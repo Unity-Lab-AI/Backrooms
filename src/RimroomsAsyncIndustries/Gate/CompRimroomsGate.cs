@@ -631,13 +631,20 @@ namespace RimroomsAsyncIndustries.Gate
             if (!IsDesignated)
             {
                 foreach (Gizmo gizmo in MakeGateGizmos()) { yield return gizmo; }
+                yield break;
             }
+            // **THE `yield break` ABOVE BELONGS TO THE UNDESIGNATED DOOR, AND FOR TWO DAYS IT DID
+            // NOT.** When the watch posture was added it went in between the make-gate gizmos and
+            // their `yield break`, which left the break under `AssemblyComplete` -- so the moment a
+            // gate was built, every control below this line vanished from the door: connection
+            // history, the address and open buttons, standing recall, crossing from the door,
+            // **Linked equipment**, and the run fallback. Found playing, 2026-10-07: a built gate
+            // offered no way to link the records archive its survey needs.
             if (AssemblyComplete)
             {
                 // Shown once the gate is a gate at all. Before that there is no post to
                 // stand at and the control would be a setting for nothing.
                 yield return WatchPostureGizmo();
-                yield break;
             }
 
             yield return new Command_Action
@@ -974,7 +981,7 @@ namespace RimroomsAsyncIndustries.Gate
             if (!ready.Success) { return ready; }
             activeExpeditionId = expeditionId;
             nativeOpeningSequence++;
-            openingTicksRemaining = GateProps.openingWindowTicks;
+            openingTicksRemaining = ExpeditionWindowTicks;
             emergencyReturnTicksRemaining = 0;
             emergencyReturnSpent = false;
             ResetOpeningWarnings();
@@ -1110,7 +1117,7 @@ namespace RimroomsAsyncIndustries.Gate
             activeExpeditionId = expeditionId;
             nativeOpeningSequence++;
             lastClosedExpeditionId = null;
-            openingTicksRemaining = GateProps.openingWindowTicks;
+            openingTicksRemaining = ExpeditionWindowTicks;
             emergencyReturnTicksRemaining = 0;
             emergencyReturnSpent = false;
             ResetOpeningWarnings();

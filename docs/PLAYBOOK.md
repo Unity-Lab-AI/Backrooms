@@ -65,4 +65,17 @@
 - *"there is no wood no trees on this map, thats why in advanced setting on world gen setup you set 300x300 mapo and spring, and then when choosing a map tile u pic on that has mountains(the rock areas on map) in forest area and jungle areas"* — new colonies are rolled that way.
 - *"use ask me question where u need my eyes"*
 - Drive the UI with semantic clicks (`.local/qa/click-label.py`); pixels last. Clear any live designator before a pixel click.
+- **A survey or contract is an EXPEDITION, and the expedition opens the gate itself.** Do not open a session by hand first: the expedition dispatch refuses on a gate that is already open, and the survey only pays when its route recording comes home as an expedition's cargo -- a hand-ordered crossing creates no expedition and its payment never settles. *Order a crossing* on an open session is for moving people, not for contract work. On the refusal, the owner: *"this isnt a issue for me u just dont know what ur doing i think"*.
 - **Never click an unlabelled icon on a bill row without proving what it is** — on a bill row the order is plus, minus, delete. One unproven click deleted the cook bill on 2026-10-07.
+
+## 9. A survey, start to payout — learned by playing AI-01, 2026-10-07
+
+1. **Debrief** anyone back from a trip (Operations → Facilities → *Debrief*), or they cannot go out again.
+2. **Kit:** tick the crew on Expedition, *Order physical shared-kit pickup*, and give each a meal and two glow pods. **Never keep them drafted for long — drafted pawns do not eat.**
+3. **Operator on the console** before dispatch, then *Approach gate and dispatch*. Do not open a session by hand first.
+4. **On site, pick up the bound record** in the office copy room — a textbook already lying there, which the menu offers as *"Order … to collect the record book"*. The blank company books do not count.
+5. **Witness the first room of each family** with the bound record carried by anyone on the map: threshold room, survey lobby, office copy, service passage, borrowed corridor, return gallery. The Atlas lists surveyed rooms; the Investigation pane says which ones count.
+6. **Route mismatch:** drop a glow pod, install it in a proper room, *Mark this pod* → Route home, then walk into a borrowed corridor.
+7. **Come home** with *Recall crew along the return route*.
+8. **File the record** on a shelf linked to the gate as *Records archive* (gate → *Linked equipment*), with that shelf allowing **Books** at **Critical** priority.
+9. **Analyse** at the company laboratory bench (Investigation → designate one). The survey pays when analysis reaches 100 %.

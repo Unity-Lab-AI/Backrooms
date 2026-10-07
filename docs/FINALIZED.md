@@ -18492,3 +18492,73 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **A dispatch refused for "carrying an object in their hands" still records an active expedition.** First press: *"A selected crew member is carrying an object in their hands. Finish that haul or put the item into an allowed inventory before dispatch."* Nobody crossed. Every press after, with both crew empty-handed and drafted: *"The gate already has an active expedition."* The Expedition page shows no expedition to cancel, so the AI-01 survey cannot be started in that save. -- **NOT A DEFECT, AND THE DIAGNOSIS ABOVE WAS MINE AND WRONG. Closed 2026-10-07 on the owner's answer, verbatim: *"this isnt a issue for me u just dont know what ur doing i think"*.** Read in source: the carrying refusal returns from `CheckCrew` before `records.Add`, so nothing was recorded. The second message is `CompRimroomsGate.CanOpen` refusing because the gate **was already open** -- I had opened the AI-01 connection by hand at checklist step 11, and the expedition dispatch opens a connection of its own. With a connection open, the gate's own card names the right control: *"To send somebody: select one colonist, then press \"Order a crossing\" on that address."* That procedure is in `PLAYBOOK.md` section 8.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **An expedition opening lasted 833 ticks, about twenty in-game minutes, while the Expedition page promised "About 129.6 hours at advancement tier 1".** `CompRimroomsGate.BeginOpening` and `BeginRecoveryOpening` set `openingTicksRemaining = GateProps.openingWindowTicks`; both laboratory-session paths in `PortalGateOpening.cs` use `PortalWindowTicksForTier`, the ladder the crew planner quotes. Measured: the AI-01 survey crew was **Stranded, "The return window expired"** twenty minutes after crossing, and two recovery windows in a row closed while the crew walked from where they were surveying to the return door at `(246, 125)` — 150 and 230 cells. The return orders were taken and then dropped by both crew on the same tick, which is the window closing rather than a path. Fix: one `ExpeditionWindowTicks` on the ladder, `int.MaxValue` at the top rung because an expedition's return window is "ticks remaining above zero". -- **BUILT 0.13.0-dev AND SEEN IN THE RUNNING GAME.** After the rebuild the survey expedition was dispatched again and the gate's own card read *"Opening time: 7776 in-game minutes remaining"* -- 129.6 hours, the planner's figure -- where the same dispatch had given twenty minutes. The recovery window that followed held while both crew were walked to the return door at `(246, 125)` and recalled; both crossed home on the first try.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **2 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **A built gate loses every control on its door.** `CompRimroomsGate.CompGetGizmosExtra` yields the watch posture under `if (AssemblyComplete)` and then `yield break`s, so on any finished gate the history, address and open gizmos, standing recall, crossing from the door, **Linked equipment** and the run fallback never appear. Found trying to link the records archive shelf the survey needs: the door showed *Watch: Balanced* and nothing of the gate's own after it. `git blame`: the break came in at `c0b1550` as the end of the `!IsDesignated` block, and `af13557` inserted the watch block between that block's gizmos and its break. Fix: the break goes back under `!IsDesignated`. -- **BUILT 0.13.0-dev AND SEEN.** After the rebuild the finished gate's door lists *Connection history (1)*, *Dial an unknown address*, *Set this gate's address*, *Open a connection (1 remembered)*, *Standing recall*, *Send somebody through*, **Linked equipment (0)**, *Set emergency cutoff*, *Assign gate operator* and *Staff gate console*, where before it stopped at *Watch: Balanced*. Linked equipment then linked a wooden shelf as the records archive: *"Records archive: 1 of 1 working, 8 maximum"*.
+- [x] **A secured record can never be analysed: analysis needs it on the archive shelf and in the analyst's hands at once.** `CompanyLaboratory`'s job picks the record up and carries it to the bench; `AddAnalysisWork` refuses unless `analyst.carryTracker.CarriedThing == record.item`, and the `CanAnalyze` it calls first refuses unless the record is `Secured` and `HasArchivedCustody` -- stored on a linked archive shelf. Both cannot hold, so the first work tick ended the job incompletable and the book was dropped beside the bench as *Recovered*. Played 2026-10-07: AI-01's record secured on the archive at `(159, 141)`, both required observations recorded, a designated bench, Scar at it -- analysis 0 %, and the book on the floor at `(132, 135)`. Fix: custody is the archive or the analyst's own hands; the work giver still asks before pickup, so filing is still required to start. -- **BUILT 0.13.0-dev AND SEEN.** With the AI-01 record back on the archive, Scar took `RR_AnalyzeEvidence` and the Investigation pane read 21 %, then 84 %, then 99 %, then *"AI-01 — Analyzed; analysis 100 %"*. The onboarding survey then settled on its own: *"AI-01 onboarding survey — Completed"*, account 64,641,860 to 69,481,860 USD.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

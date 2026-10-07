@@ -1,5 +1,43 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-07 - The onboarding survey played start to finish, and three things that stopped it
+
+- **OWNER:** *"wtf keep fucking playing and set a watch dog so if u stop thinking idel for 1 minute
+  we get woken with \"get the tests all completed\""*. The AI-01 onboarding survey was played from
+  dispatch to payout, and every place it stopped was found in a running game and fixed.
+
+### What a player gets
+
+- **An expedition's gate holds for the window the planner promises.** Expedition and recovery
+  openings used a flat 833 ticks — about twenty in-game minutes — while the Expedition page quoted
+  *"About 129.6 hours at advancement tier 1"*. A survey crew was stranded twenty minutes after
+  crossing, and two recovery windows closed before the crew could walk 150 and 230 cells home. Both
+  now follow the same window ladder a laboratory session climbs; the gate's card read *"Opening
+  time: 7776 in-game minutes remaining"* on the next dispatch.
+- **A built gate keeps its controls.** A misplaced `yield break` hid everything after the watch
+  posture on any finished gate: connection history, the address and open buttons, standing recall,
+  crossing from the door, **Linked equipment**, the emergency cutoff and operator controls. All of it
+  is back, and the records archive can be linked again.
+- **A secured record can be analysed.** Analysis required the record on the archive shelf and in
+  the analyst's hands at the same time, so it never moved off 0 %. Custody is now the archive or the
+  analyst's hands; a record still has to be filed before anybody starts on it. AI-01 went to
+  *"Analyzed; analysis 100 %"* and the survey settled: *"AI-01 onboarding survey — Completed"*.
+
+### The battery fix, seen
+
+- With the gate open and seven generators fuelled, the net read **+695 W with 2400 Wd stored** and
+  all four batteries held at 600 / 600 Wd: storage does not fall while generators carry the gate.
+
+### Found, logged, not yet fixed
+
+- **The Quiet Pursuer never spawns**, so the optional entity observation cannot be recorded. Its
+  placement only accepts a room that can reach the crew without opening a door, and every corridor
+  leg has had a door since this morning's walls commit. How the chaser should path is the owner's
+  call.
+- A survey counts only the first room of each required family, and only while the bound record
+  found on site is carried — neither is said on screen.
+- The equipment-link menu lists every shelf as an identical row with no position.
+
 ## 0.13.0-dev - 2026-10-07 - The gate is a load on the grid, and every battery pays its share
 
 - **OWNER, watching the gate open:** *"hold up now, the batteryies only one is drain, thats

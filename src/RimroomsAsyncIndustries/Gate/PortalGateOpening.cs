@@ -82,6 +82,24 @@ namespace RimroomsAsyncIndustries.Gate
         }
 
         /// <summary>
+        /// How long an **expedition's** opening lasts, in ticks: the same ladder a laboratory
+        /// opening climbs, and the same figure the crew planner quotes.
+        ///
+        /// **It used to be the flat `openingWindowTicks`, 833 ticks -- about twenty in-game
+        /// minutes -- while the Expedition page promised *"About 129.6 hours at advancement tier
+        /// 1"*.** Found playing, 2026-10-07: an onboarding survey crew was stranded twenty minutes
+        /// after crossing, and every recovery window after it closed before a crew could walk
+        /// from where it was working to the return door, 150 and 230 cells away. Two derivations
+        /// of one window, and the one the crew was actually given was the one nobody read.
+        ///
+        /// At the top rung a laboratory opening holds with no countdown at all. An expedition
+        /// reads that as the longest window an int holds rather than as zero, because its return
+        /// window is "ticks remaining above zero" and a zero would close it on the first tick.
+        /// </summary>
+        public int ExpeditionWindowTicks
+        { get { return PortalOpeningIsIndefinite ? int.MaxValue : PortalWindowTicksForTier; } }
+
+        /// <summary>
         /// A live portal session that is held rather than counted down. Legacy
         /// expeditions are never this, and neither is a natural connection, which has
         /// no machine, no operator and no timer of any kind.

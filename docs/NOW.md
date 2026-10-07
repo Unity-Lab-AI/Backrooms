@@ -8,52 +8,56 @@
 | `docs/TODO.md` | MINOR — buildable work only |
 | `docs/DECOMPOSED.md` | smallest execution units |
 | `docs/TEST.md` | the test phase, and the owner's play brief at the top of it |
-| **`docs/PLAYBOOK.md`** | **every play order the owner has given, verbatim, as one checklist. Read before playing** |
+| **`docs/PLAYBOOK.md`** | **every play order the owner has given, verbatim, and §9 the survey procedure. Read before playing** |
 | **`docs/NOW.md`** (this file) | **the handoff — one record** |
 | `docs/FINALIZED.md` | permanent archive, append-only |
 
 ---
 
-## ⛔ READ `docs/PLAYBOOK.md` BEFORE TOUCHING THE GAME ⛔
+## The standing order
 
-**Owner, 2026-10-07, verbatim:** *"u need to make meals sooner than later and get your shellves organized so like i already told you. so wtf are you not making a guide of everything ive told you becasue im not fucking around you are gonna die if u dont take care of them"*
+**Owner, 2026-10-07, verbatim:** *"wtf keep fucking playing and set a watch dog so if u stop thinking idel for 1 minute we get woken with \"get the tests all completed\""*
 
-The guide exists now. **Walk section 1, keeping them alive, every in-game day.** Play in short bursts and read alerts between them.
-
----
+The watchdog is a session cron: `*/1 * * * *`, prompt **"get the tests all completed"**. It dies with the session; the next session re-arms it the same way.
 
 ## What this session did
 
-**Shipped, built, staged: the gate's draw is a load on the grid.** The owner watched one battery go flat beside a full one on the same conduit. Two defects, both measured: the draw was a **second line beside the grid**, 3500 W out of storage while generators had 1375 W spare, and the drawing method **emptied batteries one at a time** while claiming to copy Core. An autodoor gate now rides its door's own power comp: generators first, then every battery equally. One-time costs and manual doors split evenly. The closed gate's standby draw, which nothing had ever charged, rides the same load. **Not yet seen in a running game** — that is a `[T]` row at the top of `TEST.md`'s Pending.
+**The AI-01 onboarding survey was played from dispatch to payout: "AI-01 onboarding survey — Completed".** Four requests paid on the way. Account **69,481,860 USD**.
 
-**Played: the gate is open.** Eleven of eleven. The two-section stall was a bill at `0x` nobody had priority to work. The company paid **2,000,000 USD** for *Power the gate*.
+**Three mod defects stopped it, each found in the running game and fixed, built, staged and seen working:**
 
-**Played: food.** Cook bill at 50, butcher table built with *Butcher creature* on Forever, berries and ambrosia marked, fourteen animals marked to hunt, three charge rifles issued.
+| Defect | Seen after the fix |
+|---|---|
+| Expedition windows were a flat 833 ticks, twenty in-game minutes, while the page quoted 129.6 hours | *"Opening time: 7776 in-game minutes remaining"* |
+| A built gate's door lost every control after *Watch* | *Linked equipment*, *Open a connection*, operator controls and the rest back on the door |
+| Analysis needed the record on the shelf and in the analyst's hands at once | 0 % → *"Analyzed; analysis 100 %"* |
+
+**And the earlier battery fix is three of four seen:** with seven generators fuelled and the gate open, the net read +695 W and every battery held at 600 / 600.
+
+**Built for the colony:** three wood-fired generators (seven total, +3.9 kW with the gate closed), a butcher table, the archive link, the cook bill at 50.
 
 ## The colony
 
-**`rimbridge_save_20261007_before_battery_fix`** — the latest. Async Industries, Gee, Scar, Unity, 9th of Aprimay 5500. **The AI-01 connection is open** with Gee on station. Account **51,721,860 USD**. Research: **Devilstrand**.
+**`rimbridge_save_20261007_survey_analyzed`** — the latest. Gee, Scar, Unity all home and fed. The archive is the shelf at `(159, 141)`, Books only, Critical.
 
-**And it carries the open defect below**: an expedition record that blocks dispatch.
+## ⛔ OPEN, IN ORDER ⛔
 
-## ⛔ OPEN, IN THE ORDER TO TAKE THEM ⛔
+1. **The Quiet Pursuer never spawns** (TODO). Placement only accepts a room that reaches the crew without opening a door, and every corridor leg has a door since `bcf0701`. **A design fork for the owner — how should the chaser path?** Blocks the optional entity observation and the first real threat test.
+2. **"Report a disagreement"** is the next request on the table — the two-witness accounts mechanic.
+3. **The battery `[T]` row's last check:** the connection closing at the emergency-return floor.
+4. TODO: the first-room-only survey rule, the identical-row link menu, three stale plant anchors (32 of 33), the DefInjected gate recipe text.
+5. **The play brief, per `PLAYBOOK.md`:** shelves, a vault, the prison, guest beds, defences, the *Galaxy* sculpture and the empty Lord role the ideoligion keeps alerting on. Gee no longer hunts, so Construct comes first for him.
 
-1. **Load the save and watch the batteries** — the `[T]` row. Two batteries should fall together, and not at all while the generators have surplus.
-2. **A refused dispatch leaves an expedition behind** (TODO). The first press refused with *"carrying an object in their hands"*, crossed nobody, and every press after says *"The gate already has an active expedition"*. The **$5,000,000 AI-01 survey** is waiting behind it. **Hand-carried hauls start again the instant a pawn is undrafted**, so drafting first and dispatching second is the play-side workaround once the defect is gone.
-3. **Three plant anchors** no longer find their code since `bcf0701` (TODO). The checkers are **32 of 33**, and the 33 of 33 recorded before was not true.
-4. **The DefInjected gate recipe text** still says 100 steel and one bill (TODO).
-5. **The play brief**, per `PLAYBOOK.md`: shelves organised, a vault, the prison, guest beds, defences and embrasures, the *Galaxy* sculpture the ideoligion wants, chopping, quests.
+## Tools added this session, all in `.local/qa/`
 
-## How to drive the game, learned the hard way this session
-
-| | |
+| Tool | Use |
 |---|---|
-| **A bill row's unlabelled icons are plus, minus, DELETE** | `--nth-after "<count>" 3` is plus. #5 deleted the cook bill once |
-| **Float menus** — repeat mode, research nodes | pixel clicks with `hands.py`. A plain click on a research node **replaces** the project |
-| **`find-things.py Word,Word x0 z0 x1 z1`** | new: finds things by def over the map in one socket session. **It counts cells, not stacks** — "1 survival meal" was a stack of 106 |
-| **`designate-cells.py <id> "x,z x,z"`** | new: one designator over a list of cells, then clears it. *Harvest* works per cell; *Harvest fully grown* does not |
-| **`dispatch-crew.sh <names>`** | new: waits for empty hands, drafts, dispatches |
-| **`open_context_menu` on a pawn's right-click** | says why a bill is not being worked — *"Missing 0.5x raw food"* was the whole food diagnosis |
+| `explore-to.py <pawn> x z w h` | walks a drafted pawn into a room through fog. **Undraft between legs — drafted pawns do not eat** |
+| `gizmo.py x z "<label>"` | runs a selected thing's gizmo by label; float-menu gizmos still need a pixel click after |
+| `battery-read.sh` | each battery's stored charge off its own pane |
+| `find-things.py`, `designate-cells.py`, `dispatch-crew.sh` | map search, designations over a cell list, empty-hands dispatch |
+
+**`select_pawn` switches the current map**; `jump_camera_to_pawn` does not cross maps.
 
 ## State, measured
 
@@ -61,9 +65,9 @@ The guide exists now. **Walk section 1, keeping them alive, every in-game day.**
 |---|---|
 | Branch | **`feature/bug-testing`** |
 | Version | **0.13.0-dev**, 0 warnings, 0 errors, staged copy hash-checked |
-| Checkers | **32 of 33** — the one is the three stale plant anchors, failing before this change |
-| RimWorld | **closed by owner direction** to build and stage |
+| Checkers | **32 of 33** — the stale plant anchors, failing before this session |
+| Forgejo | **held.** GitHub only |
 
 ## Is it done?
 
-**No.** The battery fix is built and unseen; the survey is blocked by a defect; the play brief is perhaps a fifth done.
+**No.** The survey loop is proven end to end; the threat half of it cannot run until the pursuer can spawn.

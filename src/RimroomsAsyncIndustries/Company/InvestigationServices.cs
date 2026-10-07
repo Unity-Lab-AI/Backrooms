@@ -166,13 +166,33 @@ namespace RimroomsAsyncIndustries.Company
             return count;
         }
 
+        /// <summary>
+        /// Whether this analyst may analyse this record at this bench.
+        ///
+        /// **Custody is the archive OR the analyst's own hands, and it used to be the archive
+        /// only.** `JobDriver_CompanyLaboratory` picks the record up and carries it to the bench,
+        /// as a researcher would, and then asks this every tick of work. Asked of a record in the
+        /// analyst's hands, "is it filed on an archive shelf?" is always no -- so the first tick
+        /// refused, the job ended incompletable, the book was dropped beside the bench as
+        /// *Recovered*, and analysis never once moved off 0 %. Found playing, 2026-10-07, with the
+        /// AI-01 record secured, both required observations recorded, a designated bench and a
+        /// researcher at it.
+        ///
+        /// **The filing rule is unchanged where it decides anything.** The work giver asks this
+        /// before the record is picked up, when only the archive branch can be true, so a record
+        /// still has to have been filed before anybody may start on it.
+        /// </summary>
         internal bool CanAnalyze(EvidenceRecord record, Pawn analyst, Thing bench)
         {
-            return CanOperate && record != null && record.status == EvidenceStatus.Secured && record.analyzedTick < 0 &&
-                record.routeRecorded && record.distortionRecorded && record.item != null &&
-                !record.item.Destroyed && record.item.MapHeld == headquarters && HasArchivedCustody(record) &&
-                record.item.GetUniqueLoadID() == record.itemLoadId && CompRouteEvidence.IsBoundRouteEvidence(record.item, record.id) &&
-                LaboratoryUtility.CanWork(analyst, bench, this, 4);
+            if (!CanOperate || record == null || record.analyzedTick >= 0 || !record.routeRecorded ||
+                !record.distortionRecorded || record.item == null || record.item.Destroyed ||
+                record.item.MapHeld != headquarters || record.item.GetUniqueLoadID() != record.itemLoadId ||
+                !CompRouteEvidence.IsBoundRouteEvidence(record.item, record.id) ||
+                !LaboratoryUtility.CanWork(analyst, bench, this, 4))
+            { return false; }
+            bool filed = record.status == EvidenceStatus.Secured && HasArchivedCustody(record);
+            bool inAnalystsHands = analyst.carryTracker != null && analyst.carryTracker.CarriedThing == record.item;
+            return filed || inAnalystsHands;
         }
 
         internal CompanyActionResult AddAnalysisWork(EvidenceRecord record, Pawn analyst, Thing bench, float work)

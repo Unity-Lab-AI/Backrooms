@@ -73,9 +73,21 @@ So the moment one exists, `IsOddSupply` is true, `coordinateId` is not empty, `v
 
 ### Found playing, 2026-10-07 — a refused dispatch leaves an expedition behind
 
-- [ ] **A dispatch refused for "carrying an object in their hands" still records an active expedition.** First press: *"A selected crew member is carrying an object in their hands. Finish that haul or put the item into an allowed inventory before dispatch."* Nobody crossed. Every press after, with both crew empty-handed and drafted: *"The gate already has an active expedition."* The Expedition page shows no expedition to cancel, so the AI-01 survey cannot be started in that save.
 - [ ] **THREE PLANT ANCHORS NO LONGER FIND THEIR CODE, AND THE "33 OF 33" IN NOW.md WAS NOT TRUE.** `check-plant-anchors.py` fails at `4469e9f` before any change of this session: `plant-generation.py` *"A ROOM WITH NO WALL GETS THE WALL FIXTURE ON THE FLOOR AGAIN"* and *"the hallways stop being lit"* find no match in `GenStep_BackroomsDestination.cs`, and `plant-unnerving-register.py` *"MARKING MOVES ABOVE THE SPAWN"* none in `RoomContentBuilder.cs`. The lighting and walls commit `bcf0701` rewrote both files. Re-aim each anchor at the code as it stands; never weaken the claim.
 - [ ] **The English DefInjected file still describes the single-bill gate.** `Languages/English/DefInjected/RecipeDef/RR_GateRecipes.xml` overrides `RR_AssembleMachineGate` to *"assemble gate"* and *"Physically carry 100 steel and 8 industrial components"*; the def is one **section** of 25 steel and 2 components, four sections. The bill reads "Assemble gate" on the table for that reason.
+
+### Found playing, 2026-10-07 — an expedition's gate closes twenty minutes after the crew crosses
+
+**Owner direction this was played under, verbatim (2026-10-07):** *"wtf keep fucking playing and set a watch dog so if u stop thinking idel for 1 minute we get woken with \"get the tests all completed\""*
+
+
+- [ ] **A survey counts only the FIRST room of each required family, and nothing on screen says so.** `EvidenceObservations.RefreshRouteRecorded` takes `coordinate.rooms.FirstOrDefault(r => r.familyId == family)` for each of the six families, so the crew had surveyed a survey lobby (room 6) and a borrowed corridor (rooms 5, 23, 29) on AI-01 and neither family counted -- only rooms 3 and 2 did. The objective reads *"Survey the six required room families"*, which a player takes to mean any room of each. **And the record book that counts is the bound one found in the office, not the blank book the kit loads**: room visits while only a blank company book was carried marked the Atlas but recorded no observation, so the checklist read *"No witnessed observations have been recorded yet"* over seven surveyed rooms.
+
+
+- [ ] **The Quiet Pursuer never spawns, so the optional entity observation can never be recorded.** Played 2026-10-07 on AI-01: a route-home glow pod set in room 1, the crew walked into the borrowed corridor, the route mismatch fired and recorded (*"a door repeats the last room's label, but the route counter disagrees"*), and no pursuer appeared in the minutes after. The save reads `rr_distortionWarned True` with `rr_pursuerEncounterStarted` never set. `FirstSlicePursuer.StartPursuer` only places the chaser in a room two away that can reach the crew under `TraverseMode.NoPassClosedDoors`, and returns silently when none can -- and `bcf0701`, the same day, put *"A door across every corridor leg"*, so every room two away is behind a closed door. Likely a regression from that commit. **The fork is how the chaser should path**: through doors as a pawn would, or placement ignoring doors and the chaser opening its own way.
+
+
+- [ ] **The equipment-link menu lists every candidate as an identical row with no position.** *Linked equipment* on the gate offered *"Link Wooden shelf as Records archive"* sixteen times and *"Link Wooden shelf as Armory"* sixteen more, with nothing saying which shelf each was; the one linked turned out to be the security-room shelf at `(159, 141)`, found only by reading the save. Each row needs the thing's position, or the menu needs to highlight its target on hover.
 
 ## TOMBSTONES
 
