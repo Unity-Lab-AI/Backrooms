@@ -25,6 +25,26 @@ LAW #0 reminder: every task description preserves the user's verbatim words.
 ---
 ## Pending
 
+### ⛔ CONFIRMED DEFECT — A CONSIGNMENT MISSION DISABLES THE WHOLE COMPANY IN ANY SAVE (2026-10-06) ⛔
+
+**Found by playing, in the owner's own colony.** On load: `[Rimrooms][Save] Campaign integrity failed; company actions are disabled. Preserve the original save.` **The mod switches itself off**, and every company row in `TEST.md` is untestable in that save.
+
+**The cause, pinned to one line.** `RimroomsCampaignComponent.ValidateRecordRelationships`:
+
+> `valid &= contracts.All(c => (c.IsOddSupply ? string.IsNullOrEmpty(c.coordinateId) : coordinateIds.Contains(c.coordinateId)) && ...)`
+
+- `IsOddSupply` is `!string.IsNullOrEmpty(requiredThingDefName) && requiredCount > 0` — **it has nothing to do with the template name.**
+- `IsConsignmentMission` is `IsOddSupply && requiredSurveyedRooms > 0`, so **a consignment mission IS an odd-supply contract.**
+- And a consignment mission **names one coordinate** by design — the 0.12.41-dev record says so in its own words: *"A mission names **one coordinate**, wants goods **that coordinate produced**"*.
+
+So the moment one exists, `IsOddSupply` is true, `coordinateId` is not empty, `valid` goes false, and `stateFaultKey` is set. **Measured in the save rather than reasoned about:** `rr.mission.oddconsignment.v1`, coordinate set, `requiredThingDefName=XER_MediumTableM`, `requiredCount=8`, `requiredSurveyedRooms=2`. The two plain `rr.supply.odd.v1` contracts correctly carry no coordinate and pass.
+
+**The validator's own comment is the record of how it went wrong:** *"An odd-supply contract is branch-wide rather than tied to one coordinate ... So it legitimately carries no coordinate id, and requiring one would fault a valid save."* **That was true before consignment missions existed and was never revisited when they landed.**
+
+- [ ] **Fix the condition so a consignment mission is allowed its coordinate.** A mission must name a coordinate **that exists**; a plain odd-supply must name none. Three cases, not two, keyed on `IsConsignmentMission` before `IsOddSupply`.
+- [ ] **AND THE FAILURE MUST NAME ITS CAUSE.** About a dozen distinct conditions collapse into one `RR_Company_InvalidSave`, and the log line says only that integrity failed. `troubleshooting.md` promises the opposite in so many words: *"Every refusal in the game names its own cause. Read it — the cause is the instruction."* **A player whose company has switched itself off is given nothing to act on**, and neither was I: pinning this took reading the save's XML by hand. The fault must carry which check failed.
+- [ ] **No instrument covers this and that is why it shipped.** Every checker reads source or defs; **none validates a saved campaign**, so a validator that rejects its own legal data is invisible until somebody loads a save. The diagnostic written to find it — re-running each condition against a save's XML — is the shape the missing instrument should take.
+
 ### ⛔ OWNER DIRECTION — I PLAY THE GAME NOW, AND THIS SUPERSEDES "ONLY THE OWNER LAUNCHES" (2026-10-06) ⛔
 
 **Verbatim owner direction (2026-10-06):** *"okay u fucking play the game and restart the scenerios as needed to test whats needed"*
