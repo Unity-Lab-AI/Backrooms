@@ -78,12 +78,12 @@
     border-radius: 7px; padding: 9px; font: inherit; font-weight: 700; cursor: pointer; }
   #modal button.ghost { background: #1c1c22; color: #a1a1aa; border: 1px solid #2a2a32; }
   #modal .err { color: #fca5a5; font-size: 11px; margin-bottom: 10px; min-height: 14px; }
-  #cam { position: fixed; top: 52px; right: 14px; width: 300px; z-index: 50; background: #0b0b0f;
-         border: 2px solid #e11d48; border-radius: 10px; overflow: hidden; box-shadow: 0 0 24px rgba(225,29,72,.35); }
+  #cam { position: relative; flex: 0 0 auto; margin: 6px 10px 0; background: #0b0b0f;
+         border: 2px solid #e11d48; border-radius: 10px; overflow: hidden; box-shadow: 0 0 18px rgba(225,29,72,.3); }
   #cam .live { position: absolute; top: 8px; left: 8px; background: #e11d48; color: #fff; font: bold 11px monospace;
                padding: 2px 7px; border-radius: 4px; letter-spacing: 1px; }
-  #cam img { width: 100%; display: block; min-height: 120px; background: #111; }
-  #cam .cap { font: 12px monospace; color: #f9a8d4; padding: 6px 9px; }
+  #cam img { width: 100%; height: 34vh; object-fit: cover; object-position: center 25%; display: block; background: #111; }
+  #cam .cap { font: 12px monospace; color: #f9a8d4; padding: 5px 9px; }
   ::-webkit-scrollbar { width: 9px; }
   ::-webkit-scrollbar-thumb { background: #2a2a32; border-radius: 5px; }
 </style>

@@ -10,8 +10,8 @@ from ctypes import wintypes
 
 URL = "http://127.0.0.1:4317/"
 TITLE = "Unity Plays RimWorld"
-W = int(sys.argv[1]) if len(sys.argv) > 1 else 460
-H = int(sys.argv[2]) if len(sys.argv) > 2 else 720
+W = int(sys.argv[1]) if len(sys.argv) > 1 else 560
+H = int(sys.argv[2]) if len(sys.argv) > 2 else 1300
 u = ctypes.WinDLL("user32")
 u.SetWindowPos.argtypes = [wintypes.HWND, wintypes.HWND, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_uint]
 u.SetWindowPos.restype = wintypes.BOOL
@@ -62,7 +62,7 @@ def main():
     if not h: print("overlay window not found"); return
     sw = u.GetSystemMetrics(0)
     HWND_TOPMOST = -1
-    ok = u.SetWindowPos(h, wintypes.HWND(HWND_TOPMOST), sw - W - 10, 60, W, H, 0x0040)
+    ok = u.SetWindowPos(h, wintypes.HWND(HWND_TOPMOST), sw - W - 10, 740, W, H, 0x0040)
     if not ok: print('SetWindowPos failed')
     print("overlay pinned topmost at", sw - W - 10, 40, W, H)
 

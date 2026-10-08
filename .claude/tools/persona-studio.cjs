@@ -391,7 +391,7 @@ function listen(port, attempt) {
     console.log('  Unity pushes images via:  POST ' + url + 'api/show  {prompt, persona}');
     console.log('  Ctrl+C to stop.');
     console.log('');
-    openBrowser(url);
+    if (!process.env.STUDIO_PERSIST) openBrowser(url);
   });
   server.listen(port, '127.0.0.1');
 }
@@ -403,6 +403,7 @@ listen(BASE_PORT, 0);
 // whose window never opened. .unref() so the timer never holds the process up.
 setInterval(() => {
   const idle = Date.now() - lastBeat;
+  if (process.env.STUDIO_PERSIST) return;   // the overlay owns the window; stay up
   if (windowSeen && idle > WINDOW_TIMEOUT_MS) {
     console.log('persona-studio: window closed — shutting down.');
     process.exit(0);
