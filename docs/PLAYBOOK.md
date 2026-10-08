@@ -154,6 +154,8 @@ Every step below is an order already in this playbook; this is only the order th
 
 **Verbatim owner direction (2026-10-08):** *"why are you commitioning their bedroom door as a gate you need to build a facility fool"* -- **a gate gets its own facility**: a dedicated gate room (with the console, battery and bench beside it) built off the base's halls, never an existing room's door.
 
+**Verbatim owner direction (2026-10-08):** *"what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process"* -- **guests:** a guest room with guest beds, beauty where they stay (floors, light, a statue), meals they can eat, recreation; **sales:** a sell zone holding only surplus, set from the Guests tab (Hospitality), and sell processed goods -- smokeleaf as joints, not leaves.
+
 ## 4. Work and pawns
 
 - *"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?"* — **look at the world map: neighbours, settlements, trade, raids to answer, places to take.**
