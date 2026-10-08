@@ -45,6 +45,8 @@ Everything else open in TEST is launch-gated on the owner (RimSort profiles, DLC
 - **Gate needs one live grid** for console, battery and door: conduit to `(169,184)`.
 - **Freezer** zone takes foods, plant matter, animal corpses, herbal medicine; nine warehouse shelves refuse them and all medicine.
 - **Vault** for silver x178 and the age-reversing serum -- not built yet.
+- **Silver ore** on the map, 36 cells at `(44-46,202-204)`, `(80-83,269-271)`, `(257-260,175-178)`, `(263-264,274-275)` -- **all fogged**: walk a pawn there first, then designate mining (never mine into fog). Procurement silver is $1,000 each, so this is the silver supply.
+- **Penoxycline x7** bought from IE Solutions for 161 silver; drug policy every 5 days.
 - Unity is **Pujari of Indra** (role change ritual at the ritual spot `(148,141)`); chess chairs blueprinted.
 
 ## State, measured 2026-10-08
