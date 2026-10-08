@@ -18,6 +18,25 @@ Links (checked 2026-10-08, all answer 200):
 
 ---
 
+## Link icon panels
+
+Owner, 2026-10-08: *"we need all the url links in a link icon thingy"*. One Twitch panel per link: upload
+the image, put the URL in **Image links to**, leave the title and description empty (the image says
+it). Images are 320x110 in the overlay's style, rendered by [`twitch-panels/render.py`](twitch-panels/render.py).
+
+| Panel image | Image links to |
+|-------------|----------------|
+| ![](twitch-panels/panel-site.png) `panel-site.png` | https://g-fourteen.github.io/Rimrooms-AsyncIndustries/ |
+| ![](twitch-panels/panel-install.png) `panel-install.png` | https://g-fourteen.github.io/Rimrooms-AsyncIndustries/install.html |
+| ![](twitch-panels/panel-modlist.png) `panel-modlist.png` | https://g-fourteen.github.io/Rimrooms-AsyncIndustries/mods-list.html |
+| ![](twitch-panels/panel-source.png) `panel-source.png` | https://github.com/Unity-Lab-AI/Backrooms |
+| ![](twitch-panels/panel-bugs.png) `panel-bugs.png` | https://github.com/Unity-Lab-AI/Backrooms/issues |
+| ![](twitch-panels/panel-workshop.png) `panel-workshop.png` | *(no link until the collection is published)* |
+
+The text panels below stay as the long-form write-ups.
+
+---
+
 ## Bio (300)
 
 ```

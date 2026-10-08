@@ -38,6 +38,8 @@ Persona Studio is installed (`.claude/tools/persona-studio.cjs`, skills `persona
 
 *"and dont styrtob the live light its distracting"* (2026-10-08) -- the overlay's LIVE dot is **steady**, never blinking or pulsing; nothing on the overlay strobes.
 
+*"and move the colony name at the top a bit to the left so not blocking characters"* (2026-10-08) -- the game cell's colony-name tab sits at the **left** of the top edge (`left: 80px`), clear of the colonist bar.
+
 *"talk 50% more offten kill dead air with fun talk and questions like a real person games and chats"* (2026-10-08) -- speak about **half again as often** as before: a line on every action **plus** filler between actions -- small talk, opinions, asking chat questions (what to name things, which room next, favourite storyteller), like a real streamer. No stretch of play goes silent. Still clean (LAW).
 
 *"and take live wenbcam off your rimchat and put AI representation"* · *"or better just reporesentation"* · *"no AI"* (2026-10-08) -- the overlay image panel is labelled **REPRESENTATION** (not "LIVE · WEBCAM", no "AI"). The persistent studio server also ignores the overlay's pagehide shutdown beacon, so reloading the overlay never drops chat.
