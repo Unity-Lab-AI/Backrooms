@@ -184,7 +184,7 @@ function personaList() {
 function readBody(req) {
   return new Promise((resolve) => {
     let d = '';
-    req.on('data', (c) => { d += c; if (d.length > 1e6) req.destroy(); });
+    req.on('data', (c) => { d += c; if (d.length > 12e6) req.destroy(); });   // 12 MB: room for annotated screenshots (base64 PNG)
     req.on('end', () => { try { resolve(d ? JSON.parse(d) : {}); } catch (e) { resolve({}); } });
     req.on('error', () => resolve({}));
   });
@@ -340,12 +340,17 @@ const server = http.createServer(async (req, res) => {
       // Webcam panel: Unity's face on stream, re-rendered when something happens in game.
       if (pathname === '/api/cam') {
         const env = readEnv();
-        const prompt = String(body.prompt || '').trim();
-        if (!prompt) return sendJson(res, 400, { error: 'empty prompt' });
         let png;
-        const faceUrl = body.face ? ((env && env.STUDIO_FACE_URL) || 'http://127.0.0.1:7862') : null;
-        try { png = await renderLocal(prompt, env, faceUrl); }
-        catch (e) { return sendJson(res, 502, { error: 'local image server: ' + e.message }); }
+        if (body.png) {
+          // A ready image (annotated game screenshot from unity-snap.py), base64 PNG.
+          png = Buffer.from(String(body.png).replace(/^data:image\/png;base64,/, ''), 'base64');
+        } else {
+          const prompt = String(body.prompt || '').trim();
+          if (!prompt) return sendJson(res, 400, { error: 'empty prompt' });
+          const faceUrl = body.face ? ((env && env.STUDIO_FACE_URL) || 'http://127.0.0.1:7862') : null;
+          try { png = await renderLocal(prompt, env, faceUrl); }
+          catch (e) { return sendJson(res, 502, { error: 'local image server: ' + e.message }); }
+        }
         fs.mkdirSync(IMG_DIR, { recursive: true });
         const name = 'cam-' + Date.now() + '.png';
         fs.writeFileSync(path.join(IMG_DIR, name), png);
@@ -354,7 +359,10 @@ const server = http.createServer(async (req, res) => {
       }
 
       if (pathname === '/api/shutdown') {
-        sendJson(res, 200, { ok: true });
+        sendJson(res, 200, { ok: true, persist: !!process.env.STUDIO_PERSIST });
+        // Persistent mode: a closing/reloading overlay window sends this beacon on pagehide,
+        // which must not take the stream's chat server down with it.
+        if (process.env.STUDIO_PERSIST) return;
         return setTimeout(() => process.exit(0), 120);
       }
     }
