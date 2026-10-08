@@ -39,6 +39,7 @@
 - *"make sure all shelves outside are set correct too. like medicine only in the room with hospital beds but heal root under mediceine needs to be in freezewr"*
 - *"u can set one and use copy button to paste it to other shelves with paste"*
 - *"you have food rotting away because you havenet stoorege things on shelveves properly"*
+- *"you also need to store all plant resources in fridge too come on fix all shelves and storages, your profits are rotting away"* -- **every plant product that rots** (crops, smokeleaf and psychoid leaves, berries, hops, cotton is fine out) **goes in the freezer**; every shelf and zone audited, not just the one in view.
 - *"build a vault ... cash silver gold high valuable gemms irvory in vaults"*
 
 ### 5. Power and plant
@@ -91,6 +92,7 @@
 - *"you are building walls straight into a mountian someone is going to get trapped building, you need to mine out the inerside first and wait to build that sections wall"*
 - *"and make sure you zone shit in right like roofs so courtyards are unroofed and generators need to be out side"*
 - *"and why is there a bed in the middle of the river delete that and remove bridge in sturcture"*
+- *"finish your building you have gaps finish the shit donlnt leave shit un set to build"* -- every wall line closed: no gap left unblueprinted, no half-built run abandoned. Scan the walls after every build order.
 - **Towers:** *"yopu need towers on all corrner that you can shhot out from with seperate ventalizatyion and added rooms for security stuff and embrassure sally ports"*
 - **Build in steel; order steel:** *"and use steel and order steel from the company"*
 - Doors in a stuff that is stocked (no limestone door exists; slate doors waited forever).
