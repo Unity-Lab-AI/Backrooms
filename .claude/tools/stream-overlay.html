@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Unity Plays RimWorld — stream overlay</title>
+<!--
+  OBS browser source, 1920x1080, transparent. Served by persona-studio.cjs at /overlay.
+  Panels sit where the RimWorld UI is quietest (1920 canvas, game captured full width):
+    chat           left,  under the resource readout   (x8-430,    y455-735)
+    representation right, under the minimap            (x1612-1912, y380-600)
+    script log     lower right, left of the clock      (x1200-1600, y848-988)
+    caption        top centre, under the colonist bar  (x560-1360,  y92)
+  Chat shows Twitch viewers and Unity's lines only; the script log shows file and command
+  names only (both filtered server-side). No audio here: the voice is OBS's own Media Source.
+-->
+<style>
+  :root { --pink: #ff4fa3; --pink2: #ff86c2; --lilac: #c9a7ff; --ink: #e9e3ee;
+          --glass: rgba(9, 7, 13, 0.80); --edge: rgba(255, 79, 163, 0.55); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+  body { font: 15px/1.4 "Cascadia Code", Consolas, monospace; color: var(--ink); }
+  .panel { position: absolute; background: var(--glass); border: 1px solid var(--edge);
+           border-radius: 10px; box-shadow: 0 0 16px rgba(255, 79, 163, 0.28), inset 0 0 22px rgba(0, 0, 0, 0.6);
+           overflow: hidden; }
+  .panel::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+                  background: repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 3px); }
+  .head { display: flex; align-items: center; gap: 8px; padding: 6px 11px 5px;
+          border-bottom: 1px solid rgba(255, 79, 163, 0.3); background: rgba(20, 8, 18, 0.7);
+          font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--pink2); }
+  .head .glyph { color: var(--pink); text-shadow: 0 0 6px var(--pink); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #ff2d6d; box-shadow: 0 0 9px #ff2d6d;
+         animation: pulse 1.6s infinite; }
+  @keyframes pulse { 50% { opacity: 0.35; } }
+
+  /* chat */
+  #chat { left: 8px; top: 455px; width: 422px; height: 280px; }
+  #brand { font: 22px "Ink Free", "Segoe Print", cursive; letter-spacing: 0.5px; text-transform: none;
+           color: #ffd1e8; text-shadow: 0 0 8px var(--pink), 0 0 2px #000; flex: 1; }
+  #rows { position: absolute; left: 0; right: 0; top: 40px; bottom: 0; padding: 4px 11px 8px;
+          display: flex; flex-direction: column; justify-content: flex-end; gap: 5px; overflow: hidden; }
+  .row { flex: 0 0 auto; word-break: break-word; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; animation: in 0.35s ease-out; text-shadow: 0 1px 2px #000; }
+  .row .who { font-weight: 700; color: var(--lilac); margin-right: 6px; }
+  .row.unity .who { color: var(--pink); text-shadow: 0 0 6px rgba(255, 79, 163, 0.7); }
+  .row.unity.narr .txt { color: #f3c6dd; font-style: italic; }
+  @keyframes in { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+
+  /* representation */
+  #cam { left: 1612px; top: 380px; width: 300px; height: 220px; }
+  #cam img { position: absolute; top: 30px; left: 0; width: 100%; height: 190px; object-fit: cover;
+             object-position: center 30%; filter: saturate(1.05) contrast(1.05); background: #120a12; }
+  #cam .cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 3px 9px 4px; font-size: 12px;
+              color: #ffd9ec; background: linear-gradient(transparent, rgba(0,0,0,0.85)); text-shadow: 0 1px 2px #000; }
+
+  /* script log */
+  #log { left: 1200px; top: 848px; width: 400px; height: 140px; }
+  #lrows { position: absolute; left: 0; right: 0; top: 30px; bottom: 0; padding: 3px 10px 6px;
+           display: flex; flex-direction: column; justify-content: flex-end; font-size: 13px; overflow: hidden; }
+  .l { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #b9f5c9; animation: in 0.25s ease-out; }
+  .l .t { color: #6b5a72; margin-right: 7px; }
+  .l .p { color: var(--pink); margin-right: 5px; }
+  .l.cmd { color: #9fd4ff; }
+
+  /* caption */
+  #caption { position: absolute; left: 560px; top: 92px; width: 800px; text-align: center;
+             font: 25px/1.3 "Ink Free", "Segoe Print", cursive; color: #fff;
+             text-shadow: 0 0 10px var(--pink), 0 2px 3px #000, 0 0 2px #000;
+             opacity: 0; transition: opacity 0.6s; }
+  #caption.show { opacity: 1; }
+  #caption span { background: rgba(9, 7, 13, 0.62); padding: 4px 14px; border-radius: 8px;
+                  box-decoration-break: clone; -webkit-box-decoration-break: clone;
+                  border-bottom: 2px solid var(--edge); }
+</style>
+</head>
+<body>
+  <div class="panel" id="chat">
+    <div class="head"><span class="dot"></span><span id="brand">Unity Plays RimWorld</span><span class="glyph">&#10016;</span>chat</div>
+    <div id="rows"></div>
+  </div>
+  <div class="panel" id="cam">
+    <div class="head"><span class="glyph">&#9760;</span>representation</div>
+    <img id="camImg" alt="" />
+    <div class="cap" id="camCap"></div>
+  </div>
+  <div class="panel" id="log">
+    <div class="head"><span class="glyph">&gt;_</span>script log</div>
+    <div id="lrows"></div>
+  </div>
+  <div id="caption"><span id="capText"></span></div>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const get = (u) => fetch(u, { cache: "no-store" }).then((r) => r.json());
+const seen = new Set();
+let chatSince = 0, logSince = 0, camTs = 0, capTimer = 0, firstChat = true;
+const MAX_ROWS = 6, MAX_LOG = 6;
+
+function caption(text) {
+  $("capText").textContent = text.length > 190 ? text.slice(0, 187) + "..." : text;
+  $("caption").classList.add("show");
+  clearTimeout(capTimer);
+  capTimer = setTimeout(() => $("caption").classList.remove("show"), Math.min(16000, 5000 + text.length * 60));
+}
+
+async function chat() {
+  try {
+    const j = await get("/api/chat?since=" + chatSince);
+    let newest = null;
+    for (const r of j.rows || []) {
+      chatSince = Math.max(chatSince, r.ts);
+      if (seen.has(r.key)) continue;
+      seen.add(r.key);
+      const d = document.createElement("div");
+      d.className = "row" + (r.unity ? " unity" : "") + (r.narration ? " narr" : "");
+      const w = document.createElement("span"); w.className = "who"; w.textContent = r.who;
+      const t = document.createElement("span"); t.className = "txt"; t.textContent = r.text;
+      d.appendChild(w); d.appendChild(t);
+      $("rows").appendChild(d);
+      if (r.unity) newest = r.text;
+    }
+    while ($("rows").children.length > MAX_ROWS) $("rows").firstChild.remove();
+    // A page (re)load shows recent history but does not replay an old line as a caption.
+    if (newest && !firstChat) caption(newest);
+    firstChat = false;
+  } catch (e) { /* studio restarting: next tick */ }
+}
+
+function hhmmss(ts) { const d = new Date(ts); return d.toTimeString().slice(0, 8); }
+async function log() {
+  try {
+    const j = await get("/api/log?since=" + logSince);
+    for (const r of j.rows || []) {
+      logSince = Math.max(logSince, r.id);
+      for (const it of r.items) {
+        const d = document.createElement("div");
+        d.className = "l" + (it.startsWith("rimworld/") ? " cmd" : "");
+        const t = document.createElement("span"); t.className = "t"; t.textContent = hhmmss(r.ts);
+        const p = document.createElement("span"); p.className = "p"; p.textContent = "›";
+        d.appendChild(t); d.appendChild(p); d.appendChild(document.createTextNode(it));
+        $("lrows").appendChild(d);
+      }
+    }
+    while ($("lrows").children.length > MAX_LOG) $("lrows").firstChild.remove();
+  } catch (e) { /* next tick */ }
+}
+
+async function cam() {
+  try {
+    const j = await get("/api/cam");
+    if (j.ts && j.ts !== camTs) { camTs = j.ts; $("camImg").src = j.url + "?t=" + j.ts; $("camCap").textContent = j.caption || ""; }
+  } catch (e) { /* next tick */ }
+}
+
+chat(); log(); cam();
+setInterval(chat, 1200); setInterval(log, 1000); setInterval(cam, 2500);
+</script>
+</body>
+</html>

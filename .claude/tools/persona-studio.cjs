@@ -38,6 +38,8 @@ const ENV_PATH   = path.join(CLAUDE_DIR, '.env');
 const HTML_PATH   = path.join(TOOLS_DIR, 'persona-studio.html');
 const INBOX_PATH  = path.join(CLAUDE_DIR, '.studio-inbox.jsonl');
 const OUTBOX_PATH = path.join(CLAUDE_DIR, '.studio-outbox.jsonl');
+const OVERLAY_PATH = path.join(TOOLS_DIR, 'stream-overlay.html');
+const STREAM_LOG   = path.join(CLAUDE_DIR, '.stream-log.jsonl');
 const BASE_PORT   = parseInt(process.env.PERSONA_STUDIO_PORT, 10) || 4317;
 
 // ── Persona roster — id → display label + accent colour ─────────────────────
@@ -232,6 +234,44 @@ const server = http.createServer(async (req, res) => {
       if (!fs.existsSync(HTML_PATH)) { res.writeHead(500); return res.end('persona-studio.html missing'); }
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
       return res.end(fs.readFileSync(HTML_PATH));
+    }
+
+    // The OBS stream overlay (full 1920x1080 canvas, transparent).
+    if (req.method === 'GET' && pathname === '/overlay') {
+      if (!fs.existsSync(OVERLAY_PATH)) { res.writeHead(500); return res.end('stream-overlay.html missing'); }
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+      return res.end(fs.readFileSync(OVERLAY_PATH));
+    }
+
+    // Stream chat: Twitch viewers and Unity's lines ONLY. The owner's own studio-window messages
+    // and Unity's replies to them never reach the stream (owner: "nothing personal of ours").
+    if (req.method === 'GET' && pathname === '/api/chat') {
+      const since = parseInt(query.since, 10) || 0;
+      const inbox = readJsonl(INBOX_PATH);
+      const twitch = new Map();
+      for (const m of inbox) {
+        const t = /^\[twitch\]\s*([^:]{1,40}):\s*([\s\S]*)$/.exec(String(m.text || ''));
+        if (t) twitch.set(m.id, { who: t[1].trim(), text: t[2].trim(), ts: m.ts });
+      }
+      const rows = [];
+      for (const [id, v] of twitch) rows.push({ key: 'v' + id, ts: v.ts, who: v.who, text: v.text, unity: false });
+      for (const r of readJsonl(OUTBOX_PATH)) {
+        if (r.replyTo != null && !twitch.has(r.replyTo)) continue;
+        rows.push({ key: 'u' + r.id, ts: r.ts, who: 'Unity', text: String(r.text || ''), unity: true,
+                    narration: r.replyTo == null });
+      }
+      rows.sort((a, b) => a.ts - b.ts);
+      return sendJson(res, 200, { rows: rows.filter((r) => r.ts > since).slice(-60) });
+    }
+
+    // Script log: re-sanitised here too -- only file basenames and rimworld/<command> survive.
+    if (req.method === 'GET' && pathname === '/api/log') {
+      const since = parseInt(query.since, 10) || 0;
+      const SAFE = /^(?:[A-Za-z0-9_-]{1,40}\.(?:py|cjs|ps1|sh)|rimworld\/[a-z_]{2,48})$/;
+      const rows = readJsonl(STREAM_LOG).filter((r) => (r.id || 0) > since).slice(-40)
+        .map((r) => ({ id: r.id, ts: r.ts, items: (r.items || []).filter((i) => SAFE.test(String(i))) }))
+        .filter((r) => r.items.length);
+      return sendJson(res, 200, { rows: rows });
     }
 
     if (req.method === 'GET' && pathname === '/api/personas') {

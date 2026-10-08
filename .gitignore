@@ -91,3 +91,4 @@ __pycache__/
 .claude/.studio-images/
 .claude/.studio-inbox.jsonl
 .claude/.studio-outbox.jsonl
+.claude/.stream-log.jsonl
