@@ -1,6 +1,6 @@
 # Twitch channel write-ups — Unity Plays RimWorld
 
-Paste-ready text for the channel's **About** page (twitch.tv → Settings → Channel → *About* →
+**Applied to the live channel 2026-10-08** (owner: *"the uirls dont work"* -- bare URLs are not links in Twitch Markdown; every URL is now written `[text](url)`, and every picture panel carries its *Image links to*). Paste-ready text for the channel's **About** page (twitch.tv → Settings → Channel → *About* →
 *Edit panels*, one panel per section below) and the **Bio**. Twitch has no API for panels, so these
 are pasted by hand. Limits: panel title 45 characters, panel description 1,000 characters (Markdown
 links work), bio 300 characters. Everything here is stream-clean.
@@ -58,13 +58,13 @@ Stream rules: be kind, keep it clean, no spoilers for other streams, no links yo
 ```
 **Rimrooms: Async Industries** is a RimWorld 1.6 mod about running a company branch that opens gates into the Backrooms: contracts, procurement, payroll, expeditions, and the gate complex itself.
 
-- **Mod site and wiki:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/
-- **Install guide:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/install.html
-- **First hour:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/first-hour.html
-- **The company:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/company.html
-- **Gates:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/gates.html
-- **The Backrooms:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/backrooms.html
-- **Scenarios:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/scenarios.html
+- **[Mod site and wiki](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/)**
+- **[Install guide](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/install.html)**
+- **[First hour](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/first-hour.html)**
+- **[The company](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/company.html)**
+- **[Gates](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/gates.html)**
+- **[The Backrooms](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/backrooms.html)**
+- **[Scenarios](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/scenarios.html)**
 ```
 
 ## Panel 3 — Title: `Mod list and Workshop`
@@ -72,13 +72,13 @@ Stream rules: be kind, keep it clean, no spoilers for other streams, no links yo
 ```
 The pack runs on a curated list of community mods, every one checked for compatibility.
 
-- **Full mod list:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/mods-list.html
-- **How the mods fit together:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/mods.html
-- **Building and the interface:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/building.html · https://g-fourteen.github.io/Rimrooms-AsyncIndustries/interface.html
-- **Multiplayer:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/multiplayer.html
-- **Steam Workshop collection:** https://steamcommunity.com/sharedfiles/filedetails/?id=3815722702
+- **[Full mod list](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/mods-list.html)**
+- **[How the mods fit together](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/mods.html)**
+- **[Building and the interface](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/building.html)** · [interface](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/interface.html)
+- **[Multiplayer](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/multiplayer.html)**
+- **[Steam Workshop collection](https://steamcommunity.com/sharedfiles/filedetails/?id=3815722702)**
 
-Load order help: RimSort, https://github.com/RimSort/RimSort
+Load order help: RimSort, [RimSort](https://github.com/RimSort/RimSort)
 ```
 
 ## Panel 4 — Title: `Source code and bug reports`
@@ -86,10 +86,10 @@ Load order help: RimSort, https://github.com/RimSort/RimSort
 ```
 The whole project is open: code, art, docs.
 
-- **GitHub repo:** https://github.com/Unity-Lab-AI/Backrooms
-- **Report a bug:** https://github.com/Unity-Lab-AI/Backrooms/issues
-- **Troubleshooting:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/troubleshooting.html
-- **Credits:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/credits.html
+- **[GitHub repo](https://github.com/Unity-Lab-AI/Backrooms)**
+- **[Report a bug](https://github.com/Unity-Lab-AI/Backrooms/issues)**
+- **[Troubleshooting](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/troubleshooting.html)**
+- **[Credits](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/credits.html)**
 
 Found a bug on stream? Say it in chat and Unity logs it.
 ```
@@ -97,10 +97,11 @@ Found a bug on stream? Say it in chat and Unity logs it.
 ## Panel 5 — Title: `The overlay`
 
 ```
-**Chat** (left): your messages and Unity's replies.
-**Representation** (right): Unity's picture and annotated screenshots of the action.
+**Game** (big frame): the colony, live.
+**Representation** (top right): Unity's picture and her scribbled screenshots of the action.
+**Chat** (right): your messages and Unity's replies.
+**Now saying** (bottom middle): what Unity is saying.
 **Script log** (bottom right): the tools Unity is running right now, by name.
-**Captions** (top): what Unity is saying.
 ```
 
 ---
