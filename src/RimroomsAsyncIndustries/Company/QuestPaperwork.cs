@@ -481,7 +481,9 @@ namespace RimroomsAsyncIndustries.Company
             Thing book = BookFor(request);
             CompRouteEvidence stamp = book == null ? null : book.TryGetComp<CompRouteEvidence>();
             if (stamp != null) { stamp.StampForQuest(request.Id, request.WriteUpsFiled.Count); }
-            RecordEvent("RR_Event_WriteUpFiled", kind.label, request.Id);
+            RimroomsRequestDef filedFor = request.Definition;
+            RecordEvent("RR_Event_WriteUpFiled", request.Id, kind.label,
+                filedFor == null ? request.Id : filedFor.LabelCap.ToString());
             return true;
         }
     }

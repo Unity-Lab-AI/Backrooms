@@ -140,7 +140,8 @@ namespace RimroomsAsyncIndustries.Company
                 certificationDefName = certification.defName,
                 earnedTick = Find.TickManager == null ? 0 : Find.TickManager.TicksGame,
             });
-            RecordEvent("RR_Event_Certified", pawn.LabelShortCap, certification.LabelCap);
+            RecordEvent("RR_Event_Certified", pawn.LabelShortCap, pawn.LabelShortCap,
+                certification.LabelCap);
             return CompanyActionResult.Applied();
         }
 

@@ -107,7 +107,8 @@ namespace RimroomsAsyncIndustries.Company
                 true, forbid: false);
 
             RimroomsRequestDef definition = request.Definition;
-            RecordEvent("RR_Event_QuestBookDelivery", request.Id);
+            RecordEvent("RR_Event_QuestBookDelivery", request.Id,
+                definition == null ? request.Id : definition.LabelCap.ToString());
             Find.LetterStack.ReceiveLetter(
                 "RR_QuestBook_Title".Translate(),
                 "RR_QuestBook_Body".Translate(CompanyName,

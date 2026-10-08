@@ -155,7 +155,8 @@ namespace RimroomsAsyncIndustries.Company
             if (stamp != null) { stamp.ClearQuestStamp(); }
             book.Destroy(DestroyMode.Vanish);
             questBooksCollected++;
-            RecordEvent("RR_Event_QuestBookCollected", request.Id, payment.ToString("N0"));
+            RecordEvent("RR_Event_QuestBookCollected", request.Id, QuestLabel(request),
+                payment.ToString("N0"));
             // **Collection closes the request.** It used to leave it Accepted, and a success route
             // later paid the same fee again under a different operation id, so the idempotence
             // this class promises below never applied. Owner, 2026-10-07: book collection closes

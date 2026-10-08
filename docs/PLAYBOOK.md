@@ -128,6 +128,8 @@
 
 **Verbatim owner direction (2026-10-07):** *"and u need florring. what ever u want each rrom to be ie hospital sterile tile. beds wood flooring cut down trees mine steel and shit"* -- **every room floored for its purpose**: hospital sterile tile, bedrooms wood floor, others to suit. **Gather the materials**: chop trees for wood, mine steel and the rest.
 
+**Verbatim owner direction (2026-10-07):** *"telling you not to set timers means exactly that NOT itsa okay to set 1m ones!!!!"* -- **no timers of any length**: no `timeout` wrappers, no sleep-and-poll loops, no command timeouts. Run a command, read its result, move on.
+
 ## 4. Work and pawns
 
 - *"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?"* — **look at the world map: neighbours, settlements, trade, raids to answer, places to take.**

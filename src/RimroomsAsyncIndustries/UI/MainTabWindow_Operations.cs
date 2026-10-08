@@ -308,11 +308,7 @@ namespace RimroomsAsyncIndustries.UI
                     if (campaign.Events.Count == 0) { listing.Label("RR_UI_NoRecords".Translate()); }
                     foreach (CompanyEventRecord activity in campaign.Events.Reverse())
                     {
-                        string message = activity.MessageKey.Translate().ToString();
-                        if (activity.Arguments.Count > 0)
-                        {
-                            message = string.Format(CultureInfo.CurrentCulture, message, activity.Arguments.Cast<object>().ToArray());
-                        }
+                        string message = ActivityText(activity);
                         listing.Label("RR_UI_ActivityRow".Translate(Day(activity.Tick), message));
                         listing.Gap(4f);
                     }
@@ -366,6 +362,31 @@ namespace RimroomsAsyncIndustries.UI
 
             // Preserve native research/tutorial/world-selection behavior via its worker.
             target.Worker.InterfaceTryActivate();
+        }
+
+        /// <summary>
+        /// One activity row as text, and **never an exception.**
+        ///
+        /// Found playing, 2026-10-07: fifteen event keys were written as if the event's related id
+        /// were their <c>{0}</c>, while `RecordEvent` stores that id apart from the format
+        /// arguments. The first such row -- *"Finished paperwork collected for {0}. Company Account
+        /// receipt: ${1} USD."* with one argument -- threw a FormatException on every frame the
+        /// Activity pane drew, flooding the log and stalling the game's main thread. A row one
+        /// argument short now takes the related id as its first; a row that still cannot be
+        /// formatted shows its plain text rather than taking the window down.
+        /// </summary>
+        private static string ActivityText(CompanyEventRecord activity)
+        {
+            string format = activity.MessageKey.Translate().ToString();
+            var values = activity.Arguments.Cast<object>().ToList();
+            int wanted = 0;
+            foreach (System.Text.RegularExpressions.Match match in
+                System.Text.RegularExpressions.Regex.Matches(format, @"\{(\d+)"))
+            { wanted = System.Math.Max(wanted, int.Parse(match.Groups[1].Value) + 1); }
+            if (wanted == values.Count + 1) { values.Insert(0, activity.RelatedId ?? ""); }
+            if (values.Count == 0) { return format; }
+            try { return string.Format(CultureInfo.CurrentCulture, format, values.ToArray()); }
+            catch (System.FormatException) { return format; }
         }
     }
 }

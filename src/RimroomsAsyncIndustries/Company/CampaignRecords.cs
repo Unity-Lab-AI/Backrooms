@@ -678,6 +678,7 @@ namespace RimroomsAsyncIndustries.Company
         public int Tick { get { return tick; } }
         public string MessageKey { get { return messageKey; } }
         public IReadOnlyList<string> Arguments { get { return arguments; } }
+        public string RelatedId { get { return relatedId; } }
         public void ExposeData()
         {
             Scribe_Values.Look(ref tick, "rr_tick");
