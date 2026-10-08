@@ -6,6 +6,24 @@
 
 ---
 
+## 00. A new colony, in order -- sustainable BEFORE the gate
+
+**Verbatim owner direction (2026-10-08):** *"there are order of operations of everything that needs to be done when starting out and you are no FUCKING WHERE CLOSE TO SUSTAINABLITY BEFORE BUILDING A GATE!"* -- then *"what all have i told you fool"*.
+
+Every step below is an order already in this playbook; this is only the order they are done in on a fresh start. **The gate is last.**
+
+1. **Read the map and the world.** Explore past the walls before designating anything (fog first, designations second); read the world map for neighbours and threats; read every letter.
+2. **Pawns set up.** Schedules on Anything; hostile response Attack; work tab manual -- Firefight to Cook at 1, each pawn's specialty at 2, one cell at a time, read back.
+3. **Food.** A growing zone sown; stove with a simple-meal bill on *Do until 50* and a cook on it; butcher table; hunting with rifles; harvests brought in.
+4. **Freezer and storage.** A freezer with coolers blue-in red-out; freezer shelves take food/healroot/ambrosia/wort only; every other shelf refuses them; medicine in the hospital; shelves one priority above each zone; nothing left on the floor.
+5. **Power.** Generation above load, every powered building on a conduit, fuel stocked.
+6. **Materials.** Chop wood, mine steel, stonecutter on Forever; enough of each to build.
+7. **Beds and comfort.** Beds in rooms off a hall, lights, vents, recreation.
+8. **Defence.** Rifles and sidearms on everyone, a fallback point, embrasures toward the approach.
+9. **Research and roles.** Research queued toward production and upgrades; leader and moral guide; antibiotics.
+10. **Money.** Cash crop sown, traders worked, silver kept.
+11. **Then the gate** -- in its own facility built off the halls, with the console, battery and bench beside it, and an operator who is fed and rested.
+
 ## 0. Everything, always -- not one and done
 
 **Verbatim owner direction (2026-10-07):** *"leave it let everyone catch up on tasks before you do more... and make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done"* -- asked whether to raise a pawn's Grow priority so ripe rice got harvested.
@@ -131,6 +149,8 @@
 **Verbatim owner direction (2026-10-07):** *"telling you not to set timers means exactly that NOT itsa okay to set 1m ones!!!!"* -- **no timers of any length**: no `timeout` wrappers, no sleep-and-poll loops, no command timeouts. Run a command, read its result, move on.
 
 **Verbatim owner direction (2026-10-08):** *"the problem of the game continueing to crash, it just did, is you are editing files or something while the game is running, you cant do that"* -- **build and stage only with the game closed.** Read on the crash, 2026-10-08: the staged DLL was untouched since before launch, and the log ended in ~600 *"Tried to get a resource ... from a different thread"* lines raised by bridge gizmo-listing calls -- so also **list a selection's gizmos as rarely as possible; read buttons off a screenshot instead.**
+
+**Verbatim owner direction (2026-10-08):** *"why are you commitioning their bedroom door as a gate you need to build a facility fool"* -- **a gate gets its own facility**: a dedicated gate room (with the console, battery and bench beside it) built off the base's halls, never an existing room's door.
 
 ## 4. Work and pawns
 
