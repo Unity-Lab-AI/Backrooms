@@ -18956,3 +18956,26 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TEST.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"make a corral for cows and such, buy cows"** -- needs a pen and a trader with cattle. **BOUGHT 2026-10-08 on Marble Hollow:** a *farming trader* caravan (Finch, The Rocan Covenant) had no cattle, so **goats** -- the milk and pen animal on offer: *Goat (male, 5)* + 2 x *Goat doe (female, 6)* ($249 each), paid by selling 1,250 potatoes ($0.73), +169 silver back; read back *"Relations with The Rocan Covenant have changed from 9 to 10 (traded)"*, *"Gee has gained 2274 social experience from this trade"*. **Pen laid** south of the bastions: fence x118-130, z47-57, gate (124,57) facing the wall door (124,64), pen marker (124,52). Closes when the pen is built and the goats are assigned to it. **CLOSED 2026-10-08:** the pen is **built** (43 fence, fence gate, pen marker -- `find-things.py`) and all three goats are **inside it** at (119,52), (128,51), (129,54); an annotated shot of the pen went to the stream's REPRESENTATION panel.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
