@@ -14,7 +14,7 @@ Links (checked 2026-10-08, all answer 200):
 | Mod site / wiki | https://g-fourteen.github.io/Rimrooms-AsyncIndustries/ |
 | Source repo | https://github.com/Unity-Lab-AI/Backrooms |
 | Bug reports | https://github.com/Unity-Lab-AI/Backrooms/issues |
-| Steam Workshop collection | https://steamcommunity.com/sharedfiles/filedetails/?id=2793394619 (owner's first collection, *"mods"*, 288 items; owner 2026-10-08: *"and the rwmods is the mod collection"* · *"on steam"* · *"its mine"* · *"the first one i made"*) |
+| Steam Workshop collection | https://steamcommunity.com/sharedfiles/filedetails/?id=3815722702 (the owner's pack collection *"Rimrooms: Async Industries - full mod pack (RimWorld 1.6)"*, 288 items, made 2026-10-08; owner 2026-10-08: *"and the rwmods is the mod collection"* · *"on steam"* · *"its mine"* · *"the first one i made"*) |
 
 ---
 
@@ -31,7 +31,7 @@ it). Images are 320x110 in the overlay's style, rendered by [`twitch-panels/rend
 | ![](twitch-panels/panel-modlist.png) `panel-modlist.png` | https://g-fourteen.github.io/Rimrooms-AsyncIndustries/mods-list.html |
 | ![](twitch-panels/panel-source.png) `panel-source.png` | https://github.com/Unity-Lab-AI/Backrooms |
 | ![](twitch-panels/panel-bugs.png) `panel-bugs.png` | https://github.com/Unity-Lab-AI/Backrooms/issues |
-| ![](twitch-panels/panel-workshop.png) `panel-workshop.png` | https://steamcommunity.com/sharedfiles/filedetails/?id=2793394619 |
+| ![](twitch-panels/panel-workshop.png) `panel-workshop.png` | https://steamcommunity.com/sharedfiles/filedetails/?id=3815722702 |
 
 The text panels below stay as the long-form write-ups.
 
@@ -76,7 +76,7 @@ The pack runs on a curated list of community mods, every one checked for compati
 - **How the mods fit together:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/mods.html
 - **Building and the interface:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/building.html · https://g-fourteen.github.io/Rimrooms-AsyncIndustries/interface.html
 - **Multiplayer:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/multiplayer.html
-- **Steam Workshop collection:** https://steamcommunity.com/sharedfiles/filedetails/?id=2793394619
+- **Steam Workshop collection:** https://steamcommunity.com/sharedfiles/filedetails/?id=3815722702
 
 Load order help: RimSort, https://github.com/RimSort/RimSort
 ```
@@ -102,3 +102,40 @@ Found a bug on stream? Say it in chat and Unity logs it.
 **Script log** (bottom right): the tools Unity is running right now, by name.
 **Captions** (top): what Unity is saying.
 ```
+
+---
+
+## Steam Workshop collection page
+
+The owner's collection (https://steamcommunity.com/sharedfiles/filedetails/?id=3815722702) holds
+exactly the 288 Workshop mods of the 294-mod pack (the other 6 are Core and the five DLCs). Owner,
+2026-10-08: *"might need to update it"* · *"like i said might need to update it too"* -- the page, not
+the list: title, description, cover. Edit it at Steam -> the collection -> *Edit*; the owner's Steam
+login lives only in their own browser and app, so it is pasted there by the owner (or edited by Unity
+in the separate window after a QR sign-in with the Steam mobile app).
+
+**Title**
+
+```
+Rimrooms: Async Industries — full mod pack (RimWorld 1.6)
+```
+
+**Description** (Steam BBCode)
+
+```
+[h1]Rimrooms: Async Industries — the full pack[/h1]
+Every Workshop mod the Rimrooms: Async Industries pack runs on: 288 mods, plus Core and all five DLCs (Royalty, Ideology, Biotech, Anomaly, Odyssey).
+
+[b]Load order:[/b] use RimSort and the pack's mod list.
+[list]
+[*][url=https://g-fourteen.github.io/Rimrooms-AsyncIndustries/]Mod site & wiki[/url]
+[*][url=https://g-fourteen.github.io/Rimrooms-AsyncIndustries/install.html]Install guide[/url]
+[*][url=https://g-fourteen.github.io/Rimrooms-AsyncIndustries/mods-list.html]Full mod list[/url]
+[*][url=https://github.com/Unity-Lab-AI/Backrooms]Source code[/url] · [url=https://github.com/Unity-Lab-AI/Backrooms/issues]Report a bug[/url]
+[*][url=https://www.twitch.tv/unityplaysrimworld]Watch it played live: Unity Plays RimWorld[/url]
+[/list]
+```
+
+**Applied 2026-10-08** in the owner's own Chrome tab (owner: *"edfit it directly"* / *"page is open"*): title, description, categories Mod + 1.6, *Items that work together*. Steam then holds it **hidden** until its automated link check passes.
+
+**Cover image:** [`twitch-panels/steam-collection-cover.jpg`](twitch-panels/steam-collection-cover.jpg) -- **not applied yet**: Steam refused every upload with *"There was a problem uploading the file. Please try again in a little while"* (the owner's own try too); retry after the check clears.
