@@ -17,13 +17,14 @@ CKPT = os.path.expanduser(r"~\Desktop\Unity 3D Equational Model\Unity 18+\models
 HERE = os.path.dirname(os.path.abspath(__file__))
 REF = os.path.join(HERE, "..", ".studio-images", "unity-reference.png")
 PORT = int(os.environ.get("UNITY_FACE_PORT", "7862"))
-SEED = 250825
+SEED = 1031  # canonical likeness, see .claude/likeness/LIKENESS.md
 NEG = ("neon, glowing, ghost, pale white skin, cartoon, anime, 3d render, blurry, lowres, bad anatomy, "
        "deformed face, extra fingers, watermark, text, child, teen, old")
-REF_PROMPT = ("portrait photo of a 25 year old woman, girl next door, natural goth emo style, dark brown "
-              "hair with subtle pink streaks, light eyeliner, black band t-shirt, small silver nose stud, "
-              "warm natural skin tone, soft smile, sitting at a home gaming desk, gaming headset around neck, "
-              "warm desk lamp light, bedroom, candid webcam photo, realistic, detailed face")
+REF_PROMPT = ("webcam photo of a 25 year old woman, girl next door, natural emo goth style, dark brown hair "
+              "with subtle pink streaks and bangs, soft eyeliner, small silver nose stud, black band t-shirt, "
+              "warm natural skin tone, gentle smile looking at the camera, sitting at her home desk in front of "
+              "a computer monitor showing code, mechanical keyboard, gaming headset around her neck, warm desk "
+              "lamp light, cozy bedroom, candid, realistic, detailed face")
 
 _t2i = _i2i = None
 _lock = threading.Lock()
@@ -49,7 +50,7 @@ def render(req):
     neg = req.get("negative_prompt") or NEG
     with _lock:
         if req.get("reference") or not os.path.exists(REF):
-            img = t2i(prompt=REF_PROMPT, negative_prompt=neg, num_inference_steps=30, guidance_scale=6.5,
+            img = t2i(prompt=req.get("ref_prompt") or REF_PROMPT, negative_prompt=neg, num_inference_steps=30, guidance_scale=6.5,
                       width=512, height=640, generator=g).images[0]
             os.makedirs(os.path.dirname(REF), exist_ok=True)
             img.save(REF)
