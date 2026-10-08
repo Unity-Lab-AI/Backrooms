@@ -62,7 +62,12 @@ def main():
     if not h: print("overlay window not found"); return
     sw = u.GetSystemMetrics(0)
     HWND_TOPMOST = -1
-    ok = u.SetWindowPos(h, wintypes.HWND(HWND_TOPMOST), 10, 30, W, H, 0x0040)
+    # WS_EX_NOACTIVATE: the overlay stays on top but never takes focus from the game (its page
+    # refocuses the chat box, which stole RimWorld's keyboard and broke clicks mid-play).
+    u.GetWindowLongW.restype = ctypes.c_long; u.SetWindowLongW.restype = ctypes.c_long
+    ex = u.GetWindowLongW(h, -20)
+    u.SetWindowLongW(h, -20, ex | 0x08000000)
+    ok = u.SetWindowPos(h, wintypes.HWND(HWND_TOPMOST), 10, 30, W, H, 0x0040 | 0x0010)
     if not ok: print('SetWindowPos failed')
     print("overlay pinned topmost at", 10, 30, W, H)
 

@@ -296,7 +296,7 @@ async function onSend() {
 function showModal(msg) {
   $("modalErr").textContent = msg || "";
   $("modal").classList.add("show");
-  setTimeout(() => $("keyInput").focus(), 50);
+  /* no autofocus: overlay must not steal focus from the game */
 }
 $("keySave").onclick = async () => {
   const key = $("keyInput").value.trim();
@@ -340,7 +340,7 @@ window.addEventListener("pagehide", () => {
   } catch (e) { /* server not ready — poll catches up */ }
   poll();
   setInterval(poll, 1500);
-  input.focus();
+  // no input.focus(): the overlay sits over the game and must never take keyboard focus from it
 })();
 </script>
 <script>
