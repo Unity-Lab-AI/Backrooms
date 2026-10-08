@@ -55,8 +55,10 @@ def setup():
     ensure_scene(cl, "Live"); ensure_scene(cl, "BRB")
     gid = ensure_input(cl, "Live", "RimWorld (game only)", "game_capture",
                        {"capture_mode": "window", "window": RIM_WIN, "capture_cursor": True})
-    cl.set_scene_item_transform("Live", gid, {"positionX": 0, "positionY": 0,
-                                "boundsType": "OBS_BOUNDS_SCALE_INNER", "boundsWidth": 1920, "boundsHeight": 1080})
+    # The game sits in the overlay's game cell (stream-overlay.html: x14 y14, 1468x785 -- the
+    # RimWorld client is 1.87:1); change both together.
+    cl.set_scene_item_transform("Live", gid, {"positionX": 14, "positionY": 14, "boundsAlignment": 0,
+                                "boundsType": "OBS_BOUNDS_SCALE_INNER", "boundsWidth": 1468, "boundsHeight": 785})
     # The stream overlay (stream-overlay.html): the full transparent canvas over the game, on top.
     # It lives only on the stream -- no desktop window covers the game.
     oid = ensure_input(cl, "Live", "Unity overlay", "browser_source",

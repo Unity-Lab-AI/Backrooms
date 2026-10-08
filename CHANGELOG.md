@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-08 - Company deliveries land while shelves outrank the stockpile
+
+- **Found playing:** 2,000 steel and 100 components, paid for through Procurement, sat in orbit as
+  *"Vanilla hauling would currently prefer another storage zone"*. Delivery demanded that the
+  receiving stockpile be the single best place hauling would put the item, and a **shelf** -- a
+  storage building, which the receiving list can never offer -- always outranked it in a colony
+  that keeps its resources on shelves. The order could wait forever.
+- **Now** a shipment lands whenever the receiving stockpile has room, and the crew puts it away
+  wherever storage priorities say, shelves included. The staging, capacity and receipt checks are
+  unchanged; the unused refusal text is gone.
+
 ## 0.13.0-dev - 2026-10-08 - Any colony can found a company branch
 
 - **A colony started on any scenario can now join the company.** Operations shows *Found a company branch here* when the home map has no branch and the game was not begun on a Rimrooms start. The colony is registered as it stands: its free colonists become staff (each in the role their skills fit), the company name is the colony's faction name, and the branch opens on the Async Industries terms - in contact with the corporation, gate projects finished, $50M account, the onboarding survey accepted. Nothing physical is added and no faction relations are reset.

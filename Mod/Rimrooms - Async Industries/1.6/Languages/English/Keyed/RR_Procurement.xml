@@ -82,7 +82,6 @@
   <RR_Proc_NoReachableStaff>No living, standing company pawn can reach the receiving route. Cargo remains held until staff or access changes.</RR_Proc_NoReachableStaff>
   <RR_Proc_FilterChanged>The selected stockpile no longer accepts this item. Redirect the same order to another accepting stockpile.</RR_Proc_FilterChanged>
   <RR_Proc_ReceivingStockpileFull>The selected stockpile has no remaining physical item capacity after accounting for cargo already staged for it.</RR_Proc_ReceivingStockpileFull>
-  <RR_Proc_ReceivingStockpileNotPreferred>Vanilla hauling would currently prefer another storage zone. Change storage priorities or redirect this order.</RR_Proc_ReceivingStockpileNotPreferred>
   <RR_Proc_ReceivingStagingFull>No reachable empty receiving cells are available beside the selected stockpile. Existing floor cargo and held cargo remain in place.</RR_Proc_ReceivingStagingFull>
   <RR_Proc_CargoOwnerUnavailable>The saved shipment holder is unavailable. No charge or item creation occurred.</RR_Proc_CargoOwnerUnavailable>
   <RR_Proc_CargoCreateFailed>Physical cargo could not be safely assembled in shipment custody. No order charge was posted.</RR_Proc_CargoCreateFailed>
