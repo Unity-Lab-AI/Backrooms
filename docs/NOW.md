@@ -29,7 +29,7 @@ The watchdog is a session cron: `*/1 * * * *`, prompt **"get the tests all compl
 ## ⛔ OPEN, IN ORDER ⛔
 
 1. **Choose a direction ($10M) -- the reason it has not paid, found:** `QuestPaperwork.LightFor` turns green only when the journal is in **archive custody** (on the gate's linked *Records archive* shelf), and collection then needs it inside a **credit beacon's** radius. The archive link is still on `(159, 141)`, a **freezer** shelf that no longer takes books. **Do:** gate → *Linked equipment* → release that shelf, link a **lab shelf** (`(130/133/136, 141)`, they take evidence) as *Records archive*; the lab sits inside the credit beacon at `(135, 139)`. Then the stamped journal (`RR_RouteRecording1001822`, most write-ups on it) has to reach that shelf. The link menu's rows carry no positions (TODO), so check which shelf was linked by saving and reading `Thing_Shelf` ids.
-2. **Stone chunks:** all 12 inside the base are marked *Haul* (2026-10-07); confirm they reach the dumping zone.
+2. **Stone chunks:** all 12 inside the base are marked *Haul*, and after a long burst **none moved** -- most likely nothing accepts chunks. Check the dumping zone `(118, 157)` allows Chunks, or lay a chunk stockpile outside the walls.
 3. **Raid the one-defender Cuvin Flamehome outpost** (world map) with three rifles; prisoner to the prison barracks.
 4. **Antibiotics:** research, a drug lab, penoxycyline every 5 days on every pawn's drug policy (`PLAYBOOK.md` §4).
 5. **AI-03 survey**, second opening, to see a stranger recorded as the entity observation.
