@@ -21,7 +21,7 @@ Every step below is an order already in this playbook; this is only the order th
 7. **Beds and comfort.** Beds in rooms off a hall, lights, vents, recreation.
 8. **Defence.** Rifles and sidearms on everyone, a fallback point, embrasures toward the approach.
 9. **Research and roles.** Research queued toward production and upgrades; leader and moral guide; antibiotics.
-10. **Money.** Cash crop sown, traders worked, silver kept.
+10. **Money.** Cash crop sown, traders worked, silver kept. Verbatim owner direction (2026-10-08): *"you have to research microelelectronics to get trade beacons otherwise you have to wait for someone to show up to base"* -- **no orbital trade beacon, no ship trade**: research Microelectronics, build a trade beacon, then call ships; until then trade only with caravans that walk in. (Played: on the Store start the *Call North Interplanetary* order dropped silently -- no beacon.)
 11. **Then the gate** -- in its own facility built off the halls, with the console, battery and bench beside it, and an operator who is fed and rested.
 
 ## 0. Everything, always -- not one and done
@@ -125,6 +125,8 @@ Every step below is an order already in this playbook; this is only the order th
 **Verbatim owner direction (2026-10-07):** *"and you should be rushing microelectionices then the mico analysis things then the computing reasearching building them as you research them to massively speed up research you need the adv research bench"* -- then *"come on you are AI you should know about upgrading"*
 
 - **Research order:** Microelectronics -> Multi-analyzer -> the computing line, then the **hi-tech research bench**. **Build each one the moment it is researched** -- every one multiplies research speed. Upgrade the base as tech unlocks; never sit on a finished project.
+
+- Verbatim (2026-10-08): *"you always wantr to upgrade and makz out research ability, so mulit analyses adv benches always building benches to get better faster research removing ther out dated benches"* -- **research capacity is always maxed**: a multi-analyzer and hi-tech benches built as soon as researched, more benches as the crew grows, and the outdated simple benches deconstructed once replaced.
 
 ## 4c. Work tab, empire, traders
 
