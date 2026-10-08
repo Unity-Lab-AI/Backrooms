@@ -15,6 +15,7 @@
 - **"File this in the records archive" works.** It built a container haul that a shelf cannot
   take, so the order did nothing. The journal now goes to a free cell of the archive shelf, with a
   message when no cell will take it.
+- **A repeat job needs a new place.** A request family remembers every gate address it has been met at, and the next request of that family counts only evidence from coordinates it has not used -- owner: *"never ending missions but they should require a differernt address through the gate"*.
 - **The gate's link menu says where each thing is.** Every row names the room and cell -- "Link
   Wooden shelf in laboratory at 133, 141 as Records archive" -- and hovering a row marks the thing
   on the map. Forty identical rows used to read "Link Wooden shelf as Records archive".

@@ -109,7 +109,7 @@ So the moment one exists, `IsOddSupply` is true, `coordinateId` is not empty, `v
 
 ### Found playing, 2026-10-07 -- a request is paid twice and never closes
 
-- [ ] **"we still want them to be never ending missions but they should require a differernt address through the gate"** -- repeat requests keep coming, and each repeat must be met at a gate address the branch has not already used for that request family.
+- [~] **"we still want them to be never ending missions but they should require a differernt address through the gate"** -- repeat requests keep coming, and each repeat must be met at a gate address the branch has not already used for that request family. **BUILT 2026-10-07:** the campaign now saves `rr_usedRequestAddresses` (`family|coordinateId`); when a request completes, every coordinate holding evidence its Document or Testify routes read is spent for that family (`SpendRequestAddresses`), and `MeasureRoute` -- for the live check and for a generated request's baseline -- counts only evidence from addresses the family has not been met at (`CompletedLogsOfKind`, `LivingWitnessCount`). Builds with 0 errors. Staged and loaded in the live colony: no Rimrooms exception in the log, and a fresh save carries `rr_usedRequestAddresses`. **Open:** played proof -- a second request of one family refusing the first one's coordinate and taking a new one.
 
 ## TOMBSTONES
 

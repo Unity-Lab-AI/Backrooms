@@ -281,11 +281,79 @@ namespace RimroomsAsyncIndustries.Company
     {
         private List<RequestRecord> requests = new List<RequestRecord>();
 
+        /// <summary>
+        /// Every gate address a request family has already been met at, as
+        /// <c>family|coordinateId</c>.
+        ///
+        /// **Owner, 2026-10-07, verbatim:** *"we still want them to be never ending missions but
+        /// they should require a differernt address through the gate"*. A family asked for again
+        /// counts only evidence from coordinates it has not been met at, so one well-documented
+        /// coordinate cannot pay the same job forever. Saved, because it is history.
+        /// </summary>
+        private List<string> usedRequestAddresses = new List<string>();
+
         internal void ExposeRequests()
         {
             Scribe_Collections.Look(ref requests, "rr_requestLine", LookMode.Deep);
+            Scribe_Collections.Look(ref usedRequestAddresses, "rr_usedRequestAddresses",
+                LookMode.Value);
             if (Scribe.mode == LoadSaveMode.PostLoadInit && requests == null)
             { requests = new List<RequestRecord>(); }
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && usedRequestAddresses == null)
+            { usedRequestAddresses = new List<string>(); }
+        }
+
+        private bool AddressUsed(string family, string coordinateId)
+        {
+            if (string.IsNullOrEmpty(family) || string.IsNullOrEmpty(coordinateId)) { return false; }
+            return usedRequestAddresses.Contains(family + "|" + coordinateId);
+        }
+
+        /// <summary>
+        /// Spends the addresses a completed request's evidence routes drew on, so the next request
+        /// of the same family needs somewhere new. Every coordinate holding evidence of a kind the
+        /// family's Document or Testify routes read is spent, whichever route actually closed it:
+        /// the branch was paid for what it knew about those places.
+        /// </summary>
+        private void SpendRequestAddresses(RimroomsRequestDef definition)
+        {
+            if (definition == null || definition.successRoutes == null) { return; }
+            string family = definition.defName;
+            foreach (RimroomsSuccessRoute route in definition.successRoutes)
+            {
+                if (route == null) { continue; }
+                if (route.kind != SuccessRouteKind.Document && route.kind != SuccessRouteKind.Testify)
+                { continue; }
+                LogKind kind;
+                if (!TryLogKind(route.logKind, out kind)) { continue; }
+                for (int index = 0; index < evidence.Count; index++)
+                {
+                    EvidenceRecord record = evidence[index];
+                    if (record == null || string.IsNullOrEmpty(record.coordinateId)) { continue; }
+                    if (!EvidenceCarries(record, kind, route.kind)) { continue; }
+                    string key = family + "|" + record.coordinateId;
+                    if (!usedRequestAddresses.Contains(key)) { usedRequestAddresses.Add(key); }
+                }
+            }
+        }
+
+        /// <summary>Whether this record holds evidence of a kind, as the given route reads it.</summary>
+        private bool EvidenceCarries(EvidenceRecord record, LogKind kind, SuccessRouteKind routeKind)
+        {
+            if (routeKind == SuccessRouteKind.Document)
+            {
+                if (record.analyzedTick < 0) { return false; }
+                return kind == LogKind.Route ? record.RouteRecorded
+                    : kind == LogKind.Distortion ? record.DistortionRecorded
+                    : record.EntityRecorded;
+            }
+            if (record.Observations == null) { return false; }
+            for (int slot = 0; slot < record.Observations.Count; slot++)
+            {
+                EvidenceObservationRecord observation = record.Observations[slot];
+                if (observation != null && ObservationCarries(observation.Kind, kind)) { return true; }
+            }
+            return false;
         }
 
         public IReadOnlyList<RequestRecord> Requests { get { return requests; } }
@@ -487,7 +555,7 @@ namespace RimroomsAsyncIndustries.Company
                     RimroomsSuccessRoute route = ordered[index];
                     if (string.IsNullOrEmpty(route.labelKey)) { continue; }
                     record.routeBaselines.Add(new RouteBaseline
-                    { labelKey = route.labelKey, value = MeasureRoute(route) });
+                    { labelKey = route.labelKey, value = MeasureRoute(route, definition.defName) });
                 }
             }
             requests.Add(record);
@@ -598,7 +666,8 @@ namespace RimroomsAsyncIndustries.Company
                 for (int slot = 0; slot < ordered.Count; slot++)
                 {
                     RimroomsSuccessRoute route = ordered[slot];
-                    if (!RouteSatisfied(route, record.BaselineFor(route.labelKey))) { continue; }
+                    if (!RouteSatisfied(route, record.BaselineFor(route.labelKey), definition.defName))
+                    { continue; }
                     record.satisfiedRouteLabelKeys.Add(route.labelKey);
                     if (satisfied == null) { satisfied = route; }
                 }
@@ -693,6 +762,7 @@ namespace RimroomsAsyncIndustries.Company
             string routeKey = satisfied == null ? "RR_Route_PaperworkReturned" : satisfied.labelKey;
             record.satisfiedRouteLabelKey = routeKey;
             RecordEvent("RR_Event_RequestCompleted", record.id, definition.LabelCap);
+            SpendRequestAddresses(definition);
             PlayPaidCue();
 
             if (definition.bonusUsd > 0 && EverybodyCameBack(record))
@@ -754,11 +824,11 @@ namespace RimroomsAsyncIndustries.Company
         /// thing once, and is where the route stood when a **generated** request was offered.
         /// See <see cref="RouteBaseline"/> for why the two differ.
         /// </summary>
-        private bool RouteSatisfied(RimroomsSuccessRoute route, int baseline)
+        private bool RouteSatisfied(RimroomsSuccessRoute route, int baseline, string family)
         {
             int required = RequiredProgress(route);
             if (required <= 0) { return false; }
-            return MeasureRoute(route) >= baseline + required;
+            return MeasureRoute(route, family) >= baseline + required;
         }
 
         /// <summary>
@@ -774,7 +844,9 @@ namespace RimroomsAsyncIndustries.Company
         /// only reason this is not simply a predicate, and it is a good enough reason: *"deliver
         /// twenty more"* and *"hold twenty"* are different jobs and only one of them is a job.
         /// </summary>
-        private int MeasureRoute(RimroomsSuccessRoute route)
+        /// <param name="family">The request family asking; evidence from an address that family
+        /// has already been met at does not count. Null counts everything.</param>
+        private int MeasureRoute(RimroomsSuccessRoute route, string family = null)
         {
             switch (route.kind)
             {
@@ -789,13 +861,13 @@ namespace RimroomsAsyncIndustries.Company
                 // The paperwork. An analysed record carries the log, and it keeps carrying it
                 // after the book itself is gone.
                 case SuccessRouteKind.Document:
-                    return CompletedLogsOfKind(route.logKind);
+                    return CompletedLogsOfKind(route.logKind, family);
 
                 // The person. Somebody who was there, is still employed, and is still alive --
                 // and DISTINCT people, so a route whose label promises two accounts needs two
                 // different witnesses rather than one witness counted twice.
                 case SuccessRouteKind.Testify:
-                    return LivingWitnessCount(route.logKind);
+                    return LivingWitnessCount(route.logKind, family);
 
                 // Finished it.
                 case SuccessRouteKind.Research:
@@ -856,10 +928,19 @@ namespace RimroomsAsyncIndustries.Company
             return count;
         }
 
-        private int CompletedLogsOfKind(string logKind)
+        private int CompletedLogsOfKind(string logKind, string family = null)
         {
             LogKind kind;
-            return TryLogKind(logKind, out kind) ? CompletedLogCount(kind) : 0;
+            if (!TryLogKind(logKind, out kind)) { return 0; }
+            if (string.IsNullOrEmpty(family)) { return CompletedLogCount(kind); }
+            int count = 0;
+            for (int index = 0; index < evidence.Count; index++)
+            {
+                EvidenceRecord record = evidence[index];
+                if (record == null || AddressUsed(family, record.coordinateId)) { continue; }
+                if (EvidenceCarries(record, kind, SuccessRouteKind.Document)) { count++; }
+            }
+            return count;
         }
 
         /// <summary>
@@ -870,7 +951,7 @@ namespace RimroomsAsyncIndustries.Company
         /// this is the half of the evidence system that a death can take away, which is exactly
         /// what makes it a different route from the paperwork rather than a second name for it.
         /// </summary>
-        private int LivingWitnessCount(string logKind)
+        private int LivingWitnessCount(string logKind, string family = null)
         {
             LogKind kind;
             if (!TryLogKind(logKind, out kind)) { return 0; }
@@ -879,6 +960,7 @@ namespace RimroomsAsyncIndustries.Company
             {
                 EvidenceRecord record = evidence[index];
                 if (record == null || record.Observations == null) { continue; }
+                if (AddressUsed(family, record.coordinateId)) { continue; }
                 IReadOnlyList<EvidenceObservationRecord> observations = record.Observations;
                 for (int slot = 0; slot < observations.Count; slot++)
                 {
