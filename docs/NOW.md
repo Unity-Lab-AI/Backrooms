@@ -38,6 +38,15 @@ Base-building is done only where a goal needs it. When a goal closes, its TEST r
 
 Everything else open in TEST is launch-gated on the owner (RimSort profiles, DLC matrices, RWT server, art review) and is not mine to close by playing.
 
+## Pending on the map, 2026-10-08 (do not drop)
+
+- **Walls after terraform:** `(182,164)`-`(182,170)` (marsh and rain-flooded *MarshFlood*) and `(167,135)`, `(168,135)` are soil blueprints; **steel walls go on all nine the moment the soil lands.** Check with `.local/qa/wall-map.py 118 132 184 198`.
+- **Gate complex** blueprinted in steel, x140-174 z176-196 (PLAYSCRIPT Act 5 layout): security door gate at `(169,184)`, reinforced glass wall along z184, 3-wide spine x161-163, main hall z186-188. **Entry wall `(162,176)` designated for deconstruction -- a steel door goes in its place.** Old closet door `(165,172)` decommissioned.
+- **Gate needs one live grid** for console, battery and door: conduit to `(169,184)`.
+- **Freezer** zone takes foods, plant matter, animal corpses, herbal medicine; nine warehouse shelves refuse them and all medicine.
+- **Vault** for silver x178 and the age-reversing serum -- not built yet.
+- Unity is **Pujari of Indra** (role change ritual at the ritual spot `(148,141)`); chess chairs blueprinted.
+
 ## State, measured 2026-10-08
 
 | | |
