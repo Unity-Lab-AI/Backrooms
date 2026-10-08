@@ -21,8 +21,13 @@
   <!-- The picker names the ROLE as well as the thing. Core ships no weapon rack and no receiving
        bay, so one shelf def answers the archive, the armory and the receiving bay - and only the
        player knows which this shelf is. Three rows reading "link shelf" would be unusable. -->
-  <RR_GateLink_AddRole>Link {0} as {1}</RR_GateLink_AddRole>
-  <RR_GateLink_UnlinkRole>Unlink {0} ({1})</RR_GateLink_UnlinkRole>
+  <!-- And it names WHERE. A facility has a dozen identical shelves, and forty rows of "Link
+       Wooden shelf as Records archive" gave no way to tell the lab's shelf from the freezer's.
+       {2} is the room and the cell; hovering a row also marks the thing on the map. -->
+  <RR_GateLink_AddRole>Link {0} in {2} as {1}</RR_GateLink_AddRole>
+  <RR_GateLink_UnlinkRole>Unlink {0} in {2} ({1})</RR_GateLink_UnlinkRole>
+  <RR_GateLink_Where>{0} at {1}, {2}</RR_GateLink_Where>
+  <RR_GateLink_Outdoors>outdoors</RR_GateLink_Outdoors>
   <RR_GateLink_RiskQuarantine>A crew that comes back carrying something is treated in the open ward, beside everybody else.</RR_GateLink_RiskQuarantine>
   <RR_GateLink_RiskArmory>A crew that meets something hostile down there has nothing to meet it with.</RR_GateLink_RiskArmory>
   <RR_GateLink_RiskReceiving>Deliveries and recovered cargo are left wherever the hauler put them down.</RR_GateLink_RiskReceiving>

@@ -22,18 +22,19 @@ Watchdog cron `*/1 * * * *`, prompt **"get the tests all completed"**. Dies with
 
 **The freezer coolers, a mod defect.** `RR_AsyncIndustriesStart` put the freezer's four coolers in the east wall at rotation 0; decompiled `Building_Cooler` cools `South.RotatedBy(rot)` and does nothing unless both sides are open, so they never cooled. Def now rotation 1; `check-start-layout.py` fails any cooler with a blocked side or its blue side outside. Built and staged; the colony's own four were rebuilt facing east at 16 F.
 
-**The colony:** leader Gee (*God Almighty*), moral guide Unity (*Lord*) at a ritual spot `(158,147)`; two trades (exotic caravan, combat supplier by comms console); 10,000 company silver ordered; an applicant requested; stun batons and pain sticks as sidearms on all three; stonecutter on Forever; freezer zone takes animal corpses; ~60 old letters dismissed. Save: **`rimbridge_save_20261007_stone_wing`**.
+**The colony:** leader Gee (*God Almighty*), moral guide Unity (*Lord*) at a ritual spot `(158,147)`; two trades (exotic caravan, combat supplier by comms console); 10,000 company silver ordered; an applicant requested; stun batons and pain sticks as sidearms on all three; stonecutter on Forever; freezer zone takes animal corpses; ~60 old letters dismissed. Save: **`rimbridge_save_20261007_before_payonce`**.
 
 **Gee, Scar and Unity are all age 14** -- no romance, no children until an adult hire. Visitors offer *"Invite to stay (No guest beds)"*: guest beds are the recruiting route.
 
 ## ⛔ OPEN, IN ORDER ⛔
 
-1. **The stone wing** (limestone walls blueprinted, x149-163, z105-127): hall x156 off a new door at `(156,128)`, cross hall z115 with exits at x149/x163, four uniform 5x5 bedrooms north (doors x155/x157 at z119, z125), nursery west and guest room east (doors at z109). **Still to place:** every door in limestone, a vent and a light in each room, a double bed + end table + dresser per bedroom in the same spot and facing, guest beds, cribs. Owner: *"think uniformity"*.
-2. **Choose a direction ($10M):** relink the gate's records archive from freezer shelf `(159,141)` to a lab shelf, get journal `RR_RouteRecording1001822` onto it.
-3. **AI-03** second opening -- a stranger as the entity observation; bring Misha and Feeb home.
-4. **Raid** the one-defender Cuvin Flamehome outpost; first prisoner.
-5. **Antibiotics**, a cash-crop-to-product chain (smokeleaf joints; devilstrand is researched), a corral and cows.
-6. Leader and moral-guide abilities on every cooldown.
+1. **Repeat requests need a different gate address** (TODO, owner's answer verbatim there).
+2. **The stone wing** is built in limestone (hall x156, cross hall z115, four bedrooms, nursery, guest room). Still: the east bedroom vent at `(157,124)`, pawns assigned to the double beds, guest beds set for guests. The fence pen east of it (x165-176, z111-119) was blueprinted while the owner stopped the call -- ask before keeping it.
+3. **Six wild muffalo marked to tame** for milk; a pen once the owner says where.
+4. **Stray double bed at `(107,168)`** in the river: deconstruction designated; then *Remove foundation* on the bridge under it.
+5. **Research:** Microelectronics, then Multi-analyzer and the computing line, building each as it lands; hi-tech research bench.
+6. **AI-03** second opening; Misha and Feeb home. **Raid** the one-defender outpost. **Antibiotics.**
+7. **Wiki / mod register:** 195 of 297 mods read "not yet confirmed in a running game" -- update from the runs (TEST row).
 
 ## Tools added, `.local/qa/`
 

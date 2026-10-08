@@ -156,7 +156,31 @@ namespace RimroomsAsyncIndustries.Company
             book.Destroy(DestroyMode.Vanish);
             questBooksCollected++;
             RecordEvent("RR_Event_QuestBookCollected", request.Id, payment.ToString("N0"));
+            // **Collection closes the request.** It used to leave it Accepted, and a success route
+            // later paid the same fee again under a different operation id, so the idempotence
+            // this class promises below never applied. Owner, 2026-10-07: book collection closes
+            // it and pays once.
+            if (definition != null)
+            {
+                CompleteRequest(request, definition, FirstSatisfiedRoute(request, definition),
+                    payment > 0L ? operationId : null);
+            }
             return true;
+        }
+
+        /// <summary>The route recorded as having come true, or null.</summary>
+        private static RimroomsSuccessRoute FirstSatisfiedRoute(RequestRecord request,
+            RimroomsRequestDef definition)
+        {
+            if (definition.successRoutes == null || request.SatisfiedRouteLabelKeys.Count == 0)
+            { return null; }
+            string key = request.SatisfiedRouteLabelKeys[0];
+            for (int index = 0; index < definition.successRoutes.Count; index++)
+            {
+                RimroomsSuccessRoute route = definition.successRoutes[index];
+                if (route != null && route.labelKey == key) { return route; }
+            }
+            return null;
         }
 
         /// <summary>The quest's own label for a letter, or its id when the def is gone.</summary>

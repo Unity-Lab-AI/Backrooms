@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-07 - A request is paid once, an archive can be found, a journal can be filed
+
+- **OWNER, asked which event should close and pay a request whose journal the company collects:**
+  *"i think option one we still want them to be never ending missions but they should require a
+  differernt address through the gate"*.
+
+### What a player gets
+
+- **Paid once.** Collecting a quest's finished journal now closes the request. It used to pay the
+  fee and leave the request open, and a route coming true later paid the same fee again. The
+  paperwork light also waits for a route to come true before it turns green. A save that was
+  already paid closes without a second payment.
+- **"File this in the records archive" works.** It built a container haul that a shelf cannot
+  take, so the order did nothing. The journal now goes to a free cell of the archive shelf, with a
+  message when no cell will take it.
+- **The gate's link menu says where each thing is.** Every row names the room and cell -- "Link
+  Wooden shelf in laboratory at 133, 141 as Records archive" -- and hovering a row marks the thing
+  on the map. Forty identical rows used to read "Link Wooden shelf as Records archive".
+
+### Played
+
+- *Choose a direction* finished: the archive moved from a freezer shelf to a lab shelf, the journal
+  filed and collected, $10,000,000 paid once.
+- A mining trader sold 200 plasteel and a farming trader 600 corn and 1,000 hay; six wild muffalo
+  marked for taming; Microelectronics researching; work tab on manual priorities.
+
 ## 0.13.0-dev - 2026-10-07 - The freezer's coolers face the right way
 
 - **OWNER, watching the colony:** *"i sdee the fucking probeleyou pout the ac units in side ways on the

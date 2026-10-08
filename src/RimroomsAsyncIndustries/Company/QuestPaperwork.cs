@@ -445,6 +445,11 @@ namespace RimroomsAsyncIndustries.Company
         {
             if (request == null || request.Status != RequestStatus.Accepted) { return QuestLight.Dark; }
             if (!PaperworkComplete(request)) { return QuestLight.Dark; }
+            // **The work comes true before the paperwork can go.** Owner, 2026-10-07: collecting
+            // the book closes the request, and the success routes decide when the paperwork can
+            // turn green. Without this a request could be filed, collected and paid with none of
+            // its routes ever satisfied.
+            if (request.SatisfiedRouteLabelKeys.Count == 0) { return QuestLight.Dark; }
             Thing book = BookFor(request);
             if (book == null) { return QuestLight.Amber; }
             CompRouteEvidence stamp = book.TryGetComp<CompRouteEvidence>();

@@ -529,8 +529,10 @@ namespace RimroomsAsyncIndustries.Gate
                     "RR_GateLink_UnlinkRole".Translate(target.LabelCap,
                         assigned == null
                             ? "RR_NativeGate_Unselected".Translate().ToString()
-                            : assigned.LabelCap.ToString()),
-                    delegate { ShowOrderResult(UnlinkEquipment(target)); }));
+                            : assigned.LabelCap.ToString(),
+                        WhereLabel(target)),
+                    delegate { ShowOrderResult(UnlinkEquipment(target)); },
+                    MenuOptionPriority.Default, HighlightOnHover(target)));
             }
 
             // Candidates are enumerated from the map rather than remembered, and sorted
@@ -563,8 +565,10 @@ namespace RimroomsAsyncIndustries.Gate
                     Thing target = candidate.Key;
                     RimroomsGateEquipmentDef role = candidate.Value;
                     options.Add(new FloatMenuOption(
-                        "RR_GateLink_AddRole".Translate(target.LabelCap, role.LabelCap),
-                        delegate { ShowOrderResult(LinkEquipment(target, role)); }));
+                        "RR_GateLink_AddRole".Translate(target.LabelCap, role.LabelCap,
+                            WhereLabel(target)),
+                        delegate { ShowOrderResult(LinkEquipment(target, role)); },
+                        MenuOptionPriority.Default, HighlightOnHover(target)));
                 }
             }
 
@@ -573,6 +577,31 @@ namespace RimroomsAsyncIndustries.Gate
                 options.Add(new FloatMenuOption("RR_GateLink_NoCandidates".Translate(), null));
             }
             Find.WindowStack.Add(new FloatMenu(options));
+        }
+
+        /// <summary>
+        /// The room a thing stands in and its cell, so one shelf can be told from another.
+        ///
+        /// **Found by playing, 2026-10-07.** The records archive had to move off a freezer shelf
+        /// onto a lab shelf, and the menu offered some forty rows reading *"Link Wooden shelf as
+        /// Records archive"* -- one per shelf and role, all identical. Nothing on the row said
+        /// which shelf it was, so the only way to pick the right one was to guess, save and read
+        /// the save. The room is Core's own role label, the one the cell inspector shows.
+        /// </summary>
+        private static string WhereLabel(Thing thing)
+        {
+            Room room = thing.Spawned ? thing.GetRoom() : null;
+            string place = room == null || room.PsychologicallyOutdoors
+                ? "RR_GateLink_Outdoors".Translate().ToString()
+                : room.GetRoomRoleLabel();
+            return "RR_GateLink_Where".Translate(place, thing.Position.x.ToString(),
+                thing.Position.z.ToString()).ToString();
+        }
+
+        /// <summary>Hovering a row marks the thing on the map, the way Core's own menus do.</summary>
+        private static System.Action<UnityEngine.Rect> HighlightOnHover(Thing thing)
+        {
+            return delegate { TargetHighlighter.Highlight(thing, true, false, true); };
         }
 
         internal void ExposeEquipmentLinks()

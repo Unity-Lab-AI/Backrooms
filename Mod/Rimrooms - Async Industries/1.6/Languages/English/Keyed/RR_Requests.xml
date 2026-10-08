@@ -149,6 +149,9 @@ Once they have you on the books they start sending work, their clean-up team wil
 
 There is no date on this and there will not be one. Open the Operations tab, look at the contracts pane, and take it on when {1} is ready to.</RR_Letter_RequestOfferedBody>
   <RR_Letter_RequestCompletedTitle>Request met: {0}</RR_Letter_RequestCompletedTitle>
+  <!-- Read "finished by {1}" in the completion letter, for a request closed by its collected
+       paperwork before any route had come true: only a save from before that rule. -->
+  <RR_Route_PaperworkReturned>the paperwork the company collected</RR_Route_PaperworkReturned>
   <RR_Letter_RequestCompletedBody>The company has what it asked for. {0} was finished by {1}, and ${2} has gone into the account.</RR_Letter_RequestCompletedBody>
 
   <!-- THE BRANCH LEDGER. Owner: "every book recieved needs to be tuned to or capable of listing the

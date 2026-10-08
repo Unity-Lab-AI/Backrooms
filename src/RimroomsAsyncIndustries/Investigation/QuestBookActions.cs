@@ -69,7 +69,21 @@ namespace RimroomsAsyncIndustries.Investigation
                     Thing target = archive;
                     yield return new FloatMenuOption("RR_UI_JournalFile".Translate(), delegate
                     {
-                        Job haul = HaulAIUtility.HaulToContainerJob(hauler, book, target);
+                        // **A shelf is slot-group storage, not a container.** This used
+                        // `HaulToContainerJob`, which asks the target for an inner `ThingOwner`;
+                        // a shelf has none, so Core logged "gave null ThingOwner", returned no job
+                        // and the order did nothing at all -- found by playing, 2026-10-07, with
+                        // the archive on a laboratory shelf and the journal one room away. The
+                        // book now goes to one of the archive's own storage cells, through Core's
+                        // ordinary haul-to-storage job.
+                        IntVec3 cell = ArchiveCellFor(target, book, hauler);
+                        if (!cell.IsValid)
+                        {
+                            Messages.Message("RR_UI_JournalArchiveFull".Translate(),
+                                target, MessageTypeDefOf.RejectInput, false);
+                            return;
+                        }
+                        Job haul = HaulAIUtility.HaulToCellStorageJob(hauler, book, cell, false);
                         if (haul != null) { hauler.jobs.TryTakeOrderedJob(haul, JobTag.Misc); }
                     });
                 }
@@ -96,6 +110,23 @@ namespace RimroomsAsyncIndustries.Investigation
                     });
                 }
             }
+        }
+
+        /// <summary>
+        /// A cell of the archive building that would take this book now, or invalid.
+        ///
+        /// Asked with Core's own `IsGoodStoreCell`, so the shelf's filter, its capacity, and
+        /// whether the pawn can reserve and reach the cell are all Core's answer rather than ours.
+        /// </summary>
+        private static IntVec3 ArchiveCellFor(Thing archive, Thing book, Pawn hauler)
+        {
+            if (archive == null || !archive.Spawned || archive.Map == null) { return IntVec3.Invalid; }
+            foreach (IntVec3 cell in archive.OccupiedRect())
+            {
+                if (StoreUtility.IsGoodStoreCell(cell, archive.Map, book, hauler, hauler.Faction))
+                { return cell; }
+            }
+            return IntVec3.Invalid;
         }
 
         /// <summary>

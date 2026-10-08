@@ -13,6 +13,7 @@
        write-up kind's own label, so the order names what is about to be written. -->
   <RR_UI_JournalWriteUpHere>Write up: {0}</RR_UI_JournalWriteUpHere>
   <RR_UI_JournalFile>File this in the records archive</RR_UI_JournalFile>
+  <RR_UI_JournalArchiveFull>The records archive has no room for this, or nobody can reach it.</RR_UI_JournalArchiveFull>
   <RR_UI_JournalSend>Send this to the company</RR_UI_JournalSend>
   <!-- {0} is the write-up kind's own label, {1} the quest id. Logged on the company's event record
        rather than lettered: filing one report is bookkeeping, and the green light is the thing the

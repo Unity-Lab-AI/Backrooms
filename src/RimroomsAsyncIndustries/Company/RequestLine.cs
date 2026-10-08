@@ -603,7 +603,23 @@ namespace RimroomsAsyncIndustries.Company
                     if (satisfied == null) { satisfied = route; }
                 }
 
-                if (satisfied == null || record.status != RequestStatus.Accepted) { continue; }
+                if (record.status != RequestStatus.Accepted) { continue; }
+                // **A request with paperwork is closed by its paperwork, and paid once.** Owner,
+                // 2026-10-07, asked which event should close and pay a request whose journal the
+                // company collects: *"i think option one"* -- book collection closes it, and the
+                // routes only decide when the paperwork can turn green. Before this, collection
+                // paid the fee under `:paperwork-return` and left the request open, and a route
+                // then paid it again under `:payment` -- found playing *Choose a direction*.
+                if (WriteUpsWanted(record).Count > 0)
+                {
+                    // A save written before this fix may already hold the collection payment for a
+                    // request that never closed. It closes now, without paying a second time.
+                    string returned = record.id + ":paperwork-return";
+                    if (ledgerIndex.ContainsKey(returned))
+                    { CompleteRequest(record, definition, satisfied, returned); }
+                    continue;
+                }
+                if (satisfied == null) { continue; }
                 CompleteRequest(record, definition, satisfied);
             }
         }
@@ -650,12 +666,18 @@ namespace RimroomsAsyncIndustries.Company
             Audio.RimroomsAudio.Play("RR_ContractPaid", map, cell, true);
         }
 
-        private void CompleteRequest(RequestRecord record, RimroomsRequestDef definition,
-            RimroomsSuccessRoute satisfied)
+        /// <param name="paidOperationId">The ledger operation that already paid this request, when
+        /// its paperwork was collected; null to pay it here.</param>
+        internal void CompleteRequest(RequestRecord record, RimroomsRequestDef definition,
+            RimroomsSuccessRoute satisfied, string paidOperationId = null)
         {
+            if (!string.IsNullOrEmpty(paidOperationId))
+            {
+                record.settlementOperationId = paidOperationId;
+            }
             // Pay first. If the payment cannot be posted the request stays Accepted and this runs
             // again next tick -- nothing is lost and nothing is completed for free.
-            if (definition.paymentUsd > 0)
+            else if (definition.paymentUsd > 0)
             {
                 string operationId = record.id + ":payment";
                 CompanyActionResult paid = PostTransaction(operationId, definition.paymentUsd,
@@ -666,7 +688,10 @@ namespace RimroomsAsyncIndustries.Company
 
             record.status = RequestStatus.Completed;
             record.completedTick = Find.TickManager.TicksGame;
-            record.satisfiedRouteLabelKey = satisfied.labelKey;
+            // Null only for a request closed by paperwork no route has yet come true for -- a save
+            // from before the paperwork rule. It reads as the paperwork itself.
+            string routeKey = satisfied == null ? "RR_Route_PaperworkReturned" : satisfied.labelKey;
+            record.satisfiedRouteLabelKey = routeKey;
             RecordEvent("RR_Event_RequestCompleted", record.id, definition.LabelCap);
             PlayPaidCue();
 
@@ -684,7 +709,7 @@ namespace RimroomsAsyncIndustries.Company
             Find.LetterStack.ReceiveLetter(
                 "RR_Letter_RequestCompletedTitle".Translate(definition.LabelCap),
                 "RR_Letter_RequestCompletedBody".Translate(definition.LabelCap,
-                    satisfied.labelKey.Translate(), definition.paymentUsd.ToString("N0")),
+                    routeKey.Translate(), definition.paymentUsd.ToString("N0")),
                 LetterDefOf.PositiveEvent);
         }
 

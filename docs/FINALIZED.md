@@ -18725,3 +18725,50 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **2 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **The equipment-link menu lists every candidate as an identical row with no position.** *Linked equipment* on the gate offered *"Link Wooden shelf as Records archive"* sixteen times and *"Link Wooden shelf as Armory"* sixteen more, with nothing saying which shelf each was; the one linked turned out to be the security-room shelf at `(159, 141)`, found only by reading the save. Each row needs the thing's position, or the menu needs to highlight its target on hover. **FIXED 2026-10-07:** every row now names the room and cell -- *"Link Wooden shelf in laboratory at 133, 141 as Records archive"*, *"Unlink Wooden shelf in laboratory at 133, 141 (Records archive)"* -- read off the live menu, and hovering a row marks the thing on the map (`GateEquipmentLinks.WhereLabel`, `HighlightOnHover`).
+- [x] **"File this in the records archive" did nothing.** Found 2026-10-07 with the archive relinked to a lab shelf: the order built `HaulAIUtility.HaulToContainerJob`, which needs an inner `ThingOwner`; a shelf is slot storage and has none, so Core logged *"gave null ThingOwner"*, returned no job, and the journal sat at `(136, 168)` through a minute of fast play. **FIXED:** the order now hauls to one of the archive's own cells that Core's `StoreUtility.IsGoodStoreCell` accepts, through `HaulToCellStorageJob`, and says so (`RR_UI_JournalArchiveFull`) when no cell will take it. Read back: Scar took a *HaulToCell* job and the book reached `(133, 141)`; the company then collected it -- *"Async Industries has collected 1 finished record book(s) from the beacon: Choose a direction. Payment is on the ledger."*
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **Collecting a quest's finished book pays the request's whole fee and leaves the request open, and completing it later pays again.** *Choose a direction* (`paymentUsd` 10,000,000): the journal was filed on the lab archive shelf and collected -- *"Async Industries has collected 1 finished record book(s) from the beacon: Choose a direction. Payment is on the ledger."* -- and the account rose from 74,961,860 to 84,721,860 USD. The Operations page still reads *"Choose a direction (accepted)"* with *"1 of 1 filed -- no book"*, and no *Request met* letter came. `QuestBookCollection.CollectQuestBook` posts `paymentUsd` under `<id>:paperwork-return` and never sets the request Completed; `RequestLine.CompleteRequest` posts `paymentUsd` again under `<id>:payment` once a success route is satisfied. The two ids differ, so `PostTransaction`'s idempotence does not stop the second payment, contradicting the class's own *"It cannot pay twice"*. Decide which event closes the request and pays it, and make the other one not pay. **FIXED 2026-10-07 (option one):** a request with write-ups is closed by `CollectQuestBook`, through `CompleteRequest` with the collection's own operation id so it pays nothing more; `CompleteSatisfiedRequests` no longer completes such a request on a route, and closes one a save already paid without paying again; `LightFor` stays dark until a success route has come true. Read back in the live save: *"Request met: Choose a direction -- The company has what it asked for. Choose a direction was finished by the paperwork the company collected, and $10,000,000 has gone into the account."*, the Operations row now *"finished by the paperwork the company collected"*, and the account held at **84,721,860 USD** -- no second payment. **Owner's answer, 2026-10-07, verbatim:** *"i think option one we still want them to be never ending missions but they should require a differernt address through the gate"* -- option one was *"Book collection closes it: collecting the green journal marks the request met and pays once; the success routes only decide when the paperwork can turn green."*
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

@@ -95,6 +95,30 @@
 
 - **Every colonist carries a melee sidearm** -- stun baton / pain stick (*Sidearms*) -- for close range, alongside the rifle.
 
+## 4b. Research — rush the upgrades
+
+**Verbatim owner direction (2026-10-07):** *"and you should be rushing microelectionices then the mico analysis things then the computing reasearching building them as you research them to massively speed up research you need the adv research bench"* -- then *"come on you are AI you should know about upgrading"*
+
+- **Research order:** Microelectronics -> Multi-analyzer -> the computing line, then the **hi-tech research bench**. **Build each one the moment it is researched** -- every one multiplies research speed. Upgrade the base as tech unlocks; never sit on a finished project.
+
+## 4c. Work tab, empire, traders
+
+**Verbatim owner directions (2026-10-07):**
+- *"you havent set up your work tab manual priorities, everything from firefighting to cooking should be hieghest 1s and you only put 2s on the teask u want each colonist doing spliting theri work up so u have like on guy cutting and planting and one crafting and constructing and one hunting and everyhting else"* -- then *"not limited to three obviously"*
+- *"as you colony grows you want it to grow be greedy you empire is the goal you need stockpiles of everything you want supplies of everything where is you vault? you want armies defences turrets all of it"*
+- *"are you reading pop up messages a good tradeer just arrived wtf !!! use the comms console"*
+
+- **Work tab on manual priorities.** Every job type from **Firefighting through Cooking at 1** for everyone; then **2 only on the specialty each colonist owns** -- one cuts and plants, one crafts and constructs, one hunts, and the rest split as the colony grows (not limited to three).
+- **Empire:** stockpiles and supplies of everything, **a vault** (silver, gold, gems, ivory), **armies, defences, turrets** -- all of it.
+- **A trade ship letter means: go to the comms console now.**
+- Verbatim: *"farming trader.. comeon always trade and look to make silver and money and get things you need"* -- **every trader, every time**: sell surplus for silver, buy what the plan needs.
+- Verbatim: *"need milk right look for milk makers tame some build a fences in field to put them"* -- **tame milk animals** (muffalo, alpaca, cows, goats) and **fence a pen in a field** for them.
+- Verbatim: *"and u need to power the things in your base without power always by conduit builds connecting near by"* -- **every powered thing gets a conduit run to the nearest line the moment it is placed.**
+- Verbatim: *"and why is there a bed in the middle of the river delete that and remove bridge in sturcture"* -- a stray bed blueprint in the river; cancel it, and cancel any bridge under it.
+- Verbatim, while the work grid was being clicked: *"stop ur fucking up the priorities i told you how to set them, now get back to it"* -- pixel clicks on the work grid landed unevenly (some twice, some not at all) and left wrong numbers. **Do not batch-click the work grid.** Change one cell, read it back zoomed, then the next.
+
+**Verbatim owner direction (2026-10-07):** *"no more settting 10m timer shit im tired of wait 10minutews on shit quit stallling all together no more of it"* -- **no long blocking waits.** Run only the checkers a change touches, keep command timeouts short, and keep playing while anything slow runs in the background.
+
 ## 4. Work and pawns
 
 - *"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?"* — **look at the world map: neighbours, settlements, trade, raids to answer, places to take.**
