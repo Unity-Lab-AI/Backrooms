@@ -43,6 +43,7 @@ Every step below is an order already in this playbook; this is only the order th
 5. **Workshop wing** (stonecutter, smithy, machining) and **research wing** (benches, multi-analyzer later) off the hall.
 6. **Guest wing** off the hall; the bolted-on guest room deconstructed once replaced.
 7. **Gate facility** deepest in the north-east, off the hall: gate room, console, battery and machining table in one secured block.
+9. **Corner towers and security rooms.** Verbatim owner direction (2026-10-08): *"yopu need towers on all corrner that you can shhot out from with seperate ventalizatyion and added rooms for security stuff and embrassure sally ports"* -- a **tower on every corner** of the perimeter, enclosed and roofed with embrasures to **shoot out from**; each tower on its **own separate ventilation** (its own vent/cooler, not shared with the base); **added rooms for security stuff** (armory, guard room, ammo, med kit) off the towers and the entrance; and **embrasure sally ports** -- a door beside embrasures in the wall so defenders can fire and sortie. Perimeter corners: `(120,136)`, `(182,136)`, `(120,176)`, `(182,176)`.
 8. **Floors** everywhere people live and work.
    - *Laid 2026-10-08:* the gate facility north of the hall, `x157-173, z169-176` -- a control room (west, `x158-164`) and a gate chamber (east, `x166-172`) divided by a slate wall with **the gate door at `(165,172)`**, entered from the hall by a slate door at `(161,169)`. Roof waits until its walls stand.
 

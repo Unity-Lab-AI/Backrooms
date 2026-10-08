@@ -31,6 +31,7 @@ Base-building is done only where a goal needs it. When a goal closes, its TEST r
 | **G3** | **Repeat request needs a different address** — repeat a request on the Store gate | TODO repeat-address row | the used address is refused and a new one is required |
 | **G4** | **Solo or group, inside** — new colony on that start, a gate built | TEST *"Solo or group, inside -- a gate built"* | a gate stands and operates there |
 | **G5** | Store-colony rows that ride along: smokeleaf harvested and **sold** (cash crops), the cow pen closed out, shelves for every resource, trade with every trader | TEST cash crops / corral / shelves / trade rows | each with its evidence |
+| **G1b** | **Corner towers** -- owner 2026-10-08: *"yopu need towers on all corrner that you can shhot out from with seperate ventalizatyion and added rooms for security stuff and embrassure sally ports"*. Four towers at the perimeter corners with embrasures, own vents, security rooms, embrasure sally ports (PLAYBOOK §01 goal 9). Blueprinted right after G1 so the crew builds them while the gate ramps | TEST *"expand the base ... defences"* row | four towers stand, each vented on its own, sally ports in |
 | **G6** | **Save, reload, revisit** a coordinate on the Store colony | TEST *"Save, reload, revisit the same coordinate"* | map state and rewards persist without duplication |
 
 Everything else open in TEST is launch-gated on the owner (RimSort profiles, DLC matrices, RWT server, art review) and is not mine to close by playing.
