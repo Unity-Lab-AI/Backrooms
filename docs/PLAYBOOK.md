@@ -222,6 +222,7 @@ Verbatim owner direction (2026-10-08): *"and make sure you zone shit in right li
 - *"start seting up the gate"*
 - *"think massive perfectly set up working facility and machine gate operations of using the bacvkrooms for cash like stripping and taking things to sell and completing misisons ect ect BUILD YOUR EMPIRE UNITY MAKE A RIMWORLD PLAY SCRIPT?.MD"* (2026-10-08) -- the running order is [`PLAYSCRIPT.md`](PLAYSCRIPT.md), Acts 1-7.
 - *"and your gate need to be not just a side room it needs to be in a massive facility with all it supposrt structures in a windowed off room for security ect ect and security   u can do the research as u need it"* (2026-10-08) -- the gate complex layout is PLAYSCRIPT Act 5: chamber, windowed control room, power, assembly, receiving, archive, lab, quarantine, security, crew quarters.
+- *"you only  need to assenble the gate once poer gate and like i fucking said u need it in a facitlity not a broom closet"* (2026-10-08) -- **one assembly per gate** (the four sections are that one assembly, not four gates); and the 7x6 chamber at `(165,172)` was a broom closet: **no gate is commissioned until the Act 5 complex around it stands.**
 
 ## 8. How to play without wrecking things
 
