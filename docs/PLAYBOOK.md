@@ -203,6 +203,7 @@ Verbatim owner direction (2026-10-08): *"and make sure you zone shit in right li
 - *"start buisnesss"*
 - *"make company money from quests"*
 - *"do quests and missions increase ur cash"*
+- *"and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on. you have a full playthrough write up right you are always updating and maintaing with how to and what works and what not to do ect ect exploring all aspects of your game mods and empire you are building"* (2026-10-08) -- **build in steel** and **order steel from the company** (Operations -> Procurement) when it runs low; **missions for cash**; **trade and sell goods and product**; **research the drug lab** and make what can be made, **acquiring the ingredients**; **sell products to guests**; **get the prison going**. **This PLAYBOOK is the full playthrough write-up**: every how-to, what works and what not to do goes here as it is learned, across all the mods and the empire.
 
 ## 6. Building
 
@@ -227,6 +228,18 @@ Verbatim owner direction (2026-10-08): *"and make sure you zone shit in right li
 - Drive the UI with semantic clicks (`.local/qa/click-label.py`); pixels last. Clear any live designator before a pixel click.
 - **A survey or contract is an EXPEDITION, and the expedition opens the gate itself.** Do not open a session by hand first: the expedition dispatch refuses on a gate that is already open, and the survey only pays when its route recording comes home as an expedition's cargo -- a hand-ordered crossing creates no expedition and its payment never settles. *Order a crossing* on an open session is for moving people, not for contract work. On the refusal, the owner: *"this isnt a issue for me u just dont know what ur doing i think"*.
 - **Never click an unlabelled icon on a bill row without proving what it is** — on a bill row the order is plus, minus, delete. One unproven click deleted the cook bill on 2026-10-07.
+
+- **`play_for` takes `{"durationMs":N,"speed":"Superfast"}`.** Given `ticks` it answers *"durationMs must be greater than 0"* and the game does not move -- read `ticksGame` before and after to prove time passed. (2026-10-08)
+- **One Esc too many opens the pause menu** (`MainTabWindow_Menu`) and every `play_for` after it plays nothing. Close it with `close_main_tab` and check `topWindowType` after every run. (2026-10-08)
+- **A door in a stone nobody stocks never gets built.** No limestone door is offered; slate doors waited forever on 21 slate. Use wood or steel for doors. (2026-10-08)
+
+## 10. A gate, start to connection -- learned commissioning the Store gate, 2026-10-08
+
+1. A **separate facility** with its own door chosen as the gate -- never a bedroom door, never the natural back door.
+2. Console, battery (vanilla `Battery`) and machining table need only be **on the same map** as the door; they do not have to sit in the facility.
+3. Select the door -> **Commission this door as the gate**. It binds the console, battery and table on its own; the inspect pane then reads *"DO THIS NEXT - step 4"*.
+4. Select the machining table -> **Set to gate control**.
+5. Table -> Bills -> Add bill -> **Assemble gate** (bottom of the list) -> raise to **4x**. 25 steel + 2 components each; Crafting work.
 
 ## 9. A survey, start to payout — learned by playing AI-01, 2026-10-07
 
