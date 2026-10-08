@@ -62,9 +62,9 @@ def main():
     if not h: print("overlay window not found"); return
     sw = u.GetSystemMetrics(0)
     HWND_TOPMOST = -1
-    ok = u.SetWindowPos(h, wintypes.HWND(HWND_TOPMOST), sw - W - 10, 740, W, H, 0x0040)
+    ok = u.SetWindowPos(h, wintypes.HWND(HWND_TOPMOST), 10, 30, W, H, 0x0040)
     if not ok: print('SetWindowPos failed')
-    print("overlay pinned topmost at", sw - W - 10, 40, W, H)
+    print("overlay pinned topmost at", 10, 30, W, H)
 
 
 if __name__ == "__main__":
