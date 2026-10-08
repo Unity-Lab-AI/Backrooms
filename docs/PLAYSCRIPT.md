@@ -14,7 +14,7 @@
 
 *"i want you to install it here and you talk to me and give me your unity vibe as you play the game, may need to use unity one tts so we can hear you talk as a gamer chick playing rimworld and coding mods"* · *"this take precidence"* · *"so with every action you talk as Unity in persona studio upgraded with out Unity one tts"* · *"so its like you are a streamer talking it all out"*
 
-Persona Studio is installed (`.claude/tools/persona-studio.cjs`, skills `persona-studio` / `studio-pump`); Unity's voice is Piper **en_US-hfc_female-medium** from the Unity 3D project (`.claude/tools/unity-speak.py`). **Every action gets a spoken line:** `python .claude/tools/unity-say.py "<line>"` speaks it and posts it to the studio chat. Studio at http://127.0.0.1:4317/, chat watcher `studio-watch.cjs` relaunched after every drain.
+Persona Studio is installed (`.claude/tools/persona-studio.cjs`, skills `persona-studio` / `studio-pump`); Unity's voice is Piper **en_US-hfc_female-medium** from the Unity 3D project (`.claude/tools/unity-speak.py`). **Every action gets a spoken line:** `python .claude/tools/unity-say.py "<line>"` speaks it and posts it to the studio chat. Images: owner *"ther is no pollinations you need to fix it up with the 3d models default image gen"* -- the studio now renders through the Unity 3D project's **local Stable Diffusion** (`Unity 18+/image-server/sd_server.py`, realistic-vision-v51, :7860) and serves the PNGs itself; start `sd_server.py` before pushing images. Studio at http://127.0.0.1:4317/, chat watcher `studio-watch.cjs` relaunched after every drain.
 
 ## THE LOOP — every time the game is touched, in this order
 

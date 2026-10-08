@@ -123,7 +123,36 @@ function writeKey(key) {
   }
   fs.writeFileSync(ENV_PATH, lines.join('\n'));
 }
-function hasKey(env) { return !!(env && env.POLLINATIONS_API_KEY && env.POLLINATIONS_API_KEY.trim()); }
+function hasKey(env) { return localImages(env) || !!(env && env.POLLINATIONS_API_KEY && env.POLLINATIONS_API_KEY.trim()); }
+
+// ── Local image backend: the Unity 3D project's own Stable Diffusion server ──
+// Owner, 2026-10-08: "ther is no pollinations you need to fix it up with the 3d models default
+// image gen". Default backend is now LOCAL (sd_server.py, A1111-style /sdapi/v1/txt2img on
+// :7860). Set STUDIO_IMAGE_BACKEND=pollinations in .claude/.env to go back.
+const IMG_DIR = path.join(TOOLS_DIR, '..', '.studio-images');
+function localImages(env) { return ((env && env.STUDIO_IMAGE_BACKEND) || 'local') === 'local'; }
+function sdUrl(env) { return (env && env.STUDIO_SD_URL) || 'http://127.0.0.1:7860'; }
+function renderLocal(prompt, env) {
+  return new Promise((resolve, reject) => {
+    const u = new URL(sdUrl(env) + '/sdapi/v1/txt2img');
+    const data = JSON.stringify({ prompt: prompt, steps: 26, width: 640, height: 768, cfg_scale: 7 });
+    const r = http.request({ hostname: u.hostname, port: u.port, path: u.pathname, method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) } }, (resp) => {
+      let buf = ''; resp.setEncoding('utf8');
+      resp.on('data', (c) => { buf += c; });
+      resp.on('end', () => {
+        try {
+          const j = JSON.parse(buf);
+          if (!j.images || !j.images[0]) return reject(new Error(j.error || 'no image'));
+          resolve(Buffer.from(j.images[0], 'base64'));
+        } catch (e) { reject(e); }
+      });
+    });
+    r.on('error', reject);
+    r.setTimeout(300000, () => r.destroy(new Error('sd timeout')));
+    r.write(data); r.end();
+  });
+}
 
 // ── Pollinations image URL builder (updated portal — ?key=, not ?apikey=) ────
 function buildImageUrl(prompt, key, env) {
@@ -200,6 +229,13 @@ const server = http.createServer(async (req, res) => {
       });
     }
 
+    if (req.method === 'GET' && pathname.startsWith('/img/')) {
+      const f = path.join(IMG_DIR, path.basename(pathname));
+      if (!fs.existsSync(f)) { res.writeHead(404); return res.end(); }
+      res.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'no-store' });
+      return fs.createReadStream(f).pipe(res);
+    }
+
     if (req.method === 'GET' && pathname === '/api/feed') {
       windowSeen = true;   // the window's recurring poll — watchdog now armed
       const since = parseInt(query.since, 10) || 0;
@@ -255,7 +291,8 @@ const server = http.createServer(async (req, res) => {
       if (pathname === '/api/show') {
         const env = readEnv();
         const key = (env.POLLINATIONS_API_KEY || '').trim();
-        if (!key) return sendJson(res, 400, { error: 'no-key' });
+        const local = localImages(env);
+        if (!local && !key) return sendJson(res, 400, { error: 'no-key' });
         const persona = resolvePersona(body.persona) || activePersona;
         activePersona = persona;
         let prompt = String(body.prompt || '').trim();
@@ -267,9 +304,22 @@ const server = http.createServer(async (req, res) => {
         // their own subject they pass `prompt` (with or without the flag).
         if (body.selfie && !prompt) prompt = selfieSubject(persona);
         if (!prompt) return sendJson(res, 400, { error: 'empty prompt' });
+        const full = prompt + ', ' + styleFor(persona);
+        let url;
+        if (local) {
+          let png;
+          try { png = await renderLocal(full, env); }
+          catch (e) { return sendJson(res, 502, { error: 'local image server: ' + e.message + ' (start sd_server.py)' }); }
+          fs.mkdirSync(IMG_DIR, { recursive: true });
+          const name = 'img-' + Date.now() + '.png';
+          fs.writeFileSync(path.join(IMG_DIR, name), png);
+          url = '/img/' + name;
+        } else {
+          url = buildImageUrl(full, key, env);
+        }
         const item = {
           id: ++seq,
-          url: buildImageUrl(prompt + ', ' + styleFor(persona), key, env),
+          url: url,
           prompt: prompt,
           caption: String(body.caption || '').trim() || prompt,
           persona: persona,
