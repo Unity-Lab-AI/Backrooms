@@ -33,32 +33,33 @@ JOBS = {
     "StandAndBeSociallyActive": "socialising", "Lovin": "having private time",
 }
 SPOT = [
-    "Quick check on {name}: {job}. Honestly, relatable.",
-    "Colonist spotlight: {name} is {job}. Give it up for {name}, chat.",
-    "Meanwhile {name} is over there {job}. Living the Marble Hollow dream.",
-    "{name} is {job}. If you want {name} doing something else, tell me in chat.",
-    "Just so you know, {name} is {job}. Productivity report: questionable.",
+    "{name} is {job}. Riveting. Truly.",
+    "Checking on {name}. {name} is {job}. Sure. Why not.",
+    "{name}, {job}, as usual. I keep that one around for the vibes.",
+    "Oh look, {name} is {job}. Nobody asked, {name}.",
+    "{name} is {job} while the rest of us hold this place together.",
+    "I am watching you, {name}. Still {job}. Mm.",
 ]
 WORLD = [
-    "It is {date}. Marble Hollow is still standing, which I count as a win.",
-    "Weather report: {weather}, {temp}. Perfect goth weather, if you ask me.",
-    "{count} colonists in Marble Hollow right now. That is a lot of mouths and a lot of marble.",
+    "{date}. Still alive. Do not get excited.",
+    "Weather: {weather}, {temp}. Perfect. Gloomy, the way I like it.",
+    "{count} colonists. {count} problems. All mine.",
 ]
 ASK = [
-    "Chat, quick vote: drug lab, rec room, or a royal wing for Gee? I am building one next.",
-    "Name suggestions, chat: what should we call the throne hall?",
-    "Who is your favourite colonist so far? Tell me in chat.",
-    "Should I hunt those thrumbos outside, or leave the giant unicorns alone? Yes or no, chat.",
-    "What should we research after microelectronics? Give me ideas.",
-    "Raid prediction time: what attacks us first, pirates, mechs, or something worse?",
-    "If you could add one room to Marble Hollow, what would it be?",
-    "First time here? Say hi. Chat helps run this colony.",
+    "Drug lab, rec room, or a royal wing for Gee. Pick one, chat. I am not asking twice.",
+    "Somebody name the throne hall. Make it dark. No, darker.",
+    "Favourite colonist. Go. Wrong answers will be remembered.",
+    "Thrumbos outside. Hunt them or leave them. Your call, your funeral.",
+    "What do I research after microelectronics. Make it worth my time.",
+    "What raids us first. Pirates, mechs, or something worse. Place your bets.",
+    "New here? Say hi. Or lurk. I see you either way.",
+    "One room you would add to my city. One. Make it good.",
 ]
 BUILD = [
-    "Construction update: the throne hall is getting pews, a big table and a throne facing the door.",
-    "The new battery room has an aisle down the middle now, so every battery is reachable.",
-    "Still waiting on microelectronics research. After that, the gate console, and after that, the Backrooms.",
-    "Marble is our bottleneck. Two stonecutters are working on it nonstop.",
+    "The throne hall is getting there. Pews, a big table, a throne staring at the door. Mine.",
+    "Battery room, take two. Now you can actually walk to the batteries. Revolutionary.",
+    "Still waiting on microelectronics. Then the gate console. Then the Backrooms. Patience is not my thing.",
+    "Marble. Always marble. Two stonecutters, zero days off.",
 ]
 
 
