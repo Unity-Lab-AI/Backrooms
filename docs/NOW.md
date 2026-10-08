@@ -47,6 +47,9 @@ Everything else open in TEST is launch-gated on the owner (RimSort profiles, DLC
 - **Vault** for silver x178 and the age-reversing serum -- not built yet.
 - **Silver ore** on the map, 36 cells at `(44-46,202-204)`, `(80-83,269-271)`, `(257-260,175-178)`, `(263-264,274-275)` -- **all fogged**: walk a pawn there first, then designate mining (never mine into fog). Procurement silver is $1,000 each, so this is the silver supply.
 - **Penoxycline x7** bought from IE Solutions for 161 silver; drug policy every 5 days.
+- **Research queue:** Drug production -> Penoxycline production (Smokepop packs dropped). Then Psychite refining, Prisoner containment, Vault Wall And Door, the computing line.
+- **Multi-analyzer** blueprinted at `(136,156)` beside the hi-tech bench; needs 50 plasteel -- 5 unfogged plasteel ore cells at `(179-181,192-194)` designated for mining.
+- **Alfred** (Hospitality quest, bedridden 19 days) for gold x260 + reinforced barrels x2. **Derek** (torturer, crashed) rescued to a sleeping spot `(152,158)` -- recruit him.
 - Unity is **Pujari of Indra** (role change ritual at the ritual spot `(148,141)`); chess chairs blueprinted.
 
 ## State, measured 2026-10-08

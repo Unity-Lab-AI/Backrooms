@@ -166,6 +166,8 @@ Bring-up (PLAYBOOK §10): commission -> table to gate control -> **Assemble gate
 | Click an unproven icon on a bill row | one click deleted a bill |
 | List gizmos over and over | the bridge read from the wrong thread and the game crashed |
 | Leave letters stacked | 32 piled up by 2026-10-08 |
+| Type into a search box with `hands.py --type` | unicode events never arrive; click the box, then `keys.py --clear <text>` (real key presses) -- the research search then jumps straight to a project, and clicking it queues its prerequisites |
+| Trust *"visible"* in the Architect list as researched | the drug lab was listed while Drug production sat at 0/500 |
 | Buy silver through Procurement | **$1,000 per silver** (100 silver = $100,000 on 2026-10-08): the company sells it *"at a poor rate"*. Sell goods to traders for silver instead |
 | Trust one trade beacon to cover the warehouse | the Store beacon at `(147,143)` missed the silver and wool shelves; the trade window showed **Silver 0**. A second beacon at `(137,143)` |
 
