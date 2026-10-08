@@ -25,7 +25,7 @@ Prompt **"get the tests all completed"**. No timers (owner: *"telling you not to
 
 *"okay lets dosomething else new game just a crashlanded scenrio and plan out a massive base with planning tool and refine it as you go building bedrooms, throne rooms, altar rooms, bedrooms for kigs and royals, facilites, hospiotals, prisons, recreation rooms, guest questers and stores and areas, and prisons and vaults with high value goods, and get to use questional ethics mod and start cloning yourself"*
 
-Paused for it: the Async save `rimbridge_save_20261008_async_stranded_rescue` -- Scar and Unity stranded on AI-01 (Unity in a psychotic wander, starving), HQ blackout half-fixed by Gee refuelling; recovery needs the grid back, then *Open a fresh recovery window*. Owner: *"you need to get your peopel back befoer they die in the backrooms"* -- do that the moment that save is loaded again.
+Owner, then: *"abandon this save and do what i said"* -- **the Async rescue is abandoned.** Last state, for the record: the Async save `rimbridge_save_20261008_async_stranded_rescue` -- Scar and Unity stranded on AI-01 (Unity in a psychotic wander, starving), HQ blackout half-fixed by Gee refuelling; recovery needs the grid back, then *Open a fresh recovery window*. Owner: *"you need to get your peopel back befoer they die in the backrooms"* -- do that the moment that save is loaded again.
 
 ## ⛔ GOALS, IN ORDER — each one closes a TEST row ⛔
 
