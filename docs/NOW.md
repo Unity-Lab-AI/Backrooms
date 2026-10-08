@@ -50,6 +50,8 @@ Everything else open in TEST is launch-gated on the owner (RimSort profiles, DLC
 - **Research queue:** Drug production -> Penoxycline production (Smokepop packs dropped). Then Psychite refining, Prisoner containment, Vault Wall And Door, the computing line.
 - **Multi-analyzer** blueprinted at `(136,156)` beside the hi-tech bench; needs 50 plasteel -- 5 unfogged plasteel ore cells at `(179-181,192-194)` designated for mining.
 - **Alfred** (Hospitality quest, bedridden 19 days) for gold x260 + reinforced barrels x2. **Derek** (torturer, crashed) rescued to a sleeping spot `(152,158)` -- recruit him.
+- **Gate chamber swap:** z184 glass is now plain **glass wall** (4 glass each, 32 total) and the gate door is an **autodoor** at `(169,184)` (wooden -- Replace to steel later). **Electric smelter** blueprinted at `(145,139)`: add *make glass from chunks* x6.
+- **Drug lab** built at `(137-139,145)`: *smokeleaf joint x4* Forever. Penoxycline needs neutroamine -- buy from a trader.
 - Unity is **Pujari of Indra** (role change ritual at the ritual spot `(148,141)`); chess chairs blueprinted.
 
 ## State, measured 2026-10-08
