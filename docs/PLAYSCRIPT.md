@@ -157,7 +157,7 @@ Bring-up (PLAYBOOK §10): commission -> table to gate control -> **Assemble gate
 | Build a gate before Act 2 is reached | owner order above |
 | Batch-click the work tab | priorities went wrong; one cell, read back |
 | Pass `ticks` to `play_for` | rejected, game does not move; use `durationMs` |
-| Press Esc twice | opens the pause menu; every `play_for` after plays nothing |
+| Press Esc with nothing to cancel (e.g. after `designate-cells.py`, which cancels its own designator) | opens the pause menu; every `play_for` after plays nothing -- `close_main_tab` it |
 | Lay walls on marsh/water or against unmined rock | owner orders above |
 | Use slate/limestone doors | no stock or no option; wood or steel |
 | Click an unproven icon on a bill row | one click deleted a bill |
