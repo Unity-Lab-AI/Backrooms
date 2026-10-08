@@ -183,6 +183,7 @@ Bring-up (PLAYBOOK §10): commission -> table to gate control -> **Assemble gate
 | Offer joints to a farming trader | not bought (2026-10-08, Pact of Gu-Lom); joints go to exotic/bulk traders and guests. Farming traders buy food: 600 rice + 250 milk = 742 silver |
 | Trust `topWindowType` alone as the modal guard | the Rimrooms generation/normalisation notices showed as `focusedWindowType` with `nonImmediateDialogWindowOpen: true` while `topWindowType` read ImmediateWindow -- check `nonImmediateDialogWindowOpen` too |
 | Select a door with conduit under it by one click | the first click picks the conduit; `.local/qa/door-gizmo.py x z <label>` cycles to the door |
+| Wait on *Hail corporate supply* | the ship (e.g. *Red Rabbit Industries*) is in orbit **immediately** and leaves like any trade ship -- call it from the console straight after hailing. Basics tier sells no textbooks |
 | Buy silver through Procurement | **$1,000 per silver** (100 silver = $100,000 on 2026-10-08): the company sells it *"at a poor rate"*. Sell goods to traders for silver instead |
 | Trust one trade beacon to cover the warehouse | the Store beacon at `(147,143)` missed the silver and wool shelves; the trade window showed **Silver 0**. A second beacon at `(137,143)` |
 
