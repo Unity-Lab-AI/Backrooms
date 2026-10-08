@@ -18933,3 +18933,26 @@ Build at the time of the move: **0.13.0-dev**. No source file was touched by thi
 **Verbatim owner direction (2026-10-08):** *"the mod is active you can start it at any time, and fix your stream rimchat image"*
 
 - [x] **"the mod is active you can start it at any time"** -- a save started on a non-Rimrooms scenario (vanilla Crashlanded, Marble Hollow) has no way to found a company branch. Operations reads *"No company branch is established in this save."* and offers nothing: `MainTabWindow_Operations` shows *RR_UI_RetryCompanyRegistration* only when `ScenPart_RimroomsStart.Current` exists, `TryInitializeExistingHeadquarters` needs a `HeadquartersSetupComponent` receipt from a Rimrooms start, and `EstablishCorporationContact` refuses without a branch. Build a mid-game founding path on the current map (no physical grants, the map's existing base as headquarters) so gates, contracts and expeditions work in any save; check the register first; build with the game closed. -- **BUILT, STAGED AND PROVEN IN PLAY 2026-10-08.** New `Scenario/BranchFounding.cs`: on a home map with no branch and no Rimrooms start, Operations shows *"Found a company branch here"*; it registers the colony through `InitializeBranch` with scenario id `founded_branch`, the `RR_AsyncIndustriesStart` company terms (corporation contact, the finished gate projects, $50M funding, wages, the onboarding survey), the player faction name as company name, every free non-slave colonist on the map as staff (max 20) with the role whose skills they meet best, and nothing physical (no facility, grants or relation reset). Register checked: `trace RR-SCEN` -> Core *Required*, Character Editor and Hospitality: Storefront *Optional*; none applied. Built 0 warnings / 0 errors, staged and hash-checked (200 files). **In play** on Marble Hollow (Crashlanded): the button was pressed, the log read *"[Rimrooms][Company] Initialized rr-branch-228e4dd5a9124d47882d007c7061513f scenario=founded_branch"*, the letter *"Company branch founded"* arrived, and Operations reads *Company: Gloom Collective*, *Company Account: 50,000,000 USD*, *Objective: Assemble the gate*, *Company staff: 3*, with the request *Power the gate*; no Rimrooms error in the log. Save: `rimbridge_save_20261008_city2_branch_founded`.
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TEST.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"get a silver supply like cash"** -- **PAID 2026-10-07:** Procurement, Item *Silver*, 10,000 to *Stockpile zone 1* (the dumping zone refused it: *"The selected HQ stockpile is missing, changed, or no longer accepts this item"*), quoted and paid **$9,000,000**, *"Dispatch day 1; arrival day 2"*; two queued component orders of 100 paid too. Account **87,561,860 -> 74,961,860 USD**. Closes when the silver is on the map. **CLOSED 2026-10-08 in play (Marble Hollow, branch founded on a Crashlanded colony):** Procurement order `procurement:000004` -- *Silver: 600*, quoted and paid **$540,000** (ledger *Day 30: Physical supply order -- -540,000 USD*), *"dispatched; supplier shipment in transit"*, then **landed as a silver stack at (137, 87) beside Stockpile zone 1** (`find-things.py Silver`: 1 stack). Bought for the next orbital-trader fee after a 460-silver offer was lost at 0 silver.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
