@@ -28,6 +28,7 @@
 - *"maintain ur colonists' needs"* · *"u need to make meals sooner than later"* · *"cook bill maintained at 50 rather than 10"* · *"meds in hospital"*
 - *"you also might want to research antibiotics and assign everyones drug scheldule manage to take peneacycline every 5 days once you build it at drug lab after researching antibiotics in game"*
 - *"set theri scheldule to anything at all times for all pawns"* · *"research and manage your pawns"*
+- *"set your priorities, dont need everyone choopping wood, multitask"* -- set them the moment a colony lands. City run 2026-10-08: everyone 1 from Firefight to Cook; Gee 2 Hunt/Grow/Research, Scar 2 Construct/Smith/Tailor/Craft, Unity 2 Mine/Plant cut/Haul/Clean. Left-click raises 3->2->1; a blank cell clicked becomes 4.
 - **Work tab:** *"you havent set up your work tab manual priorities, everything from firefighting to cooking should be hieghest 1s and you only put 2s on the teask u want each colonist doing spliting theri work up so u have like on guy cutting and planting and one crafting and constructing and one hunting and everyhting else"* · *"not limited to three obviously"* · *"stop ur fucking up the priorities i told you how to set them"* -- **one cell, then read it back; never batch-click.**
 - *"now u have a leader u need a morasl guide and they ahave abilities u want to always use"* · *"who is your leader role that you need to set"* -- and every role filled (the *Pujari* alert means a role is empty).
 - *"leave it let everyone catch up on tasks before you do more"*
