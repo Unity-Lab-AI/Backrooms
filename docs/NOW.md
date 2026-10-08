@@ -8,7 +8,7 @@
 | `docs/TODO.md` | MINOR — buildable work only |
 | `docs/DECOMPOSED.md` | smallest execution units |
 | `docs/TEST.md` | the test phase; **"Owner direction — global control"** is the live section |
-| **`docs/PLAYBOOK.md`** | **every play order the owner has given, verbatim. §4a is global control. Read before playing** |
+| **`docs/PLAYBOOK.md`** | **every play order the owner has given, verbatim. §00 order of operations, §01 architecture, §4a global control. Read before playing** |
 | **`docs/NOW.md`** (this file) | **the handoff — one record** |
 | `docs/FINALIZED.md` | permanent archive, append-only |
 
@@ -16,42 +16,36 @@
 
 ## The standing order
 
-Watchdog cron `*/1 * * * *`, prompt **"get the tests all completed"**. Dies with the session; re-arm it the same way.
+**Owner, 2026-10-08, verbatim:** *"you are dsoing test items right you keep getting lost in the game play, set fucking goals foo"*
 
-## What this session did
+Prompt **"get the tests all completed"**. No timers (owner: *"telling you not to set timers means exactly that NOT itsa okay to set 1m ones!!!!"*). Never build, stage or edit game files while the game runs.
 
-**The freezer coolers, a mod defect.** `RR_AsyncIndustriesStart` put the freezer's four coolers in the east wall at rotation 0; decompiled `Building_Cooler` cools `South.RotatedBy(rot)` and does nothing unless both sides are open, so they never cooled. Def now rotation 1; `check-start-layout.py` fails any cooler with a blocked side or its blue side outside. Built and staged; the colony's own four were rebuilt facing east at 16 F.
+## ⛔ GOALS, IN ORDER — each one closes a TEST row ⛔
 
-**The colony:** leader Gee (*God Almighty*), moral guide Unity (*Lord*) at a ritual spot `(158,147)`; two trades (exotic caravan, combat supplier by comms console); 10,000 company silver ordered; an applicant requested; stun batons and pain sticks as sidearms on all three; stonecutter on Forever; freezer zone takes animal corpses; ~60 old letters dismissed. Save: **`rimbridge_save_20261007_before_payonce`**.
+Base-building is done only where a goal needs it. When a goal closes, its TEST row gets the evidence and the next goal starts.
 
-**Gee, Scar and Unity are all age 14** -- no romance, no children until an adult hire. Visitors offer *"Invite to stay (No guest beds)"*: guest beds are the recruiting route.
+| # | Goal | Closes | Done when |
+|---|------|--------|-----------|
+| **G1** | **Store gate.** Finish the facility (x157-173, z169-176; gate door `(165,172)`, hall door `(161,169)`, both wooden), move the machining table into the control room, console + battery inside, bind, commission `(165,172)`, assemble, calibrate, console to gate control, remember an address, open a connection | TEST *"Furniture and Knickknack Store opening -- a gate built"* | a connection opens through the Store gate |
+| **G2** | **Emergency abort in play** on that connection's load notice | TODO abort row (shipped in source, unproved in play) | the notice reads *"Connection aborted. Nothing was opened, sent or charged."* and nothing was charged |
+| **G3** | **Repeat request needs a different address** — repeat a request on the Store gate | TODO repeat-address row | the used address is refused and a new one is required |
+| **G4** | **Solo or group, inside** — new colony on that start, a gate built | TEST *"Solo or group, inside -- a gate built"* | a gate stands and operates there |
+| **G5** | Store-colony rows that ride along: smokeleaf harvested and **sold** (cash crops), the cow pen closed out, shelves for every resource, trade with every trader | TEST cash crops / corral / shelves / trade rows | each with its evidence |
+| **G6** | **Save, reload, revisit** a coordinate on the Store colony | TEST *"Save, reload, revisit the same coordinate"* | map state and rewards persist without duplication |
 
-## ⛔ OPEN, IN ORDER ⛔
+Everything else open in TEST is launch-gated on the owner (RimSort profiles, DLC matrices, RWT server, art review) and is not mine to close by playing.
 
-1. **Repeat requests need a different gate address** (TODO, owner's answer verbatim there).
-2. **The stone wing** is built in limestone (hall x156, cross hall z115, four bedrooms, nursery, guest room). Still: the east bedroom vent at `(157,124)`, pawns assigned to the double beds, guest beds set for guests. The fence pen east of it (x165-176, z111-119) was blueprinted while the owner stopped the call -- ask before keeping it.
-3. **Six wild muffalo marked to tame** for milk; a pen once the owner says where.
-4. **Stray double bed at `(107,168)`** in the river: deconstruction designated; then *Remove foundation* on the bridge under it.
-5. **Research:** Microelectronics, then Multi-analyzer and the computing line, building each as it lands; hi-tech research bench.
-6. **AI-03** second opening; Misha and Feeb home. **Raid** the one-defender outpost. **Antibiotics.**
-7. **Wiki / mod register:** 195 of 297 mods read "not yet confirmed in a running game" -- update from the runs (TEST row).
-
-## Tools added, `.local/qa/`
-
-| Tool | Use |
-|---|---|
-| `keys.py --clear N` / `--esc` | real key presses: numeric fields (unicode typing does not reach them) and Escape, which drops a live designator that `press_cancel` does not |
-| `terrain-map.py x0 z0 x1 z1` | character map: walls, doors, rock, trees, chunks, blueprints |
-| `blueprints.py x z w h` | blueprints, frames and solids per cell |
-
-**Rotated placement** needs a real click: select the designator, press `E`/`Q` via `keys.py`, centre the camera on the cell, click the screen centre. `apply_architect_designator` ignores rotation.
-
-## State, measured
+## State, measured 2026-10-08
 
 | | |
 |---|---|
-| Branch | **`feature/bug-testing`** |
-| Version | **0.13.0-dev**, built and staged, hash-checked |
+| Colony | **Store**, save **`rimbridge_save_20261008_store_walls`**, tick ~1,266,700 |
+| Facility | walls framing; doors `(161,169)` and `(165,172)` wooden frames; north hall wall still blueprints x170-174 |
+| Research | Machining, then Multi-analyzer |
+| Branch | **`feature/bug-testing`**, last commit e39cb9b |
 | Checkers | **32 of 33** — the stale plant anchors, failing before this session |
-| TEST | **73 `[T]` rows open**; ~15 closed in the last 6 hours |
 | Forgejo | **held.** GitHub only |
+
+## Tools, `.local/qa/`
+
+`play_for` takes **`{"durationMs":N,"speed":"Superfast"}`** — `ticks` is rejected and the game does not move. `keys.py --esc` drops a live designator. `terrain-map.py x0 z0 x1 z1` maps walls/doors/frames (`o` there is a frame or plant, not a hole). Right-click an Architect material button for its material menu (no limestone door is offered — wood).

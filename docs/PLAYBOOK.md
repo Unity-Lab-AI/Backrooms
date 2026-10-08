@@ -4,6 +4,8 @@
 
 **Read this before every play session and walk it top to bottom every in-game day.** Every order is quoted verbatim. Colony evidence and the full test rows live in [`TEST.md`](TEST.md); this is the checklist that is worked, not the record.
 
+**The test items are the point, owner 2026-10-08:** *"you are dsoing test items right you keep getting lost in the game play, set fucking goals foo"* -- play toward the numbered goals in [`NOW.md`](NOW.md), each one tied to a TEST row. Base-building is done when a goal needs it, and the standing orders below are kept up along the way, not chased instead of the goals.
+
 ---
 
 ## 00. A new colony, in order -- sustainable BEFORE the gate
