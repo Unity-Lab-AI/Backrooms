@@ -131,6 +131,9 @@ function hasKey(env) { return localImages(env) || !!(env && env.POLLINATIONS_API
 // :7860). Set STUDIO_IMAGE_BACKEND=pollinations in .claude/.env to go back.
 const IMG_DIR = path.join(TOOLS_DIR, '..', '.studio-images');
 let camState = { url: '', caption: '', ts: 0 };
+// Unity's voice: each spoken line as a WAV the overlay page plays -- in OBS's browser source that
+// audio goes to the stream (desktop audio stays muted).
+let voiceState = { url: '', ts: 0 };
 function localImages(env) { return ((env && env.STUDIO_IMAGE_BACKEND) || 'local') === 'local'; }
 function sdUrl(env) { return (env && env.STUDIO_SD_URL) || 'http://127.0.0.1:7860'; }
 function renderLocal(prompt, env, faceUrl) {
@@ -233,12 +236,16 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && pathname.startsWith('/img/')) {
       const f = path.join(IMG_DIR, path.basename(pathname));
       if (!fs.existsSync(f)) { res.writeHead(404); return res.end(); }
-      res.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'no-store' });
+      res.writeHead(200, { 'Content-Type': f.endsWith('.wav') ? 'audio/wav' : 'image/png', 'Cache-Control': 'no-store' });
       return fs.createReadStream(f).pipe(res);
     }
 
     if (req.method === 'GET' && pathname === '/api/cam') {
       return sendJson(res, 200, camState);
+    }
+
+    if (req.method === 'GET' && pathname === '/api/voice') {
+      return sendJson(res, 200, voiceState);
     }
 
     if (req.method === 'GET' && pathname === '/api/feed') {
@@ -356,6 +363,16 @@ const server = http.createServer(async (req, res) => {
         fs.writeFileSync(path.join(IMG_DIR, name), png);
         camState = { url: '/img/' + name, caption: String(body.caption || '').trim(), ts: Date.now() };
         return sendJson(res, 200, { ok: true, url: camState.url });
+      }
+
+      if (pathname === '/api/voice') {
+        const wav = Buffer.from(String(body.wav || ''), 'base64');
+        if (!wav.length) return sendJson(res, 400, { error: 'empty wav' });
+        fs.mkdirSync(IMG_DIR, { recursive: true });
+        const name = 'voice-' + Date.now() + '.wav';
+        fs.writeFileSync(path.join(IMG_DIR, name), wav);
+        voiceState = { url: '/img/' + name, ts: Date.now() };
+        return sendJson(res, 200, { ok: true, url: voiceState.url });
       }
 
       if (pathname === '/api/shutdown') {

@@ -349,5 +349,15 @@ window.addEventListener("pagehide", () => {
     if(j.ts && j.ts!==last){ last=j.ts; document.getElementById('camImg').src=j.url+'?t='+j.ts; document.getElementById('camCap').textContent=j.caption||''; } }catch(e){} }
   cam(); setInterval(cam,2000); })();
 </script>
+<script>
+// Unity's voice: play each new line. In OBS's browser source this is the stream's voice track.
+(function(){ let last=-1; const q=[]; let busy=false;
+  function next(){ if(busy||!q.length) return; busy=true; const a=new Audio(q.shift());
+    a.onended=a.onerror=()=>{busy=false; next();}; a.play().catch(()=>{busy=false; next();}); }
+  async function voice(){ try{ const r=await fetch('/api/voice'); const j=await r.json();
+    if(last<0){ last=j.ts||0; return; }
+    if(j.ts && j.ts!==last){ last=j.ts; q.push(j.url+'?t='+j.ts); next(); } }catch(e){} }
+  voice(); setInterval(voice,500); })();
+</script>
 </body>
 </html>

@@ -91,6 +91,9 @@ def main():
                                                   "caption": caption}).encode(),
                                  headers={"Content-Type": "application/json"})
     print(urllib.request.urlopen(req, timeout=60).read().decode())
+    # owner: "keep a colonist in view at all times" -- hand the camera back to the crew
+    subprocess.run([sys.executable, BRIDGE, "call", "rimworld/set_camera_zoom", json.dumps({"zoomRange": "Close"})], capture_output=True, timeout=60)
+    subprocess.run([sys.executable, BRIDGE, "call", "rimworld/jump_camera_to_pawn", json.dumps({"pawnName": "Unity"})], capture_output=True, timeout=60)
 
 
 if __name__ == "__main__":

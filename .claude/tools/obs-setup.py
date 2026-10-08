@@ -6,7 +6,7 @@
 
 LAW (CONSTRAINTS §THE STREAM IS CLEAN): viewers only ever see RimWorld. The Live scene is a
 Game Capture of the RimWorld window ONLY, the overlay as a Browser Source, and application audio
-from RimWorld and Unity's TTS (python). Desktop audio and mic are muted. Never Display Capture.
+from RimWorld; Unity's TTS plays in the overlay browser source. Desktop audio and mic are muted. Never Display Capture.
 The stream key is read from .claude/.env and never printed.
 """
 import os, sys
@@ -58,14 +58,14 @@ def setup():
     cl.set_scene_item_transform("Live", gid, {"positionX": 0, "positionY": 0,
                                 "boundsType": "OBS_BOUNDS_SCALE_INNER", "boundsWidth": 1920, "boundsHeight": 1080})
     oid = ensure_input(cl, "Live", "Unity overlay", "browser_source",
-                       {"url": "http://127.0.0.1:4317/", "width": 560, "height": 1150, "reroute_audio": False,
+                       {"url": "http://127.0.0.1:4317/", "width": 560, "height": 1150, "reroute_audio": True,
                         "css": "body{background:transparent !important}"})
     cl.set_scene_item_transform("Live", oid, {"positionX": 8, "positionY": 8,
                                 "boundsType": "OBS_BOUNDS_SCALE_INNER", "boundsWidth": 330, "boundsHeight": 680})
     ensure_input(cl, "Live", "RimWorld audio", "wasapi_process_output_capture",
                  {"window": RIM_WIN, "priority": 2})
-    ensure_input(cl, "Live", "Unity voice", "wasapi_process_output_capture",
-                 {"window": ":ConsoleWindowClass:python.exe", "priority": 2})
+    # Unity's voice reaches the stream through the overlay browser source (reroute_audio): the studio
+    # serves each spoken line and the page plays it. A python.exe has no window for app capture.
     bid = ensure_input(cl, "BRB", "BRB image", "image_source", {"file": LIKENESS})
     cl.set_scene_item_transform("BRB", bid, {"positionX": 660, "positionY": 140,
                                 "boundsType": "OBS_BOUNDS_SCALE_INNER", "boundsWidth": 600, "boundsHeight": 600})

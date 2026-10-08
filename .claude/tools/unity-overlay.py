@@ -54,7 +54,7 @@ def main():
     if not h:
         exe = next((b for b in BROWSERS if os.path.exists(b)), None)
         if not exe: print("no Edge/Chrome found"); return
-        subprocess.Popen([exe, "--app=" + URL, "--window-size=%d,%d" % (W, H),
+        subprocess.Popen([exe, "--app=" + URL, "--window-size=%d,%d" % (W, H), "--autoplay-policy=no-user-gesture-required",
                           "--user-data-dir=" + os.path.join(os.environ["TEMP"], "unity-overlay-profile")])
         for _ in range(40):
             time.sleep(0.5); h = find()
