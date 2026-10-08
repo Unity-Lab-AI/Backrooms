@@ -27,6 +27,10 @@ Prompt **"get the tests all completed"**. No timers (owner: *"telling you not to
 
 Owner, then: *"abandon this save and do what i said"* -- **the Async rescue is abandoned.** Last state, for the record: the Async save `rimbridge_save_20261008_async_stranded_rescue` -- Scar and Unity stranded on AI-01 (Unity in a psychotic wander, starving), HQ blackout half-fixed by Gee refuelling; recovery needs the grid back, then *Open a fresh recovery window*. Owner: *"you need to get your peopel back befoer they die in the backrooms"* -- do that the moment that save is loaded again.
 
+## City run (The Hive), 2026-10-08
+
+Save `rimbridge_save_20261008_city_prisoner`. Built: 2 storage bays, 3 bedrooms, stove (simple meal until 50), office + research bench. Prisoner Reekeek on Recruit in bedroom S5 (prison cell). Scar: eye infection, being tended. Hospital blueprinted x88-106 z192-210 with 2 hospital beds; **z192 wall cells 92,93,95-100,104,105 are marsh -> soil blueprints, walls go on after; door (99,192)**. Plan JSON: `.local/qa/city/plan.json`.
+
 ## ⛔ GOALS, IN ORDER — each one closes a TEST row ⛔
 
 Base-building is done only where a goal needs it. When a goal closes, its TEST row gets the evidence and the next goal starts.
