@@ -563,6 +563,9 @@ namespace RimroomsAsyncIndustries.Gate
                 || campaign.Headquarters != parent.Map)
             { yield break; }
             if (!NativeDoorProvider()) { yield break; }
+            // Not offered on a natural way through: it can never be a gate (see DesignateAsGate).
+            Portals.CompRimroomsEmergence natural = parent.TryGetComp<Portals.CompRimroomsEmergence>();
+            if (natural != null && natural.IsDesignated) { yield break; }
 
             yield return new Command_Action
             {

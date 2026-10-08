@@ -143,6 +143,7 @@
   <RR_Letter_GateIntegrityText>{0} has taken enough damage to lose its calibration. It is down to {1} condition, and it will not open a connection until it has been repaired and calibrated again.
 
 Repairing it is ordinary construction work. Calibrating it is the assigned operator's job, as it was the first time.</RR_Letter_GateIntegrityText>
+  <RR_NativeGate_NaturalThreshold>This door is a natural way through to somewhere already. It stays that, and it cannot also be a gate: build the gate on another door.</RR_NativeGate_NaturalThreshold>
   <RR_NativeGate_TooManyGates>Three gates are already operational. That is the limit: three called addresses plus your colony is four of the five maps the game will hold open at once, and the fifth is the margin for a natural door somebody walks through without planning to.
 
 Stand one of the others down first, or board up a natural door to free a slot.</RR_NativeGate_TooManyGates>

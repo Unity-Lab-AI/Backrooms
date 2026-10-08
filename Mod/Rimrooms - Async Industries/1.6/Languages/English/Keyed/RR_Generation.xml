@@ -70,6 +70,8 @@
        universe's own voice. The example wording the owner gave was explicitly
        rejected by the owner in the same sentence; the sense it carries is kept. -->
   <RR_Generation_FreezeEvent>Resolving a space that has not been indexed...</RR_Generation_FreezeEvent>
+  <RR_Generation_Abort>Emergency abort — do not open</RR_Generation_Abort>
+  <RR_Generation_Aborted>Connection aborted. Nothing was opened, sent or charged.</RR_Generation_Aborted>
   <RR_Generation_FreezeAcknowledge>Understood — hold</RR_Generation_FreezeAcknowledge>
   <RR_Generation_FreezeNotice>THE HOLD IS EXPECTED\n\nA space on the far side is being resolved, and it is larger than anything here. Until it finishes, nothing on this side advances: no clock, no movement, no answer to anything you do.\n\nThis is not a fault and nothing has been lost. Wait for it. It ends.</RR_Generation_FreezeNotice>
   <RR_Generation_FreezeNotice_RR_AsyncIndustriesStart>GATE CONNECTION — HOLD\n\nThe aperture is resolving a coordinate that carries no index. Resolution is not interruptible and it does not share the tick: while it runs, the company clock and everything on it stops. You will see no movement and get no response.\n\nThis is expected. Async Industries records the interval as acquisition time and bills it to the client.\n\nThe hold ends when the far side has a shape.</RR_Generation_FreezeNotice_RR_AsyncIndustriesStart>

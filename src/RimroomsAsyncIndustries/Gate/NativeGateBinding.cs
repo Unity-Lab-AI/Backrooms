@@ -513,6 +513,14 @@ namespace RimroomsAsyncIndustries.Gate
             // The door itself has to be an eligible headquarters thing, asked through the same
             // predicate the provider checks use rather than a second copy of its conditions.
             if (!SameNativeHeadquartersThing(parent)) { return RefuseNative("HeadquartersRequired"); }
+            // **A NATURAL WAY THROUGH IS NOT A GATE.** Found playing the Store start, 2026-10-07:
+            // its back-room door is a permanent natural threshold, the portal network refuses a
+            // laboratory address on a door that holds one, and a gate commissioned there passed
+            // eight steps and stopped dead at "An address remembered". Owner, asked: *"Separate
+            // door is the gate"* -- the back door stays the way through, and the gate is built on
+            // another door. Refused here so every route to designation says so.
+            Portals.CompRimroomsEmergence natural = parent.TryGetComp<Portals.CompRimroomsEmergence>();
+            if (natural != null && natural.IsDesignated) { return RefuseNative("NaturalThreshold"); }
             if (!string.IsNullOrEmpty(nativeBranchId) && nativeBranchId != NativeCampaign.BranchId)
             { return RefuseNative("HeadquartersRequired"); }
             IntVec3 entry = EntrySideCell(nativeOppositeEntrySide);

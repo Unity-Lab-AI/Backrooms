@@ -248,7 +248,7 @@ namespace RimroomsAsyncIndustries.Presentation
             }
 
             float textHeight = Text.CalcHeight(notice, PanelWidth - PanelPadding * 2f);
-            float panelHeight = textHeight + PanelPadding * 3f + ButtonHeight;
+            float panelHeight = textHeight + PanelPadding * 4f + ButtonHeight * 2f;
             var panel = new Rect(
                 (inRect.width - PanelWidth) / 2f,
                 (inRect.height - panelHeight) / 2f,
@@ -263,8 +263,22 @@ namespace RimroomsAsyncIndustries.Presentation
                 notice);
 
             var button = new Rect(panel.x + PanelPadding,
-                panel.yMax - PanelPadding - ButtonHeight,
+                panel.yMax - PanelPadding * 2f - ButtonHeight * 2f,
                 PanelWidth - PanelPadding * 2f, ButtonHeight);
+            // **AN EMERGENCY ABORT BESIDE THE HOLD.** Owner, 2026-10-08, verbatim: *"we also need
+            // an emergy abort option on the gate connection so hold is not the olny option on the
+            // backrooms load start"*. Safe by construction: every caller of `Announce` runs its
+            // whole action -- the dispatch, the dial, the remembered address -- inside
+            // `onContinue`, so nothing has been opened, sent or charged while this is on screen,
+            // and aborting is simply not running it.
+            var abort = new Rect(button.x, button.yMax + PanelPadding, button.width, ButtonHeight);
+            if (Widgets.ButtonText(abort, "RR_Generation_Abort".Translate()))
+            {
+                Close(false);
+                Messages.Message("RR_Generation_Aborted".Translate(), MessageTypeDefOf.NeutralEvent,
+                    false);
+                return;
+            }
             if (Widgets.ButtonText(button, "RR_Generation_FreezeAcknowledge".Translate()))
             {
                 // **CLOSED FIRST, THEN THE WORK IS QUEUED.** The long event blocks the main thread

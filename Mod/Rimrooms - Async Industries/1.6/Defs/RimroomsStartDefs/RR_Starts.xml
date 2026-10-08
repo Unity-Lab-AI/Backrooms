@@ -489,6 +489,10 @@
            thing this start needs, to call the corporation - read "The console has no power". -->
       <li><start>(33, 0, 19)</start><length>17</length><alongX>false</alongX></li>
       <li><start>(34, 0, 21)</start><length>2</length><alongX>true</alongX></li>
+      <!-- And one under the back-room door. A manual door is a gate only with a live transmitter
+           under its own cell (NativeThresholdConnected); without this the commissioned gate in this
+           start refused calibration, "not connected to the same live power network". -->
+      <li><start>(34, 0, 34)</start><length>2</length><alongX>true</alongX></li>
       <li><start>(14, 0, 24)</start><length>22</length><alongX>true</alongX></li>
       <li><start>(28, 0, 12)</start><length>13</length><alongX>false</alongX></li>
       <li><start>(17, 0, 24)</start><length>9</length><alongX>false</alongX></li>

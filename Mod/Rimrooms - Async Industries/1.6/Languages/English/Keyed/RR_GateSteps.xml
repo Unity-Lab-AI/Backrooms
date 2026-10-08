@@ -45,7 +45,7 @@
   <RR_Steps_8How>Select {0} on the map and press "Set to gate control". This is a separate switch from the machining table's.</RR_Steps_8How>
 
   <RR_Steps_9Label>An address remembered for somewhere to open to</RR_Steps_9Label>
-  <RR_Steps_9How>Lower down this tab, choose a coordinate and press "Remember this coordinate as a laboratory address".</RR_Steps_9How>
+  <RR_Steps_9How>Lower down this tab, choose a coordinate and press "Remember this coordinate on the designated gate".</RR_Steps_9How>
 
   <RR_Steps_10Label>The operator standing at the console</RR_Steps_10Label>
   <RR_Steps_10How>Select the gate door and press "Staff the console". The ramp only climbs while they are there.</RR_Steps_10How>

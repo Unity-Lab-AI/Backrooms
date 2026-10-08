@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-08 - An emergency abort, a Store that can call and build its gate
+
+- **OWNER:** *"we also need an emergy abort option on the gate connection so hold is not the olny
+  option on the backrooms load start"*; and on the Store's back door, asked: *"Separate door is the
+  gate"*.
+
+### What a player gets
+
+- **Emergency abort.** The notice before a new space loads offers "Emergency abort — do not open"
+  beside "Understood — hold". Nothing has been opened, sent or charged at that point, so aborting
+  costs nothing.
+- **The Store start has power where it needs it.** Its conduit stopped short of the battery and
+  the generator, so the comms console could never call the corporation; and its back door had no
+  conduit under it. Both wired.
+- **A natural way through is never offered as the gate.** The Store's back door stays the way to
+  the space behind it; the gate is built on another door, and the game says so.
+- **The gate checklist names the right button** for remembering an address.
+- **The start-layout check models Core's own wiring** and fails any powered building on no grid
+  with a generator, and any natural door with no live conduit under it.
+
 ## 0.13.0-dev - 2026-10-07 - A request is paid once, an archive can be found, a journal can be filed
 
 - **OWNER, asked which event should close and pay a request whose journal the company collects:**

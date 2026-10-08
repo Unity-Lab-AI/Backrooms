@@ -130,6 +130,8 @@
 
 **Verbatim owner direction (2026-10-07):** *"telling you not to set timers means exactly that NOT itsa okay to set 1m ones!!!!"* -- **no timers of any length**: no `timeout` wrappers, no sleep-and-poll loops, no command timeouts. Run a command, read its result, move on.
 
+**Verbatim owner direction (2026-10-08):** *"the problem of the game continueing to crash, it just did, is you are editing files or something while the game is running, you cant do that"* -- **build and stage only with the game closed.** Read on the crash, 2026-10-08: the staged DLL was untouched since before launch, and the log ended in ~600 *"Tried to get a resource ... from a different thread"* lines raised by bridge gizmo-listing calls -- so also **list a selection's gizmos as rarely as possible; read buttons off a screenshot instead.**
+
 ## 4. Work and pawns
 
 - *"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?"* — **look at the world map: neighbours, settlements, trade, raids to answer, places to take.**

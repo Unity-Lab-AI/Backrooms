@@ -511,6 +511,14 @@ def check_start(node, sizes: dict) -> None:
             fail("%s: %s at %s wires to a grid with no generator -- it will never have power"
                  % (label, thing, cell))
 
+    # **A start's natural gate must be wireable as it stands.** A manual door is a gate only with a
+    # live transmitter under its own cell (`NativeThresholdConnected`). The Store's back-room door
+    # had none, so the gate commissioned there refused calibration -- found playing, 2026-10-07.
+    door = cell_of(node.findtext("emergenceDoorCell"))
+    if door is not None and powered and (door not in transmit or grid.get(door) not in live):
+        fail("%s: the emergence door at %s has no live conduit under it -- a gate commissioned "
+             "there can never calibrate" % (label, door))
+
     for name, text in (("arrivalCell", node.findtext("arrivalCell")),
                        ("stockCell", node.findtext("stockCell"))):
         cell = cell_of(text)
