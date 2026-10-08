@@ -27,7 +27,7 @@ Base-building is done only where a goal needs it. When a goal closes, its TEST r
 
 | # | Goal | Closes | Done when |
 |---|------|--------|-----------|
-| **G1** | **Store gate.** Finish the facility (x157-173, z169-176; gate door `(165,172)`, hall door `(161,169)`, both wooden), move the machining table into the control room, console + battery inside, bind, commission `(165,172)`, assemble, calibrate, console to gate control, remember an address, open a connection | TEST *"Furniture and Knickknack Store opening -- a gate built"* | a connection opens through the Store gate |
+| **G1 DONE 2026-10-08** | **Store gate -- session opened.** Finish the facility (x157-173, z169-176; gate door `(165,172)`, hall door `(161,169)`, both wooden), move the machining table into the control room, console + battery inside, bind, commission `(165,172)`, assemble, calibrate, console to gate control, remember an address, open a connection | TEST *"Furniture and Knickknack Store opening -- a gate built"* | a connection opens through the Store gate |
 | **G2 DONE 2026-10-08** | **Emergency abort in play** -- pressed on the Store gate, nothing charged (99,910 USD before and after); archived to FINALIZED on that connection's load notice | TODO abort row (shipped in source, unproved in play) | the notice reads *"Connection aborted. Nothing was opened, sent or charged."* and nothing was charged |
 | **G3** | **Repeat request needs a different address** — repeat a request on the Store gate | TODO repeat-address row | the used address is refused and a new one is required |
 | **G4** | **Solo or group, inside** — new colony on that start, a gate built | TEST *"Solo or group, inside -- a gate built"* | a gate stands and operates there |

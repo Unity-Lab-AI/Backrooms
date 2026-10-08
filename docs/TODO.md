@@ -115,6 +115,9 @@ So the moment one exists, `IsOddSupply` is true, `coordinateId` is not empty, `v
 - [ ] **Gate checklist names a button that does not exist: step 7 says press "Order calibration"; the gate's gizmo is "Calibrate gate".** Found in play 2026-10-08 on the Store gate `(169,190)`. `RR_Steps_7How` (RR_GateSteps.xml) and `RR_Portals_BlockedCalibration` (RR_Portals.xml) say *Order calibration*; `RR_Gate_CalibrateLabel` is *Calibrate gate*. Fix the two step texts to the real label, with the game closed.
 - [ ] **A machining table that no pawn will use at all.** Store colony, table `(149-151,157)` in the barracks: powered (+1,920 W), bill not suspended, *Anyone*, unlimited radius, *Assemble gate* listed in Add bill -- yet a right-click with any crafter offers only *Clean barracks*, for the gate bill and for a plain *Print company bond* alike. A new table at `(154,182)` worked first time. Find what holds the old one (a reservation left by the gate/console code is the first suspect, since it had been bound to three gates in turn) before closing.
 
+- [ ] **The ramp message shows a raw coordinate id to the player.** Opening AI-01 on the Store gate, 2026-10-08, the message read *"Bringing up a connection to rr-branch-37a5c74affad44f8abfd954f64a64def:Coordinate:000001. The operator must stay on the console until it is open."* -- it should name **AI-01**. Find the key and pass the coordinate label (same family as the event-argument fixes).
+- [ ] **"The linked physical battery does not contain enough charge for the configured opening and emergency-return reserve"** arrived right after *"Connection open."* on the Store gate, while the gate pane read *600.00/600.00 watt-days stored on the gate's circuit*. Check whether the reserve test reads the linked battery alone (one vanilla battery at `(158,144)`) while the circuit holds the charge -- the owner's rule is *"the battery braw needs to be consistant not tied to a single battery"*.
+
 ## TOMBSTONES
 
 _(none)_
