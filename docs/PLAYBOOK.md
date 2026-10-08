@@ -6,6 +6,8 @@
 
 **The test items are the point, owner 2026-10-08:** *"you are dsoing test items right you keep getting lost in the game play, set fucking goals foo"* -- play toward the numbered goals in [`NOW.md`](NOW.md), each one tied to a TEST row. Base-building is done when a goal needs it, and the standing orders below are kept up along the way, not chased instead of the goals.
 
+**The operations manual, owner 2026-10-08:** *"and your operations manual script or .md obviousliy isnt good becasue it doesnt have everything ive fucking ever told you as you arent even reading messages and clearing them"* -- [`PLAYSCRIPT.md`](PLAYSCRIPT.md) now carries every play order verbatim in the act or daily loop it belongs to, and the loop starts with letters: read every one, act, dismiss.
+
 ---
 
 ## 00. A new colony, in order -- sustainable BEFORE the gate
