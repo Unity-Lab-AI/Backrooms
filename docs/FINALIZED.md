@@ -18872,3 +18872,29 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Owner direction, 2026-10-08 -- an emergency abort when a connection comes up
+
+- [x] **"we also need an emergy abort option on the gate connection so hold is not the olny option on the backrooms load start"** -- when a gate connection starts loading the Backrooms, the only choice offered is Hold; there must be an emergency abort beside it. **BUILT AND STAGED 2026-10-08:** the load notice (`Dialog_RimroomsGenerationNotice`) now carries **"Emergency abort — do not open"** under **"Understood — hold"**; it closes the notice without running the queued action and says *"Connection aborted. Nothing was opened, sent or charged."* Safe because all five callers of `Announce` -- expedition dispatch, gate address remembered (twice), natural address, dialling a remembered address -- do their whole action inside the continuation. **PRESSED IN PLAY 2026-10-08** on the Store colony: on the commissioned gate `(169,190)`, Machine pane, *Remember this coordinate on the designated gate* for AI-01 raised the notice (*"BACK DOOR — PLEASE WAIT"*, Hold and Emergency abort side by side); **Emergency abort** closed it, the message read *"Connection aborted. Nothing was opened, sent or charged."*, the gate still read *"No address is remembered for this gate yet"*, and the Company Account read **99,910 USD before and after**. Screenshot `.local/qa/evidence/store-gate-abort-20261008.png`.
+
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
