@@ -8,7 +8,8 @@ outbox (every spoken line lands there via unity-say.py); after QUIET seconds wit
 it speaks one built from the live game -- a colonist spotlight, the weather and date, what is
 being built -- or a question for chat. Never repeats a line it said in the last 30.
 
-Stream-clean by construction (LAW: THE STREAM IS CLEAN): every line is a fixed clean template
+Questions to chat are about the GAME only -- never the overlay, tools or code (owner: "You do not
+take code advice from the twitch!"). Stream-clean by construction (LAW: THE STREAM IS CLEAN): every line is a fixed clean template
 filled with colonist names, job words and game state. Chat text is never read back out loud.
 """
 import json, os, random, subprocess, sys, time
@@ -52,7 +53,6 @@ ASK = [
     "Raid prediction time: what attacks us first, pirates, mechs, or something worse?",
     "If you could add one room to Marble Hollow, what would it be?",
     "First time here? Say hi. Chat helps run this colony.",
-    "Rate the new overlay out of ten, chat. Be honest, I can take it.",
 ]
 BUILD = [
     "Construction update: the throne hall is getting pews, a big table and a throne facing the door.",
