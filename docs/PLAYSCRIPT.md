@@ -175,6 +175,8 @@ Bring-up (PLAYBOOK §10): commission -> table to gate control -> **Assemble gate
 | Lay a building without reading its cost | the reinforced glass wall wanted **ballistic glass** (plasteel-made) and the security door **50 plasteel** -- neither on the map, so the gate chamber sat as frames. Plain **glass wall** = 4 glass + 1 steel; glass = stone chunks at an **electric smelter** (*Rebuild* recipe). Gate door: **autodoor** (the gate patch accepts it) |
 | Pass `stuffDefName` to `apply_architect_designator` | ignored; the material is whatever the button was last set to |
 | Click the corner triangle of an Architect button | it selects that designator live and the next map click builds it -- a stray wooden autodoor got built at `(177,175)` that way |
+| Let wood generators run dry | 2026-10-08: all four at 0/75 fuel, whole Store grid at 0 W -- the machining table was dead, so the gate assembly bill was never offered to anyone (no reason shown, the bench is simply unusable). Read a generator's fuel every loop; four burn ~130 wood/day. Get Solar panel / Battery research so the grid does not live on hauling |
+| Diagnose a bill nobody takes from the bill | right-click the bench with a pawn: an empty menu means the bench itself is unusable -- power first |
 | Buy silver through Procurement | **$1,000 per silver** (100 silver = $100,000 on 2026-10-08): the company sells it *"at a poor rate"*. Sell goods to traders for silver instead |
 | Trust one trade beacon to cover the warehouse | the Store beacon at `(147,143)` missed the silver and wool shelves; the trade window showed **Silver 0**. A second beacon at `(137,143)` |
 
