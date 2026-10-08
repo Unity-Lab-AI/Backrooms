@@ -45,6 +45,8 @@ Every step below is an order already in this playbook; this is only the order th
 
 Verbatim owner direction (2026-10-08): *"all those walls over top of water need to be cancled and use terraform to change it to dirt first"* -- **never lay a wall on water or marsh**: cancel it, terraform the cell to dirt first, then re-lay the wall.
 
+Verbatim owner direction (2026-10-08): *"you are building walls straight into a mountian someone is going to get trapped building, you need to mine out the inerside first and wait to build that sections wall"* -- **a wall section that meets a mountain waits**: mine out the rock on the inside of it first, then lay that section, so no builder is ever walled in against rock.
+
 Verbatim owner direction (2026-10-08): *"and make sure you zone shit in right like roofs so courtyards are unroofed and generators need to be out side"* -- **roof areas only over rooms and halls; courtyards stay unroofed**; **generators stand outside**, not in a room.
 
 ## 0. Everything, always -- not one and done
