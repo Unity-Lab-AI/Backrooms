@@ -5,11 +5,10 @@ Renders through the local Stable Diffusion via the studio's /api/cam. Runs in th
 """
 import json, subprocess, sys, urllib.request
 
-BASE = ("webcam photo of a 25 year old goth emo woman streamer, dark hair with pink streaks, "
-        "black leather top, gaming headset, sitting at a desk with RGB keyboard and two monitors "
-        "showing a colony building game and code, dim purple room light, ")
+BASE = ("photo of a 25 year old woman, girl next door, natural goth emo style, dark brown hair with subtle pink streaks, "
+        "black band t-shirt, at a home gaming desk, warm desk lamp light, bedroom, candid webcam photo, realistic, ")
 MOODS = {
-    "chill": "relaxed half smile, smoking a joint, smoke curling, sleepy eyes",
+    "chill": "relaxed half smile, smoking a joint, a little smoke, sleepy eyes",
     "hype": "excited wide grin, leaning toward the camera, fist raised",
     "angry": "furious scowl, yelling at the monitor, gripping the headset",
     "focus": "intense focused stare at the screen, typing fast, joint in the ashtray",
@@ -30,7 +29,7 @@ def main():
         return
     prompt = BASE + MOODS.get(mood, mood) + ", photo, detailed face"
     req = urllib.request.Request("http://127.0.0.1:4317/api/cam",
-                                 data=json.dumps({"prompt": prompt, "caption": caption}).encode(),
+                                 data=json.dumps({"prompt": prompt, "caption": caption, "face": True}).encode(),
                                  headers={"Content-Type": "application/json"})
     urllib.request.urlopen(req, timeout=300).read()
 

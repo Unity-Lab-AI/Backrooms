@@ -133,9 +133,9 @@ const IMG_DIR = path.join(TOOLS_DIR, '..', '.studio-images');
 let camState = { url: '', caption: '', ts: 0 };
 function localImages(env) { return ((env && env.STUDIO_IMAGE_BACKEND) || 'local') === 'local'; }
 function sdUrl(env) { return (env && env.STUDIO_SD_URL) || 'http://127.0.0.1:7860'; }
-function renderLocal(prompt, env) {
+function renderLocal(prompt, env, faceUrl) {
   return new Promise((resolve, reject) => {
-    const u = new URL(sdUrl(env) + '/sdapi/v1/txt2img');
+    const u = new URL((faceUrl || sdUrl(env)) + '/sdapi/v1/txt2img');
     const data = JSON.stringify({ prompt: prompt, steps: 26, width: 640, height: 768, cfg_scale: 7 });
     const r = http.request({ hostname: u.hostname, port: u.port, path: u.pathname, method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) } }, (resp) => {
@@ -343,7 +343,8 @@ const server = http.createServer(async (req, res) => {
         const prompt = String(body.prompt || '').trim();
         if (!prompt) return sendJson(res, 400, { error: 'empty prompt' });
         let png;
-        try { png = await renderLocal(prompt, env); }
+        const faceUrl = body.face ? ((env && env.STUDIO_FACE_URL) || 'http://127.0.0.1:7862') : null;
+        try { png = await renderLocal(prompt, env, faceUrl); }
         catch (e) { return sendJson(res, 502, { error: 'local image server: ' + e.message }); }
         fs.mkdirSync(IMG_DIR, { recursive: true });
         const name = 'cam-' + Date.now() + '.png';
