@@ -14,7 +14,7 @@ Links (checked 2026-10-08, all answer 200):
 | Mod site / wiki | https://g-fourteen.github.io/Rimrooms-AsyncIndustries/ |
 | Source repo | https://github.com/Unity-Lab-AI/Backrooms |
 | Bug reports | https://github.com/Unity-Lab-AI/Backrooms/issues |
-| Steam Workshop collection | **not published yet** -- say "coming soon", never a made-up link |
+| Steam Workshop collection | https://steamcommunity.com/sharedfiles/filedetails/?id=2793394619 (owner's first collection, *"mods"*, 288 items; owner 2026-10-08: *"and the rwmods is the mod collection"* · *"on steam"* · *"its mine"* · *"the first one i made"*) |
 
 ---
 
@@ -31,7 +31,7 @@ it). Images are 320x110 in the overlay's style, rendered by [`twitch-panels/rend
 | ![](twitch-panels/panel-modlist.png) `panel-modlist.png` | https://g-fourteen.github.io/Rimrooms-AsyncIndustries/mods-list.html |
 | ![](twitch-panels/panel-source.png) `panel-source.png` | https://github.com/Unity-Lab-AI/Backrooms |
 | ![](twitch-panels/panel-bugs.png) `panel-bugs.png` | https://github.com/Unity-Lab-AI/Backrooms/issues |
-| ![](twitch-panels/panel-workshop.png) `panel-workshop.png` | *(no link until the collection is published)* |
+| ![](twitch-panels/panel-workshop.png) `panel-workshop.png` | https://steamcommunity.com/sharedfiles/filedetails/?id=2793394619 |
 
 The text panels below stay as the long-form write-ups.
 
@@ -76,7 +76,7 @@ The pack runs on a curated list of community mods, every one checked for compati
 - **How the mods fit together:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/mods.html
 - **Building and the interface:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/building.html · https://g-fourteen.github.io/Rimrooms-AsyncIndustries/interface.html
 - **Multiplayer:** https://g-fourteen.github.io/Rimrooms-AsyncIndustries/multiplayer.html
-- **Steam Workshop collection:** coming soon.
+- **Steam Workshop collection:** https://steamcommunity.com/sharedfiles/filedetails/?id=2793394619
 
 Load order help: RimSort, https://github.com/RimSort/RimSort
 ```
