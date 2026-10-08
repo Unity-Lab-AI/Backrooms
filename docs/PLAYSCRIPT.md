@@ -121,7 +121,7 @@
 
 | Room | What is in it |
 |------|----------------|
-| Gate chamber | the gate door; steel walls; turrets covering it from outside |
+| Gate chamber | **the gate stands in the centre of the room**, not in a doorway -- owner 2026-10-08: *"the gaste needs to be center s int he room not the door between the control room and gate room"*; steel walls; turrets covering it |
 | Control room, windowed off | console and operator, seeing the chamber through windows (*Pass It Through The Window*) and embrasures |
 | Power room | battery bank (vanilla `Battery`), own loop, cutoff switch |
 | Assembly shop | up to four machining tables linked, steel and components shelved |
