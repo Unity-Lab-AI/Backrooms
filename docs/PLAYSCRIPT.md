@@ -137,6 +137,8 @@ Bring-up (PLAYBOOK §10): commission -> table to gate control -> **Assemble gate
 
 ## ACT 6 — Gate operations for cash
 
+- *"you already have 5 colonies builds of colonies open u have too close old ones if u want to open new ones"* -- every open Backrooms level counts as a colony against the max-colonies limit; **abandon finished levels** (world map -> select the site -> Abandon) before opening a new one, or the next gate reads *"blocked: your company is holding open too many gates"*.
+
 - *"machine gate operations of using the bacvkrooms for cash like stripping and taking things to sell and completing misisons"*
 - Surveys start to payout: PLAYBOOK §9.
 - Missions: *"we still want them to be never ending missions but they should require a differernt address through the gate"*
