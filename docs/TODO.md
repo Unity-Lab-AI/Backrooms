@@ -118,6 +118,7 @@ So the moment one exists, `IsOddSupply` is true, `coordinateId` is not empty, `v
 - [ ] **The ramp message shows a raw coordinate id to the player.** Opening AI-01 on the Store gate, 2026-10-08, the message read *"Bringing up a connection to rr-branch-37a5c74affad44f8abfd954f64a64def:Coordinate:000001. The operator must stay on the console until it is open."* -- it should name **AI-01**. Find the key and pass the coordinate label (same family as the event-argument fixes).
 - [ ] **"The linked physical battery does not contain enough charge for the configured opening and emergency-return reserve"** arrived right after *"Connection open."* on the Store gate, while the gate pane read *600.00/600.00 watt-days stored on the gate's circuit*. Check whether the reserve test reads the linked battery alone (one vanilla battery at `(158,144)`) while the circuit holds the charge -- the owner's rule is *"the battery braw needs to be consistant not tied to a single battery"*.
 
+
 ## TOMBSTONES
 
 _(none)_

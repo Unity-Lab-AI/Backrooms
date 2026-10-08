@@ -100,6 +100,13 @@ namespace RimroomsAsyncIndustries.UI
                     if (ScenPart_RimroomsStart.Current != null && Find.CurrentMap != null &&
                         listing.ButtonText("RR_UI_RetryCompanyRegistration".Translate()))
                     { ShowResult(ScenPart_RimroomsStart.Current.TryInitializeExistingHeadquarters(Find.CurrentMap)); }
+                    // A colony begun on any other scenario founds its branch here instead.
+                    if (BranchFounding.Available(Find.CurrentMap))
+                    {
+                        listing.Label("RR_Founding_Desc".Translate());
+                        if (listing.ButtonText("RR_Founding_Button".Translate()))
+                        { ShowResult(BranchFounding.Found(Find.CurrentMap)); }
+                    }
                 }
                 else
                 {

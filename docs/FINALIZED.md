@@ -18921,3 +18921,15 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+### 2026-10-08 -- stream overlay picture survives a studio restart
+
+**Verbatim owner direction (2026-10-08):** *"the mod is active you can start it at any time, and fix your stream rimchat image"*
+
+- [x] **"and fix your stream rimchat image"** -- the stream overlay's picture went blank (*"Unity is setting up the stream..."*) after every studio restart because the panel state lived only in memory. FIXED 2026-10-08: `persona-studio.cjs` keeps it in `.studio-images/cam-state.json` (falls back to the newest `cam-*.png`), and OBS's overlay source was re-read showing the picture with the caption *back on camera*.
+
+### 2026-10-08 -- a company branch can be founded on any colony
+
+**Verbatim owner direction (2026-10-08):** *"the mod is active you can start it at any time, and fix your stream rimchat image"*
+
+- [x] **"the mod is active you can start it at any time"** -- a save started on a non-Rimrooms scenario (vanilla Crashlanded, Marble Hollow) has no way to found a company branch. Operations reads *"No company branch is established in this save."* and offers nothing: `MainTabWindow_Operations` shows *RR_UI_RetryCompanyRegistration* only when `ScenPart_RimroomsStart.Current` exists, `TryInitializeExistingHeadquarters` needs a `HeadquartersSetupComponent` receipt from a Rimrooms start, and `EstablishCorporationContact` refuses without a branch. Build a mid-game founding path on the current map (no physical grants, the map's existing base as headquarters) so gates, contracts and expeditions work in any save; check the register first; build with the game closed. -- **BUILT, STAGED AND PROVEN IN PLAY 2026-10-08.** New `Scenario/BranchFounding.cs`: on a home map with no branch and no Rimrooms start, Operations shows *"Found a company branch here"*; it registers the colony through `InitializeBranch` with scenario id `founded_branch`, the `RR_AsyncIndustriesStart` company terms (corporation contact, the finished gate projects, $50M funding, wages, the onboarding survey), the player faction name as company name, every free non-slave colonist on the map as staff (max 20) with the role whose skills they meet best, and nothing physical (no facility, grants or relation reset). Register checked: `trace RR-SCEN` -> Core *Required*, Character Editor and Hospitality: Storefront *Optional*; none applied. Built 0 warnings / 0 errors, staged and hash-checked (200 files). **In play** on Marble Hollow (Crashlanded): the button was pressed, the log read *"[Rimrooms][Company] Initialized rr-branch-228e4dd5a9124d47882d007c7061513f scenario=founded_branch"*, the letter *"Company branch founded"* arrived, and Operations reads *Company: Gloom Collective*, *Company Account: 50,000,000 USD*, *Objective: Assemble the gate*, *Company staff: 3*, with the request *Power the gate*; no Rimrooms error in the log. Save: `rimbridge_save_20261008_city2_branch_founded`.

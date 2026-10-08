@@ -131,6 +131,14 @@ function hasKey(env) { return localImages(env) || !!(env && env.POLLINATIONS_API
 // :7860). Set STUDIO_IMAGE_BACKEND=pollinations in .claude/.env to go back.
 const IMG_DIR = path.join(TOOLS_DIR, '..', '.studio-images');
 let camState = { url: '', caption: '', ts: 0 };
+// The stream's picture survives a studio restart: kept in cam-state.json beside the images.
+const CAM_STATE = path.join(IMG_DIR, 'cam-state.json');
+try { camState = JSON.parse(fs.readFileSync(CAM_STATE, 'utf8')); } catch (e) {
+  try {
+    const last = fs.readdirSync(IMG_DIR).filter((f) => /^cam-\d+\.png$/.test(f)).sort().pop();
+    if (last) camState = { url: '/img/' + last, caption: '', ts: Date.now() };
+  } catch (e2) { /* no images yet */ }
+}
 // Unity's voice: each spoken line as a WAV the overlay page plays -- in OBS's browser source that
 // audio goes to the stream (desktop audio stays muted).
 let voiceState = { url: '', ts: 0 };
@@ -362,6 +370,7 @@ const server = http.createServer(async (req, res) => {
         const name = 'cam-' + Date.now() + '.png';
         fs.writeFileSync(path.join(IMG_DIR, name), png);
         camState = { url: '/img/' + name, caption: String(body.caption || '').trim(), ts: Date.now() };
+        try { fs.writeFileSync(CAM_STATE, JSON.stringify(camState)); } catch (e) { /* best effort */ }
         return sendJson(res, 200, { ok: true, url: camState.url });
       }
 

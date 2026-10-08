@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-08 - Any colony can found a company branch
+
+- **A colony started on any scenario can now join the company.** Operations shows *Found a company branch here* when the home map has no branch and the game was not begun on a Rimrooms start. The colony is registered as it stands: its free colonists become staff (each in the role their skills fit), the company name is the colony's faction name, and the branch opens on the Async Industries terms - in contact with the corporation, gate projects finished, $50M account, the onboarding survey accepted. Nothing physical is added and no faction relations are reset.
+
 ## 0.13.0-dev - 2026-10-08 - An emergency abort, a Store that can call and build its gate
 
 - **OWNER:** *"we also need an emergy abort option on the gate connection so hold is not the olny
