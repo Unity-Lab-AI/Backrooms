@@ -18846,3 +18846,29 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TEST.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TEST.md`
+
+### Owner question — the wiki still says untested (2026-10-08)
+
+- [x] **"and the wiki saying nothing has been tested isnt correct all these mods load and the game runs fine doesnt it?"** -- yes. `mods-list.md` already reads *"Played alongside Rimrooms (2026-10-07), loaded and active"* on every row (fixed 2026-10-07 from the game's own ModsConfig and log), but `docs/wiki/mods.md` still had a section *"What is not claimed: No compatibility report exists ... that testing has not been published"*. **Rewritten 2026-10-08** as *"What has been played"*: the whole list loaded and active through the October 2026 sessions, three scenarios started, gates built, surveys run, and the per-mod log result on the mod list. `multiplayer.md` keeps its untested list, because multiplayer has not been played. `check-public-register` and `check-public-export` pass.
+
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

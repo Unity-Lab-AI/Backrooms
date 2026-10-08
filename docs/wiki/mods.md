@@ -69,13 +69,17 @@ watch for, and a tag — Required, Recommended, Optional, Visual only or Not nee
 **Required there means required for the experience as it was built.** Nothing on that page is
 required to launch.
 
-## What is not claimed
+## What has been played
 
-**No compatibility report exists**, and none is implied by the load-order list. Nothing is
-announced as working with anything until it has been tested, and that testing has not been
-published.
+**The whole list has been played with Rimrooms.** Every mod on the [mod list](mods-list.md) was
+loaded and active through the October 2026 play sessions -- three scenarios started, gates built,
+surveys run through the Backrooms and back -- and each row there says what the game's own log
+recorded against it. One mod has a logged error on that page; the rest have none.
 
-If you hit a conflict, it is worth reporting — see [Links](links.md).
+What that is not is a promise about other versions of those mods, or about a list arranged
+differently. If you hit a conflict, report it.
+
+See [Links](links.md) for where to report one.
 
 ---
 
