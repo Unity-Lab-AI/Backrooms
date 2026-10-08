@@ -126,6 +126,8 @@
 
 **Verbatim owner direction (2026-10-07):** *"no more settting 10m timer shit im tired of wait 10minutews on shit quit stallling all together no more of it"* -- **no long blocking waits.** Run only the checkers a change touches, keep command timeouts short, and keep playing while anything slow runs in the background.
 
+**Verbatim owner direction (2026-10-07):** *"and u need florring. what ever u want each rrom to be ie hospital sterile tile. beds wood flooring cut down trees mine steel and shit"* -- **every room floored for its purpose**: hospital sterile tile, bedrooms wood floor, others to suit. **Gather the materials**: chop trees for wood, mine steel and the rest.
+
 ## 4. Work and pawns
 
 - *"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?"* — **look at the world map: neighbours, settlements, trade, raids to answer, places to take.**

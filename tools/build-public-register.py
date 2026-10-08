@@ -44,6 +44,7 @@ Usage
 import importlib.util
 import io
 import json
+import re
 import os
 import sys
 
@@ -168,8 +169,44 @@ def without_it(row, tag):
     return "Nothing breaks. The feature it feeds still works without it."
 
 
-def watch_for(row):
+PLAYED = os.path.join(TOOLS, "register-played.json")
+
+
+def load_played():
+    """What `record-played-mods.py` read off the game: active mods and errors naming them."""
+    if not os.path.isfile(PLAYED):
+        return {}
+    return json.load(io.open(PLAYED, encoding="utf-8"))
+
+
+def played_entry(row, played):
+    """This row's evidence from the played game, matched on the normalised mod name, or None."""
+    mods = played.get("mods") or {}
+    key = re.sub(r"[^a-z0-9]+", "", (row.get("mod") or "").lower())
+    if key in mods:
+        return mods[key]
+    # A register name may carry a suffix the mod's About.xml does not, or the other way round.
+    for name, entry in mods.items():
+        if len(key) >= 8 and len(name) >= 8 and (name.startswith(key) or key.startswith(name)):
+            return entry
+    return None
+
+
+def watch_for(row, played=None):
+    """**A label moves only on evidence.** Owner, 2026-10-07: *"all the shit says never tested and
+    we dont want that"*. A row the played game had active is reported as played alongside, with
+    the game log's own count of errors naming it -- never as confirmed safe on the strength of a
+    read alone, and never upgraded without the recorder having seen it active."""
     firmness = (row.get("firmness") or "").strip()
+    entry = played_entry(row, played or {})
+    if entry is not None:
+        when = (played or {}).get("recorded", "")
+        read = "Read and settled, and played" if firmness == "Settled" else "Played"
+        if entry.get("logErrors"):
+            return ("%s alongside Rimrooms (%s): the game log shows %d error(s) naming it."
+                    % (read, when, entry["logErrors"]))
+        return ("%s alongside Rimrooms (%s), loaded and active, with no error naming it in the "
+                "game log." % (read, when))
     if firmness == "Settled":
         return "Read and settled. No interference expected."
     if firmness == "Provisional":
@@ -188,6 +225,7 @@ def build():
     rows = module.rows()
     overrides = load_overrides()
     per_row = overrides.get("rows", {})
+    played = load_played()
 
     patched = patched_mod_names()
     entries = []
@@ -207,7 +245,7 @@ def build():
             "tag": tag,
             "uses": custom.get("uses") or uses_here(row),
             "without": custom.get("without") or without_it(row, tag),
-            "watch": custom.get("watch") or watch_for(row),
+            "watch": custom.get("watch") or watch_for(row, played),
         })
 
     for extra in overrides.get("extra", []):

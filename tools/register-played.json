@@ -1,0 +1,1487 @@
+{
+ "activeCount": 301,
+ "mods": {
+  "adaptiveideologystorage": {
+   "logErrors": 0,
+   "name": "Adaptive Ideology Storage",
+   "packageId": "adaptive.ideology.storage"
+  },
+  "adaptiveprimitivestorage": {
+   "logErrors": 0,
+   "name": "Adaptive Primitive Storage",
+   "packageId": "adaptive.primitivestorage"
+  },
+  "adaptivesimplestorage": {
+   "logErrors": 0,
+   "name": "Adaptive Simple Storage",
+   "packageId": "adaptive.simplestorage"
+  },
+  "adaptivestorageframework": {
+   "logErrors": 0,
+   "name": "Adaptive Storage Framework",
+   "packageId": "adaptive.storage.framework"
+  },
+  "adogsaidanimalprosthetics2": {
+   "logErrors": 0,
+   "name": "A Dog Said... Animal Prosthetics 2",
+   "packageId": "sambucher.adogsaidanimalprosthetics2"
+  },
+  "agereversingmechserum": {
+   "logErrors": 0,
+   "name": "Age Reversing Mech Serum",
+   "packageId": "legendaryminuteman.agermechserum"
+  },
+  "airtightgaragedoors": {
+   "logErrors": 0,
+   "name": "AirtightGarageDoors",
+   "packageId": "endy.airtightgarage"
+  },
+  "allmemoriesfade": {
+   "logErrors": 0,
+   "name": "All Memories Fade",
+   "packageId": "mlie.allmemoriesfade"
+  },
+  "allowtool": {
+   "logErrors": 0,
+   "name": "Allow Tool",
+   "packageId": "unlimitedhugs.allowtool"
+  },
+  "allturretscansetforcedtargetcontinued": {
+   "logErrors": 0,
+   "name": "All Turrets Can Set Forced Target (Continued)",
+   "packageId": "mlie.allturretscansetforcedtarget"
+  },
+  "alphavehiclesageofsail": {
+   "logErrors": 0,
+   "name": "Alpha Vehicles - Age of Sail",
+   "packageId": "sarg.alphavehiclesageofsail"
+  },
+  "animalapparelbasicarmor": {
+   "logErrors": 0,
+   "name": "Animal Apparel: Basic Armor",
+   "packageId": "ingendum.animalarmorbasic"
+  },
+  "animalapparelframework": {
+   "logErrors": 0,
+   "name": "Animal Apparel: Framework",
+   "packageId": "ingendum.animalapparelframework"
+  },
+  "animalapparelvacbelt": {
+   "logErrors": 0,
+   "name": "Animal Apparel: Vac Belt",
+   "packageId": "ingendum.animalarmorvacbelt"
+  },
+  "animalcontrols": {
+   "logErrors": 0,
+   "name": "Animal Controls",
+   "packageId": "avilmask.animalcontrols"
+  },
+  "animalmedicalbed": {
+   "logErrors": 0,
+   "name": "Animal Medical Bed",
+   "packageId": "godlyannihilator.animalmedicalbed"
+  },
+  "animalsarcophagus": {
+   "logErrors": 0,
+   "name": "Animal Sarcophagus",
+   "packageId": "overpl.animalsarcophagus"
+  },
+  "animalsarefuncontinued": {
+   "logErrors": 0,
+   "name": "Animals are fun! (Continued)",
+   "packageId": "colossalfossil.animalsarefuncontinued"
+  },
+  "animalslogic": {
+   "logErrors": 0,
+   "name": "Animals Logic",
+   "packageId": "oblitus.animalslogic"
+  },
+  "animaltabcontinued16": {
+   "logErrors": 0,
+   "name": "Animal Tab (Continued 1.6)",
+   "packageId": "fluffy.animaltab"
+  },
+  "anomaly": {
+   "logErrors": 0,
+   "name": "Anomaly",
+   "packageId": "ludeon.rimworld.anomaly"
+  },
+  "anomalyresearchasteroid": {
+   "logErrors": 0,
+   "name": "Anomaly Research Asteroid",
+   "packageId": "zoarak.anomalyplat"
+  },
+  "architecticons": {
+   "logErrors": 0,
+   "name": "Architect Icons",
+   "packageId": "com.bymarcin.architecticons"
+  },
+  "areaunlockercontinued": {
+   "logErrors": 0,
+   "name": "Area Unlocker (Continued)",
+   "packageId": "mlie.areaunlocker"
+  },
+  "aryautomaticstumpchopping1516": {
+   "logErrors": 0,
+   "name": "[ARY] Automatic Stump Chopping [1.5 - 1.6]",
+   "packageId": "arylice.rimworld.automaticstumpchopping"
+  },
+  "asteroidmineralscanner": {
+   "logErrors": 0,
+   "name": "Asteroid Mineral Scanner",
+   "packageId": "broms.asteroidmineralscanner"
+  },
+  "autocutblight16": {
+   "logErrors": 0,
+   "name": "Auto-Cut Blight - 1.6",
+   "packageId": "defi.autocutblight"
+  },
+  "autolinks": {
+   "logErrors": 0,
+   "name": "Auto links",
+   "packageId": "automatic.autolinks"
+  },
+  "badcanbegoodcontinued": {
+   "logErrors": 0,
+   "name": "Bad Can Be Good (Continued)",
+   "packageId": "mlie.badcanbegood"
+  },
+  "barkyscaravandogs": {
+   "logErrors": 0,
+   "name": "Barky's Caravan Dogs",
+   "packageId": "binaryspark.caravandogs"
+  },
+  "beautifulbodies": {
+   "logErrors": 0,
+   "name": "Beautiful Bodies",
+   "packageId": "mireia.bodies"
+  },
+  "beautifuloutdoors": {
+   "logErrors": 0,
+   "name": "Beautiful Outdoors",
+   "packageId": "meltup.beautifuloutdoors"
+  },
+  "bedrestforfoodpoisoning": {
+   "logErrors": 0,
+   "name": "Bed Rest For Food Poisoning",
+   "packageId": "bedrestforfoodpoisoning.1trickponyta"
+  },
+  "betterelectronics": {
+   "logErrors": 0,
+   "name": "Better Electronics",
+   "packageId": "adambucior.betterelectronics"
+  },
+  "betterexplosions": {
+   "logErrors": 0,
+   "name": "Better Explosions",
+   "packageId": "nephlite.advexplosions"
+  },
+  "bettergeneinheritance": {
+   "logErrors": 0,
+   "name": "Better Gene Inheritance",
+   "packageId": "redmattis.bettergeneinheritance"
+  },
+  "betterweight": {
+   "logErrors": 0,
+   "name": "BetterWeight",
+   "packageId": "archiev.betterweight"
+  },
+  "biglittlemodpatch": {
+   "logErrors": 0,
+   "name": "Big Little Mod Patch",
+   "packageId": "daria40k.biglittlemodpatch"
+  },
+  "biotech": {
+   "logErrors": 0,
+   "name": "Biotech",
+   "packageId": "ludeon.rimworld.biotech"
+  },
+  "bloodanimations": {
+   "logErrors": 0,
+   "name": "Blood Animations",
+   "packageId": "fuu.bloodanimations"
+  },
+  "blueprintsforked16": {
+   "logErrors": 0,
+   "name": "Blueprints Forked - 1.6",
+   "packageId": "defi.blueprints.fork"
+  },
+  "bosmilkableanimals": {
+   "logErrors": 0,
+   "name": "Bo's Milkable Animals",
+   "packageId": "bos.milkableanimals"
+  },
+  "buildableterrainv1": {
+   "logErrors": 0,
+   "name": "Buildable Terrain v1",
+   "packageId": "buildable.terrain"
+  },
+  "buildfrominventorycontinued": {
+   "logErrors": 0,
+   "name": "Build From Inventory - Continued",
+   "packageId": "memegoddess.buildfrominventory"
+  },
+  "callatrader": {
+   "logErrors": 0,
+   "name": "Call A Trader",
+   "packageId": "arakos.callatrader.acat"
+  },
+  "capturethemcontinued": {
+   "logErrors": 0,
+   "name": "Capture Them (Continued)",
+   "packageId": "mlie.capturethem"
+  },
+  "carryallsintercontinentaltransportcontinued": {
+   "logErrors": 0,
+   "name": "Carryalls | Intercontinental Transport (Continued)",
+   "packageId": "mlie.carryallsintercontinentaltransport"
+  },
+  "cashregistercontinued": {
+   "logErrors": 0,
+   "name": "Cash Register (Continued)",
+   "packageId": "orion.cashregister"
+  },
+  "changemapedgelimit": {
+   "logErrors": 0,
+   "name": "Change map edge limit",
+   "packageId": "kapitanoczywisty.changemapedge"
+  },
+  "charactereditor": {
+   "logErrors": 0,
+   "name": "Character Editor",
+   "packageId": "void.charactereditor"
+  },
+  "cmcolorcodedmoodbar11": {
+   "logErrors": 0,
+   "name": "CM Color Coded Mood Bar [1.1+]",
+   "packageId": "crashm.colorcodedmoodbar.11"
+  },
+  "commonsense": {
+   "logErrors": 0,
+   "name": "Common Sense",
+   "packageId": "avilmask.commonsense"
+  },
+  "compactworktabcontinued": {
+   "logErrors": 0,
+   "name": "Compact Work Tab (Continued)",
+   "packageId": "mlie.compactworktab"
+  },
+  "core": {
+   "logErrors": 0,
+   "name": "Core",
+   "packageId": "ludeon.rimworld"
+  },
+  "corpseinfo": {
+   "logErrors": 0,
+   "name": "Corpse info",
+   "packageId": "arl85.corpseinfo"
+  },
+  "craftablemountains": {
+   "logErrors": 0,
+   "name": "Craftable Mountains",
+   "packageId": "gwinnbleidd.craftablemountains"
+  },
+  "customprisonerinteractions": {
+   "logErrors": 0,
+   "name": "Custom Prisoner Interactions",
+   "packageId": "mlie.customprisonerinteractions"
+  },
+  "damageindicators16": {
+   "logErrors": 0,
+   "name": "Damage Indicators [1.6]",
+   "packageId": "caesarv6.damageindicators"
+  },
+  "deathrattlecontinued12": {
+   "logErrors": 0,
+   "name": "Death Rattle Continued [1.2+]",
+   "packageId": "troopersmith1.deathrattle"
+  },
+  "dependencyoverdosefix": {
+   "logErrors": 0,
+   "name": "Dependency Overdose Fix",
+   "packageId": "thecaffiend.overdosedependencyfix"
+  },
+  "destroyitem": {
+   "logErrors": 0,
+   "name": "Destroy Item",
+   "packageId": "garwel.destroyitem"
+  },
+  "dingongameloaded": {
+   "logErrors": 0,
+   "name": "Ding On Game Loaded",
+   "packageId": "mlie.dingongameloaded"
+  },
+  "dismantleancientjunk": {
+   "logErrors": 0,
+   "name": "Dismantle Ancient Junk",
+   "packageId": "proxyer.dismantleancientjunk"
+  },
+  "doorsexpanded": {
+   "logErrors": 0,
+   "name": "Doors Expanded",
+   "packageId": "jecrell.doorsexpanded"
+  },
+  "dorecreationwhenidle": {
+   "logErrors": 0,
+   "name": "Do Recreation When Idle",
+   "packageId": "xercaine.dorecreationwhenidle"
+  },
+  "doyourfresearch": {
+   "logErrors": 0,
+   "name": "Do Your F****** Research",
+   "packageId": "md.prioritizeresearch"
+  },
+  "draftableanimalsreleashed": {
+   "logErrors": 0,
+   "name": "Draftable Animals - Releashed",
+   "packageId": "wolfcub05.draftableanimals"
+  },
+  "dragselect": {
+   "logErrors": 0,
+   "name": "DragSelect",
+   "packageId": "telardo.dragselect"
+  },
+  "dualwieldcontinued": {
+   "logErrors": 0,
+   "name": "Dual Wield - Continued",
+   "packageId": "memegoddess.dualwield"
+  },
+  "dubsmintmenus": {
+   "logErrors": 0,
+   "name": "Dubs Mint Menus",
+   "packageId": "dubwise.dubsmintmenus"
+  },
+  "dubsmintminimap": {
+   "logErrors": 0,
+   "name": "Dubs Mint Minimap",
+   "packageId": "dubwise.dubsmintminimap"
+  },
+  "dubsrimatomics": {
+   "logErrors": 0,
+   "name": "Dubs Rimatomics",
+   "packageId": "dubwise.rimatomics"
+  },
+  "dubsrimkit": {
+   "logErrors": 0,
+   "name": "Dubs Rimkit",
+   "packageId": "dubwise.dubsrimkit"
+  },
+  "edbpreparecarefully": {
+   "logErrors": 0,
+   "name": "EdB Prepare Carefully",
+   "packageId": "edb.preparecarefully"
+  },
+  "efficientbatteries": {
+   "logErrors": 0,
+   "name": "Efficient batteries",
+   "packageId": "efficient.batteries"
+  },
+  "eggincubator": {
+   "logErrors": 0,
+   "name": "Egg Incubator",
+   "packageId": "mlie.eggincubator"
+  },
+  "electricstonecuttingtable": {
+   "logErrors": 0,
+   "name": "Electric Stonecutting Table",
+   "packageId": "cocaine.electricstonecuttingtable"
+  },
+  "explosiveimplantcontinued": {
+   "logErrors": 0,
+   "name": "Explosive Implant (Continued)",
+   "packageId": "mlie.explosiveimplant"
+  },
+  "fistsarentmadeofsteel": {
+   "logErrors": 0,
+   "name": "Fists Aren't Made of Steel",
+   "packageId": "aelanna.fistnerf"
+  },
+  "flickablestorage": {
+   "logErrors": 0,
+   "name": "Flickable Storage",
+   "packageId": "mlie.flickablestorage"
+  },
+  "floorsareabsolutelyworthless": {
+   "logErrors": 0,
+   "name": "Floors Are (Absolutely) Worthless",
+   "packageId": "hawkwood.floorsarealmostworthless"
+  },
+  "foodpoisoningstackfixcontinued": {
+   "logErrors": 0,
+   "name": "Food Poisoning Stack Fix (Continued)",
+   "packageId": "mlie.foodpoisoningstackfix"
+  },
+  "forcexenogermimplantation": {
+   "logErrors": 0,
+   "name": "Force Xenogerm Implantation",
+   "packageId": "zed.0xff.forcexenogermimplantation"
+  },
+  "frameratecontrol": {
+   "logErrors": 0,
+   "name": "FrameRateControl",
+   "packageId": "notfood.frameratecontrol"
+  },
+  "fsffrozensnowfoxtweaks": {
+   "logErrors": 0,
+   "name": "[FSF] FrozenSnowFox Tweaks",
+   "packageId": "frozensnowfox.frozensnowfoxtweaks"
+  },
+  "fueledcrematoriums": {
+   "logErrors": 0,
+   "name": "Fueled Crematoriums",
+   "packageId": "xercaine.fueledcrematorium"
+  },
+  "gastronomycontinued": {
+   "logErrors": 0,
+   "name": "Gastronomy (Continued)",
+   "packageId": "orion.gastronomy"
+  },
+  "gemstones": {
+   "logErrors": 0,
+   "name": "Gemstones",
+   "packageId": "zylle.gemstones"
+  },
+  "giddyup2continued": {
+   "logErrors": 0,
+   "name": "Giddy-Up 2 - Continued",
+   "packageId": "memegoddess.giddyup"
+  },
+  "glitterworldmedicinecraftable": {
+   "logErrors": 0,
+   "name": "Glitterworld medicine craftable",
+   "packageId": "amunra.gmc"
+  },
+  "goexplore": {
+   "logErrors": 0,
+   "name": "Go Explore!",
+   "packageId": "albion.goexplore"
+  },
+  "goldsilveringots": {
+   "logErrors": 0,
+   "name": "Gold & Silver Ingots",
+   "packageId": "kongkim.gsingots"
+  },
+  "grayinghair": {
+   "logErrors": 0,
+   "name": "Graying Hair",
+   "packageId": "arkymn.agingvisuals"
+  },
+  "greyermoralscontinued": {
+   "logErrors": 0,
+   "name": "Greyer morals (Continued)",
+   "packageId": "mlie.greyermorals"
+  },
+  "hardenedarmor": {
+   "logErrors": 0,
+   "name": "Hardened Armor",
+   "packageId": "sirprook.hardenedarmor"
+  },
+  "harmony": {
+   "logErrors": 0,
+   "name": "Harmony",
+   "packageId": "brrainz.harmony"
+  },
+  "harvestorganspostmortemcontinued": {
+   "logErrors": 0,
+   "name": "Harvest Organs Post Mortem Continued",
+   "packageId": "smuffle.harvestorganspostmortem"
+  },
+  "harvestwhenbutchering": {
+   "logErrors": 0,
+   "name": "Harvest When Butchering",
+   "packageId": "mlie.harvestwhenbutchering"
+  },
+  "haultostack": {
+   "logErrors": 0,
+   "name": "Haul to Stack",
+   "packageId": "jkluch.haultostack"
+  },
+  "healermechserumchoice": {
+   "logErrors": 0,
+   "name": "Healer Mech Serum Choice",
+   "packageId": "syrus.hmschoice"
+  },
+  "hospital": {
+   "logErrors": 0,
+   "name": "Hospital",
+   "packageId": "adamas.hospital"
+  },
+  "hospitalitycontinued": {
+   "logErrors": 0,
+   "name": "Hospitality (Continued)",
+   "packageId": "orion.hospitality"
+  },
+  "hospitalityinvitetostay": {
+   "logErrors": 0,
+   "name": "Hospitality - Invite to Stay",
+   "packageId": "gatoviejo.hospitality.invitetostay"
+  },
+  "hospitalitystorefront": {
+   "logErrors": 0,
+   "name": "Hospitality: Storefront",
+   "packageId": "adamas.storefront"
+  },
+  "hugslib": {
+   "logErrors": 0,
+   "name": "HugsLib",
+   "packageId": "unlimitedhugs.hugslib"
+  },
+  "humanpowergeneratormod": {
+   "logErrors": 0,
+   "name": "Human Power Generator Mod",
+   "packageId": "flashpoint55.humanpowergeneratormod"
+  },
+  "iclearlyhaveenoughcontinued": {
+   "logErrors": 0,
+   "name": "I Clearly Have Enough! (Continued)",
+   "packageId": "mlie.iclearlyhaveenough"
+  },
+  "ideology": {
+   "logErrors": 0,
+   "name": "Ideology",
+   "packageId": "ludeon.rimworld.ideology"
+  },
+  "imprisonmentonthegocontinued": {
+   "logErrors": 0,
+   "name": "Imprisonment On The Go! (Continued)",
+   "packageId": "agentblac.makepawnsprisoners"
+  },
+  "injectgenes": {
+   "logErrors": 0,
+   "name": "Inject Genes",
+   "packageId": "zaf.injectgene"
+  },
+  "injuredcarry": {
+   "logErrors": 0,
+   "name": "Injured Carry",
+   "packageId": "haecriver.injuredcarry"
+  },
+  "integratedgenes": {
+   "logErrors": 0,
+   "name": "Integrated Genes",
+   "packageId": "turnovus.biotech.integratedgenes"
+  },
+  "interrimballisticmissile": {
+   "logErrors": 0,
+   "name": "InterRim Ballistic Missile",
+   "packageId": "kazepsi.irbm"
+  },
+  "jewelry": {
+   "logErrors": 0,
+   "name": "Jewelry",
+   "packageId": "kikohi.jewelry"
+  },
+  "justputitoverthere": {
+   "logErrors": 0,
+   "name": "Just Put It Over There",
+   "packageId": "mlie.justputitoverthere"
+  },
+  "keepconverting": {
+   "logErrors": 0,
+   "name": "Keep Converting",
+   "packageId": "linnun.keepconverting"
+  },
+  "kitgrazeup": {
+   "logErrors": 0,
+   "name": "[Kit] Graze up",
+   "packageId": "kittahkhan.grazeup"
+  },
+  "kvcalltradeshipscontinued": {
+   "logErrors": 0,
+   "name": "[KV] Call Trade Ships (Continued)",
+   "packageId": "zal.calltradeships"
+  },
+  "ladiescanflirttoocontinued": {
+   "logErrors": 0,
+   "name": "Ladies Can Flirt Too! (Continued)",
+   "packageId": "mlie.ladiescanflirttoo"
+  },
+  "lessstupidromanceattemptcontinued": {
+   "logErrors": 0,
+   "name": "Less Stupid Romance Attempt (Continued)",
+   "packageId": "mlie.lessstupidromanceattempt"
+  },
+  "lifesupportcontinued11": {
+   "logErrors": 0,
+   "name": "Life Support Continued [1.1+]",
+   "packageId": "troopersmith1.lifesupport"
+  },
+  "lingmovesteamgeyser": {
+   "logErrors": 0,
+   "name": "[Ling]Move Steam Geyser",
+   "packageId": "lingluo.movesteamgeyser"
+  },
+  "livewiththepain": {
+   "logErrors": 0,
+   "name": "Live With The Pain",
+   "packageId": "mlie.livewiththepain"
+  },
+  "loadingprogress": {
+   "logErrors": 0,
+   "name": "Loading Progress",
+   "packageId": "ilyvion.loadingprogress"
+  },
+  "locks": {
+   "logErrors": 0,
+   "name": "Locks",
+   "packageId": "avius.locks"
+  },
+  "luciferiumcraftable": {
+   "logErrors": 0,
+   "name": "Luciferium craftable",
+   "packageId": "amunra.lc"
+  },
+  "lwmsadaptivedeepstorage": {
+   "logErrors": 0,
+   "name": "LWM's Adaptive Deep Storage",
+   "packageId": "asf.deepstorage"
+  },
+  "madskills": {
+   "logErrors": 0,
+   "name": "Mad Skills",
+   "packageId": "ratys.madskills"
+  },
+  "mappreview": {
+   "logErrors": 0,
+   "name": "Map Preview",
+   "packageId": "m00nl1ght.mappreview"
+  },
+  "mealsonwheelscontinued": {
+   "logErrors": 0,
+   "name": "Meals On Wheels - Continued",
+   "packageId": "memegoddess.mealsonwheels"
+  },
+  "medicaldissection": {
+   "logErrors": 0,
+   "name": "Medical Dissection",
+   "packageId": "heremeus.medicaldissection"
+  },
+  "medicalivsfork": {
+   "logErrors": 0,
+   "name": "Medical IVs Fork",
+   "packageId": "cantaloupetheclown.medicalivsfork"
+  },
+  "minesight": {
+   "logErrors": 0,
+   "name": "Mine Sight",
+   "packageId": "rabiosus.minesight"
+  },
+  "minifyeverything": {
+   "logErrors": 0,
+   "name": "MinifyEverything",
+   "packageId": "erdelf.minifyeverything"
+  },
+  "misctraining": {
+   "logErrors": 0,
+   "name": "Misc. Training",
+   "packageId": "haplo.miscellaneous.training"
+  },
+  "morebeautifulbodies": {
+   "logErrors": 0,
+   "name": "More Beautiful Bodies",
+   "packageId": "burpee.morebeautifulbodies"
+  },
+  "morecrashedshipparts": {
+   "logErrors": 0,
+   "name": "More Crashed Ship Parts",
+   "packageId": "atamandolinskaja.morecrashedshipparts"
+  },
+  "morefactioninteractioncontinued": {
+   "logErrors": 0,
+   "name": "More Faction Interaction (Continued)",
+   "packageId": "mlie.morefactioninteraction"
+  },
+  "morefiltersforanimalspen": {
+   "logErrors": 0,
+   "name": "More filters for animals' pen",
+   "packageId": "arl85.animalsagefilter"
+  },
+  "morelinkables": {
+   "logErrors": 0,
+   "name": "More Linkables",
+   "packageId": "4loris4.morelinkables"
+  },
+  "moremilkableandshearableanimals": {
+   "logErrors": 0,
+   "name": "More Milkable and Shearable Animals",
+   "packageId": "koberiddle.milkandwoolpatches"
+  },
+  "morevanillabiomes": {
+   "logErrors": 0,
+   "name": "More Vanilla Biomes",
+   "packageId": "zylle.morevanillabiomes"
+  },
+  "mortaraccuracy": {
+   "logErrors": 0,
+   "name": "Mortar Accuracy",
+   "packageId": "hobtook.mortaraccuracy"
+  },
+  "moveyourmonolith": {
+   "logErrors": 0,
+   "name": "Move Your Monolith",
+   "packageId": "ferny.moveyourmonolith"
+  },
+  "muzzleflash": {
+   "logErrors": 0,
+   "name": "Muzzle Flash",
+   "packageId": "issaczhuang.muzzleflash"
+  },
+  "namesgalorecontinued": {
+   "logErrors": 0,
+   "name": "NamesGalore (Continued)",
+   "packageId": "zal.namesgalore"
+  },
+  "nameyourentities": {
+   "logErrors": 0,
+   "name": "Name Your Entities",
+   "packageId": "ferny.nameyourentities"
+  },
+  "needbaroverflow": {
+   "logErrors": 0,
+   "name": "Need Bar Overflow",
+   "packageId": "amch.needbaroverflow"
+  },
+  "neutroaminecraftable": {
+   "logErrors": 0,
+   "name": "Neutroamine craftable",
+   "packageId": "amunra.nc"
+  },
+  "noburnmetal": {
+   "logErrors": 0,
+   "name": "No Burn Metal",
+   "packageId": "unon.noburnmetal"
+  },
+  "nodeathcootiesonarmour": {
+   "logErrors": 0,
+   "name": "No Death Cooties On Armour",
+   "packageId": "cucumpear.cooties"
+  },
+  "nohemogenfarmmedicalalert": {
+   "logErrors": 0,
+   "name": "No Hemogen Farm Medical Alert",
+   "packageId": "dark.nohemogenfarmmedicalalert"
+  },
+  "noinfestation": {
+   "logErrors": 0,
+   "name": "No Infestation",
+   "packageId": "walkingproblem.noinfestation"
+  },
+  "nonlethalreexamined": {
+   "logErrors": 0,
+   "name": "Non-Lethal: Re-Examined",
+   "packageId": "smxrez.nonlethalreexamined"
+  },
+  "nonunopinatadontdropitems": {
+   "logErrors": 0,
+   "name": "Non uno Pinata (don't drop items)",
+   "packageId": "avilmask.nonunopinata"
+  },
+  "noquestswithoutcomms": {
+   "logErrors": 0,
+   "name": "No Quests Without Comms",
+   "packageId": "ebae.noquestswithoutcomms"
+  },
+  "noroyalclothingreqs16": {
+   "logErrors": 0,
+   "name": "No Royal Clothing Reqs (1.6)",
+   "packageId": "no.royal.clothing.reqs"
+  },
+  "nosolarflares": {
+   "logErrors": 0,
+   "name": "No Solar Flares",
+   "packageId": "laura7z.noflares"
+  },
+  "nosympathyforprisoners": {
+   "logErrors": 0,
+   "name": "No Sympathy For Prisoners",
+   "packageId": "sk.noprisonersympathy"
+  },
+  "notmyfault": {
+   "logErrors": 0,
+   "name": "Not My Fault",
+   "packageId": "vesper.notmyfault"
+  },
+  "notonlygenebankinorbittrade": {
+   "logErrors": 0,
+   "name": "Not Only GeneBank in Orbit Trade",
+   "packageId": "io.github.cvrunmin.orbittradenotonlygenebank"
+  },
+  "numbers": {
+   "logErrors": 0,
+   "name": "Numbers",
+   "packageId": "mehni.numbers"
+  },
+  "odyssey": {
+   "logErrors": 0,
+   "name": "Odyssey",
+   "packageId": "ludeon.rimworld.odyssey"
+  },
+  "offspringinheritxenogenescontinued": {
+   "logErrors": 0,
+   "name": "Offspring Inherit Xenogenes (Continued)",
+   "packageId": "mlie.offspringinheritxenogenes"
+  },
+  "ogautomaticpowerswitch": {
+   "logErrors": 0,
+   "name": "[Og] Automatic Power Switch",
+   "packageId": "og.automaticpowerswitch"
+  },
+  "ogrestack": {
+   "logErrors": 0,
+   "name": "OgreStack",
+   "packageId": "ogre.ogrestack"
+  },
+  "oopsallgenebanks": {
+   "logErrors": 0,
+   "name": "Oops All Gene Banks",
+   "packageId": "redundant.oopsallgenepacks"
+  },
+  "packmulesextended": {
+   "logErrors": 0,
+   "name": "Pack Mules Extended",
+   "packageId": "packmulesextended.standard"
+  },
+  "packsarenotbelts": {
+   "logErrors": 0,
+   "name": "Packs Are Not Belts",
+   "packageId": "turnovus.submod.backpacksarenotbelts"
+  },
+  "passitthroughthewindowcontinued": {
+   "logErrors": 0,
+   "name": "Pass It Through The Window! (Continued)",
+   "packageId": "mlie.passitthroughthewindow"
+  },
+  "pawntargetfix": {
+   "logErrors": 0,
+   "name": "Pawn Target Fix",
+   "packageId": "fed1splay.pawntargetfix"
+  },
+  "permeableterrain": {
+   "logErrors": 0,
+   "name": "Permeable Terrain",
+   "packageId": "owlchemist.permeableterrain"
+  },
+  "pickupandhaul": {
+   "logErrors": 0,
+   "name": "Pick Up And Haul",
+   "packageId": "mehni.pickupandhaul"
+  },
+  "plantgrowthsynccontinued": {
+   "logErrors": 0,
+   "name": "Plant Growth Sync (Continued)",
+   "packageId": "mlie.plantgrowthsync"
+  },
+  "plasteelsurgerycontinued": {
+   "logErrors": 0,
+   "name": "Plasteel Surgery (Continued)",
+   "packageId": "mlie.plasteelsurgery"
+  },
+  "powerpoles": {
+   "logErrors": 0,
+   "name": "Power Poles",
+   "packageId": "co.uk.epicguru.rimforgepoles"
+  },
+  "powerpolesextended": {
+   "logErrors": 0,
+   "name": "Power Poles Extended",
+   "packageId": "gy.ppextend"
+  },
+  "prioritytreatmentressurected": {
+   "logErrors": 0,
+   "name": "Priority Treatment Ressurected",
+   "packageId": "tk421storm.prioritytreatmentressurected"
+  },
+  "prisoncommonscontinued": {
+   "logErrors": 0,
+   "name": "Prison Commons (Continued)",
+   "packageId": "mlie.prisoncommons"
+  },
+  "prisonerarenacontinued": {
+   "logErrors": 0,
+   "name": "Prisoner Arena (Continued)",
+   "packageId": "mlie.prisonerarena"
+  },
+  "prisonerharvesting15": {
+   "logErrors": 0,
+   "name": "Prisoner Harvesting 1.5",
+   "packageId": "extracting.organs.1.5"
+  },
+  "prisonerjumpsuits": {
+   "logErrors": 0,
+   "name": "Prisoner Jumpsuits",
+   "packageId": "ocarina.prisonerjumpsuits"
+  },
+  "prisonerransom": {
+   "logErrors": 0,
+   "name": "PrisonerRansom",
+   "packageId": "erdelf.prisonerransom"
+  },
+  "prisonerscanread": {
+   "logErrors": 0,
+   "name": "Prisoners Can Read",
+   "packageId": "divinederivative.prisonerreading"
+  },
+  "prisonersdonthavekeys": {
+   "logErrors": 0,
+   "name": "Prisoners Dont Have Keys",
+   "packageId": "mlie.prisonersdonthavekeys"
+  },
+  "prisonersneedrecruiting": {
+   "logErrors": 0,
+   "name": "Prisoners Need Recruiting",
+   "packageId": "madarauchiha.prisonersneedrecruiting"
+  },
+  "prisonersshouldfearturrets": {
+   "logErrors": 0,
+   "name": "Prisoners Should Fear Turrets",
+   "packageId": "mlie.prisonersshouldfearturrets"
+  },
+  "prisonlabor": {
+   "logErrors": 0,
+   "name": "Prison Labor",
+   "packageId": "avius.prisonlabor"
+  },
+  "prostheticdidgetscontinued": {
+   "logErrors": 0,
+   "name": "Prosthetic Didgets (Continued)",
+   "packageId": "mlie.prostheticdidgets"
+  },
+  "prostheticnomissingbodypartscontinued": {
+   "logErrors": 0,
+   "name": "Prosthetic No Missing Body Parts (Continued)",
+   "packageId": "mlie.prostheticnomissingbodyparts"
+  },
+  "qualitybuilderunofficial16": {
+   "logErrors": 0,
+   "name": "QualityBuilder Unofficial 1.6",
+   "packageId": "hatti.qualitybuilder"
+  },
+  "qualitycolorscontinued": {
+   "logErrors": 0,
+   "name": "Quality Colors (Continued)",
+   "packageId": "dawnsglow.qualcolor"
+  },
+  "questionableethicsenhancedcontinued": {
+   "logErrors": 0,
+   "name": "Questionable Ethics Enhanced (Continued)",
+   "packageId": "mlie.questionableethicsenhanced"
+  },
+  "realfactionguestcontinued": {
+   "logErrors": 0,
+   "name": "Real Faction Guest (Continued)",
+   "packageId": "mlie.realfactionguest"
+  },
+  "realisticroomsrewritten": {
+   "logErrors": 0,
+   "name": "Realistic Rooms Rewritten",
+   "packageId": "lucifer.realisticrooms"
+  },
+  "rebuilddoorsandcorners": {
+   "logErrors": 0,
+   "name": "ReBuild: Doors and Corners",
+   "packageId": "rebuild.cotr.doorsandcorners"
+  },
+  "rebuildembrasures": {
+   "logErrors": 0,
+   "name": "Rebuild: Embrasures",
+   "packageId": "rebuild.embrasures"
+  },
+  "recipeiconscontinued": {
+   "logErrors": 0,
+   "name": "Recipe icons (Continued)",
+   "packageId": "mlie.recipeicons"
+  },
+  "remotedoorscontinued": {
+   "logErrors": 0,
+   "name": "Remote Doors (Continued)",
+   "packageId": "mlie.remotedoors"
+  },
+  "removablemtrockroofpatch": {
+   "logErrors": 0,
+   "name": "Removable Mt.Rock Roof Patch",
+   "packageId": "proxyer.removablemtrockroofpatche"
+  },
+  "replacestuffcontinued": {
+   "logErrors": 0,
+   "name": "Replace Stuff - Continued",
+   "packageId": "memegoddess.replacestuff"
+  },
+  "replacestuffcoolerandventplacementfix": {
+   "logErrors": 0,
+   "name": "Replace Stuff: Cooler And Vent Placement Fix",
+   "packageId": "deadmano.replacestuffcoolerventplacementfix"
+  },
+  "replantableanimatreescontinued": {
+   "logErrors": 0,
+   "name": "Replantable Anima Trees (Continued)",
+   "packageId": "spuffy.animareplant"
+  },
+  "researchtreeeheiehversion": {
+   "logErrors": 0,
+   "name": "ResearchTree (Eheieh Version)",
+   "packageId": "eheieh.researchtree"
+  },
+  "researchwhatever": {
+   "logErrors": 0,
+   "name": "Research Whatever",
+   "packageId": "avilmask.researchwhatever"
+  },
+  "restraints": {
+   "logErrors": 0,
+   "name": "Restraints",
+   "packageId": "bdew.restraints"
+  },
+  "retend": {
+   "logErrors": 0,
+   "name": "ReTend",
+   "packageId": "temmie3754.retend.1"
+  },
+  "rimbridgeserver": {
+   "logErrors": 1,
+   "name": "RimBridgeServer",
+   "packageId": "brrainz.rimbridgeserver"
+  },
+  "rimefeller": {
+   "logErrors": 0,
+   "name": "Rimefeller",
+   "packageId": "dubwise.rimefeller"
+  },
+  "rimfridgenowwithshelves": {
+   "logErrors": 0,
+   "name": "RimFridge: Now with Shelves!",
+   "packageId": "rimfridge.kv.rw"
+  },
+  "rimroomsasyncindustries": {
+   "logErrors": 0,
+   "name": "Rimrooms - Async Industries",
+   "packageId": "rimrooms.asyncindustries"
+  },
+  "rimworldtogether": {
+   "logErrors": 0,
+   "name": "RimWorld Together",
+   "packageId": "nova.rimworldtogether"
+  },
+  "romanceontherim": {
+   "logErrors": 0,
+   "name": "Romance On The Rim",
+   "packageId": "telardo.romanceontherim"
+  },
+  "royalty": {
+   "logErrors": 0,
+   "name": "Royalty",
+   "packageId": "ludeon.rimworld.royalty"
+  },
+  "runandguncontinued": {
+   "logErrors": 0,
+   "name": "RunAndGun - Continued",
+   "packageId": "memegoddess.runandgun"
+  },
+  "safelyhiddenawaycontinued": {
+   "logErrors": 0,
+   "name": "Safely Hidden Away (Continued)",
+   "packageId": "mlie.safelyhiddenaway"
+  },
+  "searchanddestroycontinued": {
+   "logErrors": 0,
+   "name": "Search and Destroy (Continued)",
+   "packageId": "memegoddess.searchanddestroy"
+  },
+  "secretpassagedoorscontinued": {
+   "logErrors": 0,
+   "name": "Secret Passage Doors (Continued)",
+   "packageId": "mlie.secretpassagedoors"
+  },
+  "sentiencecatalystfilthratereducer": {
+   "logErrors": 0,
+   "name": "Sentience Catalyst Filth Rate Reducer",
+   "packageId": "flyingsloth.scfilthreducer"
+  },
+  "sfgrimreality": {
+   "logErrors": 0,
+   "name": "SF Grim Reality",
+   "packageId": "sf.grim.reality"
+  },
+  "shitrimworldsayscontinued": {
+   "logErrors": 0,
+   "name": "Shit Rimworld Says (Continued)",
+   "packageId": "mlie.shitrimworldsays"
+  },
+  "showmeyourhands": {
+   "logErrors": 0,
+   "name": "Show Me Your Hands",
+   "packageId": "mlie.showmeyourhands"
+  },
+  "simpleivory": {
+   "logErrors": 0,
+   "name": "Simple Ivory",
+   "packageId": "legendaryminuteman.simpleivory.fork"
+  },
+  "simplesidearms": {
+   "logErrors": 0,
+   "name": "Simple sidearms",
+   "packageId": "petetimessix.simplesidearms"
+  },
+  "slaveoutfitfix": {
+   "logErrors": 0,
+   "name": "Slave Outfit Fix",
+   "packageId": "nightkosh.slaveoutfitfix"
+  },
+  "smallerradiusforanimatreesshrinesandanimusstones": {
+   "logErrors": 0,
+   "name": "Smaller radius for Anima Trees, Shrines and Animus Stones",
+   "packageId": "longman.smallerradiusforanimatreesandshrines"
+  },
+  "smallfurniture": {
+   "logErrors": 0,
+   "name": "Small Furniture",
+   "packageId": "xercaine.furniture.small"
+  },
+  "smarterconstruction": {
+   "logErrors": 0,
+   "name": "Smarter Construction",
+   "packageId": "dhultgren.smarterconstruction"
+  },
+  "smartervisitors": {
+   "logErrors": 0,
+   "name": "Smarter Visitors",
+   "packageId": "mlie.smartervisitors"
+  },
+  "smartmedicinecontinued": {
+   "logErrors": 0,
+   "name": "Smart Medicine - Continued",
+   "packageId": "memegoddess.smartmedicine"
+  },
+  "smartmeditation": {
+   "logErrors": 0,
+   "name": "Smart Meditation",
+   "packageId": "puremj.mjrimmods.smartmeditation"
+  },
+  "smartturretcovering": {
+   "logErrors": 0,
+   "name": "Smart Turret Covering",
+   "packageId": "denev.smartturretcovering"
+  },
+  "snapout": {
+   "logErrors": 0,
+   "name": "Snap Out!",
+   "packageId": "weilbyte.snapout"
+  },
+  "socialexperiencefromtrade": {
+   "logErrors": 0,
+   "name": "Social Experience from Trade",
+   "packageId": "krelinos.socialexpfromtrade"
+  },
+  "sparklingworldsfullmod": {
+   "logErrors": 0,
+   "name": "Sparkling Worlds - Full Mod",
+   "packageId": "albion.sparklingworlds.full"
+  },
+  "srfactionalwarfork": {
+   "logErrors": 0,
+   "name": "[SR]Factional War (fork)",
+   "packageId": "sr.modrimworld.factionalwarcontinued"
+  },
+  "sslightningrodcontinued": {
+   "logErrors": 0,
+   "name": "SS Lightning Rod (Continued)",
+   "packageId": "mlie.sslightningrod"
+  },
+  "stargates": {
+   "logErrors": 0,
+   "name": "Stargates!",
+   "packageId": "ccyt.stargatesmod"
+  },
+  "stonecuttingextended": {
+   "logErrors": 0,
+   "name": "Stonecutting Extended",
+   "packageId": "scherub.stonecuttingextended"
+  },
+  "stopdropandrollbal": {
+   "logErrors": 0,
+   "name": "Stop, Drop, And Roll! [BAL]",
+   "packageId": "balistafreak.stopdropandroll"
+  },
+  "stuffmassmatters": {
+   "logErrors": 0,
+   "name": "Stuff Mass Matters",
+   "packageId": "mlie.stuffmassmatters"
+  },
+  "stuffontablesforked": {
+   "logErrors": 0,
+   "name": "Stuff on Tables Forked",
+   "packageId": "moistestwhale.stuffontablesforked"
+  },
+  "surrogatemechanoid": {
+   "logErrors": 0,
+   "name": "Surrogate Mechanoid",
+   "packageId": "sov.det.surrogatemech"
+  },
+  "takecover": {
+   "logErrors": 0,
+   "name": "TakeCover",
+   "packageId": "rabiosus.takecover"
+  },
+  "tendyourself": {
+   "logErrors": 0,
+   "name": "TendYourself",
+   "packageId": "msd.tendyourself"
+  },
+  "thecooler": {
+   "logErrors": 0,
+   "name": "The Cooler",
+   "packageId": "godlyannihilator.thelowcooler"
+  },
+  "thetitantreatment": {
+   "logErrors": 0,
+   "name": "The Titan Treatment",
+   "packageId": "santa.titantreatment"
+  },
+  "toggleharvest": {
+   "logErrors": 0,
+   "name": "Toggle Harvest",
+   "packageId": "jaxe.toggleharvest"
+  },
+  "tradablemeals": {
+   "logErrors": 0,
+   "name": "Tradable Meals",
+   "packageId": "meow.tradablemeals"
+  },
+  "tradablestoneblocks": {
+   "logErrors": 0,
+   "name": "Tradable Stone Blocks",
+   "packageId": "meow.tradablestoneblocks"
+  },
+  "tradeshipsdropspot": {
+   "logErrors": 0,
+   "name": "Trade Ships Drop Spot",
+   "packageId": "smashphil.dropspot"
+  },
+  "tradeshipsnomatterwhat": {
+   "logErrors": 0,
+   "name": "Trade Ships No Matter What",
+   "packageId": "windowsxp.tradeshipsnomatterwhat"
+  },
+  "traitraritycolors": {
+   "logErrors": 0,
+   "name": "Trait Rarity Colors",
+   "packageId": "carnysenpai.traitraritycolors"
+  },
+  "turretsshoothuntingpredators": {
+   "logErrors": 0,
+   "name": "Turrets Shoot Hunting Predators",
+   "packageId": "archie.turrettargetpatch"
+  },
+  "tvforprisoncontinued": {
+   "logErrors": 0,
+   "name": "TVForPrison (Continued)",
+   "packageId": "mlie.tvforprison"
+  },
+  "tviseducational": {
+   "logErrors": 0,
+   "name": "TV is Educational",
+   "packageId": "mlie.tviseducational"
+  },
+  "ughyougotme": {
+   "logErrors": 0,
+   "name": "Ugh You Got Me",
+   "packageId": "marvinkosh.ughyougotme"
+  },
+  "uglytogether": {
+   "logErrors": 0,
+   "name": "Ugly Together",
+   "packageId": "uglytogether.leeh"
+  },
+  "undraftaftertucking": {
+   "logErrors": 0,
+   "name": "Undraft After Tucking",
+   "packageId": "madarauchiha.undraftaftertucking"
+  },
+  "unsterilizeanimals": {
+   "logErrors": 0,
+   "name": "Unsterilize Animals",
+   "packageId": "blackfranky.unsterilizeanimals"
+  },
+  "useyourgun": {
+   "logErrors": 0,
+   "name": "Use Your Gun!",
+   "packageId": "dd.useyourgun"
+  },
+  "vanillaapparelexpanded": {
+   "logErrors": 0,
+   "name": "Vanilla Apparel Expanded",
+   "packageId": "vanillaexpanded.vappe"
+  },
+  "vanillaapparelexpandedaccessories": {
+   "logErrors": 0,
+   "name": "Vanilla Apparel Expanded \u2014 Accessories",
+   "packageId": "vanillaexpanded.vaeaccessories"
+  },
+  "vanillaarmourexpanded": {
+   "logErrors": 0,
+   "name": "Vanilla Armour Expanded",
+   "packageId": "vanillaexpanded.varme"
+  },
+  "vanillaexpandedframework": {
+   "logErrors": 0,
+   "name": "Vanilla Expanded Framework",
+   "packageId": "oskarpotocki.vanillafactionsexpanded.core"
+  },
+  "vanillafixhaulafterslaughter": {
+   "logErrors": 0,
+   "name": "Vanilla Fix: Haul After Slaughter",
+   "packageId": "puremj.mjrimmods.vanillafixhaulafterslaughter"
+  },
+  "vanillafurnitureexpandedfactory": {
+   "logErrors": 0,
+   "name": "Vanilla Furniture Expanded - Factory",
+   "packageId": "vanillaexpanded.vfefactory"
+  },
+  "vanillagravshipexpandedchapter1": {
+   "logErrors": 0,
+   "name": "Vanilla Gravship Expanded - Chapter 1",
+   "packageId": "vanillaexpanded.gravship"
+  },
+  "vanillagravshipexpandedchapter2": {
+   "logErrors": 0,
+   "name": "Vanilla Gravship Expanded - Chapter 2",
+   "packageId": "vanillaexpanded.gravship2"
+  },
+  "vanillahairexpanded": {
+   "logErrors": 0,
+   "name": "Vanilla Hair Expanded",
+   "packageId": "vanillaexpanded.vhe"
+  },
+  "vanillavehiclesexpanded": {
+   "logErrors": 0,
+   "name": "Vanilla Vehicles Expanded",
+   "packageId": "oskarpotocki.vanillavehiclesexpanded"
+  },
+  "vanillavehiclesexpandedtier3": {
+   "logErrors": 0,
+   "name": "Vanilla Vehicles Expanded - Tier 3",
+   "packageId": "oskarpotocki.vanillavehiclesexpandedtier3"
+  },
+  "vanillavehiclesexpandedupgrades": {
+   "logErrors": 0,
+   "name": "Vanilla Vehicles Expanded - Upgrades",
+   "packageId": "oskarpotocki.vanillavehiclesexpandedupgrades"
+  },
+  "vanillaweaponsexpandednonlethal": {
+   "logErrors": 0,
+   "name": "Vanilla Weapons Expanded - Non-Lethal",
+   "packageId": "vanillaexpanded.vwenl"
+  },
+  "vansretexturemisctraining": {
+   "logErrors": 0,
+   "name": "Van's Retexture : Misc. Training",
+   "packageId": "sirvan.misctrainingretexture"
+  },
+  "variousspaceshipchunkcontinued": {
+   "logErrors": 0,
+   "name": "Various Space Ship Chunk (Continued)",
+   "packageId": "mlie.variousspaceshipchunk"
+  },
+  "vaultwallsanddoors": {
+   "logErrors": 0,
+   "name": "Vault Walls and Doors",
+   "packageId": "sickboywi.vault.onepointone"
+  },
+  "vehicleframework": {
+   "logErrors": 0,
+   "name": "Vehicle Framework",
+   "packageId": "smashphil.vehicleframework"
+  },
+  "vehicleswrecksexpanded": {
+   "logErrors": 0,
+   "name": "Vehicles Wrecks Expanded",
+   "packageId": "explorern11.vehicleswrecksexpanded"
+  },
+  "vehicleswrecksexpandedrevisited": {
+   "logErrors": 0,
+   "name": "Vehicles Wrecks Expanded - Revisited",
+   "packageId": "vehicleswrecksexpanded.revisited"
+  },
+  "vvesecondaryweapons": {
+   "logErrors": 0,
+   "name": "VVE - Secondary Weapons",
+   "packageId": "tgbm.vve.secondary.weapons"
+  },
+  "walkablesolarpanels": {
+   "logErrors": 0,
+   "name": "Walkable Solar Panels",
+   "packageId": "mlie.walkablesolarpanels"
+  },
+  "wallheater": {
+   "logErrors": 0,
+   "name": "Wall Heater",
+   "packageId": "xercaine.wallheater"
+  },
+  "wallorbitaltradebeacon": {
+   "logErrors": 0,
+   "name": "Wall Orbital Trade Beacon",
+   "packageId": "xercaine.wallorbitaltradebeacon"
+  },
+  "walltelevisions": {
+   "logErrors": 0,
+   "name": "Wall Televisions",
+   "packageId": "xercaine.walltelevisions"
+  },
+  "wallvitalsmonitor": {
+   "logErrors": 0,
+   "name": "Wall Vitals Monitor",
+   "packageId": "xercaine.wallvitalsmonitor"
+  },
+  "warcrimesexpanded2coreupdated": {
+   "logErrors": 0,
+   "name": "War Crimes Expanded 2 Core (Updated)",
+   "packageId": "mersid.wce2updated.core"
+  },
+  "warehousestorage": {
+   "logErrors": 0,
+   "name": "Warehouse Storage",
+   "packageId": "vin.warehouse.storage"
+  },
+  "whileyouarenearby": {
+   "logErrors": 0,
+   "name": "While You Are Nearby",
+   "packageId": "puremj.mjrimmods.whileyouarenearby"
+  },
+  "whoshotmylegoff": {
+   "logErrors": 0,
+   "name": "Who shot my leg off?",
+   "packageId": "tixiv.whoshotmylegoff"
+  },
+  "wololoobetterconversionandrecruitment": {
+   "logErrors": 0,
+   "name": "Wololoo - Better Conversion and Recruitment",
+   "packageId": "redmattis.betterconversion"
+  },
+  "xmlextensions": {
+   "logErrors": 0,
+   "name": "XML Extensions",
+   "packageId": "imranfish.xmlextensions"
+  },
+  "xndprofitableweaponscontinued": {
+   "logErrors": 0,
+   "name": "[XND] Profitable Weapons (Continued)",
+   "packageId": "mlie.xndprofitableweapons"
+  },
+  "xndvisiblepants": {
+   "logErrors": 0,
+   "name": "[XND] Visible Pants",
+   "packageId": "xeonovadan.visiblepants"
+  },
+  "youdriveisleep": {
+   "logErrors": 0,
+   "name": "You Drive, I Sleep",
+   "packageId": "spacemoth.youdriveisleep"
+  },
+  "zonetoschedule": {
+   "logErrors": 0,
+   "name": "Zone To Schedule",
+   "packageId": "mlie.zonetoschedule"
+  }
+ },
+ "note": "Written by tools/record-played-mods.py from the game's own ModsConfig.xml and Player.log. Read by build-public-register.py; never edited by hand.",
+ "recorded": "2026-10-07"
+}

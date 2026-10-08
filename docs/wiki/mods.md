@@ -84,5 +84,6 @@ If you hit a conflict, it is worth reporting — see [Links](links.md).
 Run whatever list you like. Nothing is declared as a requirement, so no manager will warn you, and
 the mod is written so that missing content degrades rather than crashes.
 
-A reduced list is untested rather than unsupported — the same as every other list, including the
-full one.
+A reduced list is untested rather than unsupported. The full list is the one Rimrooms has been
+played on: every mod on it was loaded and active through the October 2026 play sessions, and the
+[mod list](mods-list.md) says, mod by mod, whether the game log ever named it in an error.
