@@ -338,6 +338,7 @@ Bring-up (PLAYBOOK §10): commission -> table to gate control -> **Assemble gate
 | Buy silver through Procurement | **$1,000 per silver** (100 silver = $100,000 on 2026-10-08): the company sells it *"at a poor rate"*. Sell goods to traders for silver instead |
 | Trust one trade beacon to cover the warehouse | the Store beacon at `(147,143)` missed the silver and wool shelves; the trade window showed **Silver 0**. A second beacon at `(137,143)` |
 | Run the vault at 0 silver | an *Orbital Traders Hub* offer (460 silver fee, 6 hours to decide, 2026-10-08) was lost: Procurement silver lands a day later. Keep **500+ silver beside a trade beacon** at all times -- the bulk goods trader is the marble supply |
+| Leave silver on an open shelf during a raid | the 600 Procurement silver was **stolen**: after the imp raid the only silver left in the save was in raiders' and visitors' pockets -- 306 on *Zeiv, Hachthsonss Runship* (the raiding faction); a raider who breaks off grabs loot on the way out. Silver lives in the **vault** (one door, behind Security -- the city plan's VAULT), and fleeing raiders get shot, not waved off |
 
 ## Where the live run is
 
