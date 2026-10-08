@@ -155,7 +155,8 @@ namespace RimroomsAsyncIndustries.Threats
             RimroomsCampaignComponent campaign = Verse.Current.Game == null
                 ? null : Verse.Current.Game.GetComponent<RimroomsCampaignComponent>();
             if (campaign != null)
-            { campaign.RecordEvent("RR_Event_AnomalyFired", coordinate.Id, definition.LabelCap.ToString()); }
+            { campaign.RecordEvent("RR_Event_AnomalyFired", coordinate.Id, coordinate.Label,
+                definition.LabelCap.ToString()); }
             return true;
         }
 

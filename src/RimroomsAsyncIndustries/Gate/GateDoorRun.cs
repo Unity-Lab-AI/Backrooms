@@ -169,7 +169,7 @@ namespace RimroomsAsyncIndustries.Gate
 
             other.nativeRunHost = parent;
             NativeCampaign?.RecordEvent("RR_Event_GateRunExtended", parent.LabelShortCap,
-                RunDoorCount.ToString(), GateWidth.ToString());
+                parent.LabelShortCap, RunDoorCount.ToString(), GateWidth.ToString());
             return CompanyActionResult.Applied();
         }
 

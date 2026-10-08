@@ -470,7 +470,7 @@ namespace RimroomsAsyncIndustries.Procurement
             order.receivingZoneLabel = receivingZone.label;
             order.nextAttemptTick = Find.TickManager.TicksGame;
             order.failureKey = null;
-            campaign.RecordEvent("RR_Event_ProcurementRedirected", order.id, receivingZone.label);
+            campaign.RecordEvent("RR_Event_ProcurementRedirected", order.id, order.id, receivingZone.label);
             return CompanyActionResult.Applied();
         }
 

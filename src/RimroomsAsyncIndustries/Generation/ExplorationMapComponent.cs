@@ -203,7 +203,7 @@ namespace RimroomsAsyncIndustries.Generation
             RimroomsCampaignComponent campaign = Current.Game == null
                 ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
             if (campaign != null && campaign.CanOperate)
-            { campaign.RecordEvent("RR_Event_ExplorationComplete", coordinate.Id); }
+            { campaign.RecordEvent("RR_Event_ExplorationComplete", coordinate.Id, coordinate.Label); }
         }
     }
 }

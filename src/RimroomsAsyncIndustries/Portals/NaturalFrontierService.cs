@@ -361,7 +361,8 @@ namespace RimroomsAsyncIndustries.Portals
                 // Origin id, not the coordinate's: an ordinary map has no CoordinateRecord at
                 // all, so reading source.Id here would have thrown for exactly the case this
                 // change exists to support.
-                campaign.RecordEvent("RR_Event_FrontierDiscovered", discovered.Id, origin.OriginId);
+                campaign.RecordEvent("RR_Event_FrontierDiscovered", discovered.Id, discovered.Label,
+                    campaign.CoordinateLabelOrId(origin.OriginId));
             }
             return registered;
         }

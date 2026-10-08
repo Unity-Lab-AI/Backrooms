@@ -121,6 +121,14 @@ recorded on the row, and then the row moves to `FINALIZED.md` by the usual archi
 - [T] **"kids need milk and cribs and toys"** -- the nursery, before any birth.
 
 
+### Owner direction — every scenario, a gate in each (2026-10-07)
+
+**Verbatim:** *"how are we gonna do the fucking tests if u dont play the game?"* -- then *"you need to be testing all three scenerios trying to get a gate built in all three"*
+
+- [T] **Async Industries branch opening -- a gate built.** **DONE IN PLAY 2026-10-07** on the QA colony: the facility gate assembled, calibrated, operated and crossed (AI-01 and AI-03 surveys). Stays open as the reference run.
+- [T] **Furniture and Knickknack Store opening -- a gate built.** Not started: no contact with the corporation, nothing researched, a door in the back room.
+- [T] **Solo or group, inside -- a gate built.** Not started: the crew starts inside a coordinate with one shell on the surface.
+
 ### Owner direction — the unnerving register is not a room feature, it is the register everything plays in (2026-10-04)
 
 **Verbatim owner direction (2026-10-04):** *"remember lsd unnerving feeling with all things ie events random spanwns, enemies, allies, nuetrals, even all the crazy things ive mentioned in the past and anything u can find in the many many prep docs on the Backrooms Universe"*

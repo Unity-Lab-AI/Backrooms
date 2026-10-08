@@ -161,6 +161,7 @@ namespace RimroomsAsyncIndustries.Company
             observation.Settle(filedWitnessLoadId, interviewer, interviewerId,
                 Find.TickManager.TicksGame);
             RecordEvent("RR_Event_AccountFiled", record.coordinateId,
+                CoordinateLabelOrId(record.coordinateId),
                 speaker.LabelShortCap.ToString(), interviewer.LabelShortCap.ToString());
             return CompanyActionResult.Applied();
         }

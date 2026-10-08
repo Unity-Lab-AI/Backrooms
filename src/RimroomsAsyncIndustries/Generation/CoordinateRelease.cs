@@ -138,7 +138,7 @@ namespace RimroomsAsyncIndustries.Generation
             Current.Game.DeinitAndRemoveMap(map, false);
             if (Find.WorldObjects.Contains(parent)) { Find.WorldObjects.Remove(parent); }
 
-            campaign.RecordEvent("RR_Event_CoordinateReleased", coordinate.Id);
+            campaign.RecordEvent("RR_Event_CoordinateReleased", coordinate.Id, coordinate.Label);
             return null;
         }
 

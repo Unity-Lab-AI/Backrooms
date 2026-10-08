@@ -253,7 +253,7 @@ namespace RimroomsAsyncIndustries.Company
                 return CompanyActionResult.Refused("RR_Company_InvalidSave");
             }
             coordinate = created;
-            RecordEvent("RR_Event_CoordinateDiscovered", id, discoveryId);
+            RecordEvent("RR_Event_CoordinateDiscovered", id, created.Label, discoveryId);
             return CompanyActionResult.Applied();
         }
 
@@ -448,6 +448,17 @@ namespace RimroomsAsyncIndustries.Company
         {
             if (amount <= 0 || obligations.Any(o => o.id == id)) { return; }
             obligations.Add(new CompanyObligation { id = id, reasonKey = reasonKey, amountUsd = amount, dueTick = dueTick });
+        }
+
+        /// <summary>A coordinate's label for a message, or the id itself when it names no coordinate.</summary>
+        internal string CoordinateLabelOrId(string id)
+        {
+            if (string.IsNullOrEmpty(id)) { return id ?? ""; }
+            foreach (CoordinateRecord coordinate in Coordinates)
+            {
+                if (coordinate != null && coordinate.Id == id) { return coordinate.Label; }
+            }
+            return id;
         }
 
         internal void RecordEvent(string messageKey, string relatedId, params string[] arguments)

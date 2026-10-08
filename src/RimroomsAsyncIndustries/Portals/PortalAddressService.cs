@@ -166,7 +166,7 @@ namespace RimroomsAsyncIndustries.Portals
             { connectionId = id; }
             if (result == PortalNetworkResult.Success)
             {
-                campaign.RecordEvent("RR_Event_PortalAddressRegistered", id, coordinate.Id);
+                campaign.RecordEvent("RR_Event_PortalAddressRegistered", id, id, coordinate.Label);
                 // The gate's own address book. Recorded here rather than anywhere else because
                 // this is the single point at which a LABORATORY gate dials a coordinate --
                 // which is exactly why a natural threshold never gets one. Its registration
@@ -214,7 +214,7 @@ namespace RimroomsAsyncIndustries.Portals
             PortalNetworkResult result = network.Register(id, coordinate.Id, PortalConnectionKind.Natural,
                 localThreshold, localApproach, threshold, thresholdApproach);
             if (result == PortalNetworkResult.Success)
-            { campaign.RecordEvent("RR_Event_PortalAddressRegistered", id, coordinate.Id); }
+            { campaign.RecordEvent("RR_Event_PortalAddressRegistered", id, id, coordinate.Label); }
             return Translate(result);
         }
 
@@ -282,7 +282,8 @@ namespace RimroomsAsyncIndustries.Portals
                     "; the replacement door remains in place for manual review.");
                 return Refuse("RepairNotRecorded");
             }
-            campaign.RecordEvent("RR_Event_PortalThresholdRepaired", coordinate.Id, operationId);
+            campaign.RecordEvent("RR_Event_PortalThresholdRepaired", coordinate.Id, coordinate.Label,
+                operationId);
             return CompanyActionResult.Applied();
         }
 
