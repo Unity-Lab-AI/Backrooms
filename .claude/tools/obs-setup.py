@@ -58,14 +58,18 @@ def setup():
     cl.set_scene_item_transform("Live", gid, {"positionX": 0, "positionY": 0,
                                 "boundsType": "OBS_BOUNDS_SCALE_INNER", "boundsWidth": 1920, "boundsHeight": 1080})
     oid = ensure_input(cl, "Live", "Unity overlay", "browser_source",
-                       {"url": "http://127.0.0.1:4317/", "width": 560, "height": 1150, "reroute_audio": True,
+                       {"url": "http://127.0.0.1:4317/", "width": 560, "height": 1150, "reroute_audio": False,
                         "css": "body{background:transparent !important}"})
     cl.set_scene_item_transform("Live", oid, {"positionX": 8, "positionY": 8,
                                 "boundsType": "OBS_BOUNDS_SCALE_INNER", "boundsWidth": 330, "boundsHeight": 680})
     ensure_input(cl, "Live", "RimWorld audio", "wasapi_process_output_capture",
                  {"window": RIM_WIN, "priority": 2})
-    # Unity's voice reaches the stream through the overlay browser source (reroute_audio): the studio
-    # serves each spoken line and the page plays it. A python.exe has no window for app capture.
+    # Unity's voice: a Media Source that unity-speak.py points at each new WAV. (Routing it through
+    # the overlay browser source crackled to static on stream; a python.exe has no window to capture.)
+    vid = ensure_input(cl, "Live", "Unity voice", "ffmpeg_source",
+                       {"is_local_file": True, "clear_on_media_end": True, "restart_on_activate": False})
+    cl.set_input_volume("Unity voice", vol_db=-4.0)
+    cl.set_input_mute("Unity overlay", True)
     bid = ensure_input(cl, "BRB", "BRB image", "image_source", {"file": LIKENESS})
     cl.set_scene_item_transform("BRB", bid, {"positionX": 660, "positionY": 140,
                                 "boundsType": "OBS_BOUNDS_SCALE_INNER", "boundsWidth": 600, "boundsHeight": 600})
