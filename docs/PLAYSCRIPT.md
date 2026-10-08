@@ -94,6 +94,7 @@
 - *"dont put roof over you pen"* -- pens and pastures are **No roof** area. **Closing a wall run auto-roofs whatever it encloses**: after every wall closes, paint No roof over pens and courtyards before the crew roofs them (the Store pen was roofed this way, 2026-10-08).
 - *"and why is there a bed in the middle of the river delete that and remove bridge in sturcture"*
 - *"finish your building you have gaps finish the shit donlnt leave shit un set to build"* -- every wall line closed: no gap left unblueprinted, no half-built run abandoned. Scan the walls after every build order.
+- *"comew on your base sucks think industrial facility designer and archetect, get shit finished up"* -- **finish what is laid before laying more**: no half-built runs, no frames waiting on materials nobody has; design it as an industrial facility -- production lines beside their inputs, storage beside production, power on its own yard.
 - **Towers:** *"yopu need towers on all corrner that you can shhot out from with seperate ventalizatyion and added rooms for security stuff and embrassure sally ports"*
 - **Build in steel; order steel:** *"and use steel and order steel from the company"*
 - Doors in a stuff that is stocked (no limestone door exists; slate doors waited forever).
