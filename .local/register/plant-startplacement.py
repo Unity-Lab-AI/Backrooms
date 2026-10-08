@@ -329,6 +329,7 @@ PLANTS = [
     ("AN UNDESIGNATED DOOR GOES BACK TO OFFERING NOTHING", GATECOMP,
      "            if (!IsDesignated)" + chr(10) + "            {" + chr(10)
      + "                foreach (Gizmo gizmo in MakeGateGizmos()) { yield return gizmo; }" + chr(10)
+     + "                yield break;" + chr(10)
      + "            }",
      "            if (!IsDesignated) { yield break; }", STARTS_PROOF),
 

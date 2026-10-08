@@ -137,6 +137,14 @@ namespace RimroomsAsyncIndustries.Threats
         /// </summary>
         private void StartPursuer(RoomRecord crewRoom, int now)
         {
+            // **RETIRED, owner answer 2026-10-07, verbatim:** *"there is not a quiet persuer just
+            // normal enemies and wild animals maybe nuetral maybne ally maybe enemy and variations
+            // of numnbers and difficulty based on depth"*. A route mismatch no longer conjures a
+            // chaser; what a crew meets is the site's own inhabitants and animals, placed by
+            // `InhabitantService` against depth, and the survey's entity observation is recorded
+            // from them. The saved pursuer fields stay so a save that has one still loads.
+            return;
+#pragma warning disable CS0162
             if (pursuerEncounterStarted) { return; }
             CoordinateRecord coordinate = Coordinate;
             Dictionary<int, int> distances = DistancesFrom(crewRoom.index);
@@ -193,6 +201,7 @@ namespace RimroomsAsyncIndustries.Threats
             // A reported sighting reveals its cell, never an unexplored room graph.
             map.fogGrid.Unfog(cell);
             Note("RR_Event_PursuerSighting", (pursuerRoom + 1).ToString(), "2");
+#pragma warning restore CS0162
         }
 
         /// <summary>

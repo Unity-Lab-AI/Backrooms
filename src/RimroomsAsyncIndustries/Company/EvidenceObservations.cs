@@ -661,12 +661,30 @@ namespace RimroomsAsyncIndustries.Company
         /// count every raider on the map as a sighting.
         /// </summary>
         private static bool HasSpawnedEntityInRoom(Map map, RoomRecord room)
+        { return HasLivingStrangerInRoom(map, room); }
+
+        /// <summary>
+        /// Whether a room holds a living pawn that is not the branch's own: an inhabitant of any
+        /// relation -- neutral, ally or hostile -- or an animal, wild or not.
+        ///
+        /// **This replaced asking for the first-slice chaser**, which the owner retired on
+        /// 2026-10-07: *"there is not a quiet persuer just normal enemies and wild animals maybe
+        /// nuetral maybne ally maybe enemy"*. One question for both the site that records a
+        /// sighting and the record that validates it, so the two cannot disagree.
+        /// </summary>
+        internal static bool HasLivingStrangerInRoom(Map map, RoomRecord room)
         {
-            if (map == null || room == null) { return false; }
-            Threats.FirstSliceSiteComponent site = map.GetComponent<Threats.FirstSliceSiteComponent>();
-            Pawn chaser = site == null ? null : site.Chaser;
-            return chaser != null && !chaser.Destroyed && chaser.Spawned && chaser.Map == map &&
-                room.Bounds.Contains(chaser.Position);
+            if (map == null || room == null || map.mapPawns == null) { return false; }
+            CellRect bounds = room.Bounds;
+            IReadOnlyList<Pawn> pawns = map.mapPawns.AllPawnsSpawned;
+            for (int index = 0; index < pawns.Count; index++)
+            {
+                Pawn pawn = pawns[index];
+                if (pawn == null || pawn.Dead || pawn.Destroyed || !pawn.Spawned) { continue; }
+                if (pawn.Faction == Faction.OfPlayer) { continue; }
+                if (bounds.Contains(pawn.Position)) { return true; }
+            }
+            return false;
         }
 
         private static bool ValidObservationState(EvidenceRecord record, CoordinateRecord coordinate)

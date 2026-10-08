@@ -180,11 +180,16 @@ check("nothing in the assembly still reaches for the retired def",
 
 # The sighting used to be answered by scanning the map for a def. With a chaser being an ordinary
 # hostile, that scan would either find nothing or count every raider on the map as a sighting.
-check("A SIGHTING ASKS THE SITE WHICH PAWN THE CHASER IS",
-      "site.Chaser" in observations
-      and "public Pawn Chaser" in site,
-      "-- scanning the map for hostiles would count any raider as an entity observation, which "
-      "is a false positive on a contract bonus")
+# **Re-aimed 2026-10-07 on the owner's answer, verbatim:** *"there is not a quiet persuer just normal
+# enemies and wild animals maybe nuetral maybne ally maybe enemy"*. The chaser is retired, so a sighting
+# is any living pawn in the witness's room that is not the branch's own. The claim that guards it now
+# is the one exclusion that keeps it from being a free bonus: the crew must never count themselves.
+check("A SIGHTING COUNTS A LIVING STRANGER, NEVER THE BRANCH'S OWN CREW",
+      "internal static bool HasLivingStrangerInRoom" in observations
+      and "if (pawn.Faction == Faction.OfPlayer) { continue; }" in observations
+      and "HasLivingStrangerInRoom(map, room)" in site,
+      "-- without the exclusion every witness standing in a room is an entity sighting of themselves, "
+      "which pays a contract bonus for nothing")
 
 check("THE DRAW IS DERIVED FROM THE BRANCH SEED, NEVER Rand",
       "CampaignSeed.Derive(branchSeed" in chaser

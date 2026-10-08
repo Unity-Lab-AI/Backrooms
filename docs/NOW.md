@@ -22,31 +22,19 @@ The watchdog is a session cron: `*/1 * * * *`, prompt **"get the tests all compl
 
 ## What this session did
 
-**The AI-01 onboarding survey was played from dispatch to payout: "AI-01 onboarding survey — Completed".** Four requests paid on the way. Account **69,481,860 USD**.
+**Shipped and seen in play:** expedition windows on the ladder (*"Opening time: 7776 in-game minutes"*), a built gate's controls restored, analysis that can finish (AI-01 *Analyzed 100 %*, survey **Completed**), the catalogue selling again, a case for every coordinate (AI-03 took a crew), and the battery fix three of four. **Shipped, not yet seen:** the Quiet Pursuer retired with sightings from any stranger, depth-scaled encounter numbers, one journal per job.
 
-**Three mod defects stopped it, each found in the running game and fixed, built, staged and seen working:**
+**Money:** every request the company names has paid -- account about **87.6M USD**. *Choose a direction* ($10M) has its write-up filed; its journal `RR_RouteRecording1001822` sits in Unity's pack and goes to the **credit beacon at `(135, 139)`**.
 
-| Defect | Seen after the fix |
-|---|---|
-| Expedition windows were a flat 833 ticks, twenty in-game minutes, while the page quoted 129.6 hours | *"Opening time: 7776 in-game minutes remaining"* |
-| A built gate's door lost every control after *Watch* | *Linked equipment*, *Open a connection*, operator controls and the rest back on the door |
-| Analysis needed the record on the shelf and in the analyst's hands at once | 0 % → *"Analyzed; analysis 100 %"* |
-
-**And the earlier battery fix is three of four seen:** with seven generators fuelled and the gate open, the net read +695 W and every battery held at 600 / 600.
-
-**Built for the colony:** three wood-fired generators (seven total, +3.9 kW with the gate closed), a butcher table, the archive link, the cook bill at 50.
-
-## The colony
-
-**`rimbridge_save_20261007_survey_analyzed`** — the latest. Gee, Scar, Unity all home and fed. The archive is the shelf at `(159, 141)`, Books only, Critical.
+**The colony** (`PLAYBOOK.md` §3 has the room plan): freezer and every room's shelves set by copy/paste, shelves one priority above each stockpile; hospital; prison barracks; records desk; Smokeleaf zone; seven generators.
 
 ## ⛔ OPEN, IN ORDER ⛔
 
-1. **The Quiet Pursuer never spawns** (TODO). Placement only accepts a room that reaches the crew without opening a door, and every corridor leg has a door since `bcf0701`. **A design fork for the owner — how should the chaser path?** Blocks the optional entity observation and the first real threat test.
-2. **"Report a disagreement"** is the next request on the table — the two-witness accounts mechanic.
-3. **The battery `[T]` row's last check:** the connection closing at the emergency-return floor.
-4. TODO: the first-room-only survey rule, the identical-row link menu, three stale plant anchors (32 of 33), the DefInjected gate recipe text.
-5. **The play brief, per `PLAYBOOK.md`:** shelves, a vault, the prison, guest beds, defences, the *Galaxy* sculpture and the empty Lord role the ideoligion keeps alerting on. Gee no longer hunts, so Construct comes first for him.
+1. **Drop the stamped journal in the credit beacon's radius** and watch *Choose a direction* settle.
+2. **Raid the one-defender Cuvin Flamehome outpost** (world map, north-west of home) with three rifles; bring the defender home to the prison barracks.
+3. **Antibiotics:** research, a drug lab, penoxycyline every 5 days on every pawn's drug policy -- the owner's direction in `PLAYBOOK.md` §4.
+4. **AI-03 survey**, second opening, to see a stranger recorded as the entity observation.
+5. TODO: AI-02's failed layout, the link menu's identical rows (and moving the records archive off the freezer shelf `(159, 141)` to a lab shelf), the first-room survey rule, three stale plant anchors.
 
 ## Tools added this session, all in `.local/qa/`
 

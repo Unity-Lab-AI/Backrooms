@@ -62,7 +62,7 @@ namespace RimroomsAsyncIndustries.Threats
                 RimroomsInhabitantDef family = legal[index];
                 if (!Appears(family, seed, index)) { continue; }
 
-                int wanted = Count(family, seed, index);
+                int wanted = Count(family, seed, index) + DepthExtra(family, coordinate.Depth);
                 if (family.hostile)
                 {
                     wanted = Math.Min(wanted, Math.Max(0, hostileCap - hostilesPlaced));
@@ -159,6 +159,23 @@ namespace RimroomsAsyncIndustries.Threats
             int roll = Gen.HashCombineInt(seed, index * 613 + 0x494E48);
             if (roll < 0) { roll = ~roll; }
             return (roll % 1000) / 1000f < family.chance;
+        }
+
+        /// <summary>
+        /// How many more of a family a deeper level holds: **one more for every three depths past
+        /// the family's own minimum.**
+        ///
+        /// Owner answer, 2026-10-07, verbatim: *"just normal enemies and wild animals maybe
+        /// nuetral maybne ally maybe enemy and variations of numnbers and difficulty based on
+        /// depth"*. The families already gate WHAT appears by depth; this is the NUMBERS half. A
+        /// family meets a crew in ones and twos where it first turns up and in bigger groups
+        /// further down. Hostiles stay under the ladder's encounter cap whatever this adds, so the
+        /// warning-first bound on simultaneous danger is untouched.
+        /// </summary>
+        private static int DepthExtra(RimroomsInhabitantDef family, int depth)
+        {
+            if (family == null || depth <= family.minDepth) { return 0; }
+            return (depth - family.minDepth) / 3;
         }
 
         private static int Count(RimroomsInhabitantDef family, int seed, int index)

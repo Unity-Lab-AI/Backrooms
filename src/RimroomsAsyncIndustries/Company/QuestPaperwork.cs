@@ -398,20 +398,40 @@ namespace RimroomsAsyncIndustries.Company
             if (book == null) { return null; }
             List<Map> maps = Find.Maps;
             if (maps == null) { return null; }
+            // **Every book the map holds, not only the ones lying on it.** This read
+            // `listerThings.ThingsOfDef`, which sees spawned things only -- so a quest book in a
+            // pawn's pack, in somebody's hands, or still inside the drop pod bringing it down did
+            // not exist, and `TickQuestBookDelivery` sent another. Found playing, 2026-10-07: one
+            // *Choose a direction* sent five journals, `rr_questBookDeliveries 6`, all five landing
+            // in the same room -- each one still in its pod when the next company tick looked.
+            // Core's own recursive search reaches inventories, carried things and skyfaller
+            // contents.
+            //
+            // **And where there are several, the one with the most paperwork on it.** Filing stamps
+            // whichever book this returns; a save that already holds duplicates must keep returning
+            // that same book, or the quest light compares the record against a stale copy stamped
+            // with nothing and stays amber for ever.
+            var candidates = new List<Thing>();
+            Thing best = null;
+            int bestCount = -1;
             for (int index = 0; index < maps.Count; index++)
             {
                 Map map = maps[index];
                 if (map == null || map.listerThings == null || !OwnsMap(map)) { continue; }
-                List<Thing> candidates = map.listerThings.ThingsOfDef(book);
+                candidates.Clear();
+                ThingOwnerUtility.GetAllThingsRecursively(map, ThingRequest.ForDef(book), candidates, true, null, true);
                 for (int item = 0; item < candidates.Count; item++)
                 {
                     CompRouteEvidence record = candidates[item].TryGetComp<CompRouteEvidence>();
                     if (record != null && record.IsCompanyIssued &&
-                        record.StampedQuestId == request.Id)
-                    { return candidates[item]; }
+                        record.StampedQuestId == request.Id && record.StampedWriteUpCount > bestCount)
+                    {
+                        best = candidates[item];
+                        bestCount = record.StampedWriteUpCount;
+                    }
                 }
             }
-            return null;
+            return best;
         }
 
         /// <summary>

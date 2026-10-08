@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-07 - No pursuer, a catalogue that sells, cases for every coordinate, one journal per job
+
+- **OWNER, asked how the Quiet Pursuer should reach a crew:** *"there is not a quiet persuer just
+  normal enemies and wild animals maybe nuetral maybne ally maybe enemy and variations of numnbers and
+  difficulty based on depth"*. And on the journal: *"so whats up are you trying to complete a journal
+  write up but thhere is no option on the character?"*
+
+### What a player gets
+
+- **No Quiet Pursuer.** A route mismatch no longer conjures a chaser. The survey's entity observation
+  is recorded by a witness standing in a room with any living pawn that is not the branch's own -- an
+  inhabitant in any relation, or an animal. Inhabitant families now place **one more for every three
+  depths past their own minimum**, hostiles still under the ladder's cap.
+- **The company catalogue sells.** Every quote had been hidden since 0.11.0-dev by an expiry filter
+  nothing set any more. Quotes list, and *Accept and pay* charges once; *Hold a connection open* paid
+  $12,000,000 off the purchase.
+- **Any coordinate can take an expedition.** Only the initial AI-01 case had ever been opened, so
+  every other dispatch was refused and Field Stability's own instruction -- *"Survey more
+  coordinates"* -- could never be followed. A coordinate gets its case when its recording is first
+  ensured; AI-03 took a crew on the next dispatch.
+- **One journal per job.** A quest's record book in a pack, in hands or still in its pod was invisible
+  to the check that sends it, so *Choose a direction* sent five. The check now searches inventories,
+  carried things and pods, and where duplicates already exist it follows the copy with the most
+  paperwork on it.
+
+### Played
+
+- **Freezer and every room's shelves organised by copy and paste**, priorities one above each room's
+  stockpile; a hospital, a prison barracks, a records desk where the first write-up was filed, a
+  Smokeleaf cash crop, and the world map read for the first time: two Cuvin Flamehome outposts of
+  one and two defenders next door.
+
+### Logged
+
+- A coordinate whose layout failed to generate (AI-02) can never be dispatched to and holds a place.
+- Toggle gizmos run through the bridge do not flip, and float-menu gizmos need a pixel click.
+
 ## 0.13.0-dev - 2026-10-07 - The onboarding survey played start to finish, and three things that stopped it
 
 - **OWNER:** *"wtf keep fucking playing and set a watch dog so if u stop thinking idel for 1 minute

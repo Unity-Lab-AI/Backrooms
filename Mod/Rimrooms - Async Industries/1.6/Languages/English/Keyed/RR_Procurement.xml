@@ -15,7 +15,7 @@
   <RR_Procurement_NoOpenQuotes>No current quotes. Quotes expire after the listed period.</RR_Procurement_NoOpenQuotes>
   <RR_Proc_QuoteLine>{0}: {1} requested, ${2}, receiving stockpile {3}</RR_Proc_QuoteLine>
   <RR_Proc_QuoteBurden>Quoted stack estimate: {0}. Current stack setting now gives {1}. Approximate total mass: {2} kg.</RR_Proc_QuoteBurden>
-  <RR_Proc_QuoteTiming>Dispatch in {0} day(s); arrival in {1} day(s); quote expires in {2} day(s).</RR_Proc_QuoteTiming>
+  <RR_Proc_QuoteTiming>Dispatch in {0} day(s); arrival in {1} day(s).</RR_Proc_QuoteTiming>
   <RR_Procurement_AcceptQuote>Accept and pay ${0}</RR_Procurement_AcceptQuote>
   <RR_Proc_ConfirmPurchase>Accept the order for {0} x {1} at ${2}? It will be charged once and delivered to {3} on the quoted schedule.</RR_Proc_ConfirmPurchase>
   <RR_Procurement_OrderHistoryHeading>Orders and physical shipment receipts</RR_Procurement_OrderHistoryHeading>

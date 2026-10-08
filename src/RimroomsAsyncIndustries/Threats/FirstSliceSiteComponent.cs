@@ -197,10 +197,15 @@ namespace RimroomsAsyncIndustries.Threats
                     if (!disputedBefore && HasDisputedAccount(record))
                     { Note("RR_Event_AccountsDisagree", Coordinate.Label, witness.LabelShortCap.ToString()); }
                 }
-                if (pursuer != null && pursuer.Spawned && !pursuerWithdrawn && pursuer.Map == map)
+                // **Whatever lives here, not a pursuer that does not exist.** Owner, 2026-10-07:
+                // *"there is not a quiet persuer just normal enemies and wild animals maybe
+                // nuetral maybne ally maybe enemy"*. A witness standing in a room with any living
+                // pawn that is not the branch's own -- an inhabitant in any relation, or an
+                // animal -- has seen something worth writing down.
+                if (Company.RimroomsCampaignComponent.HasLivingStrangerInRoom(map, room))
                 {
                     Campaign.RecordFieldObservation(record, EvidenceObservationKinds.EntitySighting,
-                        pursuerRoom, room.Index, 0, witness);
+                        room.Index, room.Index, 0, witness);
                 }
             }
         }

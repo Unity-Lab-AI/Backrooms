@@ -13,6 +13,7 @@ This cannot be undone.</RR_Exchange_SellConfirm>
   <RR_Company_InsufficientFunds>The Company Account cannot cover this payment. Existing debts and physical stock remain recorded.</RR_Company_InsufficientFunds>
   <RR_Company_Inactive>No company branch is active in this save. Start the Async Industries scenario to establish one.</RR_Company_Inactive>
   <RR_Company_InitialCase>AI-01: conflicting route record</RR_Company_InitialCase>
+  <RR_Company_SurveyCase>A survey the branch opened itself</RR_Company_SurveyCase>
   <RR_Company_InitialContract>AI-01 onboarding survey</RR_Company_InitialContract>
   <RR_Ledger_InitialFunding>Authorized branch allocation</RR_Ledger_InitialFunding>
   <RR_Ledger_Payroll>Staff payroll</RR_Ledger_Payroll>

@@ -84,10 +84,29 @@ So the moment one exists, `IsOddSupply` is true, `coordinateId` is not empty, `v
 - [ ] **A survey counts only the FIRST room of each required family, and nothing on screen says so.** `EvidenceObservations.RefreshRouteRecorded` takes `coordinate.rooms.FirstOrDefault(r => r.familyId == family)` for each of the six families, so the crew had surveyed a survey lobby (room 6) and a borrowed corridor (rooms 5, 23, 29) on AI-01 and neither family counted -- only rooms 3 and 2 did. The objective reads *"Survey the six required room families"*, which a player takes to mean any room of each. **And the record book that counts is the bound one found in the office, not the blank book the kit loads**: room visits while only a blank company book was carried marked the Atlas but recorded no observation, so the checklist read *"No witnessed observations have been recorded yet"* over seven surveyed rooms.
 
 
+### Owner answer, 2026-10-07 — there is no Quiet Pursuer
+
+**Verbatim owner answer (2026-10-07), asked how the pursuer should reach the crew:** *"there is not a quiet persuer just normal enemies and wild animals maybe nuetral maybne ally maybe enemy and variations of numnbers and difficulty based on depth"*
+
+- [~] **"there is not a quiet persuer"** — the first-slice chaser (`FirstSlicePursuer`) is retired: nothing spawns from a route mismatch.
+- [~] **"just normal enemies and wild animals maybe nuetral maybne ally maybe enemy"** — what a crew meets on a site is ordinary pawns and wild animals in any of the three relations, and the survey's optional entity observation is recorded by witnessing any of them rather than a pursuer that does not exist.
+- [~] **"and variations of numnbers and difficulty based on depth"** — how many and how hard scales with the coordinate's depth.
+
 - [ ] **The Quiet Pursuer never spawns, so the optional entity observation can never be recorded.** Played 2026-10-07 on AI-01: a route-home glow pod set in room 1, the crew walked into the borrowed corridor, the route mismatch fired and recorded (*"a door repeats the last room's label, but the route counter disagrees"*), and no pursuer appeared in the minutes after. The save reads `rr_distortionWarned True` with `rr_pursuerEncounterStarted` never set. `FirstSlicePursuer.StartPursuer` only places the chaser in a room two away that can reach the crew under `TraverseMode.NoPassClosedDoors`, and returns silently when none can -- and `bcf0701`, the same day, put *"A door across every corridor leg"*, so every room two away is behind a closed door. Likely a regression from that commit. **The fork is how the chaser should path**: through doors as a pawn would, or placement ignoring doors and the chaser opening its own way.
 
 
 - [ ] **The equipment-link menu lists every candidate as an identical row with no position.** *Linked equipment* on the gate offered *"Link Wooden shelf as Records archive"* sixteen times and *"Link Wooden shelf as Armory"* sixteen more, with nothing saying which shelf each was; the one linked turned out to be the security-room shelf at `(159, 141)`, found only by reading the save. Each row needs the thing's position, or the menu needs to highlight its target on hover.
+
+
+- [ ] **A coordinate whose layout failed to generate can never be dispatched to, and keeps holding a place.** AI-02, depth 2, sits in Places (*Holding 3 of 5*); every expedition dispatch to it is refused with *"No clear, walkable placement cell remains in the required room."* (`RR_Generation_NoSafeRoomCell`), the key `GenStep_BackroomsDestination` throws from three placement helpers when a room has no free interior cell. An earlier log read *"[Rimrooms][Generation] Site layout stopped; existing coordinate/map are retained"*. `FailedSiteRecovery` readdresses only the initial AI-01 survey, so any later coordinate that hits this is stranded for good. Two halves: why a room has no clear cell at all, and a way to retire or regenerate a failed site.
+
+
+### Owner question, 2026-10-07 — the journal write-up
+
+**Verbatim owner question (2026-10-07):** *"so whats up are you trying to complete a journal write up but thhere is no option on the character?"*
+
+- [~] **One quest sent five journals.** *Choose a direction* sent a record book for its paperwork, and kept sending: five *"A journal for the job"* letters, `rr_questBookDeliveries 6`, five books stamped for the one request. `QuestPaperwork.BookFor` read `listerThings.ThingsOfDef`, which sees spawned things only, so a book in a pawn's pack, in somebody's hands or still in its drop pod did not exist and `TickQuestBookDelivery` sent another -- and the expedition kit's *"Load one textbook from storage"* had loaded two of them into Unity's pack. Fix: `BookFor` searches with Core's `ThingOwnerUtility.GetAllThingsRecursively`, reaching inventories, carried things and skyfaller contents. -- **CORRECTED SAME DAY, read out of the save rather than guessed:** the five journals are `RR_RouteRecording` items and all five lie in the generator room at `(143–144, 156–158)` where their pods landed; the books in Unity's pack were blank kit textbooks, so the duplicates came from **pods still in flight** when the next company tick looked, which the recursive search covers. **A second half found with it:** with duplicates, `BookFor` returned whichever stamped copy it met first, while filing had stamped `RR_RouteRecording1001822` (count 1) and the four others read 0 -- so the quest light could compare against a stale copy for ever. `BookFor` now returns the stamped copy with the most write-ups filed.
+- [ ] **"there is no option on the character"** — the write-up is ordinary work at a **records desk** (`RR_RecordsDesk`), and the colony has none, so nothing offers it. Build one; and check that nothing on screen says a desk is needed until a player has one.
 
 ## TOMBSTONES
 

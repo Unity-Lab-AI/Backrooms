@@ -24,14 +24,35 @@
 
 ## 3. Storage
 
+- *"you still havent started growing cash crops and you still havent figured out you freezer storage as ive already told you how , you have shelfs outside the freezer set to hold freezer goods and good in the freezer not ment to be frozen, i already told you how to set up the shelves and zones, do it"* — **every shelf and zone outside the freezer refuses food, medicine and wort; everything inside the freezer takes only those.**
+- *"all shelves in and out of the freezer need to be correct"*
+- *"make sure all shelves outside are set correct too. like medicine only in the room with hospital beds but heal root under mediceine needs to be in freezewr"* — **herbal medicine (healroot) in the freezer; every other medicine only on shelves in the hospital-bed room; no medicine on any other shelf.**
+
 - *"get your shellves organized so like i already told you"*
 - *"oraganize ur shelfs"*
 - *"build a vault ... cash silver gold high valuable gemms irvory in vaults"*
 
+- *"you have lots of rooms and shelves organize them all correctly,!!! whats suppose to be on each rooms shelves and freezer shelf. rooms with stockpiles need the shelfs 1 priority highrer than the stockpile"* — the room plan, set 2026-10-07:
+
+  | Room | Shelves hold |
+  |---|---|
+  | Freezer | food, herbal medicine, ambrosia, wort; rotten refused |
+  | Hospital | medicine, glitterworld medicine |
+  | Laboratory | books, techprints, neurotrainers, evidence — the records archive belongs here |
+  | Workshop | textiles, manufactured materials, raw resources |
+  | West storeroom | everything except freezer goods |
+  | Kitchen | drugs except ambrosia |
+  | Prison barracks | nothing |
+
+  **A room with a stockpile has its shelves one priority above the zone** (zones *Preferred*, shelves *Important*). Set one shelf, then **Copy settings / Paste settings** to the rest.
+
 ## 4. Work and pawns
+
+- *"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?"* — **look at the world map: neighbours, settlements, trade, raids to answer, places to take.**
 
 - *"set theri scheldule to anything at all times for all pawns"*
 - *"research and manage your pawns"*
+- *"you also might want to research antibiotics and assign everyones drug scheldule manage to take peneacycline every 5 days once you build it at drug lab after researching antibiotics in game"* — research the antibiotics project, build a drug lab, make penoxycyline, and set every pawn's drug policy to take it every 5 days.
 - *"research what u need to unlock better things u can produce"*
 - *"accept neew employees hire them"*
 

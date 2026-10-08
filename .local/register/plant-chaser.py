@@ -93,11 +93,9 @@ PLANTS = [
     # ------------------------------------------------- the false-positive sighting
     # Scanning the map for hostiles would count any raider as an entity observation, which is a
     # false positive on a contract bonus the player gets paid for.
-    ("A SIGHTING STOPS ASKING WHICH PAWN THE CHASER IS", OBSERVATIONS,
-     "            Pawn chaser = site == null ? null : site.Chaser;",
-     "            Pawn chaser = room.Bounds.Cells.Select(c => c.GetFirstPawn(map))"
-     + CHR_NL
-     + "                .FirstOrDefault(p => p != null && p.HostileTo(Faction.OfPlayer));", PROOF),
+    ("A SIGHTING COUNTS THE CREW AS STRANGERS", OBSERVATIONS,
+     "                if (pawn.Faction == Faction.OfPlayer) { continue; }" + CHR_NL,
+     "", PROOF),
 
     # ------------------------------------------------- the ending
     ("THE WITHDRAWAL VANISHES THE PAWN AGAIN", CHASER,

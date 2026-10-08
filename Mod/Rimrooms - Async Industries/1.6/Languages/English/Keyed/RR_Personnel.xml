@@ -44,7 +44,6 @@
   <RR_Personnel_Request>Request applicants</RR_Personnel_Request>
   <RR_Personnel_OfferRow>{0} — {1}</RR_Personnel_OfferRow>
   <RR_Personnel_Quote>One-time onboarding: ${0} USD. Daily wage: ${1} USD, billed separately.</RR_Personnel_Quote>
-  <RR_Personnel_Expiry>Offer expires on day {0}.</RR_Personnel_Expiry>
   <RR_Personnel_ReviewHire>Review hiring terms</RR_Personnel_ReviewHire>
   <RR_Personnel_Decline>Decline and release applicant</RR_Personnel_Decline>
   <RR_Personnel_HireProgress>Onboarding charged: {0}. Arrival attempted: {1}. Employment registered: {2}.</RR_Personnel_HireProgress>

@@ -97,8 +97,13 @@ namespace RimroomsAsyncIndustries.UI
             listing.GapLine();
             listing.Label("RR_Procurement_QuotesHeading".Translate());
             int now = Find.TickManager.TicksGame;
+            // **No expiry filter, because nothing sets one.** "The only clock is the gate"
+            // (0.11.0-dev) stopped quotes expiring and stopped writing `expiresTick`, and this
+            // line kept filtering on `ExpiresTick >= now` -- so an unset tick of 0 hid every quote
+            // ever made, and the catalogue could not be bought from at all. Found playing,
+            // 2026-10-07: three quotes in the save, none on the page.
             List<ProcurementQuoteRecord> liveQuotes = procurement.Quotes.Reverse()
-                .Where(quote => quote != null && !quote.Accepted && quote.ExpiresTick >= now).Take(8).ToList();
+                .Where(quote => quote != null && !quote.Accepted).Take(8).ToList();
             if (liveQuotes.Count == 0) { listing.Label("RR_Proc_NoOpenQuotes".Translate()); }
             foreach (ProcurementQuoteRecord quote in liveQuotes)
             {
@@ -109,8 +114,7 @@ namespace RimroomsAsyncIndustries.UI
                     quote.TotalPriceUsd.ToString("N0", CultureInfo.CurrentCulture), quote.ReceivingZoneLabel));
                 listing.Label("RR_Proc_QuoteBurden".Translate(quote.StackCountAtQuote,
                     currentStacks.ToString("N0", CultureInfo.CurrentCulture), quote.EstimatedMassKg.ToString("N1", CultureInfo.CurrentCulture)));
-                listing.Label("RR_Proc_QuoteTiming".Translate(DaysUntil(quote.DispatchTick, now), DaysUntil(quote.ArrivalTick, now),
-                    DaysUntil(quote.ExpiresTick, now)));
+                listing.Label("RR_Proc_QuoteTiming".Translate(DaysUntil(quote.DispatchTick, now), DaysUntil(quote.ArrivalTick, now)));
                 if (listing.ButtonText("RR_Procurement_AcceptQuote".Translate(quote.TotalPriceUsd.ToString("N0", CultureInfo.CurrentCulture))))
                 {
                     ProcurementQuoteRecord captured = quote;

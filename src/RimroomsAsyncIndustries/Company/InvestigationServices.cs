@@ -35,7 +35,18 @@ namespace RimroomsAsyncIndustries.Company
             Map map = site == null ? null : site.Map;
             if (map == null || !site.LayoutReady || site.CoordinateId != coordinate.id)
             { return CompanyActionResult.Refused("RR_Evidence_SiteUnavailable"); }
-            if (!cases.Any(c => c.coordinateId == coordinate.id)) { return CompanyActionResult.Refused("RR_Evidence_InvalidRecord"); }
+            // **A coordinate with no case gets one, rather than refusing the trip.** The only case
+            // this mod ever opened was the initial AI-01 one, at branch setup, so every expedition
+            // to any other coordinate was refused right here -- *"The recording cannot be linked to
+            // this coordinate and case"* -- and no second route log could ever exist. Field
+            // Stability then refused with *"Survey more coordinates, bring the books home to an
+            // archive shelf, and analyse them"*, an instruction nothing allowed. Found playing,
+            // 2026-10-07, dispatching to AI-03, an address the gate dialled itself.
+            if (!cases.Any(c => c.coordinateId == coordinate.id))
+            {
+                cases.Add(new CaseRecord { id = coordinate.id + ":case:survey", coordinateId = coordinate.id,
+                    titleKey = "RR_Company_SurveyCase" });
+            }
             RoomRecord office = coordinate.rooms.FirstOrDefault(r => r.familyId == "office_copy");
             if (office == null) { return CompanyActionResult.Refused("RR_Evidence_NoSafeSlot"); }
             IntVec3 cell = site.OfficeEvidenceCell;

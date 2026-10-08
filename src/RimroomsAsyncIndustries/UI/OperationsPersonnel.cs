@@ -82,7 +82,6 @@ namespace RimroomsAsyncIndustries.UI
                 listing.GapLine();
                 listing.Label("RR_Personnel_OfferRow".Translate(offer.Name, ("RR_Applicant_" + offer.Status).Translate()));
                 listing.Label("RR_Personnel_Quote".Translate(Money(offer.OnboardingUsd), Money(offer.DailyWageUsd)));
-                listing.Label("RR_Personnel_Expiry".Translate(Day(offer.ExpiresTick)));
                 if (!string.IsNullOrEmpty(offer.FailureKey)) { listing.Label(offer.FailureKey.Translate()); }
                 if (offer.Pawn != null && listing.ButtonText("RR_Personnel_Inspect".Translate(offer.Name)))
                 { Find.WindowStack.Add(new Dialog_PersonnelDossier(offer.Pawn)); }

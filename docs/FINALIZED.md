@@ -18562,3 +18562,120 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TEST.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TEST.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **2 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"you still have t explored your facility to find the bed rooms and other unexplored rooms"** — **DONE 2026-10-07.** Fifteen queued shift-move orders walked Unity through every room of the compound: the bedrooms, the mess, the labs, storage, workshop, medical, security, decon and archive are all revealed and the beds are visible. **The facility generates fogged and nothing reveals it but walking**, which is how the first QA colony reached its fourth hour with the dormitories still dark.
+- [x] **"get your freezer storages set up so that noraml non needing frozen goods arent in the freezer and things like ambrosia, wort, food, healroot are in the freezer"** — a freezer stockpile that takes exactly those, and a general stockpile that takes none of them. **DONE 2026-10-07, read off the filter rather than assumed.** Two zones: a general stockpile at default, and the freezer **cleared to nothing** and then allowed exactly **Foods** (every meal, raw food and ambrosia), **Medicine** (herbal medicine, which is what healroot becomes) and **Wort** — the game's own tooltip on the row, *"Un-fermented beer. This substance needs to ferment in a fermenting barrel"*. Everything else in the tree is a red cross.
+
+> moved from `## Pending` in `docs/TEST.md`
+
+### Owner report — an open gate is charging power to send people through (2026-10-03)
+
+**Verbatim owner report (2026-10-03):** *"and another bug report on the company scenerio start i build and set up and open the gate but it incorrectly says i dont have power to send people through, even tho the gate is open and connected,,, thast is wrong if its open it doenst need special power to send things through the gate"*
+
+**Verbatim owner detail (2026-10-03), naming the message:** *"when i try to send people through it gives me a error about not enough reserver power in the batteries or something incarrate that shouldnt be"*
+
+**The second message identifies the string, and the design statement in the first decides the fix.** Located in source the same session: `Gate/PortalGateOpening.cs:113` `PortalWindowBlockerKey` is the single authority gating a crossing — `HasUsablePortalWindow` only asks it — and on an **already-open** aperture it still applies three *opening-time* power conditions:
+
+| Condition | Where | Why it does not belong on a crossing |
+|---|---|---|
+| `stablePowerTicks < stablePowerTicksRequired \|\| !HasPowerAndHeadroom()` → **`RR_Gate_PowerUnstable`**, *"The gate needs stable connected power and a charged return reserve."* | `CompRimroomsGate.CheckStationReadiness`, called at `PortalGateOpening.cs:124` | `stablePowerTicks` is a **spin-up** counter — it means "has held power long enough to open". Once open that is answered. And **"a charged return reserve" is the owner's *"reserver power in the batteries"*.** |
+| `ProjectedOpeningPowerFailure()` → `RR_Gate_SupplyTooLow` / `RR_Gate_HeadroomTooLow` | same call | Both are projections of the **opening** draw. An aperture that is already held is not a projection. |
+| `NativeStoredEnergy < OpeningPowerDrawWatts * WattsToWattDaysPerTick` → **`RR_PortalTravel_NoCharge`**, *"...Its circuit needs power in the batteries, not just a generator running..."* | `PortalGateOpening.cs:128-129` | Charges stored energy per crossing. This is the other candidate for the message, and it is the clearest case of *"if its open it doenst need special power to send things through"*. |
+
+**And the per-crossing power check is redundant as well as wrong, which is why this is a deletion rather than a tuning.** Power loss while open is already owned by the tick: `CompRimroomsGate.cs:406` runs `HasPowerAndHeadroom()` every tick and calls `EnterEmergency("RR_Gate_PowerLost")`, and `PortalWindowBlockerKey` **already** refuses an emergency gate three lines earlier with `RR_PortalTravel_InEmergency`. So the crossing path is deriving, a second time and with a worse message, a rule the tick already enforces — *"two derivations of one rule is the defect this project keeps meeting"*, in the words of this very file.
+
+- [x] **Observed in play on the company scenario start** — the owner's own repro is a launch, and only the owner launches. -- **OBSERVED 2026-10-07 on the Async Industries start, and no power refusal.** With the AI-01 laboratory connection open and the net in deficit (*"Grid excess: -2733 W"*), Scar and Unity were each sent with *Send … through Wooden autodoor (1x1) to coordinate AI-01*. The only refusal was for being drafted; undrafted, both took `RR_CrossPortal` and were on AI-01 within the next burst (`mapIndex 1`). No *"reserver power in the batteries"* message at any point.
+
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TEST.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TEST.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **2 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"all shelves in and out of the freezer need to be correct"** — **DONE 2026-10-07 by copy and paste, as the owner said.** The freezer is the room at x 158–170, z 135–142 (*Stockpile zone 2*). Its template shelf `(162, 141)`: *Allow rotten* off, fresh on, **Foods**, **Herbal medicine**, **Ambrosia** and **Wort** only -- pasted to the shelves at `(159, 141)` and `(165, 141)` and to the zone. The outside template `(130, 141)`: everything **except** Foods, all Medicine, Ambrosia, Wort and Corpses -- pasted to all fifteen other outside shelves (storerooms at x 130–137, the kitchen's six, the north room) and to the kitchen floor stockpile. Read back on a kitchen shelf afterwards: Foods ✗, Glitterworld medicine ✗, Herbal medicine ✗, Medicine ✗, Ambrosia ✗.
+- [x] **"medicine only in the room with hospital beds but heal root under mediceine needs to be in freezewr"** — **DONE 2026-10-07.** There was no hospital: none of the seven beds was medical. The two beds in the north room are now *Medical* (each reads *"Medical"* on its card), and that room's shelf `(165, 130)` holds Medicine and Glitterworld medicine only, Herbal ✗. Herbal medicine -- what healroot becomes -- is in the freezer's filter.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TEST.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TEST.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **2 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"you have lots of rooms and shelves organize them all correctly,!!! whats suppose to be on each rooms shelves and freezer shelf. rooms with stockpiles need the shelfs 1 priority highrer than the stockpile"** — **DONE 2026-10-07, every shelf read back by room.** Freezer (*Storeroom, mediocre*, 3 shelves + *Stockpile zone 2*): food, herbal medicine, ambrosia, wort, rotten refused. Hospital (1): medicine and glitterworld medicine. **Laboratory (3): books, techprints, neurotrainers and Rimrooms evidence.** **Workshop (1): textiles, manufactured materials and raw resources -- no weapons, apparel, items, drugs, medicine or food.** West storeroom (3): everything except freezer goods. **Kitchen (6): drugs except ambrosia.** **Prison barracks (2): nothing, so a prisoner finds nothing to arm with.** Priorities: both stockpiled rooms read *Preferred* on the zone and *Important* on every shelf -- one above, as asked.
+- [x] **"build prisons"** — **DONE 2026-10-07.** Two beds built in the west room at `(132, 155)` and `(135, 155)` and set *For prisoners*; the room reads **"Prison barracks"** and both beds read *For prisoner use*.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **2 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **The company catalogue has been impossible to buy from since 0.11.0-dev.** "The only clock is the gate" stopped quotes expiring and stopped setting `expiresTick`; `OperationsProcurement` kept listing only quotes with `ExpiresTick >= now`, and an unset tick is 0, so every quote ever created was hidden and none could be accepted. Found playing 2026-10-07 for *Hold a connection open* ($12,000,000, *"Buy the hardware instead"*, 20 components): three *Create supplier quote* presses, three quotes in the save at $1,800,000 each, *"No open quotes"* on the page. Fix: the filter drops the expiry, and the timing line stops promising one. -- **BUILT 0.13.0-dev AND SEEN.** On the same save after the rebuild, Procurement listed *"Component: 100 requested, $1,800,000 ... Dispatch in 1 day(s); arrival in 3 day(s). The quote stands until you accept it."*; *Accept and pay $1,800,000* → *Confirm* charged the account once, 89,481,860 to 87,681,860 USD, and the order is open. *"Request met: Hold a connection open"* had already paid $12,000,000 off the purchase route. The applicant page no longer prints an expiry nothing sets.
+- [x] **Only one case was ever opened, so no coordinate but AI-01 could ever take an expedition, and the research ladder could not be climbed.** `cases.Add` appears once in the mod, for the initial AI-01 case at branch setup; `EnsureRouteRecording` refused any coordinate without a case with *"The recording cannot be linked to this coordinate and case"*, so every dispatch to AI-03 -- generated cleanly behind *"COORDINATE INDEXED — HOLD RELEASED"* -- was refused. Field Stability meanwhile refuses with *"Not enough completed route logs. Survey more coordinates, bring the books home to an archive shelf, and analyse them"*, and *Choose a direction*'s *Say nothing and go* needs an analysed entity log -- both unreachable. Fix: a coordinate with no case gets one when its route recording is first ensured. -- **BUILT 0.13.0-dev AND SEEN.** After the rebuild the same dispatch to AI-03 was accepted: Scar and Unity took `RR_ApproachGate` and were on AI-03 (`mapIndex 3`) within the next bursts.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
