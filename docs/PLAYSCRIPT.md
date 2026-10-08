@@ -91,6 +91,7 @@
 - *"all those walls over top of water need to be cancled and use terraform to change it to dirt first"*
 - *"you are building walls straight into a mountian someone is going to get trapped building, you need to mine out the inerside first and wait to build that sections wall"*
 - *"and make sure you zone shit in right like roofs so courtyards are unroofed and generators need to be out side"*
+- *"dont put roof over you pen"* -- pens and pastures are **No roof** area. **Closing a wall run auto-roofs whatever it encloses**: after every wall closes, paint No roof over pens and courtyards before the crew roofs them (the Store pen was roofed this way, 2026-10-08).
 - *"and why is there a bed in the middle of the river delete that and remove bridge in sturcture"*
 - *"finish your building you have gaps finish the shit donlnt leave shit un set to build"* -- every wall line closed: no gap left unblueprinted, no half-built run abandoned. Scan the walls after every build order.
 - **Towers:** *"yopu need towers on all corrner that you can shhot out from with seperate ventalizatyion and added rooms for security stuff and embrassure sally ports"*
