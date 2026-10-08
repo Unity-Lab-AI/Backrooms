@@ -42,6 +42,7 @@ Every step below is an order already in this playbook; this is only the order th
 6. **Guest wing** off the hall; the bolted-on guest room deconstructed once replaced.
 7. **Gate facility** deepest in the north-east, off the hall: gate room, console, battery and machining table in one secured block.
 8. **Floors** everywhere people live and work.
+   - *Laid 2026-10-08:* the gate facility north of the hall, `x157-173, z169-176` -- a control room (west, `x158-164`) and a gate chamber (east, `x166-172`) divided by a slate wall with **the gate door at `(165,172)`**, entered from the hall by a slate door at `(161,169)`. Roof waits until its walls stand.
 
 Verbatim owner direction (2026-10-08): *"all those walls over top of water need to be cancled and use terraform to change it to dirt first"* -- **never lay a wall on water or marsh**: cancel it, terraform the cell to dirt first, then re-lay the wall.
 
