@@ -34,6 +34,7 @@ Read letters the moment they arrive; trade with every trader (comms console or t
 
 **Reach:** one perimeter, one killbox entrance, towers on every corner.
 
+0. **Nothing built is fixed** -- owner: *"u can move walss and shit anywehere to fill holes and fix building layout to anything at all you can completely redo it to make it your dream hive for your peoples"*. Redo what is wrong rather than build around it.
 1. Architect plan written first (PLAYBOOK §01): 3-wide halls, rooms by purpose, courtyards unroofed, no walls on water or against unmined rock.
 2. **Build in steel** where it matters; **order steel from the company** (Operations -> Procurement) when the pile runs low.
 3. Killbox entrance: staggered sandbags, turrets, embrasures.

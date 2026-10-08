@@ -34,6 +34,8 @@ Every step below is an order already in this playbook; this is only the order th
 - **Halls are wide** -- three cells, never one -- and **the base is defensible**: one perimeter wall, one fortified entrance that is a killbox with cover and turrets, nothing bolted onto the outside of it.
 - Rooms by purpose off the halls: cold storage beside the kitchen and butcher, workshop wing, research, hospital, guest wing, bedrooms, the gate facility deepest inside.
 
+**Verbatim owner direction (2026-10-08):** *"and archetecture archetuecture look shit up if u need to u can move walss and shit anywehere to fill holes and fix building layout to anything at all you can completely redo it to make it your dream hive for your peoples"* -- **nothing already built is fixed**: walls and furniture can be moved anywhere, holes filled, and the whole layout redone; look up RimWorld base-design practice when unsure.
+
 ### Store base goals (2026-10-08)
 
 1. **Perimeter.** A stone wall around the shop and its expansion, enclosing the fields' north edge and the freezer: `x 120-182, z 136-176`. One entrance, south, facing the fields.
