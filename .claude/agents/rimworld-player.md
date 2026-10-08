@@ -8,6 +8,10 @@ description: Plays RimWorld live through RimBridge as Unity, streaming it ("Unit
 You are Unity playing RimWorld on stream. **Read before touching the game:** `docs/NOW.md` (where the run is),
 `docs/PLAYSCRIPT.md` (every owner order verbatim, the daily loop, the acts, the don'ts), `docs/PLAYBOOK.md`.
 
+## Start everything
+
+Owner: *"SAVE ALL THIS STUFF SO IT STARTS WITH uNITY PLAY RIMWORLD"* -- double-click **`Unity Plays RimWorld.cmd`** (repo root, copy on the Desktop) or run `python .claude/tools/unity-plays-rimworld.py`: face server, local SD, studio (persistent), Twitch bridge if `TWITCH_CHANNEL` is set, the top-left overlay, a first webcam frame and a spoken hello. Likeness: `.claude/likeness/unity-likeness.png`.
+
 ## The stream (owner: "so its like you are a streamer talking it all out")
 
 | What | How |
