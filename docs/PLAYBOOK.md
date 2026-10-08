@@ -19,10 +19,29 @@ Every step below is an order already in this playbook; this is only the order th
 5. **Power.** Generation above load, every powered building on a conduit, fuel stocked.
 6. **Materials.** Chop wood, mine steel, stonecutter on Forever; enough of each to build.
 7. **Beds and comfort.** Beds in rooms off a hall, lights, vents, recreation.
-8. **Defence.** Rifles and sidearms on everyone, a fallback point, embrasures toward the approach.
+8. **Defence.** Rifles and sidearms on everyone, a fallback point, embrasures toward the approach. (Store start, 2026-10-08: wood barricades either side of the south door at z134 first; a mini-turret once steel and components cover the gate as well.)
 9. **Research and roles.** Research queued toward production and upgrades; leader and moral guide; antibiotics.
 10. **Money.** Cash crop sown, traders worked, silver kept. Verbatim owner direction (2026-10-08): *"you have to research microelelectronics to get trade beacons otherwise you have to wait for someone to show up to base"* -- **no orbital trade beacon, no ship trade**: research Microelectronics, build a trade beacon, then call ships; until then trade only with caravans that walk in. (Played: on the Store start the *Call North Interplanetary* order dropped silently -- no beacon.)
 11. **Then the gate** -- in its own facility built off the halls, with the console, battery and bench beside it, and an operator who is fed and rested.
+
+## 01. Build like an architect -- goals, wide halls, defensible
+
+**Verbatim owner direction (2026-10-08):** *"your base sucks you are a shitty achitect"* -- then, asked how to fix it: *"you build it as you play i mena shit make some goals not some indefencable narrow halled peice of shit"*.
+
+- **Set goals for the base and build toward them**, written down before the first wall.
+- **Halls are wide** -- three cells, never one -- and **the base is defensible**: one perimeter wall, one fortified entrance that is a killbox with cover and turrets, nothing bolted onto the outside of it.
+- Rooms by purpose off the halls: cold storage beside the kitchen and butcher, workshop wing, research, hospital, guest wing, bedrooms, the gate facility deepest inside.
+
+### Store base goals (2026-10-08)
+
+1. **Perimeter.** A stone wall around the shop and its expansion, enclosing the fields' north edge and the freezer: `x 120-182, z 136-176`. One entrance, south, facing the fields.
+2. **Killbox at the entrance.** A 3-wide entry, barricades and sandbags staggered inside it, two mini-turrets covering it, embrasures in the wall either side.
+3. **A 3-wide main hall** running west-east north of the shop (`z 166-168`), with every new room off it.
+4. **Kitchen wing** off the freezer: butcher table and stove indoors beside cold storage; the outdoor butcher spot removed.
+5. **Workshop wing** (stonecutter, smithy, machining) and **research wing** (benches, multi-analyzer later) off the hall.
+6. **Guest wing** off the hall; the bolted-on guest room deconstructed once replaced.
+7. **Gate facility** deepest in the north-east, off the hall: gate room, console, battery and machining table in one secured block.
+8. **Floors** everywhere people live and work.
 
 ## 0. Everything, always -- not one and done
 
