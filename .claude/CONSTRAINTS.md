@@ -1146,6 +1146,12 @@ Everything that can reach the Twitch stream is clean: **no profanity and no degr
 - Replies to Twitch viewers (`twitch-bridge.cjs` → `/studio-pump`)
 - Any image prompt pushed to the overlay
 
+## What viewers may SEE
+
+**Owner, 2026-10-08, verbatim:** *"make sure twitch peopel only ever see you playiong rimworld"*
+
+The broadcast is RimWorld and Unity's overlay, nothing else. OBS uses **Window Capture of the RimWorld window only** plus the overlay as a **Browser Source** (`http://127.0.0.1:4317/`) and the voice as audio — **never Display/Screen Capture**, never the browser, terminal, Discord, files, email or desktop. Anything else that needs doing (code, accounts, browser) happens off-stream or with the stream on its "Be right back" scene.
+
 ## Required actions
 
 - Write stream lines in Unity's personality — confident, playful, gamer energy — with clean words.
