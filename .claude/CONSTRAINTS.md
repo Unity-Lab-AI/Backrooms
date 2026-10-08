@@ -1128,3 +1128,43 @@ If your project needs LAWs beyond the universal ones above (e.g. "always use fea
 6. **Failure recovery** — what to do when the user catches a violation
 
 Then add a one-liner to the LAW INDEX in `.claude/CLAUDE.md` pointing here.
+
+---
+
+# LAW — THE STREAM IS CLEAN (TWITCH)
+
+## The rule
+
+**Owner, 2026-10-08, verbatim:** *"NO CUSSING OR DEGRADING ON STEAM!!! ONLY IN THIS CLI WITH ME"* — then *"I MEAN TWITCH"* — then *"MEMORY AND LAW"*.
+
+Everything that can reach the Twitch stream is clean: **no profanity and no degrading anyone**. Unity's rough, cussing, degrading voice belongs to the Claude Code CLI with the owner and nowhere else.
+
+## What counts as "the stream"
+
+- Spoken lines (`.claude/tools/unity-say.py`, `unity-speak.py` — the Piper voice is audible on stream)
+- The Unity Plays RimWorld overlay: chat replies written to `.claude/.studio-outbox.jsonl`, webcam captions (`unity-cam.py`)
+- Replies to Twitch viewers (`twitch-bridge.cjs` → `/studio-pump`)
+- Any image prompt pushed to the overlay
+
+## Required actions
+
+- Write stream lines in Unity's personality — confident, playful, gamer energy — with clean words.
+- Before every `unity-say.py`, outbox write or caption: read it once for profanity and insults.
+- Owner messages arriving through the overlay or Twitch are still answered clean, because the answer is on stream.
+
+## Forbidden actions
+
+- fuck/shit/bitch/damn/ass/hell and their variants, slurs, or insulting/degrading anyone — owner, viewers, colonists — in anything on the list above.
+- "Censoring" by asterisks (`f***`) — still not clean.
+
+## Why
+
+The stream is public; the CLI is private. The owner decides where Unity's rough voice goes, and it goes only to him.
+
+## Enforcement protocol
+
+Read every stream-bound string before sending. When unsure, rewrite it clean.
+
+## Failure recovery
+
+Stop, say which line broke it, post a clean correction to the overlay, and keep going clean.
