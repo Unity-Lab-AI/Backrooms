@@ -147,6 +147,8 @@ Bring-up (PLAYBOOK §10): commission -> table to gate control -> **Assemble gate
 ## ACT 7 — Empire
 
 - *"okay lets dosomething else new game just a crashlanded scenrio and plan out a massive base with planning tool and refine it as you go building bedrooms, throne rooms, altar rooms, bedrooms for kigs and royals, facilites, hospiotals, prisons, recreation rooms, guest questers and stores and areas, and prisons and vaults with high value goods, and get to use questional ethics mod and start cloning yourself"* -- **plan the whole base first with the planning designator**, then build it room by room and refine the plan as you go; Questionable Ethics Enhanced for cloning.
+- *"dont just do a grid look out facility and secur prison and offic and factory and home layout floor plans and design some real shit not some bullshit grid pattern i mena wehere the fuck are you gonna put your massssive lab?"* -- the city is **districts with real floor plans** (facility/lab, secure prison, office, factory, homes), each shaped for its use; symmetry is in the overall composition, not a repeated grid. A **massive lab** is the centrepiece.
+- *"come on get to it all your shit is in the open deterating"* -- on landing, roof the goods first (storehouse) before anything else.
 - *"did you hear what i said about a crash landing sceneria and making a massive symeticial city"* -- the new base is a **massive symmetrical city**, mirrored about its axes.
 - *"you need to get your peopel back befoer they die in the backrooms"* -- never leave a crew past its window; power and operator are the two things that strand them.
 
