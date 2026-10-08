@@ -88,11 +88,8 @@ So the moment one exists, `IsOddSupply` is true, `coordinateId` is not empty, `v
 
 **Verbatim owner answer (2026-10-07), asked how the pursuer should reach the crew:** *"there is not a quiet persuer just normal enemies and wild animals maybe nuetral maybne ally maybe enemy and variations of numnbers and difficulty based on depth"*
 
-- [~] **"there is not a quiet persuer"** — the first-slice chaser (`FirstSlicePursuer`) is retired: nothing spawns from a route mismatch.
-- [~] **"just normal enemies and wild animals maybe nuetral maybne ally maybe enemy"** — what a crew meets on a site is ordinary pawns and wild animals in any of the three relations, and the survey's optional entity observation is recorded by witnessing any of them rather than a pursuer that does not exist.
 - [~] **"and variations of numnbers and difficulty based on depth"** — how many and how hard scales with the coordinate's depth.
 
-- [ ] **The Quiet Pursuer never spawns, so the optional entity observation can never be recorded.** Played 2026-10-07 on AI-01: a route-home glow pod set in room 1, the crew walked into the borrowed corridor, the route mismatch fired and recorded (*"a door repeats the last room's label, but the route counter disagrees"*), and no pursuer appeared in the minutes after. The save reads `rr_distortionWarned True` with `rr_pursuerEncounterStarted` never set. `FirstSlicePursuer.StartPursuer` only places the chaser in a room two away that can reach the crew under `TraverseMode.NoPassClosedDoors`, and returns silently when none can -- and `bcf0701`, the same day, put *"A door across every corridor leg"*, so every room two away is behind a closed door. Likely a regression from that commit. **The fork is how the chaser should path**: through doors as a pawn would, or placement ignoring doors and the chaser opening its own way.
 
 
 

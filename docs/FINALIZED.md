@@ -18772,3 +18772,28 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **3 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **"there is not a quiet persuer"** — the first-slice chaser (`FirstSlicePursuer`) is retired: nothing spawns from a route mismatch. **PLAYED 2026-10-07 on AI-03:** Unity collected the bound record (a textbook in the far office copy room at `(108, 272)`), walked into the room where Misha -- a stranger, not the branch's own -- stands at `(131, 151)`, and the Investigation pane now reads under AI-03: *"Entity reported in room 2; the witnessing crew member was in room 2"*. No pursuer was involved.
+- [x] **"just normal enemies and wild animals maybe nuetral maybne ally maybe enemy"** — what a crew meets on a site is ordinary pawns and wild animals in any of the three relations, and the survey's optional entity observation is recorded by witnessing any of them rather than a pursuer that does not exist. **PLAYED 2026-10-07 on AI-03:** Unity collected the bound record (a textbook in the far office copy room at `(108, 272)`), walked into the room where Misha -- a stranger, not the branch's own -- stands at `(131, 151)`, and the Investigation pane now reads under AI-03: *"Entity reported in room 2; the witnessing crew member was in room 2"*. No pursuer was involved.
+- [x] **The Quiet Pursuer never spawns, so the optional entity observation can never be recorded.** Played 2026-10-07 on AI-01: a route-home glow pod set in room 1, the crew walked into the borrowed corridor, the route mismatch fired and recorded (*"a door repeats the last room's label, but the route counter disagrees"*), and no pursuer appeared in the minutes after. The save reads `rr_distortionWarned True` with `rr_pursuerEncounterStarted` never set. `FirstSlicePursuer.StartPursuer` only places the chaser in a room two away that can reach the crew under `TraverseMode.NoPassClosedDoors`, and returns silently when none can -- and `bcf0701`, the same day, put *"A door across every corridor leg"*, so every room two away is behind a closed door. Likely a regression from that commit. **The fork is how the chaser should path**: through doors as a pawn would, or placement ignoring doors and the chaser opening its own way. **SUPERSEDED AND CLOSED 2026-10-07:** the pursuer is retired on the owner's answer, and the entity observation is now recorded from any living stranger -- played on AI-03, *"Entity reported in room 2; the witnessing crew member was in room 2"*.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->

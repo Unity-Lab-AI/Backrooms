@@ -6,6 +6,13 @@
 
 ---
 
+## 0. Everything, always -- not one and done
+
+**Verbatim owner direction (2026-10-07):** *"leave it let everyone catch up on tasks before you do more... and make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done"* -- asked whether to raise a pawn's Grow priority so ripe rice got harvested.
+
+- **Every rule in this playbook is a standing order, checked every pass**, not a task finished once: storage and shelves, freezer, food and harvests, power and conduits, defence, letters and traders, research and upgrades, roles and abilities, work split, the empire list.
+- **Do not pile new work on a busy crew.** When the colony is behind, let the pawns catch up before ordering more.
+
 ## 1. Keep the colonists alive — FIRST, every check
 
 - *"u need to make meals sooner than later"* — a cook bill is running **and somebody is actually cooking it**. A bill nobody prioritizes is not food.
@@ -172,4 +179,5 @@
 6. **Route mismatch:** drop a glow pod, install it in a proper room, *Mark this pod* → Route home, then walk into a borrowed corridor.
 7. **Come home** with *Recall crew along the return route*.
 8. **File the record** on a shelf linked to the gate as *Records archive* (gate → *Linked equipment*), with that shelf allowing **Books** at **Critical** priority.
+8b. **The operator must stay at the console the whole trip.** Played AI-03, 2026-10-07: Gee left the console to sleep, the log read *"Operator station lost"*, then *"Emergency-return window expired"*, and the crew was stranded about eight hours into a 129-hour window. **Dispatch only with a rested, fed operator,** and swap in a relief operator before their rest runs out.
 9. **Analyse** at the company laboratory bench (Investigation → designate one). The survey pays when analysis reaches 100 %.
