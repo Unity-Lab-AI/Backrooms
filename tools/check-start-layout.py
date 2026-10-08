@@ -31,6 +31,8 @@ For every `RimroomsStartDef` in the package:
     actually be used -- Core requires a pawn to stand on exactly that cell,
   * **every cooler's blue side is a room interior and neither side is a wall**, so it cools the
     room it serves rather than blowing along the wall it sits in,
+  * **every powered building reaches a grid that has a power plant**, through conduits and
+    batteries as Core connects them,
   * every conduit cell is inside the layout's own extent,
   * the arrival, stock and emergence cells are interior cells, and the emergence cell is a door,
   * no room's wall runs through another room's interior.
@@ -99,11 +101,45 @@ def thing_sizes(core: str) -> dict:
                     "abstract": node.get("Abstract") == "True",
                     "interaction": node.findtext("interactionCellOffset"),
                     "hasInteraction": node.findtext("hasInteractionCell"),
+                    "power": power_kind(node),
                 }
                 for handle in filter(None, [node.findtext("defName"), node.get("Name")]):
                     by_name[handle] = record
                 order.append(key)
     return by_name
+
+
+def power_kind(node) -> str:
+    """'plant', 'battery', 'transmitter', 'consumer' or '' for a ThingDef node, from its own comps.
+
+    Order matters: a wood-fired generator is a power plant that also transmits, and a battery's
+    comp is `CompProperties_Battery`, not `CompProperties_Power` -- both read off Core 1.6.
+    """
+    for li in node.findall("comps/li"):
+        cls = li.get("Class") or ""
+        comp = li.findtext("compClass") or ""
+        if cls == "CompProperties_Battery":
+            return "battery"
+        if "CompProperties_Power" not in cls:
+            continue
+        if "PowerPlant" in comp or "Plant" in cls:
+            return "plant"
+        if (li.findtext("transmitsPower") or "").strip().lower() == "true" or "Transmitter" in comp:
+            return "transmitter"
+        return "consumer"
+    return ""
+
+
+def power_of(name: str, sizes: dict) -> str:
+    """The power role of a def, walking ParentName until a comp declares one."""
+    seen = set()
+    cursor = name
+    while cursor and cursor in sizes and cursor not in seen:
+        seen.add(cursor)
+        if sizes[cursor].get("power"):
+            return sizes[cursor]["power"]
+        cursor = sizes[cursor]["parent"]
+    return ""
 
 
 def over_wall(name: str, sizes: dict) -> bool:
@@ -403,6 +439,77 @@ def check_start(node, sizes: dict) -> None:
             if cold not in interiors and cold not in walls:
                 fail("%s: %s at %s rotation %d cools %s, outside the building -- blue faces in"
                      % (label, thing, cell, rotation, cold))
+
+    # **EVERY POWERED BUILDING ON A GRID THAT HAS A GENERATOR.** Found playing the Store start,
+    # 2026-10-07: its conduit stopped three cells short of the battery and never reached the
+    # generator, so the generator ran into nothing and the comms console -- the one thing that
+    # start needs to call the corporation -- had no power. Core connects a powered building to a
+    # transmitter on or beside its footprint, and transmitters (conduits, batteries) to each other
+    # by touch; that is modelled here and every consumer must reach a grid with a power plant.
+    # Core's own rule, read from decompiled 1.6: transmitters (conduits, batteries, generators)
+    # join by touching cells, and every other powered building wires itself to the NEAREST
+    # transmitter whose cell lies within 6 of its position, measured to that transmitter's own
+    # position -- `PowerConnectionMaker.BestTransmitterForConnector`.
+    transmit = {}          # cell -> root position of the transmitter occupying it
+    powered = []
+    for line in node.findall("conduits/li"):
+        start = cell_of(line.findtext("start"))
+        length = int(line.findtext("length") or "0")
+        along_x = (line.findtext("alongX") or "true").strip().lower() != "false"
+        if start is None:
+            continue
+        for step in range(length):
+            c = (start[0] + (step if along_x else 0), start[1] + (0 if along_x else step))
+            transmit[c] = c
+    for plan in node.findall("buildings/li"):
+        thing = (plan.findtext("thing") or "").strip()
+        cell = cell_of(plan.findtext("cell"))
+        if not thing or cell is None or thing not in sizes:
+            continue
+        kind = power_of(thing, sizes)
+        if not kind:
+            continue
+        cells = occupied(cell, int(plan.findtext("rotation") or "0"), size_of(thing, sizes))
+        if kind in ("transmitter", "battery", "plant"):
+            for c in cells:
+                transmit[c] = cell
+        powered.append((thing, cell, kind))
+    grid = {}
+    for start in transmit:
+        if start in grid:
+            continue
+        grid[start] = start
+        todo = [start]
+        while todo:
+            x, z = todo.pop()
+            for n in ((x + 1, z), (x - 1, z), (x, z + 1), (x, z - 1)):
+                if n in transmit and n not in grid:
+                    grid[n] = start
+                    todo.append(n)
+    live = {grid[c] for thing, cell, kind in powered if kind == "plant"
+            for c in transmit if transmit[c] == cell}
+    for thing, cell, kind in powered:
+        if kind in ("battery", "transmitter"):
+            if grid.get(cell) not in live:
+                fail("%s: %s at %s is on no grid with a generator" % (label, thing, cell))
+            continue
+        if kind != "consumer":
+            continue
+        best, best_d = None, None
+        for z in range(cell[1] - 6, cell[1] + 7):
+            for x in range(cell[0] - 6, cell[0] + 7):
+                if (x, z) not in transmit:
+                    continue
+                root = transmit[(x, z)]
+                d = (root[0] - cell[0]) ** 2 + (root[1] - cell[1]) ** 2
+                if best_d is None or d < best_d:
+                    best, best_d = (x, z), d
+        if best is None:
+            fail("%s: %s at %s has no conduit within 6 cells -- it will never have power"
+                 % (label, thing, cell))
+        elif grid[best] not in live:
+            fail("%s: %s at %s wires to a grid with no generator -- it will never have power"
+                 % (label, thing, cell))
 
     for name, text in (("arrivalCell", node.findtext("arrivalCell")),
                        ("stockCell", node.findtext("stockCell"))):

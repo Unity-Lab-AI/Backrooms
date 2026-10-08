@@ -483,7 +483,12 @@
       <li><thing>StandingLamp</thing><cell>(33, 0, 32)</cell></li>
     </buildings>
     <conduits>
-      <li><start>(33, 0, 22)</start><length>14</length><alongX>false</alongX></li>
+      <!-- Starts at z19, not z22, and a stub runs east to the generator. Found playing 2026-10-07:
+           the run stopped three cells short of the battery and never reached the wood-fired
+           generator, so the generator made 970 W into nothing and the comms console - the one
+           thing this start needs, to call the corporation - read "The console has no power". -->
+      <li><start>(33, 0, 19)</start><length>17</length><alongX>false</alongX></li>
+      <li><start>(34, 0, 21)</start><length>2</length><alongX>true</alongX></li>
       <li><start>(14, 0, 24)</start><length>22</length><alongX>true</alongX></li>
       <li><start>(28, 0, 12)</start><length>13</length><alongX>false</alongX></li>
       <li><start>(17, 0, 24)</start><length>9</length><alongX>false</alongX></li>
