@@ -18820,3 +18820,29 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-07)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **1 whole direction groups** whose every row was done, and **0 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+### Found playing, 2026-10-07 -- the Activity pane throws every frame and stalls the game
+
+- [x] **The Operations window threw a FormatException on every frame, flooding the log and stalling the main thread** (the owner saw it as a crash: *"something happened i think the game carashed"*). Player.log: *"Exception filling window for RimroomsAsyncIndustries.UI.MainTabWindow_Operations: System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list"* at `DrawCompany`. `RecordEvent(key, relatedId, args)` stores the related id apart from the format arguments, and **fifteen event keys were written as if that id were their `{0}`** (audit `.local/qa/audit-event-args.py`); the first such row in the feed, *"Finished paperwork collected for {0}. Company Account receipt: ${1} USD."* saved with one argument when *Choose a direction*'s journal was collected, made the Activity pane throw. **FIXED IN CODE, built 0 errors:** the pane formats through `ActivityText`, which gives a row one argument short its related id as `{0}` and shows a row it still cannot format as plain text instead of throwing; *QuestBookCollected*, *QuestBookDelivery*, *WriteUpFiled* and *Certified* now pass the readable quest label, write-up kind or pawn themselves. **AND THE ELEVEN REST:** every other event now passes the readable value its text names -- coordinate labels through the new `CoordinateLabelOrId`, the gate, the order, the address -- and the audit finds **no event short of arguments**. Built and staged (DLL hash matched after a clean relaunch). **READ BACK 2026-10-07:** staged, the colony's `Autosave-3` loaded, Operations -> Activity drawn: **0 "Exception filling window" lines** in Player.log. Rows recorded before the fix show the related id where the name belongs (*"Finished paperwork collected for rr-branch-..."*); every event recorded from now on carries the readable value.
+
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
