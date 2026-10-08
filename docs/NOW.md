@@ -52,6 +52,7 @@ Everything else open in TEST is launch-gated on the owner (RimSort profiles, DLC
 - **Alfred** (Hospitality quest, bedridden 19 days) for gold x260 + reinforced barrels x2. **Derek** (torturer, crashed) rescued to a sleeping spot `(152,158)` -- recruit him.
 - **Gate chamber swap:** z184 glass is now plain **glass wall** (4 glass each, 32 total) and the gate door is an **autodoor** at `(169,184)` (wooden -- Replace to steel later). **Electric smelter** blueprinted at `(145,139)`: add *make glass from chunks* x6.
 - **Drug lab** built at `(137-139,145)`: *smokeleaf joint x4* Forever. Penoxycline needs neutroamine -- buy from a trader.
+- **THE GATE (2026-10-08):** a steel door **centred in the gate room at `(169,190)`, commissioned** (owner: the gate stands in the centre, not the doorway). `(169,184)` is a plain autodoor, control room <-> chamber. Glass wall z184 built (smelter glass). Machining table on gate control, *Assemble gate x4* active (one assembly). Hidden conduit laid `(158,163)-(158,183)`, `(159-168,183)`, `(168,184-190)` to put the gate on the console/battery grid. Next: operator, calibrate, console to gate control, remember AI-01, open, **Emergency abort**.
 - Unity is **Pujari of Indra** (role change ritual at the ritual spot `(148,141)`); chess chairs blueprinted.
 
 ## State, measured 2026-10-08
