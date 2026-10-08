@@ -178,6 +178,8 @@ Bring-up (PLAYBOOK §10): commission -> table to gate control -> **Assemble gate
 | Click the corner triangle of an Architect button | it selects that designator live and the next map click builds it -- a stray wooden autodoor got built at `(177,175)` that way |
 | Let wood generators run dry | 2026-10-08: all four at 0/75 fuel, whole Store grid at 0 W -- the machining table was dead, so the gate assembly bill was never offered to anyone (no reason shown, the bench is simply unusable). Read a generator's fuel every loop; four burn ~130 wood/day. Get Solar panel / Battery research so the grid does not live on hauling |
 | Diagnose a bill nobody takes from the bill | right-click the bench with a pawn: an empty menu means the bench itself is unusable -- power first |
+| Type a sell amount with `keys.py` | its `-` is sent as VK 45 (Insert); use `type-neg.py -600` (VK_OEM_MINUS). In the trade window ctrl-click moves 10, shift-click moves everything |
+| Offer joints to a farming trader | not bought (2026-10-08, Pact of Gu-Lom); joints go to exotic/bulk traders and guests. Farming traders buy food: 600 rice + 250 milk = 742 silver |
 | Buy silver through Procurement | **$1,000 per silver** (100 silver = $100,000 on 2026-10-08): the company sells it *"at a poor rate"*. Sell goods to traders for silver instead |
 | Trust one trade beacon to cover the warehouse | the Store beacon at `(147,143)` missed the silver and wool shelves; the trade window showed **Silver 0**. A second beacon at `(137,143)` |
 
