@@ -43,6 +43,10 @@ Every step below is an order already in this playbook; this is only the order th
 7. **Gate facility** deepest in the north-east, off the hall: gate room, console, battery and machining table in one secured block.
 8. **Floors** everywhere people live and work.
 
+Verbatim owner direction (2026-10-08): *"all those walls over top of water need to be cancled and use terraform to change it to dirt first"* -- **never lay a wall on water or marsh**: cancel it, terraform the cell to dirt first, then re-lay the wall.
+
+Verbatim owner direction (2026-10-08): *"and make sure you zone shit in right like roofs so courtyards are unroofed and generators need to be out side"* -- **roof areas only over rooms and halls; courtyards stay unroofed**; **generators stand outside**, not in a room.
+
 ## 0. Everything, always -- not one and done
 
 **Verbatim owner direction (2026-10-07):** *"leave it let everyone catch up on tasks before you do more... and make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done"* -- asked whether to raise a pawn's Grow priority so ripe rice got harvested.
