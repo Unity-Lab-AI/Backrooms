@@ -304,6 +304,14 @@ Bring-up (PLAYBOOK §10): commission -> table to gate control -> **Assemble gate
 
 ---
 
+## Maintaining the empire -- scripts, every loop
+
+Owner, 2026-10-08, verbatim: *"ther is so so so so sooooooo much ive told you to do that you havent even set it to be done yet"* · *"no not the todo agent file and scripts of how to fucking maintatain emp[ire to the stars"* · *"and so much more"*. A standing order is enforced by **code that runs every loop**, not by a list Unity has to remember.
+
+**The loop:** `python .local/qa/play.py N` (play in slices; letters triaged; mad animals and psychic pulses get **Hunt** orders automatically) -> `python .local/qa/empire.py` (one maintenance pass) -> talk, picture, repeat.
+
+`empire.py` today: **STOCK** (steel, components, medicine, wood, cloth kept above a floor -- ordered from the company when low and no order is open) · **DROPZONE** (receiving stockpile Critical while a shipment is pending, Normal after; goes away when the delivery fix is staged) · **ARMS** (unarmed colonists pick up loose guns; the rest are reported). Every new standing order becomes a check here. Next checks to add: bills (x4 meals first, stone blocks x3 to 1000 per stone, joints at the drug lab), research queue never empty, generators fuelled, climate per room, one prisoner bed free, silver in the vault.
+
 ## What NOT to do (learned the hard way)
 
 | Don't | Because |

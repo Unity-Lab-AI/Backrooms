@@ -31,6 +31,7 @@ Owner, then: *"abandon this save and do what i said"* -- **the Async rescue is a
 
 Save `rimbridge_save_20261008_city_prisoner`. Built: 2 storage bays, 3 bedrooms, stove (simple meal until 50), office + research bench. Prisoner Reekeek on Recruit in bedroom S5 (prison cell). Scar: eye infection, being tended. **Hospital built** x88-106 z192-210, 2 steel hospital beds set Medical (save `rimbridge_save_20261008_city_hospital`); **z192 wall cells 92,93,95-100,104,105 are marsh -> soil blueprints, walls go on after; door (99,192)**. Plan JSON: `.local/qa/city/plan.json`.
 
+
 ## ⛔ GOALS, IN ORDER — each one closes a TEST row ⛔
 
 Base-building is done only where a goal needs it. When a goal closes, its TEST row gets the evidence and the next goal starts.
