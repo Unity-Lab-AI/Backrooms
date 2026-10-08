@@ -106,6 +106,7 @@
 - *"start buisnesss"* · *"make company money from quests"* · *"do quests and missions increase ur cash"* · *"get a silver supply like cash"*
 - *"and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on"*
 - **Prison:** *"expand the base build prisons and more facilities"* · *"build prison build guest questers"* · *"get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security"*
+- **Guests:** *"you need to set bed prices and make facilities for guests and use locks so they dont wonder into your vaults only wher u sell stuff and buetify thir rooms and not barracks style rooms"* -- guest beds with a **price set** on each; a guest wing with its own facilities (dining, rec, toilet if any); **locks** on vaults and storage so guests reach only the **shop / sell zone**; guest rooms are **single, beautified rooms** (floor, art, light), never a barracks.
 - **Hiring:** *"accept neew employees hire them"* · *"hire empoloyees"*; visitors: guest beds, then *Invite to stay*.
 - **Upgrades:** *"upgrade build shit you need"* · *"lab upgrade"*
 
