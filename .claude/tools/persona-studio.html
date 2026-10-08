@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Persona Studio</title>
+<title>Unity Plays RimWorld</title>
 <style>
   :root { --accent: #ff4fa3; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -78,6 +78,12 @@
     border-radius: 7px; padding: 9px; font: inherit; font-weight: 700; cursor: pointer; }
   #modal button.ghost { background: #1c1c22; color: #a1a1aa; border: 1px solid #2a2a32; }
   #modal .err { color: #fca5a5; font-size: 11px; margin-bottom: 10px; min-height: 14px; }
+  #cam { position: fixed; top: 52px; right: 14px; width: 300px; z-index: 50; background: #0b0b0f;
+         border: 2px solid #e11d48; border-radius: 10px; overflow: hidden; box-shadow: 0 0 24px rgba(225,29,72,.35); }
+  #cam .live { position: absolute; top: 8px; left: 8px; background: #e11d48; color: #fff; font: bold 11px monospace;
+               padding: 2px 7px; border-radius: 4px; letter-spacing: 1px; }
+  #cam img { width: 100%; display: block; min-height: 120px; background: #111; }
+  #cam .cap { font: 12px monospace; color: #f9a8d4; padding: 6px 9px; }
   ::-webkit-scrollbar { width: 9px; }
   ::-webkit-scrollbar-thumb { background: #2a2a32; border-radius: 5px; }
 </style>
@@ -86,7 +92,7 @@
 
   <div id="bar">
     <span class="dot"></span>
-    <h1>PERSONA STUDIO</h1>
+    <h1>UNITY PLAYS RIMWORLD</h1>
     <span class="spacer"></span>
     <span id="chip">
       <span class="pdot"></span>
@@ -96,9 +102,11 @@
     <button id="clearBtn">CLEAR</button>
   </div>
 
+  <div id="cam"><span class="live">● LIVE · WEBCAM</span><img id="camImg" alt=""><div class="cap" id="camCap">Unity is setting up the stream...</div></div>
+
   <div id="feed">
     <div id="empty">
-      <div class="big">Persona Studio</div>
+      <div class="big">Unity Plays RimWorld</div>
       <div>type to talk to Unity · /help for commands</div>
       <div>replies arrive when <code>/studio-pump</code> is running in Claude Code</div>
     </div>
@@ -334,6 +342,12 @@ window.addEventListener("pagehide", () => {
   setInterval(poll, 1500);
   input.focus();
 })();
+</script>
+<script>
+(function(){ let last=0;
+  async function cam(){ try{ const r=await fetch('/api/cam'); const j=await r.json();
+    if(j.ts && j.ts!==last){ last=j.ts; document.getElementById('camImg').src=j.url+'?t='+j.ts; document.getElementById('camCap').textContent=j.caption||''; } }catch(e){} }
+  cam(); setInterval(cam,2000); })();
 </script>
 </body>
 </html>

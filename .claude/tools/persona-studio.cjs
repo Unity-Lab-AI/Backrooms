@@ -130,6 +130,7 @@ function hasKey(env) { return localImages(env) || !!(env && env.POLLINATIONS_API
 // image gen". Default backend is now LOCAL (sd_server.py, A1111-style /sdapi/v1/txt2img on
 // :7860). Set STUDIO_IMAGE_BACKEND=pollinations in .claude/.env to go back.
 const IMG_DIR = path.join(TOOLS_DIR, '..', '.studio-images');
+let camState = { url: '', caption: '', ts: 0 };
 function localImages(env) { return ((env && env.STUDIO_IMAGE_BACKEND) || 'local') === 'local'; }
 function sdUrl(env) { return (env && env.STUDIO_SD_URL) || 'http://127.0.0.1:7860'; }
 function renderLocal(prompt, env) {
@@ -236,6 +237,10 @@ const server = http.createServer(async (req, res) => {
       return fs.createReadStream(f).pipe(res);
     }
 
+    if (req.method === 'GET' && pathname === '/api/cam') {
+      return sendJson(res, 200, camState);
+    }
+
     if (req.method === 'GET' && pathname === '/api/feed') {
       windowSeen = true;   // the window's recurring poll — watchdog now armed
       const since = parseInt(query.since, 10) || 0;
@@ -332,6 +337,21 @@ const server = http.createServer(async (req, res) => {
         return sendJson(res, 200, { ok: true, id: item.id, url: item.url });
       }
 
+      // Webcam panel: Unity's face on stream, re-rendered when something happens in game.
+      if (pathname === '/api/cam') {
+        const env = readEnv();
+        const prompt = String(body.prompt || '').trim();
+        if (!prompt) return sendJson(res, 400, { error: 'empty prompt' });
+        let png;
+        try { png = await renderLocal(prompt, env); }
+        catch (e) { return sendJson(res, 502, { error: 'local image server: ' + e.message }); }
+        fs.mkdirSync(IMG_DIR, { recursive: true });
+        const name = 'cam-' + Date.now() + '.png';
+        fs.writeFileSync(path.join(IMG_DIR, name), png);
+        camState = { url: '/img/' + name, caption: String(body.caption || '').trim(), ts: Date.now() };
+        return sendJson(res, 200, { ok: true, url: camState.url });
+      }
+
       if (pathname === '/api/shutdown') {
         sendJson(res, 200, { ok: true });
         return setTimeout(() => process.exit(0), 120);
@@ -367,7 +387,7 @@ function listen(port, attempt) {
   server.once('listening', () => {
     const url = 'http://127.0.0.1:' + port + '/';
     console.log('');
-    console.log('  █ PERSONA STUDIO — image window live  →  ' + url);
+    console.log('  █ UNITY PLAYS RIMWORLD — live  →  ' + url);
     console.log('  Unity pushes images via:  POST ' + url + 'api/show  {prompt, persona}');
     console.log('  Ctrl+C to stop.');
     console.log('');
