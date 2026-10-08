@@ -264,10 +264,17 @@
       <li><thing>Cooler</thing><cell>(21, 0, 51)</cell><rotation>0</rotation></li>
       <li><thing>Cooler</thing><cell>(22, 0, 51)</cell><rotation>0</rotation></li>
       <li><thing>Cooler</thing><cell>(23, 0, 51)</cell><rotation>0</rotation></li>
-      <li><thing>Cooler</thing><cell>(51, 0, 19)</cell><rotation>0</rotation><targetTemperature>-8</targetTemperature></li>
-      <li><thing>Cooler</thing><cell>(51, 0, 20)</cell><rotation>0</rotation><targetTemperature>-8</targetTemperature></li>
-      <li><thing>Cooler</thing><cell>(51, 0, 21)</cell><rotation>0</rotation><targetTemperature>-8</targetTemperature></li>
-      <li><thing>Cooler</thing><cell>(51, 0, 22)</cell><rotation>0</rotation><targetTemperature>-8</targetTemperature></li>
+      <!-- The freezer's four sit in the compound's EAST wall, so they face EAST (rotation 1).
+           Building_Cooler cools the cell at South.RotatedBy(Rotation) - the blue side - and
+           pushes heat into North.RotatedBy(Rotation) - the red side. At rotation 0 both sides
+           ran along the wall: blue into the next cooler's cell, red into the one above, and
+           the freezer never froze. Owner, 2026-10-07: "they have a red and blue outputs red
+           faces outside blue inside, fix themn". The three above sit in the NORTH wall and are
+           right at rotation 0: blue south into the room, red north outside. -->
+      <li><thing>Cooler</thing><cell>(51, 0, 19)</cell><rotation>1</rotation><targetTemperature>-8</targetTemperature></li>
+      <li><thing>Cooler</thing><cell>(51, 0, 20)</cell><rotation>1</rotation><targetTemperature>-8</targetTemperature></li>
+      <li><thing>Cooler</thing><cell>(51, 0, 21)</cell><rotation>1</rotation><targetTemperature>-8</targetTemperature></li>
+      <li><thing>Cooler</thing><cell>(51, 0, 22)</cell><rotation>1</rotation><targetTemperature>-8</targetTemperature></li>
       <li><thing>ElectricSmithy</thing><cell>(15, 0, 31)</cell><rotation>0</rotation></li>
       <li><thing>ElectricStove</thing><cell>(27, 0, 19)</cell><rotation>0</rotation></li>
       <li><thing>Heater</thing><cell>(9, 0, 26)</cell><rotation>0</rotation></li>

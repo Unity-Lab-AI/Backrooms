@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-07 - The freezer's coolers face the right way
+
+- **OWNER, watching the colony:** *"i sdee the fucking probeleyou pout the ac units in side ways on the
+  freezer!!!!! they have a red and blue outputs red faces outside blue inside, fix themn"* -- and *"and
+  fix the scenrio facilitieties start build"*.
+
+### What a player gets
+
+- **The Async Industries freezer freezes.** Its four coolers sit in the compound's east wall and
+  shipped facing north, so both their sides ran along the wall into a wall cell and the next cooler.
+  The game's cooler does nothing unless both sides are open, so they never cooled anything and food
+  rotted. They now face east: blue side into the freezer, red side outside. The three in the north
+  wall were already right.
+- **A start can no longer ship a sideways cooler.** The start-layout check fails any cooler with a
+  side in a wall, or with its blue side outside the building.
+
+### Played
+
+- **A leader and a moral guide**, both by ceremony at a new ritual spot: Gee as *God Almighty*, Unity
+  as *Lord*, and a first leader speech.
+- **Two trades.** An exotic caravan, worked by right-clicking its trader, gave plasteel, advanced
+  components, glitterworld medicine and 906 silver -- paid with two age-reversing serums, which the
+  owner called the mistake it was. A combat supplier called on the comms console sold three stun
+  batons, now everyone's second sidearm beside a pain stick.
+- **10,000 silver ordered from the company** for $9,000,000, an applicant requested, a stonecutter's
+  table cutting blocks forever, the freezer zone taking animal corpses, and a limestone bedroom wing
+  started off the base's own hall with a cross hall through it.
+
 ## 0.13.0-dev - 2026-10-07 - No pursuer, a catalogue that sells, cases for every coordinate, one journal per job
 
 - **OWNER, asked how the Quiet Pursuer should reach a crew:** *"there is not a quiet persuer just

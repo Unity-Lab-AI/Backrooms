@@ -7,8 +7,8 @@
 | `docs/ROADMAP.md` | MAJOR — phases and milestones |
 | `docs/TODO.md` | MINOR — buildable work only |
 | `docs/DECOMPOSED.md` | smallest execution units |
-| `docs/TEST.md` | the test phase, and the owner's play brief at the top of it |
-| **`docs/PLAYBOOK.md`** | **every play order the owner has given, verbatim, and §9 the survey procedure. Read before playing** |
+| `docs/TEST.md` | the test phase; **"Owner direction — global control"** is the live section |
+| **`docs/PLAYBOOK.md`** | **every play order the owner has given, verbatim. §4a is global control. Read before playing** |
 | **`docs/NOW.md`** (this file) | **the handoff — one record** |
 | `docs/FINALIZED.md` | permanent archive, append-only |
 
@@ -16,45 +16,41 @@
 
 ## The standing order
 
-**Owner, 2026-10-07, verbatim:** *"wtf keep fucking playing and set a watch dog so if u stop thinking idel for 1 minute we get woken with \"get the tests all completed\""*
-
-The watchdog is a session cron: `*/1 * * * *`, prompt **"get the tests all completed"**. It dies with the session; the next session re-arms it the same way.
+Watchdog cron `*/1 * * * *`, prompt **"get the tests all completed"**. Dies with the session; re-arm it the same way.
 
 ## What this session did
 
-**Pushed `f5202c3`.** Expedition windows on the ladder, a built gate's controls restored, analysis that can finish, the catalogue selling, a case for every coordinate, one journal per job, the Quiet Pursuer retired. AI-01's survey **Completed**; every request the company names has paid -- account **87.6M USD**.
+**The freezer coolers, a mod defect.** `RR_AsyncIndustriesStart` put the freezer's four coolers in the east wall at rotation 0; decompiled `Building_Cooler` cools `South.RotatedBy(rot)` and does nothing unless both sides are open, so they never cooled. Def now rotation 1; `check-start-layout.py` fails any cooler with a blocked side or its blue side outside. Built and staged; the colony's own four were rebuilt facing east at 16 F.
 
-**The colony** (`PLAYBOOK.md` §3 is the room plan): freezer and every room's shelves set by copy/paste, shelves one priority above each stockpile; hospital; prison barracks; records desk; Smokeleaf zone; seven generators. Save: **`rimbridge_save_20261007_rooms_organised`**.
+**The colony:** leader Gee (*God Almighty*), moral guide Unity (*Lord*) at a ritual spot `(158,147)`; two trades (exotic caravan, combat supplier by comms console); 10,000 company silver ordered; an applicant requested; stun batons and pain sticks as sidearms on all three; stonecutter on Forever; freezer zone takes animal corpses; ~60 old letters dismissed. Save: **`rimbridge_save_20261007_stone_wing`**.
+
+**Gee, Scar and Unity are all age 14** -- no romance, no children until an adult hire. Visitors offer *"Invite to stay (No guest beds)"*: guest beds are the recruiting route.
 
 ## ⛔ OPEN, IN ORDER ⛔
 
-1. **Choose a direction ($10M) -- the reason it has not paid, found:** `QuestPaperwork.LightFor` turns green only when the journal is in **archive custody** (on the gate's linked *Records archive* shelf), and collection then needs it inside a **credit beacon's** radius. The archive link is still on `(159, 141)`, a **freezer** shelf that no longer takes books. **Do:** gate → *Linked equipment* → release that shelf, link a **lab shelf** (`(130/133/136, 141)`, they take evidence) as *Records archive*; the lab sits inside the credit beacon at `(135, 139)`. Then the stamped journal (`RR_RouteRecording1001822`, most write-ups on it) has to reach that shelf. The link menu's rows carry no positions (TODO), so check which shelf was linked by saving and reading `Thing_Shelf` ids.
-2. **Stone chunks: DONE.** All 12 inside the base were hauled out after a long burst -- they had been reserved by Gee, not stranded; the earlier "nowhere to go" guess was wrong.
-3. **Raid the one-defender Cuvin Flamehome outpost** (world map) with three rifles; prisoner to the prison barracks.
-4. **Antibiotics:** research, a drug lab, penoxycyline every 5 days on every pawn's drug policy (`PLAYBOOK.md` §4).
-5. **AI-03 survey**, second opening, to see a stranger recorded as the entity observation.
-6. TODO: AI-02's failed layout; the link menu's identical rows, then move the records archive off the freezer shelf `(159, 141)` to a lab shelf; the first-room survey rule; three stale plant anchors.
+1. **The stone wing** (limestone walls blueprinted, x149-163, z105-127): hall x156 off a new door at `(156,128)`, cross hall z115 with exits at x149/x163, four uniform 5x5 bedrooms north (doors x155/x157 at z119, z125), nursery west and guest room east (doors at z109). **Still to place:** every door in limestone, a vent and a light in each room, a double bed + end table + dresser per bedroom in the same spot and facing, guest beds, cribs. Owner: *"think uniformity"*.
+2. **Choose a direction ($10M):** relink the gate's records archive from freezer shelf `(159,141)` to a lab shelf, get journal `RR_RouteRecording1001822` onto it.
+3. **AI-03** second opening -- a stranger as the entity observation; bring Misha and Feeb home.
+4. **Raid** the one-defender Cuvin Flamehome outpost; first prisoner.
+5. **Antibiotics**, a cash-crop-to-product chain (smokeleaf joints; devilstrand is researched), a corral and cows.
+6. Leader and moral-guide abilities on every cooldown.
 
-## Tools added this session, all in `.local/qa/`
+## Tools added, `.local/qa/`
 
 | Tool | Use |
 |---|---|
-| `explore-to.py <pawn> x z w h` | walks a drafted pawn into a room through fog. **Undraft between legs — drafted pawns do not eat** |
-| `gizmo.py x z "<label>"` | runs a selected thing's gizmo by label; float-menu gizmos still need a pixel click after |
-| `battery-read.sh` | each battery's stored charge off its own pane |
-| `find-things.py`, `designate-cells.py`, `dispatch-crew.sh` | map search, designations over a cell list, empty-hands dispatch |
+| `keys.py --clear N` / `--esc` | real key presses: numeric fields (unicode typing does not reach them) and Escape, which drops a live designator that `press_cancel` does not |
+| `terrain-map.py x0 z0 x1 z1` | character map: walls, doors, rock, trees, chunks, blueprints |
+| `blueprints.py x z w h` | blueprints, frames and solids per cell |
 
-**`select_pawn` switches the current map**; `jump_camera_to_pawn` does not cross maps.
+**Rotated placement** needs a real click: select the designator, press `E`/`Q` via `keys.py`, centre the camera on the cell, click the screen centre. `apply_architect_designator` ignores rotation.
 
 ## State, measured
 
 | | |
 |---|---|
 | Branch | **`feature/bug-testing`** |
-| Version | **0.13.0-dev**, 0 warnings, 0 errors, staged copy hash-checked |
+| Version | **0.13.0-dev**, built and staged, hash-checked |
 | Checkers | **32 of 33** — the stale plant anchors, failing before this session |
+| TEST | **73 `[T]` rows open**; ~15 closed in the last 6 hours |
 | Forgejo | **held.** GitHub only |
-
-## Is it done?
-
-**No.** The survey loop is proven end to end; the threat half of it cannot run until the pursuer can spawn.

@@ -26,6 +26,8 @@
 
 - *"you still havent started growing cash crops and you still havent figured out you freezer storage as ive already told you how , you have shelfs outside the freezer set to hold freezer goods and good in the freezer not ment to be frozen, i already told you how to set up the shelves and zones, do it"* — **every shelf and zone outside the freezer refuses food, medicine and wort; everything inside the freezer takes only those.**
 - *"all shelves in and out of the freezer need to be correct"*
+- *"you have food rotting away because you havenet stoorege things on shelveves properly"* (2026-10-07) -- **food left anywhere but the freezer rots. Read the map for every food stack outside the freezer after any harvest, hunt or butcher, and give it a shelf in the freezer.**
+- *"i sdee the fucking probeleyou pout the ac units in side ways on the freezer!!!!! they have a red and blue outputs red faces outside blue inside, fix themn"* -- **a cooler sits in the freezer's outer wall with its blue (cold) side into the freezer and its red (hot) side outside.** Check the rotation of every cooler after building it.
 - *"make sure all shelves outside are set correct too. like medicine only in the room with hospital beds but heal root under mediceine needs to be in freezewr"* — **herbal medicine (healroot) in the freezer; every other medicine only on shelves in the hospital-bed room; no medicine on any other shelf.**
 
 - *"get your shellves organized so like i already told you"*
@@ -45,6 +47,53 @@
   | Prison barracks | nothing |
 
   **A room with a stockpile has its shelves one priority above the zone** (zones *Preferred*, shelves *Important*). Set one shelf, then **Copy settings / Paste settings** to the rest.
+
+## 4a. Global control — the whole game, not one fix at a time
+
+**Verbatim owner direction (2026-10-07):** *"keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them"*
+
+- **All resources on shelves, always.** Steel, wood, stone blocks, components, cloth, silver -- every resource has a shelf that takes it, one priority above any floor stockpile in the room.
+- **Private rooms** -- a bedroom for every colonist.
+- **The leader role and every ideology role assigned**, and all the ideoligion's wants met: its statues (*The Galaxy*), its rooms.
+- **A party room, throne rooms, landing pads** -- everything in the game the colony can build.
+- **Global control:** expand, hire employees, marry, have children and raise them, protect, save, heal, feed, upgrade, arm, defend.
+
+**Verbatim owner direction (2026-10-07):** *"cant have kids until u privet rooms with double beds, one guy can knock up[ many"* -- then: *"read now.md to continue : cant have kids until u build privet rooms with double beds and set them to sleep there. can swap em in and out till all, one guy can knock up[ many"*
+
+- **Children need private rooms with double beds**, and the couple **assigned to sleep there**. Swap partners in and out of the bed until every woman is pregnant -- one man can father many.
+
+**Verbatim owner direction (2026-10-07):** *"kids need milk and cribs and toys"*
+
+- **Before the babies come:** milk (baby food), cribs, and toys -- a nursery ready in advance.
+
+**Verbatim owner direction (2026-10-07):** *"have to trade, make a corral for cows and such, buy cows, get a silver supply like cash"*
+
+- **Trade.** Build a **corral** (animal pen) for cows and other livestock, **buy cows** from traders, and keep a **silver supply** on hand like cash.
+
+**Verbatim owner direction (2026-10-07):** *"be greedy u want welath and power while making all factions you can your allies by send gifts with drop pods"*
+
+**Verbatim owner direction (2026-10-07):** *"dont ignore you messages  someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need"*
+
+- Verbatim: *"right click on message on the right to clear old ones and left click to read them"* -- **the letter stack on the right: left-click to read, right-click to dismiss once handled.** Keep it short so nothing new hides under old ones.
+- Verbatim: *"you haver t o use comms console to call trade hub to trade or call a ship to land or trade with trades via pawns dirrectly when they show up"* -- **three ways to trade:** the **comms console** (call a trade hub / a passing ship to land), or **right-click the trader pawn** of a visiting caravan with a colonist selected.
+- Verbatim: *"okay but you sold whit that was very high tech thats will keep ur colonists from dying from old age and u cant get more...... u need cash crops to sell to bulk goods traders and refine them into better products u need research to make money(silver) or order it from company"* -- **never sell irreplaceable high tech** (age-reversing serums, anything that cannot be made or bought back). **Pay for trades with cash crops and refined goods** sold to bulk goods traders, **research what turns crops into better products**, or **order silver from the company**.
+- **Read every letter and message as it lands.** A trader is an opening: buy **tech** (techprints, advanced components, gear the plan needs), plan ahead, and **buy nothing the colony does not need.**
+- **Be greedy:** chase wealth and power. **Make every faction you can an ally** by sending gifts by **transport pod** (research *Transport pod*, build pod launchers, load silver/goods, launch to their settlements as gifts).
+
+**Verbatim owner direction (2026-10-07):** *"and make sure you equipe stun batons pain sticks in off hand as side weapons for close range"*
+
+**Verbatim owner direction (2026-10-07):** *"cancle that contruction"* -- six wood bedrooms stuck to the outside of the base's south wall, doors opening outdoors. Asked why, the owner answered **"1-3"**: wrong place (outside the wall, doors to the open), wrong material (wood burns -- stone blocks or steel), and wrong order (the ritual spot and the leader role come first). Then: *"you have to continue halls and shit u cnat just attach rooms to a fucking straightr  other room u need appropriate pathing"*
+
+- **Rooms hang off a hall, never straight off another room or the outside.** Extend an existing corridor and open the new rooms off it; every room is reached through proper pathing inside the walls.
+- **Build in stone blocks or steel, not wood.**
+- Verbatim: *"dont forget cros paths dont want mile long corridors and need vents and lights and furnature for beds"* -- **halls cross**: a long corridor gets a cross hall with its own exits, never one dead-end run. **Every room gets a vent** (temperature from the base), **a light**, and **bedroom furniture** -- end table and dresser beside each bed.
+- Verbatim: *"and u can move walls and furnature wher u want it facing direction u want"* / *"think uniformity"* -- **existing walls and furniture are not fixed**: move, reinstall and rotate them to fit the plan. **Uniformity:** every bedroom the same size, same layout, bed facing the same way, same furniture in the same spots; halls the same width.
+- Then, verbatim: *"i told you 1 through 3 i never told you to stop... i said you fucked up by not using archetatual understandings to make a vibrant well planned base"* -- **plan the base like an architect**: a laid-out extension with halls, zones by purpose, defensible outer wall, then build it. Never stop playing over a correction.
+- Verbatim: *"if doing in stone ur conna need a stone cutting bench"* -- **a stonecutter's table first**, with a *Make stone blocks* bill on Forever, fed by the chunks.
+- **Order matters:** ritual spot and leader role before bedrooms.
+- Verbatim: *"now u have a leader u need a morasl guide and they ahave abilities u want to always use"* -- **leader and moral guide both filled, and their role abilities used every time they come off cooldown** (leader: speeches/inspiration; moral guide: counsel, conversion, etc.).
+
+- **Every colonist carries a melee sidearm** -- stun baton / pain stick (*Sidearms*) -- for close range, alongside the rifle.
 
 ## 4. Work and pawns
 

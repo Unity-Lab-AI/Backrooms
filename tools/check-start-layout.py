@@ -29,6 +29,8 @@ For every `RimroomsStartDef` in the package:
   * every column stands on a free interior cell, never on a door or under furniture,
   * **every interaction cell is a standable interior cell**, so a bench or console can
     actually be used -- Core requires a pawn to stand on exactly that cell,
+  * **every cooler's blue side is a room interior and neither side is a wall**, so it cools the
+    room it serves rather than blowing along the wall it sits in,
   * every conduit cell is inside the layout's own extent,
   * the arrival, stock and emergence cells are interior cells, and the emergence cell is a door,
   * no room's wall runs through another room's interior.
@@ -383,6 +385,24 @@ def check_start(node, sizes: dict) -> None:
                      % (label, thing, cell, taken[occupied_cell][0], taken[occupied_cell][1],
                         occupied_cell))
             taken[occupied_cell] = (thing, cell)
+        # **A COOLER BLOWS ALONG ITS ROTATION, NOT ACROSS THE WALL IT SITS IN.** Decompiled 1.6
+        # `Building_Cooler.TickRare`: it cools the cell at `South.RotatedBy(Rotation)` -- the
+        # blue side -- pushes heat into `North.RotatedBy(Rotation)` -- the red side -- and does
+        # NOTHING AT ALL unless both are passable. The freezer's four coolers shipped in the east
+        # wall at rotation 0, so both sides ran along the wall into a wall cell and the next
+        # cooler, and the freezer never froze. Owner, 2026-10-07: "they have a red and blue
+        # outputs red faces outside blue inside, fix themn".
+        if "Cooler" in thing:
+            south = {0: (0, -1), 1: (-1, 0), 2: (0, 1), 3: (1, 0)}[rotation % 4]
+            cold = (cell[0] + south[0], cell[1] + south[1])
+            hot = (cell[0] - south[0], cell[1] - south[1])
+            for side, spot in (("blue (cold)", cold), ("red (hot)", hot)):
+                if spot in walls or spot in pillars:
+                    fail("%s: %s at %s rotation %d puts its %s side into the wall %s -- a cooler "
+                         "with a blocked side does nothing" % (label, thing, cell, rotation, side, spot))
+            if cold not in interiors and cold not in walls:
+                fail("%s: %s at %s rotation %d cools %s, outside the building -- blue faces in"
+                     % (label, thing, cell, rotation, cold))
 
     for name, text in (("arrivalCell", node.findtext("arrivalCell")),
                        ("stockCell", node.findtext("stockCell"))):
