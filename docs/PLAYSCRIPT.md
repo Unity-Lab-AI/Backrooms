@@ -168,6 +168,9 @@ Bring-up (PLAYBOOK §10): commission -> table to gate control -> **Assemble gate
 | Leave letters stacked | 32 piled up by 2026-10-08 |
 | Type into a search box with `hands.py --type` | unicode events never arrive; click the box, then `keys.py --clear <text>` (real key presses) -- the research search then jumps straight to a project, and clicking it queues its prerequisites |
 | Trust *"visible"* in the Architect list as researched | the drug lab was listed while Drug production sat at 0/500 |
+| Read terrain blueprints with `get_cells_info` | its `blueprintBuildDefs` leaves out soil/terraform blueprints; use `get_cell_info` labels (*"Soil (blueprint)"*) |
+| Trust marsh to stay put | rain floods soil to *MarshFlood* and dries it back, and a wall blueprint on a cell that floods is lost: re-check marsh-edge walls after every rain |
+| Leave a hole while a mad animal is about | the mad alpaca came in through the unbuilt east wall and ran the length of the main hall (2026-10-08) |
 | Buy silver through Procurement | **$1,000 per silver** (100 silver = $100,000 on 2026-10-08): the company sells it *"at a poor rate"*. Sell goods to traders for silver instead |
 | Trust one trade beacon to cover the warehouse | the Store beacon at `(147,143)` missed the silver and wool shelves; the trade window showed **Silver 0**. A second beacon at `(137,143)` |
 
