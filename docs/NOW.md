@@ -22,19 +22,18 @@ The watchdog is a session cron: `*/1 * * * *`, prompt **"get the tests all compl
 
 ## What this session did
 
-**Shipped and seen in play:** expedition windows on the ladder (*"Opening time: 7776 in-game minutes"*), a built gate's controls restored, analysis that can finish (AI-01 *Analyzed 100 %*, survey **Completed**), the catalogue selling again, a case for every coordinate (AI-03 took a crew), and the battery fix three of four. **Shipped, not yet seen:** the Quiet Pursuer retired with sightings from any stranger, depth-scaled encounter numbers, one journal per job.
+**Pushed `f5202c3`.** Expedition windows on the ladder, a built gate's controls restored, analysis that can finish, the catalogue selling, a case for every coordinate, one journal per job, the Quiet Pursuer retired. AI-01's survey **Completed**; every request the company names has paid -- account **87.6M USD**.
 
-**Money:** every request the company names has paid -- account about **87.6M USD**. *Choose a direction* ($10M) has its write-up filed; its journal `RR_RouteRecording1001822` sits in Unity's pack and goes to the **credit beacon at `(135, 139)`**.
-
-**The colony** (`PLAYBOOK.md` §3 has the room plan): freezer and every room's shelves set by copy/paste, shelves one priority above each stockpile; hospital; prison barracks; records desk; Smokeleaf zone; seven generators.
+**The colony** (`PLAYBOOK.md` §3 is the room plan): freezer and every room's shelves set by copy/paste, shelves one priority above each stockpile; hospital; prison barracks; records desk; Smokeleaf zone; seven generators. Save: **`rimbridge_save_20261007_rooms_organised`**.
 
 ## ⛔ OPEN, IN ORDER ⛔
 
-1. **Drop the stamped journal in the credit beacon's radius** and watch *Choose a direction* settle.
-2. **Raid the one-defender Cuvin Flamehome outpost** (world map, north-west of home) with three rifles; bring the defender home to the prison barracks.
-3. **Antibiotics:** research, a drug lab, penoxycyline every 5 days on every pawn's drug policy -- the owner's direction in `PLAYBOOK.md` §4.
-4. **AI-03 survey**, second opening, to see a stranger recorded as the entity observation.
-5. TODO: AI-02's failed layout, the link menu's identical rows (and moving the records archive off the freezer shelf `(159, 141)` to a lab shelf), the first-room survey rule, three stale plant anchors.
+1. **Choose a direction ($10M):** write-up filed. The **kitchen beacon `(150, 139)` is now a credit beacon** with the journals lying in its radius -- watch for collection. A dropped journal is hauled away before a beacon far from storage can take it, so the beacon has to cover where the journals are stored.
+2. **Haul the stone chunks out of the base** to the dumping zone -- owner direction, 2026-10-07.
+3. **Raid the one-defender Cuvin Flamehome outpost** (world map) with three rifles; prisoner to the prison barracks.
+4. **Antibiotics:** research, a drug lab, penoxycyline every 5 days on every pawn's drug policy (`PLAYBOOK.md` §4).
+5. **AI-03 survey**, second opening, to see a stranger recorded as the entity observation.
+6. TODO: AI-02's failed layout; the link menu's identical rows, then move the records archive off the freezer shelf `(159, 141)` to a lab shelf; the first-room survey rule; three stale plant anchors.
 
 ## Tools added this session, all in `.local/qa/`
 
