@@ -392,6 +392,7 @@ Owner, 2026-10-08, verbatim: *"ther is so so so so sooooooo much ive told you to
 | Leave single embrasures in interior walls | owner, 2026-10-09, verbatim: *"3 places with stupid embracers 1x1 in interior walls that do nothing replace with marble when u can"* -- the 1x1 embrasures at (175,98), (181,98), (187,98) become marble wall |
 | Run short on steel | owner, 2026-10-09, verbatim: *"better mine steel or order some trade is your go to once u figure it out"* -- mine steel deposits and order steel from the company; trading is the main income once it works |
 | Wait on chat to choose | owner, 2026-10-09, verbatim: *"if they done answer just keep toward your goals of empire world domination and space warfare"* -- ask chat about the next move, and if nobody answers, keep going toward the long goal: an empire, world domination, space warfare |
+| Mix freezer and dry goods | owner, 2026-10-09, verbatim: *"you need to figure out your freezer storage vs non freezer items u have frezeder with all kinds of non frezeer shit and need more ac at right temp in freezer"* -- freezer shelves hold food and plant matter only; everything else lives in dry storage; the freezer has enough coolers set below freezing |
 
 ## Where the live run is
 
