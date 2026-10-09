@@ -35,7 +35,7 @@ whole body moved here unchanged and that file went back to its template state.
 | [`ROADMAP.md`](ROADMAP.md) | MAJOR — phases and milestones |
 | [`TODO.md`](TODO.md) | MINOR — the working queue, **open buildable work only** |
 | [`DECOMPOSED.md`](DECOMPOSED.md) | smallest execution units, open only |
-| **`TEST.md`** (this file) | **the test phase — `[T]` only, 68 rows, and a build closes none of them** |
+| **`TEST.md`** (this file) | **the test phase — `[T]` only, 67 rows, and a build closes none of them** |
 | [`FINALIZED.md`](FINALIZED.md) | permanent archive, append-only |
 
 Status markers here are `[T]` and nothing else. A row that turns out to be buildable after all goes
@@ -69,7 +69,6 @@ recorded on the row, and then the row moves to `FINALIZED.md` by the usual archi
 
 **The colony is `rimbridge_save_20261007_105853.rws` and its successors:** Async Industries on the owner's own flow — Preset3 through Prepare Carefully, the Godsmultiplayer ideoligion — three staff, Gee, Scar and Unity. Every order below goes through the bridge; every result is read back from the map, the log or a save, never assumed.
 
-- [T] **"expand the base build prisons and more facilities , maintain and watch your resources, research and manage your pawns , set theri scheldule to anything at all times for all pawns"** — a research project queued, every pawn's schedule on Anything, a prison, and the base growing. **PART DONE 2026-10-07:** every hour of every pawn's schedule painted **Anything**, and research is running — **Prisoner containment finished** and *"Gee Fourteen has started a new research: Crude torture methods"*. A conduit spine now reaches the batteries, the console, the machining table, the gate hall, the coolers and the mess. **Open:** the prison itself, and further building. -- **MORE 2026-10-07.** Three wood-fired generators (seven total, +3.9 kW with the gate closed); a **records desk** at `(149, 132)`, where the first research write-up was filed (*"Choose a direction — 1 of 1 filed"*); a **hospital** -- the two beds in the north room switched to *Medical* and its shelf set to medicine and glitterworld medicine only; **a prison cell started** -- two beds framed in the west storeroom at `(132, 155)` and `(135, 155)`. **Open:** the cell beds finished and set for prisoners, then the first prisoner. **PRISON GOING 2026-10-08 (Store colony):** Prisoner containment researched; a prison cell set up in the old gate chamber `(166-172,170-175)`, bed *For prisoners*; **Lenka** (34, town councilman, crashed POW) captured by Scar and jailed, interaction **Recruit**, *Force to work* on (Prison Labor). Facilities added this run: gate complex, drug lab, electric smelter, assembly shop, 2nd trade beacon, 4 generators. Still open: layers of locks, prisoner work areas. **CITY COLONY 2026-10-08 (Marble Hollow, Crashlanded + founded branch):** two marble cells built (`x171-183, z102-108`), bed set *For prisoners* (Hospitality hides it under the *For colonists* gizmo); *Raid: Choke Toxers* beaten with nobody downed and waster **Reaper (minstrel)** shot down, captured by Scar, carried to the cell and tended (*"Gunshot (charge rifle) tended"*); Prisoners tab interaction set **Recruit** (read back), legcuffs/handcuffs/intel ticked, Prison Labor work row present.
 
 ### Owner direction — storage, cash crops and ambition (2026-10-07)
 
