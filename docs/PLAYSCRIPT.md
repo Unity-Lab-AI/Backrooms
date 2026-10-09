@@ -444,6 +444,7 @@ Owner, 2026-10-08, verbatim: *"ther is so so so so sooooooo much ive told you to
 | Generators actually placed (not placed then cancelled) | owner, 2026-10-09, verbatim: *"u never did your generators youd place them then jsut cancle their palcement"* -- DONE with the owner's mouse: utility row z67 x124-131, wood row z70 x124-133. install.py now selects with the camera on the source and places with the bridge's click_cell on the exact destination cell (no pixel aim); a retry cancels ONLY its own new ghost, never neighbours |
 | All conduit one continuous string until advanced multi-circuits | chat (forever11231), 2026-10-09: *"dont foget all conduts contiuous one string, until u do advaced muilti curcuits"* -- conduit-link.py each pass |
 | Base tour with highlighted shots | chat (forever11231), 2026-10-09: *"giveeverone a view of the basefacilitys with prompt images highlights"* -- .local/qa/tour-base.py: frame each facility, ringed + labelled shot, a line each (UNITY_NO_GLANCE keeps the marked shot up) |
+| No click bursts on stream | owner, 2026-10-09, verbatim: *"something is wrong u are clicking a million times in a row and it looked weird on steeam"* -- bulk in-game selection jobs (api-paste-shelves.py) are paced (0.6 s per shelf), announced on stream first, and only run when something actually needs changing |
 
 ## Where the live run is
 
