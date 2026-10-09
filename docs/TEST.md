@@ -35,7 +35,7 @@ whole body moved here unchanged and that file went back to its template state.
 | [`ROADMAP.md`](ROADMAP.md) | MAJOR — phases and milestones |
 | [`TODO.md`](TODO.md) | MINOR — the working queue, **open buildable work only** |
 | [`DECOMPOSED.md`](DECOMPOSED.md) | smallest execution units, open only |
-| **`TEST.md`** (this file) | **the test phase — `[T]` only, 73 rows, and a build closes none of them** |
+| **`TEST.md`** (this file) | **the test phase — `[T]` only, 72 rows, and a build closes none of them** |
 | [`FINALIZED.md`](FINALIZED.md) | permanent archive, append-only |
 
 Status markers here are `[T]` and nothing else. A row that turns out to be buildable after all goes
@@ -86,7 +86,6 @@ recorded on the row, and then the row moves to `FINALIZED.md` by the usual archi
 
 **Verbatim:** *"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?"*
 
-- [T] **"start growing cash crops"** — **SOWN 2026-10-07, 122 cells of Smokeleaf.** Closes when the first harvest is sold.
 - [T] **"have you even looked at the world yet?"** — **LOOKED 2026-10-07.** Within a few tiles: Cuvin Flamehome outposts with **1** and **2** enemies, a Yowoo Fur outpost with 2, a hostile Yowoo Fur settlement (−100), and the active quest *Hidden Mechanitor Lair*. **Plan:** finish the prison, then raid the one-man Cuvin outpost with three rifles and bring the defender home as the first prisoner.
 
 ### Owner direction — global control (2026-10-07)
