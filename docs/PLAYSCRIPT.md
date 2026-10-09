@@ -352,6 +352,7 @@ Owner, 2026-10-08, verbatim: *"ther is so so so so sooooooo much ive told you to
 | Run the vault at 0 silver | an *Orbital Traders Hub* offer (460 silver fee, 6 hours to decide, 2026-10-08) was lost: Procurement silver lands a day later. Keep **500+ silver beside a trade beacon** at all times -- the bulk goods trader is the marble supply |
 | Leave silver on an open shelf during a raid | the 600 Procurement silver was **stolen**: after the imp raid the only silver left in the save was in raiders' and visitors' pockets -- 306 on *Zeiv, Hachthsonss Runship* (the raiding faction); a raider who breaks off grabs loot on the way out. Silver lives in the **vault** (one door, behind Security -- the city plan's VAULT), and fleeing raiders get shot, not waved off |
 | Build an 11x9 pen for grazers | three goats grazed it bare in about a week: *Hungry pen animals*, *Animal starvation*. A pen is **sized for grazing** (~300+ cells per few goats) or gets a feeding stockpile with hay; Marble Hollow's pen re-fenced to x104-142, z30-58 (~1,100 cells) |
+| Let a pen starve in winter | grass stops growing in winter and even the big pen starved (*Animal starvation*, a ram in *Medical emergency*). A **feeding stockpile inside the pen** -- Marble Hollow: 3x3 at (123-125, 50-52), *Stockpile zone 2* -- filtered to **raw food, hay, kibble** at **Important** feeds the herd |
 
 ## Where the live run is
 
