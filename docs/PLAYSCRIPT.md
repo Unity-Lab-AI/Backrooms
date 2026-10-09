@@ -358,6 +358,7 @@ Owner, 2026-10-08, verbatim: *"ther is so so so so sooooooo much ive told you to
 | Research Gunsmithing and stop there | guns need a **machining table** too -- Marble Hollow had only a fueled smithy, so four colonists stayed unarmed after the research finished. Machining table at (151,128), 4 bolt-action rifle bills |
 | Walk the firing line toward a raid | *Kolku* (2026-10-08): the line advanced 35 cells to meet raiders who were slow to attack, and one reached it -- Gee and Rev bled. *Thoofoo* (same day): the block **stood still** mid-base, two died six cells short and one went down, **nobody touched**. Draft and place at the letter, then never move toward them |
 | Trust a batch of move orders to all take | drafted pawns that were asleep or mid-job (Gee, Unity, Scar, a Steve -- three raids running) stayed on *Wait_Combat* where they stood. Read every pawn's position after the batch and re-send the ones that did not move |
+| Stand the block where raiders do not walk into its sight | *Hachthsonss imps* (2026-10-08, autumn): the mid-base block at x105-106 stood behind the wall of a 2-wide corridor (x109-110); an imp walked up that corridor **five cells away and no one fired**, while the other two set the storehouse burning and hit the east generators, and a child was downed outside. Imps **roam and burn** rather than charge: pick the standing spot for its **sight lines** (open ground or a corridor's end), and when raiders roam, move the whole group as one to a spot that sees them, then stand |
 
 ## Where the live run is
 
