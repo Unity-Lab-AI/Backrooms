@@ -430,6 +430,7 @@ Owner, 2026-10-08, verbatim: *"ther is so so so so sooooooo much ive told you to
 | Main pathing measured every pass | checklist.py 'path': BFS from the throne room; a room unreachable or a >2.2x detour is a FIX; research room got a door into the workshop (154,124) |
 | Answer people talking first, always | owner, 2026-10-09, verbatim: *"peopel are talking to you answer them alwways first"* -- read every CHAT line of every play/step run before anything else; stream-beat.py no longer marks lines seen for chat-watch.py, so the background watcher wakes on every line |
 | Colonists out of the prison cells: real bedrooms | chat (forever11231), 2026-10-09: *"and why are ur colinist sleeeping in the prisons?"* |
+| Weapons that can kill mechs | chat (forever11231), 2026-10-09: *"ull die when mechs come ur weapons r turds"* -- EMP grenades, assault/sniper/charge rifles; a combat supplier trader; freezer coolers were found at 70F target (over-wall coolers default to room temperature): set-temp.py X Z 14 |
 
 ## Where the live run is
 
