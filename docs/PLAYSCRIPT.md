@@ -393,6 +393,8 @@ Owner, 2026-10-08, verbatim: *"ther is so so so so sooooooo much ive told you to
 | Run short on steel | owner, 2026-10-09, verbatim: *"better mine steel or order some trade is your go to once u figure it out"* -- mine steel deposits and order steel from the company; trading is the main income once it works |
 | Wait on chat to choose | owner, 2026-10-09, verbatim: *"if they done answer just keep toward your goals of empire world domination and space warfare"* -- ask chat about the next move, and if nobody answers, keep going toward the long goal: an empire, world domination, space warfare |
 | Mix freezer and dry goods | owner, 2026-10-09, verbatim: *"you need to figure out your freezer storage vs non freezer items u have frezeder with all kinds of non frezeer shit and need more ac at right temp in freezer"* -- freezer shelves hold food and plant matter only; everything else lives in dry storage; the freezer has enough coolers set below freezing |
+| Vent an AC's heat into a roofed room | owner, 2026-10-09, verbatim: *"you have acs out put in to interior room and you need more for big rooms"* / *"on north side"* -- every cooler's hot side opens to unroofed outdoors; big rooms get more than one cooler |
+| Every standing order is a running checklist that never closes | owner, 2026-10-09, verbatim: *"now make sure everything ive evr told you to do is a running check list that is never complete and is always checking all things are done wto keep your empire moveing up"* -- `.local/qa/checklist.py` re-measures the base after every `play.py` run (FIX lines), rotates the judgement items (LOOK, `--looked KEY`), and feeds the first FIX to the stream's goal line |
 
 ## Where the live run is
 

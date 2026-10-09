@@ -94,3 +94,5 @@ __pycache__/
 .claude/.stream-log.jsonl
 .claude/.stream-beat.json
 .claude/.chat-watch.json
+.claude/.stream-goals.json
+.claude/.checklist.json
