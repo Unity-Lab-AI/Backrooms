@@ -389,6 +389,8 @@ Owner, 2026-10-08, verbatim: *"ther is so so so so sooooooo much ive told you to
 | Store goods out of beacon range | owner, 2026-10-09, verbatim: *"and u need to make sure all storage zones and shelfes and items are withing a orbital trade beacon u might need to move/add some"* -- every storage zone, shelf and stored item sits inside an orbital trade beacon's range (a beacon reaches only its own room) |
 | Run without silver | owner, 2026-10-09, verbatim: *"and order some silver from the company"* |
 | Leave embrasure bastions holed or unpowered | owner, 2026-10-09, verbatim: *"you have holes in you embrasure fortifications"* / *"and a bunch without power so u can t shoot out"* -- every bastion ring closed (wall, embrasure or door on every edge cell) and every remote embrasure on the grid so it opens to fire |
+| Leave single embrasures in interior walls | owner, 2026-10-09, verbatim: *"3 places with stupid embracers 1x1 in interior walls that do nothing replace with marble when u can"* -- the 1x1 embrasures at (175,98), (181,98), (187,98) become marble wall |
+| Run short on steel | owner, 2026-10-09, verbatim: *"better mine steel or order some trade is your go to once u figure it out"* -- mine steel deposits and order steel from the company; trading is the main income once it works |
 
 ## Where the live run is
 
