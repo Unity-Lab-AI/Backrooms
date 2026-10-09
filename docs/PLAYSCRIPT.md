@@ -354,6 +354,8 @@ Owner, 2026-10-08, verbatim: *"ther is so so so so sooooooo much ive told you to
 | Build an 11x9 pen for grazers | three goats grazed it bare in about a week: *Hungry pen animals*, *Animal starvation*. A pen is **sized for grazing** (~300+ cells per few goats) or gets a feeding stockpile with hay; Marble Hollow's pen re-fenced to x104-142, z30-58 (~1,100 cells) |
 | Let a pen starve in winter | grass stops growing in winter and even the big pen starved (*Animal starvation*, a ram in *Medical emergency*). A **feeding stockpile inside the pen** -- Marble Hollow: 3x3 at (123-125, 50-52), *Stockpile zone 2* -- filtered to **raw food, hay, kibble** at **Important** feeds the herd |
 | Sell the staple crop going into winter | 1,250 potatoes went to buy goats in autumn; by midwinter ten colonists had three stacks of meals left and nothing growing. Before winter, **stock a season of food** (survival packs from the company keep forever -- `empire.py` now keeps 60+ on hand) and hunt the safe game (gazelle, ibex, deer -- never megasloth or herds that retaliate) |
+| Start projects in the vanilla research window | the research-tree mod keeps its own queue and an idle project gets auto-picked: *Medical torture methods*, *Wake-up production*, *Organ destabilization* all ran instead of what was started. Queue in the tree tab (plain **Research** click), front of queue = shift-click |
+| Research Gunsmithing and stop there | guns need a **machining table** too -- Marble Hollow had only a fueled smithy, so four colonists stayed unarmed after the research finished. Machining table at (151,128), 4 bolt-action rifle bills |
 
 ## Where the live run is
 
