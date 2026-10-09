@@ -409,6 +409,7 @@ Owner, 2026-10-08, verbatim: *"ther is so so so so sooooooo much ive told you to
 | Stream voice is Unity's personality: we are putting on a show | owner, 2026-10-09, verbatim: *"come one talk like a normal person would your a bitch emo coder gamer chick make your shit more of your personality where is Unity! /unity"* / *"we are putting on a show here"* |
 | Test count only when a row closes; keep checking every row for what can be marked off | owner, 2026-10-09, verbatim: *"quit mentioning the mod test count until u actually mark one off or atleast get something completed be chaekcing them all what can be marked offf, work towrdas the others"* |
 | Save the king: force a doctor when a pawn is hurt | owner, 2026-10-09, verbatim: *"save Gee!"* / *"have someone save him"* / *"and tend to him"* / *"hes the KING force that shit"* -- turn the patient's self-tend off, Rescue with a doctor (prio.py PAWN X Z "Rescue"), turn self-tend back on after |
+| Hospital beds for colonists, not prisoners; injured go in with rest until healed | owner, 2026-10-09, verbatim: *"slect gee and tell him rest till healed in hospital bed"* / *"hospital is prisoner only fix that"* -- the ward (x113-125 z120-121) was For prisoners, so it read as Prison barracks; Select similar + For colonists fixed all four. The bed float menu ('Rest until healed') does not show in get_ui_layout: read it off a screenshot and raw-click it. An undrafted pawn is needed |
 
 ## Where the live run is
 
