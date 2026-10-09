@@ -93,3 +93,4 @@ __pycache__/
 .claude/.studio-outbox.jsonl
 .claude/.stream-log.jsonl
 .claude/.stream-beat.json
+.claude/.chat-watch.json
