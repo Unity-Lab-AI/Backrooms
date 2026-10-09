@@ -19059,3 +19059,19 @@ One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus 
 - [x] **"hire empoloyees"** -- **REQUESTED 2026-10-07:** Operations -> Personnel -> *Request applicants*: *"Pending applicant -- candidate requested"*, *"One-time onboarding: $100,000 USD. Daily wage: $5,000 USD"*. Next request window *Day 24*. Closes when an applicant is hired and on the map. **REQUESTED AGAIN 2026-10-08 on Marble Hollow** (the branch founded on a Crashlanded colony, staff of 3 -- Gee, Scar, Unity -- because only the founders were colonists when it was founded): Operations -> Personnel -> scrolled to *Voluntary applicants* -> *Request applicants*: *"Pending applicant -- candidate requested"* x3, *"One-time onboarding: $100,000 USD. Daily wage: $5,000 USD"*, next request *Day 43*. Closes when one is hired and on the map. **CLOSED 2026-10-08 (Marble Hollow, summer): three hired and on the map.** Operations -> Personnel listed *"Selena -- available"*, *"Skissor -- available"*, *"Val -- available"* under *Voluntary applicants* (each *"One-time onboarding: $100,000 USD. Daily wage: $5,000 USD, billed separately."*). Each was taken through *Review hiring terms* -> *Dialog_ConfirmApplicantHire* -> *Company role: Security guard* (the dialog notes *"The selected role does not change skills, traits, schedules or work priorities."*) -> *Accept quote and hire*. Read back: *"Company Account: 17,687,500 USD"* (from 17,987,500), *"Staff page 1 of 1 -- 6 records"*, *"Selena -- Security guard; 5,000 USD per day"* and the same for Skissor and Val; one play pass later `list_colonists` returned **Selena** (Thing_Human68406), **Skissor** (68414) and **Val** (68421) on the map with the founders.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - shelves row closed in docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"you always have to have all resources on shelves"** -- a shelf for every resource, one priority above the floor zone. **CLOSED 2026-10-08 (Marble Hollow, fall).** Every resource store was read cell by cell (`get_cells_info` over x80-220, z30-170, every stockpile-zone cell without a shelf) and brought onto shelves one priority above the floor: the storeroom shelves (153-170, 84-96) at *"Priority: Preferred"* over the floor *Stockpile zone 1* at Normal; in the fridge a new row of five steel shelves (161-170, 89) filtered to **Foods**, and the fridge floor zone *Alfonzoid\x27s Morgue* lowered from *Important* to **Normal** with the shelves at **Preferred** -- potatoes, survival meals, meat and hay then moved onto them (*"Prioritize hauling"* had been absent while the two tiers were equal); in the trade-beacon zone two steel shelves (130-131 and 137-138, 91) filtered to **silver, smokeleaf joint, smokeleaf leaves** at **Critical** with *Stockpile zone 3* lowered to **Important** -- *Silver x1129* and both leaf stacks moved onto the shelf at (137,91). Final scan of every non-shelf stockpile cell: *Stockpile zone 1* holds only three minified buildings (furniture, not resources) and *Stockpile zone 2* is the pen\x27s winter feeding stockpile (raw potatoes for the animals, kept on the pen floor where they graze, by the owner\x27s earlier pen direction). No resource stack is on a floor where a shelf could hold it.
+
+<!-- archived-queue:end -->
