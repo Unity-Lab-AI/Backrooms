@@ -16,8 +16,57 @@ FONT = "C:/Windows/Fonts/Inkfree.ttf"
 PINK = (255, 70, 160)
 
 
+def call(tool, args=None):
+    o = subprocess.run([sys.executable, BRIDGE, "call", tool, json.dumps(args or {})],
+                       capture_output=True, text=True, timeout=60).stdout
+    try: return json.loads(o[o.find("{"):])
+    except Exception: return {}
+
+
+def find(n, k):
+    if isinstance(n, dict):
+        if k in n: return n[k]
+        for v in n.values():
+            r = find(v, k)
+            if r is not None: return r
+    return None
+
+
+def highlight(im, marks):
+    """Owner, 2026-10-09: "maore hhighlighting in game images" -- ring every colonist in view with their
+    name, ring hostiles in red, and draw any --mark x,z,label the caller passes (plans, builds)."""
+    cam = call("rimworld/get_camera_state")
+    x0, x1, z0, z1 = (find(cam, k) for k in ("minX", "maxX", "minZ", "maxZ"))
+    if None in (x0, x1, z0, z1): return
+    W, H = im.size; cw = W / (x1 - x0 + 1.0); ch = H / (z1 - z0 + 1.0)
+    def px(x, z): return ((x - x0 + 0.5) * cw, (z1 - z + 0.5) * ch)
+    d = ImageDraw.Draw(im); f = ImageFont.truetype(FONT, 22); r = max(10, cw * 0.8)
+    def ring(x, z, label, col):
+        if not (x0 <= x <= x1 and z0 <= z <= z1): return
+        cx, cy = px(x, z)
+        for w in (5, 3):
+            d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=(0, 0, 0) if w == 5 else col, width=w)
+        for dx, dy in ((-1, 0), (1, 0), (0, -1), (0, 1)): d.text((cx + r + 2 + dx, cy - 12 + dy), label, font=f, fill=(0, 0, 0))
+        d.text((cx + r + 2, cy - 12), label, font=f, fill=col)
+    mine = set()
+    for c in call("rimworld/list_colonists").get("colonists", []):
+        p = c.get("position") or {}
+        if "x" in p: ring(p["x"], p["z"], c.get("name", ""), PINK); mine.add((p["x"], p["z"]))
+    o = subprocess.run([sys.executable, os.path.join(ROOT, ".local", "qa", "live-hostiles.py")], capture_output=True, text=True, timeout=60).stdout
+    try:
+        import ast
+        for x, z in ast.literal_eval(o.strip() or "[]"):
+            if (x, z) not in mine: ring(x, z, "HOSTILE", (255, 40, 40))
+    except Exception: pass
+    for x, z, label in marks: ring(x, z, label, (90, 220, 255))
+
+
 def main():
-    caption = " ".join(sys.argv[1:]).strip()
+    args = sys.argv[1:]; marks = []
+    while "--mark" in args:
+        i = args.index("--mark"); x, z, *lab = args[i + 1].split(",", 2); marks.append((int(x), int(z), lab[0] if lab else ""))
+        del args[i:i + 2]
+    caption = " ".join(args).strip()
     o = subprocess.run([sys.executable, BRIDGE, "call", "rimworld/take_screenshot", "{}"],
                        capture_output=True, text=True, timeout=120).stdout
     path = json.loads(o[o.find("{"):]).get("path")
@@ -25,6 +74,8 @@ def main():
         return
     im = Image.open(path).convert("RGB")
     im.thumbnail((1024, 1024))
+    try: highlight(im, marks)
+    except Exception: pass
     W, H = im.size
     d = ImageDraw.Draw(im)
     f = ImageFont.truetype(FONT, 34)
