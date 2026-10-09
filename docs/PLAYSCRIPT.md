@@ -356,6 +356,8 @@ Owner, 2026-10-08, verbatim: *"ther is so so so so sooooooo much ive told you to
 | Sell the staple crop going into winter | 1,250 potatoes went to buy goats in autumn; by midwinter ten colonists had three stacks of meals left and nothing growing. Before winter, **stock a season of food** (survival packs from the company keep forever -- `empire.py` now keeps 60+ on hand) and hunt the safe game (gazelle, ibex, deer -- never megasloth or herds that retaliate) |
 | Start projects in the vanilla research window | the research-tree mod keeps its own queue and an idle project gets auto-picked: *Medical torture methods*, *Wake-up production*, *Organ destabilization* all ran instead of what was started. Queue in the tree tab (plain **Research** click), front of queue = shift-click |
 | Research Gunsmithing and stop there | guns need a **machining table** too -- Marble Hollow had only a fueled smithy, so four colonists stayed unarmed after the research finished. Machining table at (151,128), 4 bolt-action rifle bills |
+| Walk the firing line toward a raid | *Kolku* (2026-10-08): the line advanced 35 cells to meet raiders who were slow to attack, and one reached it -- Gee and Rev bled. *Thoofoo* (same day): the block **stood still** mid-base, two died six cells short and one went down, **nobody touched**. Draft and place at the letter, then never move toward them |
+| Trust a batch of move orders to all take | drafted pawns that were asleep or mid-job (Gee, Unity, Scar, a Steve -- three raids running) stayed on *Wait_Combat* where they stood. Read every pawn's position after the batch and re-send the ones that did not move |
 
 ## Where the live run is
 
