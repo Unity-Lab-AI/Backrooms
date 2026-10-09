@@ -3,6 +3,7 @@ using RimroomsAsyncIndustries.Portals;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
+using Verse.AI;
 
 namespace RimroomsAsyncIndustries.Company
 {
@@ -401,7 +402,7 @@ namespace RimroomsAsyncIndustries.Company
             // So this method can now refuse where it previously always succeeded under the cap.
             // That is deliberate: a one-way trip IS the defect, and every refusal names its own
             // cause so a player can clear it (releasing a site frees a slot).
-            CompanyActionResult returnGate = EstablishReturnGate(record, claimed, coordinateDoor);
+            CompanyActionResult returnGate = EstablishReturnGate(record, claimed, coordinateDoor, arrival);
             if (!returnGate.Success) { return returnGate; }
 
             int moved = 0;
@@ -497,7 +498,7 @@ namespace RimroomsAsyncIndustries.Company
         /// not, which is the same lie as a section titled DONE full of open rows.
         /// </summary>
         private CompanyActionResult EstablishReturnGate(WorldExitRecord record, Map claimed,
-            Thing coordinateDoor)
+            Thing coordinateDoor, IntVec3 arrival)
         {
             if (claimed == null || coordinateDoor == null || !coordinateDoor.Spawned)
             { return CompanyActionResult.Refused("RR_WorldReturn_Unavailable"); }
@@ -508,7 +509,7 @@ namespace RimroomsAsyncIndustries.Company
             ThingDef doorDef = DefDatabase<ThingDef>.GetNamedSilentFail("Door");
             if (doorDef == null) { return CompanyActionResult.Refused("RR_WorldReturn_NoDoorDef"); }
 
-            IntVec3 cell = FindReturnGateCell(claimed);
+            IntVec3 cell = FindReturnGateCell(claimed, arrival);
             if (!cell.IsValid) { return CompanyActionResult.Refused("RR_WorldReturn_NoGateCell"); }
 
             var gate = ThingMaker.MakeThing(doorDef,
@@ -561,13 +562,33 @@ namespace RimroomsAsyncIndustries.Company
         /// door that can never be registered, so the search refuses it here rather than
         /// discovering it two steps later with a door already on the map.
         /// </summary>
-        private static IntVec3 FindReturnGateCell(Map map)
+        /// <summary>
+        /// Where the way back in stands: **near the crew, and somewhere they can walk to.**
+        ///
+        /// Found playing 2026-10-09. The arrival cell and this cell were two independent random
+        /// draws anywhere on the claimed map, and nothing asked whether one could reach the other.
+        /// A mountain jungle tile put the gate where the crew could not get to it -- a return gate
+        /// that exists and cannot be used is a one-way trip. Owner, verbatim: *"ur fucked there is
+        /// no way back in.... the map ur suppose to be in is unreachable"* / *"thats not suppose to
+        /// happen a no return gate"*.
+        ///
+        /// So the search starts at the arrival cell, widens in rings, and only accepts a cell the
+        /// arrival can reach on foot. No cell that qualifies refuses the walk-out -- nobody has
+        /// moved yet, which is the safety ordering this whole path depends on.
+        /// </summary>
+        private static IntVec3 FindReturnGateCell(Map map, IntVec3 arrival)
         {
-            IntVec3 found;
-            if (CellFinderLoose.TryFindRandomNotEdgeCellWith(12,
-                cell => cell.Standable(map) && !cell.Fogged(map) && cell.GetEdifice(map) == null &&
-                    HasStandableCardinal(cell, map), map, out found))
-            { return found; }
+            if (map == null || !arrival.IsValid || !arrival.InBounds(map)) { return IntVec3.Invalid; }
+            foreach (int radius in new[] { 6, 12, 20, 32 })
+            {
+                IntVec3 found;
+                if (CellFinder.TryFindRandomCellNear(arrival, map, radius,
+                    cell => cell != arrival && cell.Standable(map) && !cell.Fogged(map) &&
+                        cell.GetEdifice(map) == null && HasStandableCardinal(cell, map) &&
+                        map.reachability.CanReach(arrival, cell, PathEndMode.OnCell,
+                            TraverseParms.For(TraverseMode.PassDoors)), out found))
+                { return found; }
+            }
             return IntVec3.Invalid;
         }
 

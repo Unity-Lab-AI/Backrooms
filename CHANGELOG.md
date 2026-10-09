@@ -11,6 +11,11 @@
 - **Drafted colonists can now take an ordered crossing.** Owner: *"its a bug because she can walk
   through it if drafter and she walks away out of action area if not drafted"*. The drafted pawn is
   the one that stays on its order; autonomous crossing still never takes a drafted pawn.
+- **A way out to the world no longer strands the crew.** The return gate built on the claimed
+  map was dropped at a random cell anywhere on it, never checked against where the crew arrived --
+  on a mountain jungle tile it landed where nobody could walk. Owner: *"thats not suppose to
+  happen a no return gate"*. It now stands near the arrival, on a cell the arrival can reach on
+  foot, or the walk-out is refused before anybody moves.
 
 ## 0.13.0-dev - 2026-10-08 - Company deliveries land while shelves outrank the stockpile
 
