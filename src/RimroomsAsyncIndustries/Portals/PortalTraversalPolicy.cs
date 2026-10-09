@@ -124,8 +124,10 @@ namespace RimroomsAsyncIndustries.Portals
                 // Drafted included. Vanilla cannot draft an animal, but **Draftable Animals -
                 // Releashed** (register row 78) is in the owner's profile and can, and a pawn
                 // under direct combat control does not walk through a gate whatever it is.
+                // Drafted no longer refuses an ORDERED crossing (2026-10-09): see
+                // `EligibilityFailureKey` -- the drafted pawn is the one that stays on its order.
                 if (!traveller.Spawned || traveller.Dead || traveller.Downed ||
-                    traveller.InMentalState || traveller.Drafted)
+                    traveller.InMentalState)
                 { return "RR_PortalCrossing_PawnNotEligible"; }
                 return null;
             }

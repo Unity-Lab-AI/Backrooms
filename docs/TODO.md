@@ -119,6 +119,14 @@ So the moment one exists, `IsOddSupply` is true, `coordinateId` is not empty, `v
 - [ ] **"The linked physical battery does not contain enough charge for the configured opening and emergency-return reserve"** arrived right after *"Connection open."* on the Store gate, while the gate pane read *600.00/600.00 watt-days stored on the gate's circuit*. Check whether the reserve test reads the linked battery alone (one vanilla battery at `(158,144)`) while the circuit holds the charge -- the owner's rule is *"the battery braw needs to be consistant not tied to a single battery"*.
 
 
+### Found playing the solo/group inside start, 2026-10-09 -- the doors that lead somewhere refuse to go anywhere
+
+Owner, verbatim: *"your not walking through the door correctly u are doing it wrong !!! figure it out not keep doing whats not working"* / *"its a bug because she can walk through it if drafter and she walks away out of action area if not drafted"* / *"tell the players you are fixing it"* / *"then do it"*.
+
+- [~] **"Walk through - this door leads somewhere else" on (186,155) fails with "The generated room graph is not physically reachable from the entry."** Player.log: the new coordinate's room 11 (`borrowed_corridor`, bounds (268,63)-(275,70)) claims 4 links but its interior cell (272,67) has no route from the entry at (55,54), so `GenStep_BackroomsDestination` throws `RR_Generation_UnreachableRoom` and the whole coordinate -- and the way through -- is refused. One optional room must not cost the gate: an unreachable linked room should be demoted (left to be mined to), with only the required cells (office, way home) fatal.
+- [~] **Retrying the same door then reports "A different saved address already uses one of these doors."** The failed discovery leaves a half-made address on the door, so the second click hits `RR_PortalAddress_IdentityConflict` instead of retrying.
+- [~] **Drafted pawns are refused at a natural door ("Cannot enter the gate: ... Drafted ... cannot"), and an undrafted pawn walks off to survey instead.** Owner: *"she can walk through it if drafter and she walks away out of action area if not drafted"* -- a drafted colonist must be able to take a natural way through, the one state in which she stays where she is ordered.
+
 ## TOMBSTONES
 
 _(none)_

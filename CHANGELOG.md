@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-09 - The doors that lead somewhere go somewhere
+
+- **Found playing the solo/group inside start:** *"Walk through - this door leads somewhere else"*
+  refused with *"The generated room graph is not physically reachable from the entry."* One
+  optional room in the new coordinate (a borrowed corridor) claimed links with no route, and the
+  generator threw the whole coordinate away -- and the way through with it.
+- **Now** an unreachable optional room is kept as a room to dig to, the way sealed vaults already
+  are, and the coordinate stands. The office and the way home are still checked and still fatal.
+- **Drafted colonists can now take an ordered crossing.** Owner: *"its a bug because she can walk
+  through it if drafter and she walks away out of action area if not drafted"*. The drafted pawn is
+  the one that stays on its order; autonomous crossing still never takes a drafted pawn.
+
 ## 0.13.0-dev - 2026-10-08 - Company deliveries land while shelves outrank the stockpile
 
 - **Found playing:** 2,000 steel and 100 components, paid for through Procurement, sat in orbit as

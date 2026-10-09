@@ -2056,15 +2056,27 @@ namespace RimroomsAsyncIndustries.Generation
                     // cell at all versus a standable cell with no route. The thrown message stays
                     // the bare key -- it is a keyed string a player reads, and
                     // `FailedSiteRecovery` matches on it -- so the detail goes beside it.
-                    Log.Error("[Rimrooms][Generation] Coordinate " + coordinate.Id + " room "
+                    // **ONE OPTIONAL ROOM NO LONGER COSTS THE WHOLE COORDINATE, 2026-10-09.** Found
+                    // playing the solo/group inside start: a `borrowed_corridor` at (268,63)-(275,70)
+                    // claimed four links with no route from the entry, and this line refused the
+                    // coordinate -- so the door that led to it offered "Walk through" and then went
+                    // nowhere. Owner, verbatim: *"your not walking through the door correctly u are
+                    // doing it wrong !!! figure it out not keep doing whats not working"*.
+                    //
+                    // An unreachable linked room is now treated exactly as the planner already treats
+                    // a sealed vault: its walls come down and the rock around it is `Mineable`, so it
+                    // is reached by working toward it. What strands people is the office and the way
+                    // home, and those two stay fatal just below. The detail still goes to the log so
+                    // the planner fault behind it can be found.
+                    Log.Warning("[Rimrooms][Generation] Coordinate " + coordinate.Id + " room "
                         + room.Index + " (" + room.FamilyId + ") at " + room.Bounds
                         + " claims " + room.Links.Count + " link(s) and "
                         + (walkable.IsValid
                             ? "its interior cell " + walkable + " has no route from the entry at "
                                 + entry + "."
                             : "has no standable interior cell at all.")
-                        + " The coordinate is refused, which costs the gate that leads to it.");
-                    throw new InvalidOperationException("RR_Generation_UnreachableRoom");
+                        + " Kept as a room to dig to; the coordinate stands.");
+                    continue;
                 }
             }
             if (!Reachable(map, entry, officeCell) || !Reachable(map, entry, returnCell))
