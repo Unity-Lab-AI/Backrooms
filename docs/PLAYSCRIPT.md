@@ -428,6 +428,8 @@ Owner, 2026-10-08, verbatim: *"ther is so so so so sooooooo much ive told you to
 | AC and heat fort- and facility-wide; fix main pathing all around | chat (forever11231), 2026-10-09: *"get your ac and heat solved fort and facility wide and fix main pathing all around"* |
 | Marble exit doors on every embrasure room | chat (forever11231), 2026-10-09: *"put exit door of marble on all your embrasure rooms for easy pawn access keeping visitors and enemies where u want them"* -- one marble door mid outer face of each of the 18 towers; the door gizmo's material is set by right-clicking it in Architect > Structure (it had been wood; every waiting door blueprint re-placed as marble) |
 | Main pathing measured every pass | checklist.py 'path': BFS from the throne room; a room unreachable or a >2.2x detour is a FIX; research room got a door into the workshop (154,124) |
+| Answer people talking first, always | owner, 2026-10-09, verbatim: *"peopel are talking to you answer them alwways first"* -- read every CHAT line of every play/step run before anything else; stream-beat.py no longer marks lines seen for chat-watch.py, so the background watcher wakes on every line |
+| Colonists out of the prison cells: real bedrooms | chat (forever11231), 2026-10-09: *"and why are ur colinist sleeeping in the prisons?"* |
 
 ## Where the live run is
 
