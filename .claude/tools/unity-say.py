@@ -23,6 +23,18 @@ def post(text, persona="unity"):
                             "persona": persona, "text": text}) + "\n")
 
 
+def speakable(text):
+    """Only words reach the voice and the chat (owner, 2026-10-09: "dont tts speak the emojis and none
+    verbalized need shit"): drop emoji and pictographs, *stage directions* and (asides in brackets),
+    hashtags, markdown, and stray symbols."""
+    import re
+    text = re.sub(r"\*[^*]{0,80}\*|\[[^\]]{0,80}\]|<[^>]{0,80}>", " ", text)          # *sighs*, [laughs], <tags>
+    text = re.sub(r"#\w+", " ", text)
+    text = "".join(ch for ch in text if ord(ch) < 0x2190)                                  # emoji, dingbats, arrows
+    text = re.sub(r"[_~`^|\\{}]+", " ", text)
+    return re.sub(r"\s+", " ", text).strip(" -")
+
+
 def main():
     args = sys.argv[1:]
     wait = bool(args) and args[0] == "--wait"
@@ -41,10 +53,13 @@ def main():
             text = uv.voice(text)
         except Exception:
             pass
+    text = speakable(text)
+    if not text: return
     post(text)
     # a picture with every line (owner: "make some images more offten like as much as you talk")
-    subprocess.Popen([sys.executable, os.path.join(HERE, "unity-glance.py"), text],
-                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if not os.environ.get("UNITY_NO_GLANCE"):   # a caller with its own highlighted shot (tour-base.py) sets this
+        subprocess.Popen([sys.executable, os.path.join(HERE, "unity-glance.py"), text],
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     speak = [sys.executable, os.path.join(HERE, "unity-speak.py")] + ([] if wait else ["--bg"]) + [text]
     subprocess.run(speak)
 

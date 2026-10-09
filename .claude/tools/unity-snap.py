@@ -8,7 +8,7 @@ Owner (2026-10-08): "you can even post game screenshots highlighted things that 
 writting drawn over top" / "like circle things and write messsages". Notes reach the stream: keep them
 clean (CONSTRAINTS: THE STREAM IS CLEAN).
 """
-import base64, io, json, os, random, subprocess, sys, urllib.request
+import time, base64, io, json, os, random, subprocess, sys, urllib.request
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -91,7 +91,15 @@ def main():
                                                   "caption": caption}).encode(),
                                  headers={"Content-Type": "application/json"})
     print(urllib.request.urlopen(req, timeout=60).read().decode())
-    # owner: "keep a colonist in view at all times" -- hand the camera back to the crew
+    # owner: "keep a colonist in view at all times" -- hand the camera back to the crew; but in a fight the
+    # camera goes back on the enemy (owner, 2026-10-09: "focus on the fucking action no t the fucking middle of
+    # the base"): step.py --hostiles writes .claude/.fight.json with the framed rect every slice
+    fight = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".fight.json")
+    try: f = json.load(open(fight))
+    except Exception: f = {}
+    if f.get("rect") and time.time() - f.get("ts", 0) < 90:
+        subprocess.run([sys.executable, BRIDGE, "call", "rimworld/frame_cell_rect", json.dumps(f["rect"])], capture_output=True, timeout=60)
+        return
     subprocess.run([sys.executable, BRIDGE, "call", "rimworld/set_camera_zoom", json.dumps({"zoomRange": "Close"})], capture_output=True, timeout=60)
     subprocess.run([sys.executable, BRIDGE, "call", "rimworld/jump_camera_to_pawn", json.dumps({"pawnName": "Unity"})], capture_output=True, timeout=60)
 
