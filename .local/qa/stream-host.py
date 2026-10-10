@@ -9,6 +9,7 @@ Runs in the background beside play and covers the four ways the stream went quie
 Every line goes through stream-beat.fresh() (local model, clean-stream filter, no repeats, no invented numbers)
 and unity-say.py --raw. The owner's own chat lines are never answered or named here.
 """
+from datetime import datetime
 import importlib.util, json, os, random, re, socket, subprocess, sys, time, uuid
 
 # Owner, 2026-10-10: "im getting alot of system cmd openings while im doing stuff". Every helper this script
@@ -191,6 +192,15 @@ def state_facts():
         if ups: lines = lines[ups[-1] + 1:]
         for l in reversed(lines):
             m = re.search(r"model step \d+ \([\d.]+s\): (.+)", l)
+            # a step older than 90 s is not "now" any more -- she kept repeating one stale step (live: the
+            # tend-then-capture rule three lines running)
+            try:
+                age = (datetime.now() - datetime.combine(datetime.now().date(),
+                       datetime.strptime(l[:8], "%H:%M:%S").time())).total_seconds() % 86400
+            except Exception:
+                age = 0
+            if m and age > 90:
+                break
             if m and len(m.group(1)) > 20 and not re.search(r"connect|bridge|server|retry|no game|not loaded|tool|turn", m.group(1), re.I):
                 facts.insert(0, "NOW: " + m.group(1)[:200]); break
     except Exception:
