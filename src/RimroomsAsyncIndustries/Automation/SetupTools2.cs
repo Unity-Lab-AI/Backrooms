@@ -57,9 +57,15 @@ namespace RimroomsAsyncIndustries.Automation
         {
             ThingDef stove = DefDatabase<ThingDef>.GetNamedSilentFail("FueledStove");
             if (stove == null) return "refused: no FueledStove def";
-            if (map.listerBuildings.allBuildingsColonist.Any(b => b.def == stove) ||
-                map.listerThings.ThingsOfDef(stove.blueprintDef).Any())
-                return "ok: a fueled stove already exists or is planned -- add_bill CookMealSimple on it";
+            Building built = map.listerBuildings.allBuildingsColonist.FirstOrDefault(b => b.def == stove);
+            if (built != null)
+                return "ok: a fueled stove is BUILT at " + built.Position.x + "," + built.Position.z +
+                       " -- add_bill recipe CookMealSimple (the cell is optional, the bill finds the stove)";
+            Thing plan = map.listerThings.ThingsOfDef(stove.blueprintDef).FirstOrDefault() ??
+                         map.listerThings.AllThings.FirstOrDefault(t => t.def.IsFrame && t.def.entityDefToBuild == stove);
+            if (plan != null)
+                return "ok: a fueled stove is PLANNED (not built yet) at " + plan.Position.x + "," + plan.Position.z +
+                       " -- keep time running so it gets built, then add_bill CookMealSimple";
             Zone_Stockpile food = map.zoneManager.AllZones.OfType<Zone_Stockpile>().FirstOrDefault(z => z.label == "Food store");
             IntVec3 near = food?.Cells.FirstOrDefault() ?? map.mapPawns.FreeColonistsSpawned.First().Position;
             ThingDef stuff = GenStuff.DefaultStuffFor(stove);

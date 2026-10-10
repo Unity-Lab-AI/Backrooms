@@ -453,13 +453,29 @@ namespace RimroomsAsyncIndustries.Automation
 
         private static string AddBill(Map map, Dictionary<string, string> a)
         {
-            if (!Cell(a, map, out IntVec3 cell)) return "refused: bad cell";
-            Building_WorkTable table = cell.GetThingList(map).OfType<Building_WorkTable>().FirstOrDefault();
-            if (table == null) return "refused: no work table there";
             if (!a.TryGetValue("recipe", out string recipeName)) return "refused: no recipe";
-
-            RecipeDef recipe = DefDatabase<RecipeDef>.GetNamedSilentFail(recipeName) ??
-                               table.def.AllRecipes.FirstOrDefault(r =>
+            RecipeDef recipe = DefDatabase<RecipeDef>.GetNamedSilentFail(recipeName);
+            // the bill finds its own table: the given cell if a table is there, else the nearest BUILT table that can
+            // make the recipe -- she kept guessing stove cells ("no work table there", live 10-10)
+            Cell(a, map, out IntVec3 cell);
+            Building_WorkTable table = cell.IsValid && cell.InBounds(map)
+                ? cell.GetThingList(map).OfType<Building_WorkTable>().FirstOrDefault() : null;
+            if (table == null || (recipe != null && !table.def.AllRecipes.Contains(recipe)))
+            {
+                IntVec3 from = cell.IsValid && cell.InBounds(map) ? cell
+                    : (map.mapPawns.FreeColonistsSpawned.FirstOrDefault()?.Position ?? map.Center);
+                table = map.listerBuildings.allBuildingsColonist.OfType<Building_WorkTable>()
+                    .Where(t => recipe == null ? t.def.AllRecipes.Any(r => r.label.IndexOf(recipeName, StringComparison.OrdinalIgnoreCase) >= 0)
+                                               : t.def.AllRecipes.Contains(recipe))
+                    .OrderBy(t => t.Position.DistanceToSquared(from)).FirstOrDefault();
+                if (table == null)
+                {
+                    bool planned = map.listerThings.AllThings.Any(t => t.def.IsBlueprint || t.def.IsFrame);
+                    return "refused: no BUILT table can make " + recipeName +
+                           (planned ? " yet -- blueprints and frames cannot take bills; keep time running until it is built" : "");
+                }
+            }
+            recipe = recipe ?? table.def.AllRecipes.FirstOrDefault(r =>
                                    r.label.IndexOf(recipeName, StringComparison.OrdinalIgnoreCase) >= 0);
             if (recipe == null) return "refused: no recipe " + recipeName;
             if (!table.def.AllRecipes.Contains(recipe)) return "refused: " + table.LabelShort + " cannot make " + recipe.label;
@@ -479,7 +495,7 @@ namespace RimroomsAsyncIndustries.Automation
             // no skill restriction: owner, 2026-10-10 -- "so everyone can train and still get the most in one go"
             bill.allowedSkillRange = new IntRange(0, 20);
             table.BillStack.AddBill(bill);
-            return "ok: " + table.LabelShort + " now has " + recipe.label +
+            return "ok: " + table.LabelShort + " at " + table.Position.x + "," + table.Position.z + " now has " + recipe.label +
                    (bill.repeatMode == BillRepeatModeDefOf.TargetCount ? " until " + bill.targetCount : " forever");
         }
 

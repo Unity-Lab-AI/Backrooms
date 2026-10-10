@@ -349,7 +349,7 @@ class Toolbox:
             "game_set": ("[GAME ACTION, NO MOUSE] Set a field directly through the mod's own automation channel -- works "
                          "with the window minimised. cmd is one of set_zone_plant (x,z,plant e.g. Plant_Rice), "
                          "set_zone_sowing (x,z,allow), set_work_priority (pawn,work,level 0-4), set_bed_owner "
-                         "(x,z,owner colonist|prisoner|slave), add_bill (x,z,recipe e.g. CookMealSimple,count), "
+                         "(x,z,owner colonist|prisoner|slave), add_bill (recipe e.g. CookMealSimple, count; x,z optional -- it finds the nearest built table), "
                          "set_area (pawn,area label or empty). SETUP, one call each, no clicking: explore (every pawn "
                          "through every door, digs into sealed rooms -- repeat until it says nothing left), rooms (lists "
                          "explored rooms), stockpile_room (room id, mode food|nofood -- a stockpile filling that room), "
