@@ -308,6 +308,19 @@ while True:
                 pass
         firing, st = gates.decide()
         hold = os.path.join(HERE, "_setup_hold.flag")
+        # keep the HUD alive: if OBS is up and the overlay has not been reloaded for 10 minutes, reload it once --
+        # a browser source that loaded while the studio was down stays blank forever otherwise
+        global _last_overlay
+        try: _last_overlay
+        except NameError: _last_overlay = 0
+        if time.time() - _last_overlay > 600:
+            try:
+                import obsws_python as _obs, socket as _so
+                _so.create_connection(("127.0.0.1", 4455), timeout=1).close()
+                _obs.ReqClient(host="127.0.0.1", port=4455, timeout=4).press_input_properties_button("Unity overlay", "refreshnocache")
+                _last_overlay = time.time()
+            except Exception:
+                pass
         if os.path.exists(hold) and st.get("ticks_moving"):
             os.remove(hold)
             print(stamp(), "setup hold ended: time was started on purpose", flush=True)

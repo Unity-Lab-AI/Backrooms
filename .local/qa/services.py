@@ -386,7 +386,11 @@ def golive():
             c.set_current_program_scene("Live")
             if not c.get_stream_status().output_active:
                 c.start_stream()
-            print("obs         already up -- back on Live, streaming")
+            # the overlay page may have been dead when OBS started (owner, live: "our whole twich hud is mia");
+            # a browser source never retries on its own, so reload it every time we go live
+            try: c.press_input_properties_button("Unity overlay", "refreshnocache")
+            except Exception: pass
+            print("obs         already up -- back on Live, streaming, overlay reloaded")
             return
         except Exception as e:
             print("obs         websocket failed (%s) -- relaunching" % str(e)[:40])
