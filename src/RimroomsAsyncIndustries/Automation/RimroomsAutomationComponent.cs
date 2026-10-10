@@ -145,14 +145,16 @@ namespace RimroomsAsyncIndustries.Automation
                     if (inVal && quoted) { map[key.ToString()] = val.ToString(); inVal = false; haveKey = false; continue; }
                 }
                 else if (inKey) { key.Append(c); }
+                // a bare number ends at ',' or '}' -- this test has to come before the generic append below, or
+                // the rest of the line (the next keys included) is swallowed into the number
+                else if (inVal && !quoted && (c == ',' || c == '}'))
+                {
+                    map[key.ToString()] = val.ToString().Trim(); inVal = false; haveKey = false;
+                }
                 else if (inVal) { val.Append(c); }
                 else if (haveKey && (char.IsLetterOrDigit(c) || c == '-' || c == '.'))
                 {
                     inVal = true; quoted = false; val.Clear(); val.Append(c);
-                }
-                else if (inVal && !quoted && (c == ',' || c == '}'))
-                {
-                    map[key.ToString()] = val.ToString(); inVal = false; haveKey = false;
                 }
             }
 

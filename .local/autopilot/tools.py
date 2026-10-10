@@ -443,7 +443,9 @@ class Toolbox:
         if self.dry:
             log("DRY-RUN would game_set", payload)
             return "dry-run: not executed"
-        return run_script("automate", ["raw", json.dumps(payload)], timeout=90)
+        # every value goes as a quoted string: the mod's flat reader swallowed the rest of the line after a bare
+        # number ('"level": 1, "pawn": "Gee"' came back "no colonist"); the mod parses numbers out of strings fine
+        return run_script("automate", ["raw", json.dumps({k: str(v) for k, v in payload.items()})], timeout=90)
 
     def t_twitch(self, action, text, viewer=None):
         clean = guards.clean_for_stream(text, max_len=400)
