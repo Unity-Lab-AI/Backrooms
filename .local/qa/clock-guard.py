@@ -60,7 +60,11 @@ while True:
             dialog = bool(ui.get("nonImmediateDialogWindowOpen") or ui.get("NonImmediateDialogWindowOpen"))
             letters = [l.get("label") or "" for l in call("rimworld/list_letters").get("letters", [])]
             raid = any("raid" in l.lower() for l in letters)
-            if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "_setup_hold.flag")):
+            _ap = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_svc_autopilot.log")
+            _active = os.path.exists(_ap) and time.time() - os.path.getmtime(_ap) < 180
+            if _active:
+                pass   # she is working and may have paused on purpose (live: it unpaused her setup pause)
+            elif os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "_setup_hold.flag")):
                 pass   # the first-unpause checklist is not done: the owner's rule is that time waits for it
             elif dialog:
                 print(stamp(), "frozen at", t1, "-- a dialog is open, leaving it alone", flush=True)
