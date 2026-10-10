@@ -113,7 +113,7 @@ def ask(text):
         with open(ORDERS, "a", encoding="utf-8") as f:
             f.write("\n- OWNER, typed in the panel chat (binding next turn): " + text.strip()[:400] + "\n")
     body = {"model": MODEL, "system": system, "prompt": text, "stream": False, "keep_alive": "30m",
-            "options": {"num_ctx": 16384, "num_predict": 220, "temperature": 0.7}}
+            "options": {"num_ctx": 8192, "num_predict": 220, "temperature": 0.7}}
     req = urllib.request.Request("http://127.0.0.1:11435/api/generate", data=json.dumps(body).encode(),
                                  headers={"Content-Type": "application/json"})
     return json.loads(urllib.request.urlopen(req, timeout=180).read()).get("response", "").strip()

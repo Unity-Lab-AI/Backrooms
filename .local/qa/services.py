@@ -167,14 +167,14 @@ def deps():
         print("ollama-voice started on 11435")
     try:
         vapi("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "keep_alive": "30m",
-                               "options": {"num_ctx": 16384, "num_predict": 1}}, timeout=180)
+                               "options": {"num_ctx": 8192, "num_predict": 1}}, timeout=180)
         print("model       %s warm on the voice server" % VOICE)
     except Exception as e:
         print("model       %s voice warm-up skipped (%s)" % (VOICE, str(e)[:40]))
     return
     try:
         api("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "keep_alive": "30m",
-                              "options": {"num_ctx": 16384, "num_predict": 1}}, timeout=180)
+                              "options": {"num_ctx": 8192, "num_predict": 1}}, timeout=180)
         print("model       %s warm" % VOICE)
     except Exception as e:
         print("model       %s warm-up skipped (%s)" % (VOICE, str(e)[:40]))

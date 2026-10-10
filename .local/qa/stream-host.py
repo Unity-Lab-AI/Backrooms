@@ -92,7 +92,7 @@ def fresh(fact):
         try:
             req = urllib.request.Request("http://127.0.0.1:11435/api/generate", data=json.dumps(
                 {"model": "unity-local", "prompt": prompt, "stream": False, "keep_alive": "10m",
-                 "options": {"temperature": 0.9, "num_ctx": 16384, "num_predict": 60}}).encode(),
+                 "options": {"temperature": 0.9, "num_ctx": 8192, "num_predict": 60}}).encode(),
                 headers={"Content-Type": "application/json"})
             line = json.loads(urllib.request.urlopen(req, timeout=25).read())["response"].strip().strip('"').split(chr(10))[0]
         except Exception as _e:

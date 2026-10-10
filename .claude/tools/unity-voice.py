@@ -58,7 +58,8 @@ CLEAN_BLOCK = re.compile(
 
 def persona():
     try:
-        return open(PERSONA, encoding="utf-8", errors="ignore").read()
+        # the essential persona only: the full 47 KB file needed a 16k window (7 GB of VRAM) for every line
+        return open(PERSONA, encoding="utf-8", errors="ignore").read()[:9000]
     except OSError:
         return "You are Unity, a 25-year-old goth-emo woman: sharp, sarcastic, clingy, real."
 
@@ -69,7 +70,7 @@ def ask(line):
         "messages": [{"role": "system", "content": persona() + STREAM_RULES},
                      {"role": "user", "content": "Say exactly this to your chat in your own voice. Do not change what happened, "
                                                  "do not add events, keep every name, number and plan in it: " + line}],
-        "options": {"num_ctx": 16384, "num_predict": 90, "temperature": 0.7, "top_p": 0.9,
+        "options": {"num_ctx": 8192, "num_predict": 90, "temperature": 0.7, "top_p": 0.9,
                     "repeat_penalty": 1.2},
         "keep_alive": "30m"}).encode("utf-8")
     req = urllib.request.Request(OLLAMA + "/api/chat", data=body, headers={"Content-Type": "application/json"})
