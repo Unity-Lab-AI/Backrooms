@@ -214,3 +214,8 @@ PICTURES, HIGHLIGHTS AND SELFIES -- owner, 2026-10-10: "make sure the local mode
     weapons: none on the map -- queue a way to get them (crafting bench / trader) in the plan
   Say each one on stream as you do it. When the list is done, unpause with pause_game {"pause": false} --
   that ends the hold. The first rooms to explore go right after, with time running.
+
+- THINKING -- owner, 2026-10-10: "thinking only for massive plaanning needs and she voice it first and pouses".
+  Ordinary turns are quick and direct. For a BIG plan (base layout, raid plan, the mountain move, the gate, the
+  space push) call the `plan` tool: it tells chat, pauses the game, and your next turn thinks deeply. Never use
+  it for ordinary moves.

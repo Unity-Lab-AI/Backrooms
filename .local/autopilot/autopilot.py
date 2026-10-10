@@ -211,7 +211,9 @@ def turn(toolbox, st, args, system, specs):
         runlist = toolbox.t_run_list()
     messages = [{"role": "system", "content": system},
                 {"role": "user", "content": brief(toolbox, st, joins, msgs, runlist)}]
-    opts = {"num_ctx": args.num_ctx, "num_gpu": args.num_gpu, "think": args.think,
+    deep = bool(getattr(toolbox, "think_next", False)); toolbox.think_next = False
+    if deep: log("deep planning turn (thinking on)")
+    opts = {"num_ctx": args.num_ctx, "num_gpu": args.num_gpu, "think": True if deep else args.think,
             "keep_alive": "5m" if args.dry_run else "30m", "timeout": args.timeout}
     final = ""
     for step in range(args.max_steps):

@@ -276,6 +276,10 @@ class Toolbox:
             "reply_chat": ("[STREAM] Answer a Twitch viewer by name, out loud and in the overlay chat. chat_id is the "
                            "number given with their message.", S({"chat_id": i, "viewer": s, "text": s},
                                                                   ["chat_id", "viewer", "text"]), self.t_reply),
+            "plan": ("Big planning only (a new base layout, a raid plan, the mountain move, the gate, the space push). "
+                     "Owner: \"thinking only for massive plaanning needs and she voice it first and pouses\". Say on "
+                     "stream what you are planning, the game is paused, and your NEXT turn thinks deeply. Never for "
+                     "ordinary moves.", S({"what": s}, ["what"]), self.t_plan),
             "webcam": ("[STREAM] Re-render Unity's webcam with a mood and a short clean caption (raids, deaths, wins, "
                        "chat moments).", S({"mood": {"type": "string", "enum": list(MOODS)}, "caption": s},
                                            ["mood", "caption"]), self.t_webcam),
@@ -439,6 +443,20 @@ class Toolbox:
             log("DRY-RUN would twitch", args)
             return "dry-run: not executed"
         return run_script("twitch", args, timeout=90)
+
+    def t_plan(self, what):
+        line = guards.clean_for_stream("Give me a second, chat, I am planning " + (what or "the next big step") +
+                                       ". Pausing while I think it through.", max_len=200)
+        if self.dry:
+            return "dry-run: not executed"
+        if line:
+            self.t_say(line)
+        try:
+            self.bridge.call("rimworld/pause_game", {"pause": True})
+        except Exception:
+            pass
+        self.think_next = True
+        return "paused and announced; your next turn thinks deeply -- plan it, then unpause when the plan is set"
 
     def t_webcam(self, mood, caption):
         if mood not in MOODS:
