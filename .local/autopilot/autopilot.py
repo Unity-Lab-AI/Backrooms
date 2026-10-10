@@ -66,7 +66,7 @@ def ollama_chat(model, messages, tool_specs, opts):
     body = {"model": model, "messages": messages, "tools": tool_specs, "stream": False,
             "keep_alive": opts["keep_alive"],
             "options": {"num_ctx": opts["num_ctx"], "temperature": 0.5, "top_p": 0.9,
-                        "num_thread": int(os.environ.get("AUTOPILOT_THREADS", "8"))}}   # all 8 physical cores
+                        "num_thread": int(os.environ.get("AUTOPILOT_THREADS", "14"))}}   # owner: "use as many as possible" -- 14 of 16 threads, 2 left for the game and the stream
     if opts.get("num_gpu") is not None:
         body["options"]["num_gpu"] = opts["num_gpu"]
     if opts.get("think") is not None:
