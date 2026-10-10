@@ -108,6 +108,9 @@ def fresh(fact):
         line = re.sub(r"\bUnity is\b", "I'm", line); line = re.sub(r"\bUnity's\b", "my", line); line = re.sub(r"\bUnity\b", "I", line)
         low = line.lower()
         if difflib.SequenceMatcher(None, low, fact.lower()).ratio() > 0.75: continue   # a bare echo of the prompt
+        # a parroted clause of the fact ("I have only read it, I have not acted on it") is a script, not her words
+        _fw = re.findall(r"[a-z']+", fact.lower()); _lw = " " + " ".join(re.findall(r"[a-z']+", low)) + " "
+        if any(" " + " ".join(_fw[k:k + 5]) + " " in _lw for k in range(max(0, len(_fw) - 4))): continue
         if not line or len(line.split()) > 30 or any(re.search(r"\b%s" % w, low) for w in sb.BANNED): continue
         if any(w in low for w in ("behold", "cosmos", " lo,", "witness")): continue
         if low.startswith(("now:", "what i am doing", "what i'm doing")) or "right now in the game:" in low: continue   # echoed the label
