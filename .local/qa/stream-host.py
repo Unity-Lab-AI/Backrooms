@@ -245,6 +245,28 @@ def read_inbox(pos):
 try: pos = os.path.getsize(INBOX)
 except Exception: pos = 0
 greeted = set()
+SEEN = set()          # viewer names seen in chat or joins this run (never the owner's handle)
+RECAP_EVERY = 300     # owner: "she ... hasnet given a full run donwn catch up once and hasnt mentioned anyone by name"
+last_recap = time.time() - RECAP_EVERY + 60
+
+
+def recap_fact():
+    """A catch-up for whoever just arrived: the colony, what is done, what she is doing, and who is here."""
+    done = []
+    try:
+        pad = open(os.path.join(ROOT, ".local", "autopilot", "scratch", "pad.md"), encoding="utf-8").read()
+        done = [re.sub(r"\s+--.*$|\(.*?\)", "", l[3:]).strip()[:60] for l in pad.splitlines() if l.startswith("[x]")][:5]
+    except Exception:
+        pass
+    facts = state_facts()
+    now = next((f[5:] for f in facts if f.startswith("NOW: ")), "")
+    crew = next((f for f in facts if f.startswith("my crew")), "")
+    names = sorted(SEEN)[:6]
+    parts = ["a quick catch-up for anyone who just got here, like a streamer would give: " + (crew or "a fresh colony")]
+    if done: parts.append("done so far: " + "; ".join(done))
+    if now: parts.append("right now: " + now)
+    if names: parts.append("and say hi by name to the people here: " + ", ".join(names))
+    return ". ".join(parts)
 try: seen_letters = set(l.get("letterId") for l in call("rimworld/list_letters").get("letters", []))
 except Exception: seen_letters = set()   # no game yet at the press: she still talks, letters start fresh
 while True:
@@ -253,6 +275,8 @@ while True:
         for who, text in msgs:
             if who.lower() in ("unityplaysrimworld", os.environ.get("TWITCH_CHANNEL", "unityplaysrimworld").lower()):
                 continue                  # her own chat lines come back through the bridge; never answer herself
+            if who.lower() not in OWNER:
+                SEEN.add(who)             # everyone who has talked or joined this stream, for the catch-up
             if who.lower() in OWNER:
                 # the owner typing in Twitch chat is a GAME order for her (owner, 2026-10-10: "i told her to explor
                 # the hidden rroms and get outside her walls but she didnt do it" -- it had only been chat). Her
@@ -304,6 +328,10 @@ while True:
             seen_letters.add(lid)
             lab = l.get("label") or ""; body = re.sub(r"\(\*[^)]*\)|\(/[^)]*\)", "", (l.get("text") or ""))[:220]
             speak(fresh("a game event just happened: %s -- %s" % (lab, body)))
+        if time.time() - last_recap > RECAP_EVERY:
+            last_recap = time.time()
+            # a rundown needs more than one 20-word line: her announcement voice writes two or three sentences
+            subprocess.run([sys.executable, SAY, "fact: " + recap_fact()], env=dict(os.environ, UNITY_NO_GLANCE="1"))
         if time.time() - last_spoken() > SILENCE:
             facts = state_facts()
             if facts:

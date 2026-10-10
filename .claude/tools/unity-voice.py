@@ -72,7 +72,7 @@ def ask(line):
                          # owner: "dont want her corporate butllshit scripted responses anymore" -- a fact, not a
                          # script: she writes the whole line herself, her take, her words
                          ("This is what is happening right now: " + line[5:].strip() + ". Talk to your chat about it "
-                          "in your own words: one or two short sentences, your own take on it, like a real streamer "
+                          "in your own words: one to three short sentences, your own take on it, like a real streamer "
                           "girl, not an announcer, no corporate tone. Do not add events that are not in it.")
                          if line.lower().startswith("fact:") else
                          ("Say exactly this to your chat in your own voice. Do not change what happened, "
