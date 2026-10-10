@@ -35,7 +35,7 @@ whole body moved here unchanged and that file went back to its template state.
 | [`ROADMAP.md`](ROADMAP.md) | MAJOR — phases and milestones |
 | [`TODO.md`](TODO.md) | MINOR — the working queue, **open buildable work only** |
 | [`DECOMPOSED.md`](DECOMPOSED.md) | smallest execution units, open only |
-| **`TEST.md`** (this file) | **the test phase — `[T]` only, 61 rows, and a build closes none of them** |
+| **`TEST.md`** (this file) | **the test phase — `[T]` only, 60 rows, and a build closes none of them** |
 | [`FINALIZED.md`](FINALIZED.md) | permanent archive, append-only |
 
 Status markers here are `[T]` and nothing else. A row that turns out to be buildable after all goes
@@ -214,7 +214,6 @@ Nine `##` sections titled as dated checkpoint records held **20.9 KB** between t
 
 
 
-- [T] **"there is a weird route thing name a self in one of the rooms and this is kinda weird and odd"** — owner's own read: *"we probably havent gotten to a routing system yet for emergency exit and glow pods with the company start but lets try and fix this"* — **THE STATED CAUSE IS ANSWERED AND THE SIGHTING IS NOT, so this is the one row of the twelve that moves to the test phase rather than closing.** The routing system the owner supposed was missing **exists**: `CompRimroomsMarker` with five `RimroomsMarkerTypeDefs` — `RR_Marker_Route` labelled *"route home"*, plus `_Cleared`, `_Danger`, `_Cache`, `_Lead` — numbered through `FirstSliceSiteComponent.NextMarkerNumber`, and the survey tag is a Core `GlowPod` since 0.10.7-dev. **But markers are player-deployed, so a freshly generated level should carry none**, and **what the owner actually saw cannot be identified from here** — naming it needs somebody looking at the object on a map. Deliberately not guessed: editing a label on a hunch is the same move that lost three launches in one method.
 
 **From `## Lights and geometry — 2026-09-30 (0.12.61-dev) — DONE`:**
 
