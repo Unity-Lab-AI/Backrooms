@@ -1,6 +1,6 @@
 @echo off
-REM Stop every stream service. RimWorld is left alone.
+REM Stop every one of them. RimWorld is left alone.
 cd /d "%~dp0..\.."
-python .local\qa\services.py stop
+python stream\services.py stop
 echo.
 pause

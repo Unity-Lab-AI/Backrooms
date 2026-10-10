@@ -1,7 +1,7 @@
 @echo off
-REM Start the whole stream: studio, webcam, Twitch chat, host voice, guards, cursor jobs, autopilot.
-REM RimWorld is yours to launch -- this never touches the game.
+REM Start the whole show: OBS, Twitch window, studio, webcam, chat, voice, guards, click queue,
+REM the AI that plays, mission control and the local model API. RimWorld is yours to launch.
 cd /d "%~dp0..\.."
-python .local\qa\services.py start
+python stream\services.py start
 echo.
 pause

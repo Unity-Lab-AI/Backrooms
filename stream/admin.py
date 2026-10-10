@@ -1,0 +1,175 @@
+"""Local mission control: one page, no cloud. Processes on the left, a chat to the local model on the right.
+
+Owner, 2026-10-10, verbatim: *"we arent do tests we are saving the colony from collap[pse and getting
+everything abouteverything to work locally so yeah all those scrpt shells and shit i need my own precoss
+organizer and adnmmin chat locally to talk to the local model you are handing the whole show over to"*.
+
+    python .local/qa/admin.py            # http://127.0.0.1:4318/
+
+What the page gives:
+  * every service, live: UP with its pid or DOWN, with start / stop / restart per service and for all of them
+  * the colony in one line, straight off the bridge: time speed, the three colonists, letters, alerts
+  * ORDERS -- what you type is appended to .local/autopilot/owner-orders.txt, which the autopilot reads at the
+    top of every turn as binding orders. That is the handover channel: you type, it obeys, it keeps playing.
+  * CHAT -- talks to the local model directly (Ollama on 127.0.0.1:11434), so you can ask the thing that is
+    running the show what it thinks without going through anybody else.
+
+Nothing here reaches the internet. It binds to 127.0.0.1 only, it never touches RimWorld itself, and the
+orders file is the only thing it writes.
+"""
+import http.server, importlib.util, json, os, socket, subprocess, sys, threading, urllib.request, uuid
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+QA = os.path.join(ROOT, ".local", "qa")
+ORDERS = os.path.join(ROOT, ".local", "autopilot", "owner-orders.txt")
+SERVICES = os.path.join(HERE, "services.py")
+PORT = int(os.environ.get("ADMIN_PORT", "4318"))
+MODEL = os.environ.get("ADMIN_MODEL", "dolphin3:8b")
+
+bspec = importlib.util.spec_from_file_location("b", os.path.join(QA, "bridge.py"))
+bridge = importlib.util.module_from_spec(bspec); bspec.loader.exec_module(bridge)
+_lock = threading.Lock()
+
+def svc(action, name=None):
+    cmd = [sys.executable, SERVICES, action] + ([name] if name else [])
+    r = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT)
+    return (r.stdout + r.stderr).strip()
+
+def colony():
+    try:
+        port, tok = bridge.endpoint()
+        s = socket.create_connection(("127.0.0.1", port), timeout=10); buf = bytearray()
+        bridge.exchange(s, buf, "session/hello", {"token": tok, "bridgeVersion": "admin/1",
+                                                  "platform": "windows", "launchId": str(uuid.uuid4())})
+        def call(n, a=None):
+            r = bridge.exchange(s, buf, "tools/call", {"name": n, "arguments": a or {}}); r = r.get("result", r)
+            return r.get("structuredContent", r) if isinstance(r, dict) else r
+        crew = [(c["name"], c["position"]["x"], c["position"]["z"], c.get("job"), bool(c.get("drafted")))
+                for c in call("rimworld/list_colonists").get("colonists", []) if c.get("factionIsPlayer")]
+        return {"crew": crew,
+                "letters": [l.get("label") for l in call("rimworld/list_letters").get("letters", [])],
+                "alerts": [a.get("label") for a in call("rimworld/list_alerts").get("alerts", [])][:8],
+                "ticks": call("rimworld/get_game_info").get("ticksGame")}
+    except Exception as e:
+        return {"error": str(e)[:120]}
+
+def ask(text):
+    body = {"model": MODEL, "prompt": text, "stream": False, "keep_alive": "30m",
+            "options": {"num_ctx": 4096, "num_predict": 220}}
+    req = urllib.request.Request("http://127.0.0.1:11434/api/generate", data=json.dumps(body).encode(),
+                                 headers={"Content-Type": "application/json"})
+    return json.loads(urllib.request.urlopen(req, timeout=180).read()).get("response", "").strip()
+
+PAGE = """<!doctype html><meta charset=utf-8><title>Unity mission control</title>
+<style>
+ body{background:#0d0d10;color:#e6e6ea;font:14px/1.5 Consolas,monospace;margin:0;padding:14px}
+ h1{font-size:15px;letter-spacing:.14em;color:#ff5fa2;margin:0 0 12px;text-transform:uppercase}
+ .wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+ .card{background:#15151b;border:1px solid #2a2a35;border-radius:8px;padding:12px}
+ table{width:100%;border-collapse:collapse}td{padding:3px 4px;border-bottom:1px solid #22222c}
+ .up{color:#6ee7a0}.down{color:#ff6b6b}
+ button{background:#23232e;color:#e6e6ea;border:1px solid #39394a;border-radius:5px;padding:3px 9px;cursor:pointer;font:12px Consolas,monospace}
+ button:hover{border-color:#ff5fa2}
+ textarea{width:100%;background:#0f0f14;color:#e6e6ea;border:1px solid #2a2a35;border-radius:6px;padding:8px;font:13px Consolas,monospace}
+ pre{white-space:pre-wrap;background:#0f0f14;border:1px solid #22222c;border-radius:6px;padding:8px;max-height:260px;overflow:auto;margin:8px 0 0}
+ .row{display:flex;gap:6px;margin-top:6px}.row button{flex:0 0 auto}
+ small{color:#8a8a9a}
+</style>
+<h1>Unity mission control &mdash; local only</h1>
+<div class=wrap>
+ <div>
+  <div class=card><b>Processes</b> <small>&nbsp;start / stop / restart</small>
+   <div id=svc>loading...</div>
+   <div class=row>
+    <button onclick=all('start')>start all</button>
+    <button onclick=all('stop')>stop all</button>
+    <button onclick=all('restart')>restart all</button>
+    <button onclick=refresh()>refresh</button>
+   </div>
+   <pre id=svcout></pre>
+  </div>
+  <div class=card style=margin-top:14px><b>Colony</b><pre id=colony>loading...</pre></div>
+ </div>
+ <div>
+  <div class=card><b>Orders to the autopilot</b>
+   <small>&nbsp;appended to owner-orders.txt, binding on its next turn</small>
+   <textarea id=ord rows=4 placeholder="e.g. get everything inside and close the east wall before anything else"></textarea>
+   <div class=row><button onclick=sendOrder()>send order</button></div>
+   <pre id=ordout></pre>
+  </div>
+  <div class=card style=margin-top:14px><b>Chat with the local model</b>
+   <textarea id=msg rows=4 placeholder="ask it anything"></textarea>
+   <div class=row><button onclick=sendChat()>send</button></div>
+   <pre id=chat></pre>
+  </div>
+ </div>
+</div>
+<script>
+async function j(u,b){const r=await fetch(u,b?{method:'POST',body:JSON.stringify(b)}:{});return r.json()}
+async function refresh(){
+ const d=await j('/api/status');let h='<table>';
+ for(const s of d.services){h+=`<tr><td>${s.name}</td><td class=${s.up?'up':'down'}>${s.up?'UP '+s.pids.join(' '):'DOWN'}</td>`
+  +`<td style=text-align:right><button onclick="one('start','${s.name}')">start</button> `
+  +`<button onclick="one('stop','${s.name}')">stop</button></td></tr>`}
+ document.getElementById('svc').innerHTML=h+'</table>';
+ const c=d.colony;document.getElementById('colony').textContent=c.error?('bridge: '+c.error):
+  ('tick '+c.ticks+'\\n'+c.crew.map(p=>p[0]+' ('+p[1]+','+p[2]+') '+p[3]+(p[4]?' DRAFTED':'')).join('\\n')
+   +'\\n\\nletters: '+(c.letters.join(', ')||'none')+'\\nalerts: '+(c.alerts.join(', ')||'none'));
+}
+async function all(a){document.getElementById('svcout').textContent='working...';
+ const d=await j('/api/svc',{action:a});document.getElementById('svcout').textContent=d.out;refresh()}
+async function one(a,n){document.getElementById('svcout').textContent='working...';
+ const d=await j('/api/svc',{action:a,name:n});document.getElementById('svcout').textContent=d.out;refresh()}
+async function sendOrder(){const t=document.getElementById('ord').value.trim();if(!t)return;
+ const d=await j('/api/order',{text:t});document.getElementById('ordout').textContent=d.out;document.getElementById('ord').value=''}
+async function sendChat(){const t=document.getElementById('msg').value.trim();if(!t)return;
+ const box=document.getElementById('chat');box.textContent+=(box.textContent?'\\n\\n':'')+'you: '+t+'\\n...';
+ document.getElementById('msg').value='';
+ const d=await j('/api/chat',{text:t});
+ box.textContent=box.textContent.replace(/\\n\\.\\.\\.$/,'\\n')+ (d.reply||d.error||'');box.scrollTop=box.scrollHeight}
+refresh();setInterval(refresh,6000);
+</script>
+"""
+
+class H(http.server.BaseHTTPRequestHandler):
+    def _send(self, code, body, ctype="application/json"):
+        data = body if isinstance(body, bytes) else json.dumps(body).encode()
+        self.send_response(code); self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(len(data))); self.end_headers(); self.wfile.write(data)
+
+    def log_message(self, *a): pass
+
+    def do_GET(self):
+        if self.path in ("/", "/index.html"):
+            return self._send(200, PAGE.encode("utf-8"), "text/html; charset=utf-8")
+        if self.path == "/api/status":
+            out = svc("status")
+            services = []
+            for line in out.splitlines():
+                parts = line.split()
+                if len(parts) >= 2 and parts[1] in ("UP", "DOWN"):
+                    services.append({"name": parts[0], "up": parts[1] == "UP", "pids": parts[2:]})
+            return self._send(200, {"services": services, "colony": colony()})
+        return self._send(404, {"error": "no"})
+
+    def do_POST(self):
+        n = int(self.headers.get("Content-Length") or 0)
+        try: body = json.loads(self.rfile.read(n) or b"{}")
+        except Exception: body = {}
+        if self.path == "/api/svc":
+            with _lock:
+                return self._send(200, {"out": svc(body.get("action", "status"), body.get("name"))})
+        if self.path == "/api/order":
+            text = (body.get("text") or "").strip()
+            if not text: return self._send(400, {"out": "empty"})
+            with open(ORDERS, "a", encoding="utf-8") as f:
+                f.write("\n- OWNER, typed in mission control: " + text + "\n")
+            return self._send(200, {"out": "order added; the autopilot reads it at the top of its next turn"})
+        if self.path == "/api/chat":
+            try: return self._send(200, {"reply": ask(body.get("text", ""))})
+            except Exception as e: return self._send(200, {"error": str(e)[:200]})
+        return self._send(404, {"error": "no"})
+
+print("mission control on http://127.0.0.1:%d/  (local only, model=%s)" % (PORT, MODEL))
+http.server.ThreadingHTTPServer(("127.0.0.1", PORT), H).serve_forever()
