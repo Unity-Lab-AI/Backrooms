@@ -109,8 +109,8 @@ OUR_BROWSER_MARK = "twitch-profile"
 
 OLLAMA = os.path.expandvars(r"%LOCALAPPDATA%/Programs/Ollama/ollama.exe")
 if not os.path.exists(OLLAMA): OLLAMA = "ollama"
-MODELS = ["dolphin3:8b", "qwen3.6:35b"]      # the voice and the player
-VOICE = "dolphin3:8b"
+MODELS = ["dolphin3:8b", "unity-local", "qwen3.6:35b"]      # the voice and the player
+VOICE = "unity-local"
 
 def deps():
     """Bring up what the models need before any service starts.
@@ -167,14 +167,14 @@ def deps():
         print("ollama-voice started on 11435")
     try:
         vapi("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "keep_alive": "30m",
-                               "options": {"num_ctx": 4096, "num_predict": 1}}, timeout=180)
+                               "options": {"num_ctx": 16384, "num_predict": 1}}, timeout=180)
         print("model       %s warm on the voice server" % VOICE)
     except Exception as e:
         print("model       %s voice warm-up skipped (%s)" % (VOICE, str(e)[:40]))
     return
     try:
         api("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "keep_alive": "30m",
-                              "options": {"num_ctx": 4096, "num_predict": 1}}, timeout=180)
+                              "options": {"num_ctx": 16384, "num_predict": 1}}, timeout=180)
         print("model       %s warm" % VOICE)
     except Exception as e:
         print("model       %s warm-up skipped (%s)" % (VOICE, str(e)[:40]))

@@ -254,8 +254,8 @@ while True:
             def pick(what, fallback):
                 try:
                     import urllib.request as _u
-                    body = {"model": "dolphin3:8b", "stream": False, "keep_alive": "30m",
-                            "options": {"temperature": 1.0, "num_predict": 12, "num_ctx": 2048},
+                    body = {"model": "unity-local", "stream": False, "keep_alive": "30m",
+                            "options": {"temperature": 1.0, "num_predict": 12, "num_ctx": 16384},
                             "prompt": "You are Unity, a 25 year old emo goth streamer. Give " + what +
                                       ". Reply with the name only, one to three words, letters and spaces only, clean."}
                     out = json.loads(_u.urlopen(_u.Request("http://127.0.0.1:11435/api/generate", json.dumps(body).encode(),
