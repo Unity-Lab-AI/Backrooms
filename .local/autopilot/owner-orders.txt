@@ -165,7 +165,7 @@ PICTURES, HIGHLIGHTS AND SELFIES -- owner, 2026-10-10: "make sure the local mode
   code. Chat gets what is happening in the colony and in your life, not how the machine works. The stream filter
   now refuses those lines anyway.
 
-- OWNER, 2026-10-10, live (binding, do it NOW, before building anything): "i told her to explor the hidden rroms
+- OWNER, 2026-10-10 (binding, every new colony, right after day one): "i told her to explor the hidden rroms
   and get outside her walls but she didnt do it". The company start puts the crew inside a sealed facility.
   1) EXPLORE every hidden room of the facility first: walk a pawn through each door and corridor, open what is
      closed, find the supplies and every way out. ("you still have t explored your facility")
