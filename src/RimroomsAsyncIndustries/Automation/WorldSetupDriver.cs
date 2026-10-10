@@ -54,6 +54,8 @@ namespace RimroomsAsyncIndustries.Automation
 
         private float nextCheck;
         private readonly HashSet<int> handled = new HashSet<int>();
+        private static DateTime requestStamp;
+        private static bool crewLoaded;
 
         private static string Folder => Path.Combine(GenFilePaths.ConfigFolderPath, "RimroomsAutomation");
         private static string RequestPath => Path.Combine(Folder, "newgame.request");
@@ -92,8 +94,15 @@ namespace RimroomsAsyncIndustries.Automation
             try
             {
                 if (!File.Exists(RequestPath) || Find.WindowStack == null || LongEventHandler.AnyEventNowOrWaiting) { return; }
-                Window top = Find.WindowStack.Windows.LastOrDefault(w => w is Page || w is Dialog_NamePlayerFactionAndSettlement);
-                if (top == null || handled.Contains(top.ID)) { return; }
+                // a fresh request starts a fresh run: nothing is handled yet and no crew is loaded
+                DateTime stamp = File.GetLastWriteTimeUtc(RequestPath);
+                if (stamp != requestStamp) { requestStamp = stamp; handled.Clear(); crewLoaded = false; }
+                // the ideology page can sit UNDER the others (it opens right after the scenario page); it is
+                // handled first wherever it is, then the topmost unhandled page
+                var open = Find.WindowStack.Windows.Where(w => (w is Page || w is Dialog_NamePlayerFactionAndSettlement)
+                                                               && !handled.Contains(w.ID)).ToList();
+                Window top = open.FirstOrDefault(w => w is Page_ChooseIdeoPreset) ?? open.LastOrDefault();
+                if (top == null) { return; }
                 Dictionary<string, string> req = Request();
 
                 switch (top)
@@ -199,6 +208,14 @@ namespace RimroomsAsyncIndustries.Automation
 
         private static void Company(Page p, Dictionary<string, string> req)
         {
+            if (!crewLoaded && p.prev is Page_ConfigureStartingPawns && GenTypes.GetTypeInAnyAssembly("EdB.PrepareCarefully.Mod") != null)
+            {
+                // live: the company page came up before the crew page was handled and five default staff landed.
+                // Back to the pawns page (the page's own Back), so the preset is loaded first.
+                typeof(Page).GetMethod("DoBack", Any)?.Invoke(p, null);
+                Report("company setup: crew not loaded yet -- back to the pawns page");
+                return;
+            }
             p.GetType().GetField("reviewed", Any)?.SetValue(p, true);
             if (req.TryGetValue("company", out string company) && !string.IsNullOrWhiteSpace(company))
             {
@@ -279,6 +296,7 @@ namespace RimroomsAsyncIndustries.Automation
             controller.GetType().GetMethod("LoadPreset", Any).Invoke(controller, new object[] { preset });
             controller.GetType().GetMethod("StartGame", Any).Invoke(controller, null);
             pcPage.Close(false);
+            crewLoaded = true;
             Report("crew: preset '" + preset + "' loaded -> start");
             return true;
         }
