@@ -205,7 +205,11 @@ while True:
         model_needs(passes)
         # Owner, 2026-10-10: "it should ask me if im ready to start the stream and game and what i want not
         # just random do everything". Ask once, out loud and on the panel, then wait for GO.
-        if not os.path.exists(GO):
+        if not went and not os.path.exists(GO) and _bridge_up():
+            went = True                            # the game is already up: this loop was restarted mid-run
+        if went:
+            pass                                   # GO handled this run; nothing to ask
+        elif not os.path.exists(GO):
             flag = os.path.join(HERE, "_asked.flag")
             if not asked and os.path.exists(flag) and time.time() - os.path.getmtime(flag) < 7200:
                 asked = True      # already asked this press; a restart of this loop must not ask twice
@@ -222,6 +226,10 @@ while True:
             except OSError: pass
             want = open(GO, encoding="utf-8").read().strip()
             print(stamp(), "GO received:", want[:120], flush=True)
+            # a GO is used once: left on disk, every restart of this loop re-ran the whole go-live (live: a false
+            # "new stream, game loading" line mid-game)
+            try: os.remove(GO)
+            except OSError: pass
             # never read the owner's directive aloud -- it is an order to her, not a line for the stream
             say("fact: a new stream is starting and the game is loading about two hundred mods")
             # a NEW stream each start (owner: "make sure it starts a new stream"): fresh title, then OBS live
