@@ -179,8 +179,22 @@ namespace RimroomsAsyncIndustries.Automation
             if (factions != null)
             {
                 int before = factions.Count;
-                factions.RemoveAll(f => f != null && f.defName.IndexOf("Pirate", StringComparison.OrdinalIgnoreCase) >= 0
-                                        && !PirateKeep.Contains(f.defName));
+                // Owner, verbatim: "one of each and only one red pirate guy no other red ones  just not all the tribe
+                // just the fun ones". Hidden factions (mechanoids, insects, ancients...) stay -- the game needs them.
+                // Every hostile (red) one goes except the normal pirates; tribes are only the cannibals and nudists
+                // (added below); everything else keeps one faction per kind.
+                var seenKind = new HashSet<string>();
+                factions.RemoveAll(f =>
+                {
+                    if (f == null) return true;
+                    if (f.hidden) return false;
+                    if (PirateKeep.Contains(f.defName) || FactionsToAdd.Contains(f.defName)) return false;
+                    if (f.permanentEnemy || f.naturalEnemy) return true;
+                    if (f.defName.IndexOf("Tribe", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        f.categoryTag == "Tribal") return true;
+                    string kind = string.IsNullOrEmpty(f.categoryTag) ? f.defName : f.categoryTag;
+                    return !seenKind.Add(kind);
+                });
                 foreach (string name in PirateKeep.Concat(FactionsToAdd))
                 {
                     FactionDef def = DefDatabase<FactionDef>.GetNamedSilentFail(name);
