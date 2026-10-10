@@ -5,7 +5,9 @@
     {
       "id": "dialog-open",
       "priority": 1,
-      "when": { "dialog_open": true },
+      "when": {
+        "dialog_open": true
+      },
       "then": [
         "read the dialog's own buttons with get_ui_layout -- never guess from the window type",
         "a demand for payment, silver, items or a pawn: refuse (refuse/reject/decline), never pay",
@@ -13,12 +15,16 @@
         "click the button by its real targetId with click_ui_target, then confirm windowCount dropped"
       ],
       "why": "owner: \"anser them most are shit never pay them\" / \"you have a pop up u havent ckicked yet thats you are fucking ignoring\"",
-      "never": ["delete .claude/.popup.json to clear a stall -- the flag is the guard telling the truth"]
+      "never": [
+        "delete .claude/.popup.json to clear a stall -- the flag is the guard telling the truth"
+      ]
     },
     {
       "id": "hostile-on-map",
       "priority": 2,
-      "when": { "hostiles_on_map": ">0" },
+      "when": {
+        "hostiles_on_map": ">0"
+      },
       "then": [
         "pause",
         "draft all three",
@@ -27,12 +33,16 @@
         "run time again once posted"
       ],
       "why": "owner: \"remmebr always field tnde directly brefopre cpature and haul\" / prisoner bed before any fight",
-      "never": ["draft while the raid letter is still 'preparing' -- drafted pawns do no work"]
+      "never": [
+        "draft while the raid letter is still 'preparing' -- drafted pawns do no work"
+      ]
     },
     {
       "id": "letter-unread",
       "priority": 3,
-      "when": { "letters": ">0" },
+      "when": {
+        "letters": ">0"
+      },
       "then": [
         "read every letter's text, not just its label",
         "a raid letter is a WARNING, not a contact: check hostiles_on_map before any combat move",
@@ -44,7 +54,10 @@
     {
       "id": "pawn-starving",
       "priority": 4,
-      "when": { "meals": 0, "raw_food": "<5" },
+      "when": {
+        "meals": 0,
+        "raw_food": "<5"
+      },
       "then": [
         "designate every berry bush and harvestable plant near camp",
         "designate hunting on animals, but NEVER on rhinoceros, elephant, bear or thrumbo with fewer than 3 rifles",
@@ -56,7 +69,9 @@
     {
       "id": "food-rotting-or-no-cold",
       "priority": 5,
-      "when": { "store_roofed_fraction": "<1.0" },
+      "when": {
+        "store_roofed_fraction": "<1.0"
+      },
       "then": [
         "a room with no roof is not a room: a cooler in it cools open sky",
         "wall the room on its INTERIOR sides only (build-wall), never out to the camp perimeter",
@@ -68,7 +83,9 @@
     {
       "id": "perimeter-hole",
       "priority": 6,
-      "when": { "wall_gaps": ">0" },
+      "when": {
+        "wall_gaps": ">0"
+      },
       "then": [
         "read an intact stretch of the SAME wall and copy its defName -- do not take the first embrasure the list offers",
         "plain Vin_Embrasure for a non-powered wall; a door near the corners and mid-side",
@@ -79,7 +96,10 @@
     {
       "id": "blueprints-but-no-material",
       "priority": 7,
-      "when": { "blueprints": ">0", "wood": "<cost_of_blueprints" },
+      "when": {
+        "blueprints": ">0",
+        "wood": "<cost_of_blueprints"
+      },
       "then": [
         "a blueprint with no material on site is a pawn playing horseshoes, not an idle pawn",
         "mark trees for chopping ONE CELL AT A TIME and verify each designation landed",
@@ -91,7 +111,9 @@
     {
       "id": "no-medicine",
       "priority": 8,
-      "when": { "medicine": 0 },
+      "when": {
+        "medicine": 0
+      },
       "then": [
         "sweep the map for wild healroot; if none exists say so rather than hunting forever",
         "route 1: set a field to healroot (needs the Plant: menu -- cursor)",
@@ -103,8 +125,10 @@
     },
     {
       "id": "heat-wave",
-      "priority": 9,
-      "when": { "letter_matches": "heat wave" },
+      "priority": 2.5,
+      "when": {
+        "letter_matches": "heat wave"
+      },
       "then": [
         "send the whole crew through the gate into the backrooms (indoors, about 60F) until it breaks",
         "keep the coolers fuelled; a roofed room is the only room that cools"
@@ -114,7 +138,9 @@
     {
       "id": "work-priorities-unset",
       "priority": 10,
-      "when": { "grid_matches_plan": false },
+      "when": {
+        "grid_matches_plan": false
+      },
       "then": [
         "manual priorities ON",
         "every column Firefight through Cook = 1 for everyone (that is the paste)",
@@ -127,7 +153,9 @@
     {
       "id": "fields-wrong",
       "priority": 11,
-      "when": { "fields_all_default_crop": true },
+      "when": {
+        "fields_all_default_crop": true
+      },
       "then": [
         "a growing-zone cell has a plant on it: the first click selects the plant, click again to reach the zone",
         "never act unless exactly ONE zone is selected -- a second click can grab every field at once",
@@ -139,7 +167,9 @@
     {
       "id": "bills-missing",
       "priority": 12,
-      "when": { "bill_rows": 0 },
+      "when": {
+        "bill_rows": 0
+      },
       "then": [
         "Do until you have X, never Do forever, and raise X as the colony grows",
         "no skill restriction, so everyone trains on it",
@@ -150,7 +180,9 @@
     {
       "id": "research-idle",
       "priority": 13,
-      "when": { "research_queue_empty": true },
+      "when": {
+        "research_queue_empty": true
+      },
       "then": [
         "open Research and TYPE THE NAME IN THE SEARCH BOX -- never drag the tree looking for it",
         "Electricity first, then Air conditioning: power, a powered cooler, a real freezer",
@@ -161,7 +193,10 @@
     {
       "id": "game-paused",
       "priority": 14,
-      "when": { "ticks_moving": false, "hostiles_on_map": 0 },
+      "when": {
+        "ticks_moving": false,
+        "hostiles_on_map": 0
+      },
       "then": [
         "pause to SET things up, then run time again in the same turn",
         "a frozen game builds nothing, chops nothing, hauls nothing, and the stream goes static",
@@ -172,7 +207,10 @@
     {
       "id": "window-not-in-front",
       "priority": 15,
-      "when": { "game_foreground": false, "wants_click": true },
+      "when": {
+        "game_foreground": false,
+        "wants_click": true
+      },
       "then": [
         "click_cell and right_click_cell do nothing without focus: selection will not stick, menus come back empty",
         "try ONCE, say the window is not in front, then switch to work the API can do alone",

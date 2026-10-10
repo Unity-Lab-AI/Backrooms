@@ -31,12 +31,15 @@ SERVICES = [
     ("twitch",      ".claude/tools/twitch-bridge.cjs",  [NODE, os.path.join(ROOT, ".claude/tools/twitch-bridge.cjs")]),
     ("host",        ".local/qa/stream-host.py",         [PY, "-u", os.path.join(QA, "stream-host.py")]),
     ("popups",      ".local/qa/popup-guard.py",         [PY, os.path.join(QA, "popup-guard.py")]),
+    ("clock",       ".local/qa/clock-guard.py",         [PY, "-u", os.path.join(QA if "QA" in globals() else HERE, "clock-guard.py")]),
     ("heat",        ".local/qa/heat-guard.py",          [PY, os.path.join(QA, "heat-guard.py")]),
     ("cursorjobs",  ".local/qa/cursor-jobs.py",         [PY, os.path.join(QA, "cursor-jobs.py")]),
     ("autopilot",   ".local/autopilot/autopilot.py",    [PY, "-u", os.path.join(ROOT, ".local/autopilot/autopilot.py"), "--num-gpu", "0"]),
-    ("admin",       ".local/qa/admin.py",               [PY, "-u", os.path.join(HERE, "admin.py")]),
-    ("overlay",     ".claude/tools/unity-overlay.py",    [PY, os.path.join(ROOT, ".claude/tools/unity-overlay.py")]),
+    ("admin",       "admin.py",               [PY, "-u", os.path.join(HERE, "admin.py")]),
 ]
+# Runs once, pins the overlay window topmost and exits -- fired on start, never reported as a service.
+ONE_SHOTS = [[PY, os.path.join(ROOT, ".claude/tools/unity-overlay.py")]]
+
 # Not python or node, so they are matched and started by their own executables.
 EXTRAS = [
     ("obs", "obs64.exe", [os.path.expandvars(r"%USERPROFILE%/OBS-Portable/bin/64bit/obs64.exe"),
@@ -173,6 +176,11 @@ def start():
         subprocess.Popen(cmd, cwd=cwd or ROOT, stdout=log, stderr=log,
                          **DETACH, env=env)
         print("%-11s started" % name); time.sleep(1.0)
+    for cmd in ONE_SHOTS:
+        if os.path.exists(cmd[-1]):
+            log = open(os.path.join(QA if "QA" in dir() else HERE, "_svc_oneshot.log"), "ab", buffering=0)
+            subprocess.Popen(cmd, cwd=ROOT, stdout=log, stderr=log, **DETACH)
+            print("%-11s fired" % "overlay")
     # the game's own API lives inside RimWorld, which stays the owner's to launch
     try:
         bspec = importlib.util.spec_from_file_location("b", os.path.join(QA, "bridge.py"))

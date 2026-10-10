@@ -47,7 +47,20 @@ def colony():
             return r.get("structuredContent", r) if isinstance(r, dict) else r
         crew = [(c["name"], c["position"]["x"], c["position"]["z"], c.get("job"), bool(c.get("drafted")))
                 for c in call("rimworld/list_colonists").get("colonists", []) if c.get("factionIsPlayer")]
+        # days of food, measured -- the famine that nearly went unnoticed on 2026-10-09 was invisible on
+        # this page while the alert list said nothing. Meals are 0.9 nutrition, raw is 0.05, 1.6 per pawn/day.
+        nut = 0.0
+        if crew:
+            call("rimworld/select_pawn", {"pawnName": crew[0][0]})
+            for x in range(126, 182, 22):
+                for z in range(118, 164, 22):
+                    for c in call("rimworld/get_cells_info", {"x": x, "z": z, "width": 22, "height": 22}).get("cells", []):
+                        for th in c.get("things", []):
+                            d = th.get("defName") or ""
+                            if d.startswith("Meal"): nut += th.get("stackCount", 1) * 0.9
+                            elif d.startswith(("Raw", "Meat", "Pemmican", "Kibble")): nut += th.get("stackCount", 1) * 0.05
         return {"crew": crew,
+                "days_of_food": round(nut / (1.6 * max(1, len(crew))), 2),
                 "letters": [l.get("label") for l in call("rimworld/list_letters").get("letters", [])],
                 "alerts": [a.get("label") for a in call("rimworld/list_alerts").get("alerts", [])][:8],
                 "ticks": call("rimworld/get_game_info").get("ticksGame")}
@@ -117,7 +130,7 @@ async function refresh(){
   +`<button onclick="one('stop','${s.name}')">stop</button></td></tr>`}
  document.getElementById('svc').innerHTML=h+'</table>';
  const c=d.colony;document.getElementById('colony').textContent=c.error?('bridge: '+c.error):
-  ('tick '+c.ticks+'\\n'+c.crew.map(p=>p[0]+' ('+p[1]+','+p[2]+') '+p[3]+(p[4]?' DRAFTED':'')).join('\\n')
+  ('tick '+c.ticks+'   food: '+c.days_of_food+' days'+(c.days_of_food<1?'  << LOW':'')+'\\n'+c.crew.map(p=>p[0]+' ('+p[1]+','+p[2]+') '+p[3]+(p[4]?' DRAFTED':'')).join('\\n')
    +'\\n\\nletters: '+(c.letters.join(', ')||'none')+'\\nalerts: '+(c.alerts.join(', ')||'none'));
 }
 async function all(a){document.getElementById('svcout').textContent='working...';
