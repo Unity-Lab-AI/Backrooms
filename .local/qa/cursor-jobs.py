@@ -407,4 +407,5 @@ bad = {k: v for k, v in results.items()
 if bad:
     print("STILL PAUSED -- unfinished:", json.dumps(bad))
 else:
-    print("every job clean -> running time again:", call("rimworld/set_time_speed", {"speed": "Normal"}).get("success"))
+    # owner: only Unity or the owner unpauses -- a helper never runs time, even after a clean burst.
+    print("every job clean -- left paused (only Unity or the owner unpauses)")

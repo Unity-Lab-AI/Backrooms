@@ -226,6 +226,19 @@ class Toolbox:
 
     def _bridge(self, name, args):
         args = guards.check_bridge(name, args)
+        # owner: "why did she unpause beforee seeting all the pawn settings" -- time stays stopped until she
+        # has marked pawns_set and assign_set true on her ladder (ladder_set mark) after doing them.
+        starts_time = (name == "rimworld/pause_game" and not args.get("pause", True)) or \
+                      (name == "rimworld/set_time_speed" and str(args.get("speed", "")).lower() not in ("", "0", "paused"))
+        if starts_time:
+            try:
+                marks = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                    "scratch", "ladder.json"), encoding="utf-8")).get("marks", {})
+            except Exception:
+                marks = {}
+            if not (marks.get("pawns_set") and marks.get("assign_set")):
+                raise GuardError("time stays stopped until every pawn's priorities, schedule, drugs and Assign tab "
+                                 "are done -- then ladder_set mark pawns_set true and assign_set true, then unpause")
         if name == "rimworld/click_ui_target":
             tid = str(args.get("targetId") or "")
             if tid not in self.ui_targets:
