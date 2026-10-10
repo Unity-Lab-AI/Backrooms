@@ -1,0 +1,72 @@
+Every battery counts, and the refusal tells you the truth (0.12.77-dev)
+
+The owner reported from a running game that only one battery could be connected
+to a gate and that it was not enough, and guessed it was a power problem. Both
+halves were right.
+
+The bound battery was only ever the anchor that identifies which power net is the
+gate's circuit. NativeGenerationWatts has always summed the whole net and
+NativePowerConnected has always checked it; stored energy was the one reading that
+never followed, so every other battery on the circuit counted for nothing. The
+spend was worse than the reading: TrySpendNativeEnergy refused outright when the
+anchor alone could not cover a cost, which stalled a gate that had ten full
+batteries beside it on the same net.
+
+Fixed through Core's own mechanisms. PowerNet.CurrentStoredEnergy() does the sum
+and skips EMP-stunned batteries for free. The draw is copied from
+ChangeStoredEnergy, which does exactly this and is private, so the gate treats
+batteries the way the game treats its own. The anchor is still required -
+removing the limit is not removing the binding.
+
+And the message had sent the owner the wrong way. HasUsablePortalWindow collapsed
+seven conditions into one bool, the network turned false into Closed, and the
+player read "The laboratory connection for that address is not open." A flat
+battery reported an address fault, which is why a session went into looking at the
+address. PortalWindowBlockerKey is the third blocker key in this file's history
+after CalibrationBlockerKey and StaffConsoleBlockerKey, both added because one
+generic refusal covered several problems with several different fixes.
+HasUsablePortalWindow delegates to it now, so the predicate and the message cannot
+disagree.
+
+returnReserveCapacityWattDays is 2 and a Core Battery holds 600, so the bind-time
+ReserveTooSmall refusal was checked and ruled out rather than assumed. And nothing
+in forty-eight proofs had ever claimed anything about the energy a gate runs on,
+which is why a defect this central reached play.
+
+The public documentation is a wiki now: thirteen short pages covering install, mod
+manager setup, the first hour, gates, what is through them, the company, the
+interface, mods, multiplayer and troubleshooting, with clearly-marked placeholders
+for the Workshop links. The reader-facing list it replaces held thirteen entries
+and most were never reader documents - one opens "the practical guide for anyone
+(human or build agent) opening this repository" and another calls itself a design
+contract with tuning hypotheses. Holding a development document to a reader's
+vocabulary made it look supervised while nothing was going to notice it was the
+wrong kind of document. The wall limit is 360 where it was 700; the wiki tops out
+at 307.
+
+Yesterday's dependency decision made "Core only" false in twenty-six living
+documents, so a rule now reads the declared count out of About.xml and refuses any
+living document claiming there are none. If the decision is ever reversed the rule
+stops firing on its own. The verbatim ledger is exempt and the reason is a LAW:
+those four files carry the owner's recorded words and LAW #0 forbids altering them.
+
+The plants caught five consequences of this session's own work. Three went MISSED
+because the play document left the supervised set, which is the one thing a
+reader-facing rule set loses silently. One was only ever passing because of a bug -
+it planted a stat base inside an XML comment, and that checker strips comments
+since the fix for reading its own prose. And one claim was the duplicate-string
+trap for the third time in a session, asserting a line that appears twice, so
+gutting one copy left the claim true.
+
+The new dependency rule also reported wrong line numbers on its first run, because
+it enumerated stripped text while reporting file positions. A finding with the
+wrong address is worse than no finding.
+
+210 C# files, 92 package files, zero warnings, zero errors. Assembly SHA-256
+5E87D3842B559E8ABCF44654D2178923D39D8EBE2A7D9F9D36A4FCAB441E39CC, measured after
+the version bump and reproduced by two clean rebuilds. Sixteen checkers pass,
+forty-nine proofs hold, 12 of 12 planted faults caught in the new suite, 752 plant
+anchors findable.
+
+Staging is pending: tools/stage-mod.ps1 refused because RimWorld was open, so the
+fix is in this build and not yet in the game folder.

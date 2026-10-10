@@ -1,0 +1,290 @@
+{
+  "status": "complete",
+  "captured_at_utc": "2026-10-01T23:29:29+00:00",
+  "client": "RimroomsReadOnlyQA/2",
+  "limitations": [
+    "Caller-supplied PID and log pairing cannot be proven by this client.",
+    "A successful handshake is not Rimrooms compatibility evidence.",
+    "Read results are sequential observations, not an atomic game snapshot.",
+    "Warnings are the latest 50 retained journal entries, not the entire startup log."
+  ],
+  "process": {
+    "pid": 26128,
+    "executable": "RimWorldWin64.exe"
+  },
+  "endpoint": {
+    "host": "127.0.0.1",
+    "port": 5174
+  },
+  "authentication_token_present": true,
+  "selected_reads": [
+    "ping",
+    "messages",
+    "alerts",
+    "letters"
+  ],
+  "protocol": "gabp/1",
+  "calls": [
+    {
+      "selector": "ping",
+      "tool": "rimbridge/ping",
+      "result": {
+        "message": "pong",
+        "timestamp": "2026-10-01T23:29:29.8691611Z",
+        "operation": {
+          "OperationId": "op_2287c48727884a949402896d40222d6d",
+          "CapabilityId": "rimbridge.core/diagnostics/ping",
+          "Status": 2,
+          "Success": true,
+          "StartedAtUtc": "2026-10-01T23:29:29.8691611+00:00",
+          "CompletedAtUtc": "2026-10-01T23:29:29.8691611+00:00",
+          "DurationMs": 0,
+          "Result": null,
+          "HasResult": true,
+          "ResultWasTruncated": false,
+          "Warnings": [],
+          "Error": null,
+          "Metadata": {}
+        }
+      },
+      "evidence_truncations": 0
+    },
+    {
+      "selector": "messages",
+      "tool": "rimworld/list_messages",
+      "result": {
+        "success": true,
+        "currentGameTick": 109218,
+        "totalCount": 0,
+        "returnedCount": 0,
+        "truncated": false,
+        "messages": [],
+        "operation": {
+          "OperationId": "op_9f95120bb5294d658785d9920f5d8dcc",
+          "CapabilityId": "rimbridge.core/notifications/list-messages",
+          "Status": 2,
+          "Success": true,
+          "StartedAtUtc": "2026-10-01T23:29:29.8701618+00:00",
+          "CompletedAtUtc": "2026-10-01T23:29:29.8766716+00:00",
+          "DurationMs": 6,
+          "Result": null,
+          "HasResult": true,
+          "ResultWasTruncated": false,
+          "Warnings": [],
+          "Error": null,
+          "Metadata": {}
+        }
+      },
+      "evidence_truncations": 0
+    },
+    {
+      "selector": "alerts",
+      "tool": "rimworld/list_alerts",
+      "result": {
+        "success": true,
+        "currentGameTick": 109219,
+        "alertSnapshotFingerprint": "alerts-e3b0c44298fc1c14",
+        "totalCount": 0,
+        "returnedCount": 0,
+        "truncated": false,
+        "alerts": [],
+        "operation": {
+          "OperationId": "op_3ec1d54673124a3eb9528677596e516c",
+          "CapabilityId": "rimbridge.core/notifications/list-alerts",
+          "Status": 2,
+          "Success": true,
+          "StartedAtUtc": "2026-10-01T23:29:29.8816825+00:00",
+          "CompletedAtUtc": "2026-10-01T23:29:29.8982257+00:00",
+          "DurationMs": 16,
+          "Result": null,
+          "HasResult": true,
+          "ResultWasTruncated": false,
+          "Warnings": [],
+          "Error": null,
+          "Metadata": {}
+        }
+      },
+      "evidence_truncations": 0
+    },
+    {
+      "selector": "letters",
+      "tool": "rimworld/list_letters",
+      "result": {
+        "success": true,
+        "currentGameTick": 109220,
+        "totalCount": 3,
+        "returnedCount": 3,
+        "truncated": false,
+        "letters": [
+          {
+            "id": "Letter_2",
+            "type": "Verse.NewQuestLetter",
+            "letterDef": "NewQuest",
+            "label": "Quest available: Strange Signal",
+            "text": "A new quest is available.\n\nThe quest is called 'Strange Signal'.",
+            "arrivalTick": 65000,
+            "ageTicks": 44220,
+            "canDismissWithRightClick": true,
+            "shouldAutomaticallyOpenLetter": false,
+            "relatedFaction": null,
+            "debugInfo": null,
+            "lookTargets": {
+              "isValid": false,
+              "any": false,
+              "targetCount": 0,
+              "targetsTruncated": false,
+              "primaryTarget": null,
+              "targets": []
+            },
+            "choiceCount": 2,
+            "choices": [
+              {
+                "index": 1,
+                "text": "View quest",
+                "disabled": false,
+                "disabledReason": null,
+                "closesDialog": true,
+                "hasAction": true,
+                "hasLink": false
+              },
+              {
+                "index": 2,
+                "text": "Close",
+                "disabled": false,
+                "disabledReason": null,
+                "closesDialog": true,
+                "hasAction": true,
+                "hasLink": false
+              }
+            ]
+          },
+          {
+            "id": "Letter_1",
+            "type": "Verse.StandardLetter",
+            "letterDef": "NeutralEvent",
+            "label": "Request: Power the gate",
+            "text": "Async Industries wants the branch drawing power and holding a reserve before anything else happens. A gate that cannot hold a charge cannot open, and a gate that opens and then loses its reserve is worse than one that never opened at all.\n\nThe company does not care how the reserve gets there.\n\nThere is no date on this and there will not be one. Open the Operations tab, look at the contracts pane, and take it on when Async Industries is ready to.",
+            "arrivalTick": 90,
+            "ageTicks": 109130,
+            "canDismissWithRightClick": true,
+            "shouldAutomaticallyOpenLetter": false,
+            "relatedFaction": null,
+            "debugInfo": null,
+            "lookTargets": {
+              "isValid": false,
+              "any": false,
+              "targetCount": 0,
+              "targetsTruncated": false,
+              "primaryTarget": null,
+              "targets": []
+            },
+            "choiceCount": 1,
+            "choices": [
+              {
+                "index": 1,
+                "text": "Close",
+                "disabled": false,
+                "disabledReason": null,
+                "closesDialog": true,
+                "hasAction": true,
+                "hasLink": false
+              }
+            ]
+          },
+          {
+            "id": "Letter_0",
+            "type": "Verse.StandardLetter",
+            "letterDef": "NeutralEvent",
+            "label": "Branch authorization received",
+            "text": "Your selected people have arrived and the branch allocation is recorded.\n\nNative starting supplies are near the arrival point, and equipped or carried items stay with their owners. The fixed facility is separate from those supplies.\n\nReview Operations, assign a capable operator, complete the gate and prepare a real return route. A small or underqualified roster may need recruitment or training first.\n\nNative Work, Research, Architect and pawn controls all remain available.",
+            "arrivalTick": 0,
+            "ageTicks": 109220,
+            "canDismissWithRightClick": true,
+            "shouldAutomaticallyOpenLetter": false,
+            "relatedFaction": null,
+            "debugInfo": null,
+            "lookTargets": {
+              "isValid": false,
+              "any": false,
+              "targetCount": 0,
+              "targetsTruncated": false,
+              "primaryTarget": null,
+              "targets": []
+            },
+            "choiceCount": 1,
+            "choices": [
+              {
+                "index": 1,
+                "text": "Close",
+                "disabled": false,
+                "disabledReason": null,
+                "closesDialog": true,
+                "hasAction": true,
+                "hasLink": false
+              }
+            ]
+          }
+        ],
+        "operation": {
+          "OperationId": "op_a9c5f3afeed54b109f0d9d01033dbe84",
+          "CapabilityId": "rimbridge.core/notifications/list-letters",
+          "Status": 2,
+          "Success": true,
+          "StartedAtUtc": "2026-10-01T23:29:29.9002255+00:00",
+          "CompletedAtUtc": "2026-10-01T23:29:29.9146132+00:00",
+          "DurationMs": 14,
+          "Result": null,
+          "HasResult": true,
+          "ResultWasTruncated": false,
+          "Warnings": [],
+          "Error": null,
+          "Metadata": {}
+        }
+      },
+      "evidence_truncations": 0
+    }
+  ],
+  "session": {
+    "agentId": "gabp-server",
+    "app": {
+      "name": "RimBridgeServer",
+      "version": "2.1.1.0"
+    },
+    "capabilities": {
+      "methods": [
+        "session/hello",
+        "tools/list",
+        "tools/call",
+        "events/subscribe",
+        "events/unsubscribe",
+        "attention/current",
+        "attention/ack"
+      ],
+      "events": [
+        "attention/updated",
+        "system/status",
+        "rimbridge.operation",
+        "attention/cleared",
+        "attention/opened",
+        "system/log",
+        "rimbridge.log"
+      ],
+      "resources": []
+    },
+    "schemaVersion": "1.0"
+  },
+  "evidence_truncations": 0,
+  "available_allowlisted_tools": [
+    "rimbridge/get_bridge_status",
+    "rimbridge/list_logs",
+    "rimbridge/ping",
+    "rimworld/get_game_info",
+    "rimworld/get_mod_configuration_status",
+    "rimworld/get_selection_semantics",
+    "rimworld/list_alerts",
+    "rimworld/list_colonists",
+    "rimworld/list_letters",
+    "rimworld/list_messages"
+  ],
+  "requested_tools_missing_from_live_list": []
+}

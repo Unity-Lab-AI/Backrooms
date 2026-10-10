@@ -18921,3 +18921,328 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+### 2026-10-08 -- stream overlay picture survives a studio restart
+
+**Verbatim owner direction (2026-10-08):** *"the mod is active you can start it at any time, and fix your stream rimchat image"*
+
+- [x] **"and fix your stream rimchat image"** -- the stream overlay's picture went blank (*"Unity is setting up the stream..."*) after every studio restart because the panel state lived only in memory. FIXED 2026-10-08: `persona-studio.cjs` keeps it in `.studio-images/cam-state.json` (falls back to the newest `cam-*.png`), and OBS's overlay source was re-read showing the picture with the caption *back on camera*.
+
+### 2026-10-08 -- a company branch can be founded on any colony
+
+**Verbatim owner direction (2026-10-08):** *"the mod is active you can start it at any time, and fix your stream rimchat image"*
+
+- [x] **"the mod is active you can start it at any time"** -- a save started on a non-Rimrooms scenario (vanilla Crashlanded, Marble Hollow) has no way to found a company branch. Operations reads *"No company branch is established in this save."* and offers nothing: `MainTabWindow_Operations` shows *RR_UI_RetryCompanyRegistration* only when `ScenPart_RimroomsStart.Current` exists, `TryInitializeExistingHeadquarters` needs a `HeadquartersSetupComponent` receipt from a Rimrooms start, and `EstablishCorporationContact` refuses without a branch. Build a mid-game founding path on the current map (no physical grants, the map's existing base as headquarters) so gates, contracts and expeditions work in any save; check the register first; build with the game closed. -- **BUILT, STAGED AND PROVEN IN PLAY 2026-10-08.** New `Scenario/BranchFounding.cs`: on a home map with no branch and no Rimrooms start, Operations shows *"Found a company branch here"*; it registers the colony through `InitializeBranch` with scenario id `founded_branch`, the `RR_AsyncIndustriesStart` company terms (corporation contact, the finished gate projects, $50M funding, wages, the onboarding survey), the player faction name as company name, every free non-slave colonist on the map as staff (max 20) with the role whose skills they meet best, and nothing physical (no facility, grants or relation reset). Register checked: `trace RR-SCEN` -> Core *Required*, Character Editor and Hospitality: Storefront *Optional*; none applied. Built 0 warnings / 0 errors, staged and hash-checked (200 files). **In play** on Marble Hollow (Crashlanded): the button was pressed, the log read *"[Rimrooms][Company] Initialized rr-branch-228e4dd5a9124d47882d007c7061513f scenario=founded_branch"*, the letter *"Company branch founded"* arrived, and Operations reads *Company: Gloom Collective*, *Company Account: 50,000,000 USD*, *Objective: Assemble the gate*, *Company staff: 3*, with the request *Power the gate*; no Rimrooms error in the log. Save: `rimbridge_save_20261008_city2_branch_founded`.
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TEST.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"get a silver supply like cash"** -- **PAID 2026-10-07:** Procurement, Item *Silver*, 10,000 to *Stockpile zone 1* (the dumping zone refused it: *"The selected HQ stockpile is missing, changed, or no longer accepts this item"*), quoted and paid **$9,000,000**, *"Dispatch day 1; arrival day 2"*; two queued component orders of 100 paid too. Account **87,561,860 -> 74,961,860 USD**. Closes when the silver is on the map. **CLOSED 2026-10-08 in play (Marble Hollow, branch founded on a Crashlanded colony):** Procurement order `procurement:000004` -- *Silver: 600*, quoted and paid **$540,000** (ledger *Day 30: Physical supply order -- -540,000 USD*), *"dispatched; supplier shipment in transit"*, then **landed as a silver stack at (137, 87) beside Stockpile zone 1** (`find-things.py Silver`: 1 stack). Bought for the next orbital-trader fee after a 460-silver offer was lost at 0 silver.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TEST.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **1 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"make a corral for cows and such, buy cows"** -- needs a pen and a trader with cattle. **BOUGHT 2026-10-08 on Marble Hollow:** a *farming trader* caravan (Finch, The Rocan Covenant) had no cattle, so **goats** -- the milk and pen animal on offer: *Goat (male, 5)* + 2 x *Goat doe (female, 6)* ($249 each), paid by selling 1,250 potatoes ($0.73), +169 silver back; read back *"Relations with The Rocan Covenant have changed from 9 to 10 (traded)"*, *"Gee has gained 2274 social experience from this trade"*. **Pen laid** south of the bastions: fence x118-130, z47-57, gate (124,57) facing the wall door (124,64), pen marker (124,52). Closes when the pen is built and the goats are assigned to it. **CLOSED 2026-10-08:** the pen is **built** (43 fence, fence gate, pen marker -- `find-things.py`) and all three goats are **inside it** at (119,52), (128,51), (129,54); an annotated shot of the pen went to the stream's REPRESENTATION panel.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - drill row closed in docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file with the row's closing note).
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"set everyone to attack not flee and group up when something attacks and draft and flee attack never letting someone melle person or animal get close to your pawns kill them with range at all costs"** — the hostile-response setting on every pawn, and the drill when something comes. **THE SETTING IS DONE 2026-10-07 and confirmed by the game's own tooltip:** *"Change how this person will react to nearby enemies when not drafted. Current mode: Attack"* on all three, where all three read **Flee** before. **Open:** the drill itself, which needs something hostile to arrive. -- **DRILL RUN TWICE 2026-10-08 (Crashlanded city colony, Marble Hollow), and neither was clean.** *Shamblers approach* (4): all three drafted, advanced to ~20 cells and stood to fire -- three dropped at range with headshots, but the crew first **kited while moving** (moving pawns do not fire) and one shambler closed on **Scar**: bites, cracks, *"Bleeding: 184%/d (death in 12 hours)"*; undrafted to bed and tended to *"no immediate danger"*. *Raid: Choke Toxers* (1 waster, club): Gee and Unity held the hall, but **Unity was unarmed** (the earlier bridge equip had not taken) and **all three were back on Flee** -- this colony was new and the setting had never been made here. Waster *Mitch* killed in the storehouse; Unity took three cracked bones. **Fixed in play:** all three set to **Attack** (fist icon read back on each), charge rifle + steel-knife sidearm on each. *Mad gazelle* (same day): all three armed and on Attack, drafted at once; Unity was 1 cell from it when the letter landed and killed it point-blank, but took a bite and two bruises first (bleeding 8.2%/d, no danger). Closer, still not clean. *Mad guinea pigs* (8, same day, 8 colonists): rifles drafted to a line north of the field and the first pig died at range (Gee), but two came round the east side; the line was **re-ordered across the whole base and still walking** when they arrived, and Unity took a bite and two scratches before both were shot at (168,78)/(173,78) (bleeding 37%/d, no danger; nobody downed). Lesson: hold one firing position and let them come -- never re-position through the base under attack. *Mad doe* (same day): landed on Alfonzoid and Stee at the throne-hall site; all nearby drafted at once, Steve (11) sent to the hall, Unity and Gee to positions; the doe was down within seconds and finished off -- **no medical alert, nobody touched**. First clean run; the row closes on a clean run against a raid. **Still open:** a drill run where nobody is touched -- range held, standing fire, every pawn armed and on Attack before the letter. *Raid: Hachthsonss Runship* (3 imps, 2026-10-08, 10 colonists): before they moved, every pawn's weapon was read off the autosave (4 guns; a machine pistol and a revolver from the prison stock equipped on Rev and Steeve -> 6 guns; Alfonzoid, Stee and two Steves unarmed or melee, all on Attack). The imps then crossed **~120 cells in one 6-second Superfast slice** and were in the hospital before anyone was placed. The six guns were drafted and sent to **one standing line** at the east end of the corridor south of the hospital (132-134, 111-114), the unarmed drafted and walked east out of it; all three imps went down at range (Roznath, Ltzrov, Cazich). **Not clean:** **Steeve and a Steve were wounded** (*Medical treatment needed*, tended at once), and the imps' fire set the hospital alight (20 burning cells, out within the minute by ordinary firefighting). Capture was refused -- no free prisoner bed. **Lessons:** with imps the line has to be **standing before they move** -- draft and place at the raid letter, not when they come; keep one prisoner bed free so downed raiders can be taken. *Psychic pulse: mad quails* (5, same day): four circled outside the west wall, one came in from the north-east and was killed inside; the four got **Hunt** orders so hunters engaged from weapon range instead of walking a line out through a door; all five dead in about two in-game hours. One Steve shows *Medical treatment needed* afterwards -- **not separable from his imp-raid wounds**, so not counted clean. Mad animals, not a raid: the row still closes only on a clean run against a raid. *Manhunter pack: 7 crows (scaria)* (same day): `play.py` now reads manhunter, mad-animal and psychic-pulse letters and puts **Hunt** on every animal of that kind; all seven died to hunters' fire within about two in-game hours, colonists otherwise inside. *Revenge wargs* (2): the first caught **Scar, hunting with her knife equipped** (rifle in her inventory) -- she held it in melee until four guns arrived and downed it; the second was answered by pulling the fence crew inside and manning the south bastion's embrasures, and it never closed. **Not clean:** Scar wounded by the warg, Steeve shows *Medical treatment needed* after the crows. Lesson: a hunter must hold a **gun** in hand, never a sidearm knife. *Raid: Horax cultists* (2, Anomaly, winter, same colony): five guns marched as one group to a standing line ~20 cells from the ritual site (x220-224, z49-51) and fired from there; **Pyrrha killed at range**, but **Elk charged the line** and closed to melee before she went down, wounding **two Steves** (*Medical treatment needed*). Not clean. Lesson: against chargers, the line stands **further back** (30+) or behind cover, and every pawn on it holds a gun -- the melee-armed stay home. *Raid: Kolku yttakin* (4 with pack animals, winter, 10 colonists, 8 guns): the line of eight was drafted and standing at the raid letter (x86-87, z118-125) while the raiders were still preparing ~60 cells west; when they had not moved after a long wait the line advanced as one to x52-53 and **stood** there. The raiders charged; **Oyytt and Orytt downed at range** at (58,109) and (65,114), the other two fled. **Not clean:** blood of **Gee and Rev** at the line afterwards (a raider, Hysyon, reached it). Lesson: a line that walks toward a raid gives them the closing distance -- stand still and let them come the whole way. *Raid: Horax cultists* (2, spring, ritual in the south-west corner at (16,1)/(27,3)): every gun drafted at the letter and sent as one line to x45-46, z14-21, ~20 cells off; two pawns' first move orders did not take and were re-issued. The cultists **left the map before contact** -- no shot fired, nobody hurt. Not counted: no engagement.
+ **CLOSED 2026-10-08 (summer) on a clean raid run.** *Raid: Thoofoo* (neanderthals, attacking immediately from the north-west and the east): at the letter every gun was drafted (8 armed, on Attack; the two children undrafted) and **grouped in one standing block** mid-base at x105-106, z99-107; two pawns' first orders did not take and were re-sent at once. **Nobody moved toward them.** *Purple* and *Irabiagal* came in from the north-west and **died at range** at (98,113) and (100,111), six cells short of the block; *Skunk* from the east went **down at range** at (145,86) and crawled off. Afterwards: **no blood of any colonist** anywhere in the block's cells (x95-110, z96-116 read cell by cell -- only *Purple* and *Irabiagal*), and **no medical alert** (`list_alerts`: no *Medical treatment needed*). Range held, standing fire, every pawn armed and on Attack before the letter: the drill the row asks for.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - cash crop row closed in docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## In progress
+` in `docs/TEST.md`
+
+- [x] **"start growing cash crops"** — **SOWN 2026-10-07, 122 cells of Smokeleaf.** Closes when the first harvest is sold.
+ **CLOSED 2026-10-08 (winter, Marble Hollow): the first harvest is sold.** A *bulk goods trader* ship, *Homestead Corporation of Trade Alliance*, was called from the comms console at (142-144, 125-126) with Gee negotiating under *Inspired trade* (*"Negotiator: Gee Fourteen (+30%)"*). **Smokeleaf leaves x652** -- every leaf inside the trade beacon's range -- sold at **$1.25** each; the window read **Silver +817** before any purchase. **15 industrial medicine** were bought back at $18 (net **+554 silver**). Read back on accept: *"Relations with Trade Alliance have changed from 34 to 35 (traded)"*, *"Gee has gained 1630 social experience from this trade"*. (A farming trader earlier the same year read *"Trader is not willing to buy this."* for the same leaves.)
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - trade row closed in docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need"** / **"use comms console to call trade hub to trade or call a ship to land or trade with trades via pawns dirrectly"** -- **FIRST TRADE DONE 2026-10-07** with *Tail, exotic goods trader (Welpog Concord)*, a caravan south of the wall; found by right-clicking each caravan pawn with Gee selected until one offered *"Trade with Tail, exotic goods trader"*. Bought **plasteel x145, advanced components x2, glitterworld medicine x3**, paid with **2 of our 10 age-reversing mech serums**, and took **906 of the trader's 948 silver** on top. Read back: *"Relations with Welpog Concord have changed from 0 to 5 (traded)"*, *"Gee has gained 7688 social experience from this trade"*. Passed over: genepacks, airship / ox-carryall techprints, serums, car parts. **A MISTAKE, owner, verbatim:** *"okay but you sold whit that was very high tech thats will keep ur colonists from dying from old age and u cant get more...... u need cash crops to sell to bulk goods traders and refine them into better products u need research to make money(silver) or order it from company"* -- the serums were irreplaceable; the remaining 8 are kept, and trades are paid from cash crops, refined goods or company-ordered silver from here on. **THE COMMS CONSOLE ROUTE, DONE 2026-10-07:** Gee right-clicked the comms console at `(151-153, 152-153)` -> *"Call Arnprior Import Company of Space Syndicate (combat supplier)"*; the trade window opened with the ship's 6,407 silver. Bought **stun batons x3 for 483 silver** -- the owner's named sidearm -- and nothing else: its guns are worse than our charge rifles and its armour is awful-quality or a lone legendary flak pants at 1,366. The company record books it offered to buy are job paperwork and were not sold. The batons came down by pod at `(145-146, 157-159)` and all three were taken *"Equip stun baton as sidearm"*; none left on the ground. **Open:** a cash-crop-to-product chain. -- **SECOND CARAVAN 2026-10-08 (spring):** *Dinosaur, farming trader (The Rocan Covenant)*, found by right-clicking each caravan pawn with Gee selected. The pen showed *Animal starvation*, so the trade was greedy for that: **sold a baby goat, two lambs and three young male goats** (fewer mouths) and **bought all 754 hay**, net **60 silver** of our 82. Searched *smoke*: **Smokeleaf joint x5** and **Smokeleaf leaves x3394** both read *"Trader is not willing to buy this."* -- a farming trader does not buy drugs; the cash-crop sale waits for an exotic or bulk trader (comms console after Microelectronics). -- **COMMS CONSOLE BUILT 2026-10-08 (autumn)** at (142-144, 125-126) in the lab after *"Research finished: Microelectronics"*, and an **orbital trade beacon** at (153,95) in the storehouse (conduit run (153,96)-(153,97) through the hall wall). Gee's right-click on the console lists *"Call the Orbital Traders Hub"* and ten factions, and reads *"Not enough silver to call for trade ships (0 but need 500)"*; the *Trade Alliance* (+53) offers *"Request orbital trader (cost: 38 goodwill) (must be ally)"*. So the smokeleaf goes to the **next orbital trader that passes** or an ally request once goodwill reaches ally. -- **CLOSED 2026-10-08 (Marble Hollow, spring): the cash-crop-to-product chain runs end to end.** Smokeleaf grown in the colony's fields was rolled at the drug lab (146-148,124) on *Make smokeleaf joint x4* bills, hauled into *Stockpile zone 3* -- the trade beacon's range at (135,89), filtered to silver and smokeleaf at Critical -- and sold from the comms console to *Ghostface Partners (mining goods trader)*: **Smokeleaf joint x4 at $7.43** each, read back *"Gee has gained 45 social experience from this trade."* The raw leaf had already gone to a bulk goods ship (652 leaves, 817 silver; the cash-crop row). On the way: walls do not carry power, a beacon reaches only its own room, and the console must be on the battery grid -- each written into `docs/PLAYSCRIPT.md`.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - resources row closed in docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"collecting resources planting crops and setting bills for food"** — a growing zone outside, a cook bill, wood and stone coming in. **PART DONE 2026-10-07:** two growing zones laid outside the east wall, **396 cells on soil the crew had actually walked**, and an **electric stove** built in the mess on the new conduit run. **Open:** the cook bill itself, and chopping, which the flat first tile had nothing to chop on. -- **MORE 2026-10-07, after the owner's *"u need to make meals sooner than later"* and *"how u plan on cutting up them animals?"*.** The stove refused to cook with *"Missing 0.5x raw food"*: the rice was still growing and there was no butcher table anywhere. Now: the stove's simple-meal bill is **Do until you have X at 50**, a **wooden butcher table** stands in the kitchen at (151,140) with **Butcher creature on Forever**, seventeen wild berry and ambrosia plants within reach are marked to harvest, and fourteen animals are marked to hunt -- deer, alpaca, ibex, raccoon, turkey, hare; the muffalo herd and a boomrat were left alone. **Hunting needed guns**: *"No hunter has a valid hunting weapon"* until three charge rifles from the security room went to Gee, Scar and Unity. Six corpses were hauled and butchering started. **Open:** chopping. -- **MORE 2026-10-07, and the cash crop the owner kept asking for.** A second growing zone of 122 cells south of the rice, set to **Smokeleaf** (*"Plant: Smokeleaf plant"* on the zone); the plant list also offers healroot, psychoid, hops and tinctoria for the next field. Three more wood-fired generators were built and all seven refuelled to 57–75. **Open:** chopping. **CLOSED 2026-10-08 (Marble Hollow, spring): chopping.** With the wood-fired generators down to *WoodLog 23* in the maintenance pass, the trees east of the city wall (x195-215, z115-145) were marked **Chop wood** -- 15 of 16 designations applied; within one play pass 14 of them were felled (one poplar standing at (200,134)) and logs lay on the ground at (206,144) *"Wood x8"* and (211,144) *"Wood x37"* before hauling. Every part of the row now holds: growing zones, the cook bill, hunting and butchering, stone, and wood chopped from standing trees.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - hire row closed in docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"hire empoloyees"** -- **REQUESTED 2026-10-07:** Operations -> Personnel -> *Request applicants*: *"Pending applicant -- candidate requested"*, *"One-time onboarding: $100,000 USD. Daily wage: $5,000 USD"*. Next request window *Day 24*. Closes when an applicant is hired and on the map. **REQUESTED AGAIN 2026-10-08 on Marble Hollow** (the branch founded on a Crashlanded colony, staff of 3 -- Gee, Scar, Unity -- because only the founders were colonists when it was founded): Operations -> Personnel -> scrolled to *Voluntary applicants* -> *Request applicants*: *"Pending applicant -- candidate requested"* x3, *"One-time onboarding: $100,000 USD. Daily wage: $5,000 USD"*, next request *Day 43*. Closes when one is hired and on the map. **CLOSED 2026-10-08 (Marble Hollow, summer): three hired and on the map.** Operations -> Personnel listed *"Selena -- available"*, *"Skissor -- available"*, *"Val -- available"* under *Voluntary applicants* (each *"One-time onboarding: $100,000 USD. Daily wage: $5,000 USD, billed separately."*). Each was taken through *Review hiring terms* -> *Dialog_ConfirmApplicantHire* -> *Company role: Security guard* (the dialog notes *"The selected role does not change skills, traits, schedules or work priorities."*) -> *Accept quote and hire*. Read back: *"Company Account: 17,687,500 USD"* (from 17,987,500), *"Staff page 1 of 1 -- 6 records"*, *"Selena -- Security guard; 5,000 USD per day"* and the same for Skissor and Val; one play pass later `list_colonists` returned **Selena** (Thing_Human68406), **Skissor** (68414) and **Val** (68421) on the map with the founders.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - shelves row closed in docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"you always have to have all resources on shelves"** -- a shelf for every resource, one priority above the floor zone. **CLOSED 2026-10-08 (Marble Hollow, fall).** Every resource store was read cell by cell (`get_cells_info` over x80-220, z30-170, every stockpile-zone cell without a shelf) and brought onto shelves one priority above the floor: the storeroom shelves (153-170, 84-96) at *"Priority: Preferred"* over the floor *Stockpile zone 1* at Normal; in the fridge a new row of five steel shelves (161-170, 89) filtered to **Foods**, and the fridge floor zone *Alfonzoid's Morgue* lowered from *Important* to **Normal** with the shelves at **Preferred** -- potatoes, survival meals, meat and hay then moved onto them (*"Prioritize hauling"* had been absent while the two tiers were equal); in the trade-beacon zone two steel shelves (130-131 and 137-138, 91) filtered to **silver, smokeleaf joint, smokeleaf leaves** at **Critical** with *Stockpile zone 3* lowered to **Important** -- *Silver x1129* and both leaf stacks moved onto the shelf at (137,91). Final scan of every non-shelf stockpile cell: *Stockpile zone 1* holds only three minified buildings (furniture, not resources) and *Stockpile zone 2* is the pen's winter feeding stockpile (raw potatoes for the animals, kept on the pen floor where they graze, by the owner's earlier pen direction). No resource stack is on a floor where a shelf could hold it.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - expansion and prison row closed in docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"expand the base build prisons and more facilities , maintain and watch your resources, research and manage your pawns , set theri scheldule to anything at all times for all pawns"** — a research project queued, every pawn's schedule on Anything, a prison, and the base growing. **PART DONE 2026-10-07:** every hour of every pawn's schedule painted **Anything**, and research is running — **Prisoner containment finished** and *"Gee Fourteen has started a new research: Crude torture methods"*. A conduit spine now reaches the batteries, the console, the machining table, the gate hall, the coolers and the mess. **Open:** the prison itself, and further building. -- **MORE 2026-10-07.** Three wood-fired generators (seven total, +3.9 kW with the gate closed); a **records desk** at `(149, 132)`, where the first research write-up was filed (*"Choose a direction — 1 of 1 filed"*); a **hospital** -- the two beds in the north room switched to *Medical* and its shelf set to medicine and glitterworld medicine only; **a prison cell started** -- two beds framed in the west storeroom at `(132, 155)` and `(135, 155)`. **Open:** the cell beds finished and set for prisoners, then the first prisoner. **PRISON GOING 2026-10-08 (Store colony):** Prisoner containment researched; a prison cell set up in the old gate chamber `(166-172,170-175)`, bed *For prisoners*; **Lenka** (34, town councilman, crashed POW) captured by Scar and jailed, interaction **Recruit**, *Force to work* on (Prison Labor). Facilities added this run: gate complex, drug lab, electric smelter, assembly shop, 2nd trade beacon, 4 generators. Still open: layers of locks, prisoner work areas. **CITY COLONY 2026-10-08 (Marble Hollow, Crashlanded + founded branch):** two marble cells built (`x171-183, z102-108`), bed set *For prisoners* (Hospitality hides it under the *For colonists* gizmo); *Raid: Choke Toxers* beaten with nobody downed and waster **Reaper (minstrel)** shot down, captured by Scar, carried to the cell and tended (*"Gunshot (charge rifle) tended"*); Prisoners tab interaction set **Recruit** (read back), legcuffs/handcuffs/intel ticked, Prison Labor work row present. **CLOSED 2026-10-08 (Marble Hollow, fall): the two last open items.** **Layers of locks:** the prison block (x168-188, z98-110) is cells behind their own doors onto a shared corridor, and the corridor behind a second set of doors to the rest of the base -- a prisoner who leaves a cell is still inside the block. **Prisoner work areas:** a new allowed area **Prison labor** (`create_allowed_area`, read back *"Area_10_Named_Prison labor"*) painted over the prison block and the smokeleaf field (*"cellCount": 444*), and in the Prisoners tab -> Schedule the prisoner **Blackjack** (Kolku pirate, captured after the clean Kolku raid, converted to *The way* by Gee) set to **Prison labor** (outlined in the Allowed area column); the Overview read *"Is Working"* ticked, *Motivation 100 %*, legcuffs and handcuffs on. Across the row: schedules on Anything, research running, a hospital, two prisons (Store and Marble Hollow) with prisoners taken and worked, and the base grown -- throne room, altar room, drug lab, machining table, comms console, two trade beacons, guest rooms, landing pad, one power grid.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - ideology row closed in docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"start making u ideology statues, party room and throne rooms and landing pads"** -- the ideoligion asks for *The Galaxy*, *The Universe*, *The Man*, *The Solar System*, an *Open Platform* and *Pew* seats. **MARBLE HOLLOW 2026-10-08:** the **throne room** (throne at (150,107), sealed, *"Throne room ... Impressiveness 79"*) holds 24 **pews**. **The Galaxy** (Good, *"Author: Mitchel 'Rev' Fatzinger"*) had been made but sat minified in the warehouse -- the cause of the standing *"The Galaxy desired"* alert. Installed in Unity's bedroom it read *"The Galaxy disrespected ... No beds allowed"*; in the corridor, *"Room impressiveness 59/60"*; in the altar room the same; reinstalled in the throne room at (144,106) **both alerts cleared**. *The Universe* and *The Solar System* are on the art bench; *The Man* is not in its recipe list. Four **ship landing beacons** marked a pad on cleared ground east of the wall (200-208, 118-126). **Open:** *The Universe* and *The Solar System* made and placed, the *Open Platform*. **CLOSED 2026-10-08 (Marble Hollow, fall).** Every piece the ideoligion asks for stands, read off the map (`find-things.py`): **The Galaxy** (*SculptureLarge* (144,106), *"Author: Mitchel Rev Fatzinger"*), **The Universe** (*SculptureGrand* (152-153,107-108), *"Author: Selena Light / Title: The Universe"*), **The Solar System** (*SculptureSmall* (147,103), *"Author: Levi Steve Cortez / Title: The Solar System"*), **The Man** (*Effigy* (143,101) -- an Ideology-tab building, not an art-bench recipe; 80 wood, built after *Prioritize working on effigy (The Man)*), the **Open Platform** (the grand altar, inspect label *"Wooden grand altar (Open Platform)"*), and **24 pews**. Placed in the sealed **throne room** (throne at (150,107)), the room that meets the statues' *"Room impressiveness 60 / No beds allowed / No work facilities allowed"* requirement; after placing them `list_alerts` carries no *desired* or *disrespected* alert. **Party room:** the throne hall hosts the colony's parties (letters *"Unity is throwing a party!"*, *"Scar is throwing a party!"*). **Landing pads:** four *ShipLandingBeacon* mark a pad on cleared ground east of the wall (200-208, 118-126). Statues installed through `.local/qa/install.py`, which pans with the keyboard because an API camera move cancels placement.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - roles row closed in docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"who is your leader role that you need to set"** / **"now u have a leader u need a morasl guide and they ahave abilities u want to always use"** -- **BOTH FILLED 2026-10-07.** *Assign role...* first refused: *"No reachable altar, ideogram or ritual spot"*, so a **ritual spot** went down at `(158, 147)` in the control room. Then two role-change ceremonies: *"Gee now holds the role of God Almighty"* and *"Unity now holds the role of Lord"* (100% quality each, 2 of 1 spectators). Abilities read off the gizmos -- Gee: *Leader speech, Trial, Work drive, Combat command*; Unity: *Convert, Keep Converting, Reassure, Counsel, Preach health*. First **Leader speech** given at once: *"Uninspiring leader speech"*, total quality 51% (Gee's social impact 101%, room impressiveness 42.9/120, 2 of 10 participants). **Open:** the abilities used on every cooldown as a standing habit; a more impressive ritual room. **Marble Hollow, 2026-10-08:** roles filled (Gee leader *God Almighty*, Unity moral guide); a **grand altar** (3x3, Altar_Grand) built in the altar room west of the throne hall. Gee's **Leader speech** (gizmo on Gee -> *Dialog_BeginRitual* -> Begin; it chose the grand altar) read back *"Encouraging leader speech ... total quality was 68%"* -- social impact +30%, 9/10 participants +38%, **room impressiveness 0/120** (the altar room's walls not yet up). Up from the first speech's 51% *Uninspiring*. Still open: room impressiveness (enclose and furnish the altar room) and the abilities used on cooldown as a habit. -- **ABILITIES AS A HABIT 2026-10-08 (fall):** `.local/qa/abilities.py` runs every play loop beside `empire.py`: Unity *Reassure* and *Counsel*, Gee *Work drive*, each aimed at the first colonist named by a break-risk alert (else any other colonist), cast by clicking the gizmo icon then the target. Read back on a pass: *"Unity Reassure -> Gee: caster job now CastAbilityOnThingMelee"*, *"Gee Work drive -> Scar: caster job now CastAbilityOnThingMelee"*. **Altar room:** floored in marble tile (70 cells) and lit with three torch lamps; it still reads as part of a larger room, so its own impressiveness is the remaining step. **CLOSED 2026-10-08 (Marble Hollow, winter): both open items.** **A more impressive ritual room:** the altar room west of the throne hall was floored in marble tile, lit with three torch lamps and its braziers fuelled, a **lectern** built at (139,105), and two gaps closed -- a vent at (142,101) that joined it to the throne hall, and an open cell at (138,109) in its north wall -- after which it counted as its own room. Read back in Gee's *Leader speech* dialog: *"Room impressiveness 78.2 / 120 ... +14% (out of +20%)"* (it had read *"0 / 120"*), expected quality **80%** (from 66%); the speech letter confirms *"78.2 / 120 room impressiveness: +14% quality"* (outcome rolled *Uninspiring*, the 21% band). **Abilities used as a habit:** `.local/qa/abilities.py` runs each play loop -- Unity *Reassure* and *Counsel*, Gee *Work drive* -- read back on successive passes *"Gee Work drive -> Scar: caster job now CastAbilityOnThingMelee"*, *"Unity Reassure -> Gee: caster job now CastAbilityOnThingMelee"*; a *Fun Party* (66%) and the speech were held at the grand altar.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - delivery-fix row closed in docs/TEST.md (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **Company deliveries land while shelves outrank the receiving stockpile.** Found in play 2026-10-08 (Marble Hollow): steel and components paid for through Procurement waited as *AwaitingReceivingSpace* / `RR_Proc_ReceivingStockpileNotPreferred` because the shelves outranked *Stockpile zone 1*. Worked around in play by setting the zone to **Critical** (steel x3 stacks, components and medicine landed at once). **Fixed in source** (the preferred-target gate removed; 0.13.0-dev builds clean) -- **not yet staged**: the game was running. Closes when the staged build delivers an order with the receiving zone back at **Normal** and the shelves still preferred. **CLOSED 2026-10-09 (Marble Hollow, winter): the staged build delivers with the receiving zone at Normal.** The owner approved the restart (*"if so save then restart"*): saved as `rimbridge_save_20261009_before_delivery_fix`, quit to OS from the main menu, staged with the project tool `tools/stage-mod.ps1 -UpdateExisting` (*"Staged and hash-checked 200 package files"*; the previous install moved to `artifacts/staging-backups/`), relaunched the same `RimWorldWin64.exe`, reloaded the save; `Player.log`: *"[Rimrooms][Build] 0.13.0-dev development package loaded."* Then, with **Stockpile zone 1 at "Priority: Normal"** and the storeroom **"Wooden shelf ... Priority: Preferred"** (both read off the inspect pane), order **Procurement:000023**, 20 industrial components, receiving stockpile *Stockpile zone 1*, was paid and played forward: *"20 ordered, 20 delivered, 0 still held; all ordered cargo physically staged"*, and *"Component x20"* lay on (137,86) in *Stockpile zone 1*. The Critical-priority workaround in `.local/qa/empire.py` (DROPZONE) is retired.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - Freezer coolers: red outside, blue inside, freezer at 14F (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## In progress` in `docs/TEST.md`
+
+- [x] **"red faces outside blue inside, fix themn" -- the freezer's coolers, and the start that put them in sideways.** The four freezer coolers in the compound's east wall were authored `<rotation>0</rotation>` in `RR_AsyncIndustriesStart`. Decompiled `Building_Cooler.TickRare` cools `South.RotatedBy(Rotation)` and heats `North.RotatedBy(Rotation)`, and does nothing unless both are passable, so at rotation 0 in an east wall **both sides ran into a wall cell or the next cooler: the freezer never froze**, which is why food rotted. **FIXED IN THE DEF** -- rotation 1 (East: blue west into the freezer, red east outside) -- and `tools/check-start-layout.py` now fails any cooler with a side in a wall or its blue side outside; run against the old def it reports all four, against the new one it passes. **FIXED IN THE COLONY:** the four deconstructed and rebuilt facing East (placement ghost read: blue cell inside, red cell outside, outline green), target set to **16 F** each. **Built and staged** (0.13.0-dev, 200 files hash-checked; checkers 32 of 33, the stale plant anchors as before). **Open:** a freezer temperature read once it has run. **CLOSED 2026-10-09 -- the freezer temperature read.** After the freezer's over-wall coolers were set to a 14F target (they had come out of the box at 70F, room temperature) and its block re-linked to the power grid by a hidden-conduit run from the main grid at (140,80), the game's own readout over a freezer cell (166,90), read through the bridge's virtual hover target (no OS input), says *"Indoors 14F"*. The freezer freezes; the coolers face blue-in, red-out.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - every finished item moved out of docs/TODO.md (2026-10-09)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Every line below was moved out of `docs/TODO.md` **unaltered**. The transfer is not asserted by reading it: the mover labelled each line of the original file either kept or moved, and proved that reassembling the two halves in their original order reproduces the original file byte for byte. Nothing was reworded, shortened or summarised, per LAW #0.
+
+What moved: **0 whole `##` sections** that were closed records end to end, **0 whole direction groups** whose every row was done, and **2 further `[x]` rows** lifted out of groups that still hold open work. What did not move: every `[ ]`, `[~]` and `[T]` row, because a `[T]` row belongs to the post-completion test phase and is not finished work.
+
+Everything below is in **original queue order**. A `> moved from` line marks each change of source section, so any row can be traced back to where it sat.
+
+
+> moved from `## Pending` in `docs/TODO.md`
+
+- [x] **Drafted pawns are refused at a natural door ("Cannot enter the gate: ... Drafted ... cannot"), and an undrafted pawn walks off to survey instead.** Owner: *"she can walk through it if drafter and she walks away out of action area if not drafted"* -- a drafted colonist must be able to take a natural way through, the one state in which she stays where she is ordered. **VERIFIED IN PLAY 2026-10-09:** drafted Unity was offered *Walk through* at (186,155) and *Enter the gate* at (270,150), and crossed.
+- [x] **Haulers cannot carry across an open natural gate: "Cannot haul steel x1000: No empty, accessible spot configured to store it."** Found 2026-10-09 in the solo/group inside start, with the way home (AI-02 threshold hall door (270,150) -> surface shell) open and a stockpile in the shell on the surface map. The starting supplies on the Backrooms side see no storage at all, so moving them out is hand-carry runs. Owner, verbatim: *"you need to set stockpile and get everyone hueling stuff out without exahusting them"* / *"set control shift carry but becasre full sending them on 50 runs without a break"*. CONNECTED_COLONY_PORTALS says a hauler delivers to storage across an open portal; the haul work giver does not. **Cause found 2026-10-09:** `RimroomsConnectedWorkComponent.MayPlanFor/NotePlanningPass` keyed one cooldown per pawn for all ~36 connected families, so the first planner in work order (firefighting) starved hauling permanently; now keyed per pawn per family (cap 4096). **VERIFIED IN PLAY 2026-10-09:** after the fix Scar and Unity took `RR_ConnectedFetch` / `RR_CrossPortal` jobs on their own, and the shell stockpile on the surface map received components, a survival meal pack, steel and wood from the Backrooms side.
+
+Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - the solo group builds, gets supplies and finds a way out (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## Public face: the site, the Workshop page and the collection` in `docs/TEST.md`
+
+- [x] **"so that a solo group has ability to build and get supplies on backrroms instances and find a way out before dying"** — **THE ARITHMETIC GUARANTEES IT AS OF 0.8.0-dev**, as three properties rather than tuning: an **absolute** cap of three simultaneous encounters at any depth and any wealth; **half of every coordinate's rooms bare by count rather than by chance**, so an unlucky run of rolls cannot produce a space with something in every room; and a first visit always quiet. Shallow coordinates are also capped below the top band regardless of wealth. **Stays in progress until inhabitants exist and the condition can actually be observed.** — **an acceptance condition on the whole generator, not a nice-to-have.** A high-tier coordinate that cannot be survived solo by building, supplying and finding a way out has failed this direction regardless of how good it looks. — **RECLASSIFIED TO THE TEST PHASE 0.12.98-dev, on the row's own condition.** It says it stays in progress *"until inhabitants exist and the condition can actually be observed"*. **Inhabitants exist** — twelve defs, wanderers through to the dead and the psychotic — and the three guarantees are constants in source rather than tuning: `MaxSimultaneousEncounters = 3`, half of every coordinate's rooms bare by count, and a quiet first visit. **So nothing buildable remains; what remains is watching it**, which is the owner's launch and belongs in the test phase rather than the working queue. **CLOSED IN PLAY 2026-10-09 (equator colony, solo/group inside start, Cassandra Community builder, 300x300):** Gee, Scar and Unity started inside coordinate AI-02 with no sight of the exit. They surveyed doors, found the opening's natural way home (the blue door at (270,150) in the refogged threshold hall, east side), and crossed to the surface shell on Map_0 alive. Supplies came out through it by connected hauling (shell stockpile received components, a survival meal pack, steel and wood), and the crew built three beds and a fueled stove on the surface. The first visit was quiet -- no encounter met the crew. Build, get supplies, find a way out before dying: observed. Defects found on the way and fixed: drafted ordered crossing, cross-gate hauling starved by a shared cooldown, no-return world exits, one unreachable optional room refusing a coordinate.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - QoL feature availability under the full profile (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## Public face: the site, the Workshop page and the collection` in `docs/TEST.md`
+
+- [x] Verify all QoL features remain available, including work-priority, UI, scheduling, storage, movement, hauling, selection, visitors, prisoners, health, combat, map, and scenario helpers represented in the list. — post-completion test phase (owner RimSort launch). -- **SWEPT IN PLAY 2026-10-09 on the live 294-mod profile (equator jungle colony, 3 maps loaded):** every named feature exercised through RimBridge and read back, not assumed. **work-priority:** the Work tab's full 35-column grid (Firefight..Cycle, including the modded Maintain Vat, Haul+, Childcare, Jailor, Wait, Sell, Entertain, Dissect, Training, Fish, Nuclear, Resource, Dark study, Cycle) read cell-by-cell out of `get_ui_layout` and set for all three colonists -- 66 clicks, every row verified digit-by-digit, blanks only where a pawn is incapable (Gee Doctor/Jailor/Mine/Cycle, Scar Jailor/Mine/Art, Unity Cycle). **UI:** main tabs (Work, Research, Assign) and inspect tabs (Health, Needs, Bio, Social, Gear, Log, Storage, Bills) opened by id. **scheduling:** Assign-tab schedules and self-tend checkboxes set per pawn. **storage:** growing and stockpile zones created, listed and deleted by id; Storage tab filter rows enumerated. **movement:** forced Go-here and camera jumps on both maps. **hauling:** vanilla hauling plus the mod's own cross-portal connected hauling both observed running. **selection:** pawn, zone and building selection with gizmo lists read back. **visitors:** a Skyflight Bazaar group (Rainford, Noodles, Andrea, Toni, Dede) arrived under Hospitality and sat in the rec room. **prisoners:** a prison hold with its sleeping spot switched For prisoners. **health:** field-tending, self-tend, and the Medical-treatment-needed alert raised and cleared. **combat:** a pirate raid handled earlier in the run, drafting and undrafting through the bridge, Simple Sidearms swapping weapons. **map:** three maps resident (home surface, backrooms coordinate, gate destination) with per-map reads following the selected pawn. **scenario helpers:** the Solo-or-group-inside opening played from its start shell out through a natural gate. Nothing in the list was missing or broken under the full profile.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - the weird route thing named a self (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## Pending` in `docs/TEST.md`
+
+- [x] **"there is a weird route thing name a self in one of the rooms and this is kinda weird and odd"** — owner's own read: *"we probably havent gotten to a routing system yet for emergency exit and glow pods with the company start but lets try and fix this"* — **THE STATED CAUSE IS ANSWERED AND THE SIGHTING IS NOT, so this is the one row of the twelve that moves to the test phase rather than closing.** The routing system the owner supposed was missing **exists**: `CompRimroomsMarker` with five `RimroomsMarkerTypeDefs` — `RR_Marker_Route` labelled *"route home"*, plus `_Cleared`, `_Danger`, `_Cache`, `_Lead` — numbered through `FirstSliceSiteComponent.NextMarkerNumber`, and the survey tag is a Core `GlowPod` since 0.10.7-dev. **But markers are player-deployed, so a freshly generated level should carry none**, and **what the owner actually saw cannot be identified from here** — naming it needs somebody looking at the object on a map. Deliberately not guessed: editing a label on a hunch is the same move that lost three launches in one method.  -- **IDENTIFIED 2026-10-09, and it is not a bug.** Two reads settle it. (1) **The defs:** every label in the shipped package containing *route* is one of exactly two strings -- `mark a route home` (the player deploy gizmo) and `route home` (the marker it places). **No label, def, keyed string or comment anywhere in the mod contains the word *self*** -- a grep of `Mod/` and `src/` for it returns nothing, so there is no object named *a self* to find. (2) **The live map:** a 26-cell-step sweep of the whole settled surface (x130-185, z120-175) returned **zero** markers, GlowPods or anything marker-like, which is what a level nobody has deployed a marker on should look like, markers being player-deployed. So what was seen was the intended **`route home`** marker -- `CompRimroomsMarker` / `RR_Marker_Route`, numbered by `FirstSliceSiteComponent.NextMarkerNumber`, surveyed with a Core `GlowPod` -- read at a glance. Nothing was renamed on a hunch, which is what the row warned against: the sighting is explained by an object that exists and works, and the routing system the owner supposed was missing was already shipped.
+
+<!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - duplicate Defs and patch collisions in the 294 profile (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## Public face: the site, the Workshop page and the collection` in `docs/TEST.md`
+
+- [x] Resolve duplicate Defs/patch collisions in the exact 294 profile; use load-after patches only where a reproducible conflict requires one. — **STILL OPEN.** **Structurally requires a launch with the 294 profile loaded**, which only the owner does, through RimSort. -- **MOVED TO THE TEST PHASE 0.12.99-dev, on the row's own words:** *"Structurally requires a launch with the 294 profile loaded, which only the owner does, through RimSort."* A collision is a thing two mods do to each other at load; it cannot be found by reading. -- **THE LAUNCH HAPPENED AND THE LOAD IS CLEAN, 2026-10-09.** The row says a collision cannot be found by reading, only by loading, and that load is what this run is: the owner launched the full profile through RimSort and the equator colony has been played on it all evening. The live `Player.log` carries the startup phase -- `[Rimrooms][Build] 0.13.0-dev development package loaded`, `[Rimrooms][Generation] Fixture tells attached to 1802 definitions`, `[Rimrooms] odd-origin marker attached to 2770 thing definitions` -- and across it there are **zero** of every collision signature: no `Duplicate def`, no `XML error`, no `Could not resolve cross-reference`, no texture or asset load failure. **So no load-after patch was added**, which is precisely what the row asks for: use one *only where a reproducible conflict requires one*, and none did. The errors the log does carry are unrelated to def resolution and are recorded as their own open bugs in `docs/TODO.md` -- `Verse.FloatMenu` throwing a `NullReferenceException` inside `RimWorld.ITab_Bills+<FillTab>b__2` when an Add-bill option is chosen, and out-of-bounds `Explosion` spawn spam -- both runtime faults in profile mods, neither a Def or patch collision.
+
+<!-- archived-queue:end -->

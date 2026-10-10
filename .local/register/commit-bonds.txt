@@ -1,0 +1,75 @@
+Company bonds, from ten credits to a quadrillion (0.7.5-dev)
+
+Corporate credits can now be held as physical bearer paper, printed at a bench,
+hauled, stored in a vault, banked at a beacon, and lost in a fire.
+
+Three layers of money, with the bond as the bridge. Silver, gold, jade and ivory
+are entirely untouched vanilla and a vault works as it always did. The company
+account stays the abstract ledger: audited, weightless, impossible to steal
+because it is not anywhere. The bond is the only one of the three that can burn,
+and per the owner's answer that physical means physical, that is exactly the
+trade-off which makes the account still worth having. Liquidity costs risk.
+
+The ladder runs to ten to the fifteenth rather than to a million, following the
+owner's immediate follow-up not to stop at a million. Stopping there would have
+needed a million pieces of paper to represent one trillion, against a parent
+corporation recorded at multi-trillion scale. Fifteen rungs keeps that to three
+or four bonds and stays far inside long, whose ceiling is about 9.2e18, so even
+thousands of top bonds cannot overflow a total.
+
+Every rung is exactly ten of the one below, which is what keeps the chain simple
+and is also why the payout rule is provably correct: greedy largest-first is
+optimal precisely because every rung is an exact multiple of every rung beneath
+it. That is why a strict power-of-ten ladder was worth insisting on rather than
+something like one-five-ten. Anything under ten credits stays in the account
+rather than being rounded away, so a player's money is never lost to the shape of
+the ladder.
+
+The bench bills produce nothing, and that is the interesting part. A bond's value
+lives per instance in a comp, a recipe's products list can only name a ThingDef
+and a count, and the hook that post-processes a finished product is private and
+static. There is no supported way to stamp a value onto something a bill just
+made, and the workaround would be Harmony. So the worker mints the bond itself in
+Notify_IterationCompleted, which is a documented virtual. Two things fall out and
+both are better than the original plan: the denomination comes from the recipe
+that is running rather than from guessing which object on the floor was the one
+just made, and an unfunded print produces nothing at all instead of an unstamped
+book worth free market value. Adding a rung needs one more RecipeDef and no code,
+because the denomination is parsed from the recipe's own name and the ladder
+stays the source of truth.
+
+The face value is debited before the bond is made and refunded if the paper
+cannot be placed. Printing paper the company cannot back is printing money, which
+is the one thing this layer exists to prevent.
+
+The credit beacon was the owner's own suggestion and the best reuse in the batch.
+A Core orbital trade beacon already means that the valuables inside this circle
+are the ones that count, so nobody has to learn a new idea and Core already draws
+the radius on the ground. Dormant until designated, exactly like the gate comps
+on Core doors, so an unrelated beacon in somebody's existing colony behaves as it
+always has. Banking destroys the paper and credits the account in one transaction
+for the lot -- counted, then destroyed, then posted -- so a reload mid-action
+cannot credit a subset twice. That is the requirement that redeeming must not
+leave a dead item: no spent certificate, no zero-value object to haul away.
+
+Repurposed rather than invented: the bond is a Core Novel carrying a comp, which
+is what a bearer instrument physically is. No new item and no new texture, and an
+unstamped Novel is still an ordinary novel. Bonds are stamped Outside on creation
+so one can never be sold as odd goods. AllowStackWith keeps face values apart
+even though Novel has a stack limit of one today, because that is a fact about a
+Core def rather than a guarantee, and a mod raising a book's stack limit would
+otherwise silently merge two bonds and destroy the quieter one.
+
+131 C# source files, 81 approved package files, zero warnings, zero errors.
+Fifteen RecipeDefs and one PatchOperationAdd on a Core def; Replace and Remove
+remain forbidden. No new gameplay ThingDef, no asset, no new work type. Assembly
+SHA-256 63205DCF237021A4B238F4E11891B3060DF4833B90CCFC4B095B5FC6F74DE4CD
+reproduced by two full recompiles after deleting obj/ and bin/. All four checkers
+pass.
+
+Recorded for the next checkpoint rather than deferred: the valuables exchange
+paying above market for odd resources; the multi-trillion corporate trader whose
+stock tiers are locked behind tech, company quests and a credit cost; and
+withdrawing credits as paper at a console.
+
+No game was launched, no test was run, no RimSort mod list was changed.

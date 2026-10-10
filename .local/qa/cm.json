@@ -1,0 +1,98 @@
+{
+ "success": true,
+ "menuId": 7,
+ "provider": "ui_event",
+ "clickCell": {
+  "x": 150,
+  "z": 111
+ },
+ "target": "cell 150,111",
+ "button": "right",
+ "holdDurationMs": 0,
+ "modifiers": "none",
+ "selectedPawns": [
+  "Unity"
+ ],
+ "optionCount": 7,
+ "options": [
+  {
+   "index": 1,
+   "label": "Carry doe",
+   "disabled": false,
+   "priority": "Default",
+   "orderInPriority": 0,
+   "autoTakeable": false,
+   "hasAction": true
+  },
+  {
+   "index": 2,
+   "label": "Tend a doe (without medicine)",
+   "disabled": false,
+   "priority": "Default",
+   "orderInPriority": 0,
+   "autoTakeable": false,
+   "hasAction": true
+  },
+  {
+   "index": 3,
+   "label": "Finish off doe",
+   "disabled": false,
+   "priority": "Default",
+   "orderInPriority": 0,
+   "autoTakeable": false,
+   "hasAction": true
+  },
+  {
+   "index": 4,
+   "label": "Melee attack doe to death",
+   "disabled": false,
+   "priority": "VeryLow",
+   "orderInPriority": 0,
+   "autoTakeable": false,
+   "hasAction": true
+  },
+  {
+   "index": 5,
+   "label": "Go here",
+   "disabled": false,
+   "priority": "GoHere",
+   "orderInPriority": 0,
+   "autoTakeable": true,
+   "hasAction": true
+  },
+  {
+   "index": 6,
+   "label": "Fire at doe: Cannot hit target",
+   "disabled": true,
+   "priority": "DisabledOption",
+   "orderInPriority": 0,
+   "autoTakeable": false,
+   "hasAction": false
+  },
+  {
+   "index": 7,
+   "label": "Cannot rescue: No reachable, un-reserved animal bed in safe temperature.",
+   "disabled": true,
+   "priority": "DisabledOption",
+   "orderInPriority": 0,
+   "autoTakeable": false,
+   "hasAction": false
+  }
+ ],
+ "message": "Dispatched a live right-click through RimWorld's play UI and a context menu remained open.",
+ "operation": {
+  "OperationId": "op_fb8a51be97664a01a8e9b5b129ece3a9",
+  "CapabilityId": "rimbridge.optional/context_menu/open-context-menu",
+  "Status": 2,
+  "Success": true,
+  "StartedAtUtc": "2026-10-08T19:34:47.4554009+00:00",
+  "CompletedAtUtc": "2026-10-08T19:34:47.4915945+00:00",
+  "DurationMs": 36,
+  "Result": null,
+  "HasResult": true,
+  "ResultWasTruncated": false,
+  "Warnings": [],
+  "Error": null,
+  "Metadata": {}
+ }
+}

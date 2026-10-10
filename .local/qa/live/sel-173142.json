@@ -1,0 +1,271 @@
+{
+  "status": "complete",
+  "captured_at_utc": "2026-10-01T23:31:42+00:00",
+  "client": "RimroomsReadOnlyQA/2",
+  "limitations": [
+    "Caller-supplied PID and log pairing cannot be proven by this client.",
+    "A successful handshake is not Rimrooms compatibility evidence.",
+    "Read results are sequential observations, not an atomic game snapshot.",
+    "Warnings are the latest 50 retained journal entries, not the entire startup log."
+  ],
+  "process": {
+    "pid": 26128,
+    "executable": "RimWorldWin64.exe"
+  },
+  "endpoint": {
+    "host": "127.0.0.1",
+    "port": 5174
+  },
+  "authentication_token_present": true,
+  "selected_reads": [
+    "ping",
+    "selection"
+  ],
+  "protocol": "gabp/1",
+  "calls": [
+    {
+      "selector": "ping",
+      "tool": "rimbridge/ping",
+      "result": {
+        "message": "pong",
+        "timestamp": "2026-10-01T23:31:42.7932227Z",
+        "operation": {
+          "OperationId": "op_3e6639ec31cc49ebb8af1d97846e6605",
+          "CapabilityId": "rimbridge.core/diagnostics/ping",
+          "Status": 2,
+          "Success": true,
+          "StartedAtUtc": "2026-10-01T23:31:42.7932227+00:00",
+          "CompletedAtUtc": "2026-10-01T23:31:42.7932227+00:00",
+          "DurationMs": 0,
+          "Result": null,
+          "HasResult": true,
+          "ResultWasTruncated": false,
+          "Warnings": [],
+          "Error": null,
+          "Metadata": {}
+        }
+      },
+      "evidence_truncations": 0
+    },
+    {
+      "selector": "selection",
+      "tool": "rimworld/get_selection_semantics",
+      "result": {
+        "success": true,
+        "hasSelection": true,
+        "selectionFingerprint": "sel-1ed6e31819398e80",
+        "selectedCount": 1,
+        "detailedObjectCount": 1,
+        "selectionDetailsTruncated": false,
+        "selectedKinds": [
+          "thing"
+        ],
+        "selectedObjects": [
+          {
+            "kind": "thing",
+            "type": "DoorsExpanded.Building_DoorRemote",
+            "id": "Thing_Autodoor52079",
+            "label": "Steel autodoor (1x1)",
+            "inspectLabel": "Steel autodoor (1x1)",
+            "inspectString": "Door locked\r\nPower needed: 50 W\nGrid excess: 1185 W (533 Wd stored)\r\nCalibrated\nOpening 1 wide, 1 cell(s) of gate (autodoor (1x1)).\nOperator on station: Gee\nEmergency cutoff: none set.\nAssembly condition: 7.4 days remaining, wearing at 3.0x.\nLinked battery charge: 533.13/2400.00 watt-days. Rimrooms direct drain while open: 3500 W. Charge needed for normal window plus emergency return: 49.59 watt-days; recovery opening total: 50.59 watt-days. The native battery remains shared with its power network.\nOf that, 1.00 watt-days is held back for an emergency return, and a recovery opening costs 1.00 watt-days.\nOpening time: 7075 in-game minutes remaining\nEmergency return: Closed\nStatus: Normal",
+            "inspectStringLines": [
+              "Door locked",
+              "Power needed: 50 W",
+              "Grid excess: 1185 W (533 Wd stored)",
+              "Calibrated",
+              "Opening 1 wide, 1 cell(s) of gate (autodoor (1x1)).",
+              "Operator on station: Gee",
+              "Emergency cutoff: none set.",
+              "Assembly condition: 7.4 days remaining, wearing at 3.0x.",
+              "Linked battery charge: 533.13/2400.00 watt-days. Rimrooms direct drain while open: 3500 W. Charge needed for normal window plus emergency return: 49.59 watt-days; recovery opening total: 50.59 watt-days. The native battery remains shared with its power network.",
+              "Of that, 1.00 watt-days is held back for an emergency return, and a recovery opening costs 1.00 watt-days.",
+              "Opening time: 7075 in-game minutes remaining",
+              "Emergency return: Closed",
+              "Status: Normal"
+            ],
+            "inspectTabTypes": [
+              "Locks.ITab_Lock"
+            ],
+            "reference": {
+              "kind": "thing",
+              "id": "Thing_Autodoor52079",
+              "label": "Steel autodoor (1x1)",
+              "mapId": "Map_0",
+              "mapIndex": 0,
+              "position": {
+                "x": 159,
+                "z": 154
+              }
+            },
+            "details": {
+              "thingId": "Thing_Autodoor52079",
+              "thingIdNumber": 52079,
+              "defName": "Autodoor",
+              "label": "Steel autodoor (1x1)",
+              "spawned": true,
+              "stackCount": 1,
+              "hitPoints": 160,
+              "maxHitPoints": 160,
+              "mapId": "Map_0",
+              "mapIndex": 0,
+              "position": {
+                "x": 159,
+                "z": 154
+              }
+            }
+          }
+        ],
+        "visibleGizmoCount": 21,
+        "uiState": {
+          "Success": true,
+          "ProgramState": "Playing",
+          "InEntryScene": false,
+          "HasCurrentGame": true,
+          "NonImmediateDialogWindowOpen": false,
+          "CurrentWindowGetsInput": true,
+          "MouseObscuredNow": false,
+          "WindowsForcePause": false,
+          "WindowsPreventCameraMotion": false,
+          "WindowsPreventSave": false,
+          "AnyWindowAbsorbingAllInput": false,
+          "AnySearchWidgetFocused": false,
+          "FloatMenuOpen": false,
+          "WindowCount": 2,
+          "FocusedWindowType": "RimWorld.MainTabWindow_Inspect",
+          "FocusedWindowTitle": null,
+          "TopWindowType": "RimWorld.MainTabWindow_Inspect",
+          "TopWindowTitle": null,
+          "MainTabOpen": true,
+          "OpenMainTabId": "main-tab:Inspect",
+          "OpenMainTabType": "RimWorld.MainTabWindow_Inspect",
+          "OpenMainTabLabel": "Inspect",
+          "MainTab": {
+            "Id": "main-tab:Inspect",
+            "DefName": "Inspect",
+            "Label": "Inspect",
+            "Type": "RimWorld.MainTabWindow_Inspect",
+            "Order": 0,
+            "IsOpen": true,
+            "Visible": false,
+            "Disabled": false,
+            "ValidWithoutMap": false,
+            "Minimized": false,
+            "Rect": {
+              "X": 0.0,
+              "Y": 880.0,
+              "Width": 432.0,
+              "Height": 165.0
+            }
+          },
+          "Windows": [
+            {
+              "Index": 0,
+              "Id": 24,
+              "Type": "DubsMintMinimap.MainTabWindow_MiniMap",
+              "Title": null,
+              "Layer": "GameUI",
+              "IsOpen": true,
+              "GetsInput": true,
+              "CloseOnAccept": false,
+              "CloseOnCancel": false,
+              "ForcePause": false,
+              "PreventCameraMotion": false,
+              "AbsorbInputAroundWindow": false,
+              "DrawInScreenshotMode": false,
+              "SemanticKind": "",
+              "SemanticDetails": null,
+              "Rect": {
+                "X": 1617.0,
+                "Y": 49.0,
+                "Width": 300.0,
+                "Height": 325.0
+              }
+            },
+            {
+              "Index": 1,
+              "Id": 69,
+              "Type": "RimWorld.MainTabWindow_Inspect",
+              "Title": null,
+              "Layer": "GameUI",
+              "IsOpen": true,
+              "GetsInput": true,
+              "CloseOnAccept": false,
+              "CloseOnCancel": false,
+              "ForcePause": false,
+              "PreventCameraMotion": false,
+              "AbsorbInputAroundWindow": false,
+              "DrawInScreenshotMode": false,
+              "SemanticKind": "",
+              "SemanticDetails": null,
+              "Rect": {
+                "X": 0.0,
+                "Y": 880.0,
+                "Width": 432.0,
+                "Height": 165.0
+              }
+            }
+          ]
+        },
+        "operation": {
+          "OperationId": "op_0a9617b1ad904497b277e8eb1a1b0dcb",
+          "CapabilityId": "rimbridge.core/inspection/get-selection-semantics",
+          "Status": 2,
+          "Success": true,
+          "StartedAtUtc": "2026-10-01T23:31:42.7932227+00:00",
+          "CompletedAtUtc": "2026-10-01T23:31:42.8197962+00:00",
+          "DurationMs": 26,
+          "Result": null,
+          "HasResult": true,
+          "ResultWasTruncated": false,
+          "Warnings": [],
+          "Error": null,
+          "Metadata": {}
+        }
+      },
+      "evidence_truncations": 0
+    }
+  ],
+  "session": {
+    "agentId": "gabp-server",
+    "app": {
+      "name": "RimBridgeServer",
+      "version": "2.1.1.0"
+    },
+    "capabilities": {
+      "methods": [
+        "session/hello",
+        "tools/list",
+        "tools/call",
+        "events/subscribe",
+        "events/unsubscribe",
+        "attention/current",
+        "attention/ack"
+      ],
+      "events": [
+        "attention/updated",
+        "system/status",
+        "rimbridge.operation",
+        "attention/cleared",
+        "attention/opened",
+        "system/log",
+        "rimbridge.log"
+      ],
+      "resources": []
+    },
+    "schemaVersion": "1.0"
+  },
+  "evidence_truncations": 0,
+  "available_allowlisted_tools": [
+    "rimbridge/get_bridge_status",
+    "rimbridge/list_logs",
+    "rimbridge/ping",
+    "rimworld/get_game_info",
+    "rimworld/get_mod_configuration_status",
+    "rimworld/get_selection_semantics",
+    "rimworld/list_alerts",
+    "rimworld/list_colonists",
+    "rimworld/list_letters",
+    "rimworld/list_messages"
+  ],
+  "requested_tools_missing_from_live_list": []
+}

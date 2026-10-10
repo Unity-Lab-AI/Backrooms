@@ -1,0 +1,7286 @@
+{
+"AIPersonaCore": {
+"category": "Item",
+"size": null
+},
+"ActivatorCountdown": {
+"category": "Building",
+"size": "(1,1)"
+},
+"ActivatorProximity": {
+"category": "Building",
+"size": "(1,1)"
+},
+"ActiveDropPod": {
+"category": "Item",
+"size": null
+},
+"ActiveDropPodAncient": {
+"category": "Item",
+"size": null
+},
+"ActiveDropPodMechanoid": {
+"category": "Item",
+"size": null
+},
+"AdrenalHeart": {
+"category": "Item",
+"size": null
+},
+"AestheticNose": {
+"category": "Item",
+"size": null
+},
+"AestheticShaper": {
+"category": "Item",
+"size": null
+},
+"Agarilux": {
+"category": "Plant",
+"size": null
+},
+"Alligator": {
+"category": "Pawn",
+"size": null
+},
+"Alpaca": {
+"category": "Pawn",
+"size": null
+},
+"AlphaThrumbo": {
+"category": "Pawn",
+"size": null
+},
+"AlphaThrumboHorn": {
+"category": "Item",
+"size": null
+},
+"Alphabeaver": {
+"category": "Pawn",
+"size": null
+},
+"Altar_Grand": {
+"category": "Building",
+"size": "(3,3)"
+},
+"Altar_Large": {
+"category": "Building",
+"size": "(3,2)"
+},
+"Altar_Medium": {
+"category": "Building",
+"size": "(3,1)"
+},
+"Altar_Small": {
+"category": "Building",
+"size": "(1,1)"
+},
+"Ambrosia": {
+"category": "Item",
+"size": null
+},
+"AncientAPC": {
+"category": "Building",
+"size": "(5,3)"
+},
+"AncientATM": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientAirConditioner": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientAmmoStack": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientAntenna": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientArmchair": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientAutocannonTurret": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"AncientBandNode": {
+"category": "Building",
+"size": "(2,2)"
+},
+"AncientBarrel": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientBarrierLong": {
+"category": "Building",
+"size": "(2, 1)"
+},
+"AncientBasicRecharger": {
+"category": "Building",
+"size": "(3,1)"
+},
+"AncientBathtub": {
+"category": "Building",
+"size": "(1, 2)"
+},
+"AncientBed": {
+"category": "Building",
+"size": "(1,2)"
+},
+"AncientBlastDoor": {
+"category": "Building",
+"size": null
+},
+"AncientBox_ComponentIndustrial": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientBox_ComponentSpacer": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientBox_SteelSlag": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientCardboardBox": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientChembarrel": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientChembarrelPallet": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"AncientChemfuelCanister": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientChemtruck": {
+"category": "Building",
+"size": "(2, 4)"
+},
+"AncientColdStorage": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientCommsConsole": {
+"category": "Building",
+"size": "(3, 2)"
+},
+"AncientConcreteBarrier": {
+"category": "Building",
+"size": null
+},
+"AncientCraneArm": {
+"category": "Building",
+"size": "(2, 1)"
+},
+"AncientCraneArmSmall": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientCraneBase": {
+"category": "Building",
+"size": "(5, 5)"
+},
+"AncientCraneColumn": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"AncientCrate": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientCratePallet": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"AncientCryptosleepCasket": {
+"category": "Building",
+"size": "(1,2)"
+},
+"AncientCryptosleepPod": {
+"category": "Building",
+"size": "(1,2)"
+},
+"AncientDestroyedConsole": {
+"category": "Building",
+"size": "(2,1)"
+},
+"AncientDestroyedConsoleLarge": {
+"category": "Building",
+"size": "(3,1)"
+},
+"AncientDisplayBank": {
+"category": "Building",
+"size": "(3, 1)"
+},
+"AncientDoubleBed": {
+"category": "Building",
+"size": "(2,2)"
+},
+"AncientDrillPlatform": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"AncientDropshipEngine": {
+"category": "Building",
+"size": "(3,2)"
+},
+"AncientEmergencyLight_Blue": {
+"category": "Building",
+"size": null
+},
+"AncientEmergencyLight_Green": {
+"category": "Building",
+"size": null
+},
+"AncientEmergencyLight_Red": {
+"category": "Building",
+"size": null
+},
+"AncientEnemyTerminal": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientEquipmentBlocks": {
+"category": "Building",
+"size": "(4, 2)"
+},
+"AncientExcavator": {
+"category": "Building",
+"size": "(3, 4)"
+},
+"AncientExostriderCannon": {
+"category": "Building",
+"size": "(3,2)"
+},
+"AncientExostriderHead": {
+"category": "Building",
+"size": "(2,2)"
+},
+"AncientExostriderLeg": {
+"category": "Building",
+"size": "(2,1)"
+},
+"AncientExostriderRemains": {
+"category": "Building",
+"size": "(3,2)"
+},
+"AncientExplosivesCrate": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"AncientFence": {
+"category": "Building",
+"size": null
+},
+"AncientFilingCabinet": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientForklift": {
+"category": "Building",
+"size": "(2, 4)"
+},
+"AncientFortifiedWall": {
+"category": "Building",
+"size": null
+},
+"AncientFuelNode": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientGenerator": {
+"category": "Building",
+"size": "(2,2)"
+},
+"AncientGiantWheel": {
+"category": "Building",
+"size": "(2,2)"
+},
+"AncientGravEngine": {
+"category": "Building",
+"size": "(3,3)"
+},
+"AncientGravReactor": {
+"category": "Building",
+"size": "(5, 5)"
+},
+"AncientHatch": {
+"category": "Building",
+"size": "(3,3)"
+},
+"AncientHatchExit": {
+"category": "Building",
+"size": "(3,3)"
+},
+"AncientHeatVent": {
+"category": "Building",
+"size": "(7,7)"
+},
+"AncientHermeticCrate": {
+"category": "Building",
+"size": "(1, 2)"
+},
+"AncientHydrant": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientIndustrialShelf": {
+"category": "Building",
+"size": "(2, 1)"
+},
+"AncientIndustrialTruck": {
+"category": "Building",
+"size": "(2, 4)"
+},
+"AncientJetEngine": {
+"category": "Building",
+"size": "(3,2)"
+},
+"AncientKitchenSink": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientLamp": {
+"category": "Building",
+"size": null
+},
+"AncientLamppost": {
+"category": "Building",
+"size": null
+},
+"AncientLargeContainer": {
+"category": "Building",
+"size": "(3,5)"
+},
+"AncientLargeCrate": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientLargeMechGestator": {
+"category": "Building",
+"size": "(4,3)"
+},
+"AncientLargeRustedEngineBlock": {
+"category": "Building",
+"size": "(2,1)"
+},
+"AncientLockerBank": {
+"category": "Building",
+"size": "(3, 1)"
+},
+"AncientLockers": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientLongCrate": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientMachine": {
+"category": "Building",
+"size": "(5, 3)"
+},
+"AncientMechDropBeacon": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientMechGestator": {
+"category": "Building",
+"size": "(3,2)"
+},
+"AncientMechGestatorTank": {
+"category": "Building",
+"size": "(2,2)"
+},
+"AncientMediumContainer": {
+"category": "Building",
+"size": "(2, 4)"
+},
+"AncientMegaCannonBarrel": {
+"category": "Building",
+"size": "(1,2)"
+},
+"AncientMegaCannonTripod": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"AncientMetalCrate": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientMicrowave": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientMilitaryBarrier": {
+"category": "Building",
+"size": "(2, 1)"
+},
+"AncientMilitaryCrate": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientMilitaryGeneratorSmall": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientMiniWarwalkerRemains": {
+"category": "Building",
+"size": "(5,3)"
+},
+"AncientMiningCharge": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientMortar": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"AncientOpenContainer": {
+"category": "Building",
+"size": "(4, 2)"
+},
+"AncientOperatingTable": {
+"category": "Building",
+"size": "(1,2)"
+},
+"AncientOven": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientPallet_SteelSlag": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"AncientPipe": {
+"category": "Building",
+"size": null
+},
+"AncientPipelineSection": {
+"category": "Building",
+"size": "(2,1)"
+},
+"AncientPipes": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientPlantPot": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientPodCar": {
+"category": "Building",
+"size": "(3,2)"
+},
+"AncientPostbox": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientRazorWire": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientRefrigerator": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientRustedCar": {
+"category": "Building",
+"size": "(2,4)"
+},
+"AncientRustedCarFrame": {
+"category": "Building",
+"size": "(2,3)"
+},
+"AncientRustedDropship": {
+"category": "Building",
+"size": "(6,5)"
+},
+"AncientRustedEngineBlock": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientRustedJeep": {
+"category": "Building",
+"size": "(3,5)"
+},
+"AncientRustedMicrowave": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientRustedTruck": {
+"category": "Building",
+"size": "(2,4)"
+},
+"AncientSafe": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientSealedContainer": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"AncientSealedContainer_GravshipUpgrade": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"AncientSealedCrate": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientSealedCrate_Gravlite": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientSealedCrate_Shells": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientSecurityCrate": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"AncientSecurityTerminal": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientSecurityTurret": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientShelf": {
+"category": "Building",
+"size": "(2, 1)"
+},
+"AncientShipBeacon": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientShoppingCart": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientShower": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientSimpleResearchBench": {
+"category": "Building",
+"size": "(3, 2)"
+},
+"AncientSingleBed": {
+"category": "Building",
+"size": "(1,2)"
+},
+"AncientSmallContainer": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"AncientSmallCrate": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientSmallShelf": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientSmokeVent": {
+"category": "Building",
+"size": "(7,7)"
+},
+"AncientSpacerCrate": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientStandardRecharger": {
+"category": "Building",
+"size": "(3,2)"
+},
+"AncientStorageCylinder": {
+"category": "Building",
+"size": "(2, 1)"
+},
+"AncientStove": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientSystemRack": {
+"category": "Building",
+"size": "(1, 3)"
+},
+"AncientTV": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AncientTableBrewery": {
+"category": "Building",
+"size": "(3, 1)"
+},
+"AncientTableButcher": {
+"category": "Building",
+"size": "(3, 1)"
+},
+"AncientTableDrugLab": {
+"category": "Building",
+"size": "(3, 1)"
+},
+"AncientTableMachining": {
+"category": "Building",
+"size": "(3, 1)"
+},
+"AncientTableSmithingElectric": {
+"category": "Building",
+"size": "(3, 1)"
+},
+"AncientTableSmithingFueled": {
+"category": "Building",
+"size": "(3, 1)"
+},
+"AncientTableStoveElectric": {
+"category": "Building",
+"size": "(3, 1)"
+},
+"AncientTableStoveFueled": {
+"category": "Building",
+"size": "(3, 1)"
+},
+"AncientTableTailorElectric": {
+"category": "Building",
+"size": "(3, 1)"
+},
+"AncientTableTailorHand": {
+"category": "Building",
+"size": "(3, 1)"
+},
+"AncientTank": {
+"category": "Building",
+"size": "(5,3)"
+},
+"AncientTankTrap": {
+"category": "Building",
+"size": "(2,2)"
+},
+"AncientTerminal": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientTerminal_Worshipful": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientTerraformer": {
+"category": "Building",
+"size": "(4,4)"
+},
+"AncientToilet": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientToxVent": {
+"category": "Building",
+"size": "(7,7)"
+},
+"AncientToxifierGenerator": {
+"category": "Building",
+"size": "(2,2)"
+},
+"AncientTransportPod": {
+"category": "Building",
+"size": null
+},
+"AncientTunnelerClaw": {
+"category": "Building",
+"size": "(2, 1)"
+},
+"AncientTunnelerHusk": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"AncientUplink": {
+"category": "Building",
+"size": "(2,2)"
+},
+"AncientUraniumSlugTurret": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"AncientVendingMachine": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientWarspiderRemains": {
+"category": "Building",
+"size": "(5,5)"
+},
+"AncientWarwalkerClaw": {
+"category": "Building",
+"size": "(1,2)"
+},
+"AncientWarwalkerFoot": {
+"category": "Building",
+"size": "(2,2)"
+},
+"AncientWarwalkerLeg": {
+"category": "Building",
+"size": "(2,4)"
+},
+"AncientWarwalkerShell": {
+"category": "Building",
+"size": "(5,3)"
+},
+"AncientWarwalkerTorso": {
+"category": "Building",
+"size": "(4,6)"
+},
+"AncientWashingMachine": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientWheel": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AncientWindTurbineBody": {
+"category": "Building",
+"size": "(5, 2)"
+},
+"AncientWoodenCrate": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"AnimalBed": {
+"category": "Building",
+"size": null
+},
+"AnimalFlap": {
+"category": "Building",
+"size": null
+},
+"AnimalSleepingBox": {
+"category": "Building",
+"size": null
+},
+"AnimalSleepingSpot": {
+"category": "Building",
+"size": "(1,1)"
+},
+"AnimalistSlab_Broad": {
+"category": "Building",
+"size": "(4,4)"
+},
+"AnimalistSlab_Medium": {
+"category": "Building",
+"size": "(3,3)"
+},
+"AnimusStone": {
+"category": "Building",
+"size": null
+},
+"AnticraftBeam": {
+"category": "Building",
+"size": "(9,9)"
+},
+"Apparel_AdvancedHelmet": {
+"category": "Item",
+"size": null
+},
+"Apparel_AirwireHeadset": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorCataphract": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorCataphractPhoenix": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorCataphractPrestige": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorHelmetCataphract": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorHelmetCataphractPrestige": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorHelmetMechCommander": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorHelmetMechlordHelmet": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorHelmetRecon": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorHelmetReconPrestige": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorLocust": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorMarineGrenadier": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorMarineHelmetPrestige": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorMarinePrestige": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorRecon": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArmorReconPrestige": {
+"category": "Item",
+"size": null
+},
+"Apparel_ArrayHeadset": {
+"category": "Item",
+"size": null
+},
+"Apparel_AuthorityCap": {
+"category": "Item",
+"size": null
+},
+"Apparel_Bandolier": {
+"category": "Item",
+"size": null
+},
+"Apparel_BasicShirt": {
+"category": "Item",
+"size": null
+},
+"Apparel_Beret": {
+"category": "Item",
+"size": null
+},
+"Apparel_BiomutationLance": {
+"category": "Item",
+"size": null
+},
+"Apparel_Blindfold": {
+"category": "Item",
+"size": null
+},
+"Apparel_BodyStrap": {
+"category": "Item",
+"size": null
+},
+"Apparel_BowlerHat": {
+"category": "Item",
+"size": null
+},
+"Apparel_Broadwrap": {
+"category": "Item",
+"size": null
+},
+"Apparel_Burka": {
+"category": "Item",
+"size": null
+},
+"Apparel_Cape": {
+"category": "Item",
+"size": null
+},
+"Apparel_CerebrexNode": {
+"category": "Item",
+"size": null
+},
+"Apparel_CeremonialCultistMask": {
+"category": "Item",
+"size": null
+},
+"Apparel_ClothMask": {
+"category": "Item",
+"size": null
+},
+"Apparel_Collar": {
+"category": "Item",
+"size": null
+},
+"Apparel_CollarShirt": {
+"category": "Item",
+"size": null
+},
+"Apparel_Coronet": {
+"category": "Item",
+"size": null
+},
+"Apparel_Corset": {
+"category": "Item",
+"size": null
+},
+"Apparel_CowboyHat": {
+"category": "Item",
+"size": null
+},
+"Apparel_Crown": {
+"category": "Item",
+"size": null
+},
+"Apparel_CrownStellic": {
+"category": "Item",
+"size": null
+},
+"Apparel_CultistMask": {
+"category": "Item",
+"size": null
+},
+"Apparel_DeadlifePack": {
+"category": "Item",
+"size": null
+},
+"Apparel_DisruptorFlarePack": {
+"category": "Item",
+"size": null
+},
+"Apparel_Duster": {
+"category": "Item",
+"size": null
+},
+"Apparel_EltexSkullcap": {
+"category": "Item",
+"size": null
+},
+"Apparel_FirefoampopPack": {
+"category": "Item",
+"size": null
+},
+"Apparel_FlakJacket": {
+"category": "Item",
+"size": null
+},
+"Apparel_FlakPants": {
+"category": "Item",
+"size": null
+},
+"Apparel_FlakVest": {
+"category": "Item",
+"size": null
+},
+"Apparel_Flophat": {
+"category": "Item",
+"size": null
+},
+"Apparel_GasMask": {
+"category": "Item",
+"size": null
+},
+"Apparel_Gunlink": {
+"category": "Item",
+"size": null
+},
+"Apparel_HatHood": {
+"category": "Item",
+"size": null
+},
+"Apparel_HatLadies": {
+"category": "Item",
+"size": null
+},
+"Apparel_HatTop": {
+"category": "Item",
+"size": null
+},
+"Apparel_Headwrap": {
+"category": "Item",
+"size": null
+},
+"Apparel_HeavyShield": {
+"category": "Item",
+"size": null
+},
+"Apparel_IntegratorHeadset": {
+"category": "Item",
+"size": null
+},
+"Apparel_Jacket": {
+"category": "Item",
+"size": null
+},
+"Apparel_KidHelmet": {
+"category": "Item",
+"size": null
+},
+"Apparel_KidPants": {
+"category": "Item",
+"size": null
+},
+"Apparel_KidParka": {
+"category": "Item",
+"size": null
+},
+"Apparel_KidRomper": {
+"category": "Item",
+"size": null
+},
+"Apparel_KidShirt": {
+"category": "Item",
+"size": null
+},
+"Apparel_KidTribal": {
+"category": "Item",
+"size": null
+},
+"Apparel_LabCoat": {
+"category": "Item",
+"size": null
+},
+"Apparel_MechlordSuit": {
+"category": "Item",
+"size": null
+},
+"Apparel_PackBandwidth": {
+"category": "Item",
+"size": null
+},
+"Apparel_PackBroadshield": {
+"category": "Item",
+"size": null
+},
+"Apparel_PackControl": {
+"category": "Item",
+"size": null
+},
+"Apparel_PackHunter": {
+"category": "Item",
+"size": null
+},
+"Apparel_PackJump": {
+"category": "Item",
+"size": null
+},
+"Apparel_PackTox": {
+"category": "Item",
+"size": null
+},
+"Apparel_PackTurret": {
+"category": "Item",
+"size": null
+},
+"Apparel_Pants": {
+"category": "Item",
+"size": null
+},
+"Apparel_Parka": {
+"category": "Item",
+"size": null
+},
+"Apparel_PlateArmor": {
+"category": "Item",
+"size": null
+},
+"Apparel_PowerArmor": {
+"category": "Item",
+"size": null
+},
+"Apparel_PowerArmorHelmet": {
+"category": "Item",
+"size": null
+},
+"Apparel_PsychicFoilHelmet": {
+"category": "Item",
+"size": null
+},
+"Apparel_PsychicInsanityLance": {
+"category": "Item",
+"size": null
+},
+"Apparel_PsychicShockLance": {
+"category": "Item",
+"size": null
+},
+"Apparel_PsyfocusHelmet": {
+"category": "Item",
+"size": null
+},
+"Apparel_PsyfocusRobe": {
+"category": "Item",
+"size": null
+},
+"Apparel_PsyfocusShirt": {
+"category": "Item",
+"size": null
+},
+"Apparel_PsyfocusVest": {
+"category": "Item",
+"size": null
+},
+"Apparel_Robe": {
+"category": "Item",
+"size": null
+},
+"Apparel_RobeRoyal": {
+"category": "Item",
+"size": null
+},
+"Apparel_Sash": {
+"category": "Item",
+"size": null
+},
+"Apparel_Shadecone": {
+"category": "Item",
+"size": null
+},
+"Apparel_ShardPsychicInsanityLance": {
+"category": "Item",
+"size": null
+},
+"Apparel_ShardPsychicShockLance": {
+"category": "Item",
+"size": null
+},
+"Apparel_ShieldBelt": {
+"category": "Item",
+"size": null
+},
+"Apparel_ShirtRuffle": {
+"category": "Item",
+"size": null
+},
+"Apparel_SimpleHelmet": {
+"category": "Item",
+"size": null
+},
+"Apparel_Slicecap": {
+"category": "Item",
+"size": null
+},
+"Apparel_SmokepopBelt": {
+"category": "Item",
+"size": null
+},
+"Apparel_Tailcap": {
+"category": "Item",
+"size": null
+},
+"Apparel_TortureCrown": {
+"category": "Item",
+"size": null
+},
+"Apparel_TribalA": {
+"category": "Item",
+"size": null
+},
+"Apparel_TribalHeaddress": {
+"category": "Item",
+"size": null
+},
+"Apparel_Tuque": {
+"category": "Item",
+"size": null
+},
+"Apparel_Vacsuit": {
+"category": "Item",
+"size": null
+},
+"Apparel_VacsuitChildren": {
+"category": "Item",
+"size": null
+},
+"Apparel_VacsuitHelmet": {
+"category": "Item",
+"size": null
+},
+"Apparel_VestRoyal": {
+"category": "Item",
+"size": null
+},
+"Apparel_VisageMask": {
+"category": "Item",
+"size": null
+},
+"Apparel_WarMask": {
+"category": "Item",
+"size": null
+},
+"Apparel_WarVeil": {
+"category": "Item",
+"size": null
+},
+"ArcheanSeed": {
+"category": "Item",
+"size": null
+},
+"ArchiteCapsule": {
+"category": "Item",
+"size": null
+},
+"ArchonexusCore": {
+"category": "Building",
+"size": "(11, 11)"
+},
+"ArchotechArm": {
+"category": "Item",
+"size": null
+},
+"ArchotechEye": {
+"category": "Item",
+"size": null
+},
+"ArchotechLeg": {
+"category": "Item",
+"size": null
+},
+"ArchotechTower": {
+"category": "Building",
+"size": "(5, 5)"
+},
+"Armadillo": {
+"category": "Pawn",
+"size": null
+},
+"Armchair": {
+"category": "Building",
+"size": null
+},
+"ArmorskinGland": {
+"category": "Item",
+"size": null
+},
+"Arrow_Great": {
+"category": "Projectile",
+"size": null
+},
+"Arrow_Recurve": {
+"category": "Projectile",
+"size": null
+},
+"Arrow_Short": {
+"category": "Projectile",
+"size": null
+},
+"Artillery_AutoMortar": {
+"category": "Item",
+"size": null
+},
+"Artillery_Mortar": {
+"category": "Item",
+"size": null
+},
+"AtmosphericHeater": {
+"category": "Building",
+"size": "(3,3)"
+},
+"AtmosphericHeaterGlowingVents": {
+"category": "Mote",
+"size": null
+},
+"Autobong": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Autodoor": {
+"category": "Building",
+"size": null
+},
+"BabyDecoration": {
+"category": "Building",
+"size": "(1,1)"
+},
+"BabyFood": {
+"category": "Item",
+"size": null
+},
+"BabySleepingSpot": {
+"category": "Building",
+"size": "(1,1)"
+},
+"Badger": {
+"category": "Pawn",
+"size": null
+},
+"BandNode": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Barricade": {
+"category": "Building",
+"size": null
+},
+"BasicRecharger": {
+"category": "Building",
+"size": "(3,1)"
+},
+"Battery": {
+"category": "Building",
+"size": "(1,2)"
+},
+"Bear_Grizzly": {
+"category": "Pawn",
+"size": null
+},
+"Bear_Polar": {
+"category": "Pawn",
+"size": null
+},
+"Bed": {
+"category": "Building",
+"size": "(1,2)"
+},
+"Bedroll": {
+"category": "Building",
+"size": "(1,2)"
+},
+"BedrollDouble": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Beer": {
+"category": "Item",
+"size": null
+},
+"BilliardsTable": {
+"category": "Building",
+"size": "(2,3)"
+},
+"Bioferrite": {
+"category": "Item",
+"size": null
+},
+"BioferriteGenerator": {
+"category": "Building",
+"size": "(3,2)"
+},
+"BioferriteHarvester": {
+"category": "Building",
+"size": "(1,2)"
+},
+"BioferriteShaper": {
+"category": "Building",
+"size": "(3,1)"
+},
+"BiofuelRefinery": {
+"category": "Building",
+"size": "(3,2)"
+},
+"BiomutationPulser": {
+"category": "Item",
+"size": null
+},
+"BiomutationWarmup": {
+"category": "Mote",
+"size": null
+},
+"BionicArm": {
+"category": "Item",
+"size": null
+},
+"BionicEar": {
+"category": "Item",
+"size": null
+},
+"BionicEye": {
+"category": "Item",
+"size": null
+},
+"BionicHeart": {
+"category": "Item",
+"size": null
+},
+"BionicJaw": {
+"category": "Item",
+"size": null
+},
+"BionicLeg": {
+"category": "Item",
+"size": null
+},
+"BionicSpine": {
+"category": "Item",
+"size": null
+},
+"BionicStomach": {
+"category": "Item",
+"size": null
+},
+"BionicTongue": {
+"category": "Item",
+"size": null
+},
+"BiosculpterPod": {
+"category": "Building",
+"size": "(3,2)"
+},
+"Bison": {
+"category": "Pawn",
+"size": null
+},
+"Blackboard": {
+"category": "Building",
+"size": "(2,1)"
+},
+"Blight": {
+"category": "Ethereal",
+"size": null
+},
+"BlocksGranite": {
+"category": "Item",
+"size": null
+},
+"BlocksLimestone": {
+"category": "Item",
+"size": null
+},
+"BlocksMarble": {
+"category": "Item",
+"size": null
+},
+"BlocksSandstone": {
+"category": "Item",
+"size": null
+},
+"BlocksSlate": {
+"category": "Item",
+"size": null
+},
+"BlocksVacstone": {
+"category": "Item",
+"size": null
+},
+"BloodWarmer": {
+"category": "Item",
+"size": null
+},
+"Bluebird": {
+"category": "Pawn",
+"size": null
+},
+"BogHound": {
+"category": "Pawn",
+"size": null
+},
+"Bombardment": {
+"category": "Ethereal",
+"size": null
+},
+"Bookcase": {
+"category": "Building",
+"size": "(2,1)"
+},
+"BookcaseSmall": {
+"category": "Building",
+"size": "(1,1)"
+},
+"Boomalope": {
+"category": "Pawn",
+"size": null
+},
+"Boomrat": {
+"category": "Pawn",
+"size": null
+},
+"Boomshroom": {
+"category": "Plant",
+"size": null
+},
+"Bow_Great": {
+"category": "Item",
+"size": null
+},
+"Bow_Great_Unique": {
+"category": "Item",
+"size": null
+},
+"Bow_Recurve": {
+"category": "Item",
+"size": null
+},
+"Bow_Short": {
+"category": "Item",
+"size": null
+},
+"Brazier": {
+"category": "Building",
+"size": null
+},
+"Brewery": {
+"category": "Building",
+"size": "(3,1)"
+},
+"BroadshieldCore": {
+"category": "Item",
+"size": null
+},
+"BroadshieldProjector": {
+"category": "Building",
+"size": null
+},
+"Bryolux": {
+"category": "Plant",
+"size": null
+},
+"Building_KidOutfitStand": {
+"category": "Building",
+"size": null
+},
+"Building_OutfitStand": {
+"category": "Building",
+"size": null
+},
+"Bulbfreak": {
+"category": "Pawn",
+"size": null
+},
+"BulletShieldPsychic": {
+"category": "Ethereal",
+"size": null
+},
+"Bullet_AncientArmoredTurret": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_AssaultRifle": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_AutocannonTurret": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Autopistol": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_BeamRepeater": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_BoltActionRifle": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_ChargeBlasterHeavy": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_ChargeLance": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_ChargeRifle": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_DoomsdayRocket": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_EMPLauncher": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_FleshmelterBolt": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Heatspike": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_HeavySMG": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_HellcatRifle": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_HellsphereCannonGun": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_IncendiaryLauncher": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_InfernoCannon": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_LMG": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_MachinePistol": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_MiniShotgun": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_MiniSlug": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_MiniTurret": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Minigun": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_NeedleGun": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Revolver": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Rocket": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Scattergun": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Shell_AcidSpit": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Shell_AntigrainWarhead": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Shell_Deadlife": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Shell_EMP": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Shell_Firefoam": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Shell_HighExplosive": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Shell_Incendiary": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Shell_Smoke": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Shell_Tox": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Shotgun": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Slugthrower": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_SmokeLauncher": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_SniperRifle": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_Spiner": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_TacticalTurret": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_ThumpCannon": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_ToxbombLauncher": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_ToxicNeedleGun": {
+"category": "Projectile",
+"size": null
+},
+"Bullet_TurretSniper": {
+"category": "Projectile",
+"size": null
+},
+"Bullfrog": {
+"category": "Pawn",
+"size": null
+},
+"Burnbong": {
+"category": "Building",
+"size": "(1,1)"
+},
+"BurnedTree": {
+"category": "Plant",
+"size": null
+},
+"BurningPowerCell": {
+"category": "Building",
+"size": "(1,1)"
+},
+"BurnoutMechlinkBooster": {
+"category": "Building",
+"size": "(2,1)"
+},
+"BurrowWall": {
+"category": "Building",
+"size": null
+},
+"ButcherSpot": {
+"category": "Building",
+"size": "(1,1)"
+},
+"Campfire": {
+"category": "Building",
+"size": null
+},
+"CannibalPlatter": {
+"category": "Building",
+"size": "(2,3)"
+},
+"Capybara": {
+"category": "Pawn",
+"size": null
+},
+"CaravanPackingSpot": {
+"category": "Building",
+"size": null
+},
+"Caribou": {
+"category": "Pawn",
+"size": null
+},
+"Cassowary": {
+"category": "Pawn",
+"size": null
+},
+"Cat": {
+"category": "Pawn",
+"size": null
+},
+"Cat_Scimitar": {
+"category": "Pawn",
+"size": null
+},
+"CaveExit": {
+"category": "Building",
+"size": "(3,3)"
+},
+"CerebrexCore": {
+"category": "Building",
+"size": "(7,7)"
+},
+"CerebrexCore_Destroyed": {
+"category": "Building",
+"size": "(7,7)"
+},
+"CerebrexStabilizer": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"Chemfuel": {
+"category": "Item",
+"size": null
+},
+"ChemfuelPoweredGenerator": {
+"category": "Building",
+"size": "(2,2)"
+},
+"ChemfuelTank": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"ChessTable": {
+"category": "Building",
+"size": null
+},
+"Chicken": {
+"category": "Pawn",
+"size": null
+},
+"Chimera": {
+"category": "Pawn",
+"size": null
+},
+"Chinchilla": {
+"category": "Pawn",
+"size": null
+},
+"Chocolate": {
+"category": "Item",
+"size": null
+},
+"ChoppedStump": {
+"category": "Plant",
+"size": null
+},
+"ChoppedStump_Anima": {
+"category": "Plant",
+"size": null
+},
+"ChoppedStump_Archean": {
+"category": "Plant",
+"size": null
+},
+"ChoppedStump_Gauranlen": {
+"category": "Plant",
+"size": null
+},
+"ChoppedStump_Harbinger": {
+"category": "Plant",
+"size": null
+},
+"ChoppedStump_Polluted": {
+"category": "Plant",
+"size": null
+},
+"ChoppedStump_Polux": {
+"category": "Plant",
+"size": null
+},
+"ChristmasTree": {
+"category": "Building",
+"size": "(1,1)"
+},
+"ChunkGranite": {
+"category": "Item",
+"size": null
+},
+"ChunkLimestone": {
+"category": "Item",
+"size": null
+},
+"ChunkMarble": {
+"category": "Item",
+"size": null
+},
+"ChunkMechanoidSlag": {
+"category": "Item",
+"size": null
+},
+"ChunkSandstone": {
+"category": "Item",
+"size": null
+},
+"ChunkSlagSteel": {
+"category": "Item",
+"size": null
+},
+"ChunkSlate": {
+"category": "Item",
+"size": null
+},
+"ChunkVacstone": {
+"category": "Item",
+"size": null
+},
+"CircadianAssistant": {
+"category": "Item",
+"size": null
+},
+"CircadianHalfCycler": {
+"category": "Item",
+"size": null
+},
+"ClimateAdjuster": {
+"category": "Building",
+"size": "(6,6)"
+},
+"Cloth": {
+"category": "Item",
+"size": null
+},
+"Coagulator": {
+"category": "Item",
+"size": null
+},
+"Cobra": {
+"category": "Pawn",
+"size": null
+},
+"CochlearImplant": {
+"category": "Item",
+"size": null
+},
+"CocoonLocust": {
+"category": "Building",
+"size": null
+},
+"CocoonMegascarab": {
+"category": "Building",
+"size": null
+},
+"CocoonMegaspider": {
+"category": "Building",
+"size": null
+},
+"CocoonSpawner": {
+"category": "Ethereal",
+"size": null
+},
+"CocoonSpelopede": {
+"category": "Building",
+"size": null
+},
+"CollapsedRocks": {
+"category": "Building",
+"size": null
+},
+"ColossusToad": {
+"category": "Pawn",
+"size": null
+},
+"Column": {
+"category": "Building",
+"size": null
+},
+"CommsConsole": {
+"category": "Building",
+"size": "(3,2)"
+},
+"ComponentIndustrial": {
+"category": "Item",
+"size": null
+},
+"ComponentSpacer": {
+"category": "Item",
+"size": null
+},
+"ControlSublink": {
+"category": "Item",
+"size": null
+},
+"ControlSublinkHigh": {
+"category": "Item",
+"size": null
+},
+"Cooler": {
+"category": "Building",
+"size": null
+},
+"CornerArmoredTurret": {
+"category": null,
+"size": null
+},
+"CornerMechPylon": {
+"category": null,
+"size": null
+},
+"CornerMiniTurret": {
+"category": null,
+"size": null
+},
+"CorrosiveHeart": {
+"category": "Item",
+"size": null
+},
+"Couch": {
+"category": "Building",
+"size": "(2,1)"
+},
+"Cougar": {
+"category": "Pawn",
+"size": null
+},
+"Cow": {
+"category": "Pawn",
+"size": null
+},
+"CracksShieldBreak": {
+"category": "Mote",
+"size": null
+},
+"CraftingSpot": {
+"category": "Building",
+"size": "(1,1)"
+},
+"CrashedShipPartIncoming": {
+"category": "Ethereal",
+"size": "(6, 3)"
+},
+"CraterLarge": {
+"category": "Building",
+"size": "(5, 5)"
+},
+"CraterMedium": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"CraterSmall": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"CreepJoiner": {
+"category": "Pawn",
+"size": null
+},
+"Crib": {
+"category": "Building",
+"size": "(1,1)"
+},
+"Crow": {
+"category": "Pawn",
+"size": null
+},
+"CryptosleepCasket": {
+"category": "Building",
+"size": "(1,2)"
+},
+"DarklightBrazier": {
+"category": "Building",
+"size": null
+},
+"Darktorch": {
+"category": "Building",
+"size": null
+},
+"DarktorchFungus": {
+"category": "Building",
+"size": null
+},
+"DeathAcidifier": {
+"category": "Item",
+"size": null
+},
+"DeathrestAccelerator": {
+"category": "Building",
+"size": "(1,2)"
+},
+"DeathrestCapacitySerum": {
+"category": "Item",
+"size": null
+},
+"DeathrestCasket": {
+"category": "Building",
+"size": "(1,2)"
+},
+"DeepDrill": {
+"category": "Building",
+"size": "(1,1)"
+},
+"Deer": {
+"category": "Pawn",
+"size": null
+},
+"Defoliator": {
+"category": "Building",
+"size": "(3,3)"
+},
+"DefoliatorShipPart": {
+"category": "Building",
+"size": "(6,3)"
+},
+"DelayedEffecterSpawner": {
+"category": null,
+"size": null
+},
+"DelayedMetalhorrorEmerger": {
+"category": null,
+"size": null
+},
+"DetoxifierKidney": {
+"category": "Item",
+"size": null
+},
+"DetoxifierLung": {
+"category": "Item",
+"size": null
+},
+"DetoxifierStomach": {
+"category": "Item",
+"size": null
+},
+"DevilstrandCloth": {
+"category": "Item",
+"size": null
+},
+"Devourer": {
+"category": "Pawn",
+"size": null
+},
+"DiningChair": {
+"category": "Building",
+"size": null
+},
+"DirtCubeSculpture": {
+"category": "Building",
+"size": null
+},
+"DisruptorFlare": {
+"category": null,
+"size": null
+},
+"Donkey": {
+"category": "Pawn",
+"size": null
+},
+"Door": {
+"category": "Building",
+"size": null
+},
+"DoubleBed": {
+"category": "Building",
+"size": "(2,2)"
+},
+"DoubleSleepingSpot": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Drape": {
+"category": "Building",
+"size": "(2,1)"
+},
+"Dreadmeld": {
+"category": "Pawn",
+"size": null
+},
+"Dresser": {
+"category": "Building",
+"size": "(2,1)"
+},
+"DrillArm": {
+"category": "Item",
+"size": null
+},
+"Dromedary": {
+"category": "Pawn",
+"size": null
+},
+"Drone_Hunter": {
+"category": "Pawn",
+"size": null
+},
+"Drone_Sentry": {
+"category": "Pawn",
+"size": null
+},
+"Drone_Wasp": {
+"category": "Pawn",
+"size": null
+},
+"DropPodIncoming": {
+"category": "Ethereal",
+"size": null
+},
+"DropPodIncomingAncient": {
+"category": "Ethereal",
+"size": null
+},
+"DropPodIncomingMechanoidRapid": {
+"category": "Ethereal",
+"size": null
+},
+"DropPodIncomingMechanoidSoft": {
+"category": "Ethereal",
+"size": null
+},
+"DropPodLeaving": {
+"category": "Ethereal",
+"size": null
+},
+"DropPodLeavingAncient": {
+"category": "Ethereal",
+"size": null
+},
+"DropPodLeavingMechanoid": {
+"category": "Ethereal",
+"size": null
+},
+"DrugLab": {
+"category": "Building",
+"size": "(3,1)"
+},
+"Drug_Psilocap": {
+"category": "Item",
+"size": null
+},
+"Drum": {
+"category": "Building",
+"size": "(1,1)"
+},
+"DryadCocoon": {
+"category": "Building",
+"size": null
+},
+"DryadHealingPod": {
+"category": "Building",
+"size": null
+},
+"Dryad_Barkskin": {
+"category": "Pawn",
+"size": null
+},
+"Dryad_Basic": {
+"category": "Pawn",
+"size": null
+},
+"Dryad_Berrymaker": {
+"category": "Pawn",
+"size": null
+},
+"Dryad_Carrier": {
+"category": "Pawn",
+"size": null
+},
+"Dryad_Clawer": {
+"category": "Pawn",
+"size": null
+},
+"Dryad_Gaumaker": {
+"category": "Pawn",
+"size": null
+},
+"Dryad_Medicinemaker": {
+"category": "Pawn",
+"size": null
+},
+"Dryad_Woodmaker": {
+"category": "Pawn",
+"size": null
+},
+"Duck": {
+"category": "Pawn",
+"size": null
+},
+"Dye": {
+"category": "Item",
+"size": null
+},
+"DyingRevenant": {
+"category": "Ethereal",
+"size": null
+},
+"EMIDynamo": {
+"category": "Building",
+"size": "(6,4)"
+},
+"Effigy": {
+"category": "Building",
+"size": "(1,1)"
+},
+"EggAlligatorFertilized": {
+"category": "Item",
+"size": null
+},
+"EggAlligatorUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggBluebirdFertilized": {
+"category": "Item",
+"size": null
+},
+"EggBluebirdUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggBox": {
+"category": "Building",
+"size": null
+},
+"EggCassowaryFertilized": {
+"category": "Item",
+"size": null
+},
+"EggCassowaryUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggChickenFertilized": {
+"category": "Item",
+"size": null
+},
+"EggChickenUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggCobraFertilized": {
+"category": "Item",
+"size": null
+},
+"EggCobraUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggCrowFertilized": {
+"category": "Item",
+"size": null
+},
+"EggCrowUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggDuckFertilized": {
+"category": "Item",
+"size": null
+},
+"EggDuckUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggEmuFertilized": {
+"category": "Item",
+"size": null
+},
+"EggEmuUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggFlamingoFertilized": {
+"category": "Item",
+"size": null
+},
+"EggFlamingoUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggGooseFertilized": {
+"category": "Item",
+"size": null
+},
+"EggGooseUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggHeronFertilized": {
+"category": "Item",
+"size": null
+},
+"EggHeronUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggIguanaFertilized": {
+"category": "Item",
+"size": null
+},
+"EggIguanaUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggMacawFertilized": {
+"category": "Item",
+"size": null
+},
+"EggMacawUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggMonitorLizardFertilized": {
+"category": "Item",
+"size": null
+},
+"EggMonitorLizardUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggOstrichFertilized": {
+"category": "Item",
+"size": null
+},
+"EggOstrichUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggPeacockFertilized": {
+"category": "Item",
+"size": null
+},
+"EggPeacockUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggPenguinFertilized": {
+"category": "Item",
+"size": null
+},
+"EggPenguinUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggQuailFertilized": {
+"category": "Item",
+"size": null
+},
+"EggQuailUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggSac": {
+"category": "Building",
+"size": null
+},
+"EggSeaTurtleFertilized": {
+"category": "Item",
+"size": null
+},
+"EggSeaTurtleUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggSparrowFertilized": {
+"category": "Item",
+"size": null
+},
+"EggSparrowUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggSwanFertilized": {
+"category": "Item",
+"size": null
+},
+"EggSwanUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggTortoiseFertilized": {
+"category": "Item",
+"size": null
+},
+"EggTortoiseUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggTurkeyFertilized": {
+"category": "Item",
+"size": null
+},
+"EggTurkeyUnfertilized": {
+"category": "Item",
+"size": null
+},
+"EggVultureFertilized": {
+"category": "Item",
+"size": null
+},
+"EggVultureUnfertilized": {
+"category": "Item",
+"size": null
+},
+"ElbowBlade": {
+"category": "Item",
+"size": null
+},
+"ElectricCrematorium": {
+"category": "Building",
+"size": "(3,2)"
+},
+"ElectricInhibitor": {
+"category": "Building",
+"size": "(1,2)"
+},
+"ElectricSmelter": {
+"category": "Building",
+"size": "(3,1)"
+},
+"ElectricSmithy": {
+"category": "Building",
+"size": "(3,1)"
+},
+"ElectricStove": {
+"category": "Building",
+"size": "(3,1)"
+},
+"ElectricTailoringBench": {
+"category": "Building",
+"size": "(3,1)"
+},
+"Electroharvester": {
+"category": "Building",
+"size": "(2,1)"
+},
+"Elephant": {
+"category": "Pawn",
+"size": null
+},
+"ElephantTusk": {
+"category": "Item",
+"size": null
+},
+"Elk": {
+"category": "Pawn",
+"size": null
+},
+"Emu": {
+"category": "Pawn",
+"size": null
+},
+"EndTable": {
+"category": "Building",
+"size": null
+},
+"EndlessPit2x2c": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"EndlessPit3x2c": {
+"category": "Building",
+"size": "(3, 2)"
+},
+"EndlessPit3x3c": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"Explosion": {
+"category": "Ethereal",
+"size": null
+},
+"ExplosiveCrate": {
+"category": null,
+"size": null
+},
+"FabricationBench": {
+"category": "Building",
+"size": "(5,2)"
+},
+"Fence": {
+"category": "Building",
+"size": null
+},
+"FenceGate": {
+"category": "Building",
+"size": null
+},
+"FermentingBarrel": {
+"category": "Building",
+"size": null
+},
+"FieldHand": {
+"category": "Item",
+"size": null
+},
+"Filth_AmnioticFluid": {
+"category": "Filth",
+"size": null
+},
+"Filth_AnimalFilth": {
+"category": "Filth",
+"size": null
+},
+"Filth_Ash": {
+"category": "Filth",
+"size": null
+},
+"Filth_BlastMark": {
+"category": "Filth",
+"size": "(3,3)"
+},
+"Filth_Blood": {
+"category": "Filth",
+"size": null
+},
+"Filth_BloodInsect": {
+"category": "Filth",
+"size": null
+},
+"Filth_BloodSmear": {
+"category": "Filth",
+"size": null
+},
+"Filth_ChemfuelStain": {
+"category": "Filth",
+"size": null
+},
+"Filth_ChippedIce": {
+"category": "Filth",
+"size": null
+},
+"Filth_CorpseBile": {
+"category": "Filth",
+"size": null
+},
+"Filth_DarkBlood": {
+"category": "Filth",
+"size": null
+},
+"Filth_DarkBloodSmear": {
+"category": "Filth",
+"size": null
+},
+"Filth_Dirt": {
+"category": "Filth",
+"size": null
+},
+"Filth_DriedBlood": {
+"category": "Filth",
+"size": null
+},
+"Filth_FireFoam": {
+"category": "Filth",
+"size": null
+},
+"Filth_FlammableBile": {
+"category": "Filth",
+"size": null
+},
+"Filth_Fleshmass": {
+"category": "Filth",
+"size": null
+},
+"Filth_Floordrawing": {
+"category": "Filth",
+"size": null
+},
+"Filth_Fuel": {
+"category": "Filth",
+"size": null
+},
+"Filth_GestationFluid": {
+"category": "Filth",
+"size": null
+},
+"Filth_GrayFlesh": {
+"category": "Filth",
+"size": null
+},
+"Filth_GrayFleshNoticeable": {
+"category": "Filth",
+"size": null
+},
+"Filth_Hair": {
+"category": "Filth",
+"size": null
+},
+"Filth_LooseGround": {
+"category": "Filth",
+"size": null
+},
+"Filth_MachineBits": {
+"category": "Filth",
+"size": null
+},
+"Filth_MetalhorrorDebris": {
+"category": "Filth",
+"size": null
+},
+"Filth_MoldyUniform": {
+"category": "Filth",
+"size": null
+},
+"Filth_OilSmear": {
+"category": "Filth",
+"size": null
+},
+"Filth_PodSlime": {
+"category": "Filth",
+"size": null
+},
+"Filth_RevenantBloodPool": {
+"category": "Filth",
+"size": null
+},
+"Filth_RevenantSmear": {
+"category": "Filth",
+"size": null
+},
+"Filth_RubbleBuilding": {
+"category": "Filth",
+"size": null
+},
+"Filth_RubbleRock": {
+"category": "Filth",
+"size": null
+},
+"Filth_Sand": {
+"category": "Filth",
+"size": null
+},
+"Filth_ScatteredDocuments": {
+"category": "Filth",
+"size": null
+},
+"Filth_Slime": {
+"category": "Filth",
+"size": null
+},
+"Filth_SpentAcid": {
+"category": "Filth",
+"size": null
+},
+"Filth_Trash": {
+"category": "Filth",
+"size": null
+},
+"Filth_TwistedFlesh": {
+"category": "Filth",
+"size": null
+},
+"Filth_VolcanicAsh": {
+"category": "Filth",
+"size": null
+},
+"Filth_Vomit": {
+"category": "Filth",
+"size": null
+},
+"Filth_Water": {
+"category": "Filth",
+"size": null
+},
+"Fingerspike": {
+"category": "Pawn",
+"size": null
+},
+"Fire": {
+"category": "Attachment",
+"size": null
+},
+"FirefoamPopper": {
+"category": "Building",
+"size": null
+},
+"Fish_Bass": {
+"category": "Item",
+"size": null
+},
+"Fish_Bluefish": {
+"category": "Item",
+"size": null
+},
+"Fish_Catfish": {
+"category": "Item",
+"size": null
+},
+"Fish_Cod": {
+"category": "Item",
+"size": null
+},
+"Fish_Dogfish": {
+"category": "Item",
+"size": null
+},
+"Fish_Flounder": {
+"category": "Item",
+"size": null
+},
+"Fish_Frostfish": {
+"category": "Item",
+"size": null
+},
+"Fish_Guppy": {
+"category": "Item",
+"size": null
+},
+"Fish_Marlin": {
+"category": "Item",
+"size": null
+},
+"Fish_Piranha": {
+"category": "Item",
+"size": null
+},
+"Fish_Salmon": {
+"category": "Item",
+"size": null
+},
+"Fish_Tilapia": {
+"category": "Item",
+"size": null
+},
+"Fish_Toxfish": {
+"category": "Item",
+"size": null
+},
+"Fish_Tuna": {
+"category": "Item",
+"size": null
+},
+"Flake": {
+"category": "Item",
+"size": null
+},
+"Flamebow": {
+"category": "Item",
+"size": null
+},
+"Flamingo": {
+"category": "Pawn",
+"size": null
+},
+"FlashShieldBreak": {
+"category": "Mote",
+"size": null
+},
+"Flashstorm": {
+"category": "Ethereal",
+"size": null
+},
+"FlatscreenTelevision": {
+"category": "Building",
+"size": "(2,1)"
+},
+"FleshSack": {
+"category": "Building",
+"size": "(2,2)"
+},
+"FleshbeastGroundSpawner": {
+"category": "Ethereal",
+"size": null
+},
+"Fleshbulb": {
+"category": "Building",
+"size": null
+},
+"Fleshmass": {
+"category": "Building",
+"size": null
+},
+"FleshmassHeart": {
+"category": "Building",
+"size": "(3,3)"
+},
+"FleshmassHeartSpawner": {
+"category": null,
+"size": "(3,3)"
+},
+"FleshmassNeuralLump": {
+"category": "Item",
+"size": null
+},
+"FleshmassNucleus": {
+"category": "Pawn",
+"size": null
+},
+"FleshmassSpitter": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"Fleshmass_Active": {
+"category": "Building",
+"size": null
+},
+"FloodLight": {
+"category": "Building",
+"size": null
+},
+"FloorEtching": {
+"category": "Building",
+"size": null
+},
+"FloorEtchingRambling": {
+"category": "Building",
+"size": null
+},
+"FlyerArrival": {
+"category": "Ethereal",
+"size": null
+},
+"FlyerLeaving": {
+"category": "Ethereal",
+"size": null
+},
+"Fox_Arctic": {
+"category": "Pawn",
+"size": null
+},
+"Fox_Fennec": {
+"category": "Pawn",
+"size": null
+},
+"Fox_Red": {
+"category": "Pawn",
+"size": null
+},
+"FrenzyInducer": {
+"category": "Building",
+"size": null
+},
+"FuelOptimizer": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"FueledSmithy": {
+"category": "Building",
+"size": "(3,1)"
+},
+"FueledStove": {
+"category": "Building",
+"size": "(3,1)"
+},
+"GameOfUrBoard": {
+"category": "Building",
+"size": null
+},
+"GastroAnalyzer": {
+"category": "Item",
+"size": null
+},
+"GaumakerCocoon": {
+"category": "Building",
+"size": null
+},
+"GauranlenSeed": {
+"category": "Item",
+"size": null
+},
+"GaussCannon": {
+"category": "Building",
+"size": "(9,9)"
+},
+"Gazelle": {
+"category": "Pawn",
+"size": null
+},
+"GeneAssembler": {
+"category": "Building",
+"size": "(3, 2)"
+},
+"GeneBank": {
+"category": "Building",
+"size": "(2, 1)"
+},
+"GeneExtractor": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"GeneProcessor": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"Genepack": {
+"category": "Item",
+"size": null
+},
+"GeothermalGenerator": {
+"category": "Building",
+"size": "(6,6)"
+},
+"GeothermalVent": {
+"category": "Building",
+"size": "(5,5)"
+},
+"GhoulBarbs": {
+"category": "Item",
+"size": null
+},
+"GhoulPlating": {
+"category": "Item",
+"size": null
+},
+"GhoulResurrectionSerum": {
+"category": "Item",
+"size": null
+},
+"GibbetCage": {
+"category": "Building",
+"size": "(1,1)"
+},
+"Gloomlight": {
+"category": "Building",
+"size": "(1,1)"
+},
+"GlowPod": {
+"category": "Building",
+"size": null
+},
+"Glowstool": {
+"category": "Plant",
+"size": null
+},
+"GlucosoidPump": {
+"category": "Building",
+"size": "(1,2)"
+},
+"GoJuice": {
+"category": "Item",
+"size": null
+},
+"Goat": {
+"category": "Pawn",
+"size": null
+},
+"Gold": {
+"category": "Item",
+"size": null
+},
+"GoldenCube": {
+"category": "Item",
+"size": null
+},
+"Goose": {
+"category": "Pawn",
+"size": null
+},
+"Gorehulk": {
+"category": "Pawn",
+"size": null
+},
+"Gorilla": {
+"category": "Pawn",
+"size": null
+},
+"GrandArchotechStructure": {
+"category": "Building",
+"size": "(9, 9)"
+},
+"GrandThrone": {
+"category": "Building",
+"size": "(3,2)"
+},
+"Granite": {
+"category": "Building",
+"size": null
+},
+"GravAnchor": {
+"category": "Building",
+"size": "(4, 4)"
+},
+"GravEngine": {
+"category": "Building",
+"size": "(3,3)"
+},
+"GravFieldExtender": {
+"category": "Building",
+"size": null
+},
+"Gravcore": {
+"category": "Item",
+"size": null
+},
+"GravcorePowerCell": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"Grave": {
+"category": "Building",
+"size": "(1,2)"
+},
+"GravlitePanel": {
+"category": "Item",
+"size": null
+},
+"GravshipHull": {
+"category": "Building",
+"size": null
+},
+"GravshipLandingMarker": {
+"category": "Ethereal",
+"size": null
+},
+"GravshipShieldGenerator": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"GrayBox": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"GrayDoor": {
+"category": "Building",
+"size": null
+},
+"GrayFleshSample": {
+"category": "Item",
+"size": null
+},
+"GrayStatueDeadlifeDust": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"GrayStatueTeleporter": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"GrayWall": {
+"category": "Building",
+"size": null
+},
+"Grenade_Deadlife": {
+"category": "Projectile",
+"size": null
+},
+"Grenade_DisruptorFlare": {
+"category": "Projectile",
+"size": null
+},
+"Grenade_HunterPack": {
+"category": "Projectile",
+"size": null
+},
+"Grenade_TurretPack": {
+"category": "Projectile",
+"size": null
+},
+"GroundCrackHuge": {
+"category": "Mote",
+"size": null
+},
+"GroundPenetratingScanner": {
+"category": "Building",
+"size": "(3,3)"
+},
+"GrowthVat": {
+"category": "Building",
+"size": "(1,2)"
+},
+"GuineaPig": {
+"category": "Pawn",
+"size": null
+},
+"Gun_AncientArmoredTurret": {
+"category": "Item",
+"size": null
+},
+"Gun_AssaultRifle": {
+"category": "Item",
+"size": null
+},
+"Gun_AssaultRifle_Unique": {
+"category": "Item",
+"size": null
+},
+"Gun_AutocannonTurret": {
+"category": "Item",
+"size": null
+},
+"Gun_Autopistol": {
+"category": "Item",
+"size": null
+},
+"Gun_BeamGraser": {
+"category": "Item",
+"size": null
+},
+"Gun_BeamRepeater": {
+"category": "Item",
+"size": null
+},
+"Gun_BeamRepeater_Unique": {
+"category": "Item",
+"size": null
+},
+"Gun_BoltActionRifle": {
+"category": "Item",
+"size": null
+},
+"Gun_BoltActionRifle_Unique": {
+"category": "Item",
+"size": null
+},
+"Gun_ChainShotgun": {
+"category": "Item",
+"size": null
+},
+"Gun_ChainShotgun_Unique": {
+"category": "Item",
+"size": null
+},
+"Gun_ChargeBlasterHeavy": {
+"category": "Item",
+"size": null
+},
+"Gun_ChargeBlasterHeavyTurret": {
+"category": "Item",
+"size": null
+},
+"Gun_ChargeBlasterTurret": {
+"category": "Item",
+"size": null
+},
+"Gun_ChargeLance": {
+"category": "Item",
+"size": null
+},
+"Gun_ChargeLance_Unique": {
+"category": "Item",
+"size": null
+},
+"Gun_ChargeRifle": {
+"category": "Item",
+"size": null
+},
+"Gun_ChargeRifle_Unique": {
+"category": "Item",
+"size": null
+},
+"Gun_DoomsdayRocket": {
+"category": "Item",
+"size": null
+},
+"Gun_EmpLauncher": {
+"category": "Item",
+"size": null
+},
+"Gun_HeavySMG": {
+"category": "Item",
+"size": null
+},
+"Gun_HeavySMG_Unique": {
+"category": "Item",
+"size": null
+},
+"Gun_HellcatRifle": {
+"category": "Item",
+"size": null
+},
+"Gun_HellcatRifle_Unique": {
+"category": "Item",
+"size": null
+},
+"Gun_HellsphereCannon": {
+"category": "Item",
+"size": null
+},
+"Gun_IncendiaryLauncher": {
+"category": "Item",
+"size": null
+},
+"Gun_Incinerator": {
+"category": "Item",
+"size": null
+},
+"Gun_InfernoCannon": {
+"category": "Item",
+"size": null
+},
+"Gun_InfernoCannonTurret": {
+"category": "Item",
+"size": null
+},
+"Gun_LMG": {
+"category": "Item",
+"size": null
+},
+"Gun_LMG_Unique": {
+"category": "Item",
+"size": null
+},
+"Gun_MachinePistol": {
+"category": "Item",
+"size": null
+},
+"Gun_MiniFlameblaster": {
+"category": "Item",
+"size": null
+},
+"Gun_MiniShotgun": {
+"category": "Item",
+"size": null
+},
+"Gun_MiniTurret": {
+"category": "Item",
+"size": null
+},
+"Gun_MiniTurretMech": {
+"category": "Item",
+"size": null
+},
+"Gun_Minigun": {
+"category": "Item",
+"size": null
+},
+"Gun_Minigun_Unique": {
+"category": "Item",
+"size": null
+},
+"Gun_Needle": {
+"category": "Item",
+"size": null
+},
+"Gun_NeedleLauncher": {
+"category": "Item",
+"size": null
+},
+"Gun_PumpShotgun": {
+"category": "Item",
+"size": null
+},
+"Gun_Revolver": {
+"category": "Item",
+"size": null
+},
+"Gun_Revolver_Unique": {
+"category": "Item",
+"size": null
+},
+"Gun_RocketswarmLauncher": {
+"category": "Item",
+"size": null
+},
+"Gun_Scattergun": {
+"category": "Item",
+"size": null
+},
+"Gun_Slugthrower": {
+"category": "Item",
+"size": null
+},
+"Gun_SmokeLauncher": {
+"category": "Item",
+"size": null
+},
+"Gun_SniperRifle": {
+"category": "Item",
+"size": null
+},
+"Gun_SniperRifle_Unique": {
+"category": "Item",
+"size": null
+},
+"Gun_Spiner": {
+"category": "Item",
+"size": null
+},
+"Gun_TacticalTurret": {
+"category": "Item",
+"size": null
+},
+"Gun_ThumpCannon": {
+"category": "Item",
+"size": null
+},
+"Gun_ToxbombLauncher": {
+"category": "Item",
+"size": null
+},
+"Gun_ToxicNeedle": {
+"category": "Item",
+"size": null
+},
+"Gun_TripleRocket": {
+"category": "Item",
+"size": null
+},
+"Gun_TurretFoam": {
+"category": "Item",
+"size": null
+},
+"Gun_TurretSniper": {
+"category": "Item",
+"size": null
+},
+"HandTailoringBench": {
+"category": "Building",
+"size": "(3,1)"
+},
+"HandTalon": {
+"category": "Item",
+"size": null
+},
+"HarbingerSeed": {
+"category": "Item",
+"size": null
+},
+"Hare": {
+"category": "Pawn",
+"size": null
+},
+"Harp": {
+"category": "Building",
+"size": "(1,1)"
+},
+"Harpsichord": {
+"category": "Building",
+"size": "(2,3)"
+},
+"Hay": {
+"category": "Item",
+"size": null
+},
+"HealingEnhancer": {
+"category": "Item",
+"size": null
+},
+"Heart": {
+"category": "Item",
+"size": null
+},
+"Heater": {
+"category": "Building",
+"size": null
+},
+"HemogenAmplifier": {
+"category": "Building",
+"size": "(1,2)"
+},
+"HemogenPack": {
+"category": "Item",
+"size": null
+},
+"Hemopump": {
+"category": "Building",
+"size": "(1,2)"
+},
+"HermitCrab": {
+"category": "Pawn",
+"size": null
+},
+"Heron": {
+"category": "Pawn",
+"size": null
+},
+"HiTechResearchBench": {
+"category": "Building",
+"size": "(5,2)"
+},
+"HiddenConduit": {
+"category": "Building",
+"size": null
+},
+"Hippo": {
+"category": "Pawn",
+"size": null
+},
+"Hive": {
+"category": "Building",
+"size": null
+},
+"HiveQueen": {
+"category": "Pawn",
+"size": null
+},
+"HoldingPlatform": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"HoldingSpot": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"HoopstoneRing": {
+"category": "Building",
+"size": null
+},
+"Hopper": {
+"category": "Building",
+"size": null
+},
+"Horse": {
+"category": "Pawn",
+"size": null
+},
+"HorseshoesPin": {
+"category": "Building",
+"size": null
+},
+"HospitalBed": {
+"category": "Building",
+"size": "(1,2)"
+},
+"Human": {
+"category": "Pawn",
+"size": null
+},
+"HumanEmbryo": {
+"category": "Item",
+"size": null
+},
+"HumanOvum": {
+"category": "Item",
+"size": null
+},
+"HunterDrone": {
+"category": null,
+"size": null
+},
+"HunterDroneTrap": {
+"category": "Building",
+"size": null
+},
+"Husky": {
+"category": "Pawn",
+"size": null
+},
+"HydroponicsBasin": {
+"category": "Building",
+"size": "(1,4)"
+},
+"Hyperweave": {
+"category": "Item",
+"size": null
+},
+"Ibex": {
+"category": "Pawn",
+"size": null
+},
+"Ideogram": {
+"category": "Building",
+"size": "(3,3)"
+},
+"Iguana": {
+"category": "Pawn",
+"size": null
+},
+"Immunoenhancer": {
+"category": "Item",
+"size": null
+},
+"IncenseShrine": {
+"category": "Building",
+"size": "(2,2)"
+},
+"IncineratorSpray": {
+"category": "Ethereal",
+"size": null
+},
+"InfiniteChemreactor": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"InsectAmbush": {
+"category": "Ethereal",
+"size": null
+},
+"InsectJelly": {
+"category": "Item",
+"size": null
+},
+"InsectLairEntrance": {
+"category": "Building",
+"size": "(6,6)"
+},
+"Jade": {
+"category": "Item",
+"size": null
+},
+"Joywire": {
+"category": "Item",
+"size": null
+},
+"JuggernautSerum": {
+"category": "Item",
+"size": null
+},
+"Kibble": {
+"category": "Item",
+"size": null
+},
+"Kidney": {
+"category": "Item",
+"size": null
+},
+"KneeSpike": {
+"category": "Item",
+"size": null
+},
+"KneelPillow": {
+"category": "Building",
+"size": "(1,1)"
+},
+"KneelSheet": {
+"category": "Building",
+"size": "(2,2)"
+},
+"LabradorRetriever": {
+"category": "Pawn",
+"size": null
+},
+"LabyrinthMatter": {
+"category": "Item",
+"size": null
+},
+"LargeChemfuelTank": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"LargeMechGestator": {
+"category": "Building",
+"size": "(4,3)"
+},
+"LargeThruster": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"Larva": {
+"category": "Pawn",
+"size": null
+},
+"LavaEmergence": {
+"category": "Ethereal",
+"size": null
+},
+"LavaEmergenceImmediate": {
+"category": "Ethereal",
+"size": null
+},
+"LavaRockIncoming": {
+"category": "Ethereal",
+"size": "(2, 2)"
+},
+"LavaSnail": {
+"category": "Pawn",
+"size": null
+},
+"LearningAssistant": {
+"category": "Item",
+"size": null
+},
+"Leather_AlphaThrumbo": {
+"category": "Item",
+"size": null
+},
+"Leather_Armadillo": {
+"category": "Item",
+"size": null
+},
+"Leather_Bear": {
+"category": "Item",
+"size": null
+},
+"Leather_Bird": {
+"category": "Item",
+"size": null
+},
+"Leather_Bluefur": {
+"category": "Item",
+"size": null
+},
+"Leather_Camel": {
+"category": "Item",
+"size": null
+},
+"Leather_Chinchilla": {
+"category": "Item",
+"size": null
+},
+"Leather_Dog": {
+"category": "Item",
+"size": null
+},
+"Leather_Dread": {
+"category": "Item",
+"size": null
+},
+"Leather_Elephant": {
+"category": "Item",
+"size": null
+},
+"Leather_Fox": {
+"category": "Item",
+"size": null
+},
+"Leather_GuineaPig": {
+"category": "Item",
+"size": null
+},
+"Leather_Heavy": {
+"category": "Item",
+"size": null
+},
+"Leather_Hippo": {
+"category": "Item",
+"size": null
+},
+"Leather_Human": {
+"category": "Item",
+"size": null
+},
+"Leather_Light": {
+"category": "Item",
+"size": null
+},
+"Leather_Lizard": {
+"category": "Item",
+"size": null
+},
+"Leather_Mastodon": {
+"category": "Item",
+"size": null
+},
+"Leather_Mink": {
+"category": "Item",
+"size": null
+},
+"Leather_Panthera": {
+"category": "Item",
+"size": null
+},
+"Leather_Patch": {
+"category": "Item",
+"size": null
+},
+"Leather_Pig": {
+"category": "Item",
+"size": null
+},
+"Leather_Plain": {
+"category": "Item",
+"size": null
+},
+"Leather_Rhinoceros": {
+"category": "Item",
+"size": null
+},
+"Leather_Sealskin": {
+"category": "Item",
+"size": null
+},
+"Leather_Thrumbo": {
+"category": "Item",
+"size": null
+},
+"Leather_Wolf": {
+"category": "Item",
+"size": null
+},
+"Lectern": {
+"category": "Building",
+"size": "(1,1)"
+},
+"LifeSupportUnit": {
+"category": "Building",
+"size": null
+},
+"LightBall": {
+"category": "Building",
+"size": "(1,1)"
+},
+"Limestone": {
+"category": "Building",
+"size": null
+},
+"Liver": {
+"category": "Item",
+"size": null
+},
+"Locust": {
+"category": "Pawn",
+"size": null
+},
+"LongRangeMineralScanner": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"Loudspeaker": {
+"category": "Building",
+"size": "(1,1)"
+},
+"LoveEnhancer": {
+"category": "Item",
+"size": null
+},
+"Luciferium": {
+"category": "Item",
+"size": null
+},
+"Lung": {
+"category": "Item",
+"size": null
+},
+"Lynx": {
+"category": "Pawn",
+"size": null
+},
+"Macaw": {
+"category": "Pawn",
+"size": null
+},
+"MajorArchotechStructure": {
+"category": "Building",
+"size": "(7, 7)"
+},
+"MajorArchotechStructureStudiable": {
+"category": "Building",
+"size": "(7, 7)"
+},
+"MalfunctioningTransportPod": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"Map": {
+"category": "Item",
+"size": null
+},
+"Marble": {
+"category": "Building",
+"size": null
+},
+"MarriageSpot": {
+"category": "Building",
+"size": "(2,1)"
+},
+"Mastodon": {
+"category": "Pawn",
+"size": null
+},
+"MastodonTusk": {
+"category": "Item",
+"size": null
+},
+"MealFine": {
+"category": "Item",
+"size": null
+},
+"MealFine_Meat": {
+"category": "Item",
+"size": null
+},
+"MealFine_Veg": {
+"category": "Item",
+"size": null
+},
+"MealLavish": {
+"category": "Item",
+"size": null
+},
+"MealLavish_Meat": {
+"category": "Item",
+"size": null
+},
+"MealLavish_Veg": {
+"category": "Item",
+"size": null
+},
+"MealNutrientPaste": {
+"category": "Item",
+"size": null
+},
+"MealSimple": {
+"category": "Item",
+"size": null
+},
+"MealSurvivalPack": {
+"category": "Item",
+"size": null
+},
+"Meat_Twisted": {
+"category": "Item",
+"size": null
+},
+"MechAssembler": {
+"category": "Building",
+"size": "(3,3)"
+},
+"MechBooster": {
+"category": "Building",
+"size": "(2,2)"
+},
+"MechCapsule": {
+"category": "Building",
+"size": "(2,3)"
+},
+"MechDropBeacon": {
+"category": "Building",
+"size": "(1,1)"
+},
+"MechFormfeeder": {
+"category": "Item",
+"size": null
+},
+"MechGestator": {
+"category": "Building",
+"size": "(3,2)"
+},
+"MechGestatorCycleCompleteLarge_East": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorCycleCompleteLarge_North": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorCycleCompleteLarge_South": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorCycleCompleteLarge_West": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorCycleComplete_East": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorCycleComplete_North": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorCycleComplete_South": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorFormedLarge_East": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorFormedLarge_North": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorFormedLarge_South": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorFormedLarge_West": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorFormed_East": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorFormed_North": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorFormed_South": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorFormingLarge_East": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorFormingLarge_North": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorFormingLarge_South": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorFormingLarge_West": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorForming_East": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorForming_North": {
+"category": "Mote",
+"size": null
+},
+"MechGestatorForming_South": {
+"category": "Mote",
+"size": null
+},
+"MechPylon": {
+"category": "Building",
+"size": "(1,1)"
+},
+"MechRelay": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"MechRelay_Crashed": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"MechSerumHealer": {
+"category": "Item",
+"size": null
+},
+"MechSerumResurrector": {
+"category": "Item",
+"size": null
+},
+"MechShield": {
+"category": null,
+"size": null
+},
+"MechStabilizer": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"Mech_Agrihand": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Apocriton": {
+"category": "Pawn",
+"size": null
+},
+"Mech_CentipedeBlaster": {
+"category": "Pawn",
+"size": null
+},
+"Mech_CentipedeBurner": {
+"category": "Pawn",
+"size": null
+},
+"Mech_CentipedeGunner": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Centurion": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Cleansweeper": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Constructoid": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Cyclops": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Diabolus": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Fabricor": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Lancer": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Legionary": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Lifter": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Militor": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Paramedic": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Pikeman": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Scorcher": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Scyther": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Termite": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Tesseron": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Tunneler": {
+"category": "Pawn",
+"size": null
+},
+"Mech_WarUrchin": {
+"category": "Pawn",
+"size": null
+},
+"Mech_Warqueen": {
+"category": "Pawn",
+"size": null
+},
+"MechanoidDropPod": {
+"category": "Building",
+"size": "(1,1)"
+},
+"MechanoidProcessor": {
+"category": "Building",
+"size": "(4,4)"
+},
+"MechanoidTransponder": {
+"category": "Item",
+"size": null
+},
+"MechbandDish": {
+"category": "Building",
+"size": "(2,2)"
+},
+"MechhiveAssembler": {
+"category": "Building",
+"size": "(4,4)"
+},
+"Mechlink": {
+"category": "Item",
+"size": null
+},
+"MedicineHerbal": {
+"category": "Item",
+"size": null
+},
+"MedicineIndustrial": {
+"category": "Item",
+"size": null
+},
+"MedicineUltratech": {
+"category": "Item",
+"size": null
+},
+"MeditationSpot": {
+"category": "Building",
+"size": null
+},
+"Megascarab": {
+"category": "Pawn",
+"size": null
+},
+"MegascreenTelevision": {
+"category": "Building",
+"size": "(3,1)"
+},
+"Megasloth": {
+"category": "Pawn",
+"size": null
+},
+"Megaspider": {
+"category": "Pawn",
+"size": null
+},
+"Megavole": {
+"category": "Pawn",
+"size": null
+},
+"MeleeWeapon_Axe": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_BreachAxe": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_Club": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_Gladius": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_Ikwa": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_Knife": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_LongSword": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_Mace": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_MonoSword": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_MonoSwordBladelink": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_PlasmaSword": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_PlasmaSwordBladelink": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_PsyfocusStaff": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_Spear": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_Warhammer": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_ZeusHammerBladelink": {
+"category": "Item",
+"size": null
+},
+"MeleeWeapon_Zeushammer": {
+"category": "Item",
+"size": null
+},
+"MetalHellAmbience": {
+"category": "Ethereal",
+"size": null
+},
+"MetalHellFloorCracks": {
+"category": "Ethereal",
+"size": null
+},
+"MetalHellFloorMarkings": {
+"category": "Ethereal",
+"size": null
+},
+"MetalHellFog": {
+"category": "Mote",
+"size": null
+},
+"MetalHellFogHigh": {
+"category": "Mote",
+"size": null
+},
+"MetalbloodHeart": {
+"category": "Item",
+"size": null
+},
+"MetalbloodSerum": {
+"category": "Item",
+"size": null
+},
+"Metalhorror": {
+"category": "Pawn",
+"size": null
+},
+"MeteoriteCraterIncoming": {
+"category": "Ethereal",
+"size": "(2, 2)"
+},
+"MeteoriteIncoming": {
+"category": "Ethereal",
+"size": "(2, 2)"
+},
+"Milk": {
+"category": "Item",
+"size": null
+},
+"MindNumbSerum": {
+"category": "Item",
+"size": null
+},
+"Mindscrew": {
+"category": "Item",
+"size": null
+},
+"MineableComponentsIndustrial": {
+"category": "Building",
+"size": null
+},
+"MineableGold": {
+"category": "Building",
+"size": null
+},
+"MineableJade": {
+"category": "Building",
+"size": null
+},
+"MineableObsidian": {
+"category": "Building",
+"size": null
+},
+"MineablePlasteel": {
+"category": "Building",
+"size": null
+},
+"MineableSilver": {
+"category": "Building",
+"size": null
+},
+"MineableSteel": {
+"category": "Building",
+"size": null
+},
+"MineableUranium": {
+"category": "Building",
+"size": null
+},
+"MinifiedGravEngine": {
+"category": "Item",
+"size": null
+},
+"MinifiedThing": {
+"category": "Item",
+"size": null
+},
+"MinifiedThingRealtimeDraw": {
+"category": "Item",
+"size": null
+},
+"MinifiedTree": {
+"category": "Item",
+"size": null
+},
+"Mink": {
+"category": "Pawn",
+"size": null
+},
+"MoisturePump": {
+"category": "Building",
+"size": null
+},
+"MonitorLizard": {
+"category": "Pawn",
+"size": null
+},
+"Monkey": {
+"category": "Pawn",
+"size": null
+},
+"MonolithFragment": {
+"category": "Item",
+"size": null
+},
+"MonolithIncoming": {
+"category": "Ethereal",
+"size": null
+},
+"MonumentMarker": {
+"category": "Ethereal",
+"size": null
+},
+"Moose": {
+"category": "Pawn",
+"size": null
+},
+"MorbidSlab_Broad": {
+"category": "Building",
+"size": "(4,4)"
+},
+"MorbidSlab_Medium": {
+"category": "Building",
+"size": "(3,3)"
+},
+"Mote_AbductWarmupDistortionRing": {
+"category": "Mote",
+"size": null
+},
+"Mote_AbductWarmupDistortionRingBuilding": {
+"category": "Mote",
+"size": null
+},
+"Mote_ActivatedVoidStructure": {
+"category": "Mote",
+"size": null
+},
+"Mote_ActivatorCountdownGlow": {
+"category": "Mote",
+"size": null
+},
+"Mote_ActivatorProximityGlow": {
+"category": "Mote",
+"size": null
+},
+"Mote_AnimalWarcallDistortion": {
+"category": "Mote",
+"size": null
+},
+"Mote_AnimalWarcallFlash": {
+"category": "Mote",
+"size": null
+},
+"Mote_AnimalWarcallMentalState": {
+"category": "Mote",
+"size": null
+},
+"Mote_AnimalWarcallTarget": {
+"category": "Mote",
+"size": null
+},
+"Mote_AnimalWarcallTargetFlash": {
+"category": "Mote",
+"size": null
+},
+"Mote_AnimalWarcallWarmup": {
+"category": "Mote",
+"size": null
+},
+"Mote_ApocritonPulse": {
+"category": "Mote",
+"size": null
+},
+"Mote_ApocritonWarmupArea": {
+"category": "Mote",
+"size": null
+},
+"Mote_BabyCryingDots": {
+"category": "Mote",
+"size": null
+},
+"Mote_BeamRepeaterLaser": {
+"category": "Mote",
+"size": null
+},
+"Mote_BeamRepeater_Charge": {
+"category": "Mote",
+"size": null
+},
+"Mote_BerserkBit": {
+"category": "Mote",
+"size": null
+},
+"Mote_Bestow": {
+"category": "Mote",
+"size": null
+},
+"Mote_BioFerriteHarvested": {
+"category": "Mote",
+"size": null
+},
+"Mote_Bombardment": {
+"category": "Mote",
+"size": null
+},
+"Mote_Bombardment_PreImpact": {
+"category": "Mote",
+"size": null
+},
+"Mote_Cards": {
+"category": "Mote",
+"size": null
+},
+"Mote_CastPsycast": {
+"category": "Mote",
+"size": null
+},
+"Mote_ChargingCablesPulse": {
+"category": "Mote",
+"size": null
+},
+"Mote_ChargingElectroCables": {
+"category": "Mote",
+"size": null
+},
+"Mote_Clean": {
+"category": "Mote",
+"size": null
+},
+"Mote_ClearSnow": {
+"category": "Mote",
+"size": null
+},
+"Mote_Clipboard": {
+"category": "Mote",
+"size": null
+},
+"Mote_CoagulateA": {
+"category": "Mote",
+"size": null
+},
+"Mote_CoagulateB": {
+"category": "Mote",
+"size": null
+},
+"Mote_CoagulateStencil": {
+"category": "Mote",
+"size": null
+},
+"Mote_CocoonBreaking": {
+"category": "Mote",
+"size": null
+},
+"Mote_CocoonDestroyedFlyingPiece": {
+"category": "Mote",
+"size": null
+},
+"Mote_CocoonDestroyedFlyingSlime": {
+"category": "Mote",
+"size": null
+},
+"Mote_CocoonDestroyedMist": {
+"category": "Mote",
+"size": null
+},
+"Mote_ColonistAttacking": {
+"category": "Mote",
+"size": null
+},
+"Mote_ColonistFleeing": {
+"category": "Mote",
+"size": null
+},
+"Mote_CombatCommand": {
+"category": "Mote",
+"size": null
+},
+"Mote_CombatCommandLinkLine": {
+"category": "Mote",
+"size": null
+},
+"Mote_CookBit": {
+"category": "Mote",
+"size": null
+},
+"Mote_Danger": {
+"category": "Mote",
+"size": null
+},
+"Mote_Deathresting": {
+"category": "Mote",
+"size": null
+},
+"Mote_DistortionPulse": {
+"category": "Mote",
+"size": null
+},
+"Mote_DrunkBubble": {
+"category": "Mote",
+"size": null
+},
+"Mote_DuelCircle": {
+"category": "Mote",
+"size": null
+},
+"Mote_ExtinguisherPuff": {
+"category": "Mote",
+"size": null
+},
+"Mote_FishingRod": {
+"category": "Mote",
+"size": null
+},
+"Mote_FleshmelterBolt_Aim": {
+"category": "Mote",
+"size": null
+},
+"Mote_FleshmelterBolt_Charge": {
+"category": "Mote",
+"size": null
+},
+"Mote_FleshmelterBolt_Target": {
+"category": "Mote",
+"size": null
+},
+"Mote_FoodBitMeat": {
+"category": "Mote",
+"size": null
+},
+"Mote_FoodBitVegetarian": {
+"category": "Mote",
+"size": null
+},
+"Mote_ForceJob": {
+"category": "Mote",
+"size": null
+},
+"Mote_ForceJobMaintained": {
+"category": "Mote",
+"size": null
+},
+"Mote_ForcedVisible": {
+"category": "Mote",
+"size": null
+},
+"Mote_GauranlenCasteChanged": {
+"category": "Mote",
+"size": null
+},
+"Mote_GiantExplosion": {
+"category": "Mote",
+"size": null
+},
+"Mote_GiantExplosionInner": {
+"category": "Mote",
+"size": null
+},
+"Mote_GraserBeamBase": {
+"category": "Mote",
+"size": null
+},
+"Mote_Hacking": {
+"category": "Mote",
+"size": null
+},
+"Mote_HarbingerTreeRoots": {
+"category": "Mote",
+"size": null
+},
+"Mote_Harvest": {
+"category": "Mote",
+"size": null
+},
+"Mote_HateChantCall": {
+"category": "Mote",
+"size": null
+},
+"Mote_HateChantShadow": {
+"category": "Mote",
+"size": null
+},
+"Mote_HellsphereCannon_Aim": {
+"category": "Mote",
+"size": null
+},
+"Mote_HellsphereCannon_Charge": {
+"category": "Mote",
+"size": null
+},
+"Mote_HellsphereCannon_Target": {
+"category": "Mote",
+"size": null
+},
+"Mote_HoraxHugeSpellWarmup": {
+"category": "Mote",
+"size": null
+},
+"Mote_HoraxSmallSpellWarmup": {
+"category": "Mote",
+"size": null
+},
+"Mote_IncineratorBurst": {
+"category": "Mote",
+"size": null
+},
+"Mote_Leaf": {
+"category": "Mote",
+"size": null
+},
+"Mote_LightBall": {
+"category": "Mote",
+"size": null
+},
+"Mote_LightBallLights": {
+"category": "Mote",
+"size": null
+},
+"Mote_LongSparkThrown": {
+"category": "Mote",
+"size": null
+},
+"Mote_LoudspeakerLights": {
+"category": "Mote",
+"size": null
+},
+"Mote_MeatExplosionFlyingPiece": {
+"category": "Mote",
+"size": null
+},
+"Mote_MeatExplosionFlyingPieceOverloaded": {
+"category": "Mote",
+"size": null
+},
+"Mote_MeatExplosionFlyingSplatter": {
+"category": "Mote",
+"size": null
+},
+"Mote_MeatExplosionMist": {
+"category": "Mote",
+"size": null
+},
+"Mote_MechCharging": {
+"category": "Mote",
+"size": null
+},
+"Mote_MechControlTakingSparkArch": {
+"category": "Mote",
+"size": null
+},
+"Mote_MechResurrectFlash": {
+"category": "Mote",
+"size": null
+},
+"Mote_MechResurrectGlow": {
+"category": "Mote",
+"size": null
+},
+"Mote_MechResurrectWarmupOnTarget": {
+"category": "Mote",
+"size": null
+},
+"Mote_MechSparkSimple": {
+"category": "Mote",
+"size": null
+},
+"Mote_MechTunnelerSlowedDown": {
+"category": "Mote",
+"size": null
+},
+"Mote_MechUncontrolled": {
+"category": "Mote",
+"size": null
+},
+"Mote_MechbandAntennaWaves": {
+"category": "Mote",
+"size": null
+},
+"Mote_MechbandDishWaves": {
+"category": "Mote",
+"size": null
+},
+"Mote_MechbandElectricity": {
+"category": "Mote",
+"size": null
+},
+"Mote_MechbandPreparing": {
+"category": "Mote",
+"size": null
+},
+"Mote_NewbornBecomeChildGlow": {
+"category": "Mote",
+"size": null
+},
+"Mote_NoctolEyes": {
+"category": "Mote",
+"size": null
+},
+"Mote_ObeliskExplosionWarmupArea": {
+"category": "Mote",
+"size": null
+},
+"Mote_Paint": {
+"category": "Mote",
+"size": null
+},
+"Mote_PollutionPump": {
+"category": "Mote",
+"size": null
+},
+"Mote_PowerBeam": {
+"category": "Mote",
+"size": null
+},
+"Mote_PowerCellBurning": {
+"category": "Mote",
+"size": null
+},
+"Mote_ProgressBar": {
+"category": "Mote",
+"size": null
+},
+"Mote_ProgressBarAlwaysVisible": {
+"category": "Mote",
+"size": null
+},
+"Mote_ProximityScannerActivated": {
+"category": "Mote",
+"size": null
+},
+"Mote_ProximityScannerRadius": {
+"category": "Mote",
+"size": null
+},
+"Mote_PsychicBanshee": {
+"category": "Mote",
+"size": null
+},
+"Mote_PsychicConditionCauserEffect": {
+"category": "Mote",
+"size": null
+},
+"Mote_PsychicDistortionRingContractingQuick": {
+"category": "Mote",
+"size": null
+},
+"Mote_PsychicEmanatorEffect": {
+"category": "Mote",
+"size": null
+},
+"Mote_PsychicLinkLine": {
+"category": "Mote",
+"size": null
+},
+"Mote_PsychicLinkPulse": {
+"category": "Mote",
+"size": null
+},
+"Mote_PsychicRitualInvocation": {
+"category": "Mote",
+"size": null
+},
+"Mote_PsyfocusPulse": {
+"category": "Mote",
+"size": null
+},
+"Mote_RedFlash": {
+"category": "Mote",
+"size": null
+},
+"Mote_RedFlashStrong": {
+"category": "Mote",
+"size": null
+},
+"Mote_ResurrectAbility": {
+"category": "Mote",
+"size": null
+},
+"Mote_ResurrectFlash": {
+"category": "Mote",
+"size": null
+},
+"Mote_RevenantHeard": {
+"category": "Mote",
+"size": null
+},
+"Mote_RipscannerHeadGlow": {
+"category": "Mote",
+"size": null
+},
+"Mote_RitualCandleA": {
+"category": "Mote",
+"size": null
+},
+"Mote_RitualCandleB": {
+"category": "Mote",
+"size": null
+},
+"Mote_RitualCandleC": {
+"category": "Mote",
+"size": null
+},
+"Mote_RitualGlowRays": {
+"category": "Mote",
+"size": null
+},
+"Mote_RitualGlowSingleRay": {
+"category": "Mote",
+"size": null
+},
+"Mote_RitualSmoke": {
+"category": "Mote",
+"size": null
+},
+"Mote_RitualSmokeDust": {
+"category": "Mote",
+"size": null
+},
+"Mote_RitualSmokeDustVague": {
+"category": "Mote",
+"size": null
+},
+"Mote_RitualSmokeThick": {
+"category": "Mote",
+"size": null
+},
+"Mote_RitualSmokeThickSlim": {
+"category": "Mote",
+"size": null
+},
+"Mote_RitualTechLineA": {
+"category": "Mote",
+"size": null
+},
+"Mote_RitualTechLineB": {
+"category": "Mote",
+"size": null
+},
+"Mote_RitualTechLineC": {
+"category": "Mote",
+"size": null
+},
+"Mote_RolePawnHighlight": {
+"category": "Mote",
+"size": null
+},
+"Mote_RolePositionHighlight": {
+"category": "Mote",
+"size": null
+},
+"Mote_SanguophageMeetingSmoke": {
+"category": "Mote",
+"size": null
+},
+"Mote_ShamblerAlert": {
+"category": "Mote",
+"size": null
+},
+"Mote_ShamblerRaiseMist": {
+"category": "Mote",
+"size": null
+},
+"Mote_SkyLanternGlow": {
+"category": "Mote",
+"size": null
+},
+"Mote_SkyLanternOuterGlow": {
+"category": "Mote",
+"size": null
+},
+"Mote_SkyLanternSmoke": {
+"category": "Mote",
+"size": null
+},
+"Mote_SmokeFlake": {
+"category": "Mote",
+"size": null
+},
+"Mote_SmokeJoint": {
+"category": "Mote",
+"size": null
+},
+"Mote_Sow": {
+"category": "Mote",
+"size": null
+},
+"Mote_SparkSimple": {
+"category": "Mote",
+"size": null
+},
+"Mote_SparkThrown": {
+"category": "Mote",
+"size": null
+},
+"Mote_SparkThrownFast": {
+"category": "Mote",
+"size": null
+},
+"Mote_SparkThrownFastBlue": {
+"category": "Mote",
+"size": null
+},
+"Mote_SparkThrownFastBright": {
+"category": "Mote",
+"size": null
+},
+"Mote_Speech": {
+"category": "Mote",
+"size": null
+},
+"Mote_SpikePipe": {
+"category": "Mote",
+"size": null
+},
+"Mote_Splash": {
+"category": "Mote",
+"size": null
+},
+"Mote_StoneBit": {
+"category": "Mote",
+"size": null
+},
+"Mote_Stun": {
+"category": "Mote",
+"size": null
+},
+"Mote_SubcoreEncoderEast": {
+"category": "Mote",
+"size": null
+},
+"Mote_SubcoreEncoderNorth": {
+"category": "Mote",
+"size": null
+},
+"Mote_SubcoreEncoderSouth": {
+"category": "Mote",
+"size": null
+},
+"Mote_TempRoof": {
+"category": "Mote",
+"size": null
+},
+"Mote_TerrorHalo": {
+"category": "Mote",
+"size": null
+},
+"Mote_TerrorRoarDistortion": {
+"category": "Mote",
+"size": null
+},
+"Mote_TerrorRoarFlash": {
+"category": "Mote",
+"size": null
+},
+"Mote_Text": {
+"category": "Mote",
+"size": null
+},
+"Mote_Thought": {
+"category": "Mote",
+"size": null
+},
+"Mote_ThoughtBad": {
+"category": "Mote",
+"size": null
+},
+"Mote_ThoughtGood": {
+"category": "Mote",
+"size": null
+},
+"Mote_TotemOutline": {
+"category": "Mote",
+"size": null
+},
+"Mote_ToxicDamage": {
+"category": "Mote",
+"size": null
+},
+"Mote_Toy": {
+"category": "Mote",
+"size": null
+},
+"Mote_VatGlowHorizontal": {
+"category": "Mote",
+"size": null
+},
+"Mote_VatGlowVertical": {
+"category": "Mote",
+"size": null
+},
+"Mote_VoidNode": {
+"category": "Mote",
+"size": null
+},
+"Mote_VomitBit": {
+"category": "Mote",
+"size": null
+},
+"Mote_WarQueenSpineGlow": {
+"category": "Mote",
+"size": null
+},
+"Mote_WarTrumpetDistortion": {
+"category": "Mote",
+"size": null
+},
+"Mote_WarTrumpetFlash": {
+"category": "Mote",
+"size": null
+},
+"Mote_WarUrchinSpawnFlash": {
+"category": "Mote",
+"size": null
+},
+"Mote_WarhUrchinSpawnElectricity": {
+"category": "Mote",
+"size": null
+},
+"Mote_WarmupNeuroquake": {
+"category": "Mote",
+"size": null
+},
+"Mote_WarmupWordOf": {
+"category": "Mote",
+"size": null
+},
+"Mote_WorkCommand": {
+"category": "Mote",
+"size": null
+},
+"Mote_WorkCommandLinkLine": {
+"category": "Mote",
+"size": null
+},
+"Mote_XenogermImplantation": {
+"category": "Mote",
+"size": null
+},
+"Muffalo": {
+"category": "Pawn",
+"size": null
+},
+"MultiAnalyzer": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Muskox": {
+"category": "Pawn",
+"size": null
+},
+"NanostructuringChip": {
+"category": "Item",
+"size": null
+},
+"NatureShrine_Large": {
+"category": "Building",
+"size": "(3,3)"
+},
+"NatureShrine_Small": {
+"category": "Building",
+"size": "(2,2)"
+},
+"NerveBundle": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"NerveSpiker": {
+"category": "Item",
+"size": null
+},
+"NerveSpiker_Spike": {
+"category": "Projectile",
+"size": null
+},
+"NeuralSupercharger": {
+"category": "Building",
+"size": "(1, 3)"
+},
+"Neurocalculator": {
+"category": "Item",
+"size": null
+},
+"Neutroamine": {
+"category": "Item",
+"size": null
+},
+"Nociosphere": {
+"category": "Pawn",
+"size": "(2,2)"
+},
+"Noctol": {
+"category": "Pawn",
+"size": null
+},
+"Noctolith": {
+"category": "Building",
+"size": "(2,2)"
+},
+"NoctolithIncoming": {
+"category": "Ethereal",
+"size": "(2, 2)"
+},
+"Novel": {
+"category": "Item",
+"size": null
+},
+"NuclearStomach": {
+"category": "Item",
+"size": null
+},
+"NutrientPasteDispenser": {
+"category": "Building",
+"size": "(3,4)"
+},
+"Obsidian": {
+"category": "Item",
+"size": null
+},
+"OrbitalAncientFortifiedWall": {
+"category": "Building",
+"size": null
+},
+"OrbitalDebrisSpawner": {
+"category": "Ethereal",
+"size": null
+},
+"OrbitalScanner": {
+"category": "Building",
+"size": "(2,2)"
+},
+"OrbitalTargeterBombardment": {
+"category": "Item",
+"size": null
+},
+"OrbitalTargeterMechCluster": {
+"category": "Item",
+"size": null
+},
+"OrbitalTargeterPowerBeam": {
+"category": "Item",
+"size": null
+},
+"OrbitalTradeBeacon": {
+"category": "Building",
+"size": null
+},
+"OrnateDoor": {
+"category": "Building",
+"size": "(2, 1)"
+},
+"Ostrich": {
+"category": "Pawn",
+"size": null
+},
+"Otter": {
+"category": "Pawn",
+"size": null
+},
+"OxygenPump": {
+"category": "Building",
+"size": null
+},
+"Painstopper": {
+"category": "Item",
+"size": null
+},
+"Pallet_Medicine": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"Pallet_SurvivalMeals": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"Panda": {
+"category": "Pawn",
+"size": null
+},
+"Panther": {
+"category": "Pawn",
+"size": null
+},
+"PartySpot": {
+"category": "Building",
+"size": null
+},
+"PassengerShuttle": {
+"category": "Building",
+"size": "(3,5)"
+},
+"PassengerShuttleIncoming": {
+"category": "Ethereal",
+"size": "(3,5)"
+},
+"PassengerShuttleLeaving": {
+"category": "Ethereal",
+"size": "(3,5)"
+},
+"PassiveCooler": {
+"category": "Building",
+"size": null
+},
+"PawnFlyer": {
+"category": "Ethereal",
+"size": null
+},
+"PawnFlyer_ConsumeLeap": {
+"category": "Ethereal",
+"size": null
+},
+"PawnFlyer_Stun": {
+"category": "Ethereal",
+"size": null
+},
+"PawnGroundSpawner": {
+"category": "Ethereal",
+"size": null
+},
+"Peacock": {
+"category": "Pawn",
+"size": null
+},
+"Pemmican": {
+"category": "Item",
+"size": null
+},
+"PenMarker": {
+"category": "Building",
+"size": null
+},
+"Penguin": {
+"category": "Pawn",
+"size": null
+},
+"Penoxycyline": {
+"category": "Item",
+"size": null
+},
+"Pew": {
+"category": "Building",
+"size": "(3,1)"
+},
+"Piano": {
+"category": "Building",
+"size": "(3,3)"
+},
+"PiercingSpine": {
+"category": "Projectile",
+"size": null
+},
+"Pig": {
+"category": "Pawn",
+"size": null
+},
+"Pila": {
+"category": "Item",
+"size": null
+},
+"PilotAssistant": {
+"category": "Item",
+"size": null
+},
+"PilotConsole": {
+"category": "Building",
+"size": "(3, 2)"
+},
+"PilotSubpersonaCore": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"Pilum_Thrown": {
+"category": "Projectile",
+"size": null
+},
+"PitBurrow": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"PitBurrowSpawner": {
+"category": null,
+"size": "(3, 3)"
+},
+"PitGate": {
+"category": "Building",
+"size": "(8,8)"
+},
+"PitGateExit": {
+"category": "Building",
+"size": "(3,3)"
+},
+"PitGateSpawner": {
+"category": null,
+"size": "(8, 8)"
+},
+"PlantPot": {
+"category": "Building",
+"size": null
+},
+"PlantPot_Bonsai": {
+"category": "Building",
+"size": null
+},
+"Plant_Agave": {
+"category": "Plant",
+"size": null
+},
+"Plant_Alocasia": {
+"category": "Plant",
+"size": null
+},
+"Plant_Ambrosia": {
+"category": "Plant",
+"size": null
+},
+"Plant_Astragalus": {
+"category": "Plant",
+"size": null
+},
+"Plant_Berry": {
+"category": "Plant",
+"size": null
+},
+"Plant_Berry_Leafless": {
+"category": "Plant",
+"size": null
+},
+"Plant_Brambles": {
+"category": "Plant",
+"size": null
+},
+"Plant_Brambles_Leafless": {
+"category": "Plant",
+"size": null
+},
+"Plant_Bulrush": {
+"category": "Plant",
+"size": null
+},
+"Plant_Bush": {
+"category": "Plant",
+"size": null
+},
+"Plant_Bush_Leafless": {
+"category": "Plant",
+"size": null
+},
+"Plant_Chokevine": {
+"category": "Plant",
+"size": null
+},
+"Plant_Clivia": {
+"category": "Plant",
+"size": null
+},
+"Plant_Corn": {
+"category": "Plant",
+"size": null
+},
+"Plant_Cotton": {
+"category": "Plant",
+"size": null
+},
+"Plant_Cotton_Wild": {
+"category": "Plant",
+"size": null
+},
+"Plant_Dandelion": {
+"category": "Plant",
+"size": null
+},
+"Plant_Daylily": {
+"category": "Plant",
+"size": null
+},
+"Plant_Devilstrand": {
+"category": "Plant",
+"size": null
+},
+"Plant_Fibercorn": {
+"category": "Plant",
+"size": null
+},
+"Plant_Fibercorn_Wild": {
+"category": "Plant",
+"size": null
+},
+"Plant_Fireweed": {
+"category": "Plant",
+"size": null
+},
+"Plant_Grass": {
+"category": "Plant",
+"size": null
+},
+"Plant_GrassAnima": {
+"category": "Plant",
+"size": null
+},
+"Plant_GrayGrass": {
+"category": "Plant",
+"size": null
+},
+"Plant_Haygrass": {
+"category": "Plant",
+"size": null
+},
+"Plant_Healroot": {
+"category": "Plant",
+"size": null
+},
+"Plant_HealrootWild": {
+"category": "Plant",
+"size": null
+},
+"Plant_Hops": {
+"category": "Plant",
+"size": null
+},
+"Plant_LilyPad": {
+"category": "Plant",
+"size": null
+},
+"Plant_Lotus": {
+"category": "Plant",
+"size": null
+},
+"Plant_MagmaCactus": {
+"category": "Plant",
+"size": null
+},
+"Plant_Moss": {
+"category": "Plant",
+"size": null
+},
+"Plant_MossGauranlen": {
+"category": "Plant",
+"size": null
+},
+"Plant_NightRafflesia": {
+"category": "Plant",
+"size": null
+},
+"Plant_Nightgrass": {
+"category": "Plant",
+"size": null
+},
+"Plant_Nutrifungus": {
+"category": "Plant",
+"size": null
+},
+"Plant_PebbleCactus": {
+"category": "Plant",
+"size": null
+},
+"Plant_PincushionCactus": {
+"category": "Plant",
+"size": null
+},
+"Plant_PodGauranlen": {
+"category": "Plant",
+"size": null
+},
+"Plant_Potato": {
+"category": "Plant",
+"size": null
+},
+"Plant_Psilocap": {
+"category": "Plant",
+"size": null
+},
+"Plant_Psychoid": {
+"category": "Plant",
+"size": null
+},
+"Plant_Psychoid_Wild": {
+"category": "Plant",
+"size": null
+},
+"Plant_Rafflesia": {
+"category": "Plant",
+"size": null
+},
+"Plant_RatPalm": {
+"category": "Plant",
+"size": null
+},
+"Plant_Reeds": {
+"category": "Plant",
+"size": null
+},
+"Plant_Rice": {
+"category": "Plant",
+"size": null
+},
+"Plant_Ripthorn": {
+"category": "Plant",
+"size": null
+},
+"Plant_Rose": {
+"category": "Plant",
+"size": null
+},
+"Plant_SaguaroCactus": {
+"category": "Plant",
+"size": null
+},
+"Plant_ShrubLow": {
+"category": "Plant",
+"size": null
+},
+"Plant_Smokeleaf": {
+"category": "Plant",
+"size": null
+},
+"Plant_Smokeleaf_Wild": {
+"category": "Plant",
+"size": null
+},
+"Plant_Strawberry": {
+"category": "Plant",
+"size": null
+},
+"Plant_Strawberry_Wild": {
+"category": "Plant",
+"size": null
+},
+"Plant_TallGrass": {
+"category": "Plant",
+"size": null
+},
+"Plant_Thornvine": {
+"category": "Plant",
+"size": null
+},
+"Plant_Timbershroom": {
+"category": "Plant",
+"size": null
+},
+"Plant_Tinctoria": {
+"category": "Plant",
+"size": null
+},
+"Plant_Tinctoria_Wild": {
+"category": "Plant",
+"size": null
+},
+"Plant_Toxipotato": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeAnima": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeArchean": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeBamboo": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeBirch": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeBonsai": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeCecropia": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeCocoa": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeCocoa_Wild": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeCypress": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeDrago": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeGauranlen": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeGrayPine": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeHarbinger": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeMaple": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeOak": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreePalm": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreePine": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreePolux": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreePoplar": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeSnagroot": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeTeak": {
+"category": "Plant",
+"size": null
+},
+"Plant_TreeWillow": {
+"category": "Plant",
+"size": null
+},
+"Plant_Willowgill": {
+"category": "Plant",
+"size": null
+},
+"Plant_Witchwood": {
+"category": "Plant",
+"size": null
+},
+"Plant_YellowGrass": {
+"category": "Plant",
+"size": null
+},
+"Plant_YellowTallGrass": {
+"category": "Plant",
+"size": null
+},
+"Plasteel": {
+"category": "Item",
+"size": null
+},
+"PodLauncher": {
+"category": "Building",
+"size": "(1,2)"
+},
+"PokerTable": {
+"category": "Building",
+"size": "(2,2)"
+},
+"PollutionPump": {
+"category": "Building",
+"size": "(1,1)"
+},
+"PoluxSeed": {
+"category": "Item",
+"size": null
+},
+"Porcupine": {
+"category": "Pawn",
+"size": null
+},
+"PowerBeam": {
+"category": "Ethereal",
+"size": null
+},
+"PowerClaw": {
+"category": "Item",
+"size": null
+},
+"PowerConduit": {
+"category": "Building",
+"size": null
+},
+"PowerSwitch": {
+"category": "Building",
+"size": null
+},
+"PowerfocusChip": {
+"category": "Item",
+"size": null
+},
+"PrairieDog": {
+"category": "Pawn",
+"size": null
+},
+"Proj_Acid": {
+"category": "Projectile",
+"size": null
+},
+"Proj_CorrosiveFluid": {
+"category": "Projectile",
+"size": null
+},
+"Proj_EggSac": {
+"category": "Projectile",
+"size": null
+},
+"Proj_FireArrow": {
+"category": "Projectile",
+"size": null
+},
+"Proj_Foam": {
+"category": "Projectile",
+"size": null
+},
+"Proj_Foam_Ability": {
+"category": "Projectile",
+"size": null
+},
+"Proj_GrenadeEMP": {
+"category": "Projectile",
+"size": null
+},
+"Proj_GrenadeFrag": {
+"category": "Projectile",
+"size": null
+},
+"Proj_GrenadeMolotov": {
+"category": "Projectile",
+"size": null
+},
+"Proj_GrenadePhoenixFire": {
+"category": "Projectile",
+"size": null
+},
+"Proj_GrenadeTox": {
+"category": "Projectile",
+"size": null
+},
+"Proj_GrenadierGrenade": {
+"category": "Projectile",
+"size": null
+},
+"Proj_Rocket": {
+"category": "Projectile",
+"size": null
+},
+"Proj_SludgeSpray": {
+"category": "Projectile",
+"size": null
+},
+"Proj_StrongSludgeSpray": {
+"category": "Projectile",
+"size": null
+},
+"ProximityDetector": {
+"category": "Building",
+"size": "(1,1)"
+},
+"PsychicAmplifier": {
+"category": "Item",
+"size": null
+},
+"PsychicAnimalPulser": {
+"category": "Item",
+"size": null
+},
+"PsychicDroner": {
+"category": "Building",
+"size": "(6,6)"
+},
+"PsychicDronerShipPart": {
+"category": "Building",
+"size": "(6,3)"
+},
+"PsychicEmanator": {
+"category": "Building",
+"size": null
+},
+"PsychicHarmonizer": {
+"category": "Item",
+"size": null
+},
+"PsychicReader": {
+"category": "Item",
+"size": null
+},
+"PsychicRitualSpot": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"PsychicSensitizer": {
+"category": "Item",
+"size": null
+},
+"PsychicSoothePulser": {
+"category": "Item",
+"size": null
+},
+"PsychicSuppressor": {
+"category": "Building",
+"size": "(6,6)"
+},
+"PsychiteTea": {
+"category": "Item",
+"size": null
+},
+"PsychofluidPump": {
+"category": "Building",
+"size": "(1,2)"
+},
+"PsychoidLeaves": {
+"category": "Item",
+"size": null
+},
+"Pyre": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Quail": {
+"category": "Pawn",
+"size": null
+},
+"RR_FieldRecorder": {
+"category": "Item",
+"size": null
+},
+"RR_ReturnAnchor": {
+"category": "Building",
+"size": "(1,1)"
+},
+"RR_RouteRecording": {
+"category": "Item",
+"size": null
+},
+"Raccoon": {
+"category": "Pawn",
+"size": null
+},
+"RadialTrigger": {
+"category": "Ethereal",
+"size": null
+},
+"RaisedRocks": {
+"category": "Building",
+"size": null
+},
+"Rat": {
+"category": "Pawn",
+"size": null
+},
+"RawAgave": {
+"category": "Item",
+"size": null
+},
+"RawBerries": {
+"category": "Item",
+"size": null
+},
+"RawCorn": {
+"category": "Item",
+"size": null
+},
+"RawFungus": {
+"category": "Item",
+"size": null
+},
+"RawHops": {
+"category": "Item",
+"size": null
+},
+"RawPotatoes": {
+"category": "Item",
+"size": null
+},
+"RawRice": {
+"category": "Item",
+"size": null
+},
+"RawToxipotato": {
+"category": "Item",
+"size": null
+},
+"RectTrigger": {
+"category": "Ethereal",
+"size": null
+},
+"ReinforcedBarrel": {
+"category": "Item",
+"size": null
+},
+"RelicInertArk": {
+"category": "Item",
+"size": null
+},
+"RelicInertBox": {
+"category": "Item",
+"size": null
+},
+"RelicInertCube": {
+"category": "Item",
+"size": null
+},
+"RelicInertCup": {
+"category": "Item",
+"size": null
+},
+"RelicInertFragment": {
+"category": "Item",
+"size": null
+},
+"RelicInertPendant": {
+"category": "Item",
+"size": null
+},
+"RelicInertSwordHandle": {
+"category": "Item",
+"size": null
+},
+"RelicInertTablet": {
+"category": "Item",
+"size": null
+},
+"Reliquary": {
+"category": "Building",
+"size": "(3,2)"
+},
+"RemoteRepairer": {
+"category": "Item",
+"size": null
+},
+"RemoteShielder": {
+"category": "Item",
+"size": null
+},
+"RepairProbe": {
+"category": "Item",
+"size": null
+},
+"ReprocessorStomach": {
+"category": "Item",
+"size": null
+},
+"Revenant": {
+"category": "Pawn",
+"size": null
+},
+"RevenantFleshChunk": {
+"category": "Item",
+"size": null
+},
+"RevenantSpine": {
+"category": "Item",
+"size": null
+},
+"RevenantVertebrae": {
+"category": "Item",
+"size": null
+},
+"Rhinoceros": {
+"category": "Pawn",
+"size": null
+},
+"RipScannerGlow_East": {
+"category": "Mote",
+"size": null
+},
+"RipScannerGlow_North": {
+"category": "Mote",
+"size": null
+},
+"RipScannerGlow_South": {
+"category": "Mote",
+"size": null
+},
+"RipScannerGlow_West": {
+"category": "Mote",
+"size": null
+},
+"RitualSpot": {
+"category": "Building",
+"size": null
+},
+"RoyalBed": {
+"category": "Building",
+"size": "(2,2)"
+},
+"RubblePile": {
+"category": "Building",
+"size": "(1,1)"
+},
+"RusticRug_Broad": {
+"category": "Building",
+"size": "(4,4)"
+},
+"RusticRug_Medium": {
+"category": "Building",
+"size": "(3,3)"
+},
+"SacrificialFlag": {
+"category": "Building",
+"size": "(1,1)"
+},
+"SandCubeSculpture": {
+"category": "Building",
+"size": null
+},
+"SandbagRubble": {
+"category": "Filth",
+"size": null
+},
+"Sandbags": {
+"category": "Building",
+"size": null
+},
+"Sandstone": {
+"category": "Building",
+"size": null
+},
+"SanguphageMeetingTorch": {
+"category": "Building",
+"size": null
+},
+"Sarcophagus": {
+"category": "Building",
+"size": "(1,2)"
+},
+"Schematic": {
+"category": "Item",
+"size": null
+},
+"SchoolDesk": {
+"category": "Building",
+"size": "(2,1)"
+},
+"ScrapCubeSculpture": {
+"category": "Building",
+"size": null
+},
+"SculptureGrand": {
+"category": "Building",
+"size": "(2,2)"
+},
+"SculptureLarge": {
+"category": "Building",
+"size": null
+},
+"SculptureSmall": {
+"category": "Building",
+"size": null
+},
+"SculptureTerror": {
+"category": "Building",
+"size": null
+},
+"SeaLion": {
+"category": "Pawn",
+"size": null
+},
+"SeaTurtle": {
+"category": "Pawn",
+"size": null
+},
+"Seal": {
+"category": "Pawn",
+"size": null
+},
+"SealedCrate": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"SeasonalFlood": {
+"category": "Ethereal",
+"size": null
+},
+"SecurityDoor": {
+"category": "Building",
+"size": "(2, 1)"
+},
+"SentienceCatalyst": {
+"category": "Item",
+"size": null
+},
+"SerumCentrifuge": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Shard": {
+"category": "Item",
+"size": null
+},
+"ShardAnimalPulser": {
+"category": "Item",
+"size": null
+},
+"ShardBeacon": {
+"category": "Building",
+"size": null
+},
+"ShardInhibitor": {
+"category": "Building",
+"size": "(1,1)"
+},
+"Sheep": {
+"category": "Pawn",
+"size": null
+},
+"Shelf": {
+"category": "Building",
+"size": "(2,1)"
+},
+"ShelfSmall": {
+"category": "Building",
+"size": "(1,1)"
+},
+"Shell_AntigrainWarhead": {
+"category": "Item",
+"size": null
+},
+"Shell_Deadlife": {
+"category": "Item",
+"size": null
+},
+"Shell_Deadlife_Releasing": {
+"category": null,
+"size": null
+},
+"Shell_EMP": {
+"category": "Item",
+"size": null
+},
+"Shell_Firefoam": {
+"category": "Item",
+"size": null
+},
+"Shell_HighExplosive": {
+"category": "Item",
+"size": null
+},
+"Shell_Incendiary": {
+"category": "Item",
+"size": null
+},
+"Shell_Smoke": {
+"category": "Item",
+"size": null
+},
+"Shell_Toxic": {
+"category": "Item",
+"size": null
+},
+"Shell_Toxic_Releasing": {
+"category": null,
+"size": null
+},
+"Shell_Toxic_Releasing_Water": {
+"category": null,
+"size": null
+},
+"ShieldGeneratorBullets": {
+"category": "Building",
+"size": "(1,1)"
+},
+"ShieldGeneratorMortar": {
+"category": "Building",
+"size": "(1,1)"
+},
+"ShipChunk": {
+"category": "Building",
+"size": "(2,2)"
+},
+"ShipChunkIncoming": {
+"category": "Ethereal",
+"size": "(2, 2)"
+},
+"ShipChunkIncoming_SmallExplosion": {
+"category": "Ethereal",
+"size": "(2, 2)"
+},
+"ShipChunk_Mech": {
+"category": "Building",
+"size": "(2,2)"
+},
+"ShipLandingBeacon": {
+"category": "Building",
+"size": null
+},
+"Ship_Beam": {
+"category": "Building",
+"size": "(2,6)"
+},
+"Ship_ComputerCore": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Ship_CryptosleepCasket": {
+"category": "Building",
+"size": "(1,2)"
+},
+"Ship_Engine": {
+"category": "Building",
+"size": "(3,4)"
+},
+"Ship_Reactor": {
+"category": "Building",
+"size": "(6,7)"
+},
+"Ship_SensorCluster": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Shuttle": {
+"category": "Building",
+"size": "(5,3)"
+},
+"ShuttleCrashed": {
+"category": "Building",
+"size": "(5,3)"
+},
+"ShuttleCrashed_Exitable": {
+"category": "Building",
+"size": "(5,3)"
+},
+"ShuttleCrashed_Exitable_Mechanitor": {
+"category": "Building",
+"size": "(5,3)"
+},
+"ShuttleCrashing": {
+"category": "Ethereal",
+"size": "(5,3)"
+},
+"ShuttleCrashing_Mechanitor": {
+"category": "Ethereal",
+"size": "(5,3)"
+},
+"ShuttleEngine": {
+"category": "Item",
+"size": null
+},
+"ShuttleIncoming": {
+"category": "Ethereal",
+"size": "(5,3)"
+},
+"ShuttleLeaving": {
+"category": "Ethereal",
+"size": "(5,3)"
+},
+"Sightstealer": {
+"category": "Pawn",
+"size": null
+},
+"SignalAction_Ambush": {
+"category": "Ethereal",
+"size": null
+},
+"SignalAction_Delay": {
+"category": "Ethereal",
+"size": null
+},
+"SignalAction_DormancyWakeUp": {
+"category": "Ethereal",
+"size": null
+},
+"SignalAction_Incident": {
+"category": "Ethereal",
+"size": null
+},
+"SignalAction_Infestation": {
+"category": "Ethereal",
+"size": null
+},
+"SignalAction_Letter": {
+"category": "Ethereal",
+"size": null
+},
+"SignalAction_Message": {
+"category": "Ethereal",
+"size": null
+},
+"SignalAction_OpenCasket": {
+"category": "Ethereal",
+"size": null
+},
+"SignalAction_OpenDoor": {
+"category": "Ethereal",
+"size": null
+},
+"SignalAction_SoundOneShot": {
+"category": "Ethereal",
+"size": null
+},
+"SignalAction_StartWick": {
+"category": "Ethereal",
+"size": null
+},
+"SignalChip": {
+"category": "Item",
+"size": null
+},
+"SignalJammer": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"Silver": {
+"category": "Item",
+"size": null
+},
+"SimpleProstheticArm": {
+"category": "Item",
+"size": null
+},
+"SimpleProstheticHeart": {
+"category": "Item",
+"size": null
+},
+"SimpleProstheticLeg": {
+"category": "Item",
+"size": null
+},
+"SimpleResearchBench": {
+"category": "Building",
+"size": "(3,2)"
+},
+"Skull": {
+"category": "Item",
+"size": null
+},
+"Skullspike": {
+"category": "Building",
+"size": "(1,1)"
+},
+"SkyLantern": {
+"category": "Ethereal",
+"size": "(1, 1)"
+},
+"SlabBed": {
+"category": "Building",
+"size": "(1,2)"
+},
+"SlabDoubleBed": {
+"category": "Building",
+"size": "(2,2)"
+},
+"SlagRubble": {
+"category": "Filth",
+"size": null
+},
+"Slate": {
+"category": "Building",
+"size": null
+},
+"SleepAccelerator": {
+"category": "Building",
+"size": "(1,1)"
+},
+"SleepSuppressor": {
+"category": "Building",
+"size": "(2,1)"
+},
+"SleepingSpot": {
+"category": "Building",
+"size": "(1,2)"
+},
+"SmallThruster": {
+"category": "Building",
+"size": "(1, 2)"
+},
+"SmashedStump": {
+"category": "Plant",
+"size": null
+},
+"SmashedStump_Anima": {
+"category": "Plant",
+"size": null
+},
+"SmashedStump_Archean": {
+"category": "Plant",
+"size": null
+},
+"SmashedStump_Gauranlen": {
+"category": "Plant",
+"size": null
+},
+"SmashedStump_Harbinger": {
+"category": "Plant",
+"size": null
+},
+"SmashedStump_Polluted": {
+"category": "Plant",
+"size": null
+},
+"SmashedStump_Polux": {
+"category": "Plant",
+"size": null
+},
+"SmokeSpewer": {
+"category": "Building",
+"size": "(6,5)"
+},
+"SmokeleafJoint": {
+"category": "Item",
+"size": null
+},
+"SmokeleafLeaves": {
+"category": "Item",
+"size": null
+},
+"SmoothedGranite": {
+"category": "Building",
+"size": null
+},
+"SmoothedLimestone": {
+"category": "Building",
+"size": null
+},
+"SmoothedMarble": {
+"category": "Building",
+"size": null
+},
+"SmoothedSandstone": {
+"category": "Building",
+"size": null
+},
+"SmoothedSlate": {
+"category": "Building",
+"size": null
+},
+"SmoothedSolidIce": {
+"category": "Building",
+"size": null
+},
+"SmoothedVacstone": {
+"category": "Building",
+"size": null
+},
+"Snowhare": {
+"category": "Pawn",
+"size": null
+},
+"Snowman": {
+"category": "Building",
+"size": null
+},
+"SoftScannerGlow_East": {
+"category": "Mote",
+"size": null
+},
+"SoftScannerGlow_North": {
+"category": "Mote",
+"size": null
+},
+"SoftScannerGlow_South": {
+"category": "Mote",
+"size": null
+},
+"SoftScannerGlow_West": {
+"category": "Mote",
+"size": null
+},
+"SolarGenerator": {
+"category": "Building",
+"size": "(4,4)"
+},
+"SolarPinhole": {
+"category": "PsychicEmitter",
+"size": null
+},
+"SolidIce": {
+"category": "Building",
+"size": null
+},
+"Spacedrone": {
+"category": "Building",
+"size": "(5,3)"
+},
+"SpacedroneIncoming": {
+"category": "Ethereal",
+"size": "(5,3)"
+},
+"Spark": {
+"category": "Projectile",
+"size": null
+},
+"Sparrow": {
+"category": "Pawn",
+"size": null
+},
+"Spelopede": {
+"category": "Pawn",
+"size": null
+},
+"Spike_Fingerspike": {
+"category": "Projectile",
+"size": null
+},
+"Spike_Toughspike": {
+"category": "Projectile",
+"size": null
+},
+"SpikecoreFloorStar_Broad": {
+"category": "Building",
+"size": "(4,4)"
+},
+"SpikecoreFloorStar_Medium": {
+"category": "Building",
+"size": "(3,3)"
+},
+"Spine_Gorehulk": {
+"category": "Projectile",
+"size": null
+},
+"Squirrel": {
+"category": "Pawn",
+"size": null
+},
+"StandardRecharger": {
+"category": "Building",
+"size": "(3,2)"
+},
+"StandingLamp": {
+"category": "Building",
+"size": null
+},
+"Statue": {
+"category": "Building",
+"size": null
+},
+"SteamGeyser": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Steel": {
+"category": "Item",
+"size": null
+},
+"SteleGrand": {
+"category": "Building",
+"size": "(3,3)"
+},
+"SteleLarge": {
+"category": "Building",
+"size": "(2,2)"
+},
+"StoneCrab": {
+"category": "Pawn",
+"size": null
+},
+"StoneCubeSculpture": {
+"category": "Building",
+"size": null
+},
+"StoneskinGland": {
+"category": "Item",
+"size": null
+},
+"Stool": {
+"category": "Building",
+"size": null
+},
+"StylingStation": {
+"category": "Building",
+"size": "(3,1)"
+},
+"SubcoreBasic": {
+"category": "Item",
+"size": null
+},
+"SubcoreEncoder": {
+"category": "Building",
+"size": "(3,2)"
+},
+"SubcoreHigh": {
+"category": "Item",
+"size": null
+},
+"SubcoreRegular": {
+"category": "Item",
+"size": null
+},
+"SubcoreRipscanner": {
+"category": "Building",
+"size": "(3,2)"
+},
+"SubcoreSoftscanner": {
+"category": "Building",
+"size": "(3,2)"
+},
+"SunBlocker": {
+"category": "Building",
+"size": "(6,4)"
+},
+"SunLamp": {
+"category": "Building",
+"size": null
+},
+"SurveyScanner": {
+"category": "Building",
+"size": "(3,3)"
+},
+"Swan": {
+"category": "Pawn",
+"size": null
+},
+"Synthread": {
+"category": "Item",
+"size": null
+},
+"Table1x2c": {
+"category": "Building",
+"size": "(1,2)"
+},
+"Table2x2c": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Table2x4c": {
+"category": "Building",
+"size": "(2,4)"
+},
+"Table3x3c": {
+"category": "Building",
+"size": "(3,3)"
+},
+"TableButcher": {
+"category": "Building",
+"size": "(3,1)"
+},
+"TableMachining": {
+"category": "Building",
+"size": "(3,1)"
+},
+"TableSculpting": {
+"category": "Building",
+"size": "(3,1)"
+},
+"TableStonecutter": {
+"category": "Building",
+"size": "(3,1)"
+},
+"TachycardiacArrestExplosion": {
+"category": "Mote",
+"size": null
+},
+"TechprofSubpersonaCore": {
+"category": "Item",
+"size": null
+},
+"Telescope": {
+"category": "Building",
+"size": null
+},
+"TextBook": {
+"category": "Item",
+"size": null
+},
+"Throne": {
+"category": "Building",
+"size": null
+},
+"Thrumbo": {
+"category": "Pawn",
+"size": null
+},
+"ThrumboHorn": {
+"category": "Item",
+"size": null
+},
+"Tiger": {
+"category": "Pawn",
+"size": null
+},
+"Tome": {
+"category": "Item",
+"size": null
+},
+"ToolCabinet": {
+"category": "Building",
+"size": "(2,1)"
+},
+"TorchLamp": {
+"category": "Building",
+"size": null
+},
+"TorchWallLamp": {
+"category": "Building",
+"size": null
+},
+"Tornado": {
+"category": "Ethereal",
+"size": null
+},
+"TornadoGenerator": {
+"category": "Item",
+"size": null
+},
+"TorrentialRainFlood": {
+"category": "Ethereal",
+"size": null
+},
+"Tortoise": {
+"category": "Pawn",
+"size": null
+},
+"TotemicSlab_Broad": {
+"category": "Building",
+"size": "(4,4)"
+},
+"TotemicSlab_Medium": {
+"category": "Building",
+"size": "(3,3)"
+},
+"ToughskinGland": {
+"category": "Item",
+"size": null
+},
+"Toughspike": {
+"category": "Pawn",
+"size": null
+},
+"Toxalope": {
+"category": "Pawn",
+"size": null
+},
+"ToxicSpewer": {
+"category": "Building",
+"size": "(6,5)"
+},
+"ToxifierGenerator": {
+"category": "Building",
+"size": "(2,2)"
+},
+"ToyBox": {
+"category": "Building",
+"size": "(1,1)"
+},
+"TransportPod": {
+"category": "Building",
+"size": "(1,1)"
+},
+"TrapIED_AntigrainWarhead": {
+"category": "Building",
+"size": null
+},
+"TrapIED_Deadlife": {
+"category": "Building",
+"size": null
+},
+"TrapIED_EMP": {
+"category": "Building",
+"size": null
+},
+"TrapIED_Firefoam": {
+"category": "Building",
+"size": null
+},
+"TrapIED_HighExplosive": {
+"category": "Building",
+"size": null
+},
+"TrapIED_Incendiary": {
+"category": "Building",
+"size": null
+},
+"TrapIED_Smoke": {
+"category": "Building",
+"size": null
+},
+"TrapIED_ToxGas": {
+"category": "Building",
+"size": null
+},
+"TrapSpike": {
+"category": "Building",
+"size": null
+},
+"TriggerContainerEmptied": {
+"category": "Ethereal",
+"size": null
+},
+"TriggerUnfogged": {
+"category": "Ethereal",
+"size": null
+},
+"Trispike": {
+"category": "Pawn",
+"size": null
+},
+"TubeTelevision": {
+"category": "Building",
+"size": null
+},
+"TunnelHiveSpawner": {
+"category": "Ethereal",
+"size": null
+},
+"TunnelJellySpawner": {
+"category": "Ethereal",
+"size": null
+},
+"Turkey": {
+"category": "Pawn",
+"size": null
+},
+"Turret_AncientArmoredTurret": {
+"category": "Building",
+"size": null
+},
+"Turret_AutoChargeBlaster": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Turret_AutoInferno": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Turret_AutoMiniTurret": {
+"category": "Building",
+"size": null
+},
+"Turret_AutoMortar": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Turret_Autocannon": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Turret_FoamTurret": {
+"category": "Building",
+"size": null
+},
+"Turret_MiniTurret": {
+"category": "Building",
+"size": null
+},
+"Turret_Mortar": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Turret_RocketswarmLauncher": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Turret_Sniper": {
+"category": "Building",
+"size": "(2,2)"
+},
+"Turret_TacticalTurret": {
+"category": "Building",
+"size": null
+},
+"TwistedArchotechSupport_Large": {
+"category": "Building",
+"size": "(3, 5)"
+},
+"TwistedArchotechSupport_Small": {
+"category": "Building",
+"size": "(3, 4)"
+},
+"TwistedArchotechSupport_Vertical": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"UnfinishedApparel": {
+"category": "Item",
+"size": null
+},
+"UnfinishedArmor": {
+"category": "Item",
+"size": null
+},
+"UnfinishedBelt": {
+"category": "Item",
+"size": null
+},
+"UnfinishedComponent": {
+"category": "Item",
+"size": null
+},
+"UnfinishedGun": {
+"category": "Item",
+"size": null
+},
+"UnfinishedHealthItemBionic": {
+"category": "Item",
+"size": null
+},
+"UnfinishedHealthItemGhoul": {
+"category": "Item",
+"size": null
+},
+"UnfinishedHealthItemProsthetic": {
+"category": "Item",
+"size": null
+},
+"UnfinishedMask": {
+"category": "Item",
+"size": null
+},
+"UnfinishedMetallicTechArmor": {
+"category": "Item",
+"size": null
+},
+"UnfinishedMusicalInstrument": {
+"category": "Item",
+"size": null
+},
+"UnfinishedPack": {
+"category": "Item",
+"size": null
+},
+"UnfinishedPiano": {
+"category": "Item",
+"size": null
+},
+"UnfinishedSculpture": {
+"category": "Item",
+"size": null
+},
+"UnfinishedSubcore": {
+"category": "Item",
+"size": null
+},
+"UnfinishedTechArmor": {
+"category": "Item",
+"size": null
+},
+"UnfinishedWeapon": {
+"category": "Item",
+"size": null
+},
+"UnstablePowerCell": {
+"category": "Building",
+"size": "(1,1)"
+},
+"Uranium": {
+"category": "Item",
+"size": null
+},
+"Urn": {
+"category": "Building",
+"size": null
+},
+"VacBarrier": {
+"category": "Building",
+"size": null
+},
+"VacskinGland": {
+"category": "Item",
+"size": null
+},
+"Vacstone": {
+"category": "Building",
+"size": null
+},
+"VanometricPowerCell": {
+"category": "Building",
+"size": "(1, 2)"
+},
+"VenomFangs": {
+"category": "Item",
+"size": null
+},
+"VenomTalon": {
+"category": "Item",
+"size": null
+},
+"Vent": {
+"category": "Building",
+"size": null
+},
+"VitalsMonitor": {
+"category": "Building",
+"size": "(1,1)"
+},
+"VoidMonolith": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"VoidMonolithAttachmentBottomLeft": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"VoidMonolithAttachmentBottomRight": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"VoidMonolithAttachmentLeft": {
+"category": "Building",
+"size": "(1, 3)"
+},
+"VoidMonolithAttachmentRight": {
+"category": "Building",
+"size": "(1, 3)"
+},
+"VoidMonolithAttachmentTop": {
+"category": "Building",
+"size": "(3, 1)"
+},
+"VoidMonolithPyramind": {
+"category": "Ethereal",
+"size": null
+},
+"VoidNode": {
+"category": "Building",
+"size": "(7, 7)"
+},
+"VoidNodeCore_DustA": {
+"category": "Mote",
+"size": null
+},
+"VoidNodeCore_DustB": {
+"category": "Mote",
+"size": null
+},
+"VoidNodeDistortion": {
+"category": "Mote",
+"size": null
+},
+"VoidSculpture": {
+"category": "Building",
+"size": null
+},
+"VoidStructure": {
+"category": "Building",
+"size": "(5, 5)"
+},
+"VoidStructureIncoming": {
+"category": "Ethereal",
+"size": null
+},
+"VoidmetalMass": {
+"category": "Building",
+"size": null
+},
+"VoidmetalMassLarge": {
+"category": "Building",
+"size": "(3, 3)"
+},
+"VoidmetalMassMedium": {
+"category": "Building",
+"size": "(2, 2)"
+},
+"VoidmetalMassSmall": {
+"category": "Building",
+"size": "(1, 1)"
+},
+"VoidmetalWall": {
+"category": "Building",
+"size": null
+},
+"VoidsightSerum": {
+"category": "Item",
+"size": null
+},
+"Vulture": {
+"category": "Pawn",
+"size": null
+},
+"WakeUp": {
+"category": "Item",
+"size": null
+},
+"Wall": {
+"category": "Building",
+"size": null
+},
+"WallLamp": {
+"category": "Building",
+"size": null
+},
+"Walrus": {
+"category": "Pawn",
+"size": null
+},
+"Warg": {
+"category": "Pawn",
+"size": null
+},
+"WarpedObeliskIncoming": {
+"category": "Ethereal",
+"size": null
+},
+"WarpedObelisk_Abductor": {
+"category": "Building",
+"size": "(3,3)"
+},
+"WarpedObelisk_Duplicator": {
+"category": "Building",
+"size": "(3,3)"
+},
+"WarpedObelisk_Labyrinth": {
+"category": "Building",
+"size": "(3,3)"
+},
+"WarpedObelisk_Mutator": {
+"category": "Building",
+"size": "(3,3)"
+},
+"WaspDrone": {
+"category": null,
+"size": null
+},
+"WaspDroneTrap": {
+"category": "Building",
+"size": null
+},
+"WasteRat": {
+"category": "Pawn",
+"size": null
+},
+"Wastepack": {
+"category": "Item",
+"size": null
+},
+"WastepackAtomizer": {
+"category": "Building",
+"size": "(3,2)"
+},
+"WatermillGenerator": {
+"category": "Building",
+"size": "(5,6)"
+},
+"WaterproofConduit": {
+"category": "Building",
+"size": null
+},
+"Weapon_GrenadeEMP": {
+"category": "Item",
+"size": null
+},
+"Weapon_GrenadeFrag": {
+"category": "Item",
+"size": null
+},
+"Weapon_GrenadeMolotov": {
+"category": "Item",
+"size": null
+},
+"Weapon_GrenadeTox": {
+"category": "Item",
+"size": null
+},
+"WeatherController": {
+"category": "Building",
+"size": "(6,6)"
+},
+"WildBoar": {
+"category": "Pawn",
+"size": null
+},
+"WindTurbine": {
+"category": "Building",
+"size": "(7,2)"
+},
+"Wolf_Arctic": {
+"category": "Pawn",
+"size": null
+},
+"Wolf_Great": {
+"category": "Pawn",
+"size": null
+},
+"Wolf_Timber": {
+"category": "Pawn",
+"size": null
+},
+"Wolverine": {
+"category": "Pawn",
+"size": null
+},
+"WoodFiredGenerator": {
+"category": "Building",
+"size": "(2,2)"
+},
+"WoodLog": {
+"category": "Item",
+"size": null
+},
+"WoolAlpaca": {
+"category": "Item",
+"size": null
+},
+"WoolBison": {
+"category": "Item",
+"size": null
+},
+"WoolMastodon": {
+"category": "Item",
+"size": null
+},
+"WoolMegasloth": {
+"category": "Item",
+"size": null
+},
+"WoolMuffalo": {
+"category": "Item",
+"size": null
+},
+"WoolMuskox": {
+"category": "Item",
+"size": null
+},
+"WoolSheep": {
+"category": "Item",
+"size": null
+},
+"Wort": {
+"category": "Item",
+"size": null
+},
+"Xenogerm": {
+"category": "Item",
+"size": null
+},
+"Yak": {
+"category": "Pawn",
+"size": null
+},
+"Yayo": {
+"category": "Item",
+"size": null
+},
+"YorkshireTerrier": {
+"category": "Pawn",
+"size": null
+}
+}

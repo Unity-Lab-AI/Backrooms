@@ -45,7 +45,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             { return deployment == null || deployment.ProviderId != ProviderId; }
             // One commitment per worker, across both record kinds.
             if (deployment != null || work.ActiveIntentFor(pawn) != null) { return true; }
-            if (!work.MayPlanFor(pawn) || !provider.WorkerEligible(pawn)) { return true; }
+            if (!work.MayPlanFor(pawn, ProviderId) || !provider.WorkerEligible(pawn)) { return true; }
             // Nothing to plan against until this branch actually remembers a gate.
             RimroomsPortalNetwork network = Network();
             return network == null || network.HasStateFault || network.Connections.Count == 0;
@@ -76,10 +76,10 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 if (!ContinueOnly || deployment.ProviderId != ProviderId) { return null; }
                 return Continue(deployment, provider, pawn, work);
             }
-            if (ContinueOnly || !work.MayPlanFor(pawn)) { return null; }
+            if (ContinueOnly || !work.MayPlanFor(pawn, ProviderId)) { return null; }
             if (work.ActiveIntentFor(pawn) != null) { return null; }
             if (!provider.WorkerEligible(pawn)) { return null; }
-            work.NotePlanningPass(pawn);
+            work.NotePlanningPass(pawn, ProviderId);
             deployment = Plan(provider, pawn, work);
             return deployment == null ? null : Continue(deployment, provider, pawn, work);
         }

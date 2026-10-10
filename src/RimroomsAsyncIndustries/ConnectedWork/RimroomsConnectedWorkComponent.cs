@@ -57,7 +57,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         internal const int PlanningCooldownTicks = 180;
 
         private const int MaintenanceInterval = 60;
-        private const int MaximumCooldownEntries = 256;
+        private const int MaximumCooldownEntries = 4096;
 
         /// <summary>Bounded saved growth for allowed-area observations.</summary>
         internal const int MaximumAreaObservations = 256;
@@ -268,20 +268,35 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         private static string RefusalKey(Pawn pawn, Map map)
         { return pawn.GetUniqueLoadID() + "|" + map.uniqueID; }
 
-        public bool MayPlanFor(Pawn pawn)
+        /// <summary>
+        /// Whether this worker may run a planning pass for this FAMILY of connected work.
+        ///
+        /// **KEYED PER FAMILY, 2026-10-09, because a shared key starved hauling for good.** Found
+        /// playing the solo/group inside start: loose supplies on the Backrooms side, a Critical
+        /// stockpile at home through an open natural gate, and nobody ever carried anything across.
+        /// Core walks work givers in work-type order; the first connected planner a pawn reached
+        /// (firefighting, with default priorities) recorded the pawn's single cooldown and found
+        /// nothing, so every later connected planner in that pass -- hauling included -- was
+        /// skipped, and 180 ticks later the same early planner won again. Owner, verbatim: *"you need
+        /// to set stockpile and get everyone hueling stuff out without exahusting them"*.
+        /// </summary>
+        public bool MayPlanFor(Pawn pawn, string family)
         {
             if (pawn == null) { return false; }
             int readyTick;
-            return !planningCooldown.TryGetValue(pawn.GetUniqueLoadID(), out readyTick) ||
+            return !planningCooldown.TryGetValue(CooldownKey(pawn, family), out readyTick) ||
                 Find.TickManager.TicksGame >= readyTick;
         }
 
-        public void NotePlanningPass(Pawn pawn)
+        public void NotePlanningPass(Pawn pawn, string family)
         {
             if (pawn == null) { return; }
             if (planningCooldown.Count >= MaximumCooldownEntries) { planningCooldown.Clear(); }
-            planningCooldown[pawn.GetUniqueLoadID()] = Find.TickManager.TicksGame + PlanningCooldownTicks;
+            planningCooldown[CooldownKey(pawn, family)] = Find.TickManager.TicksGame + PlanningCooldownTicks;
         }
+
+        private static string CooldownKey(Pawn pawn, string family)
+        { return pawn.GetUniqueLoadID() + "|" + (family ?? string.Empty); }
 
         // ----- mutation -----
 

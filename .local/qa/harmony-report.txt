@@ -1,0 +1,497 @@
+=== installed 0Harmony.dll ===
+
+
+AssemblyVersion : 1.0.9.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1157085076\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.0.9.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\872762753\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.1.0.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2358261479\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.1.0.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1874644848\v1.0\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1969732297\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2014616487\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2023507013\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2022581505\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2023661266\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1638467041\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1561769193\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1542424705\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1662119905\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1931453053\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1899474310\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1888705256\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3550817577\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3532342422\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3520167264\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\832333531\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\818773962\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\731111514\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2904906618\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2243274070\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\949498803\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2162909284\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2850854272\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2379076640\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2269697598\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1414302321\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1446523594\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1127530465\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1098354593\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1321849735\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1279012058\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files 
+                  (x86)\Steam\steamapps\workshop\content\294100\1098354593\0.19\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1328216966\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.2
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1778821244\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 1.2.0.3
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\794038005\1.0\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.0.10
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1662119905\1.1\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.0.2
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\872762753\1.1\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.0.3
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3480177412\1.5\Source\packages\Lib.Har
+                  mony.2.0.0.3\lib\net472\0Harmony.dll
+
+AssemblyVersion : 2.0.0.3
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3480177412\1.5\Source\packages\Lib.Har
+                  mony.2.0.0.3\lib\net35\0Harmony.dll
+
+AssemblyVersion : 2.0.0.3
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3480177412\1.6\Source\packages\Lib.Har
+                  mony.2.0.0.3\lib\net48\0Harmony.dll
+
+AssemblyVersion : 2.0.0.3
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3480177412\1.6\Source\packages\Lib.Har
+                  mony.2.0.0.3\lib\net45\0Harmony.dll
+
+AssemblyVersion : 2.0.0.3
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3480177412\1.5\Source\packages\Lib.Har
+                  mony.2.0.0.3\lib\netcoreapp3.1\0Harmony.dll
+
+AssemblyVersion : 2.0.0.3
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3480177412\1.5\Source\packages\Lib.Har
+                  mony.2.0.0.3\lib\netcoreapp3.0\0Harmony.dll
+
+AssemblyVersion : 2.0.0.3
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3480177412\1.6\Source\packages\Lib.Har
+                  mony.2.0.0.3\lib\net35\0Harmony.dll
+
+AssemblyVersion : 2.0.0.3
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3480177412\1.5\Source\packages\Lib.Har
+                  mony.2.0.0.3\lib\net48\0Harmony.dll
+
+AssemblyVersion : 2.0.0.3
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3480177412\1.6\Source\packages\Lib.Har
+                  mony.2.0.0.3\lib\netcoreapp3.0\0Harmony.dll
+
+AssemblyVersion : 2.0.0.3
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3480177412\1.6\Source\packages\Lib.Har
+                  mony.2.0.0.3\lib\net472\0Harmony.dll
+
+AssemblyVersion : 2.0.0.3
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3480177412\1.6\Source\packages\Lib.Har
+                  mony.2.0.0.3\lib\netcoreapp3.1\0Harmony.dll
+
+AssemblyVersion : 2.0.0.3
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3480177412\1.5\Source\packages\Lib.Har
+                  mony.2.0.0.3\lib\net45\0Harmony.dll
+
+AssemblyVersion : 2.0.0.7
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1814988282\1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.0.7
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1888705256\1.1\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.0.7
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1814988282\1.1\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.0.7
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1888705256\1.3\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.0.7
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1888705256\1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.0.8
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1127530465\1.1\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.0.8
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\794038005\1.1\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.0.8
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2006605356\1.1\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.0.8
+Path            : C:\Program Files 
+                  (x86)\Steam\steamapps\workshop\content\294100\1328216966\v1.1\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.0.8
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2006605356\1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.0.9
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1446523594\1.1\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.0.9
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2059389912\1.1\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.1.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2221387317\1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.1.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2221387317\1.3\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.1.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2221387317\1.1\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1662119905\1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1127530465\1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1321849735\1.1\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2302739121\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2302739121\1.3\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2807132773\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1321849735\1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2059389912\1.3\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2059389912\1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.2.0
+Path            : C:\Program Files 
+                  (x86)\Steam\steamapps\workshop\content\294100\1328216966\v1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2059389912\1.6\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2807132773\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2059389912\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2362707956\StopDropAndRoll\1.2\Source\
+                  StopDropAndRoll\bin\Debug\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files 
+                  (x86)\Steam\steamapps\workshop\content\294100\2362707956\StopDropAndRoll\1.3\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files 
+                  (x86)\Steam\steamapps\workshop\content\294100\2362707956\StopDropAndRoll\1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2362707956\1.4\Source\StopDropAndRoll\
+                  bin\Debug\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2362707956\1.5\Source\StopDropAndRoll\
+                  bin\Debug\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1446523594\1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\832333531\1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2362707956\StopDropAndRoll\1.5\Source\
+                  StopDropAndRoll\bin\Debug\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2362707956\StopDropAndRoll\1.3\Source\
+                  StopDropAndRoll\bin\Debug\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2362707956\StopDropAndRoll\1.4\Source\
+                  StopDropAndRoll\bin\Debug\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2362707956\1.2\Source\StopDropAndRoll\
+                  bin\Debug\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2362707956\1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1279012058\1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files 
+                  (x86)\Steam\steamapps\workshop\content\294100\1729446857\v1.2\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2362707956\1.3\Source\StopDropAndRoll\
+                  bin\Debug\0Harmony.dll
+
+AssemblyVersion : 2.0.4.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2362707956\1.3\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.1.0.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1319782555\1.3\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.1.0.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\794038005\1.3\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.1.0.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\794038005\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.1.0.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1662119905\1.3\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.1.0.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\832333531\1.3\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.1.1.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2006605356\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.1.1.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2006605356\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.1.1.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1321849735\1.3\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.1.1.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2006605356\1.3\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.1.1.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1127530465\1.3\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.0.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1446523594\1.3\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2362707956\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files 
+                  (x86)\Steam\steamapps\workshop\content\294100\735106432\Pre1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1662119905\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1127530465\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3575480305\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3575480305\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2221387317\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\832333531\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1446523594\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\872762753\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2302739121\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files 
+                  (x86)\Steam\steamapps\workshop\content\294100\2302739121\Current\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files 
+                  (x86)\Steam\steamapps\workshop\content\294100\2362707956\StopDropAndRoll\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1414302321\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3575480305\1.6\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2913588675\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1321849735\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.2.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2009463077\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.1.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\794038005\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.1.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\794038005\1.6\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.1.1
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\872762753\1.6\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1446523594\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.2.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1662119905\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.3.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2917732219\1.6\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.3.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3032870787\1.4\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.3.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3261312042\1.6\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.3.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\872762753\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.3.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\832333531\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.3.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3032870787\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.3.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2917732219\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.3.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2009463077\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.3.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2157495459\1.6\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.3.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1127530465\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.3.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\3525790312\Source\SC_Filth_Reducer\bin
+                  \Debug\0Harmony.dll
+
+AssemblyVersion : 2.3.3.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1321849735\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.3.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1414302321\1.5\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.6.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1414302321\1.6\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.6.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1127530465\1.6\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.6.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1446523594\1.6\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.6.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1321849735\1.6\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.6.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\832333531\1.6\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.3.6.0
+Path            : C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1662119905\1.6\Assemblies\0Harmony.dll
+
+AssemblyVersion : 2.4.1.0
+Path            : C:\Program Files 
+                  (x86)\Steam\steamapps\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll
+
+
+
+
+=== RimBridgeServer assemblies and what they reference ===
+--- C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\RimBridgeServer\1.6\Assemblies\RimBridgeServer.Contracts.dll
+--- C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\RimBridgeServer\1.6\Assemblies\RimBridgeServer.Core.dll
+--- C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\RimBridgeServer\1.6\Assemblies\RimBridgeServer.dll
+    references 0Harmony 2.4.2.0
+--- C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\RimBridgeServer\1.6\Assemblies\RimBridgeServer.Extensions.Abstractions.dll
+--- C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\RimBridgeServer\1.6\Assemblies\RimBridgeServer.Sdk.dll

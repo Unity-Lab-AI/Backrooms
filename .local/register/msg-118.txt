@@ -1,0 +1,64 @@
+The storyteller finally knows this mod exists (0.11.8-dev)
+
+The flavour half of the owner's decision at the fork: "Both - guaranteed
+floor, storyteller flavour". The floor shipped in 0.11.7; this is the other
+half.
+
+Until this checkpoint the mod shipped ZERO IncidentDefs. Every event fired
+from its own GameComponent tick, so whichever storyteller the player chose had
+never heard of the mod and never paced a single thing it did. A mod that runs
+beside the game's event economy instead of inside it always reads as bolted
+on, however good the content is.
+
+Two incidents, both Core-only, both Misc, neither able to hurt a pawn, destroy
+a thing or block a route:
+
+- RR_Incident_ThresholdBleed. The space comes out the near side: the lights in
+  the room a designated gate stands in go out, or the room drops eight degrees,
+  or dirt appears that was not there. Scoped to the gate's room, never the
+  colony, which is what makes the rule learnable. Requires the branch to have
+  visited a coordinate, because the space cannot follow a crew home from
+  somewhere the crew has never been.
+- RR_Incident_CorporationDelivery. A crate nobody ordered, gated on corporation
+  contact. Greed is the mechanism for the generosity, not a contradiction of
+  it. Deliberately modest at 40% of the clean-up team's crate.
+
+No StorytellerDef, and the reason is not effort. It is an exclusive slot the
+player would have to give up Cassandra or Randy for, it needs portrait art the
+no-new-art rule forbids, and there is no intelligence in one to borrow: a
+StorytellerComp rolls a mean-time-between against wealth and population. The
+part that behaves like a director is IncidentWorker.CanFireNowSub, which is
+ours without owning anything. proof-incidents.py now asserts the never.
+
+AnomalyEventService was re-scoped from CoordinateRecord to a plain cell list so
+the bleed runs the SAME four effect bodies a coordinate runs. What would drift
+out of a second copy are the four safety promises in invariant 28.
+
+One supply table at two scales. The relief crate and the courier crate are one
+corporation with one warehouse; two tables would drift the first time either
+was tuned and the letter would keep promising the old one.
+
+Deliberately not incidents: the clean-up team, because a guarantee does not
+admit the two questions a storyteller asks; incursion, because invariant 53
+keeps exactly one door into the one named exception; and anything inside a
+coordinate. All three asserted.
+
+An assertion was wrong and the source was right, for the second time this
+session. The incursion claim matched this mod's own doc comment explaining why
+incursion is excluded. A proof that punishes the explanation teaches people to
+delete explanations, so it now strips comments and asks about code.
+
+A defect in the 0.11.7 ledger script was found and repaired here: its replace()
+helper consumed the "Inherited pre-workflow history" heading in FINALIZED.md
+instead of inserting before it. FINALIZED is append-only. No entry text was
+lost; the heading is restored verbatim from HEAD~1, every insertion now
+re-includes its anchor, and the diff is checked for removed lines rather than
+trusted because a script printed "updated".
+
+The heredoc \n gotcha, hit for the seventh time, with the fix already written
+next to it in NOW.md.
+
+Build 0.11.8-dev, 167 C# files, 86 package files, 0 warnings, 0 errors.
+Assembly 3E7B151603CFA38B2066DD5F7DD57EB1DE1EE60317E3A2634D12F452FB05C528
+reproduced by two clean recompiles. Eight checkers pass, six proofs hold, the
+new one fault-planted four ways. No game was launched.

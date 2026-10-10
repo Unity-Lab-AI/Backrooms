@@ -1,0 +1,34 @@
+NOW.md rewritten as the compaction handoff
+
+Nothing was unfinished. The tree was clean, all six checkers passed,
+and the eleven [~] markers in TODO.md are long-running standing items
+rather than half-done work, so this checkpoint is the handoff itself.
+
+The file had grown to 104 numbered invariants accumulated across the
+whole session, with an arc table listing every version individually.
+Rewritten so it can be read: the arc groups the early versions and
+names the recent ones, and the invariants are sorted into the gate and
+crossing, generation and threats, and method, with the historical
+numbering kept so existing references still resolve.
+
+The state table now carries the two tools a fresh session needs before
+it can follow the LAWs at all: register-query.py, because the register
+LAW requires filtering by system family and the HTML has two tables
+that make a naive read silently wrong, and make-readable-html.py,
+because the readable output is where the owner looks.
+
+What is left is ordered as a dependency chain rather than a list. The
+field gear is first and blocks the remaining scenarios, since the
+existing scenario still grants the items being retired. All four
+replacements are decided and none are built, so each one is recorded
+with the decision and the verified Core facts behind it, including
+that CompGlower.GlowColor has a public setter with a saved
+per-instance override and a colour picker that needs no new UI.
+
+The checkpoint ritual now opens with the register check and lists six
+checkers. The gotchas carry the counts that matter: four XML comment
+double dashes, six mangled heredocs, and one silent partial push that
+only the eight-ref read-back caught.
+
+All six checkers pass. No game launched, no test run, no RimSort
+profile touched.

@@ -1,0 +1,58 @@
+An offer with more than one way through (0.11.1-dev)
+
+Four blocking questions asked before a line was written. This is step 4
+of the chart's build order: the offer shape, built before any request
+content so the first request ever written has to satisfy the absolutes
+rather than being retrofitted to them.
+
+Quest surface: our Operations tab records. Core's quest system is built
+around time-limited offers with single objectives, which is precisely
+the two things the absolutes forbid, so adopting it would have meant
+fighting it to arrive back where we started. It was also the safer
+register answer -- rows 148 No Quests Without Comms and 132 More Faction
+Interaction both operate on native quests, and by not using that system
+this mod cannot collide with either.
+
+Contact is a state, not a scenario, and that answer reframed the
+question that was asked. The blocker had looked like "the rescue is
+scoped to two scenarios that do not exist"; it is not scoped to
+scenarios at all. corporationContact is a saved branch flag and
+beginsInCorporationContact decides where a start opens. Async Industries
+begins in contact with basic gate research done. The other two begin
+without it, and that absence is the point: before contact there is no
+rescue. One-way by design -- there is deliberately no method to revoke
+contact, because that would take the never-die guarantee from a player
+who had earned it.
+
+The answer carried a constraint on every branch still to be built: our
+research layers on the shared RimWorld tech tree and never forks it.
+
+Both absolutes are enforced twice, at def load by ConfigErrors and
+before shipping by the checker, because they catch different things. The
+checker catches a bad def in this repository; ConfigErrors catches one
+arriving from a patch, another mod or a hand edit after shipping. The
+no-deadline rule is enforced by absence: a deadline cannot be configured
+onto a request because the shape has nowhere to hold one.
+
+Six route kinds exist so that "two routes" means something. Two Deliver
+routes differing only in which shelf the item lands on is one route
+wearing two hats, and a rule counting it as two would be satisfied by
+text rather than by design.
+
+The safety property is an ordering, not a count. The authored floor is
+assembled before capability is consulted, so if deriving ever returned
+nothing -- no catalogue, a broken save, a mod that removed the
+procurement defs -- a request still offers two ways through. Authored
+routes are never filtered by capability either: a route a player cannot
+currently take is still one they can see and work toward.
+
+proof-offer-routes.py checks the floor alone with capability
+deliberately ignored, because that is the case nobody plays and
+therefore the case nobody notices is broken. Nineteen claims held,
+sanity-tested by making both routes the same kind and by moving the
+derive block above the floor.
+
+One worked request, RR_Request_PowerTheGate, with exactly the routes the
+chart already names for it. 162 C# files, 85 package files, zero
+warnings. Eight checkers pass, three proofs hold, assembly reproduced by
+two clean recompiles. No game launched.

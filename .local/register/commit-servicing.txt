@@ -1,0 +1,69 @@
+The gate assembly needs looking after (0.7.1-dev)
+
+Gate servicing, modelled on how Questionable Ethics Enhanced runs its cloning
+and organ vats, which is what the owner was pointing at.
+
+A misreading of mine, corrected by the owner and worth recording. I read
+"questionable ethics" as flavour and went as far as asking which way to take the
+ethics angle, framing it as a content-policy question. It is a mod name, profile
+row 182, and the owner meant a concrete mechanic with numbers behind it. The
+wrong reading would have produced atmospheric text and no system. The register
+recovered it in one query: row 182's review carried the package id and the local
+install path, which led to the mod's own defs and its own description.
+
+Their model, from their own shipped description: "Requires regular maintenance
+by a skilled scientist and doctor. A sterile room will significantly decrease
+the maintenance required. If the vat loses power, it will rapidly lose
+maintenance." Plus a dedicated low-priority maintenance giver and a job whose
+report string is "monitoring and adjusting" rather than repairing.
+
+Three ideas, all better than a service timer: a condition that decays
+continuously; the room modulating the decay; and power loss degrading it fast.
+The owner's "cool down dead zone" falls out of that rather than being bolted on
+-- a well-kept room decays so slowly nobody is called for a long stretch, a
+filthy one calls somebody constantly, so the player controls the dead zone by
+looking after the place.
+
+Built as a condition in ticks, ten days at full, wearing at half rate in a
+sterile room, triple in a filthy one, eight times without power and three times
+while a connection is held open, clamped at both ends. Cleanliness is
+RoomStatDefOf.Cleanliness, Core's own number.
+
+The dead zone is also a hard threshold, and that part is load-bearing. Offering
+the work whenever condition is below full would be the growth-vat-one-nutrition-
+short trap and would have a pawn topping the gate up continuously, which is
+exactly what the direction rules out. Offered only below a quarter, restores
+full in one visit. ServiceWanted is false across the whole band, so the giver's
+scan finds nothing and costs one boolean per console for most of a game.
+
+It plugs into what already exists rather than sitting beside it. Cleanliness is
+kept by the cleaning family, which already crosses a gate, so a chamber either
+side of a portal is kept by the same work. Power ties to the kill switch built
+the checkpoint before, which now costs more than closing the gate. Skill reuses
+the Research work type calibration already uses, so no new work type is added.
+
+Lapsing stops the next opening and never closes one already running: ending an
+opening for a bookkeeping reason would strand whoever is on the far side, and
+the return window is for real emergencies. Cost is work time by a skilled
+colonist and nothing else, because the owner's ceiling is explicit -- not "crazy
+amounts" -- and a resource cost on a recurring chore is how maintenance becomes
+a tax.
+
+Nothing of that mod is copied, referenced or depended on. Its defs and assembly
+are untouched and this works with it absent. The idea was read from its public
+description exactly as every profile row is read.
+
+Saved as one integer defaulting to minus one, which reads as full, so every gate
+in a 0.7.0-dev save loads in full condition rather than lapsed.
+
+NOW.md is rewritten as a compaction handoff: state, the standing instruction,
+what exists, what is left in order, thirty-one invariants, the standing method,
+the reading order, the checkpoint ritual and the gotchas.
+
+120 C# source files, 76 approved package files unchanged, zero warnings, zero
+errors. No patch operation, no asset, no new work type. Assembly SHA-256
+751C315B18A79A9EC9B965759261B987B69EF5B43319D5FA59B1D9C7B8B62C5A reproduced by
+two full recompiles after deleting obj/ and bin/. check-keyed-strings reports
+1,135 keys with zero duplicates, check-dlc-gating and audit-gate0 both pass.
+
+No game was launched, no test was run, no RimSort mod list was changed.

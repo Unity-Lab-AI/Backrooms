@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-09 - The doors that lead somewhere go somewhere
+
+- **Found playing the solo/group inside start:** *"Walk through - this door leads somewhere else"*
+  refused with *"The generated room graph is not physically reachable from the entry."* One
+  optional room in the new coordinate (a borrowed corridor) claimed links with no route, and the
+  generator threw the whole coordinate away -- and the way through with it.
+- **Now** an unreachable optional room is kept as a room to dig to, the way sealed vaults already
+  are, and the coordinate stands. The office and the way home are still checked and still fatal.
+- **Drafted colonists can now take an ordered crossing.** Owner: *"its a bug because she can walk
+  through it if drafter and she walks away out of action area if not drafted"*. The drafted pawn is
+  the one that stays on its order; autonomous crossing still never takes a drafted pawn.
+- **A way out to the world no longer strands the crew.** The return gate built on the claimed
+  map was dropped at a random cell anywhere on it, never checked against where the crew arrived --
+  on a mountain jungle tile it landed where nobody could walk. Owner: *"thats not suppose to
+  happen a no return gate"*. It now stands near the arrival, on a cell the arrival can reach on
+  foot, or the walk-out is refused before anybody moves.
+- **Haulers now carry through a gate.** Every family of connected work shared one planning
+  cooldown per colonist, so the first connected planner reached in work order (firefighting) used
+  it, found nothing, and every later one -- hauling included -- was skipped for good. Supplies on
+  the Backrooms side never came home. The cooldown is now per colonist per family.
+
+## 0.13.0-dev - 2026-10-08 - Company deliveries land while shelves outrank the stockpile
+
+- **Found playing:** 2,000 steel and 100 components, paid for through Procurement, sat in orbit as
+  *"Vanilla hauling would currently prefer another storage zone"*. Delivery demanded that the
+  receiving stockpile be the single best place hauling would put the item, and a **shelf** -- a
+  storage building, which the receiving list can never offer -- always outranked it in a colony
+  that keeps its resources on shelves. The order could wait forever.
+- **Now** a shipment lands whenever the receiving stockpile has room, and the crew puts it away
+  wherever storage priorities say, shelves included. The staging, capacity and receipt checks are
+  unchanged; the unused refusal text is gone.
+
+## 0.13.0-dev - 2026-10-08 - Any colony can found a company branch
+
+- **A colony started on any scenario can now join the company.** Operations shows *Found a company branch here* when the home map has no branch and the game was not begun on a Rimrooms start. The colony is registered as it stands: its free colonists become staff (each in the role their skills fit), the company name is the colony's faction name, and the branch opens on the Async Industries terms - in contact with the corporation, gate projects finished, $50M account, the onboarding survey accepted. Nothing physical is added and no faction relations are reset.
+
 ## 0.13.0-dev - 2026-10-08 - An emergency abort, a Store that can call and build its gate
 
 - **OWNER:** *"we also need an emergy abort option on the gate connection so hold is not the olny

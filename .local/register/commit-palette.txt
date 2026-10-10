@@ -1,0 +1,62 @@
+The yellow rooms, and what happens further in (0.7.8-dev)
+
+The first Backrooms space now looks like the Backrooms: yellow carpet, yellow
+wood walls, and lights mounted on the walls rather than lamps standing in the
+middle of the floor.
+
+The owner asked for that look and, in the next message, said it is only the
+shallow one -- further in it gets very varied and weird. That second message is
+what shaped the design, because a single global palette could only ever deliver
+half of it. So the look became a function of depth, which meant adding a depth
+concept the project did not have: a coordinate now records how far in it sits,
+counted in portals from the ordinary world. A frontier on a world map mints depth
+one and every step inward adds one, without limit.
+
+Depth one is fixed and never rolls. The first space a player ever sees must be
+the yellow rooms, on every seed, every time; it is the image the whole setting
+rests on and a random alternative there would be a worse game for the sake of
+variety. Deeper bands roll from the coordinate's own seed, so a space is stable
+across reloads and two spaces at the same depth are not identical. Five bands:
+poolrooms, machinery, abandoned offices, cold storage, and one where the palette
+stops agreeing with itself.
+
+Core already had the light. The owner reached for floor lights on the assumption
+the game had no overhead fluorescent, and it ships WallLamp. That is the better
+answer twice over: closer to the intended look, and it frees the floor, because
+an endless corridor reads as endless precisely when nothing is standing in it.
+Generation had been using StandingLamp, which put a piece of furniture in the
+middle of every room.
+
+The yellow itself is Core content wearing a colour. The floor is Core Carpet,
+whose own description says it is dyed a single colour, and TerrainGrid.colorGrid
+is a public field, so the tint is applied directly after SetTerrain with no
+Harmony and no new terrain def. Walls are Core Wall built from wood and tinted
+through CompColorable, the same mechanism generation already used for its grey
+and tan rooms. The tint is a sickly mustard rather than a clean primary, which is
+what the reference actually looks like. No new texture, no new terrain, no new
+building.
+
+One Core behaviour worth recording: SetTerrain clears the colour grid, so the
+colour has to be applied after the terrain and the cell redrawn. Missing either
+produces a floor that is silently the wrong colour until something else dirties
+the mesh.
+
+The band list is deliberately short. Variation deeper down should come from what
+is in a room rather than from an ever-growing list of paint schemes, because a
+palette that never repeats stops reading as a place at all. That is where the
+owner's labs, workshops, nurseries and everything imaginable belongs, and it is
+the next body of work rather than this one.
+
+138 C# source files, 85 approved package files, zero warnings, zero errors. No
+new gameplay ThingDef, no terrain, no asset, no patch operation, no new work
+type. Assembly SHA-256
+262F02B6EBACE586D281A9251566E5728A1A0490158521421DA2851F60BE1392 reproduced by
+two full recompiles after deleting obj/ and bin/. All four checkers pass.
+
+Recorded in TODO.md rather than deferred: the entire seed-generator expansion --
+room archetypes and their variations, material variety, anomalous places and
+events as saved bounded content, escalation balanced against colony wealth rather
+than wall-clock time, and the owner's explicit acceptance condition that a solo
+group must be able to build, supply and find a way out of a high-tier coordinate.
+
+No game was launched, no test was run, no RimSort mod list was changed.

@@ -1,0 +1,65 @@
+Zones on both sides of a gate, audited, and one defect that trapped a colonist (0.6.8-dev)
+
+A RimWorld Zone cannot span two maps -- Zone.Map is single-valued, ZoneManager
+is per-map, and the same holds for every Area. So a zone that "continues through
+the gate" cannot be one object. Continuation had to mean two zones, one each
+side, behaving as one: goods flow between them, work on either side attracts
+somebody, and the far one's own settings are what get respected. That is the
+standard every case here was held to.
+
+The defect that made the question worth asking: a growing zone inside the
+Backrooms could never be sown, and the provider held the worker there anyway.
+
+ZoneHasWork decided sowing was wanted from three facts about the zone --
+allowSow, CanAcceptSowNow, GetPlantDefToGrow -- and then treated any empty cell
+as work. It never asked whether that cell could be sown. Coordinate rooms are
+floored with Concrete and PavedTile; both inherit FloorBase, declare no
+fertility and so carry the field default of 0, while every Core plant requires
+fertilityMin of at least 0.01 and CanEverPlantAt refuses below it.
+
+So a grower was sent, Core refused on arrival, and HasWorkHere asked the
+identical question and also said yes -- the deployment was never released and
+the colonist stood in the Backrooms indefinitely holding a live commitment. A
+wasted crossing costs one walk. A deployment that will not release costs a
+colonist.
+
+Fixed with Core's own two gates, both of which read the cell and its own map and
+take no pawn: CanEverPlantAt for terrain fertility, blockers, roof and edifices,
+and PlantUtility.GrowthSeasonNow for the cell's room and temperature, which
+matters independently because a coordinate has no climate control beyond
+whatever the player keeps powered. Nothing is reimplemented.
+zone.GetPlantDefToGrow() is used rather than WorkGiver_Grower.wantedPlantDef,
+which Core writes mid-scan and a remote probe must never touch.
+
+One hypothesis of mine was wrong and is recorded so nobody repeats it: the first
+theory was that a fully roofed coordinate blocks sowing for lack of sunlight. It
+does not. GrowthSeasonNow reads room and temperature, not light, and Core sows
+indoors happily; plants just grow slowly without light, no differently from an
+unlit greenhouse in vanilla. The real gate is terrain fertility, and building on
+the light theory would have produced a check that tested the wrong thing and
+still shipped the bug.
+
+Everything else was audited rather than assumed. Stockpiles work in both
+directions, with the far zone's own filter and priority deciding through
+IsValidStorageFor(storeMap, thing). Fishing zones, Home areas and per-colonist
+allowed areas all read the far side's own settings, the last as a recorded
+observation plus the definitive check on arrival. NoRoof is deliberately emptied
+inside the Backrooms by the containment rule. And zones persist across visits at
+all because ShouldRemoveMapNow returns false unconditionally, so a coordinate
+map is never removed -- already true by construction, now written down because
+it is load-bearing and non-obvious.
+
+Three area types have no cross-gate route and currently cannot need one:
+Area_BuildRoof, Area_NoRoof, and the snow/sand and pollution clear areas. A
+coordinate is already all thick rock, roof removal there is forbidden by the
+world rule, and it has no outside and therefore no weather. All of them become
+live the moment the far side of a gate can be an ordinary world map, so the row
+is recorded as a dependency of that endpoint rather than as a free-floating gap.
+
+117 C# source files and 76 approved package files, both unchanged -- this is one
+corrected predicate and the documentation around it. Assembly SHA-256
+4E474FF0A277861CB788A87C893714CF0C9A0CFC3834473B6972D8F4941C9930 reproduced by
+two full recompiles after deleting obj/ and bin/. audit-gate0 PASS with zero
+errors, DLC gating passes, the register verifies.
+
+No game was launched, no test was run, no RimSort mod list was changed.

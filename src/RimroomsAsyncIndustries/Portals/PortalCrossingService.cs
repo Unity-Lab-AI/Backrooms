@@ -511,8 +511,15 @@ namespace RimroomsAsyncIndustries.Portals
             // owner's profile and does exactly that. A drafted animal could cross while a
             // drafted colonist could not, which is the kind of gap that only shows up on
             // somebody else's mod list. Found by the register check, not by reading this.
-            if (pawn == null || !pawn.Spawned || pawn.Dead || pawn.Downed || pawn.InMentalState ||
-                pawn.Drafted)
+            //
+            // **DRAFTED NO LONGER REFUSES, 2026-10-09.** Every caller of this rule is a player's
+            // order -- the float menu, the door gizmo, `OrderCrossing` -- and a drafted pawn is the
+            // one pawn that stays where it is ordered. Owner, verbatim: *"its a bug because she
+            // can walk through it if drafter and she walks away out of action area if not
+            // drafted"*. Refusing the drafted pawn left only the undrafted one, who is taken by
+            // the next work job before she reaches the door. Autonomous crossing keeps its own
+            // drafted block (`CrossForNeed`), so nothing wanders through on its own.
+            if (pawn == null || !pawn.Spawned || pawn.Dead || pawn.Downed || pawn.InMentalState)
             { return "RR_PortalCrossing_PawnNotEligible"; }
 
             // **THIS CLAUSE USED TO READ `pawn.Faction != Faction.OfPlayer` AND IT REFUSED A

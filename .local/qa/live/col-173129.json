@@ -1,0 +1,219 @@
+{
+  "status": "complete",
+  "captured_at_utc": "2026-10-01T23:31:29+00:00",
+  "client": "RimroomsReadOnlyQA/2",
+  "limitations": [
+    "Caller-supplied PID and log pairing cannot be proven by this client.",
+    "A successful handshake is not Rimrooms compatibility evidence.",
+    "Read results are sequential observations, not an atomic game snapshot.",
+    "Warnings are the latest 50 retained journal entries, not the entire startup log."
+  ],
+  "process": {
+    "pid": 26128,
+    "executable": "RimWorldWin64.exe"
+  },
+  "endpoint": {
+    "host": "127.0.0.1",
+    "port": 5174
+  },
+  "authentication_token_present": true,
+  "selected_reads": [
+    "ping",
+    "colonists"
+  ],
+  "protocol": "gabp/1",
+  "calls": [
+    {
+      "selector": "ping",
+      "tool": "rimbridge/ping",
+      "result": {
+        "message": "pong",
+        "timestamp": "2026-10-01T23:31:29.1770409Z",
+        "operation": {
+          "OperationId": "op_0e466b628065427898913fdf7a68ef90",
+          "CapabilityId": "rimbridge.core/diagnostics/ping",
+          "Status": 2,
+          "Success": true,
+          "StartedAtUtc": "2026-10-01T23:31:29.1770409+00:00",
+          "CompletedAtUtc": "2026-10-01T23:31:29.1770409+00:00",
+          "DurationMs": 0,
+          "Result": null,
+          "HasResult": true,
+          "ResultWasTruncated": false,
+          "Warnings": [],
+          "Error": null,
+          "Metadata": {}
+        }
+      },
+      "evidence_truncations": 0
+    },
+    {
+      "selector": "colonists",
+      "tool": "rimworld/list_colonists",
+      "result": {
+        "success": true,
+        "count": 3,
+        "colonists": [
+          {
+            "pawnId": "Thing_Human984",
+            "thingIdNumber": 984,
+            "className": "Verse.Pawn",
+            "defName": "Human",
+            "kindDef": "Colonist",
+            "race": "Verse.RaceProperties",
+            "name": "Gee",
+            "fullName": "Gee Fourteen",
+            "label": "Gee<color=#999999FF>, Scientist</color>",
+            "selected": false,
+            "drafted": false,
+            "downed": false,
+            "dead": false,
+            "spawned": true,
+            "map": "0",
+            "mapId": "Map_0",
+            "mapIndex": 0,
+            "position": {
+              "x": 152,
+              "z": 151
+            },
+            "job": "RR_OperateGate",
+            "mentalState": null,
+            "faction": "New Arrivals",
+            "factionDef": "PlayerColony",
+            "factionIsPlayer": true,
+            "factionHostileToPlayer": false,
+            "humanlike": true,
+            "animal": false,
+            "mechanoid": false,
+            "insect": false
+          },
+          {
+            "pawnId": "Thing_Human995",
+            "thingIdNumber": 995,
+            "className": "Verse.Pawn",
+            "defName": "Human",
+            "kindDef": "Colonist",
+            "race": "Verse.RaceProperties",
+            "name": "Scar",
+            "fullName": "Scarlett 'Scar' Johansen",
+            "label": "Scar<color=#999999FF>, Assembler</color>",
+            "selected": false,
+            "drafted": false,
+            "downed": false,
+            "dead": false,
+            "spawned": true,
+            "map": "0",
+            "mapId": "Map_0",
+            "mapIndex": 0,
+            "position": {
+              "x": 140,
+              "z": 131
+            },
+            "job": "SocialRelax",
+            "mentalState": null,
+            "faction": "New Arrivals",
+            "factionDef": "PlayerColony",
+            "factionIsPlayer": true,
+            "factionHostileToPlayer": false,
+            "humanlike": true,
+            "animal": false,
+            "mechanoid": false,
+            "insect": false
+          },
+          {
+            "pawnId": "Thing_Human1003",
+            "thingIdNumber": 1003,
+            "className": "Verse.Pawn",
+            "defName": "Human",
+            "kindDef": "Colonist",
+            "race": "Verse.RaceProperties",
+            "name": "Unity",
+            "fullName": "Unity God",
+            "label": "Unity<color=#999999FF>, Castaway</color>",
+            "selected": false,
+            "drafted": false,
+            "downed": false,
+            "dead": false,
+            "spawned": true,
+            "map": "0",
+            "mapId": "Map_0",
+            "mapIndex": 0,
+            "position": {
+              "x": 132,
+              "z": 135
+            },
+            "job": "Research",
+            "mentalState": null,
+            "faction": "New Arrivals",
+            "factionDef": "PlayerColony",
+            "factionIsPlayer": true,
+            "factionHostileToPlayer": false,
+            "humanlike": true,
+            "animal": false,
+            "mechanoid": false,
+            "insect": false
+          }
+        ],
+        "operation": {
+          "OperationId": "op_3a36a0f885ed4efd97f6da9d435b90ac",
+          "CapabilityId": "rimbridge.core/selection/list-colonists",
+          "Status": 2,
+          "Success": true,
+          "StartedAtUtc": "2026-10-01T23:31:29.1780447+00:00",
+          "CompletedAtUtc": "2026-10-01T23:31:29.18856+00:00",
+          "DurationMs": 10,
+          "Result": null,
+          "HasResult": true,
+          "ResultWasTruncated": false,
+          "Warnings": [],
+          "Error": null,
+          "Metadata": {}
+        }
+      },
+      "evidence_truncations": 0
+    }
+  ],
+  "session": {
+    "agentId": "gabp-server",
+    "app": {
+      "name": "RimBridgeServer",
+      "version": "2.1.1.0"
+    },
+    "capabilities": {
+      "methods": [
+        "session/hello",
+        "tools/list",
+        "tools/call",
+        "events/subscribe",
+        "events/unsubscribe",
+        "attention/current",
+        "attention/ack"
+      ],
+      "events": [
+        "attention/updated",
+        "system/status",
+        "rimbridge.operation",
+        "attention/cleared",
+        "attention/opened",
+        "system/log",
+        "rimbridge.log"
+      ],
+      "resources": []
+    },
+    "schemaVersion": "1.0"
+  },
+  "evidence_truncations": 0,
+  "available_allowlisted_tools": [
+    "rimbridge/get_bridge_status",
+    "rimbridge/list_logs",
+    "rimbridge/ping",
+    "rimworld/get_game_info",
+    "rimworld/get_mod_configuration_status",
+    "rimworld/get_selection_semantics",
+    "rimworld/list_alerts",
+    "rimworld/list_colonists",
+    "rimworld/list_letters",
+    "rimworld/list_messages"
+  ],
+  "requested_tools_missing_from_live_list": []
+}

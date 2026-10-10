@@ -1,0 +1,40 @@
+One kind of gate (0.9.1-dev)
+
+Retiring RR_MachineGate made IsNativeProvider a constant. Sixty-eight
+sites branched on it and every else-side became unreachable. This is
+that cleanup, kept deliberately out of the retirement commit: a diff
+that says only "remove the dead branch" can be read and checked, and
+the same change mixed into a content retirement cannot.
+
+Every edit is a boolean identity applied to a constantly-true value,
+so behaviour is unchanged by construction rather than by judgement.
+The property was pinned true, every site transformed, then the
+property deleted outright so the compiler enumerated anything missed.
+One had been: an unbalanced parenthesis in the assembly-bill guard.
+
+An entire vestigial power model fell out of it. The retired machine
+drew from the colony network directly, so the component carried its
+own stored reserve, applied draw, charging tick and charge-rate
+calculation. A gate on a door has never used any of it; it is fed by
+the battery the player binds to it. ApplyPowerDraw reduced to an empty
+method and went, with its nine call sites, along with the door's own
+flickable handle and the grid-headroom arithmetic in both power
+checks.
+
+CompInspectStringExtra was also building a legacy power readout and
+overwriting it on every call before returning, so that string was
+computed and discarded every tick a gate was selected.
+
+nativeProvider was removed from both component property classes and
+from the patch that set it, in the same change. Removing only the
+field would have left an XML element no class declares, which RimWorld
+ignores in complete silence at load: the exact defect class that cost
+two checkpoints when maxTechLevel did it.
+
+Net minus 112 lines across 18 files. Seven orphaned keyed strings
+pruned with the legacy UI they served.
+
+155 C# source files, 79 approved package files. Zero warnings, zero
+errors. Assembly SHA-256 reproduced by two clean recompiles. All four
+checkers pass, 1,200 keyed references resolving. Nothing was added. No
+game launched, no test run, no RimSort profile touched.

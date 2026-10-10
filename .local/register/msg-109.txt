@@ -1,0 +1,61 @@
+What you have learned is what you can build (0.10.9-dev)
+
+Five items recorded from the direction; the first is built. The quest
+layout, the corporation's character and the never-die rescue are queued
+behind it in that order, because a quest that unlocks a tier needs tiers
+to unlock.
+
+The direction landed on a real defect. portalWindowTierProjects held one
+name while portalIndefiniteTier was 4, and the tier rises one per
+completed rung -- so a standing connection was unreachable however a
+branch played, for as long as the mod has existed, and incursion at tier
+1 sat at the very top of everything that existed rather than partway up.
+No checker could see it. Every individual value was valid and the fault
+existed only in the relationship between two settings in different files,
+which is the same shape as the retired-beacon condition found in
+0.10.7-dev.
+
+Logs are the qualification; insight is the price. A project cost
+spendable insight and nothing else, and insight is fungible: four
+analysed records of the same kind bought exactly what four different ones
+bought, so nothing ever asked what a branch had actually learned. Every
+evidence record has carried routeRecorded, distortionRecorded and
+entityRecorded all along and nothing had ever read them as a
+prerequisite. Only Analyzed records count, because the word was
+"complete". A completed log stays completed even if the book later burns,
+so a tier already earned can never be lost by spending on the next one.
+The qualification is checked before insight is deducted, so a branch
+short of logs is told which kind rather than charged and then refused.
+
+Four rungs instead of one: Gate Telemetry, Field Stability, Sustained
+Aperture, Standing Connection, each requiring the one below. The
+requirements rise in the order a branch naturally learns things -- routes
+from surveying, distortion from the space misbehaving while somebody was
+recording, entities from something being down there and seen. Sustained
+Aperture is the rung where what lives down there can follow a crew out,
+and it requires an entity log, so nothing can come through before the
+branch has written down that something is there. The readable-warning
+rule arrives a tier early by construction rather than by a separate
+check.
+
+Custody is a place now, not a receipt. The retired check asked whether
+the expedition still had a sealed evidence case somewhere at
+headquarters and did not care where the book itself had gone. Custody is
+now: stored on a shelf linked to a gate as a records archive, the role
+built in 0.10.8-dev. It is visible, it can be reorganised or lost, and
+any archive on a multi-gate facility counts -- the corporation cares that
+the paperwork is filed, not which door it came through.
+RR_SealedEvidenceCase is retired with its recipe, texture, scenario
+grant, kit requirement and refusal string; starts grant two shelves.
+
+proof-tier-ladder.py reads the ladder from the source and the rungs from
+the defs, so it checks the relationship that broke rather than either
+side of it. Twenty claims held, including a transitive cycle check.
+Sanity-tested by reconstructing the original defect, which failed with
+"3 rungs >= 4 -- a standing connection is UNREACHABLE", and by removing
+a prerequisite, which failed with "the ladder can be climbed out of
+order".
+
+160 C# files, 83 package files, zero warnings. Seven checkers pass. Both
+proofs hold. Assembly reproduced by two clean recompiles. No game
+launched.

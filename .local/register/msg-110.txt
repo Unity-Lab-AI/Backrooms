@@ -1,0 +1,62 @@
+The only clock is the gate (0.11.0-dev)
+
+A stop-building instruction, obeyed. No quest, request or research
+content was written. What shipped is the campaign chart, the two
+absolutes made enforceable, and the removal of the two clocks that
+already broke one of them.
+
+The part that went wrong, recorded first. The clock removals were made
+by deleting a tuned def field, a const and a keyed string outright with
+no archive, and the owner stopped it. Two failures, the second worse.
+Whether "offeres and trades" covered a hiring applicant and a purchase
+quote was a fork with two readings, and it was guessed rather than
+asked. And retired content is archived, never deleted -- an existing
+invariant followed for the survey tag, the evidence case and the machine
+gate, skipped here, so a tuned 420000 and a 25000 went into a diff and
+nowhere else. Nothing had been committed, so the tree was restored to
+3cf7dc8 intact, build and checkers re-verified, and the scope asked. The
+owner confirmed the reading, which means the conclusion was right and
+the method was wrong -- the more dangerous shape, because it looks like
+progress. The redo archives every value, field, call site and string
+before removing anything.
+
+Two clocks retired, neither of which bounded anything. A hiring offer
+withdrew itself after seven in-game days; a purchase quote expired after
+about ten in-game hours. Both pools were already capped by a count, with
+new requests refused at the cap, so both clocks were pure pressure with
+no function. refreshTicks, the same number on the same def, is kept
+because a cooldown cannot be failed. Both expiresTick fields and the
+Expired enum members stay scribed and unread, because dropping a scribed
+field to tidy up is how a saved game stops loading.
+
+Seven prep documents promised the opposite, which is the argument for
+doing the chart before the content. Since Gate 0 the prep material had
+promised deadlines, timed distortion investigations and consequences for
+delay. Nothing was ever built from those lines, so correcting the
+blueprint cost nothing; written a week later it would have cost a
+rewrite. Eleven documents corrected. Two hits deliberately left because
+they argue for the rule. "Consequence for abandonment" survives
+everywhere: abandoning is an act, being slow is not.
+
+check-campaign-absolutes.py is the eighth checker. No source identifier
+named as an expiry outside a five-entry allowlist with reasons, no def
+field, no living document promising one, and every offer def carrying
+two or more success routes -- of which zero exist, stated plainly, so
+the first offer ever written has to satisfy it. Deliberately narrow: it
+does not scan every ...Ticks field, because forty of them are delays and
+cooldowns and flagging those makes a checker people scroll past. It
+found five documents the hand sweep had missed, and it caught two more
+in this checkpoint's own NOW.md and FINALIZED.md. A negation was briefly
+widened with "banned" and "superseded" so existing text would pass, and
+taken straight back out.
+
+docs/CAMPAIGN_CHART.md is the authority on campaign structure and wins
+over any prep document: the two absolutes, the tutorial-to-campaign
+hinge, eight arcs with what is built, five research tiers and nine
+branches, the mission line with its routes, the corporation's character,
+what the prep got wrong, three decisions named as the owner's, and the
+build order. The gate branch is the only complete one of nine.
+
+160 C# files, 83 package files, zero warnings. Eight checkers pass, both
+proofs hold, assembly reproduced by two clean recompiles. No content
+built, deliberately. No game launched.

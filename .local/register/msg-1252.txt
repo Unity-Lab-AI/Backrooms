@@ -1,0 +1,87 @@
+Every type of material, and level 0 stays yellow (0.12.52-dev)
+
+Owner direction: "with the wild variatiosn of material typeds in all items
+equaipment walls floors lights furnature and benches that are found everywher
+deeper in", then the correction when the first attempt was too narrow: "this
+is wrong we want every type of wall and material for all things randomly",
+"but depth 0 in the backrroms is the standard yellow style", and "ive already
+lkayed this out".
+
+They had. Their two sentences from 2026-09-29 are quoted inside
+BackroomsPalette already: "yellow carpet and yellow wood walls for the main
+backrooms look" and "further in it gets very varied and weird". The
+specification was in the codebase in their own words and a compromise was
+built instead of reading it.
+
+The line they quoted back, WALLS GO BACK TO ONE OF TWO NAMED MATERIALS, was a
+plant label - the name of a fault deliberately planted to prove the proof
+catches it, not shipped behaviour. Worth recording because a plant label
+reads exactly like a bug report.
+
+Register read first, per LAW. Family materials: 221 Stuff Mass Matters and 52
+BetterWeight mean mass scales with stuff, so a wider material set changes
+hauling weight, which is native behaviour and correct. 101 Gold & Silver
+Ingots and 144 No Burn Metal add or alter stuff defs and are picked up
+automatically because nothing is named. 53 Big Little Mod Patch widens what
+is stuffable. A profile that adds materials makes coordinates more varied,
+which is the intended direction and needs no adapter.
+
+What was already right and needed nothing: CoordinateMaterials already
+derived from the coordinate's seed, sorted candidates by defName before
+indexing, drew from GenStuff.AllowedStuffsFor, named no material and made no
+Rand call. RoomArchetypeService already gated which defs appear by depth. The
+variety of things already grew inward.
+
+Three gaps, all the same shape - a material chosen somewhere the palette
+could not reach. The palette was a flat 3 at every depth. TryPlace, the path
+that places the depth-scaled archetype dressing and therefore the benches,
+equipment and loot, used GenStuff.DefaultStuffFor and never consulted the
+palette at all, so the content that was supposed to vary was the one content
+that could not. And walls were one of two named defs, WoodLog or Steel,
+across five bands.
+
+The first fix grew the palette with depth, 2 to 6, and was still wrong. A
+growing palette is still a palette: every fixture takes the first entry it can
+use, so a deep level still reads as fitted out in three materials and a table
+and a wall in one place tend to match. The palette's own doc argued for that
+and called per-item choice a jumble. That argument was mine, and for the deep
+bands the owner is right, because very varied and weird is the brief and
+coherence is what is being left behind as you go inward.
+
+So the behaviour is a split. Level 0 shares one narrow palette and stays the
+standard yellow style, monotonous on purpose, because a level where the table,
+the shelf and the walls match is what makes the yellow rooms read as a place.
+Deeper there is no palette at all: every fixture draws from the full set Core
+allows for its own def, indexed by its own variant, so two tables in one room
+can be different woods, different metals, or one of each.
+
+Walls are chosen per room deeper in rather than per cell, because a wall whose
+every cell is a different stone is a patchwork rather than a wall, and
+BuildRoomWalls places one room's ring at a time so the room is the unit the
+geometry already has. At level 0 every room takes the band's wood, unchanged.
+
+Everything that made the old path safe is kept on the new one: StableHash from
+the coordinate's seed and id plus the def name plus the variant, no Rand call,
+sorted by defName so a mod list cannot change a coordinate's appearance,
+Core's own allowedInStuffGeneration opt-out honoured, no material named, and a
+def Core allows nothing for falls through to the palette and then to Core's
+default, because a generation pass must never fail over a furnishing choice.
+
+ColonistEcho.CopyApparel is deliberately unchanged. It copies one of the
+player's own colonists, so the source pawn's material is the right one and
+DefaultStuffFor there is only a fallback for a piece that had none. An echo
+should mirror the colonist, not the coordinate.
+
+Six proof claims objected correctly across the two passes and every one
+encoded a previous decision rather than a property: PaletteSize = 3, then the
+grown palette, then four whose exact strings moved. Three plants found loose
+claims: CoherentDepth had no upper bound so a planted 99 passed, nothing
+asserted that the variant reached the hash key even though that is the entire
+feature, and a 16-space anchor was a substring of a 20-space one so the
+harness refused to run rather than mis-score - the duplicate-string trap,
+twice in one checkpoint.
+
+200 C# files, 91 package files, zero warnings, zero errors. Assembly SHA-256
+9D7DCDAF2FFA06C740F800437458571351511B56DDBDC1123463886B46ED7DF4, reproduced
+by two clean recompiles. Thirteen checkers pass, forty-one proofs hold, 43 of
+43 planted faults caught.

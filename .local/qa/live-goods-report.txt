@@ -1,0 +1,55 @@
+cells read: 9216   tiles failed: 0
+
+DEF                                   TOTAL STACKS
+----------------------------------------------------
+Marble                                 2271   2271
+Granite                                 515    515
+Wall                                    417    417
+MineableSteel                            68     68
+PowerConduit                             63     63
+MineableComponentsIndustrial             19     19
+Shelf                                    18     18
+Column                                   13     13
+Door                                     12     12
+Table2x2c                                12     12
+SteleLarge                               12     12
+Z_MineableQuartz                          9      9
+MineablePlasteel                          7      7
+Sarcophagus                               6      6
+Steel                                     6      6
+CommsConsole                              6      6
+Bed                                       6      6
+StandingLamp                              5      5
+MineableGold                              4      4
+WoodFiredGenerator                        4      4
+Z_MineableSerpentine                      4      4
+Crow                                      3      3
+Gun_ChargeRifle                           3      3
+PainStickSW                               3      3
+ElectricStove                             3      3
+Human                                     3      3
+AncientCryptosleepCasket                  2      2
+AncientHermeticCrate                      2      2
+AncientPipelineSection                    2      2
+AncientRustedCar                          2      2
+Table1x2c                                 2      2
+Stool                                     2      2
+Battery                                   2      2
+AncientShipBeacon                         2      2
+Urn                                       2      2
+RectTrigger                               1      1
+SignalAction_Letter                       1      1
+StargateMod_GlyphScrap                    1      1
+Neurotrainer_Mining                       1      1
+AncientBarrel                             1      1
+MedicineUltratech                         1      1
+ComponentIndustrial                       1      1
+MealSurvivalPack                          1      1
+ComponentSpacer                           1      1
+MechSerumYouth                            1      1
+Heater                                    1      1
+Raccoon                                   1      1
+
+FOOD AND MEALS SPECIFICALLY
+----------------------------------------------------
+MealSurvivalPack                          1  at [(146, 147, 1)]

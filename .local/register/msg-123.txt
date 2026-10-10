@@ -1,0 +1,67 @@
+A portal is its own door cell (0.12.3-dev)
+
+Owner direction: "in the real world maps the portals dont extend into the real
+world environment so in the real world you can mine and build and explore
+directly behind the gates with out actually effecting the gate, unless there is
+connected need requipremd equipemnet directly required placemnets behind the
+pgate doors".
+
+A portal is its own door cell and reserves nothing. No radius, no claimed
+cells, no protected zone. The one exception is not the portal's doing at all:
+linked equipment has a reach of its own, so a console or a bound battery has to
+be within range. That is the equipment's constraint, and the distinction
+matters - a player told "the gate needs space" builds very differently from one
+told "this cabinet has to be within reach of that gate".
+
+A REAL DEFECT, invisible from any single file. PortalEndpointRecord snapshots
+the cell a traveller stands on at registration, and Availability validated that
+saved cell forever after. ApproachCellFor returns the FIRST standable cardinal
+neighbour, so which cell got frozen depended on what happened to be walkable
+the moment the address was registered.
+
+Build a wall on that one cell and the connection reported Obstructed for the
+life of the save - with up to three other perfectly walkable cells beside the
+same door, and no error, no message and no crash. A gate the design calls
+permanently open that had simply stopped working because the player built a
+room behind it.
+
+Both files read correctly alone. The record's snapshotting is deliberate and
+documented; the availability check honestly asks whether a cell is standable.
+The bug lives only in the relationship, which is the same failure family as the
+beacon that could never fire and the tier ladder that could never be climbed.
+
+The fix is PortalEndpointRecord.TryRepairApproach(), re-deriving through
+PortalAddressService.ApproachCellFor - the single derivation, whose own comment
+says callers must not re-derive it.
+
+The anchor cell is deliberately NOT refreshed. That snapshot is what stops a
+moved door silently redirecting a saved route. Refreshing both would have
+traded one silent failure for a worse one, and the proof asserts the asymmetry.
+
+Not repaired while a crossing is in flight. A PortalCrossingReceipt records the
+approach cells it began with and ConnectionStillMatches refuses to continue if
+they changed - the guard that stops a transfer losing a pawn, invariant 55.
+Moving the cell out from under a live transfer would trip that guard and abort
+a legitimate crossing, so a busy edge waits, matched on the connection id
+specifically. The naive fix - re-derive live everywhere - would have quietly
+weakened the most safety-critical system in the mod. Enumerating every read
+site before changing the value is the only reason it did not.
+
+An eighth proof, which also enforces a forward-looking rule: no portal source
+may contain ReserveCell, ClaimRadius, portalRadius, ProtectedRadius or
+ReservedCells. If one ever appears, somebody has started projecting the gate
+onto the map. Fault-planted four ways and correct on every one.
+
+STILL OWED: "natruals can not be destoryed or moved". Core decides
+destructibility at the DEF level - def.destroyable,
+def.building.IsDeconstructible - and this mod may not change those, because it
+would make every door in every colony indestructible for every player and every
+other mod. Damage is solvable per-instance through the vanilla
+PostPreApplyDamage comp hook. Deconstruction has no comp-level veto, and the
+three honest options are all defensible, so it is queued with the question
+attached rather than guessed at.
+
+Build 0.12.3-dev, 168 C# files, 86 package files, 0 warnings, 0 errors.
+Assembly 826C21158ECB93979E2D89FEDBFB8FFC9EC4D825C439215F14A9B3A3D73AC46D
+reproduced by two clean recompiles. Eight checkers pass, eight proofs hold.
+No game was launched, and nothing here has been played.

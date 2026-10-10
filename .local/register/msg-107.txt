@@ -1,0 +1,60 @@
+The survey tag becomes a glow pod (0.10.7-dev)
+
+Route markers are Core glow pods now. You set one down with the
+ordinary install order and mark it, the same shape the gate already
+uses on a door: the component sits on every glow pod in the game and
+is dormant until designated. One dropped by an insect hive on a normal
+map is untouched -- same green light, same lifespan, one extra button
+that does nothing until pressed.
+
+The colour is what it means. Route home, cleared, danger, supply cache,
+unexplored lead. RimWorld's own free colour picker is deliberately not
+enabled: a picker lets a player paint a danger marker the same green as
+a cleared one, and the whole value of the colour is that it reads from
+the far end of a corridor without selecting anything. Marker type also
+carries countersDistortion, so what a colour means is mechanical rather
+than only visual.
+
+Core's glow pod dies after twenty days, and that fact shaped the
+design. CompLifespan.age is a public field, so a designated pod is held
+at zero and every other glow pod in the game is left alone. A route
+home that evaporates on day twenty is not a route home.
+
+The direction named one cap and there were three: one deployed aid per
+room, a dispatch check refusing any crew carrying fewer than six tags,
+and a recipe that made exactly six. None of them is left.
+
+An outcome in the code could never happen. A marked junction countering
+a corridor distortion tested for a return beacon, a def retired in
+0.9.9-dev, so the condition had been permanently false for three
+checkpoints and no checker could see it. Marker types gave it a real
+condition for the first time. Retiring a def means retiring every rule
+only that def could satisfy.
+
+Two things that would have been bugs. The distortion moves a marker,
+and the retired code moved it by writing Position -- correct for a
+small item, wrong for a Building, whose cells are registered in the
+map's thing grid at spawn. It despawns and respawns now. That respawn
+would then have re-read the room the marker had just been moved into
+and quietly agreed with it, erasing the discrepancy the move exists to
+create, so a flag suppresses the rebind for that instant while keeping
+it for the case that wants it.
+
+Supply is entirely native. ScenPart_StartingThing_Defined minifies its
+own output, so granting eight pods at the start needed no code at all.
+Procurement needed one line: an uncrated building in a cargo hold is a
+thing no colonist can pick up, and that was latent for every minifiable
+def the catalogue might ever carry. Deployment is the install order --
+five moving parts became none.
+
+The register was checked first and came back empty. Zero of 295 rows
+mention glow; none of the 27 that mention light touches CompGlower or
+the glow grid.
+
+Retired and archived, never deleted: RR_SurveyTag, RR_MakeSurveyTags,
+RR_DeployRouteAid, two source files, one texture, eleven keyed strings.
+The dated record that linked to the retired source had its link
+repointed and its sentences left alone.
+
+159 C# files, 82 package files, zero warnings. Seven checkers pass.
+Assembly reproduced by two clean recompiles. No game launched.

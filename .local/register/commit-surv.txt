@@ -1,0 +1,68 @@
+Getting somebody out, and earning what comes against you (0.8.3-dev)
+
+Two loose ends closed, both named honestly in the previous checkpoint rather than
+buried.
+
+Recruiting a survivor. The previous checkpoint placed them -- alive, neutral,
+carryable out -- and said plainly that without a way to accept them a survivor
+was scenery you could pick up rather than a person you could save. This is
+offering passage rather than recruiting: no negotiation, no recruitment chance
+and no prisoner step, because somebody lost in the Backrooms who meets a team
+with a way out wants to leave, and making a player roll for that would be a worse
+story and a worse game.
+
+The structurally important part is that joining is also what lets them leave. The
+traversal rule is absolute -- an inhabitant may never decide anything about a
+gate -- so a survivor who has not joined cannot cross, and the only way out for
+them is to be carried, exactly like anything else found down there. Joining makes
+them a colonist and PortalTraversalPolicy then permits it through the same single
+chokepoint everything else uses. Nothing here special-cases a gate, deliberately:
+the rule is enforced in one place and this is one more caller obeying it rather
+than an exception to it. The letter says so out loud, because it is the most
+interesting thing about the interaction.
+
+The comp sits on the human race def so every pawn in the game carries it, and it
+does nothing unless a coordinate marked that particular person as a survivor it
+produced -- the same dormant-until-designated pattern the gate, emergence and
+credit beacon comps use on Core buildings. One of the branch's own people must be
+present to make the offer, so a survivor cannot be recruited from the other side
+of a gate by a player looking at a map.
+
+The encounter cap as a recorded progression step. This was the last unmet clause
+of the original ladder direction from 2026-09-28: caps where raising a cap is
+itself a recorded progression step. The cap and the absolute ceiling were built
+in 0.8.0-dev; what was missing is that the cap should not simply be the ceiling
+from day one. It has to be earned, recorded and visible in the branch's own
+history, so a player can look back and see the moment the rules changed rather
+than discovering that the world quietly got harder.
+
+The step is reaching a depth nobody has reached before, and that choice is
+deliberate. Wealth already feeds the ladder's ceiling, so using it again here
+would double-count one input, and research is not an act of exploration. Pushing
+deeper than the branch has ever been is the one thing that is unambiguously the
+player choosing to escalate, which means the Backrooms never brings more against
+somebody than they went looking for. A branch that stays shallow stays at the
+opening cap forever however rich or advanced it becomes, and that is the point
+rather than a side effect.
+
+The cap opens at one so a first dangerous space is dangerous rather than
+overwhelming, rises by one per new deepest coordinate, and never passes the
+absolute ceiling of three that keeps the solo-survivability condition true. It is
+idempotent, so a cap cannot be walked up by re-entering one space, and depth one
+never raises anything because every branch starts there. A step that hits the
+ceiling is still recorded, because the history should show the branch went deeper
+even when nothing changed.
+
+147 C# source files, 89 approved package files, zero warnings, zero errors. One
+PatchOperationAdd adding a dormant comp to a Core def; Replace and Remove remain
+forbidden. No new PawnKindDef, no new gameplay ThingDef, no asset, no new work
+type. Assembly SHA-256
+EB18029C58456A3A99D85440D3808BE9A8A410380CC3895AEE7CA1A95A08F51C reproduced by
+two full recompiles after deleting obj/ and bin/. All four checkers pass.
+
+Still open and named in TODO.md rather than deferred: anomalous events as
+distinct from anomalous rooms and inhabitants; and echoed room shapes, which is
+the larger of the two because room dimensions feed the saved layout fingerprint
+and changing them touches generation's validation path.
+
+No game was launched, no test was run, no RimSort mod list was changed.

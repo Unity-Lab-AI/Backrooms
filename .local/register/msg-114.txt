@@ -1,0 +1,65 @@
+The second rung of every branch (0.11.4-dev)
+
+Step 6 of the chart's build order, tier 1: "First entry -- prepare a
+measured short expedition and interpret a first return." Seven projects,
+one per branch, each requiring its own tier 0 root and one completed
+route log. No distortion or entity log at this band, because those need
+something to have gone wrong and that is tier 2's business.
+
+Efficient Aperture, Rescue Training, Corroboration, Alternate Exits,
+Detection, Relays, Leases. Three of them supersede their tier 0
+capability rather than compounding with it: the read sites check the
+tier 1 capability first and fall through, so a branch holding both gets
+the deeper number and not the product. A player should be able to read
+"twice as long" off a card and have it be twice as long.
+
+Alternate Exits lowers the cap on how many things move, not the chance
+that any do. The space still moves things on the same schedule; a branch
+simply notices fewer because it is no longer depending on one remembered
+route. Relays shortens a delay, never a deadline -- nothing is asked of
+the player in transit and nothing fails on arrival -- and is clamped so
+a shipment cannot arrive before it left.
+
+Two vestigial props found and retired. The Facilities tier 1 project was
+going to raise reserveChargePowerWatts. That prop is read by nothing,
+and neither is returnReserveCapacityWattDays. Both appear in exactly two
+places, the declaration and a validation, and no system consults either.
+They are residue from the power model retired in 0.9.1-dev, since when
+the reserve IS the bound Core battery and RimWorld charges it. Note the
+trap: the property ReturnReserveCapacityWattDays reads the battery while
+the field returnReserveCapacityWattDays read nothing. One character of
+casing between a value that means something and one that means nothing,
+in the same class.
+
+The validation went with them. It compared the two costs against a
+number unrelated to the battery a player binds, so it guaranteed
+nothing; the real guarantee in SpendNativeOpeningTick is untouched.
+
+That would have shipped an unlock that changed nothing -- the exact lie
+the previous checkpoint built a proof to prevent, arriving one
+checkpoint later through a door that proof does not watch. It asserts a
+capability is read; this would have been a capability that was read,
+modifying a prop that was not. A dead prop is more dangerous than dead
+code, because it reads exactly like a live one.
+
+The proof gained a claim and the first version of it was wrong. It
+asserted every depth must trace to two or more roots, and failed on
+depths 2 and 3 -- which are the gate ladder's upper rungs, and that
+ladder is deliberately a single linear chain, proved ordered and
+monotonic in 0.10.9-dev. The assertion was wrong and the tree was right.
+The chart's rule is about entering a branch, so the claim was restated:
+no project downstream may be a chokepoint where separate branches merge.
+It still catches something real -- planting a second prerequisite so
+Commerce required Logistics failed with "two branches merge here". The
+temptation was to widen the ladder so the assertion passed, which is
+invariant 110 exactly.
+
+The -- in an XML comment, for the fifth time. The file stopped parsing
+and the build did not notice, because it compiles C# and copies files
+rather than parsing def XML. Two checkers caught it hard; only running
+the proof first hid it.
+
+162 C# files, 85 package files, zero warnings. 18 projects, 14
+capabilities, every one granted once and read by real code. Eight
+checkers pass, four proofs hold, assembly reproduced by two clean
+recompiles. No game launched.

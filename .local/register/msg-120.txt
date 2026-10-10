@@ -1,0 +1,70 @@
+You are already in (0.12.0-dev)
+
+The third and last of the chart's starts. The mod now ships all three, and
+this one is unlike the other two: the map itself is a Backrooms coordinate,
+wall to wall.
+
+The stable scenario ID stays lone_survivor because saves depend on it. The
+name is solo/group, on owner direction: "group have been known to end up
+together inside". One to five people through Core's own config page -
+pawnCount 1 with pawnChoiceCount 5 - so native setup, Prepare Carefully and
+Character Editor all see an ordinary scenario with no custom UI to go stale.
+
+No Harmony and no trick. Game.InitNewGame picks
+
+    initData.mapGeneratorDef ?? settlement.MapGeneratorDef
+
+GameInitData.mapGeneratorDef is a public field Core consults first, and
+ScenPart_RimroomsStart.PreMapGenerate has assigned it from the start def since
+the Async headquarters was built. A start that opens inside simply names a
+different generator, and the map size comes from the same place, which is why
+the coordinate fills the map to every edge instead of sitting as an island in
+open ground. Nothing was patched and no other mod's defs were touched.
+
+The coordinate SHELL is now shared between the destination generator and the
+inside start: void terrain, RoofRockThick over every cell, solid mineable rock
+filling everything that is not a room, rooms carved out of it, corridors,
+walls and doors. That block carries invariant 13 - a Backrooms coordinate has
+no outside and its roof is never removable - and the roof is deliberately
+RoofRockThick rather than RoofConstructed because constructed roof can be
+taken off. A second copy would have drifted, and what would drift out of it is
+the promise that you cannot dig your way into open sky. Same reasoning as the
+anomaly effects one checkpoint ago: share the half that carries the promises,
+let each caller furnish its own.
+
+Three absences, each deliberate and each cheaper and more honest than a
+half-built version:
+
+- No power and no lights. The destination generator wires a generator and
+  conduits because a branch arrives with a gate behind it. Nobody wired this
+  one. Three glow pods and whatever else they carried in.
+- No gate anchor and no return cell. Nothing opened onto this place. There is
+  no way home and finding one is the whole opening.
+- The coordinate is not registered in the branch atlas. It is the map the
+  colony lives on, saved whole, so a reload cannot silently produce a
+  different place - which is what SCENARIOS.md actually requires. Turning
+  where you were trapped into a coordinate you can dial back to is a
+  convergence feature and belongs with the escape route.
+
+Zero funding, zero wages, zero overhead, and none of that is a balance call.
+There is no company here, so nobody is paid and nothing is billed.
+
+The starts proof learned a second shape. An inside start has no layout, so
+every geometry claim is about a facility that does not exist; it now asserts
+what is true instead - no declared facility, the coordinate map size, a map
+generator the mod ships, and a genstep class that resolves in source. That
+last one is the nastiest failure in the checkpoint: a class named in XML and
+defined nowhere does not crash, it gives the player an ORDINARY RIMWORLD
+COLONY while the scenario description still promises the Backrooms.
+
+Fault-planted four more ways - a room added to the inside start, map size 50,
+a generator that does not exist, a genstep class typo - and correct on every
+one. The proof holds over all three starts.
+
+Exactly one start begins in corporation contact, asserted. The other two earn
+it, and until they do there is no clean-up team and no courier.
+
+Build 0.12.0-dev, 168 C# files, 86 package files, 0 warnings, 0 errors.
+Assembly C6810C8DD2E0B422B4B5F3BBF1CA05E178B8AC0F9D60FAF16D84598E7CB46AEB
+reproduced by two clean recompiles. Eight checkers pass, seven proofs hold.
+No game was launched.

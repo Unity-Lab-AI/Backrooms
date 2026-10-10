@@ -1,0 +1,65 @@
+The free doors run out (0.12.1-dev)
+
+Owner direction: "and remember the solo/group start in a backroom needs to
+100% have a exit to map natural portal on their first backrroms level with
+natural portals deeper to an extent till they would need to buidl theri own
+gate". And, mid-turn: "but remmebr this is all open eneded they can play how
+they choose".
+
+This corrects 0.12.0-dev, shipped an hour earlier, whose record states "There
+is no way home and finding one is the whole opening." That is wrong. The
+0.12.0 record is annotated, not rewritten, per invariant 135.
+
+This checkpoint builds the second half of the direction. The owner's answer at
+the fork was through depth 3, and that is what shipped:
+NaturalFrontierService.MaximumNaturalDepth = 3. The Backrooms hands a branch
+the shallow yellow rooms and two steps inward, then stops handing out doors.
+Deeper is a machine's job, which is the convergence this start needed.
+
+The cap is applied AFTER the way-out attempt, and that ordering is the whole
+safety of it. Capping both directions would make depth 3 a trap - a crew at
+the deepest natural band with no door home and no way to find one - which
+invariant 28 forbids. It is asserted rather than trusted to the reading.
+
+It refuses rather than quietly minting something shallower. A door that led
+somewhere other than where it should would be a quieter and worse lie than
+being told plainly that nothing natural goes further.
+
+It restrains the doors, not the player. A built gate reaches any depth it has
+earned, exactly as before, and a player who never wants to go deeper never
+meets the wall at all.
+
+check-info-cards refused the first version of the player-facing string for
+saying "doorway": the enforced vocabulary is door, gate, connection,
+threshold. The string was wrong and the rule was right.
+
+A claim of mine was failing OPEN, which is a new failure mode this session.
+The ordering claim was a string-index search over the literal text
+"depth > MaximumNaturalDepth", so a plant that reordered the cap using a
+different variable name failed it for the WRONG reason - and the same claim
+could have PASSED for a genuinely reordered cap. Rewritten to key off
+Refused("RR_Frontier_BeyondNaturalReach"), which is the thing that actually
+happens and cannot be renamed without the keyed string moving with it, then
+re-planted and confirmed to fail for the right reason. Fourth assertion
+corrected this session and the first of this kind.
+
+Fault-planted three ways: the depth limit changed to 5, the cap moved before
+the way-out attempt, and the keyed string deleted. Correct on all three.
+
+Register checked first across facilities and spatial construction. Nothing
+applies: this adds no building, terrain or roof behaviour, and the adjacent
+remove-mountain-roof concern was closed in 0.6.4-dev and is untouched.
+
+STILL OWED on this direction, queued with its full design: the guaranteed exit
+on level 1, emerging on a fresh world tile chosen by the seed. The existing
+emergence path cannot serve it - RegisterEmergenceAddress needs a
+CompRimroomsEmergence anchor, which is a door the player marked on a map they
+already hold, and it requires the Backrooms side to be a
+RimroomsDestinationMapParent while the solo start's map is Settlement-parented
+because Core requires a player settlement for the starting map. Then the
+solo/group tutorial line, which must guide without railing.
+
+Build 0.12.1-dev, 168 C# files, 86 package files, 0 warnings, 0 errors.
+Assembly 62935DFB887DED243394A1A6C5440ED3DE39F364AF055AAB17E5CF8491FCFA57
+reproduced by two clean recompiles. Eight checkers pass, seven proofs hold.
+No game was launched.

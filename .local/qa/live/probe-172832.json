@@ -1,0 +1,427 @@
+{
+  "status": "complete",
+  "captured_at_utc": "2026-10-01T23:28:32+00:00",
+  "client": "RimroomsReadOnlyQA/2",
+  "limitations": [
+    "Caller-supplied PID and log pairing cannot be proven by this client.",
+    "A successful handshake is not Rimrooms compatibility evidence.",
+    "Read results are sequential observations, not an atomic game snapshot.",
+    "Warnings are the latest 50 retained journal entries, not the entire startup log."
+  ],
+  "process": {
+    "pid": 26128,
+    "executable": "RimWorldWin64.exe"
+  },
+  "endpoint": {
+    "host": "127.0.0.1",
+    "port": 5174
+  },
+  "authentication_token_present": true,
+  "selected_reads": [
+    "ping",
+    "status",
+    "game",
+    "logs"
+  ],
+  "protocol": "gabp/1",
+  "calls": [
+    {
+      "selector": "ping",
+      "tool": "rimbridge/ping",
+      "result": {
+        "message": "pong",
+        "timestamp": "2026-10-01T23:28:32.6879628Z",
+        "operation": {
+          "OperationId": "op_33f84ea4fe204a4d86cd998b31644928",
+          "CapabilityId": "rimbridge.core/diagnostics/ping",
+          "Status": 2,
+          "Success": true,
+          "StartedAtUtc": "2026-10-01T23:28:32.6824561+00:00",
+          "CompletedAtUtc": "2026-10-01T23:28:32.688462+00:00",
+          "DurationMs": 6,
+          "Result": null,
+          "HasResult": true,
+          "ResultWasTruncated": false,
+          "Warnings": [],
+          "Error": null,
+          "Metadata": {}
+        }
+      },
+      "evidence_truncations": 0
+    },
+    {
+      "selector": "status",
+      "tool": "rimbridge/get_bridge_status",
+      "result": {
+        "success": true,
+        "state": {
+          "programState": "Playing",
+          "inEntryScene": false,
+          "hasCurrentGame": true,
+          "currentMapId": "Map_0",
+          "currentMapIndex": 0,
+          "mapCount": 2,
+          "longEventPending": false,
+          "paused": false,
+          "timeSpeed": "Normal",
+          "screenFading": false,
+          "fadeOverlayAlpha": 0.0,
+          "gameDataReady": true,
+          "mapDataReady": true,
+          "currentMapReady": true,
+          "screenFadeClear": true,
+          "playable": true,
+          "visualReady": true,
+          "automationReady": true
+        },
+        "version": {
+          "bridgeVersion": "2.1.1+ca5997c9e02f53609358223a673834e35a1d1ee1",
+          "bridgeAssemblyVersion": "2.1.1.0",
+          "sdkVersion": "2.1.1.0",
+          "sdkInformationalVersion": "2.1.1+ca5997c9e02f53609358223a673834e35a1d1ee1"
+        },
+        "sdk": {
+          "sdkAssembly": "RimBridgeServer.Sdk",
+          "sdkVersion": "2.1.1.0",
+          "sdkInformationalVersion": "2.1.1+ca5997c9e02f53609358223a673834e35a1d1ee1",
+          "companionCount": 0,
+          "companionWarningCount": 0,
+          "companionErrorCount": 0
+        },
+        "companions": {
+          "totalCount": 0,
+          "registeredToolCount": 0,
+          "diagnostics": []
+        },
+        "patches": {
+          "applied": true,
+          "essentialApplied": true,
+          "optionalPatchAttemptCount": 56,
+          "optionalPatchSuccessCount": 56,
+          "optionalPatchFailureCount": 0,
+          "optionalPatchFailures": [],
+          "lateInputPatches": {
+            "applied": true,
+            "attemptCount": 6,
+            "successCount": 6,
+            "failureCount": 0,
+            "failures": []
+          }
+        },
+        "recentOperationCount": 2,
+        "trackedOperationCount": 2,
+        "operationJournalCapacity": 1000,
+        "retainedResultCount": 1,
+        "retainedResultCapacity": 50,
+        "recentEventCount": 3,
+        "eventJournalCapacity": 5000,
+        "recentLogCount": 65,
+        "logJournalCapacity": 2000,
+        "latestOperationEventSequence": 3,
+        "latestLogSequence": 66,
+        "operation": {
+          "OperationId": "op_15c15fe8f74f45e9a61b19049ad95cf7",
+          "CapabilityId": "rimbridge.core/diagnostics/get-bridge-status",
+          "Status": 2,
+          "Success": true,
+          "StartedAtUtc": "2026-10-01T23:28:32.7080249+00:00",
+          "CompletedAtUtc": "2026-10-01T23:28:32.7290788+00:00",
+          "DurationMs": 21,
+          "Result": null,
+          "HasResult": true,
+          "ResultWasTruncated": false,
+          "Warnings": [],
+          "Error": null,
+          "Metadata": {}
+        }
+      },
+      "evidence_truncations": 0
+    },
+    {
+      "selector": "game",
+      "tool": "rimworld/get_game_info",
+      "result": {
+        "status": "game_loaded",
+        "ticksGame": 105796,
+        "mapCount": 2,
+        "selectedPawns": [],
+        "operation": {
+          "OperationId": "op_54ec933d556a4bf3adb38990bf10cb86",
+          "CapabilityId": "rimbridge.core/diagnostics/get-game-info",
+          "Status": 2,
+          "Success": true,
+          "StartedAtUtc": "2026-10-01T23:28:32.7707199+00:00",
+          "CompletedAtUtc": "2026-10-01T23:28:32.7732303+00:00",
+          "DurationMs": 2,
+          "Result": null,
+          "HasResult": true,
+          "ResultWasTruncated": false,
+          "Warnings": [],
+          "Error": null,
+          "Metadata": {}
+        }
+      },
+      "evidence_truncations": 0
+    },
+    {
+      "selector": "logs",
+      "tool": "rimbridge/list_logs",
+      "result": {
+        "logs": [
+          {
+            "Sequence": 63,
+            "EntryId": "log_2ef414cebf89421292a4b17c3aae834d",
+            "Level": "error",
+            "Message": "TableTop has no table at (266, 0, 34)!",
+            "StackTrace": "",
+            "Source": "unity",
+            "OperationId": "",
+            "CapabilityId": "",
+            "ParentOperationId": "",
+            "RootOperationId": "",
+            "ScriptStatementId": "",
+            "ScriptStepId": "",
+            "ScriptCall": "",
+            "FirstSeenAtUtc": "2026-10-01T23:22:48.5069822+00:00",
+            "TimestampUtc": "2026-10-01T23:22:48.5069822+00:00",
+            "RepeatCount": 1
+          },
+          {
+            "Sequence": 62,
+            "EntryId": "log_f8e3a67383fa40049c5cd4e0e59f4997",
+            "Level": "error",
+            "Message": "TableTop has no table at (249, 0, 24)!",
+            "StackTrace": "",
+            "Source": "unity",
+            "OperationId": "",
+            "CapabilityId": "",
+            "ParentOperationId": "",
+            "RootOperationId": "",
+            "ScriptStatementId": "",
+            "ScriptStepId": "",
+            "ScriptCall": "",
+            "FirstSeenAtUtc": "2026-10-01T23:22:48.5064822+00:00",
+            "TimestampUtc": "2026-10-01T23:22:48.5064822+00:00",
+            "RepeatCount": 1
+          },
+          {
+            "Sequence": 61,
+            "EntryId": "log_3113b2a5d3a24b8fb7fbcea1b920ea9b",
+            "Level": "error",
+            "Message": "TableTop has no table at (253, 0, 30)!",
+            "StackTrace": "",
+            "Source": "unity",
+            "OperationId": "",
+            "CapabilityId": "",
+            "ParentOperationId": "",
+            "RootOperationId": "",
+            "ScriptStatementId": "",
+            "ScriptStepId": "",
+            "ScriptCall": "",
+            "FirstSeenAtUtc": "2026-10-01T23:22:48.5059823+00:00",
+            "TimestampUtc": "2026-10-01T23:22:48.5059823+00:00",
+            "RepeatCount": 1
+          },
+          {
+            "Sequence": 60,
+            "EntryId": "log_af38f01427344f63898bc9f78ba19887",
+            "Level": "error",
+            "Message": "TableTop has no table at (266, 0, 34)!",
+            "StackTrace": "",
+            "Source": "unity",
+            "OperationId": "",
+            "CapabilityId": "",
+            "ParentOperationId": "",
+            "RootOperationId": "",
+            "ScriptStatementId": "",
+            "ScriptStepId": "",
+            "ScriptCall": "",
+            "FirstSeenAtUtc": "2026-10-01T23:22:42.8750293+00:00",
+            "TimestampUtc": "2026-10-01T23:22:42.8750293+00:00",
+            "RepeatCount": 1
+          },
+          {
+            "Sequence": 59,
+            "EntryId": "log_ee1d8e91c3ea460a8a1e61ec2c931d8e",
+            "Level": "error",
+            "Message": "TableTop has no table at (249, 0, 24)!",
+            "StackTrace": "",
+            "Source": "unity",
+            "OperationId": "",
+            "CapabilityId": "",
+            "ParentOperationId": "",
+            "RootOperationId": "",
+            "ScriptStatementId": "",
+            "ScriptStepId": "",
+            "ScriptCall": "",
+            "FirstSeenAtUtc": "2026-10-01T23:22:42.8740296+00:00",
+            "TimestampUtc": "2026-10-01T23:22:42.8740296+00:00",
+            "RepeatCount": 1
+          },
+          {
+            "Sequence": 58,
+            "EntryId": "log_6fbd973dbbd3467e9a03dd75f9cdad70",
+            "Level": "error",
+            "Message": "TableTop has no table at (253, 0, 30)!",
+            "StackTrace": "",
+            "Source": "unity",
+            "OperationId": "",
+            "CapabilityId": "",
+            "ParentOperationId": "",
+            "RootOperationId": "",
+            "ScriptStatementId": "",
+            "ScriptStepId": "",
+            "ScriptCall": "",
+            "FirstSeenAtUtc": "2026-10-01T23:22:42.8675235+00:00",
+            "TimestampUtc": "2026-10-01T23:22:42.8675235+00:00",
+            "RepeatCount": 1
+          },
+          {
+            "Sequence": 28,
+            "EntryId": "log_f6a9f36c31f84bc4861bd9a51137364f",
+            "Level": "warning",
+            "Message": "Scatterer RimWorld.GenStep_Monolith from def VoidMonolith could not find cell to generate at.",
+            "StackTrace": "",
+            "Source": "unity",
+            "OperationId": "",
+            "CapabilityId": "",
+            "ParentOperationId": "",
+            "RootOperationId": "",
+            "ScriptStatementId": "",
+            "ScriptStepId": "",
+            "ScriptCall": "",
+            "FirstSeenAtUtc": "2026-10-01T23:00:35.5496644+00:00",
+            "TimestampUtc": "2026-10-01T23:00:35.5496644+00:00",
+            "RepeatCount": 1
+          },
+          {
+            "Sequence": 27,
+            "EntryId": "log_3e01db09a79d4bc68c363aea16aece6e",
+            "Level": "warning",
+            "Message": "Scatterer RimWorld.GenStep_Monolith from def VoidMonolith could not find cell to generate at, trying fallback validators.",
+            "StackTrace": "",
+            "Source": "unity",
+            "OperationId": "",
+            "CapabilityId": "",
+            "ParentOperationId": "",
+            "RootOperationId": "",
+            "ScriptStatementId": "",
+            "ScriptStepId": "",
+            "ScriptCall": "",
+            "FirstSeenAtUtc": "2026-10-01T23:00:35.5496644+00:00",
+            "TimestampUtc": "2026-10-01T23:00:35.5496644+00:00",
+            "RepeatCount": 1
+          },
+          {
+            "Sequence": 26,
+            "EntryId": "log_424d3bbc32f441a1992b2d641c4c6a88",
+            "Level": "warning",
+            "Message": "Scatterer RimWorld.GenStep_ScatterLayout from def AncientExostriderRemains could not find cell to generate at.",
+            "StackTrace": "",
+            "Source": "unity",
+            "OperationId": "",
+            "CapabilityId": "",
+            "ParentOperationId": "",
+            "RootOperationId": "",
+            "ScriptStatementId": "",
+            "ScriptStepId": "",
+            "ScriptCall": "",
+            "FirstSeenAtUtc": "2026-10-01T23:00:35.5486641+00:00",
+            "TimestampUtc": "2026-10-01T23:00:35.5486641+00:00",
+            "RepeatCount": 1
+          },
+          {
+            "Sequence": 25,
+            "EntryId": "log_570a7d96188d41f68362d73b84b95192",
+            "Level": "warning",
+            "Message": "Scatterer RimWorld.GenStep_ScatterLayout from def AncientExostriderRemains could not find cell to generate at, trying fallback validators.",
+            "StackTrace": "",
+            "Source": "unity",
+            "OperationId": "",
+            "CapabilityId": "",
+            "ParentOperationId": "",
+            "RootOperationId": "",
+            "ScriptStatementId": "",
+            "ScriptStepId": "",
+            "ScriptCall": "",
+            "FirstSeenAtUtc": "2026-10-01T23:00:35.5486641+00:00",
+            "TimestampUtc": "2026-10-01T23:00:35.5486641+00:00",
+            "RepeatCount": 1
+          },
+          {
+            "Sequence": 24,
+            "EntryId": "log_fbdb5ae8527241e7aebeb3a7e1edbcdf",
+            "Level": "warning",
+            "Message": "Tried scattering group from def AncientJunkClusters at (14, 0, 26) on map Map-0-PlayerHome which is an invalid location!",
+            "StackTrace": "",
+            "Source": "unity",
+            "OperationId": "",
+            "CapabilityId": "",
+            "ParentOperationId": "",
+            "RootOperationId": "",
+            "ScriptStatementId": "",
+            "ScriptStepId": "",
+            "ScriptCall": "",
+            "FirstSeenAtUtc": "2026-10-01T23:00:34.6564474+00:00",
+            "TimestampUtc": "2026-10-01T23:00:34.6564474+00:00",
+            "RepeatCount": 1
+          }
+        ],
+        "operation": {
+          "OperationId": "op_32fe60b400f34d3988ea615c74e23291",
+          "CapabilityId": "rimbridge.core/diagnostics/list-logs",
+          "Status": 2,
+          "Success": true,
+          "StartedAtUtc": "2026-10-01T23:28:32.7762396+00:00",
+          "CompletedAtUtc": "2026-10-01T23:28:32.777743+00:00",
+          "DurationMs": 1,
+          "Result": null,
+          "HasResult": true,
+          "ResultWasTruncated": false,
+          "Warnings": [],
+          "Error": null,
+          "Metadata": {}
+        }
+      },
+      "evidence_truncations": 0
+    }
+  ],
+  "session": {
+    "agentId": "gabp-server",
+    "app": {
+      "name": "RimBridgeServer",
+      "version": "2.1.1.0"
+    },
+    "capabilities": {
+      "methods": [
+        "session/hello",
+        "tools/list",
+        "tools/call",
+        "events/subscribe",
+        "events/unsubscribe",
+        "attention/current",
+        "attention/ack"
+      ],
+      "events": [
+        "attention/updated",
+        "system/status",
+        "rimbridge.operation",
+        "attention/cleared",
+        "attention/opened",
+        "system/log",
+        "rimbridge.log"
+      ],
+      "resources": []
+    },
+    "schemaVersion": "1.0"
+  },
+  "evidence_truncations": 0,
+  "available_allowlisted_tools": [
+    "rimbridge/get_bridge_status",
+    "rimbridge/list_logs",
+    "rimbridge/ping",
+    "rimworld/get_game_info",
+    "rimworld/get_mod_configuration_status"
+  ],
+  "requested_tools_missing_from_live_list": []
+}
