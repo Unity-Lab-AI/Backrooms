@@ -19,6 +19,25 @@ orders file is the only thing it writes.
 """
 import http.server, importlib.util, json, os, re, socket, subprocess, sys, threading, urllib.request, uuid
 
+# Owner, 2026-10-10: "im getting alot of system cmd openings while im doing stuff". Every helper this script
+# spawns -- powershell for the process table, python for a spoken line -- was flashing its own console over
+# whatever the owner was doing. One shim, applied to this process, makes every child windowless.
+import subprocess as _sp, os as _os
+if _os.name == "nt":
+    _CF = 0x08000000                       # CREATE_NO_WINDOW
+    _run = _sp.run
+    def _run_nowin(*a, **k):
+        k["creationflags"] = k.get("creationflags", 0) | _CF
+        return _run(*a, **k)
+    _sp.run = _run_nowin
+    _Popen = _sp.Popen
+    class _PopenNoWin(_Popen):
+        def __init__(self, *a, **k):
+            k["creationflags"] = k.get("creationflags", 0) | _CF
+            super().__init__(*a, **k)
+    _sp.Popen = _PopenNoWin
+
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 QA = os.path.join(ROOT, ".local", "qa")
@@ -103,6 +122,8 @@ PAGE = """<!doctype html><meta charset=utf-8><title>Unity mission control</title
    <pre id=svcout></pre>
   </div>
   <div class=card style=margin-top:14px><b>Colony</b><pre id=colony>loading...</pre></div>
+  <div class=card style=margin-top:14px id=popcard><b>Pop-up waiting for you</b>
+   <pre id=popup>none</pre></div>
   <div class=card style=margin-top:14px><b>Needs the game window</b>
    <small>&nbsp;these only work when RimWorld is the front window</small>
    <pre id=queue>loading...</pre></div>
@@ -150,7 +171,17 @@ async function queue(){const d=await j('/api/queue');
 
 last run:
 '+(d.log||'')}
-refresh();queue();setInterval(refresh,6000);setInterval(queue,15000);
+async function popup(){const d=await j('/api/popup');const box=document.getElementById('popup');
+ const card=document.getElementById('popcard');
+ if(!d||!d.type){box.textContent='none';card.style.borderColor='#2a2a35';return}
+ box.textContent=(d.type||'')+'
+
+'+((d.text||[]).join('
+'))+'
+
+options: '+((d.options||[]).join(' | '));
+ card.style.borderColor='#ff5fa2'}
+refresh();queue();popup();setInterval(refresh,6000);setInterval(queue,15000);setInterval(popup,5000);
 </script>
 """
 
@@ -165,6 +196,15 @@ class H(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path in ("/", "/index.html"):
             return self._send(200, PAGE.encode("utf-8"), "text/html; charset=utf-8")
+        if self.path == "/api/popup":
+            # Owner, 2026-10-10: "and i got a p t u didnt mention it so i denyed" -- a pop-up the guard cannot
+            # decide was only written to a flag file and spoken on stream, so the owner had to answer it blind.
+            # It belongs where they are actually looking.
+            f = os.path.join(ROOT, ".claude", ".popup.json")
+            try:
+                return self._send(200, json.load(open(f, encoding="utf-8")))
+            except Exception:
+                return self._send(200, {})
         if self.path == "/api/queue":
             # what still needs the game window, and what the queue said last time it ran
             jobs, log = [], ""

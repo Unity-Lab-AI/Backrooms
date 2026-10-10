@@ -1,7 +1,30 @@
 {
   "version": 1,
-  "note": "Logic gates, not prose. Each gate is: when (conditions on measured state) -> then (an ordered action chain), with the owner's own words as `why` so the reason survives. gates.py evaluates these in priority order against a state dict read off the bridge and hands the autopilot ONE chain, so the model looks up instead of re-reasoning. Lower priority number fires first.",
+  "note": "Logic gates, not prose. Each gate is: when (conditions on measured state) -> then (an ordered action chain), with the owner's own words as `why` so the reason survives. gates.py evaluates these in priority order against a state dict read off the bridge and hands the autopilot ONE chain, so the model looks up instead of re-reasoning. Lower priority number fires first. The gates are a PLC ladder: measured inputs, rungs scanned by priority, the highest live rung wins, and a rung can only be reached when the rungs below it hold -- survive, then power, then defence, then production, then the mountain, then off-world.",
   "gates": [
+    {
+      "id": "new-colony",
+      "priority": 0,
+      "when": {
+        "colony_exists": false
+      },
+      "then": [
+        "start RimWorld's own New Colony page with .local/qa/start-scenario.py \"Async Industries\" -- never a save, never the quick-test colony",
+        "pick a tile near the equator: year-round growing, a mountain edge to dig into, flat buildable ground",
+        "show the tile up close on stream before committing",
+        "settle in this order: roofed food room with a food-only stockpile, stove bill (simple meals, do until 30, no skill limit), beds under a roof, prisoner bed in its own room, two lamps a room",
+        "day one: designate every food plant and every safe animal; never a boomalope, never big game with fewer than three rifles",
+        "day one: manual work priorities, Firefight through Cook = 1 for everyone, then customise after Cook, no blanks",
+        "set each field's crop the day it is drawn: rice first for speed, then corn, potatoes, healroot, cotton",
+        "keep days-of-food above three before building anything that is not shelter",
+        "the company gate and the expeditions come AFTER the colony feeds itself"
+      ],
+      "why": "owner, 2026-10-10: \"lets get the local model starting a new coloy and everything as the company doing everything that you normal do corrrectly while playing\" -- the equator camp ended on an empty larder",
+      "never": [
+        "load an old save",
+        "start the built-in quick-test colony: it has no company and no gate"
+      ]
+    },
     {
       "id": "dialog-open",
       "priority": 1,
@@ -56,15 +79,21 @@
       "priority": 4,
       "when": {
         "meals": 0,
-        "raw_food": "<5"
+        "raw_food": "<5",
+        "days_of_food": "<{FOOD_PANIC_DAYS}"
       },
       "then": [
-        "designate every berry bush and harvestable plant near camp",
-        "designate hunting on animals, but NEVER on rhinoceros, elephant, bear or thrumbo with fewer than 3 rifles",
+        "designate every berry bush and harvestable food plant near camp",
+        "designate hunting on animals, but NEVER rhinoceros, elephant, bear, thrumbo or megasloth with fewer than 3 rifles",
+        "NEVER a boomalope: it explodes when it dies, which is a fire next to a wooden camp for almost no meat",
         "add a stove bill: simple meals, Do until you have 30, no skill restriction",
-        "force the nearest colonist onto the closest food job"
+        "force the nearest colonist onto the closest food job",
+        "if no food plants are left on the map, meat is the only income until the fields mature -- say so and keep the hunts full"
       ],
-      "why": "owner: \"you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!\""
+      "why": "owner: \"you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!\"",
+      "never": [
+        "mark a boomalope, insect hive or anything that explodes or swarms as a hunt target"
+      ]
     },
     {
       "id": "food-rotting-or-no-cold",
@@ -232,6 +261,159 @@
         "never edit the mod, never write code, never touch anything outside RimWorld and the stream"
       ],
       "why": "owner: \"messages and chat are #1\" / \"NO CUSSING OR DEGRADING ON STEAM\" / the handover's standing contract"
+    },
+    {
+      "id": "rung-2-power-and-cold",
+      "priority": 20,
+      "when": {
+        "days_of_food": ">{FOOD_MIN_DAYS}",
+        "medicine": ">0"
+      },
+      "then": [
+        "research Electricity, then Air conditioning, by typing it in the search box",
+        "a wood-fired generator row, conduit as ONE continuous string, never a spur per building",
+        "a powered cooler on the food room with the hot side OUTSIDE, so the store becomes a freezer",
+        "electric wall lamps replace torches, two per room",
+        "only then is the colony off hand-to-mouth"
+      ],
+      "why": "owner: \"u need power and ac units and shit just like the last paly through\" -- the rung above food, nothing more",
+      "never": [
+        "start this while days-of-food is under three"
+      ]
+    },
+    {
+      "id": "rung-3-defence",
+      "priority": 21,
+      "when": {
+        "days_of_food": ">{FOOD_MIN_DAYS}",
+        "has_power": true
+      },
+      "then": [
+        "embrasure wall all the way round, non-powered type, matching what is already built",
+        "doors two cells in from each corner and one mid-side, lanes behind them kept clear",
+        "a marble firebreak ring three wide outside the wall",
+        "a prisoner room with its own bed before any fight, and a hospital bed marked Medical",
+        "everyone carries a ranged weapon; a sidearm second"
+      ],
+      "why": "owner: \"make wall of embrasure non powered type all around then u can shoot out\" / \"door on corner and sides\"",
+      "never": [
+        "leave a pawn outside the wall when a raid letter is live"
+      ]
+    },
+    {
+      "id": "rung-4-production",
+      "priority": 22,
+      "when": {
+        "days_of_food": ">{FOOD_COMFORT_DAYS}",
+        "has_power": true,
+        "defences_built": true
+      },
+      "then": [
+        "crops into products: beer from hops, joints from smokeleaf, psychite tea, cloth into clothes",
+        "every bill Do-until-you-have, the number raised as the colony grows, no skill restriction",
+        "a comms console: call a trader rather than waiting for one",
+        "stone blocks from the mountain for everything that should not burn"
+      ],
+      "why": "owner: \"lots to sell and production\" / \"set amounts higher and higher as your base grows\""
+    },
+    {
+      "id": "rung-5-the-mountain-base",
+      "priority": 23,
+      "when": {
+        "days_of_food": ">{FOOD_COMFORT_DAYS}",
+        "production_running": true
+      },
+      "then": [
+        "mine the mountain cutout: ONE door in, never pierce the outer rock",
+        "a 3-wide spine south into the gut, throne room centred on it",
+        "labs and tech deeper in, prison and guest wings off the first cross hall",
+        "two cells of rock between every room and the outside face",
+        "move the natural gate into a sealed laboratory at the back"
+      ],
+      "why": "owner: \"plan on putting you bas inside that natural cut out ... never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spine\""
+    },
+    {
+      "id": "rung-6-off-world",
+      "priority": 24,
+      "when": {
+        "mountain_base_done": true
+      },
+      "then": [
+        "ship research, then the hull, engines, reactor and cryptosleep",
+        "defend the launch: a raid comes for the ship, not the colony",
+        "the company's gates and expeditions feed the build -- that is what they are for",
+        "nothing here starts until the mountain base is sealed and fed"
+      ],
+      "why": "owner: \"dominate the universe with a space ewarfare and planet domination\" -- the top rung of the ladder, reached by climbing it",
+      "never": [
+        "chase this rung while anything below it is unfinished"
+      ]
     }
-  ]
+  ],
+  "tags": {
+    "note": "PLC tag table. CONSTANTS are safety limits and never auto-change. VARIABLES are setpoints that scale with the empire -- gates.py recomputes them from measured state each scan and writes them back, so one colony of three and an empire of thirty read the same ladder with different numbers. Reference them in a gate's `when` as {NAME}.",
+    "constants": {
+      "FOOD_PANIC_DAYS": 1.0,
+      "RIFLES_FOR_BIG_GAME": 3,
+      "LAMPS_PER_ROOM": 2,
+      "ROCK_CELLS_AROUND_ROOMS": 2,
+      "SPINE_WIDTH": 3,
+      "MOUNTAIN_DOORS_IN": 1,
+      "FIREBREAK_WIDTH": 3,
+      "MAX_COMMANDS_PER_PASS": 32,
+      "NEVER_HUNT": [
+        "boomalope",
+        "rhinoceros",
+        "elephant",
+        "bear",
+        "thrumbo",
+        "megasloth",
+        "insect hive"
+      ]
+    },
+    "variables": {
+      "FOOD_MIN_DAYS": {
+        "value": 3.0,
+        "rule": "2 + 0.4 per colonist",
+        "min": 3.0,
+        "max": 30.0
+      },
+      "FOOD_COMFORT_DAYS": {
+        "value": 5.0,
+        "rule": "twice FOOD_MIN_DAYS",
+        "min": 5.0,
+        "max": 60.0
+      },
+      "MEAL_BILL_TARGET": {
+        "value": 10,
+        "rule": "10 per colonist",
+        "min": 10,
+        "max": 300
+      },
+      "WOOD_RESERVE": {
+        "value": 100,
+        "rule": "60 per colonist",
+        "min": 100,
+        "max": 2000
+      },
+      "MEDICINE_RESERVE": {
+        "value": 4,
+        "rule": "2 per colonist",
+        "min": 4,
+        "max": 80
+      },
+      "BEDS_NEEDED": {
+        "value": 2,
+        "rule": "one per colonist, plus one spare",
+        "min": 2,
+        "max": 60
+      },
+      "COOLERS_PER_ROOM": {
+        "value": 1,
+        "rule": "one per room up to 3 rooms, then one per 2 rooms",
+        "min": 1,
+        "max": 8
+      }
+    }
+  }
 }
