@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using RimWorld;
 using Verse;
+using Verse.AI;
 
 namespace RimroomsAsyncIndustries.Automation
 {
@@ -67,6 +68,16 @@ namespace RimroomsAsyncIndustries.Automation
                 return;
             }
 
+            ProcessInbox();
+        }
+
+        /// <summary>
+        /// Reads and executes the command file. Called from the game tick, and -- because a paused game does not
+        /// tick, and the owner's rule is that setup happens BEFORE the clock runs -- also once a second from
+        /// <see cref="WorldSetupDriver"/> while a game is loaded and paused.
+        /// </summary>
+        public static void ProcessInbox()
+        {
             string inbox = InboxPath;
             if (!File.Exists(inbox))
             {
@@ -177,8 +188,97 @@ namespace RimroomsAsyncIndustries.Automation
                 case "set_bed_owner": return SetBedOwner(map, a);
                 case "add_bill": return AddBill(map, a);
                 case "set_area": return SetArea(map, a);
+                case "day_one": return DayOne(map);
                 default: return "refused: unknown cmd " + cmd;
             }
+        }
+
+        /// <summary>
+        /// Everything the owner sets on every colony before the clock runs, in one command.
+        /// Owner, verbatim: "set their scheldule to anything at all times for all pawns" / "were ur crops u get
+        /// priorities done and scedukele and drug assignment" / "make sure everyone has their sidearm and maine rifle"
+        /// / "set everyone to attack not flee" / "set up all priorities ... keep all the 1s firsefiring through
+        /// cooking" / "dint leave a bunch blankk" / "she never armed any one and is just letting the game run with
+        /// out seeting sechedul drugs storages workschedule priorities".
+        ///   work      manual priorities; every work type from Firefighter through Cooking = 1; every later type by
+        ///             skill (passion or skill 8+ = 2, skill 4+ = 3, otherwise 4) -- nothing left blank
+        ///   schedule  Anything, all 24 hours, everyone
+        ///   drugs     the policy with no hard drugs (vanilla "Social drugs"), everyone
+        ///   hostility Attack, never Flee
+        ///   weapons   anyone without a weapon is sent to equip the best free ranged weapon on the map
+        /// </summary>
+        private static string DayOne(Map map)
+        {
+            var notes = new List<string>();
+            List<Pawn> crew = map.mapPawns.FreeColonistsSpawned.ToList();
+            if (crew.Count == 0) return "refused: no colonists on the map";
+
+            Current.Game.playSettings.useWorkPriorities = true;
+            List<WorkTypeDef> order = DefDatabase<WorkTypeDef>.AllDefsListForReading.OrderByDescending(w => w.naturalPriority).ToList();
+            int cookIndex = order.FindIndex(w => w.defName == "Cooking");
+
+            DrugPolicy policy = Current.Game.drugPolicyDatabase.AllPolicies
+                .FirstOrDefault(p => p.label.IndexOf("social", StringComparison.OrdinalIgnoreCase) >= 0)
+                ?? Current.Game.drugPolicyDatabase.DefaultDrugPolicy();
+
+            var claimed = new HashSet<Thing>();
+            foreach (Pawn pawn in crew)
+            {
+                if (pawn.workSettings != null)
+                {
+                    pawn.workSettings.EnableAndInitializeIfNotAlreadyInitialized();
+                    for (int i = 0; i < order.Count; i++)
+                    {
+                        WorkTypeDef w = order[i];
+                        if (pawn.WorkTypeIsDisabled(w)) continue;
+                        int level;
+                        if (cookIndex >= 0 && i <= cookIndex) level = 1;
+                        else
+                        {
+                            int best = 0; bool passion = false;
+                            foreach (SkillDef s in w.relevantSkills ?? new List<SkillDef>())
+                            {
+                                SkillRecord r = pawn.skills?.GetSkill(s);
+                                if (r == null) continue;
+                                best = Math.Max(best, r.Level);
+                                passion |= r.passion != Passion.None;
+                            }
+                            level = (passion || best >= 8) ? 2 : best >= 4 ? 3 : 4;
+                        }
+                        pawn.workSettings.SetPriority(w, level);
+                    }
+                }
+
+                if (pawn.timetable != null)
+                {
+                    for (int h = 0; h < 24; h++) pawn.timetable.SetAssignment(h, TimeAssignmentDefOf.Anything);
+                }
+
+                if (pawn.drugs != null && policy != null) pawn.drugs.CurrentPolicy = policy;
+                if (pawn.playerSettings != null) pawn.playerSettings.hostilityResponse = HostilityResponseMode.Attack;
+
+                if (pawn.equipment != null && pawn.equipment.Primary == null)
+                {
+                    Thing gun = map.listerThings.ThingsInGroup(ThingRequestGroup.Weapon)
+                        .Where(t => t.def.IsRangedWeapon && !t.IsForbidden(Faction.OfPlayer) && !claimed.Contains(t) &&
+                                    t.Spawned && pawn.CanReserveAndReach(t, PathEndMode.ClosestTouch, Danger.Deadly))
+                        .OrderByDescending(t => t.MarketValue)
+                        .FirstOrDefault();
+                    if (gun != null)
+                    {
+                        claimed.Add(gun);
+                        pawn.jobs.TryTakeOrderedJob(JobMaker.MakeJob(JobDefOf.Equip, gun), JobTag.Misc);
+                        notes.Add(pawn.LabelShort + " -> " + gun.LabelShort);
+                    }
+                    else
+                    {
+                        notes.Add(pawn.LabelShort + " -> no free ranged weapon on the map");
+                    }
+                }
+            }
+
+            return "ok: " + crew.Count + " colonists -- work 1s Firefighter..Cooking, rest by skill, none blank; schedule Anything; drugs '" +
+                   (policy?.label ?? "none") + "'; hostility Attack; arming: " + (notes.Count > 0 ? string.Join("; ", notes) : "everyone already armed");
         }
 
         private static bool Cell(Dictionary<string, string> a, Map map, out IntVec3 cell)
