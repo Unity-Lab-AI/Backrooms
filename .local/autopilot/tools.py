@@ -163,7 +163,7 @@ class Toolbox:
     # The tools that actually play the colony. Owner: "no she has to do it" -- so she has to be fast, and 72 tool
     # definitions (~9k tokens) were re-read on CPU every turn. Camera minutiae, UI layout, tab and save plumbing
     # stay registered (a call to them still works) but are not offered in the prompt.
-    CORE = {"pawn_priorities", "new_colony", "game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "plan", "webcam", "snap",
+    CORE = {"ladder", "ladder_set", "pawn_priorities", "new_colony", "game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "plan", "webcam", "snap",
             "twitch_chat", "note", "read_doc", "run_list", "empire_pass", "play_slices",
             "game_apply_architect_designator", "game_select_architect_designator", "game_list_architect_designators",
             "game_list_architect_categories", "game_set_zone_target", "game_list_zones", "game_list_areas",
@@ -311,6 +311,16 @@ class Toolbox:
             "read_doc": ("[READ-ONLY] Read a repo file for knowledge (docs/, src/, Mod/ ...). Reading only: you can "
                          "never edit, build or fix code. offset/limit are line numbers.",
                          S({"path": s, "offset": i, "limit": i}, ["path"]), self.t_read),
+            "ladder": ("Read your PLC ladder: the live rung(s) for what is measured right now, every rung that holds, the "
+                       "tag table (constants + live setpoints) and your own marks and rungs. Check it at the start of a turn.",
+                       S({}, []), self.t_ladder),
+            "ladder_set": ("Edit your ladder on the fly (open-ended, for the whole empire): op 'mark' (name, value true/false) "
+                           "marks a step done; op 'tag' (name, value) changes a setpoint; op 'add_rung' (rung: {id, priority, "
+                           "when: {measured_key: value}, then: [actions], why}) adds or replaces a rung of your own; op "
+                           "'remove_rung' (name) removes one of yours. Book rungs from the owner cannot be deleted.",
+                           S({"op": {"type": "string", "enum": ["mark", "tag", "add_rung", "remove_rung"]}, "name": s,
+                              "value": {"type": ["string", "number", "boolean"]}, "rung": {"type": "object"}}, ["op"]),
+                           self.t_ladder_set),
             "pawn_priorities": ("[GAME ACTION, NO MOUSE] Set ONE pawn's whole work grid in one step, the owner's way: every work "
                                 "type from Firefighter through Cooking = 1, then the levels you give in 'custom' (work name -> "
                                 "1-4, 0 = off) for the rest. Names: Firefighter Patient Doctor PatientBedRest BasicWorker Warden "
@@ -455,6 +465,43 @@ class Toolbox:
         w = str(w or "").strip()
         exact = next((o for o in self.ORDER if o.lower() == w.lower()), None)
         return exact or self.WORK_ALIASES.get(w.lower().replace(" ", ""), w)
+
+    def _ladder_path(self):
+        return os.path.join(os.path.dirname(os.path.abspath(__file__)), "scratch", "ladder.json")
+
+    def t_ladder(self):
+        spec = importlib.util.spec_from_file_location("gates_rt", os.path.join(os.path.dirname(os.path.abspath(__file__)), "gates.py"))
+        g = importlib.util.module_from_spec(spec); spec.loader.exec_module(g)
+        hits, st = g.decide(every=True)
+        try: mine = json.load(open(self._ladder_path(), encoding="utf-8"))
+        except Exception: mine = {}
+        live = [{"id": h["id"], "priority": h["priority"], "then": h.get("then", [])} for h in hits[:4]]
+        return json.dumps({"live_rungs": live, "tags": st.get("tags"), "my_marks": mine.get("marks", {}),
+                           "my_rungs": [r.get("id") for r in mine.get("gates", [])]}, default=str)[:5000]
+
+    def t_ladder_set(self, op, name=None, value=None, rung=None):
+        path = self._ladder_path()
+        try: d = json.load(open(path, encoding="utf-8"))
+        except Exception: d = {}
+        if op == "mark":
+            if not re.fullmatch(r"[a-z0-9_]{1,40}", str(name or "")): raise GuardError("mark name: lowercase_with_underscores")
+            d.setdefault("marks", {})[name] = bool(value) if not isinstance(value, str) else value.lower() in ("true", "1", "yes", "done")
+        elif op == "tag":
+            if not re.fullmatch(r"[A-Z0-9_]{1,40}", str(name or "")): raise GuardError("tag name: UPPER_CASE")
+            d.setdefault("tags", {})[name] = value
+        elif op == "add_rung":
+            r = rung or {}
+            if not (isinstance(r, dict) and r.get("id") and isinstance(r.get("priority"), (int, float)) and isinstance(r.get("when"), dict)):
+                raise GuardError("rung needs id, priority (number), when (object), then (list)")
+            r["id"] = "unity-" + re.sub(r"[^a-z0-9-]", "-", str(r["id"]).lower())[:40] if not str(r["id"]).startswith("unity-") else str(r["id"])[:46]
+            r["then"] = [str(x)[:300] for x in (r.get("then") or [])][:8]
+            d["gates"] = [g for g in d.get("gates", []) if g.get("id") != r["id"]] + [r]
+        elif op == "remove_rung":
+            d["gates"] = [g for g in d.get("gates", []) if g.get("id") != name]
+        else:
+            raise GuardError("op must be mark, tag, add_rung or remove_rung")
+        guards.scratch_write("ladder.json", json.dumps(d, indent=1))
+        return "ladder updated: " + op + " " + str(name or (rung or {}).get("id", ""))
 
     def t_pawn_priorities(self, pawn, custom=None):
         """Owner: "set up all priorities ... for every one using coopy paste to paste one to the tosthers then

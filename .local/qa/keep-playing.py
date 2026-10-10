@@ -301,6 +301,15 @@ while True:
                 try: os.remove(req + ".tries")
                 except OSError: pass
                 print(stamp(), "new colony started (%d colonists) -- the request is cleared" % crew, flush=True)
+                # a fresh colony starts a fresh ladder: explored flag and her setup marks cleared
+                for f_ in (os.path.join(HERE, "_explore_done.flag"),):
+                    try: os.remove(f_)
+                    except OSError: pass
+                try:
+                    lp = os.path.join(ROOT, ".local", "autopilot", "scratch", "ladder.json")
+                    d_ = json.load(open(lp, encoding="utf-8")); d_["marks"] = {}; json.dump(d_, open(lp, "w", encoding="utf-8"), indent=1)
+                except Exception: pass
+                global _explore_done; _explore_done = False
                 day_one(auto)
                 say("We are down. %s, spring, forest and mountains. Food first." % settlement)
             else:
@@ -339,7 +348,10 @@ while True:
                 time.sleep(3)
                 last = open(os.path.join(auto, "outbox.jsonl"), encoding="utf-8", errors="replace").read().splitlines()[-1]
                 print(stamp(), "auto-explore:", last[:220], flush=True)
-                if "nothing left to explore" in last: _explore_done = True
+                # the ladder's explore rung clears only when nothing is left at all, sealed rooms included (v3 wording)
+                if "nothing left to explore" in last and "sealed" in last:
+                    _explore_done = True
+                    open(os.path.join(HERE, "_explore_done.flag"), "w").write(stamp())
             except Exception as e:
                 print(stamp(), "auto-explore failed:", e, flush=True)
         hold = os.path.join(HERE, "_setup_hold.flag")

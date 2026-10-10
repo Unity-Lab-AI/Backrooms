@@ -34,6 +34,9 @@ def _session():
                                               "platform": "windows", "launchId": str(uuid.uuid4())})
     return s, buf
 
+QA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), ".local", "qa")
+LADDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scratch", "ladder.json")   # her edits
+
 def state():
     """Everything the gates ask about, measured -- never assumed."""
     s, buf = _session()
@@ -82,7 +85,27 @@ def state():
         pass
     st["wall_gaps"] = gaps          # measured by the camp sweep in cursor-jobs; left at 0 here to stay cheap
     st["game_foreground"] = _foreground()
+    # --- setup inputs (owner: "the whole logic gate chain like a plc ... use and edit on the fly") ---
+    st["colony_exists"] = len(st["crew"]) > 0
+    try:
+        zl = [z.get("label") or "" for z in call("rimworld/list_zones").get("zones", [])]
+    except Exception:
+        zl = []
+    st["food_store"] = any("food" in z.lower() for z in zl)
+    st["main_store"] = any("main" in z.lower() for z in zl)
+    st["explore_done"] = os.path.exists(os.path.join(QA_DIR, "_explore_done.flag"))
+    # her own marks: a step the game cannot measure directly is marked done by her with ladder_set
+    for k, v in (_ladder_file().get("marks") or {}).items():
+        st["mark_" + k] = bool(v)
+    for k in ("pawns_set", "assign_set", "beds_set", "stove_set", "bill_set"):
+        st.setdefault("mark_" + k, False)
     return st
+
+def _ladder_file():
+    try:
+        return json.load(open(LADDER, encoding="utf-8"))
+    except Exception:
+        return {}
 
 def _foreground():
     try:
@@ -113,8 +136,10 @@ def tags(book, st):
         "COOLERS_PER_ROOM": 1,
     }
     out = dict(const)
+    for k, v in (_ladder_file().get("tags") or {}).items():     # her setpoint edits win over the computed ones
+        if k in var: var[k]["override"] = v
     for name, spec in var.items():
-        v = computed.get(name, spec.get("value"))
+        v = spec.get("override", computed.get(name, spec.get("value")))
         lo, hi = spec.get("min"), spec.get("max")
         if lo is not None: v = max(lo, v)
         if hi is not None: v = min(hi, v)
@@ -153,7 +178,11 @@ def decide(st=None, every=False):
         json.dump(book, open(PLAYBOOK, "w", encoding="utf-8"), indent=2)   # write the maintained setpoints back
     except Exception:
         pass
-    hits = [g for g in sorted(book["gates"], key=lambda g: g["priority"]) if _holds(g.get("when", {}), st, tagvals)]
+    # open-ended (owner: "dont limit it leave it open ended for the full complete empire build not some starter
+    # camp"): rungs she writes herself with ladder_set merge in every scan; hers replace a book rung of the same id
+    mine = {g["id"]: g for g in (_ladder_file().get("gates") or []) if g.get("id") and "priority" in g}
+    allg = [g for g in book["gates"] if g["id"] not in mine] + list(mine.values())
+    hits = [g for g in sorted(allg, key=lambda g: g["priority"]) if _holds(g.get("when", {}), st, tagvals)]
     return (hits if every else hits[:1] + [g for g in hits if g["id"] == "always"][:1]), st
 
 if __name__ == "__main__":
