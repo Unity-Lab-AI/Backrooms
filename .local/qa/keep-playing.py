@@ -249,7 +249,7 @@ while True:
             os.makedirs(auto, exist_ok=True)
             open(os.path.join(auto, "newgame.result"), "w").close()
             open(os.path.join(auto, "newgame.request"), "w", encoding="utf-8").write(
-                "seed=%s\nfaction=%s\nsettlement=%s\ncompany=Async Industries\n" % (seed, faction, settlement))
+                "seed=%s\nfaction=%s\nsettlement=%s\ncompany=Async Industries\nideo=Godsmultiplayer\npreset=Preset3\ncoverage=0.3\n" % (seed, faction, settlement))
             print(stamp(), "new game request: seed=%s faction=%s settlement=%s" % (seed, faction, settlement), flush=True)
             say("New planet seed is %s. Setting it up the way I always do, spring, three hundred square, mountains." % seed)
             r = subprocess.run([sys.executable, os.path.join(HERE, "start-scenario.py"), scen, "--stop-at", "SelectStoryteller"],
