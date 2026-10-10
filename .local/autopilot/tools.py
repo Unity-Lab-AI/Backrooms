@@ -163,7 +163,7 @@ class Toolbox:
     # The tools that actually play the colony. Owner: "no she has to do it" -- so she has to be fast, and 72 tool
     # definitions (~9k tokens) were re-read on CPU every turn. Camera minutiae, UI layout, tab and save plumbing
     # stay registered (a call to them still works) but are not offered in the prompt.
-    CORE = {"new_colony", "game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "plan", "webcam", "snap",
+    CORE = {"pawn_priorities", "new_colony", "game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "plan", "webcam", "snap",
             "twitch_chat", "note", "read_doc", "run_list", "empire_pass", "play_slices",
             "game_apply_architect_designator", "game_select_architect_designator", "game_list_architect_designators",
             "game_list_architect_categories", "game_set_zone_target", "game_list_zones", "game_list_areas",
@@ -311,6 +311,13 @@ class Toolbox:
             "read_doc": ("[READ-ONLY] Read a repo file for knowledge (docs/, src/, Mod/ ...). Reading only: you can "
                          "never edit, build or fix code. offset/limit are line numbers.",
                          S({"path": s, "offset": i, "limit": i}, ["path"]), self.t_read),
+            "pawn_priorities": ("[GAME ACTION, NO MOUSE] Set ONE pawn's whole work grid in one step, the owner's way: every work "
+                                "type from Firefighter through Cooking = 1, then the levels you give in 'custom' (work name -> "
+                                "1-4, 0 = off) for the rest. Names: Firefighter Patient Doctor PatientBedRest BasicWorker Warden "
+                                "Handling Cooking Hunting Construction Growing Mining PlantCutting Smithing Tailoring Art "
+                                "Crafting Hauling Cleaning Research. Do one call per pawn.",
+                                S({"pawn": s, "custom": {"type": "object", "description": "work name -> level 0-4 for types after Cooking"}},
+                                  ["pawn"]), self.t_pawn_priorities),
             "game_set": ("[GAME ACTION, NO MOUSE] Set a field directly through the mod's own automation channel -- works "
                          "with the window minimised. cmd is one of set_zone_plant (x,z,plant e.g. Plant_Rice), "
                          "set_zone_sowing (x,z,allow), set_work_priority (pawn,work,level 0-4), set_bed_owner "
@@ -432,6 +439,58 @@ class Toolbox:
                 try: run_script("twitch", ["reply", name or str(viewer), said], timeout=60)
                 except Exception as e: log("twitch reply failed:", str(e)[:80])
         return ("replied: " + said) if said else "BLOCKED by the stream filter; reply cleaner"
+
+    # names she reaches for that the game does not use (live: "Medicine", "Harvesting", "Medical", "Firefighting")
+    WORK_ALIASES = {"medicine": "Doctor", "medical": "Doctor", "doctoring": "Doctor", "firefighting": "Firefighter",
+                    "harvesting": "PlantCutting", "plantcut": "PlantCutting", "cutting": "PlantCutting", "farming": "Growing",
+                    "plants": "Growing", "cook": "Cooking", "handle": "Handling", "animals": "Handling",
+                    "construct": "Construction", "building": "Construction", "mine": "Mining", "haul": "Hauling",
+                    "clean": "Cleaning", "craft": "Crafting", "smith": "Smithing", "tailor": "Tailoring",
+                    "research": "Research", "rest": "PatientBedRest", "bedrest": "PatientBedRest", "basic": "BasicWorker"}
+    ORDER = ["Firefighter", "Patient", "Doctor", "PatientBedRest", "BasicWorker", "Warden", "Handling", "Cooking",
+             "Hunting", "Construction", "Growing", "Mining", "PlantCutting", "Smithing", "Tailoring", "Art", "Crafting",
+             "Hauling", "Cleaning", "Research"]
+
+    def _work_name(self, w):
+        w = str(w or "").strip()
+        exact = next((o for o in self.ORDER if o.lower() == w.lower()), None)
+        return exact or self.WORK_ALIASES.get(w.lower().replace(" ", ""), w)
+
+    def t_pawn_priorities(self, pawn, custom=None):
+        """Owner: "set up all priorities ... for every one using coopy paste to paste one to the tosthers then
+        customize keep all the 1s firsefiring through cooking" / "dint leave a bunch blankk". One step per pawn."""
+        if not re.fullmatch(r"[A-Za-z0-9_ .-]{1,40}", str(pawn or "")):
+            raise GuardError("bad pawn name")
+        grid = {}
+        for w in self.ORDER[:self.ORDER.index("Cooking") + 1]:
+            grid[w] = 1
+        for w, lvl in (custom or {}).items():
+            name = self._work_name(w)
+            try: lvl = max(0, min(4, int(lvl)))
+            except Exception: continue
+            grid[name] = lvl
+        for w in self.ORDER:                    # nothing left blank
+            grid.setdefault(w, 3)
+        if self.dry:
+            return "dry-run: " + json.dumps(grid)
+        lines = [json.dumps({"cmd": "set_work_priority", "pawn": str(pawn), "work": w, "level": str(l)}) for w, l in grid.items()]
+        folder = os.path.join(os.path.expandvars(r"%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Config"),
+                              "RimroomsAutomation")
+        outbox = os.path.join(folder, "outbox.jsonl")
+        before = os.path.getsize(outbox) if os.path.exists(outbox) else 0
+        with open(os.path.join(folder, "inbox.jsonl"), "a", encoding="utf-8") as f:
+            f.write(chr(10).join(lines) + chr(10))           # one batch: the mod takes up to 32 a pass
+        results = []
+        for _ in range(30):
+            time.sleep(1)
+            if os.path.exists(outbox) and os.path.getsize(outbox) > before:
+                with open(outbox, encoding="utf-8", errors="replace") as f:
+                    f.seek(before); results = [l for l in f.read().splitlines() if "set_work_priority" in l]
+                if len(results) >= len(lines): break
+        ok = sum(1 for r in results if "-> ok" in r)
+        bad = [r[-90:] for r in results if "-> ok" not in r]
+        return "%s: %d/%d work types set (1s Firefighter..Cooking, rest as given, none blank)%s" % (
+            pawn, ok, len(lines), ("; refused: " + " | ".join(bad[:3])) if bad else "")
 
     def t_game_set(self, cmd, **kw):
         """Owner, 2026-10-10: "fix that so it doesnt ever need the screen and MY DAMN MOUSE" / "build it into
