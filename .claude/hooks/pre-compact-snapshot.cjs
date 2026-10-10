@@ -26,6 +26,22 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+// Owner, 2026-10-09: "monitor context limit and once it gets to 95% warn you might have to compact soon and you
+// will be going quite but only when it happens before happening". The model cannot read its own context
+// percentage; this hook is the one moment it is known for certain that compaction is about to happen, so the
+// stream is told here, before the quiet. Detached and fire-and-forget: it can never delay or block compaction.
+try {
+  const root = process.env.CLAUDE_PROJECT_DIR || path.resolve(__dirname, '..', '..');
+  const say = path.join(root, '.claude', 'tools', 'unity-say.py');
+  if (fs.existsSync(say)) {
+    const { spawn } = require('child_process');
+    const child = spawn('python', [say, '--raw',
+      "Heads up chat, my brain is about to do a quick memory reboot, so I might go quiet for a minute. The colony keeps running. Be right back."],
+      { detached: true, stdio: 'ignore', env: Object.assign({}, process.env, { UNITY_NO_GLANCE: '1' }), windowsHide: true });
+    child.unref();
+  }
+} catch (e) { /* never block compaction */ }
+
 function safe(cmd, opts) {
   try { return execSync(cmd, Object.assign({ encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }, opts || {})).trim(); }
   catch (e) { return null; }
