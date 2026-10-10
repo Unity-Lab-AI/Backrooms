@@ -190,3 +190,74 @@ PICTURES, HIGHLIGHTS AND SELFIES -- owner, 2026-10-10: "make sure the local mode
   explore every room of the facility (walk a pawn through each door), then the initial setup -- food stockpile
   inside a roofed room, shelves, the stove bill, beds, a way to get weapons (none were on the map) -- then
   outside the walls.
+
+- OWNER in Twitch chat (game order, binding next turn): (joined the stream)
+
+- TONIGHT, from the owner at GO: go this time set all your initial shit to colonists set up and map start set up and when u get in gasme pause it and get everyone armed and explore first all hidden rroms and areas then get your shcelededs time and work prioriteis and zones growing and stockpiles in freexeser and normal ones all of it all perishable items go in freezer everything else in dry storage or specifics in spefic places.. ask me questions here if u need guidance
+
+- OWNER in Twitch chat (game order, binding next turn): hi
+
+- OWNER in Twitch chat (game order, binding next turn): (joined the stream)
+
+- SETUP HOLD -- owner, 2026-10-10, live: "she is letting time pass and hasnt set a priority or shelf or schedula
+  or anyof the multitude of things required beforoe the firest unpause". After landing the game is PAUSED and
+  stays paused (nothing will unpause it for you) until YOU have done the whole first-unpause checklist, using
+  game_set and the bridge while paused:
+    work priorities checked (day one set them: 1s Firefighting..Cooking, rest by skill, none blank)
+    schedule Anything, drug policy, everyone on Attack (day one set them) -- confirm, do not redo
+    stockpiles: a food stockpile inside a ROOFED room (filter: food only), a general stockpile for the rest
+    shelves placed in the storage rooms (blueprints are fine), set to the right filters
+    a stove/campfire with the bill: simple meals, Do until you have 30, no skill limit
+    beds under a roof for everyone
+    crops: a growing zone with food crops if there is soil
+    research chosen; leader and moral guide noted for the first ritual
+    weapons: none on the map -- queue a way to get them (crafting bench / trader) in the plan
+  Say each one on stream as you do it. When the list is done, unpause with pause_game {"pause": false} --
+  that ends the hold. The first rooms to explore go right after, with time running.
+
+- THINKING -- owner, 2026-10-10: "thinking only for massive plaanning needs and she voice it first and pouses".
+  Ordinary turns are quick and direct. For a BIG plan (base layout, raid plan, the mountain move, the gate, the
+  space push) call the `plan` tool: it tells chat, pauses the game, and your next turn thinks deeply. Never use
+  it for ordinary moves.
+
+- OWNER, typed in the panel chat (binding next turn): get to it Unity set everything up in your camp that u need to survive before you plan main mountain base, and dont unpause uunless you are ready to build some stuff and keep it small first then grow
+
+LESSONS FROM THIS RUN (Claude watches and adds here; read them, do not repeat the mistake)
+- Do not survey with huge cell reads (30x30 = 900 cells eats a whole turn). Use `look` once, then small reads
+  only where you are about to place something.
+- The game is paused under the setup hold: place zones, shelves, bills and beds NOW, one per step, and say each
+  one on stream. Reading the map again is not progress.
+- The colony faction still shows the default "New Arrivals"; when the naming window appears, the mod fills in
+  your names (Ethereal Shadows / Shadowpeak). Do not close it by hand.
+- Greetings are handled for you; do not spend a turn greeting someone who was already welcomed.
+- ASSIGN TAB (owner, live: "she still hasent set all the priorties scheduled drug use attakck heal and all that on
+  assign"). Day one already set drugs (Social drugs), schedule (Anything) and priorities. Still yours to do on the
+  Assign tab (open_main_tab Assign, then click_ui_target the cell, then pick from the menu):
+    Food policy: change every pawn from "Lavish" to "Fine" -- lavish eats twice the food and we have under a day.
+    Medical care (the + column): doctor may use the best medicine for everyone.
+    Hostility: Attack for everyone (check the icon; set it if it is not Attack).
+  Say on stream what you changed. Then the stockpiles, shelves, bill and beds.
+
+- OWNER in Twitch chat (game order, binding next turn): she is doing some massive thinking behind scens on a potato so inital start is slow
+
+- OWNER in Twitch chat (game order, binding next turn): she is doing some massive thinking behind scens on a potato so inital start is slow
+
+HOW TO DO THE SETUP -- exact calls (owner, live: "actual do the inital game and in game pawn sett up and stockpiles
+and know wtf to do with freezers"). One item per step, say it on stream, tick it in pad.md.
+- STOCKPILE: game_apply_architect_designator designatorId "architect-designator:zone:highlight-designator-zoneaddstockpile-resources"
+  x z width height = the open floor of a ROOFED room (inside the walls, not on walls or doors). Then
+  game_set cmd "stockpile_filter" x z (any cell of it) mode "food" (food store) or "nofood" (everything else),
+  priority "preferred" for food.
+- SHELVES: designatorId "architect-designator:furniture:build-shelf" (1 cell; or build-shelfsmall), against a wall
+  inside the storage room. Shelves sit INSIDE a stockpile and hold 3 stacks a cell.
+- FREEZER (food keeps): a fully walled, ROOFED small room with one door. Put a cooler IN the wall:
+  "architect-designator:temperature:build-cooler" (or the over-wall cooler "...build-cooler-over"), blue side
+  facing INTO the freezer, red side OUTSIDE (owner: "the ac units" were backwards once). Needs power and a
+  conduit. Then a food stockpile inside it. A cooler in an unroofed room cools nothing.
+- STOVE + BILL: stove "architect-designator:production:build-fueledstove" (or campfire under temperature); when it
+  stands, game_set cmd "add_bill" x z recipe "CookMealSimple" count 30.
+- BEDS: "architect-designator:furniture:build-bed" in a roofed room, one per colonist (check if beds exist first).
+- GROWING: "architect-designator:zone:highlight-designator-zoneadd-growing" on soil; game_set "set_zone_plant".
+- ROOF: "architect-designator:zone:highlight-designator-areabuildroofexpand" over any room missing a roof.
+- ASSIGN TAB (food Fine, medical best, Attack): game_open_main_tab Assign isn't offered -- use game_execute_gizmo
+  "main-tab:Assign", then click_ui_target the cell and pick from the menu.

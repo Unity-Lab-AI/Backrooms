@@ -60,7 +60,9 @@ while True:
             dialog = bool(ui.get("nonImmediateDialogWindowOpen") or ui.get("NonImmediateDialogWindowOpen"))
             letters = [l.get("label") or "" for l in call("rimworld/list_letters").get("letters", [])]
             raid = any("raid" in l.lower() for l in letters)
-            if dialog:
+            if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "_setup_hold.flag")):
+                pass   # the first-unpause checklist is not done: the owner's rule is that time waits for it
+            elif dialog:
                 print(stamp(), "frozen at", t1, "-- a dialog is open, leaving it alone", flush=True)
             elif raid:
                 print(stamp(), "frozen at", t1, "-- a raid letter is live, leaving it to the owner", flush=True)

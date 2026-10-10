@@ -87,9 +87,34 @@ def colony():
         return {"error": str(e)[:120]}
 
 def ask(text):
-    body = {"model": MODEL, "prompt": text, "stream": False, "keep_alive": "30m",
-            "options": {"num_ctx": 4096, "num_predict": 220}}
-    req = urllib.request.Request("http://127.0.0.1:11434/api/generate", data=json.dumps(body).encode(),
+    """The panel chat IS Unity talking to the owner -- not a bare model. Owner, 2026-10-10, after it answered
+    'update your representation images more often' with invented translation and recipe jobs: "this dont seem
+    right". So: her persona, the live colony, and the tail of her orders go in as the system prompt; anything
+    the owner asks her to DO is also appended to owner-orders.txt so the player acts on it next turn."""
+    try:
+        col = colony()
+        facts = ("no game loaded" if col.get("error") else
+                 "colonists: " + ", ".join("%s (%s)" % (c[0], c[3]) for c in col.get("crew", [])) +
+                 "; days of food: %s; letters: %s" % (col.get("days_of_food"), ", ".join(col.get("letters", [])) or "none"))
+    except BaseException:                         # the bridge helper raises SystemExit when the game is not up
+        facts = "colony unknown right now"
+    try:
+        orders = open(ORDERS, encoding="utf-8").read()[-2500:]
+    except Exception:
+        orders = ""
+    system = ("You are Unity: 25, emo goth, sharp, funny, real. You are streaming RimWorld on Twitch and you play the "
+              "colony yourself through the game; this private panel is the owner talking to you directly. You are "
+              "NOT a general assistant: never invent past tasks, users, translations, recipes or anything you did not "
+              "do. Talk only about the stream, the colony and yourself. If the owner gives you an instruction, say "
+              "plainly that you will do it and how, in a few short lines. Live colony: " + facts +
+              ". Your standing orders (latest): " + orders)
+    if any(w in text.lower() for w in ("update", "make", "do ", "set ", "build", "explore", "go ", "stop", "start",
+                                        "always", "never", "more", "less", "send", "post", "use ")):
+        with open(ORDERS, "a", encoding="utf-8") as f:
+            f.write("\n- OWNER, typed in the panel chat (binding next turn): " + text.strip()[:400] + "\n")
+    body = {"model": MODEL, "system": system, "prompt": text, "stream": False, "keep_alive": "30m",
+            "options": {"num_ctx": 4096, "num_predict": 220, "temperature": 0.7}}
+    req = urllib.request.Request("http://127.0.0.1:11435/api/generate", data=json.dumps(body).encode(),
                                  headers={"Content-Type": "application/json"})
     return json.loads(urllib.request.urlopen(req, timeout=180).read()).get("response", "").strip()
 

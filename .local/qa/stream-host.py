@@ -90,11 +90,11 @@ def fresh(fact):
                   "these recent lines: %s. Reply with the line only."
                   % (fact, " | ".join(hist[-8:])))
         try:
-            req = urllib.request.Request("http://127.0.0.1:11434/api/generate", data=json.dumps(
+            req = urllib.request.Request("http://127.0.0.1:11435/api/generate", data=json.dumps(
                 {"model": "dolphin3:8b", "prompt": prompt, "stream": False, "keep_alive": "10m",
                  "options": {"temperature": 0.9, "num_ctx": 4096, "num_predict": 60}}).encode(),
                 headers={"Content-Type": "application/json"})
-            line = json.loads(urllib.request.urlopen(req, timeout=90).read())["response"].strip().strip('"').split(chr(10))[0]
+            line = json.loads(urllib.request.urlopen(req, timeout=25).read())["response"].strip().strip('"').split(chr(10))[0]
         except Exception as _e:
             # the player model shares Ollama and can hold it for a while; say why, then let the next pass retry
             print("voice model did not answer:", str(_e)[:80], flush=True); break
@@ -156,18 +156,18 @@ BETWEEN_RUNS = [
     "the plan tonight is a three hundred by three hundred map, spring start, forest with mountains",
     "I want a mountain base this time, one door in, a three wide hallway down the middle",
     "food first, always, the last colony starved and I am not doing that again",
-    "I want chat to tell me what the crew should build first once we land -- put it to them as a question",
-    "I cannot decide between hunting early or farming early and chat gets a vote -- put it to them as a question",
+    "chat, what should the crew build first once we are out of these rooms?",
+    "hunting early or farming early, chat? I genuinely cannot decide",
     "work priorities go in on day one, firefighting through cooking set to top for everyone",
     "a roofed room for the food before anything pretty, rot is the enemy",
     "the company is called Async Industries and the crew works for it",
     "I have a playlist going that is way too sad for a farming game",
-    "I am curious what music chat is listening to -- put it to them as a question",
+    "what is everyone listening to right now?",
     "I keep a list of every mistake from the last colony and it is long",
     "the loading bar is moving, I promise, slowly",
     "anyone new in chat, say hi, I see you",
     "I eventually want this crew in space, but tonight it is dirt and berries",
-    "chat gets to nickname the first colonist who does something dumb -- put it to them as a question"]
+    "chat, you get to nickname the first colonist who does something dumb. Who is it going to be?"]
 
 def state_facts():
     facts = []
@@ -177,6 +177,16 @@ def state_facts():
             what = next((v for k, v in JOB.items() if k in j), None)
             if what: facts.append("%s is %s" % (c["name"], what))
     except Exception: pass
+    # living in the moment (owner, live: "shes just repeating same things not living in the momnet"): what her
+    # player just did is the freshest true fact there is
+    try:
+        lines = open(os.path.join(ROOT, ".local", "qa", "_svc_autopilot.log"), encoding="utf-8", errors="replace").read().splitlines()[-40:]
+        for l in reversed(lines):
+            m = re.search(r"model step \d+ \([\d.]+s\): (.+)", l)
+            if m and len(m.group(1)) > 20:
+                facts.insert(0, "what I am doing right now in the game: " + m.group(1)[:200]); break
+    except Exception:
+        pass
     if not facts:
         import random as _r
         facts = [_r.choice(BETWEEN_RUNS)]      # no game is a fact too, and it is better than going quiet
@@ -204,6 +214,8 @@ while True:
     try:
         pos, msgs = read_inbox(pos)
         for who, text in msgs:
+            if who.lower() in ("unityplaysrimworld", os.environ.get("TWITCH_CHANNEL", "unityplaysrimworld").lower()):
+                continue                  # her own chat lines come back through the bridge; never answer herself
             if who.lower() in OWNER:
                 # the owner typing in Twitch chat is a GAME order for her (owner, 2026-10-10: "i told her to explor
                 # the hidden rroms and get outside her walls but she didnt do it" -- it had only been chat). Her
@@ -216,7 +228,16 @@ while True:
             if text == "(joined the stream)":
                 if who.lower() in greeted: continue
                 greeted.add(who.lower())
-                speak(fresh("%s just joined the stream; greet %s by name, warmly, in one short line" % (who, who)))
+                # owner, live: "peopel are join she isnt saying hi" -- the model can be busy; a greeting never waits on it
+                g = fresh("%s just joined the stream; greet %s by name, warmly, in one short line" % (who, who))
+                if not g or who.lower() not in g.lower():
+                    g = random.choice(("Hey %s, welcome in!", "Hi %s, glad you made it, pull up a chair.",
+                                       "Welcome in, %s. Fresh colony, good timing.")) % who
+                speak(g)
+                try:
+                    subprocess.Popen([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "say",
+                                      "hey %s, welcome in!" % who], creationflags=0x08000000 if os.name == "nt" else 0)
+                except Exception: pass
             else:
                 facts = "; ".join(state_facts()[:3])
                 speak(fresh("viewer %s said in chat: \"%s\". Answer %s by name, briefly and honestly. What is true right now: %s"
@@ -231,7 +252,20 @@ while True:
             speak(fresh("a game event just happened: %s -- %s" % (lab, body)))
         if time.time() - last_spoken() > SILENCE:
             facts = state_facts()
-            if facts: speak(fresh(random.choice(facts)))
+            if facts:
+                now = [f for f in facts if f.startswith("what I am doing right now")]
+                line = fresh(now[0] if now and random.random() < 0.7 else random.choice(facts))
+                if not line:
+                    # owner, live: "this stream keeps dying ... shes not talking regualrly". The voice model can be
+                    # stuck behind the player model; silence never waits on it -- say a true line straight out.
+                    try: hist = json.load(open(sb.HIST, encoding="utf-8"))
+                    except Exception: hist = []
+                    pool = [f for f in facts + BETWEEN_RUNS if f not in hist[-12:] and not f.startswith("what I am doing")] or BETWEEN_RUNS
+                    pick = random.choice(pool)
+                    line = pick[0].upper() + pick[1:] + ("." if not pick.endswith((".", "?", "!")) else "")
+                    try: json.dump((hist + [pick])[-30:], open(sb.HIST, "w", encoding="utf-8"))
+                    except Exception: pass
+                speak(line)
     except Exception:
         s = buf = None                     # drop the dead socket; the next call reconnects
         try: s, buf = session()

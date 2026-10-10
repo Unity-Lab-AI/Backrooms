@@ -145,14 +145,16 @@ namespace RimroomsAsyncIndustries.Automation
                     if (inVal && quoted) { map[key.ToString()] = val.ToString(); inVal = false; haveKey = false; continue; }
                 }
                 else if (inKey) { key.Append(c); }
+                // a bare number ends at ',' or '}' -- this test has to come before the generic append below, or
+                // the rest of the line (the next keys included) is swallowed into the number
+                else if (inVal && !quoted && (c == ',' || c == '}'))
+                {
+                    map[key.ToString()] = val.ToString().Trim(); inVal = false; haveKey = false;
+                }
                 else if (inVal) { val.Append(c); }
                 else if (haveKey && (char.IsLetterOrDigit(c) || c == '-' || c == '.'))
                 {
                     inVal = true; quoted = false; val.Clear(); val.Append(c);
-                }
-                else if (inVal && !quoted && (c == ',' || c == '}'))
-                {
-                    map[key.ToString()] = val.ToString(); inVal = false; haveKey = false;
                 }
             }
 
@@ -189,6 +191,7 @@ namespace RimroomsAsyncIndustries.Automation
                 case "add_bill": return AddBill(map, a);
                 case "set_area": return SetArea(map, a);
                 case "day_one": return DayOne(map);
+                case "stockpile_filter": return StockpileFilter(map, a);
                 default: return "refused: unknown cmd " + cmd;
             }
         }
@@ -279,6 +282,40 @@ namespace RimroomsAsyncIndustries.Automation
 
             return "ok: " + crew.Count + " colonists -- work 1s Firefighter..Cooking, rest by skill, none blank; schedule Anything; drugs '" +
                    (policy?.label ?? "none") + "'; hostility Attack; arming: " + (notes.Count > 0 ? string.Join("; ", notes) : "everyone already armed");
+        }
+
+        /// <summary>
+        /// Sets the stockpile under a cell to a filter the owner's rules ask for -- the filter is UI-only otherwise.
+        ///   {"cmd":"stockpile_filter","x":..,"z":..,"mode":"food|nofood|all","priority":"important|preferred|normal|low"}
+        /// food: every food (meals, raw food, corpses off); nofood: everything except food and corpses.
+        /// </summary>
+        private static string StockpileFilter(Map map, Dictionary<string, string> a)
+        {
+            if (!Cell(a, map, out IntVec3 cell)) return "refused: bad cell";
+            if (!(map.zoneManager.ZoneAt(cell) is Zone_Stockpile zone)) return "refused: no stockpile there";
+            a.TryGetValue("mode", out string mode);
+            ThingFilter f = zone.settings.filter;
+            ThingCategoryDef foods = ThingCategoryDefOf.Foods, corpses = ThingCategoryDefOf.Corpses;
+            switch ((mode ?? "all").ToLowerInvariant())
+            {
+                case "food":
+                    f.SetDisallowAll();
+                    f.SetAllow(foods, true);
+                    break;
+                case "nofood":
+                    f.SetAllowAll(null);
+                    f.SetAllow(foods, false);
+                    f.SetAllow(corpses, false);
+                    break;
+                default:
+                    f.SetAllowAll(null);
+                    break;
+            }
+            if (a.TryGetValue("priority", out string pr) && Enum.TryParse(pr, true, out StoragePriority p))
+            {
+                zone.settings.Priority = p;
+            }
+            return "ok: " + zone.label + " filter " + (mode ?? "all") + ", priority " + zone.settings.Priority;
         }
 
         private static bool Cell(Dictionary<string, string> a, Map map, out IntVec3 cell)
