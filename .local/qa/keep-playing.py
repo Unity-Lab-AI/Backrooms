@@ -228,9 +228,15 @@ while True:
         if os.path.exists(req) and _bridge_up():
             try: already = len(gates.state().get("crew") or [])
             except Exception: already = 0
-            if already > 0:     # a colony is already on the map: never go back to the menu over it
+            body = open(req, encoding="utf-8").read()
+            if already > 0 and "force" not in body:     # never go back to the menu over a colony unless ordered
                 os.remove(req); print(stamp(), "colony already on the map -- request cleared", flush=True); continue
-            scen = (open(req, encoding="utf-8").read().strip() or "Async Industries")
+            if "force" in body:                         # ordered redo: honour it once, then it is a normal request
+                open(req, "w", encoding="utf-8").write(body.replace("force", "").strip())
+                for f_ in ("_setup_hold.flag", "_new_colony.request.tries"):
+                    try: os.remove(os.path.join(HERE, f_))
+                    except OSError: pass
+            scen = (open(req, encoding="utf-8").read().strip().split(chr(10))[0] or "Async Industries")
             print(stamp(), "new colony requested (%s) and the window is up -- starting it" % scen, flush=True)
             say("Right, new colony. Company start, clean map, and this time I feed everyone before I build anything pretty.")
             # Owner: "wtf it didnt do the fucking map set up with faction adv settings pollution seed name none of
