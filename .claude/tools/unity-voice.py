@@ -66,7 +66,7 @@ def persona():
 
 def ask(line):
     body = json.dumps({
-        "model": MODEL, "stream": False,
+        "model": MODEL, "stream": False, "think": False,
         "messages": [{"role": "system", "content": persona() + STREAM_RULES},
                      {"role": "user", "content": (
                          # owner: "dont want her corporate butllshit scripted responses anymore" -- a fact, not a

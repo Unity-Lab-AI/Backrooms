@@ -85,13 +85,13 @@ def fresh(fact):
                   "cold hands, never being tired or sleepy. Do NOT narrate like a documentary and never "
                   "say behold, lo, witness, cosmos, indeed, truly or fellow. First person always (I, me, my "
                   "crew), never your own name in the third person. ONE spoken line, at most 20 words, about "
-                  "this and nothing else: \"%s\". You may add your own feeling about it, but invent NO events, "
+                  "this and nothing else: \"%s\". Say it IN YOUR OWN WORDS -- react to it, never repeat it back. Invent NO events, "
                   "names or numbers that are not in that fact, and NEVER say you did, built, set up or powered anything unless the fact says it is done. No swearing, nothing degrading. Don't reuse "
                   "these recent lines: %s. Reply with the line only."
                   % (fact, " | ".join(hist[-8:])))
         try:
             req = urllib.request.Request("http://127.0.0.1:11435/api/generate", data=json.dumps(
-                {"model": "unity-local", "prompt": prompt, "stream": False, "keep_alive": "10m",
+                {"model": "unity-local", "prompt": prompt, "stream": False, "think": False, "keep_alive": "10m",
                  "options": {"temperature": 0.9, "num_ctx": 8192, "num_predict": 60}}).encode(),
                 headers={"Content-Type": "application/json"})
             line = json.loads(urllib.request.urlopen(req, timeout=25).read())["response"].strip().strip('"').split(chr(10))[0]
