@@ -124,8 +124,14 @@ def model_needs(passes):
                          creationflags=0x08000000 if os.name == "nt" else 0).stdout
     for line in out.splitlines():
         if line.startswith("autopilot") and "DOWN" in line:
+            # a restart by hand leaves it DOWN for ~2 s; confirm it is still down before starting, or two players race up
+            time.sleep(8)
+            again = subprocess.run([sys.executable, SERVICES, "status"], cwd=ROOT, capture_output=True, text=True,
+                                   creationflags=0x08000000 if os.name == "nt" else 0).stdout
+            if any(l.startswith("autopilot") and "DOWN" not in l for l in again.splitlines()):
+                break
             print(stamp(), "the player is down -- restarting it", flush=True)
-            subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1"), capture_output=True, text=True, timeout=900,
+            subprocess.run([sys.executable, SERVICES, "start", "autopilot"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1"), capture_output=True, text=True, timeout=900,
                        creationflags=0x08000000 if os.name == "nt" else 0)
             break
     # 3b. the bridge guards (pop-ups, clock, heat, click queue, voice) exit when there is no game -- which is the
@@ -274,6 +280,22 @@ while True:
                 print(stamp(), "no colonists on a map yet -- the colony request stays armed", flush=True)
 
 
+        # an open main tab (minimap, Operations, Work...) hides every selected pawn's buttons -- Draft included.
+        # Owner, live: "three peopel are there its selecting them but no pawn options apear like draft". Tabs the
+        # scripts or the model left open are closed whenever the owner is not at the game window.
+        if not game_up():
+            try:
+                _s, _b = gates._session()
+                _r = gates.bridge.exchange(_s, _b, "tools/call", {"name": "rimworld/get_ui_state", "arguments": {}})
+                _r = _r.get("result", _r); _r = _r.get("structuredContent", _r)
+                _top = str(_r.get("topWindowType") or "")
+                # only a real tab panel (Operations, Work, Research...) -- never the inspect pane or the minimap
+                if ("MainTabWindow" in _top and not any(k in _top for k in ("Inspect", "MiniMap", "Minimap"))
+                        and not _r.get("floatMenuOpen")):
+                    gates.bridge.exchange(_s, _b, "tools/call", {"name": "rimworld/press_cancel", "arguments": {}})
+                    print(stamp(), "closed a main tab left open (%s) -- pawn buttons visible again" % _r.get("topWindowType"), flush=True)
+            except Exception:
+                pass
         firing, st = gates.decide()
         top = firing[0]["id"] if firing else "none"
         print(stamp(), "gate:", top, "| food days:", round(st.get("meals", 0) * 0.9 / 4.8 + st.get("raw_food", 0) * 0.05 / 4.8, 2),

@@ -94,8 +94,10 @@ def fresh(fact):
                 {"model": "dolphin3:8b", "prompt": prompt, "stream": False, "keep_alive": "10m",
                  "options": {"temperature": 0.9, "num_ctx": 4096, "num_predict": 60}}).encode(),
                 headers={"Content-Type": "application/json"})
-            line = json.loads(urllib.request.urlopen(req, timeout=40).read())["response"].strip().strip('"').split(chr(10))[0]
-        except Exception: break
+            line = json.loads(urllib.request.urlopen(req, timeout=90).read())["response"].strip().strip('"').split(chr(10))[0]
+        except Exception as _e:
+            # the player model shares Ollama and can hold it for a while; say why, then let the next pass retry
+            print("voice model did not answer:", str(_e)[:80], flush=True); break
         line = line.replace('"', "").strip()
         line = re.sub(r"\bUnity is\b", "I'm", line); line = re.sub(r"\bUnity's\b", "my", line); line = re.sub(r"\bUnity\b", "I", line)
         low = line.lower()
