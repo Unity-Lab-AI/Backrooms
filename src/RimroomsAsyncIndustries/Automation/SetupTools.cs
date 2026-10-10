@@ -59,26 +59,50 @@ namespace RimroomsAsyncIndustries.Automation
             return sb.Length == 0 ? "no indoor rooms found" : sb.ToString();
         }
 
+        /// <summary>
+        /// Explore EVERYTHING (owner: "exploring is not finished ... it never went through EVERY DOOR"). Targets are
+        /// every door that touches fog, then every reachable fogged cell beside explored ground (the fog frontier),
+        /// inside and outside. Each idle colonist gets a QUEUE of the nearest unclaimed targets, so one call walks
+        /// several doors; the result says how much frontier is left, and the caller repeats until it is zero.
+        /// </summary>
         public static string Explore(Map map)
         {
-            List<Room> fogged = IndoorRooms(map).Where(r => FoggedShare(map, r) > 0.3f).ToList();
-            if (fogged.Count == 0) return "ok: every indoor room is explored";
-            var notes = new List<string>();
-            var taken = new HashSet<int>();
-            foreach (Pawn p in map.mapPawns.FreeColonistsSpawned)
+            FogGrid fog = map.fogGrid;
+            var targets = new List<IntVec3>();
+            foreach (Building b in map.listerBuildings.allBuildingsColonist.Concat(map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial).OfType<Building>()))
             {
-                Room target = fogged.Where(r => !taken.Contains(r.ID))
-                                    .OrderBy(r => Centre(r).DistanceToSquared(p.Position))
-                                    .FirstOrDefault(r => p.CanReach(Centre(r), PathEndMode.OnCell, Danger.Deadly));
-                if (target == null) continue;
-                taken.Add(target.ID);
-                IntVec3 dest = Centre(target);
-                p.jobs.TryTakeOrderedJob(JobMaker.MakeJob(JobDefOf.Goto, dest), JobTag.Misc);
-                notes.Add(p.LabelShort + " -> room " + target.ID + " (" + dest.x + "," + dest.z + ")");
+                if (!(b is Building_Door)) continue;
+                if (GenAdj.CellsAdjacent8Way(b).Any(c => c.InBounds(map) && fog.IsFogged(c))) targets.Add(b.Position);
+            }
+            // the fog frontier: fogged, walkable cells right next to seen ground, sampled so the list stays short
+            int step = 0;
+            foreach (IntVec3 c in map.AllCells)
+            {
+                if (!fog.IsFogged(c) || !c.Walkable(map)) continue;
+                if (!GenAdj.CardinalDirections.Any(d => { IntVec3 n = c + d; return n.InBounds(map) && !fog.IsFogged(n) && n.Walkable(map); })) continue;
+                if (++step % 6 == 0) targets.Add(c);
+            }
+            targets = targets.Distinct().ToList();
+            if (targets.Count == 0) return "ok: nothing left to explore -- no fogged door or fog frontier";
+
+            var notes = new List<string>();
+            var claimed = new HashSet<IntVec3>();
+            foreach (Pawn p in map.mapPawns.FreeColonistsSpawned.Where(p => !p.Downed && !p.InMentalState))
+            {
+                List<IntVec3> mine = targets.Where(t => !claimed.Contains(t))
+                                            .OrderBy(t => t.DistanceToSquared(p.Position))
+                                            .Where(t => p.CanReach(t, PathEndMode.Touch, Danger.Some))
+                                            .Take(5).ToList();
+                if (mine.Count == 0) continue;
+                foreach (IntVec3 t in mine) claimed.Add(t);
+                p.jobs.TryTakeOrderedJob(JobMaker.MakeJob(JobDefOf.Goto, mine[0]), JobTag.Misc);
+                foreach (IntVec3 t in mine.Skip(1))
+                    p.jobs.jobQueue.EnqueueLast(JobMaker.MakeJob(JobDefOf.Goto, t), JobTag.Misc);
+                notes.Add(p.LabelShort + " -> " + mine.Count + " stops from " + mine[0].x + "," + mine[0].z);
             }
             return notes.Count == 0
-                ? "refused: " + fogged.Count + " fogged rooms but none reachable by an idle colonist"
-                : "ok: exploring " + string.Join("; ", notes) + " -- the game must be running for them to walk";
+                ? "refused: " + targets.Count + " places left to explore but none reachable right now"
+                : "ok: exploring, " + targets.Count + " places left (doors + fog edge): " + string.Join("; ", notes) + " -- the game must run for them to walk";
         }
 
         public static string StockpileRoom(Map map, Dictionary<string, string> a)

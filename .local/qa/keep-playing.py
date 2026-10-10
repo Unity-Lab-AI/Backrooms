@@ -314,6 +314,23 @@ while True:
             except Exception:
                 pass
         firing, st = gates.decide()
+        # owner: "exploring is not finished ... it never went through EVERY DOOR". Until the mod reports nothing left,
+        # re-send explore every 3 minutes (each call queues every colonist through the nearest doors and fog edge)
+        global _last_explore, _explore_done
+        try: _last_explore
+        except NameError: _last_explore, _explore_done = 0, False
+        if not _explore_done and st.get("ticks_moving") and time.time() - _last_explore > 180:
+            _last_explore = time.time()
+            try:
+                auto = os.path.join(os.path.expandvars(r"%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Config"), "RimroomsAutomation")
+                with open(os.path.join(auto, "inbox.jsonl"), "a", encoding="utf-8") as f:
+                    f.write(json.dumps({"cmd": "explore"}) + chr(10))
+                time.sleep(3)
+                last = open(os.path.join(auto, "outbox.jsonl"), encoding="utf-8", errors="replace").read().splitlines()[-1]
+                print(stamp(), "auto-explore:", last[:220], flush=True)
+                if "nothing left to explore" in last: _explore_done = True
+            except Exception as e:
+                print(stamp(), "auto-explore failed:", e, flush=True)
         hold = os.path.join(HERE, "_setup_hold.flag")
         # keep the HUD alive: if OBS is up and the overlay has not been reloaded for 10 minutes, reload it once --
         # a browser source that loaded while the studio was down stays blank forever otherwise
