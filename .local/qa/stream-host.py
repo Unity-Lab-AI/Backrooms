@@ -104,6 +104,7 @@ def fresh(fact):
         if difflib.SequenceMatcher(None, low, fact.lower()).ratio() > 0.75: continue   # a bare echo of the prompt
         if not line or len(line.split()) > 30 or any(re.search(r"\b%s" % w, low) for w in sb.BANNED): continue
         if any(w in low for w in ("behold", "cosmos", " lo,", "witness")): continue
+        if low.startswith(("now:", "what i am doing", "what i'm doing")) or "right now in the game:" in low: continue   # echoed the label
         # never the plumbing on stream (owner: "tell chat whats up too not the details tho")
         if re.search(r"connect|server|bridge|retry|retrying|loading the mod|crash|bug|error|offline|back online|"
                      r"script|model|api|turn\b|tool", low): continue
@@ -187,7 +188,7 @@ def state_facts():
         for l in reversed(lines):
             m = re.search(r"model step \d+ \([\d.]+s\): (.+)", l)
             if m and len(m.group(1)) > 20 and not re.search(r"connect|bridge|server|retry|no game|not loaded|tool|turn", m.group(1), re.I):
-                facts.insert(0, "what I am doing right now in the game: " + m.group(1)[:200]); break
+                facts.insert(0, "NOW: " + m.group(1)[:200]); break
     except Exception:
         pass
     try:
@@ -271,7 +272,7 @@ while True:
         if time.time() - last_spoken() > SILENCE:
             facts = state_facts()
             if facts:
-                now = [f for f in facts if f.startswith("what I am doing right now")]
+                now = [f for f in facts if f.startswith("NOW: ")]
                 # owner: "NEVER EVER ANY FALLBACKS" -- every spoken line is written by her model. A miss means
                 # another topic, never a canned line; up to four topics, then she tries again next pass.
                 order = (now[:1] if now else []) + random.sample(facts, len(facts))
