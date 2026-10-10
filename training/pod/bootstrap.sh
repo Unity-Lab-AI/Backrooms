@@ -11,6 +11,7 @@ cd $W
 python3 -m http.server 8000 --directory $W/gguf >/dev/null 2>&1 &
 status() { echo "$(date -u +%FT%TZ) $*" > $W/gguf/status.txt; }
 status "cloning"
+rm -rf "$W/repo"          # a restart pulls the newest scripts and data, never a stale copy
 git clone -q --depth 1 --filter=blob:none --sparse -b "$BRANCH" "$REPO" $W/repo && (cd $W/repo && git sparse-checkout set training/pod training/data)
 mkdir -p $W/data $W/pod
 cp $W/repo/training/data/*.jsonl $W/repo/training/data/tools.json $W/data/ 2>/dev/null
