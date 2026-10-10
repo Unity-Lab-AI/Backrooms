@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RR_Operations_Title>Company Operations</RR_Operations_Title>
   <RR_Operations_NoGame>Company operations are unavailable here. Open a colony save to view its status.</RR_Operations_NoGame>
@@ -89,4 +89,10 @@ Nothing on that map has changed and the colony there is still yours. Clear what 
   <RR_Event_RemoteSiteRegistered>A place beyond headquarters went on the books. It costs something every day now.</RR_Event_RemoteSiteRegistered>
   <RR_Event_RemoteSiteReleased>A place came off the books. No fee, no notice, and the colony there is still the player's own business.</RR_Event_RemoteSiteReleased>
   <RR_Sites_RowUnstaffed>{0} - on the books and reachable, but nobody is there. Shipments to it will wait.</RR_Sites_RowUnstaffed>
+  <RR_Founding_Desc>This colony was not founded by the company. It can still register as a branch: the colony stays as it is, its colonists become staff, and the company opens the books, the gate projects and the first survey.</RR_Founding_Desc>
+  <RR_Founding_Button>Found a company branch here</RR_Founding_Button>
+  <RR_Founding_Unavailable>A branch can only be founded on your home colony, once, when no branch exists yet.</RR_Founding_Unavailable>
+  <RR_Founding_NoStaff>Nobody here can be put on the books. A branch needs at least one free colonist on this map.</RR_Founding_NoStaff>
+  <RR_Founding_LetterTitle>Company branch founded</RR_Founding_LetterTitle>
+  <RR_Founding_LetterText>{0} is now on the company's books, with {1} staff. The onboarding survey is accepted and the initial allocation is recorded. Open Operations to see the contracts, the ledger and the gate projects already finished.</RR_Founding_LetterText>
 </LanguageData>

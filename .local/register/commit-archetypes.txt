@@ -1,0 +1,73 @@
+Rooms that are a kind of place (0.7.9-dev)
+
+The previous checkpoint made coordinates look different by depth, and a repainted
+room is still the same room. This is what makes a deep space strange from the
+inside: fourteen room archetypes dressing rooms on top of their structural
+family, tiered by how far in the coordinate sits.
+
+Every furniture slot asks the game what KIND of thing it wants -- a work table, a
+bed, something sittable, something with storage, something that emits light,
+something decorative, anything in a named category -- and the def database
+answers. A hand-written list of defNames could never deliver "everything
+imanginable": it would cover Core, miss every DLC, miss all 274 profile mods, and
+rot the first time anything was renamed. Asking for a capability means a profile
+that adds a new workbench puts that workbench in Backrooms workshops the day it
+is installed, without this mod knowing it exists.
+
+Candidate lists are cached per session and sorted ordinally, which matters more
+than it looks. Unsorted, the list would follow def load order; that order changes
+with the mod list; and the same seed would then produce different rooms on a
+different machine.
+
+Depth one stays empty, and that is the point. Select returns null there, because
+the shallow yellow rooms are sparse precisely because that emptiness is the look,
+and filling them with laboratory equipment would destroy the exact image the
+setting rests on. The threshold room is never dressed at any depth either: it is
+where the player arrives and the way back must never be buried under scenery.
+
+Depth two brings laboratories, workshops, dormitories, canteens, storerooms,
+office floors and salvage caches. Depth three adds nurseries, machine halls and
+wards. Depth four and five add the four the owner asked for as wild and creepy,
+flagged anomalous so the escalation ladder can later cap how many a coordinate
+may hold without reworking any of this: a gallery, a room you have already been
+in laid out exactly the same, an assembly of things that belong in different
+rooms, and a hoard. The duplicate room is deliberately fixed-count rather than
+rolled, because identical furniture in identical positions is the whole idea.
+
+"Every variation of them" is answered without authoring each variation: every
+slot carries a count range and an appearance chance, both rolled from the room's
+own seed. Two laboratories in one coordinate share an archetype and are not the
+same room, and the same room is identical every time it loads.
+
+Decoration is never allowed to fail a generation. TryPlace returns null instead
+of throwing, so a slot nothing answers is skipped, a fixture that will not fit is
+skipped, and a room that ends up bare is a bare room. It is a separate method
+from Place rather than a flag on it, deliberately: the required content genuinely
+must fail loudly if it cannot be placed, because the clue system, the power
+validation and the saved layout all depend on it, and a shared code path with a
+do-not-throw switch is exactly how that guarantee gets quietly lost later.
+Dressing also runs after the family fixtures and the landmark, so nothing it does
+can displace what those systems depend on.
+
+Two placement rules protect the player. A fixture may be at most two by two,
+because a large machine dropped into a Backrooms room can seal the route cross
+and the entire point of a coordinate is that somebody can walk back out of it.
+And edifices that are not minifiable are excluded outright, since a wall or door
+in the middle of a room changes the layout rather than dressing it. A definition
+from an unknown mod that refuses to be constructed is caught and skipped, which
+is a missing decoration rather than a broken coordinate.
+
+140 C# source files, 86 approved package files, zero warnings, zero errors. One
+def file, fourteen archetypes. No new gameplay ThingDef, no asset, no patch
+operation, no new work type. Every referenced ThingCategoryDef verified present
+in Core. Assembly SHA-256
+10FD715C060E983DA8DCCFB77E273701EBAA0E0053C2781EE8CDF60502179215 reproduced by
+two full recompiles after deleting obj/ and bin/. All four checkers pass.
+
+Still open and named in TODO.md rather than deferred: material variety, since
+fixtures currently take their default stuff; anomalous events as distinct from
+anomalous rooms, because the rooms exist but things that happen do not;
+escalation against colony wealth; and the owner's acceptance condition that a
+solo group can build, supply and escape a high-tier coordinate.
+
+No game was launched, no test was run, no RimSort mod list was changed.

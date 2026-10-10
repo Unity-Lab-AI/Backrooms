@@ -1,0 +1,48 @@
+The field kit, part one (0.9.9-dev)
+
+The last two scenarios cannot be written while the first still grants
+RR_FieldRecorder, RR_SurveyTag, RR_ReturnBeacon and
+RR_SealedEvidenceCase, which M2 is retiring. These are not deletions:
+the owner has refused repeatedly to lose the mechanics, so each needed
+a decision with real Core content behind it.
+
+Core was enumerated before anything was proposed. Twenty-six
+minifiable defs, which is what makes a carried deployable item
+possible at all, and essentially one container with a real ThingOwner,
+which ruled out a like-for-like sealed case and forced an honest
+question instead of a bad substitution.
+
+Answers, asked at the fork: survey tag becomes Core GlowPod, carried
+in and placed to mark the route, lighting the room it marks; the
+return beacon is dropped because the gate's address book and the saved
+return threshold already are the route authority; the evidence case
+becomes a designated headquarters Shelf as the archive, with the book
+carried and custody completing when it arrives; and the field recorder
+becomes the book itself, carried in blank, written in the field and
+carried home as the evidence.
+
+Only the beacon ships here, because it is the one that needed no
+replacement built. Its job was genuinely taken over by work already
+shipped, which makes it a retirement rather than a substitution. Gone:
+the def, its recipe, its scenario grant, two keyed strings, its deploy
+button and all six C# references. QueueDeployAid lost its beacon
+parameter, since there is one kind of route aid now and the flag had
+nothing to select between.
+
+The integrity checker found the last trace. RR_ReturnAnchor, itself
+legacy and still live, used the beacon's texture, so the package
+referenced a name it no longer declared. The texture is renamed to the
+def that actually uses it. That was not found by reading the diff.
+
+Verified for the next checkpoint: CompGlower.GlowColor has a public
+setter backed by a saved per-instance glowColorOverride, and
+CompProperties_Glower.colorPickerEnabled turns on RimWorld's own
+colour picker. Settable glow colour needs no new UI, which matters
+because the owner's direction is that colour is semantic: mod-defined
+marker types each with a colour, and no cap on how many pods a crew
+carries.
+
+158 C# source files, 79 approved package files. Zero warnings, zero
+errors. Assembly SHA-256 reproduced by two clean recompiles. All five
+checkers pass. Nothing was added. No game launched, no test run, no
+RimSort profile touched.

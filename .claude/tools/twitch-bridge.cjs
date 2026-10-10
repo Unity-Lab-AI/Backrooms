@@ -33,7 +33,7 @@ function connect() {
   const s = net.connect(6667, 'irc.chat.twitch.tv');
   let buf = '';
   s.on('connect', () => {
-    s.write('CAP REQ :twitch.tv/tags\r\n');
+    s.write('CAP REQ :twitch.tv/tags twitch.tv/membership\r\n');
     s.write('NICK justinfan' + Math.floor(10000 + Math.random() * 80000) + '\r\n');
     s.write('JOIN #' + channel + '\r\n');
     console.log('twitch-bridge: reading #' + channel);
@@ -44,6 +44,10 @@ function connect() {
     while ((i = buf.indexOf('\r\n')) >= 0) {
       const line = buf.slice(0, i); buf = buf.slice(i + 2);
       if (line.startsWith('PING')) { s.write('PONG :tmi.twitch.tv\r\n'); continue; }
+      // joins (twitch.tv/membership): posted so Unity greets newcomers (owner, 2026-10-09:
+      // "make sure u always inguage with joins to stream and people are talking to you answe r them always")
+      const j = line.match(/^:(\w+)!\w+@\w+\.tmi\.twitch\.tv JOIN #\w+$/);
+      if (j && !/^justinfan/.test(j[1]) && j[1].toLowerCase() !== channel.toLowerCase()) { console.log(j[1] + ' joined'); say('[twitch] ' + j[1] + ': (joined the stream)'); continue; }
       const m = line.match(/(?:display-name=([^;]*);.*)?:(\w+)!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :(.*)$/);
       if (m) {
         const who = m[1] || m[2];

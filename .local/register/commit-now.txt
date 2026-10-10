@@ -1,0 +1,39 @@
+NOW.md rewritten as the compaction handoff
+
+Owner direction: wrap up current work, then write the handoff so the next session
+picks straight back up.
+
+The handoff carries the state table, the standing do-not-stop instruction, the
+full 0.7.1 to 0.8.7 arc as a table, what is left in priority order, twenty-nine
+invariants, the standing method, the reading order, the checkpoint ritual and the
+gotchas.
+
+Three things in it are worth calling out because they are new this session.
+
+DEFERRED.md is closed and listed as such at the top: zero open rows, and never
+add one. Work that is not being done right now has exactly three homes -- build
+it, queue it in TODO.md, or ask.
+
+The warning that matters most is given its own section: a checker that silently
+passes everything is worse than no checker, because it manufactures confidence.
+The unknown-def-field check was written this session, verified correct in every
+part in isolation, and still reported nothing against a deliberately planted bad
+field, so it was removed rather than shipped. The rule that follows is to sanity
+test every checker by breaking something first, which is how all three checker
+gaps this session were proved.
+
+Two invariants were added from traps that bit during the work: sort any candidate
+list ordinally before rolling, because def load order varies with the mod list
+and unsorted the same seed produces different output on another machine, which
+was live three times; and anything feeding the layout fingerprint must be
+snapshotted rather than read live, because layout is re-planned to verify a saved
+graph and reading current colony state there makes a coordinate fail its own
+check.
+
+The gotcha list now also records the Core facts found by reading rather than by
+failing: StockGenerator_Category has all-private fields and cannot be usefully
+subclassed, GenRecipe.PostProcessProduct is private static so a bench bill cannot
+stamp a per-instance value, SetTerrain clears the colour grid, and
+CompFlickable.SwitchIsOn has a public setter.
+
+No game was launched, no test was run, no RimSort mod list was changed.

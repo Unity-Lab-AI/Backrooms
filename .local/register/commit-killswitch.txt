@@ -1,0 +1,68 @@
+A cutoff you can throw (0.7.0-dev)
+
+An optional emergency cutoff for a laboratory gate: a Core power switch on the
+gate's own circuit that somebody can throw to shut an open gate at once.
+
+What already happened, stated before what is new, because it changes what needed
+building. Cutting power to an open gate already closed it: TickGate tests
+HasPowerAndHeadroom every tick and calls EnterEmergency("RR_Gate_PowerLost"),
+which starts the bounded emergency-return window. And Core's own
+Building_PowerSwitch stops transmitting when open, so a switch wired upstream
+already cut the supply and already closed the gate. The physics was most of the
+way there.
+
+What was missing was everything that turns it from an accident into a control.
+The gate had no idea which switch was its own, so it could not say so. Nothing
+verified the switch was actually on the gate's circuit, so a player could build
+one, believe it was the cutoff, and find out otherwise in the one moment it
+mattered. And a deliberate shutdown and a snapped conduit produced the identical
+message.
+
+The design is that the wiring is real rather than cosmetic. A switch may only be
+bound while it is closed and while it and the gate sit on the same power net.
+That single condition separates a real kill switch from a decoration: sharing a
+net while closed means opening it necessarily severs the gate from its supply,
+using Core's own power graph rather than simulating anything. Requiring it
+closed at bind time is why the check can be that simple, because an open switch
+has already split the net and there would be nothing to compare. Matched by
+capability rather than by name, so a modded switch works unnamed. One switch to
+one gate, because two gates sharing a cutoff would mean one flick closed both.
+
+The tick checks the cutoff before the generic power test, and that ordering is
+the point: a thrown switch would cut the supply a tick later anyway and the
+cause recorded would be "power lost", indistinguishable from a broken wire.
+
+The emergency-return window is deliberately kept. It is the entire reason the
+gate reserves its own watt-days, and removing it would mean one flick
+permanently strands everybody on the far side. "Instantly closes" is honoured as
+the opening ending the moment the switch is thrown, while those already through
+keep the bounded chance to come back that every other emergency gives them.
+
+One consequence worth stating out loud because it is a feature: flicking is
+ordinary work through Core's Flick designation, and cross-gate BasicWorker
+support landed in 0.6.7-dev, so somebody at home can be ordered to throw the
+cutoff while a team is still inside. That is exactly the scenario it exists for.
+
+Optional, as a separate call rather than a fourth argument on the existing
+binding, so every saved gate is untouched and none needs rebinding. The link
+re-derives from its saved reference on every read, so a deconstructed or
+relocated switch stops being the cutoff with nothing having to clear it.
+
+The owner's follow-up direction in the same session was checked against shipped
+values rather than assumed, and three of four already matched exactly: power
+loss already closes an open gate every tick; the first opening is already
+exactly 30 real minutes, since portalBaseWindowTicks is 108000 and 108000 over
+60 ticks per second is 1800 seconds; it already only increases from there at
+three times per earned tier; and tiers already come from completed research
+rather than spendable insight. The genuinely new part is equipment maintenance,
+which does not exist anywhere in the gate today, and a player-facing how-to.
+Both are recorded verbatim in TODO.md and scoped to their own checkpoints rather
+than folded into this one.
+
+119 C# source files, 76 approved package files unchanged, zero warnings, zero
+errors. No new def, no patch operation, no asset. Assembly SHA-256
+3E0DA100B9C78E32AE733429B6F2FAEC48471F46AE40D1A1B11265171BB71464 reproduced by
+two full recompiles after deleting obj/ and bin/. check-keyed-strings reports
+1,128 keys with zero duplicates, check-dlc-gating and audit-gate0 both pass.
+
+No game was launched, no test was run, no RimSort mod list was changed.

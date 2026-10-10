@@ -1,0 +1,682 @@
+[
+ {
+  "topic": "Gate chamber",
+  "owner_words": [
+   "the gaste needs to be center s int he room not the door between the control room and gate room"
+  ],
+  "rule": "the gate stands in the centre of the room, not in a doorway -- owner 2026-10-08: ; steel walls; turrets covering it"
+ },
+ {
+  "topic": "Leave power plant in the middle of the base",
+  "owner_words": [
+   "and you need to move thos wood generators out of middle of base room can be better used putting them in a real generator area"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- the eight wood-fired generators at (144-145, 84-94) sit in a room beside the throne entrance hall. Generators belong in one generator area with the batteries, inside th"
+ },
+ {
+  "topic": "Let colonists sleep wherever a bed is free",
+  "owner_words": [
+   "and where are all the bed rooms? why are people sleeping in the proisons"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- every colonist gets an owned bed in a bedroom; prison cells hold only beds"
+ },
+ {
+  "topic": "Light rooms with torches, or credit the owner on stream",
+  "owner_words": [
+   "and wtf why are you useing tourches.. and quick fucking telling people that i tell you to do stuff"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- rooms get powered electric lights (standing lamps on the grid), never torch lamps; and stream lines say what Unity is doing, never that the owner told her to"
+ },
+ {
+  "topic": "Leave buildings unpowered",
+  "owner_words": [
+   "you have shit all over your base that doesnt have power"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- every powered building on the grid; widens from heaters/coolers to every power consumer"
+ },
+ {
+  "topic": "Store goods in a hallway",
+  "owner_words": [
+   "and wtf why are you storing plant materials resources in the fucking hallway that needs to be in freezer"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- plant matter goes to the freezer shelves; a trade beacon goes inside the storage room it serves, never a stockpile laid in a corridor for a beacon's sake"
+ },
+ {
+  "topic": "Let the stream go quiet",
+  "owner_words": [
+   "iots so fucking quiet and you arnt making your pics of yourself and the game WTF this is horse shit i need rectifyment of this fucking issue of how ur never going to let this shit happen again"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- structural fix: the game moves only through or , and both run after every slice: a spoken line from live game state plus a fresh game shot every slice, a new webcam pic"
+ },
+ {
+  "topic": "Put an AC and a heater in every room",
+  "owner_words": [
+   "based on room size",
+   "you have un conditioned haslls and walkways too that are inside"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / / -- one cooler + one heater per cluster, each cluster at most 3 vents into neighbouring rooms, cluster size by room size; every indoor hall and walkway is in some clust"
+ },
+ {
+  "topic": "Look away from a fight",
+  "owner_words": [
+   "you need to mobilize when attacked and fight not run",
+   "when under attack u need to focus on the action",
+   "i mean keep the viewer able to see the action"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / / / -- on any attack: draft every gun at once, give them targets (), and step the game only through , which frames the hostiles and drafted colonists every slice; no lon"
+ },
+ {
+  "topic": "Fill an outer-wall gap with wall",
+  "owner_words": [
+   "hold some places you put walls where doors are to be opn outer wall"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- a one-cell gap in an outer wall is an entrance: it gets a door. Only gaps left by removed coolers/vents in interior walls get wall"
+ },
+ {
+  "topic": "Sit on junk and grow one crop",
+  "owner_words": [
+   "you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- cash crops of every kind growing; call traders and sell everything the colony does not need"
+ },
+ {
+  "topic": "Leave halls half-roofed and dead-ended",
+  "owner_words": [
+   "you need to figure out you halls and whats suppose to have roof and not and do everything in back log that you never finished u have rooms with holes in walls and hallways that end nowhere"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- every hall roofed end to end and leading somewhere (a door at each end), courtyards unroofed on purpose, every room's walls complete, and every unfinished backlog item"
+ },
+ {
+  "topic": "Make prisoners a long walk away",
+  "owner_words": [
+   "you may want to make the dissection room somewhere else and make that a path to the rest of the prisons so save the long walk around"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- move the dissection room elsewhere and turn its space into a direct path to the prisons"
+ },
+ {
+  "topic": "Store goods out of beacon range",
+  "owner_words": [
+   "and u need to make sure all storage zones and shelfes and items are withing a orbital trade beacon u might need to move/add some"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- every storage zone, shelf and stored item sits inside an orbital trade beacon's range (a beacon reaches only its own room)"
+ },
+ {
+  "topic": "Run without silver",
+  "owner_words": [
+   "and order some silver from the company"
+  ],
+  "rule": "owner, 2026-10-09, verbatim:"
+ },
+ {
+  "topic": "Leave embrasure bastions holed or unpowered",
+  "owner_words": [
+   "you have holes in you embrasure fortifications",
+   "and a bunch without power so u can t shoot out"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- every bastion ring closed (wall, embrasure or door on every edge cell) and every remote embrasure on the grid so it opens to fire"
+ },
+ {
+  "topic": "Leave single embrasures in interior walls",
+  "owner_words": [
+   "3 places with stupid embracers 1x1 in interior walls that do nothing replace with marble when u can"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- the 1x1 embrasures at , , become marble wall"
+ },
+ {
+  "topic": "Run short on steel",
+  "owner_words": [
+   "better mine steel or order some trade is your go to once u figure it out"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- mine steel deposits and order steel from the company; trading is the main income once it works"
+ },
+ {
+  "topic": "Wait on chat to choose",
+  "owner_words": [
+   "if they done answer just keep toward your goals of empire world domination and space warfare"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- ask chat about the next move, and if nobody answers, keep going toward the long goal: an empire, world domination, space warfare"
+ },
+ {
+  "topic": "Mix freezer and dry goods",
+  "owner_words": [
+   "you need to figure out your freezer storage vs non freezer items u have frezeder with all kinds of non frezeer shit and need more ac at right temp in freezer"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- freezer shelves hold food and plant matter only; everything else lives in dry storage; the freezer has enough coolers set below freezing"
+ },
+ {
+  "topic": "Vent an AC's heat into a roofed room",
+  "owner_words": [
+   "you have acs out put in to interior room and you need more for big rooms",
+   "on north side"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- every cooler's hot side opens to unroofed outdoors; big rooms get more than one cooler"
+ },
+ {
+  "topic": "Every standing order is a running checklist that never closes",
+  "owner_words": [
+   "now make sure everything ive evr told you to do is a running check list that is never complete and is always checking all things are done wto keep your empire moveing up"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- re-measures the base after every run (FIX lines), rotates the judgement items (LOOK, ), and feeds the first FIX to the stream's goal line"
+ },
+ {
+  "topic": "Prison and every room climate-controlled; freezer food-only; a vault a",
+  "owner_words": [
+   "prison need ac and heat and vents and stuff, i told you all rooms keep at it and fix the freezer shit is stored wrong need a vault and storage rooms with lots of shelves"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- freezer shelves now filter Foods + herbal medicine only (copy/paste from the shelf at 161,85)"
+ },
+ {
+  "topic": "Cash crops: psychoid and hops too, one smokeleaf field only",
+  "owner_words": [
+   "need psycoid and hops too, you dont need two crops of smokeleaf",
+   "fidure it our ur not sleecting crops right"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- north strip x113-152 z131-135: cotton (113-126), psychoid (128-142), hops (144-152). The crop picker is a scrolling window: type the crop into its search box and clic"
+ },
+ {
+  "topic": "Walls complete on all rooms, always",
+  "owner_words": [
+   "holes in building rooms make sure walls are complete on all rooms"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- checklist.py's holes check runs every pass; roofed porches with no walls lose their roof, real rooms get marble walls and doors"
+ },
+ {
+  "topic": "Work priorities: copy/paste a full row, then adjust",
+  "owner_words": [
+   "fielkds arent set up yet",
+   "use copy paset to set defalts then change"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- Work tab clipboard icon copies a pawn's row (Unity's), the paste icon beside it fills each blank row; then tune (Steeve Grow 1, the farmer). The Work tab cells sit le"
+ },
+ {
+  "topic": "Storage rooms: shelves take everything but freezer goods, floors take ",
+  "owner_words": [
+   "still waiting for you to do everything ive said still need storage rooms and ashit all set to not allow freezer good but allow everything on the foloors",
+   "need more shelves in storages rooms and secure vault figured"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- storage hall x173-187 z75-81 with a vault x184-187 z75-78"
+ },
+ {
+  "topic": "Research benches; money from guests: Hospitality tab, guest beds, sale",
+  "owner_words": [
+   "and research benches.. need to start making money nneed guests and products to sell them in seles zone have u even used hospitality tab"
+  ],
+  "rule": "owner, 2026-10-09, verbatim:"
+ },
+ {
+  "topic": "Never go quiet: when processing, tell chat to bear with me",
+  "owner_words": [
+   "talk come on NEVER FUCKING IGNORE CHAT TELL THEM IF U HAVE TO PROCESS SOMETHING GIVE TO BARE WITH YOU"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- a spoken line before every long job (surveys, multi-step builds) and after it with the result"
+ },
+ {
+  "topic": "Generators organised like the batteries, and better power than wood",
+  "owner_words": [
+   "come on organize your generator like batteries are fucker,,, not all over the place no ryme or reason.. and u need better power not 10000 wood gens"
+  ],
+  "rule": "owner, 2026-10-09, verbatim:"
+ },
+ {
+  "topic": "In a fight: line of sight, barely in gun range, camera on the bad guys",
+  "owner_words": [
+   "u need to move perople to embrasures to shoot the bad guys",
+   "all ways move you peopel to line of sight to keep barirly in gun range",
+   "focus on the bad gusy when they come"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / /"
+ },
+ {
+  "topic": "East and west gates on the fort",
+  "owner_words": [
+   "you need east and west gates on you fort too so u dont have to run arouns , or like i said put them where they can shoot out at the bad guys"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- a raider on the east wall made the gunners walk out the south gate and round the outside"
+ },
+ {
+  "topic": "Stream voice is Unity's personality: we are putting on a show",
+  "owner_words": [
+   "come one talk like a normal person would your a bitch emo coder gamer chick make your shit more of your personality where is Unity! /unity",
+   "we are putting on a show here"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: /"
+ },
+ {
+  "topic": "Test count only when a row closes; keep checking every row for what ca",
+  "owner_words": [
+   "quit mentioning the mod test count until u actually mark one off or atleast get something completed be chaekcing them all what can be marked offf, work towrdas the others"
+  ],
+  "rule": "owner, 2026-10-09, verbatim:"
+ },
+ {
+  "topic": "Save the king: force a doctor when a pawn is hurt",
+  "owner_words": [
+   "save Gee!",
+   "have someone save him",
+   "and tend to him"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / / / -- turn the patient's self-tend off, Rescue with a doctor (prio.py PAWN X Z \"Rescue\"), turn self-tend back on after"
+ },
+ {
+  "topic": "Hospital beds for colonists, not prisoners; injured go in with rest un",
+  "owner_words": [
+   "slect gee and tell him rest till healed in hospital bed",
+   "hospital is prisoner only fix that"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- the ward (x113-125 z120-121) was For prisoners, so it read as Prison barracks; Select similar + For colonists fixed all four. The bed float menu ('Rest until healed')"
+ },
+ {
+  "topic": "No dissection table in the freezer; never block the main path",
+  "owner_words": [
+   "and u have dissection bed in the freezer room",
+   "you cant block the main path with a disection room move it to N"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- dissection room at the dead-end north of the strip x142-147 z94-97, door"
+ },
+ {
+  "topic": "Freezer: no holes, enough coolers for its size",
+  "owner_words": [
+   "your freezer has holes in the walls!! u never added enough ac units for such a big space",
+   "are you writing this all down and maintinaing it"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- six coolers for 165 cells"
+ },
+ {
+  "topic": "Components: buy them; traders first, the company only if you have to; ",
+  "owner_words": [
+   "you have no components",
+   "buy some",
+   "you need to get to where u know how to call traiders u need a bulk good traders mainly"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / / / -- 0 components, so 100 ordered from the company once; next time a trader"
+ },
+ {
+  "topic": "Calling a trader: comms console -> Call trader to land -> pick the typ",
+  "owner_words": [
+   "u want to use call a trader to land",
+   "not orbital trader that one sucks",
+   "u have to select the the drop down"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / / / -- best Social pawn (Val, Chief) right-clicks the console; the float menu entries are clicked off a screenshot (layout rects lie); once the ship is in orbit, right-c"
+ },
+ {
+  "topic": "Fresh, original lines on stream; never repeat a canned phrase",
+  "owner_words": [
+   "and you keep repeating this place never lets us breath, stop that shit new origanl shit always"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- stream-beat.py fresh(): the local model writes each line from real facts only, rejected if it echoes the last 30"
+ },
+ {
+  "topic": "Camera on the action in a fight, never the middle of the base; never p",
+  "owner_words": [
+   "focus on the fucking action no t the fucking middle of the base",
+   "talk u cant just pause the game and say nothing for 5 minutes!"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- unity-snap.py frames .claude/.fight.json's rect while a fight is live"
+ },
+ {
+  "topic": "Fix the towers, walls and fences; soil under farms, fields and animal ",
+  "owner_words": [
+   "fix ur tower and walls and fenses and put soil under ur famrs and feilds and animal areas so they have grass grow"
+  ],
+  "rule": "owner, 2026-10-09, verbatim:"
+ },
+ {
+  "topic": "Talk to the viewers and entertain them",
+  "owner_words": [
+   "TALK TO THE VIEWEREWS YOU ARE FUCKING IGNORING THEM",
+   "its quiet becasue you arent entrertaining enough"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- lines talk TO chat like a streamer putting on a show (hype, drama, jokes about the crew), snark at the game and raiders, never at chat; every third line asks chat som"
+ },
+ {
+  "topic": "Save the dying; fix destroyed fortifications, walls and embrasures; ha",
+  "owner_words": [
+   "you have people dying save them!",
+   "fix the destroyed fortifications and walls and embrasures",
+   "start harvesting organs on those corpses"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / / / -- autopsy table (Harvest Organs Post Mortem) bill 'Butcher for organs' set Do forever (Bills -> Add bill -> + in the picker; the repeat dropdown off a screenshot);"
+ },
+ {
+  "topic": "Embrasure towers whole and powered; no dead strings of conduit",
+  "owner_words": [
+   "you still have holes in you embrasures and wires that arent connected just not connected string of conduit",
+   "you need to set dissection bills or do it dirreectly idk"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- finds conduit networks with no generator/battery and lays the shortest hidden-conduit path to a powered one; the organ bill needed its ingredient filter set to Allow"
+ },
+ {
+  "topic": "Speak words only: no emoji, no *stage directions*, nothing that isn't ",
+  "owner_words": [
+   "dont tts speak the emojis and none verbalized need shit"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- unity-say.py speakable() strips emoji, , [asides], hashtags and markup before the voice and the chat"
+ },
+ {
+  "topic": "Everything in the game is fair game; maintain everything ever said, in",
+  "owner_words": [
+   "evrything in the game is fair game get to it",
+   "maintain everything in totality ive evr told you"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- checklist.py after every play run, follow-ups worked down, traders first for steel and components (bought 1000 steel from Lasoid Traders, mining goods, 2026-10-09)"
+ },
+ {
+  "topic": "Vents, not a heater in every room: one cooler + heater per cluster of ",
+  "owner_words": [
+   "hnot heater in every room and ac on every wall vents vents vents!!!!",
+   "3 rooms per one based on size"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- hvac-auto.py is vent-first now (a room beside a conditioned room gets an over-wall vent, cluster capped at 3 rooms / ~120 cells); prison column: cells 1-3 share the m"
+ },
+ {
+  "topic": "Answer people talking first, always",
+  "owner_words": [
+   "peopel are talking to you answer them alwways first"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- read every CHAT line of every play/step run before anything else; stream-beat.py no longer marks lines seen for chat-watch.py, so the background watcher wakes on every"
+ },
+ {
+  "topic": "Never fight the owner for the computer; ask for the mouse; stop means ",
+  "owner_words": [
+   "you dont fight me for control of tmy computer",
+   "NOW LISTEN YOU ASK ME FOR CONTROL OF MOUSE IF YOU NEED IT",
+   "FIX ALL THE ISSUES OF EVERYTHING IVE EVER SAID IN TOTALITY AGAIN AND AGIN TILL EVERYTHING IN THE BASE IS CORRECT!!!!!"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / / -- no OS mouse/keyboard (raw-click, game-click, keybd_event); bridge API only (apply_architect_designator, click_ui_target, right_click_cell, get/execute_context_menu_"
+ },
+ {
+  "topic": "Embrasure rooms get no climate",
+  "owner_words": [
+   "embrasures leak air dont condition"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- checklist.py and hvac-auto.py skip any room bordered by an embrasure"
+ },
+ {
+  "topic": "All plant resources in the freezer",
+  "owner_words": [
+   "all plat resource was told keep in freezer",
+   "you did sopmething wrong they took the herba s out of the cooler",
+   "u build a vauilt i think and its not frozen"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / / / -- freezer shelves: Foods + Plant matter + Herbal medicine; non-freezer shelves refuse both"
+ },
+ {
+  "topic": "Morgue its own cold room; no clicking-and-double-clicking storage; no ",
+  "owner_words": [
+   "you keep sclicking and double clicking the storage zone stuff i think u still have plant matter in non freezer and cooller for morgeus need own room so disssection or isnt frozen"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- owner chose: wall off part of the freezer. Morgue = x161-171 z96-97, wall z95, door to the store room, coolers ,, dumping stockpile there; the dissection-room dump zone"
+ },
+ {
+  "topic": "Never leave chat on a paused game",
+  "owner_words": [
+   "update chat come one dont leave them in a paused game"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- set_time_speed Normal while working between play runs; pause only for a fight decision, then resume"
+ },
+ {
+  "topic": "Generators actually placed (not placed then cancelled)",
+  "owner_words": [
+   "u never did your generators youd place them then jsut cancle their palcement"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- DONE with the owner's mouse: utility row z67 x124-131, wood row z70 x124-133. install.py now selects with the camera on the source and places with the bridge's click_ce"
+ },
+ {
+  "topic": "No click bursts on stream",
+  "owner_words": [
+   "something is wrong u are clicking a million times in a row and it looked weird on steeam",
+   "sounds spammy, warn viewers for shit before like that"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- bulk in-game selection jobs (api-paste-shelves.py) are paced (0.6 s per shelf), announced on stream first (owner: -- the warning line is built into api-paste-shelves.py"
+ },
+ {
+  "topic": "Never lose the HUD; save the people; reload if the game is busted",
+  "owner_words": [
+   "i lost the hud in my game here on the system i see no hud ui of the game when u where mass clicking shit it disappeared fix it",
+   "save your peopel fix the game hud relaod it if its fucking busted wtf... we cant paly with no hud"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / / chat: -- bursts of take_screenshot left RimWorld in screenshot mode (no HUD; F11 toggles it; the bridge has no key tool). Fixed by save_game rimbridge_save_hudfix_* +"
+ },
+ {
+  "topic": "Set it everywhere else too; click each filter option ONCE",
+  "owner_words": [
+   "and why is all your products rotting in the non freezer and sotrages all over your base DO YOU KNOW WHEN U SETSOME SOME EHWERRE U HAVE TO DESET IT EVERYWHERE ELSE",
+   "you did it iagin you set it correct then set it wrong and the n pasted wrongly to all",
+   "click the option s one not twice"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / / / / / -- the pixel-check retry in storage-fix.setrow misread rows and flipped them back; it is retired. Method now: look-filter.py X Z (search + screenshot, no box cli"
+ },
+ {
+  "topic": "About to starve: food first; terraform the pen; generators finished",
+  "owner_words": [
+   "terriform u pen",
+   "set up generators still not done",
+   "pirate attack 1h"
+  ],
+  "rule": "chat (forever11231), 2026-10-09: / / / -- 100 survival meals ordered (owner lent the mouse): procurement had been delivering to a dumping zone, now 'Stockpile zone 3' in the freezer aisle x161-171 z83"
+ },
+ {
+  "topic": "New-game setup is a fixed procedure (the existing one)",
+  "owner_words": [
+   "there already is a proceddure u",
+   "save this save.. start new secenerio,, solo/groupd start with same precets pic a mountin tile to start and try to find natural gate to it or just out of back rooms and get in contact with the company",
+   "not peace full you cheap skat community buiilder go back"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- the procedure is (storyteller default now Cassandra Classic / Community builder); the presets below are its settings, not a second procedure. Earlier, verbatim: (chat)"
+ },
+ {
+  "topic": "Supplies out into the shell, the future throne room",
+  "owner_words": [
+   "okay if u found way out try to get all your supplies out and into starting structure that will become your main center throne roome you will exapand and plan around  later on once settled"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- the way home is the blue gate at in AI-02's threshold hall, coming up in the surface shell on Map_0. Haul every starting supply through it into the shell; the shell is"
+ },
+ {
+  "topic": "Crew setup before hauling: arms, settings, careful carry runs",
+  "owner_words": [
+   "you should have a maintaince list of thinge proprigating what all you need to do"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / / -- pause, then: equip the charge rifles; every colonist hostility Attack, self-tend on, a schedule with sleep and recreation, work priorities set, drug policy No drugs"
+ },
+ {
+  "topic": "Order of operations every few minutes",
+  "owner_words": [
+   "you still havent pauses d and set all you pawns up take control of your conlony shit!"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- the loop: 1) greet every new chatter by name; 2) check pawn needs and health and fix the worst; 3) talk to chat; 4) an image when something happens; 5) walk viewers t"
+ },
+ {
+  "topic": "Equator fortress layout: throne room first, prison and guests either s",
+  "owner_words": [
+   "you can plan your base out into the mountain in that moutain cut out that surounded on 3 sides",
+   "then teriform the rocks to make all planting areas in the cutout mountin ears that aready exists to the se",
+   "main room ienter is the throne room centered on spine labs and tech stuff deepeer in with insta right and left halls to prison and guests seperate"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / then / -- the door opens straight into the throne room, centered on the 3-wide spine; immediately right (east) a hall to the prison wing, immediately left (west) a hall"
+ },
+ {
+  "topic": "Fortress walls are the mountain, two cells thick",
+  "owner_words": [
+   "your gonna have to mine alot nothing is exposed struture out side the mountina walls and plan for the intoer rooms wall too so 2x mountain space along all inrteror warooms",
+   "on exterior maountain walls bunped up to rooms",
+   "need 2 so u have rrom for you room wall with out breaking the exposed mountain"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- nothing built outside the mountain; every room is mined out of the rock and keeps a 2-cell band of natural rock between it and every neighbour and the outside; corridor"
+ },
+ {
+  "topic": "Camp and food before the fortress",
+  "owner_words": [
+   "let your people get good on food and set up camp before moving into the base like u said itll tak a while"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- mining the fortress waits; first a steady food supply (forage, hunt, rice, cooking) and a working camp by the shell; the fortress plan stays drawn"
+ },
+ {
+  "topic": "Temp camp: wood walls, a marble firebreak, and hands off the gate room",
+  "owner_words": [
+   "make it of wood just exterior make 3wide terrriom stone smooth marble for fire break",
+   "thats to be moved later",
+   "make wall of embrasure non powered type all around then u can shoot out"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- the camp's exterior wall is wood (x137-168, z127-154, gates north and east) with a 3-wide smooth-marble firebreak ring outside it; the surface shell is the natural ga"
+ },
+ {
+  "topic": "Field-tend first, then capture or carry",
+  "owner_words": [
+   "remmebr always field tnde directly brefopre cpature and haul"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- any downed pawn, ours or theirs, is tended where they lie before anyone captures or carries them (right-click -> tend, or a doctor's Tend order), so they do not bleed o"
+ },
+ {
+  "topic": "Camp swap: the walled store becomes the prison hold, food storage move",
+  "owner_words": [
+   "nmake that sotrage room a prison hold toss in a spot and put the storage where the table and chairs are might have to move benches, compelte evertthing ive sdaid"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- the walled room x155-161 z146-152 is now the prison hold (sleeping spot , passive cooler kept, food pile removed); the food store is a new walled room x153-160 z132-139"
+ },
+ {
+  "topic": "A Rev character joins, set up like every new pawn",
+  "owner_words": [
+   "tell reve its one the list Rev character(ask if any requests when u get to making him, as an extra hand will be helpopfull just have to always set up everything for new pawns"
+  ],
+  "rule": "chat RoomsIdleHands: ; owner, 2026-10-09, verbatim: -- QUEUED: make a Rev pawn (Character Editor); when starting, ask RoomsIdleHands in chat for requests; every new pawn gets the full setup at once"
+ },
+ {
+  "topic": "Farms outside the walls: eight crops, sell and produce",
+  "owner_words": [
+   "put famrs out side the walls when u get to it",
+   "need berrys potatos corn and healroot minimum plus cotton smoke leaf psycoid and hops so lots to sell and production",
+   "items as u unlock"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / / -- fields outside the camp wall (the NE pocket x212-260 z174-196, eight plots): berries, potatoes, corn, healroot (minimum), cotton, smokeleaf, psychoid, hops; product"
+ },
+ {
+  "topic": "Stable first, then mine",
+  "owner_words": [
+   "and try to get to where everything is stable and food supply is handled production  so that things can settle down and u can start mining out the base, but lots before then"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- the fortress digs only once food supply, production and the camp are stable; until then camp work comes first"
+ },
+ {
+  "topic": "Firm ground inside the camp",
+  "owner_words": [
+   "use teriform to remove mud and shit like water inside camp perimeter"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- 60 of 66 marshy cells inside the wall set to Soil (6 sit under buildings); no open water inside; storage zones built as separate drags, the zone tool merges a new drag"
+ },
+ {
+  "topic": "Heat kills: coolers in every roofed room, the backrooms is the heat sh",
+  "owner_words": [
+   "your people are in the heat too theri nextr  to die",
+   "you need to figure out the tmepature pronblem asap ASAP one heat wave and your dead in 3 minutes"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- passive coolers (wood-fuelled, no power) in every roofed room: bunk hut x2 , prison hold , food store ; a room only cools once it is walled and roofed; on any heat wa"
+ },
+ {
+  "topic": "Farms outside, a cool rec room, a cool workshop",
+  "owner_words": [
+   "u need farms out side the walls and a entertainment room to keep cool in",
+   "you need to put horse shoes up against wide wall so action area isnt clicked need at minimum one action area unblocked",
+   "and workshops cool"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- the inner field is gone; farms west of the wall beyond the firebreak (x116-131 z129-138 and z141-150) plus the NE plots; a walled rec room where the field was (x140-1"
+ },
+ {
+  "topic": "Pause, set everything, shift-queue the work",
+  "owner_words": [
+   "you need to work on everything at once pauseing till everything is set and use shift slick to mass complete prioriities not just let the dumb ai get tot it"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- pause, lay every order, then hand each colonist a ranked shift-queued list of Prioritize orders (coolers, food store, rec room, workshop, hut, perimeter, rest), round-r"
+ },
+ {
+  "topic": "Power, AC and a real freezer -- finish what was started",
+  "owner_words": [
+   "you still need to figure out storages and frideges you keep forgetting to go back and finish things u need power and ac units and shit just like the last paly through"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- research Electricity then Air conditioning (queued through the cursor jobs: the research tree pans only with a real drag); then a wood-fired generator row, conduit as o"
+ },
+ {
+  "topic": "Benches inside, wall lights, two per room",
+  "owner_words": [
+   "need to get ur benches insie with wall lights use wall light this time they dont take up floor space just be weirry they aree actual infront of the wall to select",
+   "minimum 2 lights per room for full brightness"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- the stove, research bench and butcher spot are walled into a kitchen (x152-161, z139-146, door ) that opens into the food store; every room gets at least two wall lam"
+ },
+ {
+  "topic": "Equator colony build order -- everything already ordered, applied up f",
+  "owner_words": [
+   "you need to plan things out and get shit settled out how you already know because ive already told you veverything in other play throughs"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: -- the standing orders above, in order: P1 survive -- shelter and beds (hut), food store + kitchen side by side, coolers in every roofed room, embrasure wall with doors ne"
+ },
+ {
+  "topic": "Work priorities, closed loop",
+  "owner_words": [
+   "set up priorities u fool",
+   "pawns have none set",
+   "your prioties for work are all fucked come on fix it for next time u know how to do it fix why u didnt do it and do it"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / / -- manual priorities ON; Gee Firefight 1 Patient 1 Cook 2 (+ Research 1), Scar Firefight 1 Patient 1 Construct 1 Craft/Smith/Tailor 2, Unity Firefight 1 Patient 1 Mine"
+ },
+ {
+  "topic": "Pop-ups: answered, never paid",
+  "owner_words": [
+   "make sure pops ups dont monkey wrentch everything",
+   "yes that one was to accept visitor if u refussed that pop up non will arrive until u set it in hospitality tab",
+   "anser them most are shit never pay them"
+  ],
+  "rule": "owner, 2026-10-09, verbatim: / -- runs in the background: naming and plain notices are accepted; demands, ransoms and offers are refused (refuse / reject / decline / ignore), never paid; anything with"
+ },
+ {
+  "topic": "Every priority, every pawn: paste then customise",
+  "owner_words": [
+   "work priorites yours and the pawns",
+   "you have to use the mouse to change the work priorities come on get it done",
+   "dint leave a bunch blankk"
+  ],
+  "rule": "owner, 2026-10-10, verbatim: / / / -- manual priorities on, and every column from Firefight through Cook is 1 for all three (that is the paste), then each pawn's own columns after Cook are customised:"
+ },
+ {
+  "topic": "Food emergency: hunt, harvest, never starve",
+  "owner_words": [
+   "you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!"
+  ],
+  "rule": "owner, 2026-10-10, verbatim: -- the pantry read one survival pack and two raw berries. Every berry bush on the map is designated for harvest (36 cells) and every animal for hunting (13), except the th"
+ },
+ {
+  "topic": "A cooler must not block the lane along a wall",
+  "owner_words": [
+   "and u have a coloer out side i think blocking path to larege amout of inner N wall"
+  ],
+  "rule": "owner, 2026-10-10, verbatim: -- the workshop's passive cooler sat at , one cell inside the camp's north wall, blocking the lane that runs the length of the inner north wall to the north gate . Furnitu"
+ },
+ {
+  "topic": "She is 25, and she streams like it",
+  "owner_words": [
+   "and u are not streaming like a emo goth chick 25 girl would and dont look like her a homie one not like currently just currently your about 37"
+  ],
+  "rule": "owner, 2026-10-10, verbatim: -- the webcam read mid-thirties, so the reference portrait prompt names the youth cues outright (youthful soft round face, smooth skin, big dark eyes, choppy fringe) and e"
+ },
+ {
+  "topic": "Small camp, then the mountain",
+  "owner_words": [
+   "remmeber dont go building a massive camp just get telled and start on the mountain base might need a replan based on starting entrance near or N most farms"
+  ],
+  "rule": "owner, 2026-10-10, verbatim: -- the camp stops growing here: it is a staging camp, not a colony. Once food and production are steady the work moves to the mountain base, and the fortress plan is re-si"
+ },
+ {
+  "topic": "Storage is a ROOF problem first, and blueprints need material on site",
+  "owner_words": [
+   "after this fight get your storage figured all your shit is deterioratiorting you should of done that real hours ago"
+  ],
+  "rule": "owner, 2026-10-10, verbatim: / -- measured, not guessed: the food store read every cell unroofed, so its passive cooler was cooling open sky and hauled food was dumped outside to spoil; the west pile"
+ },
+ {
+  "topic": "The perimeter is never another room's wall",
+  "owner_words": [
+   "wtf why u putting walls upganets and replacing embrasures that wont work fix those walls"
+  ],
+  "rule": "owner, 2026-10-10, verbatim: -- a storage ring was run out to x168, which is the camp's east perimeter, so plain wooden wall was built over the embrasures at - and over the east gate : embrasures repl"
+ }
+]

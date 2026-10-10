@@ -1,0 +1,71 @@
+A way out of the Backrooms, and it comes up where you said (0.6.9-dev)
+
+The half of the topology direction that was never built. Everything assumed the
+far endpoint of a portal was a branch-owned coordinate: RegisterNaturalAddress
+took a CoordinateRecord and EnsureSite generated a Backrooms map for it. This is
+the bounded form the previous record named, where the far side is an ordinary
+map the branch already holds, and it is what makes the owner's own examples
+map > backrooms > map > backrooms and backrooms > map > backrooms > backrooms >
+map route end to end.
+
+One orientation choice made most of it free. An emergence edge is recorded
+anchor-first: First is the marked door on the ordinary branch-owned map, Second
+is the doorway inside the coordinate. That is the same orientation every other
+kind already uses, so Availability needed no change, Register's site check on the
+second anchor needed no change, and the uniqueness rule needed no change. What
+the kind adds is a single gate in Register, mirroring line for line the check
+laboratories already get on CompRimroomsGate. The enum value is appended and
+never renumbered, and the three places testing "is this kind known" became one
+helper rather than a fourth copy of the condition.
+
+The player marks where a way out comes up, and nothing ever picks for them.
+CompRimroomsEmergence sits on Core Door and Autodoor, added by one additive
+patch beside the existing gate comp, dormant until marked. This inherits
+0.6.3-dev's rule with more force rather than less, because a way out arrives at
+the player's own map: a door somebody built is never quietly turned into a hole
+in the world. Marking is refused inside the Backrooms, and the command is not
+even offered there, because a way out cannot come up in the place it leads away
+from. Withdrawing a mark deliberately leaves an existing way out alone -- it
+means "no more ways out here", not "close the one that exists", because a saved
+edge is evidence of a place somebody found.
+
+A doorway that already leads onward gets a second, independent draw deciding
+deeper or out, with a distinct seed key so the two can never correlate, derived
+from the coordinate's own seed and the doorway's position so it is stable across
+saves and revisits. One in three leads out, deliberately common, because a way
+home is what makes the rest of the topology usable rather than a trap. With
+nothing marked the doorway leads deeper instead -- a fallback, not a refusal.
+The question is asked before the coordinate is minted, because minting one and
+then not using it would leave a space nobody can reach recorded against the
+branch.
+
+Two unrelated defects found on the way. RR_Gate_OperatorAway was declared twice
+in one file with two different texts, serving both a readout that takes the
+operator's name as {0} and a refusal with no argument. RimWorld resolves
+duplicates last-one-wins, so one of the two messages was always wrong. The
+refusal now has its own key matching its own text. And nothing was checking for
+it: tools/check-keyed-strings.py now verifies no duplicate keys, every literal
+RR_ reference resolving, and format arguments lining up. It resolves against the
+mod's own declared defNames and against internal identifiers recognised by the
+shape of the call site rather than a maintained list, for the same reason the DLC
+gating check reads the game's data -- a list of names rots exactly the way the
+thing it checks rots. 1,114 keys, 0 duplicates, 1,086 references all resolving.
+
+Now genuinely live rather than hypothetical: Area_BuildRoof, Area_NoRoof,
+Area_SnowOrSandClear and Area_PollutionClear have no cross-gate route, and an
+ordinary map reachable through a gate gets snow, wants roofs built and may be
+polluted. The zone audit recorded them as a dependency of exactly this endpoint.
+
+The owner's kill switch request arrived while this was in flight. It is recorded
+verbatim in TODO.md and deliberately not built here: this feature was half
+finished and compiling, and leaving it that way to start something else would
+have left an inconsistent tree.
+
+118 C# source files, 76 approved package files unchanged, zero warnings, zero
+errors. Assembly SHA-256
+33DBB4EF977C7539CAF4E5C066BA29DA437602B37CFC9FC5C101CBC4FCD38A8D reproduced by
+two full recompiles after deleting obj/ and bin/. check-keyed-strings,
+check-dlc-gating and audit-gate0 all pass with zero errors. The new comp is added
+by an additive patch operation with no destructive operation anywhere.
+
+No game was launched, no test was run, no RimSort mod list was changed.

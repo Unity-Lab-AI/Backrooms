@@ -1,0 +1,57 @@
+A gate remembers where it has been (0.8.8-dev)
+
+Every laboratory gate now keeps its own address book of everywhere it has
+connected to, and the handoff document is refreshed for compaction.
+
+The list belongs to the gate rather than the branch, which is the right shape
+rather than a convenience: a branch running a gate at headquarters and another at
+an outpost is running two different operations, and merging their histories into
+one branch-wide list would lose the distinction that makes a second gate worth
+building at all.
+
+Recording happens at exactly one point, the success branch of
+RegisterLaboratoryAddress, because that is the single moment a laboratory gate
+dials a coordinate. Repeat connections update the entry rather than appending,
+which keeps it an address book rather than a log, and the list orders most
+recently used first so it stays useful without anyone sorting it.
+
+Rename, pin, remove and clear. A history nobody can prune becomes unusable in a
+long game. Clear keeps pinned entries deliberately, because in a long game clear
+means get rid of the noise, and a single button that also destroyed the handful
+of addresses somebody had explicitly marked would be a trap rather than a
+convenience. The list caps at thirty-two and evicts the least recently used
+unpinned entry, which pinning is what makes safe; if everything is pinned a new
+address is simply not recorded, which is better than silently discarding
+something the player deliberately kept.
+
+Renaming reuses the game's own rename dialog, the same one used for zones,
+caravans and the company name. Dialog_Rename is abstract so a concrete subclass
+is required even though it adds nothing, and that is worth doing because the
+player gets an interaction they already know and there is no second rename UI to
+keep consistent with the first. A blank name is accepted and falls back to the
+coordinate's own label, because clearing a name is how a player undoes a rename.
+
+A float menu per row rather than a bespoke window: everything asked for is four
+verbs on a short list, and each row opens its own actions rather than cramming
+rename, pin and remove onto one line where a misclick destroys an address.
+
+The natural-gate rule needed no new guard. Every gate gizmo already sits behind
+IsDesignated, which is only ever true of a laboratory gate the player assembled;
+a natural threshold registers through RegisterNaturalAddress, has no gate behind
+it at all, and never reaches this code. Adding a second check would have implied
+the first one was unreliable, which is the same reasoning that kept survivor
+recruitment from special-casing a gate.
+
+NOW.md is refreshed for the pre-compact handoff: state table updated, the 0.8.8
+row added to the arc, the completed history item replaced by dialling from it,
+and two invariants added -- a natural gate has no address book and may not dial,
+and when an existing guarantee already covers a new requirement, say so and rely
+on it rather than adding a second check.
+
+154 C# source files, 92 approved package files, zero warnings, zero errors. No
+new def of any kind, no asset, no patch operation, no new work type. Assembly
+SHA-256 5CFCA1C8EEEF139655B91ED421942FC58B33F683B03F1590F0607810A75C643B
+reproduced by two full recompiles after deleting obj/ and bin/. All four checkers
+pass.
+
+No game was launched, no test was run, no RimSort mod list was changed.

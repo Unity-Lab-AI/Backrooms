@@ -1,0 +1,68 @@
+The way out was already there (0.12.2-dev)
+
+The guaranteed exit the direction asked for at 100%. The solo/group start now
+generates two maps: an ordinary surface map holding one small concrete shell
+with one door, and a REAL Backrooms coordinate beside it. The people and
+everything they were carrying begin inside, and an ordinary Emergence
+connection is registered at the opening rather than found by a survey draw.
+
+A hard constraint decided the architecture, and it was found by reading
+RimroomsPortalNetwork.Register rather than assumed:
+
+    RimroomsDestinationMapParent site = secondAnchor.Map.Parent as ...;
+    if (coordinate == null || coordinate.site != site || site == null || ...)
+    { return PortalNetworkResult.UnknownCoordinate; }
+
+The Backrooms side of every connection must be a real coordinate map, and the
+STARTING map can never be one because Game.InitNewGame generates it for a
+player Settlement and errors without one. So 0.12.0-dev's design - generating
+the starting map AS the coordinate - was the thing standing in the way. The
+alternative was widening the validation every existing gate depends on, which
+is the riskiest change available here. Taken to the owner rather than decided
+quietly; the answer was "Two maps at start, coordinate is real".
+
+The order of the opening is its safety. Mint the coordinate, generate its map,
+mark the surface door, register the connection, and move everybody inside LAST.
+A failure anywhere above leaves the whole party standing safely on the surface
+with no exit registered, which is recoverable. Moving them first would seal a
+group inside a coordinate with no registered way out - the exact trap invariant
+28 forbids. The proof asserts the ordering, and a plant that moves the party
+first fails it immediately. Marking before registering for the same reason: the
+network refuses an unmarked Emergence endpoint.
+
+Why this is 100% and a survey is not: NaturalFrontierService finds a way out at
+roughly one door in twelve, and only when a way home is already marked. A draw
+cannot deliver a guarantee.
+
+The surface map holds one small shell and nothing else. No power, no furniture,
+no stockpile. Everything a facility needs, they build. The start def NAMES which
+door is the way out, and ConfigErrors refuses a cell that is not one of its own
+doors, because no door is generated there and there would be nothing to mark.
+
+GenStep_InsideStart and the RR_InsideStart map generator are retired and
+archived verbatim with the reason, per invariant 37. BuildShell stays: it is the
+destination generator's own shell and the single implementation carrying
+invariant 13. insideStart changed meaning and the field says so.
+
+check-keyed-strings caught two refusal keys I invented - RR_Portal_InvalidState
+and RR_Portal_LocalThresholdUnavailable. The real prefix is RR_PortalAddress_,
+built by the service's own Refuse helper. A refusal key that does not exist
+shows the player the raw key.
+
+Fault-planted three ways: the party moved before registration, the door marked
+after registration, and the emergence cell moved off the start's own door.
+Correct on all three. The starts proof now holds over three starts, three
+layouts, the opening sequence and the natural chain.
+
+Recorded verbatim and queued, arriving mid-checkpoint: "natruals can not be
+destoryed or moved, so one can technically build a roomm directly on the other
+side of the portal door and it shouldnt interfere with the portal transition to
+the seeded backrooms". A natural gate is a Core Door today, with hit points and
+a deconstruct designation, so it is very probably destructible; and a wall built
+on its approach cell would very probably break a connection the design calls
+permanently open. Both are to be checked first, not assumed.
+
+Build 0.12.2-dev, 168 C# files, 86 package files, 0 warnings, 0 errors.
+Assembly D9090678DBFBABFB02B144A9E0C23777E23680D2164D3369742D2BE7BB26421F
+reproduced by two clean recompiles. Eight checkers pass, seven proofs hold.
+No game was launched, and nothing here has been played.

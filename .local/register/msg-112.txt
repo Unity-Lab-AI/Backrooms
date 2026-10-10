@@ -1,0 +1,57 @@
+The company asks for six things, then stops asking (0.11.2-dev)
+
+Step 5 of the chart's build order: tutorial requests 2-6 and the hinge.
+Nothing invented -- each request's routes are the ones the chart already
+names for it, and every def name was read out of the installed game or
+our own project file.
+
+Power the gate, assemble and calibrate it, bring back one record, mark a
+route home, report a disagreement, hold a connection open, then the
+hinge where the company stops naming things. Each teaches one system by
+being played, in the order the systems depend on each other, and each
+requires the one before it. Every request offers at least two genuinely
+different ways through, and none of them expires.
+
+Three conflicts with the chart, all raised at the point they were found.
+
+A route kind that did not exist. Request 6 offers "complete Field
+Stability" and none of the six kinds covered it -- research is a thing a
+branch does, and it is not a delivery, a document, a substitute, a
+purchase, a testimony or a redirect. Research added as a seventh, with
+its own ConfigErrors rule. The chart's table was always "route kinds
+this chart uses" rather than a closed set.
+
+The rule bit the chart's own content, and the result is better. The
+hinge was drawn as "pick any one of the eight branches", which would
+have made every route the same kind and failed the two-different-kinds
+rule. The tempting move was a carve-out, which is exactly the failure
+recorded one checkpoint earlier as "never widen a rule so that existing
+text passes". The hinge was redesigned instead: declare a direction, say
+nothing and go do something and let the work speak, or take the aperture
+further. "Every choice is a success" is more true when nothing has to be
+announced.
+
+The chart contradicted an earlier answer. Section 2 claimed the hinge is
+where contact with the corporation completes. Async Industries begins in
+contact, so for that start the hinge is not where contact happens at
+all. The hinge is where the tutorial ends for every start; whether the
+corporation is watching when you arrive depends on which start you
+chose, and for two of three there is no rescue until contact is earned.
+
+The proof grew from nineteen claims to fifty-eight. Every thingDefName
+resolves to a real ThingDef, every projectDefName and redirectTo
+resolves, every logKind is one the campaign can actually count --
+because CompletedLogCount returns 0 for an unknown kind silently, so a
+typo produces a route that can never be satisfied -- and request N
+requires request N-1 with no cycle anywhere.
+
+The proof was wrong before the content was. Its first run reported
+TextBook as missing; it exists, in Core/Defs/Books/BookDefs.xml, which
+is not under a ThingDefs* path. The index was wrong, not the content,
+and a proof that reports a correct reference as a fault is the worst
+kind because the obvious response is to "fix" working content. The index
+now reads every Defs file.
+
+162 C# files, 85 package files, zero warnings. Eight checkers pass with
+rule 2 now checking seven offer defs, three proofs hold, assembly
+reproduced by two clean recompiles. No game launched.

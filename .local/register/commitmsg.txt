@@ -1,0 +1,72 @@
+A register that opens, and a families list checked instead of trusted
+
+The owner reported the 294-mod register was not human navigable and did not
+match its own preview images. It had four real XML defects -- and then a fifth
+that outranked them all: there is no spreadsheet application installed on this
+machine and no .xlsx association at all, so the workbook was never openable
+here whatever its XML said.
+
+The primary fix is a self-contained HTML register beside the workbook. Browser,
+no install, no external asset, works offline. Four views as tabs plus a live
+search across all seventeen columns of every row and stance/firmness/family
+filters. File associations and software installs were deliberately left alone:
+that is the owner's call, not a build step.
+
+The four XML defects, each verified against the file:
+
+  - all 5,009 text cells typed t="str", the type for a cached formula result,
+    with no formula anywhere and an empty <sst/> still declared
+  - all 294 rows pinned ht="78" customHeight="1", which forbids auto-fit, while
+    five columns carry up to 300 characters; every evidence field was clipped
+  - the Overview listed 45 system families where the rows hold 66, with eleven
+    counts disagreeing; both totals reached 294 only because stale buckets
+    absorbed the missing families
+  - no generator existed anywhere, and six columns lived in that binary alone
+
+Six orphan columns are tracked CSVs now and the tallies are counted from the
+rows on every build rather than stored, which is the only way the third defect
+cannot recur. build-mod-register.py produces both outputs in one pass from the
+same rows; check-mod-register.py round-trips every cell and card back out,
+asserts zero formula-typed cells and zero pinned heights, and validates the
+HTML for cards, links, escaping, filters, balanced tags and no external asset.
+audit-gate0.py independently compares 3,234 workbook cells and passed the
+rebuilt file unchanged. Row heights are now a floor written without
+customHeight, the exact inversion of the second defect.
+
+Joy and rituals: both decided no. Every WorkGiverDef in Core and all five DLC
+was enumerated -- 23 work types, 145 giver defs -- and Joy is not among them;
+JobGiver_GetJoy is a ThinkNode_JobGiver reading pawn.needs.joy. No WorkGiverDef
+anywhere is ritual-driven, because a LordJob_Ritual owns its participants'
+duties. Patient and PatientBedRest decided against permanently.
+
+That enumeration was the point: the remembered families list omitted DarkStudy
+and Fishing entirely, and closing the row on it would have closed it wrongly.
+Four gaps are now recorded with evidence, the largest being that ingredients
+cross a gate to a bill but nobody is sent to run it.
+
+The three hauling rows closed. Prison Labor settled on the axis that mattered,
+from Core source: a prisoner can never cross a gate, because Pawn.IsColonist
+requires Faction.IsPlayer and a prisoner keeps its own faction. Proving it
+surfaced undocumented behaviour worth pinning -- a secure slave may cross and
+an insecure one may not, because Core's own containment judgement draws the
+line.
+
+Also fixed: audit-gate0.py had been returning FAIL on a bare same-file link
+fragment in TODO.md copy-pasted from the file where that heading lives.
+
+Two mistakes of mine caught by reading output rather than by assuming: a
+checker comparing (column,row) against a (row,column) map, and a classifier
+that ranked "no integration" above "optional" and silently moved 59 supported
+mods into the wrong bucket.
+
+No C# change and no version bump. The mod stays 0.6.4-dev with assembly SHA-256
+4057EFD15AAB4B1C609732AB18A02F025C9A98A8D951374CE7333A80C9780728 after a clean
+rebuild, identical to the previous checkpoint, because the register lives beside
+the mod rather than inside it and announcing a mod change that did not happen
+would be a lie to anyone reading the changelog.
+
+Doc-rot sweep: nine live docs pointed readers at the unopenable .xlsx and now
+point at the HTML; ARCHITECTURE.md and DEFERRED.md still listed joy, rituals
+and the hauling providers as remaining families. Four new rot checks recorded.
+
+No game was launched, no test was run, no RimSort mod list was changed.

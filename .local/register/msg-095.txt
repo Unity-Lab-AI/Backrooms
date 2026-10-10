@@ -1,0 +1,45 @@
+They follow you (0.9.5-dev)
+
+Owner direction: "and at deeper levels i do want monstrosities and
+npcs to Chase pawns/ kill them all the way to the gate".
+
+A hostile inhabitant was given a LordJob_DefendPoint, with a comment
+saying why: the warning-first rule requires that a player who backs
+off is not pursued across the whole space. That was deliberate, and at
+shallow depth it is still right. The direction is not that it was
+wrong but that it should stop being true as you go deeper.
+
+The threshold already existed and did not need inventing. Band.Hostile
+is defined in the pressure ladder as "more than one thing acts, and
+the space stops being forgiving", derived from depth, operating
+history, technology and colony wealth together. A second threshold
+beside it would have given one idea two definitions that could drift
+apart. Below Hostile, unchanged. At Hostile, it hunts.
+
+No pursuit code was written. RimWorld's own assault lord already walks
+a hostile toward whoever it can reach, and "all the way to the gate"
+needed nothing added because the threshold room is excluded from
+spawning, never from being walked into.
+
+Kidnapping, stealing, fleeing and timing out are all off. Every
+generated coordinate has map edges, and a kidnapper carrying somebody
+off one would be a disappearance with no story attached to it. What
+was asked for is something that follows you; the countermeasure stays
+what it always was, which is to leave.
+
+One bug was caught by re-reading the diff against the decompiled
+constructor: LordJob_AssaultColony's first parameter is the
+assaulter's faction, and the first version passed the player's, naming
+the player as the attacker. It compiled, and no checker could have
+caught it.
+
+The frozen threat rules still hold. A hostile is still announced when
+placed, the band is visible in the coordinate readout, the
+countermeasure is to leave, and the absolute cap of three simultaneous
+encounters, the required quiet rooms and the empty threshold room are
+all untouched.
+
+156 C# source files, 79 approved package files. Zero warnings, zero
+errors. Assembly SHA-256 reproduced by two clean recompiles. All five
+checkers pass. No new def, asset, patch operation or work type. No
+game launched, no test run, no RimSort profile touched.

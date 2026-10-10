@@ -1,0 +1,11 @@
+====================================================================================================
+LINE 216  (429 chars)
+====================================================================================================
+- [~] Implement every open item in [connected colony portals](CONNECTED_COLONY_PORTALS.md#required-implementation-backlog): independent connection ownership, permanent natural portals, free crossing, shared cross-map work/materials, persistent seeds and dynamic inhabitants/complexity. This supersedes dispatch-only travel as the target. — **PARTLY BUILT**; what shipped is archived. **Open:** the individual routes listed below.
+
+====================================================================================================
+LINE 241  (656 chars)
+====================================================================================================
+- [~] **Adapter families, one at a time with source evidence per route.** Eighteen families and decisions closed in order from 0.5.0-dev to 0.6.7-dev; the sequence and the reason for each is archived. Sources: [`research/WORK_TYPE_COVERAGE_AUDIT.md`](research/WORK_TYPE_COVERAGE_AUDIT.md), `CONNECTED_WORK_CORE_API.md`, `CONNECTED_WORK_PROFILE_BOUNDARIES.md`. — **Open:** this row's own remainder clause reads *"Surgery across a gate is the named remainder"*, and the surgery row was separately CLOSED at 0.12.33-dev as something Core forbids being built. **Flagged 2026-10-02 rather than resolved** — see *Contradictions found while splitting rows* below.
+
+TOTAL: 2 rows, 1.1 KB

@@ -38,6 +38,8 @@ const ENV_PATH   = path.join(CLAUDE_DIR, '.env');
 const HTML_PATH   = path.join(TOOLS_DIR, 'persona-studio.html');
 const INBOX_PATH  = path.join(CLAUDE_DIR, '.studio-inbox.jsonl');
 const OUTBOX_PATH = path.join(CLAUDE_DIR, '.studio-outbox.jsonl');
+const OVERLAY_PATH = path.join(TOOLS_DIR, 'stream-overlay.html');
+const STREAM_LOG   = path.join(CLAUDE_DIR, '.stream-log.jsonl');
 const BASE_PORT   = parseInt(process.env.PERSONA_STUDIO_PORT, 10) || 4317;
 
 // ── Persona roster — id → display label + accent colour ─────────────────────
@@ -131,6 +133,17 @@ function hasKey(env) { return localImages(env) || !!(env && env.POLLINATIONS_API
 // :7860). Set STUDIO_IMAGE_BACKEND=pollinations in .claude/.env to go back.
 const IMG_DIR = path.join(TOOLS_DIR, '..', '.studio-images');
 let camState = { url: '', caption: '', ts: 0 };
+// The stream's picture survives a studio restart: kept in cam-state.json beside the images.
+const CAM_STATE = path.join(IMG_DIR, 'cam-state.json');
+try { camState = JSON.parse(fs.readFileSync(CAM_STATE, 'utf8')); } catch (e) {
+  try {
+    const last = fs.readdirSync(IMG_DIR).filter((f) => /^cam-\d+\.png$/.test(f)).sort().pop();
+    if (last) camState = { url: '/img/' + last, caption: '', ts: Date.now() };
+  } catch (e2) { /* no images yet */ }
+}
+// Unity's voice: each spoken line as a WAV the overlay page plays -- in OBS's browser source that
+// audio goes to the stream (desktop audio stays muted).
+let voiceState = { url: '', ts: 0 };
 function localImages(env) { return ((env && env.STUDIO_IMAGE_BACKEND) || 'local') === 'local'; }
 function sdUrl(env) { return (env && env.STUDIO_SD_URL) || 'http://127.0.0.1:7860'; }
 function renderLocal(prompt, env, faceUrl) {
@@ -184,7 +197,7 @@ function personaList() {
 function readBody(req) {
   return new Promise((resolve) => {
     let d = '';
-    req.on('data', (c) => { d += c; if (d.length > 1e6) req.destroy(); });
+    req.on('data', (c) => { d += c; if (d.length > 12e6) req.destroy(); });   // 12 MB: room for annotated screenshots (base64 PNG)
     req.on('end', () => { try { resolve(d ? JSON.parse(d) : {}); } catch (e) { resolve({}); } });
     req.on('error', () => resolve({}));
   });
@@ -223,6 +236,44 @@ const server = http.createServer(async (req, res) => {
       return res.end(fs.readFileSync(HTML_PATH));
     }
 
+    // The OBS stream overlay (full 1920x1080 canvas, transparent).
+    if (req.method === 'GET' && pathname === '/overlay') {
+      if (!fs.existsSync(OVERLAY_PATH)) { res.writeHead(500); return res.end('stream-overlay.html missing'); }
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+      return res.end(fs.readFileSync(OVERLAY_PATH));
+    }
+
+    // Stream chat: Twitch viewers and Unity's lines ONLY. The owner's own studio-window messages
+    // and Unity's replies to them never reach the stream (owner: "nothing personal of ours").
+    if (req.method === 'GET' && pathname === '/api/chat') {
+      const since = parseInt(query.since, 10) || 0;
+      const inbox = readJsonl(INBOX_PATH);
+      const twitch = new Map();
+      for (const m of inbox) {
+        const t = /^\[twitch\]\s*([^:]{1,40}):\s*([\s\S]*)$/.exec(String(m.text || ''));
+        if (t) twitch.set(m.id, { who: t[1].trim(), text: t[2].trim(), ts: m.ts });
+      }
+      const rows = [];
+      for (const [id, v] of twitch) rows.push({ key: 'v' + id, ts: v.ts, who: v.who, text: v.text, unity: false });
+      for (const r of readJsonl(OUTBOX_PATH)) {
+        if (r.replyTo != null && !twitch.has(r.replyTo)) continue;
+        rows.push({ key: 'u' + r.id, ts: r.ts, who: 'Unity', text: String(r.text || ''), unity: true,
+                    narration: r.replyTo == null });
+      }
+      rows.sort((a, b) => a.ts - b.ts);
+      return sendJson(res, 200, { rows: rows.filter((r) => r.ts > since).slice(-60) });
+    }
+
+    // Script log: re-sanitised here too -- only file basenames and rimworld/<command> survive.
+    if (req.method === 'GET' && pathname === '/api/log') {
+      const since = parseInt(query.since, 10) || 0;
+      const SAFE = /^(?:[A-Za-z0-9_-]{1,40}\.(?:py|cjs|ps1|sh)|rimworld\/[a-z_]{2,48})$/;
+      const rows = readJsonl(STREAM_LOG).filter((r) => (r.id || 0) > since).slice(-40)
+        .map((r) => ({ id: r.id, ts: r.ts, items: (r.items || []).filter((i) => SAFE.test(String(i))) }))
+        .filter((r) => r.items.length);
+      return sendJson(res, 200, { rows: rows });
+    }
+
     if (req.method === 'GET' && pathname === '/api/personas') {
       return sendJson(res, 200, {
         active: activePersona, activeMeta: PERSONAS[activePersona],
@@ -233,12 +284,16 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && pathname.startsWith('/img/')) {
       const f = path.join(IMG_DIR, path.basename(pathname));
       if (!fs.existsSync(f)) { res.writeHead(404); return res.end(); }
-      res.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'no-store' });
+      res.writeHead(200, { 'Content-Type': f.endsWith('.wav') ? 'audio/wav' : 'image/png', 'Cache-Control': 'no-store' });
       return fs.createReadStream(f).pipe(res);
     }
 
     if (req.method === 'GET' && pathname === '/api/cam') {
       return sendJson(res, 200, camState);
+    }
+
+    if (req.method === 'GET' && pathname === '/api/voice') {
+      return sendJson(res, 200, voiceState);
     }
 
     if (req.method === 'GET' && pathname === '/api/feed') {
@@ -340,21 +395,40 @@ const server = http.createServer(async (req, res) => {
       // Webcam panel: Unity's face on stream, re-rendered when something happens in game.
       if (pathname === '/api/cam') {
         const env = readEnv();
-        const prompt = String(body.prompt || '').trim();
-        if (!prompt) return sendJson(res, 400, { error: 'empty prompt' });
         let png;
-        const faceUrl = body.face ? ((env && env.STUDIO_FACE_URL) || 'http://127.0.0.1:7862') : null;
-        try { png = await renderLocal(prompt, env, faceUrl); }
-        catch (e) { return sendJson(res, 502, { error: 'local image server: ' + e.message }); }
+        if (body.png) {
+          // A ready image (annotated game screenshot from unity-snap.py), base64 PNG.
+          png = Buffer.from(String(body.png).replace(/^data:image\/png;base64,/, ''), 'base64');
+        } else {
+          const prompt = String(body.prompt || '').trim();
+          if (!prompt) return sendJson(res, 400, { error: 'empty prompt' });
+          const faceUrl = body.face ? ((env && env.STUDIO_FACE_URL) || 'http://127.0.0.1:7862') : null;
+          try { png = await renderLocal(prompt, env, faceUrl); }
+          catch (e) { return sendJson(res, 502, { error: 'local image server: ' + e.message }); }
+        }
         fs.mkdirSync(IMG_DIR, { recursive: true });
         const name = 'cam-' + Date.now() + '.png';
         fs.writeFileSync(path.join(IMG_DIR, name), png);
         camState = { url: '/img/' + name, caption: String(body.caption || '').trim(), ts: Date.now() };
+        try { fs.writeFileSync(CAM_STATE, JSON.stringify(camState)); } catch (e) { /* best effort */ }
         return sendJson(res, 200, { ok: true, url: camState.url });
       }
 
+      if (pathname === '/api/voice') {
+        const wav = Buffer.from(String(body.wav || ''), 'base64');
+        if (!wav.length) return sendJson(res, 400, { error: 'empty wav' });
+        fs.mkdirSync(IMG_DIR, { recursive: true });
+        const name = 'voice-' + Date.now() + '.wav';
+        fs.writeFileSync(path.join(IMG_DIR, name), wav);
+        voiceState = { url: '/img/' + name, ts: Date.now() };
+        return sendJson(res, 200, { ok: true, url: voiceState.url });
+      }
+
       if (pathname === '/api/shutdown') {
-        sendJson(res, 200, { ok: true });
+        sendJson(res, 200, { ok: true, persist: !!process.env.STUDIO_PERSIST });
+        // Persistent mode: a closing/reloading overlay window sends this beacon on pagehide,
+        // which must not take the stream's chat server down with it.
+        if (process.env.STUDIO_PERSIST) return;
         return setTimeout(() => process.exit(0), 120);
       }
     }

@@ -1,0 +1,71 @@
+Somebody finally runs the bill on the far side (0.6.5-dev)
+
+Ingredients have crossed a gate to a bill since 0.5.7-dev and nobody was ever
+sent to work the bench. A coordinate holding a stove, a live bill and delivered
+ingredients produced nothing unless a colonist happened to be standing there.
+The supply half was settled; this half had never been decided.
+
+The Core fact the carry family pinned as an obstacle turns out to enable this
+one. ClosestUnfinishedThingForBill validates Creator == pawn and
+Bill_ProductionWithUft binds BoundUft to a BoundWorker, so a half-made thing
+belongs to exactly one colonist -- which is why the carry family must never
+touch one, and why a deployed worker running Core's own WorkGiver_DoBill on the
+bill's own map is correct by construction rather than as a workaround.
+
+Built as five families, not one, because Core draws that line itself:
+StartOrResumeBillJob compares bill.recipe.requiredGiverWorkType against
+def.workType, and a bench belongs to a work type only through
+WorkGiverDef.fixedBillGiverDefs. A single provider would have declared one work
+type and pulled a cook across a gate for smithing. Cooking, Crafting, Smithing,
+Tailoring and Art each get their own provider, priority pair and work-settings
+row. Twenty-seven families now, nineteen of them deployments.
+
+The bench set is unioned from the loaded giver defs rather than named, so a mod
+adding a bench to an existing work type is covered with no code here and no
+mention of it. Match by capability, one level deeper than usual.
+
+Rules split by what each actually reads, verified in source. PawnAllowedToStartAnew
+is safe to ask remotely -- it reads the bill's pawn restriction, its slaves-only
+and mechs-only flags and the pawn's skill against allowedSkillRange, and none of
+it touches the pawn's map -- so a bill restricted to one named colonist or to a
+skill band never drags the wrong worker through a gate. nextTickToSearchForIngredients
+is read and never written. TryFindBestBillIngredients, every reservation, the
+interaction cell and the whole unfinished-thing resolution stay at arrival.
+
+One test is deliberately approximate and says so: every ingredient must be
+present within the bill's radius, which is necessary and not sufficient. It
+exists because a coordinate with a bench, a live bill and no materials would
+otherwise look like work forever -- Core's own throttle only moves when a pawn
+tries and fails, and on a map nobody stands on nobody ever tries.
+
+Also fixes a defect shipped five checkpoints ago. ConnectedBillAdapter has said
+since 0.5.7-dev that autonomous and mech bills are out of scope, while filtering
+with `if (!(bill is Bill_Production))`. But Bill_Autonomous derives from
+Bill_Production and Bill_Mech from Bill_Autonomous, so both passed straight
+through the test written to exclude them, and the carry family has been
+supplying mech gestator bills without review. Both families now share one type
+test in ConnectedBillScan, which excludes Bill_Autonomous explicitly. Found by
+reading the hierarchy instead of trusting the names.
+
+Five profile rows were read before writing and their answers recorded back into
+the register: 260 While You Are Nearby, 67 Compact Work Tab, 53 Big Little Mod
+Patch, 246 Vanilla Furniture Expanded Factory, 96 Fueled Crematoriums. Nothing
+of anyone else's is edited, copied, patched, replaced or bundled; these are our
+notes about our own behaviour alongside theirs.
+
+One priority interaction named rather than papered over: Rimrooms' own
+RR_DoGateAssembly sits at 100 in Crafting, so the Crafting continue giver at 102
+outranks it. That follows the rule every family follows and is tunable live.
+
+114 C# source files, 76 approved package files unchanged, zero warnings, zero
+errors. Assembly SHA-256
+51D2DB71724A7559FCE6092406040C6660EDCF15817732511D74C3A018D7E8EC reproduced by
+two full recompiles after deleting obj/ and bin/. Every RR_ key resolves, all 57
+giverClass references resolve, all 27 priority pairs name real defs, audit-gate0
+PASS with zero errors.
+
+Doc-rot sweep: five live docs still carried a twenty-two family count or listed
+bill work as an open gap. Three new rot checks recorded, including that
+`is Bill_Production` does not exclude what it looks like it excludes.
+
+No game was launched, no test was run, no RimSort mod list was changed.

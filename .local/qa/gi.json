@@ -1,0 +1,21 @@
+{
+ "status": "game_loaded",
+ "ticksGame": 1689796,
+ "mapCount": 5,
+ "selectedPawns": [],
+ "operation": {
+  "OperationId": "op_41c47bb671b74636b44f9597e864cc87",
+  "CapabilityId": "rimbridge.core/diagnostics/get-game-info",
+  "Status": 2,
+  "Success": true,
+  "StartedAtUtc": "2026-10-08T11:46:51.5759928+00:00",
+  "CompletedAtUtc": "2026-10-08T11:46:51.5835409+00:00",
+  "DurationMs": 7,
+  "Result": null,
+  "HasResult": true,
+  "ResultWasTruncated": false,
+  "Warnings": [],
+  "Error": null,
+  "Metadata": {}
+ }
+}

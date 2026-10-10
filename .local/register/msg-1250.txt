@@ -1,0 +1,103 @@
+The warren, the map budget, and a doorway you can carry (0.12.50-dev)
+
+Stages two to four of the coordinate rebuild, all answering direction given
+inside one session.
+
+The register instruction paid for itself in one query, and found a live
+defect nothing in our own code could have. Row 188 Removable Mt.Rock Roof
+Patch is installed in this profile and patches RoofRockThick.isThickRoof to
+false, so Core's overhead mountain here VANISHES on collapse. Invariant 13,
+a Backrooms coordinate has no outside, was therefore already broken before
+this session: BackroomsContainment's claim that thick roof never vanishes
+was reasoning from unpatched Core, and this profile is not unpatched Core.
+The non-collapsing roof def added one checkpoint earlier for the cave-in
+direction repairs that breach, and this is a second independent reason
+patching Core's roof would have been wrong - two mods editing one def at
+startup, resolved by load order, with that mod asking to load last. Rows 69
+Craftable Mountains and 63 Change map edge limit were checked and are clear.
+
+The map budget reads Core rather than writing a five.
+Prefs.MaxNumberOfPlayerSettlements is a 1-to-5 player slider Core enforces in
+SettleUtility as count >= the pref, which is the "limits built in" the owner
+pointed at. Core's own count is IsPlayerHome && Parent is Settlement plus
+gravship landings and cannot see a coordinate map, so OpenMapBudget counts
+both: a Backrooms level is one colony, as asked. A scenario may override the
+budget, which is the per-scenario part. A floor of two is load-bearing,
+because the slider can be set to one and the solo/group start opens a
+coordinate while the surface map already counts - without it that scenario
+refuses its own opening on a clean new game.
+
+The budget is enforced at the doorway before any coordinate is minted, and
+again at EnsureSite as a backstop for machine gates, saved addresses and
+recovery paths, but only when a NEW map would be made. It is checked AFTER
+the way-out attempt on purpose: a doorway may lead out instead of deeper, and
+a way home costs no map because it records a world tile rather than minting a
+place. Blocking it would strand a crew that is deep and full up, which is the
+same trap the depth cap is ordered to avoid. The budget stops the mod opening
+another place; it never closes the last door home. And discovering a gate is
+free - no map exists until somebody crosses.
+
+Ways onward scale with the size of the place now: FrontiersFor gives four to
+six, one more per twenty rooms, read from the room count rather than the
+depth. MaximumNaturalDepth is six, up from three. What made that safe is the
+budget rather than a change of mind about finiteness. Two proofs objected
+correctly because they encoded the previous decisions, and the restraint they
+were protecting is kept and asserted harder: no research capability may buy
+more ways onward or reach further, now checked by reading FrontiersFor's own
+body rather than the shape of an assignment.
+
+Rooms stopped being rectangles in a way that is provably safe.
+RockIntrusionCells leaves rock standing in the corners only, as quarter
+ellipses, never on the centre cross and never at an edge midpoint. That one
+restriction means no shape can disconnect a doorway, the pillar lattice needs
+no special case because rock already holds roof, and the intrusions are
+mineable so a player who wants the rectangle can dig for it. Proved rather
+than argued: the proof fills every corner at full reach and flood-fills from
+the room centre to all four edge midpoints at every depth. Depth one stays
+rectangular. Corridors are three or five cells wide from
+CorridorHalfWidthBetween, and the planner reads the same function the
+generator carves from.
+
+A natural gate is an object you own. It is a plain Building_Door in steel
+with no power, console, calibration or assembly - measured live, not
+inferred. Destroying one already ended its route and already warned the
+player with informed consent. Carrying one silently lost it, because
+EndpointPresent requires Anchor.Position == AnchorCell and the endpoint's
+cell is a deliberate snapshot so a moved door cannot silently redirect a
+saved route. Right under the old no-move rule, wrong now.
+TryFollowMovedAnchor is a move rather than a refresh and keeps what the
+snapshot protected: the same Thing instance only, so a lookalike rebuilt in
+the same cell cannot capture a route; branch-owned ground only; refused while
+a crossing is in flight, which is invariant 55; and not on load, or every
+load would re-anchor every route. Uninstall and deconstruct now say different
+things, and the red destructive confirmation is reserved for the one that is.
+
+Eight of my own proof claims were too loose and plants found every one: a doc
+comment satisfying a code claim, a prefix, a surviving declaration while the
+use was deleted, a shape appearing four times in a file, the same guard line
+added to a second function where the harness replaces only the first, a
+comment counting toward a count, an ordering compared across the wrong pair
+because the string appears twice, and a string appearing seven times. All
+eight are now scoped to a method body, an exact tag, or a call site. A claim
+about code must never be satisfiable by a comment, a prefix, a declaration or
+a duplicate.
+
+The heredoc rule earned its place twice more, the seventh and eighth times in
+two days. Both scripts were rewritten as files.
+
+200 C# files, 91 package files, zero warnings, zero errors. Assembly SHA-256
+0B307BD06299AE6EA7028267A1663D5D15315F540FEBDD8898432E60F1150599, reproduced
+by two clean recompiles. Thirteen checkers pass, forty-one proofs hold, 62 of
+62 and 15 of 15 in the two plant suites touched.
+
+One piece is deliberately not shipped and not half-built: the Operations
+held-places Release list, which frees a slot so a machine gate can aim
+deeper. It needs a save-schema field on CoordinateRecord to tell a deliberate
+release from a broken reference, because EnsureSite refuses to regenerate a
+coordinate whose rooms were surveyed; teardown that orphans neither the world
+object, the Site reference nor a portal edge pointing in; and a refusal set
+for crew present, crossing in flight, or the headquarters. Getting any of
+those wrong produces an unreachable place or a dead record, which is the exact
+defect class that cost this project thirty-nine checkpoints. Next checkpoint,
+first thing. Meanwhile discovering gates is free, so the cap is only met after
+five places are held open.

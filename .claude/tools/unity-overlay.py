@@ -54,7 +54,7 @@ def main():
     if not h:
         exe = next((b for b in BROWSERS if os.path.exists(b)), None)
         if not exe: print("no Edge/Chrome found"); return
-        subprocess.Popen([exe, "--app=" + URL, "--window-size=%d,%d" % (W, H),
+        subprocess.Popen([exe, "--app=" + URL, "--window-size=%d,%d" % (W, H), "--autoplay-policy=no-user-gesture-required",
                           "--user-data-dir=" + os.path.join(os.environ["TEMP"], "unity-overlay-profile")])
         for _ in range(40):
             time.sleep(0.5); h = find()
@@ -62,7 +62,12 @@ def main():
     if not h: print("overlay window not found"); return
     sw = u.GetSystemMetrics(0)
     HWND_TOPMOST = -1
-    ok = u.SetWindowPos(h, wintypes.HWND(HWND_TOPMOST), 10, 30, W, H, 0x0040)
+    # WS_EX_NOACTIVATE: the overlay stays on top but never takes focus from the game (its page
+    # refocuses the chat box, which stole RimWorld's keyboard and broke clicks mid-play).
+    u.GetWindowLongW.restype = ctypes.c_long; u.SetWindowLongW.restype = ctypes.c_long
+    ex = u.GetWindowLongW(h, -20)
+    u.SetWindowLongW(h, -20, ex | 0x08000000)
+    ok = u.SetWindowPos(h, wintypes.HWND(HWND_TOPMOST), 10, 30, W, H, 0x0040 | 0x0010)
     if not ok: print('SetWindowPos failed')
     print("overlay pinned topmost at", 10, 30, W, H)
 

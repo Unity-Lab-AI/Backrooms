@@ -1,0 +1,42 @@
+        /// <summary>
+        /// The write-up kinds already filed for this quest, by <see cref="RimroomsWriteUpDef"/>
+        /// defName.
+        ///
+        /// **THIS IS THE AUTHORITY, AND THE BOOK CARRIES A COPY.** The owner chose
+        /// *"Both, and they must agree"* when asked what the green light reads from, and the risk
+        /// was named in the option text: two things holding one truth is *"two derivations of one
+        /// rule"*, the defect this project keeps meeting.
+        ///
+        /// So it is spent down to **one writer and two readers**: <see cref="FileWriteUp"/> is the
+        /// only thing that ever adds to this list, and it stamps the book in the same call, record
+        /// first. **A mismatch therefore cannot be produced by the mod working normally** -- only a
+        /// book from another branch, a hand-edited save, or damage. Each of those is something the
+        /// player should be told about, which is what the amber state is for.
+        ///
+        /// A list of defNames rather than a count, because *which* paperwork is outstanding is what
+        /// a pawn needs in order to pick the next job and what the ledger has to show. A count could
+        /// not answer either question.
+        /// </summary>
+        internal List<string> writeUpsFiled = new List<string>();
+
+        /// <summary>What has been filed. Read-only to everything but <see cref="FileWriteUp"/>.</summary>
+        public IReadOnlyList<string> WriteUpsFiled
+        {
+            get { return writeUpsFiled ?? (writeUpsFiled = new List<string>()); }
+        }
+
+        /// <summary>
+        /// Record one filed write-up. **Idempotent, and the only writer.**
+        ///
+        /// Returns false when it was already filed, so a caller cannot double-count and a resumed
+        /// job that finishes twice costs nothing. The same reasoning as `PostTransaction`'s
+        /// operation id: the second attempt is not an error, it is a no-op.
+        /// </summary>
+        internal bool FileWriteUp(string writeUpDefName)
+        {
+            if (string.IsNullOrWhiteSpace(writeUpDefName)) { return false; }
+            if (writeUpsFiled == null) { writeUpsFiled = new List<string>(); }
+            if (writeUpsFiled.Contains(writeUpDefName)) { return false; }
+            writeUpsFiled.Add(writeUpDefName);
+            return true;
+        }

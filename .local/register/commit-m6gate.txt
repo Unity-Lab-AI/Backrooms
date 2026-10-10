@@ -1,0 +1,60 @@
+The M6 release gate, and the first change to a Gate 0 decision
+
+M6 was the only major that cannot be closed by building. Six of its ten rows
+need the owner's launch, its exit condition was a distribution decision, and one
+row carried an instruction that contradicted a standing rule. So it was put to
+the owner as a question rather than guessed at, and all three answers landed.
+
+Decision 19: M6 splits into M6a and M6b. M6a is the four rows that close with no
+running game -- package and def validation, the mod page and provenance, the tag
+and archive ritual, and the buildable part of the fresh-start checklist. M6b is
+the six that structurally cannot. Bookkeeping only: no row dropped, reworded,
+renumbered or moved out of Phase 6. It exists because one major reading zero
+percent hid that nearly half of it was buildable today.
+
+Decision 20: one scoped exception to the no-tests rule, and it is deferred. The
+owner selected both the automated-fixtures option and the defer option, which
+read together means fixtures are authorised for that row and none is written
+until after the first launch, so their content follows observed failures rather
+than guesses. The exception covers the five subjects in that single row and
+nothing else. That limit is written into CONTRIBUTING.md itself so a later
+session cannot read it as general permission.
+
+Decision 21: D1 is superseded. Public Steam Workshop is now the first
+distribution target, replacing the private RimWorld Together prototype. The
+owner's reason answers the exact objection that was put to them: the risk raised
+was first real-world validation happening in public against other players' saves,
+and there are no other players' saves. Nothing has shipped.
+
+Two consequences are recorded rather than assumed. The no-compatibility-claim
+rule is now the main protection instead of a formality -- the mod page may claim
+the Core-only solo path and must claim no profile row, no DLC interaction and no
+co-op without a recorded result, and 200 of the 294 dispositions are still
+provisional. And save migration becomes a standing obligation from the first
+published version, because from publication onward there are other people's
+saves.
+
+This is the first change to a D-numbered Gate 0 decision since 2026-09-27, so it
+was propagated rather than noted. Every D1 assertion in the repository was
+grepped and reconciled; four documents still stated the superseded content after
+the first pass. Several docs assert a decision's content rather than linking it,
+which is why an ID grep alone is not enough.
+
+Two defects surfaced while counting the backlog for the owner, both named rather
+than quietly fixed. The master backlog stopped at 0.4.2-dev: it spends 81 rows on
+Phase 0 research and covers the entire cross-map work engine, 31 work families
+and 27 shipped versions with one unchecked row, so a raw count reads about
+twelve percent on code while the source tree went from 78 files to 120. And
+disposition_stance() counts a negated "required" as Required -- 14 of the 17 rows
+in that bucket say the opposite, so 82 percent of it is wrong, the same class of
+bug as the classifier-priority defect that silently moved 59 mods.
+
+The roadmap status table was three versions and 42 source files out of date and
+is corrected here too.
+
+Docs only: zero C# and zero XML files changed, so no build, no version bump and
+no changelog entry, because nothing player-facing moved. audit-gate0 PASS with
+zero errors across 482 markdown files, 3,048 local links and 202 fragments,
+including the new anchor now referenced from five documents.
+
+No game was launched, no test was run, no RimSort mod list was changed.

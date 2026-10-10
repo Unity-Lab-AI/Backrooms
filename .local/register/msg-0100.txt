@@ -1,0 +1,53 @@
+The documents say what is true (0.10.0-dev)
+
+Owner direction: "we need to keep using the mod register and all the
+prep docs while updating old out of date docs, readmes, how tos and
+other docs making sure they conform to the wanted stake state".
+
+README.md opened with "Current development version: 0.4.1-dev" against
+a build at 0.9.9-dev, twenty-five checkpoints stale, on the front
+page. PUBLISHING.md, the procedure followed at every checkpoint, named
+feature/preproduction-handoff as the working branch when the real one
+has been feature/connected-colony-portals throughout; that one is not
+cosmetic, because it is the document an agent follows to push. In
+total 28 genuine problems across 10 living documents.
+
+A sixth checker, check-doc-conformance.py, enforces it. Living
+documents and dated records are different things and the distinction
+is the whole design: a readme must describe the mod as it is now,
+while an implementation record describes a moment that has passed and
+was telling the truth when written. Rewriting those would falsify the
+evidence trail this project's method rests on, so dated records are
+never checked and 48 living documents are checked strictly.
+
+Precision mattered more than coverage. The first branch rule matched
+any feature/... string and produced 26 false positives on file paths
+and prose, and the deferral rule flagged NOW.md for the sentence that
+forbids deferring. A checker that cries wolf is one people learn to
+scroll past, which is worse than not having it. Branch names now come
+from an explicit list, a retired def may be named freely while
+explaining that it is retired, and the deferral rule fires only if a
+document never says anywhere that the file is closed. 54 raw hits
+became 28 real ones.
+
+Proved in both directions. Each fault was planted separately so a rule
+that does nothing cannot hide behind one that works: stale version,
+retired branch name, retired def and wrong checker count were all
+caught. Then all four were planted in a dated record and correctly not
+flagged, because an exemption that leaked would quietly disable the
+whole check.
+
+It caught itself twice. Adding it made six checkers while its own
+count said five, so it failed the checkpoint ritual in NOW.md. It then
+caught the ledger prose written for this very checkpoint, which quoted
+the banned phrase while explaining the rule; the prose was rephrased
+rather than the rule weakened.
+
+Recorded and not yet built: the unified vocabulary, decided at the
+fork. The gate is the machine in your wall, the connection is the live
+link it holds open, and the threshold is the doorway on the far side.
+
+158 C# source files, 79 approved package files. Zero warnings, zero
+errors. Assembly SHA-256 reproduced by two clean recompiles. All six
+checkers pass. No new def, asset, patch operation or work type. No
+game launched, no test run, no RimSort profile touched.

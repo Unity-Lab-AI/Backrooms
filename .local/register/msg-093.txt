@@ -1,0 +1,48 @@
+Everything you can look at says what it is (0.9.3-dev)
+
+Owner direction: "we also need to be making sure all mod ingame
+decriptions and informational informations for everything is properly
+in the cards like the game does currently".
+
+"Like the game does currently" is measurable, so it was measured
+rather than guessed. Across Core's own defs: 0 of 105 work givers
+described, 0 of 109 pawn kinds, 0 of 16 trader kinds, 0 of 74 thing
+categories, and 80 of 80 recipes. The first draft of the checker
+demanded a description everywhere and reported 94 problems, 67 of them
+work givers, which would have produced sixty-seven lines of text no
+player is ever shown. Matching the game meant writing fewer
+descriptions in the right places. After calibration: 17 real problems,
+every one genuine.
+
+Our own def types are held higher, because they appear in our own
+windows where a bare noun is all a player gets. Nine facility
+categories and seven procurement catalogue entries were described, and
+rendered in the same checkpoint: the facilities overview now explains
+what the chosen category is for and what goes wrong without it, and
+the procurement panel explains what the selected item is actually for.
+Before this, exactly one of our def types had its description shown
+anywhere, so writing the rest without rendering them would have been
+text in a file.
+
+One exemption, with its reason: RimroomsStartDef is branch setup data
+and the ScenarioDef beside it is what a player reads at the picker.
+
+A fifth checker, check-info-cards.py, joins the ritual.
+
+It caught a real bug in itself. A planted blank description was
+caught; a planted "TODO Structural steel..." passed clean, because the
+placeholder test only matched a whole string. The rule added for that
+still passed the plant, while the same regex tested correctly in
+isolation. The cause was a literal backspace byte: writing a
+word-boundary escape through a shell collapsed one level too far, so
+the pattern demanded a 0x08 after the keyword and matched nothing, and
+it looked correct in every listing because a backspace renders as
+nothing. That is exactly the failure the standing warning describes,
+and the same shape as the unknown-def-field checker that was removed
+rather than shipped. The difference is that this one was debugged
+instead of abandoned, and then proved in both directions.
+
+156 C# source files, 79 approved package files. Zero warnings, zero
+errors. Assembly SHA-256 reproduced by two clean recompiles. All five
+checkers pass. No new def, asset, patch operation or work type. No
+game launched, no test run, no RimSort profile touched.

@@ -1,0 +1,78 @@
+Four answers, and a tier 0 unlock that did nothing (0.12.4-dev)
+
+Four open questions closed, and a real defect the first of them uncovered.
+
+THE FIND. Wiring reserveChargePowerWatts meant reading what already consumed
+the gate's power values, and something did not:
+
+    public float MinimumPowerHeadroomWatts   // applies RR_Cap_ReserveDiscipline
+    { get { ... } }                          // and was itself READ BY NOTHING
+
+RR_Cap_ReserveDiscipline is the tier 0 Facilities unlock and its entire effect
+was to lower that number. So the card promised "the gate needs less spare
+headroom above its draw before it will open" and changed nothing a player
+could ever observe.
+
+That is invariant 136 exactly, and exactly why proof-research-branches.py
+cannot catch it: the capability WAS read, by real code, and the code reading it
+was itself dead. A live read site is not a live effect.
+
+So the sweep became a general proof. proof-live-effects.py walks every public
+property on the gate comp whose body reads GateProps - fifteen of them - and
+insists each is consulted elsewhere. It found TWO MORE:
+EmergencyReturnCostWattDays and RecoveryOpeningCostWattDays, which are dead
+ACCESSORS rather than dead values. The readout showed the totals that include
+them and never showed how much of the total was the way home, which is the
+number that decides whether it is safe to send anybody. It has its own line
+now. Three dead members, one sweep, and the sweep keeps working after everybody
+has forgotten why it exists.
+
+reserveChargePowerWatts = "A supply requirement before opening". The circuit
+must be GENERATING this much, not holding it: a battery is a buffer, not
+supply, and a gate opened on one charged battery and no generator is a gate
+about to strand a crew. NativeGenerationWatts sums only what is actually
+producing. Plus margin above what the gate already draws, which is what makes
+the tier 0 unlock real. Two distinct refusals, because "cannot deliver enough"
+and "no margin above the draw" are different problems with different fixes.
+
+It gates OPENING only, deliberately not NativeBindingFailureKey, which is read
+every tick - a generation dip there would emergency-return a crew already
+across, and the chart's rule is that a lapse blocks the next opening, never the
+current one. The proof asserts the absence.
+
+Natural gates became informed consent rather than prohibition, on the owner's
+own relaxation: "dont worry about it, can we at least do a rim style pop up
+warning". It is also the only honest option, because Core decides
+destructibility at the def level and changing it would make every door in every
+colony indestructible for every player and every other mod. A player may close
+their own way in; they may not do it by accident. A laboratory gate gets no
+warning - it is a machine they built and warning about ordinary construction is
+how a player learns to click through warnings. A bounded map sweep rather than
+a comp ticking on every door in the colony.
+
+Solo/group guidance is option three: no request line until contact, for honesty
+rather than difficulty. Nobody is helping them because nobody knows they exist,
+and a quest-giver would have to be invented. Instead four hints in the
+survivors' own voice, each once, on conditions already true when they fire.
+None is an objective; nothing tracks whether the player listened. A hint that
+checked whether you obeyed it would be a quest wearing a costume.
+
+Idle draw: confirmed at 250 W. No code needed - the shipped behaviour is the
+intended behaviour, and the open balance question from 0.11.5-dev is settled.
+
+TWO PROOF MISTAKES OF MY OWN. The declaration scan matched nothing, because a
+property body is `{ get { ... } }` and the regex had a brace-nesting limit - so
+it reported zero exposed properties and PASSED every per-property claim by
+having none to check. That is invariant 152, written this same session.
+Rewritten so it cannot silently match zero. And the hints built keyed strings
+at runtime; check-keyed-strings refused it and was right, because a constructed
+key cannot be verified in either direction and a typo ships as a raw key on
+screen.
+
+Fault-planted three ways, including restoring the original bug, and correct on
+every one.
+
+Build 0.12.4-dev, 170 C# files, 86 package files, 0 warnings, 0 errors.
+Assembly E62DF5326AC89E59E744E4AD10F054CA6674439AA7F73C34075DF1CF14AD2BE3
+reproduced by two clean recompiles. Eight checkers pass, nine proofs hold.
+No game was launched, and nothing here has been played.

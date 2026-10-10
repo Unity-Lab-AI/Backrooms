@@ -1,0 +1,74 @@
+Who you find down there (0.8.2-dev)
+
+All six variations the owner named, and no shortcuts: wanderers, people who went
+missing, bodies, unstable inhabitants alone and in packs, survivors who can be
+brought home, and variation rolled rather than authored. This is what the
+escalation ladder was built to pace.
+
+The load-bearing split is bodies at generation, living things on arrival. A
+corpse is discoverable content -- finding one should not wait on a danger band,
+and a body does not act. But if living inhabitants were baked in at generation,
+"a first visit is always quiet" would be a lie the moment somebody walked in, and
+a band that rose later would never show. So anything that acts is placed on
+arrival, against the band as it stands at that moment.
+
+"Of disappering" lands because the name is one the player knows. When a
+coordinate produces a missing person, the name it carries is drawn from the
+branch's own register of people it lost inside a coordinate. A stranger called
+nothing in particular is atmosphere; somebody you lost is a story. The register
+is bounded at twenty-four, drops the oldest when full, and consumes a name when
+it is used, so the same colonist is never found twice -- which is both better and
+the only honest reading of missing. Losses are recorded by sampling corpses on
+the sweep that already runs rather than by hooking death, for the same reason the
+construction echo samples: bounded cost, and it is also correct for a body
+carried in from elsewhere and left there.
+
+No new pawn kinds, and that constraint was load-bearing. M2 is currently deleting
+this mod's five legacy staff PawnKindDefs under the existing-content policy, so
+authoring new ones here would reopen the exact category being closed. Every
+inhabitant generates from a PawnKindDef the loaded game already ships, through a
+fallback chain, so a Core-only install and a 274-mod profile both work. A family
+whose kinds are all absent is skipped rather than substituted, because a wanderer
+rendered as the wrong kind of person is worse than an empty room.
+
+The frozen threat rules are enforced rather than intended. Only Psychotic
+families may be hostile and that is checked in code, not trusted in data,
+because a hostile family that does not read as hostile breaks the warning-first
+rule. Hostiles get a defend-point lord rather than an assault lord, so a player
+who backs off is not pursued across the whole space and withdrawal is a real
+countermeasure rather than a delayed death. Every announced family sends a letter
+that points at the pawn, so the warning arrives before the encounter. The
+ladder's absolute cap of three clamps hostile counts whatever the defs say. Quiet
+rooms are never used for people, so the guaranteed-empty half of a coordinate
+stays empty of inhabitants too. The threshold room is never used, so nothing is
+ever standing between the player and the way back. And nothing here touches
+gates: PortalTraversalPolicy remains the single chokepoint.
+
+Bodies carry what they had. A body is generated and then killed rather than
+spawned dead, so it has a real cause, a real age and real belongings -- finding
+one is a discovery, and a body with nothing on it is a prop rather than a find.
+One family is deliberately stripped, an old one long since picked over. Corpses
+are marked odd, so a body found down there is consistent with everything else a
+coordinate produces.
+
+A checker gap was closed in the same checkpoint. The integrity checker flagged
+every letter key as an unresolved def reference: the package was right and the
+checker was incomplete, because a def may legitimately name a keyed string. It
+now loads keyed names and accepts them, verified by planting a genuinely missing
+key, confirming it still fails, and restoring. That is the third checker gap this
+session found by a real change rather than by inspection.
+
+145 C# source files, 88 approved package files, zero warnings, zero errors. No
+new PawnKindDef, no new gameplay ThingDef, no asset, no patch operation, no new
+work type. Assembly SHA-256
+6CF7DD15383596B41C85A36039CDC1C9F3383147569F13040FE814268CE2901B reproduced by
+two full recompiles after deleting obj/ and bin/. All four checkers pass.
+
+Still open and named in TODO.md rather than deferred: recruiting a survivor,
+since they exist and can be carried out but the interaction that turns finding
+one into gaining one does not exist; raising an encounter cap as a recorded
+progression step; anomalous events as distinct from anomalous rooms and
+inhabitants; and echoed room shapes, still outstanding from the previous
+checkpoint.
+
+No game was launched, no test was run, no RimSort mod list was changed.

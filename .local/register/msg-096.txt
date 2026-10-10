@@ -1,0 +1,50 @@
+It came through with them (0.9.6-dev)
+
+Owner direction: "and even at higher techs they can come through the
+portal into your base and attack, kidnap, steal, do everything npcs
+can do in game", under the condition chosen when asked: depth plus
+technology, while an opening is live, and "if it reaches the threshold
+before you close: it comes through".
+
+This inverts the rule the rest of the code base exists to enforce, so
+it is a named exception bounded on five axes at once: only while a
+connection is actually open, only at Band.Hostile, only once the
+branch has advanced the machine, only if the intruder fits the
+opening, and only once per opening. The tech condition is
+PortalWindowTier >= 1, which requires the RR_GateTelemetry project;
+that project was checked to exist and be completable, because this
+session already produced an invariant about writing rules that can
+never fire.
+
+The inhabitant still decides nothing.
+MayApproachThresholdForTraversal still returns false for everything,
+so nothing on the far side is ever given a threshold as a destination.
+A hostile walks to the doorway because the player's people are
+standing there, which is vanilla assault-lord behaviour aimed at
+colonists rather than at a door, and the gate then notices what is
+already on its doorstep and asks the policy.
+AutonomousNonPlayerTraversalPermitted is still a constant false, and
+PortalTraversalPolicy.IncursionFailureKey is the only thing that may
+say yes.
+
+The class-level documentation was rewritten rather than left standing.
+A founding comment that no longer describes the code is worse than no
+comment.
+
+The transfer preflights completely before anything is despawned, and a
+spawn that somehow fails puts the pawn back where it stood. A vanished
+hostile is a save with a hole in it that the player would never know
+about, and it would look exactly like the feature working. Candidate
+cells are taken in a fixed radial order so the same situation resolves
+the same way on every machine.
+
+Once through, no behaviour was written. It is an ordinary hostile pawn
+on a player map and every native behaviour applies. Kidnapping and
+stealing are deliberately off inside a coordinate, where a kidnapper
+leaving by a map edge is a disappearance with no story, and on in the
+colony, where it is an ordinary raid the player can chase.
+
+157 C# source files, 79 approved package files. Zero warnings, zero
+errors. Assembly SHA-256 reproduced by two clean recompiles. All five
+checkers pass. No new def, asset, patch operation or work type. No
+game launched, no test run, no RimSort profile touched.

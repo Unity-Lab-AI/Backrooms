@@ -242,7 +242,7 @@ portal_keys = io.open(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "
 
 check("WALKING OUT ONTO A CLAIMED TILE BUILDS THE WAY BACK IN",
       "private CompanyActionResult EstablishReturnGate(" in exit_src
-      and "EstablishReturnGate(record, claimed, coordinateDoor)" in exit_src
+      and "EstablishReturnGate(record, claimed, coordinateDoor, arrival)" in exit_src
       and "PortalConnectionKind.Emergence" in exit_src,
       "-- a recorded way back that nothing reads is not a way back. This is the step that turns "
       "the saved coordinateId and doorLoadId into an edge a pawn can walk")
@@ -256,9 +256,9 @@ check("AND IT IS BUILT BEFORE ANYBODY IS DESPAWNED, EXACTLY ONCE",
       # alone finds the FIRST occurrence, so adding a SECOND call after the despawn satisfies it
       # while doing the exact thing the claim forbids -- which is how the matching plant went
       # MISSED. "Once, before" is the property; "before" on its own is not.
-      exit_src.count("EstablishReturnGate(record, claimed, coordinateDoor)") == 1
+      exit_src.count("EstablishReturnGate(record, claimed, coordinateDoor, arrival)") == 1
       and "pawn.DeSpawn();" in exit_src
-      and exit_src.index("EstablishReturnGate(record, claimed, coordinateDoor)")
+      and exit_src.index("EstablishReturnGate(record, claimed, coordinateDoor, arrival)")
           < exit_src.index("pawn.DeSpawn();"),
       "-- if the way home cannot be made, nothing has moved and the door is still there")
 

@@ -1,0 +1,46 @@
+One set of words (0.10.2-dev)
+
+Owner direction: "ive used alot of differnt terms for the gates.. from
+portals, gates, doors , the machine, the gizmo, ect ect we need a
+unified name throught the entire mode in all the equipment information
+and cards of things items resources and buildings and all things that
+our mod touches".
+
+One word would have been the wrong answer. Asked at the fork, and the
+answer was three words for three genuinely different things: the gate
+is the machine in your wall, the connection is the live link it holds
+open, and the threshold is the doorway you arrive at on the far side.
+"The gate is fine, the connection dropped" says something true and
+could not be said at all while both were called a portal. Gate already
+won on the evidence at 171 player-facing uses against 13 for portal.
+
+The biggest source of drift was not portal. It was "machine gate", the
+name of RR_MachineGate, a def retired in 0.9.0-dev, still present in
+25 player-facing strings: calibrate machine gate, assembling the
+machine gate, no company machine was found, the machine's reserve. The
+def was gone and its name was still what the game called itself. 84
+lines across 21 files changed.
+
+Key names were deliberately left alone. A player never reads
+RR_Portals_Heading, and renaming keys is churn with real DefInjected
+risk for no reader benefit, so only displayed text moved.
+
+One real bug was caught by a checker rather than by reading. A global
+word replacement renamed a key, RR_Frontier_NotADoorway becoming
+RR_Frontier_NotADoor, while the C# still asked for the old name, which
+a player would have seen as a raw key in a refusal.
+check-keyed-strings.py caught it immediately. The new name matches the
+new vocabulary, so the C# reference was updated rather than the rename
+reverted, and the replacement script now asserts that no key or class
+name count changes.
+
+check-info-cards.py gained a vocabulary rule over everything a player
+can read, with the reason attached to each banned term. Proved by
+planting all four terms separately and confirming failure, then
+planting a key name containing "portal" and the three blessed words
+together and confirming silence.
+
+158 C# source files, 79 approved package files. Zero warnings, zero
+errors. Assembly SHA-256 reproduced by two clean recompiles. All six
+checkers pass. No new def, asset, patch operation or work type. No
+game launched, no test run, no RimSort profile touched.

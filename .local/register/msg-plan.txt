@@ -1,0 +1,45 @@
+Plan the public face: site, Workshop page, collection
+
+Owner direction, recorded verbatim and explicitly future-tense: a
+GitHub Pages site cataloguing the whole mod at a real domain rather
+than a github.io path, then the Steam Workshop mod page, then the
+collection, with write-ups linking to each other and to the site.
+
+Written up as docs/PUBLIC_RELEASE_PLAN.md rather than left as a queue
+entry, because the ordering the owner named is a real dependency chain
+and the parts that are the owner's to decide need naming now rather
+than being discovered later.
+
+Why it is last: every artefact in it describes the mod, so each is
+written twice if the mod is still changing underneath. README.md
+already announced a version twenty-five checkpoints out of date on the
+front page until a checker caught it, and a published site and a
+Workshop listing are the same failure with an audience.
+
+The ordering: the mod settles, then the site deploys and is reachable,
+then the Workshop page whose write-up links to it, then the collection
+whose write-up links to both. Publishing a link to a page that does
+not exist yet is the one mistake strangers can see.
+
+The site must be generated rather than hand-maintained.
+tools/make-readable-html.py is already the seed of it, and a
+hand-written site would be a fourth copy of the truth that drifts from
+the other three. check-doc-conformance.py should cover the generated
+output once that output exists.
+
+Three decisions are the owner's and are named rather than assumed:
+which domain and whether it is registered, since a custom domain and a
+project-path deploy generate different internal links; which branch
+Pages publishes from, given the four-branch cascade; and whether to
+drive Steam with Playwright at all.
+
+That last one is recorded as the owner's idea and deliberately not
+treated as approval. It means operating an authenticated session on
+the owner's Steam account, which is a different class of action from
+anything done here so far, and it needs explicit permission with a
+stated scope. The alternative costs the owner very little: a prepared
+write-up in Steam's own markup, ready to paste, plus a checklist of
+the settings to set.
+
+All six checkers pass. No new def, asset, patch operation or work
+type. No game launched, no test run, no RimSort profile touched.

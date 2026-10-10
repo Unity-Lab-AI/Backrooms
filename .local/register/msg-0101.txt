@@ -1,0 +1,44 @@
+LAW #0, made checkable (0.10.1-dev)
+
+Owner direction: "it seems i could be wrong but it seems like
+sometimes i dont see you record the verbatiums and then build them
+into tasks of the todo prperly, documenting them alll, idk".
+
+The right response was to measure it rather than argue about it. The
+owner was not wrong. An audit of seventeen directions from this
+session found fourteen recorded in TODO.md and three not: the
+ask-do-not-flag rule, the no-crossing-limits rule, and the
+cannot-expand-a-working-gate rule. All three were implemented
+correctly so no work was lost, but the queue is supposed to be the
+record of what was asked for, and for those three it was not.
+
+The rule written to prevent a recurrence then found seven more from
+earlier in the run, including "we cant have backrooms npc pawns all
+dying off if a person is slow to explore" and "WE ARE NOT EDITING
+OTHER PEOPLES MODS!". Ten directions total, now recorded verbatim.
+
+The rule: a direction quoted in FINALIZED.md is by definition
+something that shipped, so if it never appeared in TODO.md it skipped
+the queue entirely, and that is now a build failure. It is not a
+promise to do better. It caught seven things that had not been
+noticed, and then caught this checkpoint's own direction when that was
+archived before being queued.
+
+Two things would have made it useless. Markup false positives: the
+same direction is quoted in one ledger with escaped quotation marks
+and in another without, so comparison is normalised to fire on words
+rather than markup. Continuation prompts: "get to it all we are
+finishing everything" is genuinely the owner's words and a queue entry
+for it would say nothing actionable, so six are listed explicitly
+rather than matched by a pattern. An over-eager pattern would swallow
+a direction carrying real content alongside a "get to it", which has
+happened repeatedly here.
+
+Proved by planting a direction into the archive that exists nowhere in
+the queue and confirming the build fails, alongside the four existing
+plants and the dated-record exemption.
+
+158 C# source files, 79 approved package files. Zero warnings, zero
+errors. Assembly SHA-256 reproduced by two clean recompiles. All six
+checkers pass. No new def, asset, patch operation or work type. No
+game launched, no test run, no RimSort profile touched.

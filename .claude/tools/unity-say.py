@@ -23,13 +23,46 @@ def post(text, persona="unity"):
                             "persona": persona, "text": text}) + "\n")
 
 
+def speakable(text):
+    """Only words reach the voice and the chat (owner, 2026-10-09: "dont tts speak the emojis and none
+    verbalized need shit"): drop emoji and pictographs, *stage directions* and (asides in brackets),
+    hashtags, markdown, and stray symbols."""
+    import re
+    text = re.sub(r"\*[^*]{0,80}\*|\[[^\]]{0,80}\]|<[^>]{0,80}>", " ", text)          # *sighs*, [laughs], <tags>
+    text = re.sub(r"#\w+", " ", text)
+    text = "".join(ch for ch in text if ord(ch) < 0x2190)                                  # emoji, dingbats, arrows
+    text = re.sub(r"[_~`^|\\{}]+", " ", text)
+    return re.sub(r"\s+", " ", text).strip(" -")
+
+
 def main():
     args = sys.argv[1:]
     wait = bool(args) and args[0] == "--wait"
     if wait: args = args[1:]
+    raw = bool(args) and args[0] == "--raw"
+    if raw: args = args[1:]
     text = " ".join(args).strip()
     if not text: return
+    # Unity's own words: the plain line goes through the Unity 3D project's model (unity-voice.py,
+    # stream-filtered); --raw skips it. Owner: "be Unity or no one will watch".
+    if not raw:
+        try:
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("unity_voice", os.path.join(HERE, "unity-voice.py"))
+            uv = importlib.util.module_from_spec(spec); spec.loader.exec_module(uv)
+            text = uv.voice(text)
+        except Exception:
+            pass
+    text = speakable(text)
+    if not text: return
     post(text)
+    # a picture with every line (owner: "make some images more offten like as much as you talk")
+    _gl = os.path.join(HERE, "..", ".cam-highlight.json")
+    try: _recent = time.time() - json.load(open(_gl)).get("ts", 0) < 90
+    except Exception: _recent = False
+    if not os.environ.get("UNITY_NO_GLANCE") and not _recent:   # highlights stay occasional; Unity's face holds the panel   # a caller with its own highlighted shot (tour-base.py) sets this
+        subprocess.Popen([sys.executable, os.path.join(HERE, "unity-glance.py"), text],
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     speak = [sys.executable, os.path.join(HERE, "unity-speak.py")] + ([] if wait else ["--bg"]) + [text]
     subprocess.run(speak)
 

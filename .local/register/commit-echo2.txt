@@ -1,0 +1,80 @@
+The place copies your people, and holds them until you find them (0.8.5-dev)
+
+Items and production benches echoed in the previous checkpoint. This is the other
+half of that direction: echoes of the branch's inhabitants, which is a different
+thing entirely from echoing objects.
+
+An echo carries the name and the clothes of a colonist who is alive and at home
+right now. Deliberately not somebody the branch lost -- that is the Missing
+family and it is a different and sadder feeling, because a body with a familiar
+name is grief. An echo is uncanny, and it is uncanny precisely because the real
+one is standing in the base at the same moment the player is looking at this one.
+
+That constraint is enforced rather than assumed. The source must be alive, not
+downed, on a player home map, and not on the coordinate map itself -- meeting
+your own echo while you are standing there is a sillier effect than meeting it
+while you know they are at home. If nobody qualifies, no echo is placed at all,
+because a generic stranger under an echo family would be a worse encounter than
+none: the whole effect is the recognition.
+
+Only the surface is copied: the name and the apparel, which are what a player
+recognises at a glance and are together enough to land. Skills, traits,
+backstory, health and relationships are deliberately not copied, because an echo
+is something that has seen your colonist rather than something that is them.
+Copying the interior would make it a duplicate, which is a weaker and much more
+confusing idea, and would hand the player a free second copy of their best worker
+if they ever recruited one. Echoes therefore cannot be recruited at all, and the
+survivor mark is never applied to them.
+
+Apparel is copied rather than taken. Taking the real clothes would strip a living
+colonist from across a gate, which would be a bug wearing a feature's clothes.
+Each piece is made fresh from the same def and stuff, so quality and damage
+differ, which is fitting for a likeness rather than a duplicate. Whatever the
+generator already dressed the echo in is removed first, or it wears two shirts
+and reads as a mess rather than as a copy.
+
+An echo is never hostile. Hostility would break the warning-first rule outright,
+since a thing wearing a friendly name that attacks is the definition of an
+unreadable threat, and the existing ConfigErrors guard already refuses any
+hostile family that is not Psychotic.
+
+Determinism needed a specific fix. Candidates are sorted by thingIDNumber rather
+than taken in list order, because list order varies with spawn and load order:
+without the sort the same seed would echo a different colonist after a reload,
+and the entire effect depends on it being the same person every time.
+
+The owner caught a real defect in this mid-build and it is fixed in the same
+checkpoint rather than shipped: Backrooms inhabitants would die off if a player
+explored slowly. Everything placed in a coordinate is a live pawn on a live map,
+so needs tick from the moment it exists, and a survivor three rooms away would
+starve before a cautious player ever reached them. The rescue would have been
+impossible for exactly the player most likely to want it, and it would have read
+as a broken feature rather than as somebody having died. The same applied to a
+hostile freezing in a cold band's coordinate and to a body rotting behind a door
+nobody had opened.
+
+Fog of war is the right discovery signal and the owner named it. RimWorld already
+tracks per cell whether the player has seen it, so nothing had to be invented,
+saved or kept in sync, and it is already the exact question a player experiences
+as having been somewhere yet. Needs are topped back up on a bounded sweep rather
+than frozen, because stopping them ticking would need Harmony and the observable
+result is identical. Malnutrition, hypothermia and heatstroke are cleared and
+corpse rot is held at zero, which is safe precisely because this only ever runs
+on somebody nobody has seen: no player decision is undone and nothing observable
+is reversed. Mood is deliberately left alone, because a held pawn is being kept
+alive rather than made happy, and a forced mood would produce somebody who reads
+as uncannily content in a place designed to be unbearable. Discovery starts their
+clock.
+
+151 C# source files, 91 approved package files, zero warnings, zero errors. One
+inhabitant def and two keyed strings added to existing files. No new PawnKindDef,
+no new gameplay ThingDef, no asset, no patch operation, no new work type.
+Assembly SHA-256
+1314BF625F45C04F9F64BB8AC18F88B5705F9ED253563AA4BBEE9E8C8983BE28 reproduced by
+two full recompiles after deleting obj/ and bin/. All four checkers pass.
+
+Still open and named in TODO.md rather than deferred: echoed room shapes, the
+last one, which touches the saved layout fingerprint and therefore generation's
+validation path.
+
+No game was launched, no test was run, no RimSort mod list was changed.

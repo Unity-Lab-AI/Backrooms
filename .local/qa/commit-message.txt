@@ -1,0 +1,11 @@
+The mod list says what was played, not "not yet confirmed" (0.13.0-dev)
+
+Owner: "your probably going to have to update the wiki and mod registry on the
+wiki once your done as all the shit says never tested and we dont want that".
+
+tools/record-played-mods.py reads the game's own ModsConfig.xml (301 active)
+and Player.log/Player-prev.log, attributing whole error blocks to the mod they
+name, into tools/register-played.json. build-public-register.py reports each
+played mod as played alongside, with the log's error count. mods-list.md: no
+row reads "not yet confirmed" any more. mods.md no longer calls the full list
+untested. Flooring direction recorded in PLAYBOOK.

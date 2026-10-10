@@ -1,0 +1,75 @@
+Every work type in the game is now answered (0.6.7-dev)
+
+Closes the last three gaps the coverage audit found: hauling upkeep, BasicWorker
+and Fishing. Thirty-one families, twenty-three of them deployments. Every work
+type in Core and all five expansions is now either covered or decided against
+with its reason recorded.
+
+Hauling is the largest work type in the game and "only partly covered" was not a
+good enough answer, so all thirty givers were classified. Seven were already
+handled by existing carry families. Three are decided AGAINST rather than
+deferred, and each would have been a quiet bug if guessed at:
+HelpGatheringItemsForCaravan and LoadTransporters are semantically map-bound --
+a caravan forms on, and a pod launches from, one specific map, so crossing a
+gate to load either would be loading the wrong departure -- and HaulToPortal is
+Core's own map-portal system, which CONNECTED_WORK_CORE_API.md had already
+established cannot serve this design. Strip is custody-adjacent and left for its
+own review.
+
+Four routes built, each on exact map-local state: a fermenting barrel wanting
+wort or with beer ready, an egg box Core considers ready to empty, and a carrier
+the player marked to unload. SpawnedPawnsWhoShouldHaveInventoryUnloaded is
+map-parameterised, the same clean shape the study manager gave. The egg route
+matches by CompEggContainer rather than by a named building, so a modded
+container with that comp is covered with nothing naming it.
+
+Eleven DLC container givers are named and left open rather than swept in. Each
+carries a pawn or a live subject into a machine or moves an entity between
+platforms, so each needs its own review of what that does to custody before a
+worker is sent across a gate for it.
+
+The priority here follows the Hauling ladder's own documented exception rather
+than the rule every other family uses, and reading the existing records before
+picking a number is the only reason this does not silently contradict them.
+Applying the generic "just above Core's highest giver in the type" would have
+put it at 302; CONNECTED_FOOD_IMPLEMENTATION.md calibrates the cross-gate
+hauling numbers against HaulGeneral (15) and states outright that "Core's local
+rearming at 150 will always beat it anyway". So continue sits at 131, above
+every container giver it travels for including UnloadCarriers (130) and below
+Refuel (140) and RearmTurrets (150), because a turret out of shells at home
+beats eggs across a gate. Plan sits at 4, the least urgent crossing in the mod.
+A rot check now names that trap.
+
+BasicWorker is purely designation-driven -- Flick, Open and EjectFuel each read
+nothing but their own designation off the map -- so it reuses FieldworkScan
+rather than asking the same question a second way. ExtractSkull, ChangeTreeMode
+and BasicReleasePrisoner are deliberately excluded.
+
+Fishing's deferred generation question was answered and then turned out not to
+matter. A coordinate does carry water: GenStep_BackroomsDestination uses
+WaterDeep as its void floor. But Core will not fish anywhere the player has not
+painted a Zone_Fishing, so this is the growing-zone shape and unpainted water
+attracts nobody. Settling the question was still worth it, because the
+alternative was building on an assumption. Odyssey-gated in both C# and XML, and
+check-dlc-gating.py caught the new defs automatically -- which is what it was
+written for one checkpoint ago.
+
+The register drove the work, as asked. Eleven storage rows were read first and
+each changed the code or was explicitly ruled out: OgreStack changes stack sizes
+and nothing here reads one; the four storage mods matter only through Core's own
+TryFindBestBetterStorageFor on arrival, so a modded store is used automatically
+with nothing here knowing it exists; Egg Incubator is covered by the comp match.
+Nothing of anyone else's is edited, copied, patched, replaced or bundled.
+
+The build's own XML validator rejected a comment containing "--", which is
+illegal inside an XML comment and would have been a load failure. Caught before
+anything shipped.
+
+117 C# source files, 76 approved package files unchanged, zero warnings, zero
+errors. Assembly SHA-256
+9A73827B2E0F6C6AC33712BE447CEA5C7F8959C72820080AE7C2C00BA75A8EAE reproduced by
+two full recompiles after deleting obj/ and bin/. Every RR_ key resolves, every
+giverClass resolves, all 31 priority pairs name real defs, 24 providers
+registered, check-dlc-gating reports 6 references all gated, audit-gate0 PASS.
+
+No game was launched, no test was run, no RimSort mod list was changed.

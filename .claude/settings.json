@@ -93,6 +93,15 @@
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-tool-memory-sync.cjs\""
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-tool-stream-log.cjs\""
+          }
+        ]
       }
     ],
     "PreCompact": [
@@ -146,5 +155,5 @@
       }
     ]
   },
-  "_comment": "TEAM-SHARED Claude Code settings (committed to git per Anthropic convention). The env block enforces the team's privacy posture (no telemetry, no error reporting, no feedback surveys/command, no Generated-with-Claude-Code attribution header, no autoupdater). The permissions allow-list standardizes bash command access. The hooks block IS the harness layer — every script under .claude/hooks/ is wired here. Each hook has a .cjs (Option A primary) and .sh (Option B fallback) sibling; if a team member's machine lacks node, swap each command from `node ...cjs` to `bash ...sh`. For PERSONAL machine-local overrides, create .claude/settings.local.json (gitignored by Anthropic default) — settings there take precedence over this file. Never paste API keys in either settings file — use a gitignored .env via /setup."
+  "_comment": "TEAM-SHARED Claude Code settings (committed to git per Anthropic convention). The env block enforces the team's privacy posture (no telemetry, no error reporting, no feedback surveys/command, no Generated-with-Claude-Code attribution header, no autoupdater). The permissions allow-list standardizes bash command access. The hooks block IS the harness layer \u2014 every script under .claude/hooks/ is wired here. Each hook has a .cjs (Option A primary) and .sh (Option B fallback) sibling; if a team member's machine lacks node, swap each command from `node ...cjs` to `bash ...sh`. For PERSONAL machine-local overrides, create .claude/settings.local.json (gitignored by Anthropic default) \u2014 settings there take precedence over this file. Never paste API keys in either settings file \u2014 use a gitignored .env via /setup."
 }

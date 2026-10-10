@@ -1,0 +1,72 @@
+# -*- coding: utf-8 -*-
+"""The numbered start-up checks, in plain words, with one sentence of how for each."""
+import io
+import os
+
+REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages",
+                     "English", "Keyed", "RR_GateSteps.xml")
+
+XML = u"""<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The gate start-up checks, numbered.
+
+  Owner direction, 2026-10-01, verbatim: "the whole machine  tab needs to be numbered and
+  everything step 1 step 2... ect ect so fucking simple a 6 yr old chimp can do it", "it needs to
+  have checks showing the start up connection checks are complete or unfinished yet", "and it need
+  to explain conciselky how, becuse this is fucking confusing".
+
+  One sentence of how per step, naming the thing to click. Opening a gate has eleven
+  prerequisites across a door, three bound buildings, a worktable bill, a job and two panels, and
+  every method that checked them reported one refusal in prose that named none of them.
+-->
+<LanguageData>
+
+  <RR_Steps_Heading>Start-up connection checks</RR_Steps_Heading>
+  <RR_Steps_Progress>{0} of {1} complete.</RR_Steps_Progress>
+  <RR_Steps_NextUp>DO THIS NEXT - step {0}, {1}: {2}</RR_Steps_NextUp>
+  <RR_Steps_AllDone>All checks complete. The gate is open or ramping up.</RR_Steps_AllDone>
+  <RR_Steps_LineDone>[x] {0}. {1}</RR_Steps_LineDone>
+  <RR_Steps_LineToDo>[ ] {0}. {1} - {2}</RR_Steps_LineToDo>
+  <RR_Steps_Fault>FAULT, and it blocks everything below the step it broke: {0}</RR_Steps_Fault>
+  <RR_Steps_TheTable>the machining table</RR_Steps_TheTable>
+  <RR_Steps_TheConsole>the communications console</RR_Steps_TheConsole>
+
+  <RR_Steps_1Label>A door chosen to become the gate</RR_Steps_1Label>
+  <RR_Steps_1How>Press "Select a door" below and pick one in the headquarters. Any ordinary door will do.</RR_Steps_1How>
+
+  <RR_Steps_2Label>Console, battery and machining table bound to it</RR_Steps_2Label>
+  <RR_Steps_2How>Use the three "Choose..." buttons below. They must all be in the same headquarters as the door.</RR_Steps_2How>
+
+  <RR_Steps_3Label>The gate commissioned</RR_Steps_3Label>
+  <RR_Steps_3How>Press "Commission this door as the gate" below, or use the same button on the door itself.</RR_Steps_3How>
+
+  <RR_Steps_4Label>Machining table set to gate control</RR_Steps_4Label>
+  <RR_Steps_4How>Select {0} on the map and press "Set to gate control". The gate recipe is withdrawn while it is doing its ordinary work.</RR_Steps_4How>
+
+  <RR_Steps_5Label>Gate assembled - 100 steel and 8 industrial components</RR_Steps_5Label>
+  <RR_Steps_5How>Add the "assemble gate" bill to that machining table's bill list, then let a crafter finish it.</RR_Steps_5How>
+
+  <RR_Steps_6Label>An operator assigned</RR_Steps_6Label>
+  <RR_Steps_6How>Select the gate door and press "Assign operator". They must be employed staff.</RR_Steps_6How>
+
+  <RR_Steps_7Label>The gate calibrated</RR_Steps_7Label>
+  <RR_Steps_7How>Select the gate door and press "Order calibration". The assigned operator walks to the console and does it.</RR_Steps_7How>
+
+  <RR_Steps_8Label>Communications console set to gate control</RR_Steps_8Label>
+  <RR_Steps_8How>Select {0} on the map and press "Set to gate control". This is a separate switch from the machining table's.</RR_Steps_8How>
+
+  <RR_Steps_9Label>An address remembered for somewhere to open to</RR_Steps_9Label>
+  <RR_Steps_9How>Lower down this tab, choose a coordinate and press "Remember this coordinate as a laboratory address".</RR_Steps_9How>
+
+  <RR_Steps_10Label>The operator standing at the console</RR_Steps_10Label>
+  <RR_Steps_10How>Select the gate door and press "Staff the console". The ramp only climbs while they are there.</RR_Steps_10How>
+
+  <RR_Steps_11Label>A session opened</RR_Steps_11Label>
+  <RR_Steps_11How>Lower down this tab, press "Open a session" on the address you want. Opening is work, not a timer, and it falls back if the operator leaves.</RR_Steps_11How>
+
+</LanguageData>
+"""
+
+io.open(KEYED, "w", encoding="utf-8", newline="").write(XML)
+print("RR_GateSteps.xml written with %d keys" % XML.count("<RR_Steps_"))

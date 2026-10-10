@@ -1,0 +1,491 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- Original first-slice tuning and layout. The campaign owns ongoing rules and saved money. -->
+  <RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
+    <defName>RR_AsyncIndustriesStart</defName>
+    <label>Async Industries branch opening</label>
+    <scenarioId>async_industries</scenarioId>
+    <!-- Owner direction 2026-09-29: "Async industries starts with this tech research and other
+         basic gate techs it needs to operate and begin researching and gate operations at basic
+         levels". This start is on the corporation's books from the first minute, so it can take
+         company requests immediately - and the clean-up team, when it is built, applies to it.
+         The Store and Solo/Group starts begin WITHOUT contact and have to reach it. -->
+    <beginsInCorporationContact>true</beginsInCorporationContact>
+    <!-- Only a suggestion. Every start renames its own company. -->
+    <defaultCompanyName>Async Industries</defaultCompanyName>
+    <scenarioVersion>1</scenarioVersion>
+    <!-- Owner direction 2026-09-29: "all starts have same tech tree just differnt
+         starting researches finished based on scenerio". A start lists ONLY what it
+         begins with finished. The tree itself is every RimroomsProjectDef the game has
+         loaded, so it is identical for every start and cannot drift between them.
+         **Corrected 2026-09-29 on owner direction.** This start listed NOTHING finished, which
+         contradicted the direction it was written under: "Async industries starts with this tech
+         research and other basic gate techs it needs to operate and begin researching and gate
+         operations at basic levels". Owner's answer at the fork: all seven tier 0 roots, plus the
+         gate ladder's first rung.
+
+         So Async opens able to operate a gate properly and with a foot in the door on every
+         branch, which is what an authorised branch of a company that has done this before would
+         actually have. The Store and Solo/Group starts list nothing, and that difference is now
+         real rather than a note.
+
+         NOTE, chosen knowingly: RR_GateTelemetry puts PortalWindowTier at 1, which is the floor
+         at which something may follow a crew out. Async is therefore exposed to incursion from
+         the first opening. That is the cost of starting equipped and the owner took it. -->
+    <completedProjects>
+      <li>RR_GateTelemetry</li>
+      <li>RR_Facilities_ReserveDiscipline</li>
+      <li>RR_Fieldcraft_ReturnDrill</li>
+      <li>RR_Measurement_SecondReading</li>
+      <li>RR_Spatial_CoordinateAtlas</li>
+      <li>RR_Entities_EarlyWarning</li>
+      <li>RR_Logistics_StandingOrders</li>
+      <li>RR_Commerce_NegotiatedTerms</li>
+    </completedProjects>
+    <mapSize>60</mapSize>
+    <outdoorTerrain>Soil</outdoorTerrain>
+    <floorTerrain>Concrete</floorTerrain>
+    <wallStuff>BlocksGranite</wallStuff>
+    <arrivalCell>(39, 0, 29)</arrivalCell>
+    <stockCell>(27, 0, 19)</stockCell>
+    <!-- The facility, as a plan rather than eight boxes in a rectangle. Owner direction
+         2026-10-01. Authored by .local/register/build-async-facility.py and re-validated
+         offline by tools/check-start-layout.py, because GenStep_Headquarters throws on any
+         geometry mistake and a throw there costs the player the start. -->
+    <rooms>
+      <!-- compound -->
+      <li><x>8</x><z>8</z><width>44</width><height>44</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- gatehall -->
+      <li><x>28</x><z>34</z><width>22</width><height>16</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- control -->
+      <li><x>28</x><z>25</z><width>22</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- airlock -->
+      <li><x>36</x><z>30</z><width>7</width><height>5</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- labs -->
+      <li><x>8</x><z>14</z><width>14</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- storage -->
+      <li><x>23</x><z>14</z><width>13</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- workshop -->
+      <li><x>37</x><z>14</z><width>15</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- housing -->
+      <li><x>8</x><z>8</z><width>14</width><height>7</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- mess -->
+      <li><x>23</x><z>8</z><width>13</width><height>7</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- medical -->
+      <li><x>37</x><z>8</z><width>15</width><height>7</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- security -->
+      <li><x>8</x><z>25</z><width>11</width><height>9</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- decon -->
+      <li><x>8</x><z>34</z><width>11</width><height>9</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- archive -->
+      <li><x>8</x><z>43</z><width>11</width><height>8</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- powerroom -->
+      <li><x>22</x><z>25</z><width>6</width><height>8</height><roofed>true</roofed><floor>true</floor></li>
+      <!-- breezeway -->
+      <li><x>22</x><z>34</z><width>6</width><height>8</height><roofed>false</roofed><floor>true</floor></li>
+    </rooms>
+    <doors>
+      <li>(8, 0, 24)</li>
+      <li>(14, 0, 23)</li>
+      <li>(29, 0, 23)</li>
+      <li>(44, 0, 23)</li>
+      <li>(39, 0, 25)</li>
+      <li>(21, 0, 11)</li>
+      <li>(23, 0, 11)</li>
+      <li>(35, 0, 11)</li>
+      <li>(37, 0, 11)</li>
+      <li>(14, 0, 25)</li>
+      <li>(18, 0, 29)</li>
+      <li>(18, 0, 38)</li>
+      <li>(18, 0, 46)</li>
+      <li>(51, 0, 24)</li>
+      <li>(22, 0, 29)</li>
+      <li>(22, 0, 37)</li>
+      <li>(21, 0, 19)</li>
+      <li>(23, 0, 19)</li>
+      <li>(35, 0, 19)</li>
+      <li>(37, 0, 19)</li>
+      <li>(39, 0, 30)</li>
+      <li>(39, 0, 34)</li>
+      <li>(39, 0, 49)</li>
+    </doors>
+    <!-- The airlock between the control room and the gate hall: two thresholds in series
+         through a vestibule, both automatic. Owner: "with security zones and shit". -->
+    <autodoors>
+      <li>(39, 0, 30)</li>
+      <li>(39, 0, 34)</li>
+    </autodoors>
+    <!-- **THE VIEWING WALL'S GLASS IS GONE, 0.12.87-dev.** Owner, 2026-10-04:
+         "issues like the ballistic glass we used needs to be taken out of the starting
+         scenerio to acturatley make sure it isnt needed to play the mod".
+
+         This named RB_ReinforcedGlassWall and RB_GlassWall from ReBuild: Doors and
+         Corners, register row 185, stance Optional. They were the ONLY two non-Core def
+         references in any shipped start, and the genstep already fell back to a plain
+         wall when ReBuild was absent, so nothing broke and nothing changes for a
+         Core-only player: the same eleven cells were plain steel wall before and are
+         plain steel wall now.
+
+         What changes is that the claim is checkable. A shipped start that names another
+         mod's defs cannot be audited as stand-alone by reading it; you have to go and
+         read the C# that resolves it. check-register-compliance.py now refuses any
+         non-Core def reference in a shipped start or scenario.
+
+         The glazing field, the run plan and the genstep all stay: they cost nothing and
+         a scenario may use them.
+
+         **AND THE DIRECTION IT SERVED IS NOW ANSWERED, 0.12.98-dev.** Owner, 2026-10-04:
+         "with like ballistic glass  walls for viewing the machine remotely and safely
+         with security zones and shit". Measured against the installed game: Core ships
+         NO barrier that is both see-through and sealing. Wall blocks sight; Barricade is
+         passability PassThroughOnly at fillPercent 0.55, holds no roof and seals nothing,
+         so a run of them across a twenty-cell hall breaks the seal AND reintroduces the
+         roof-collapse case the pillars below exist to prevent.
+
+         So "remotely" is answered by what already ships - the Operations Machine pane
+         reads live gate state from any map - and "safely with security zones" by this
+         facility's own shape: a solid wall plus the two-autodoor airlock above. That is
+         strictly safer than a window, which is the half of the direction glass would
+         have failed.
+
+         A physical window remains a legitimate content decision and is recorded as an
+         open row rather than left implied here. **The note this replaced said the
+         direction "stays open in the queue" and it did NOT: no row for it existed in any
+         queue, because the promise was written inside the row that closed and was
+         archived with it. A sentence promising something stays open is not a queue
+         row.** -->
+    <!-- Columns. A roof is supported only within 6.9 cells of a wall and the gate hall is
+         twenty across, so without these its middle is unsupported and collapses on the
+         pawn who deconstructs the wall holding it. proof-startplacement.py caught exactly
+         that on the first authoring of this facility. -->
+    <pillars>
+      <li>(35, 0, 39)</li>
+      <li>(42, 0, 39)</li>
+      <li>(35, 0, 44)</li>
+      <li>(42, 0, 44)</li>
+    </pillars>
+    <buildings>
+      <li><thing>CommsConsole</thing><cell>(32, 0, 33)</cell><rotation>2</rotation></li>
+      <li><thing>TableMachining</thing><cell>(45, 0, 33)</cell></li>
+      <li><thing>Table1x2c</thing><stuff>WoodLog</stuff><cell>(45, 0, 27)</cell></li>
+      <li><thing>DiningChair</thing><stuff>WoodLog</stuff><cell>(44, 0, 27)</cell></li>
+      <li><thing>DiningChair</thing><stuff>WoodLog</stuff><cell>(46, 0, 27)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(30, 0, 27)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(47, 0, 27)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(30, 0, 32)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(47, 0, 32)</cell></li>
+      <li><thing>Heater</thing><cell>(34, 0, 32)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(31, 0, 37)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(46, 0, 37)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(31, 0, 46)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(46, 0, 46)</cell></li>
+      <li><thing>Heater</thing><cell>(33, 0, 37)</cell></li>
+      <li><thing>Heater</thing><cell>(44, 0, 37)</cell></li>
+      <li><thing>ElectricSmithy</thing><cell>(46, 0, 16)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(39, 0, 21)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(42, 0, 21)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(45, 0, 21)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(49, 0, 19)</cell></li>
+      <li><thing>Heater</thing><cell>(49, 0, 16)</cell></li>
+      <li><thing>SimpleResearchBench</thing><stuff>Steel</stuff><cell>(12, 0, 16)</cell></li>
+      <li><thing>SimpleResearchBench</thing><stuff>Steel</stuff><cell>(17, 0, 16)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(10, 0, 21)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 21)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(16, 0, 21)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(19, 0, 19)</cell></li>
+      <li><thing>Heater</thing><cell>(19, 0, 16)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(25, 0, 16)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(28, 0, 16)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(31, 0, 16)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(25, 0, 21)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(28, 0, 21)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(31, 0, 21)</cell></li>
+      <li><thing>GlowPod</thing><cell>(33, 0, 16)</cell></li>
+      <li><thing>GlowPod</thing><cell>(33, 0, 17)</cell></li>
+      <li><thing>GlowPod</thing><cell>(33, 0, 18)</cell></li>
+      <li><thing>GlowPod</thing><cell>(33, 0, 19)</cell></li>
+      <li><thing>GlowPod</thing><cell>(33, 0, 20)</cell></li>
+      <li><thing>GlowPod</thing><cell>(33, 0, 21)</cell></li>
+      <li><thing>GlowPod</thing><cell>(24, 0, 16)</cell></li>
+      <li><thing>GlowPod</thing><cell>(24, 0, 17)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(34, 0, 21)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(10, 0, 10)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(12, 0, 10)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(14, 0, 10)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(16, 0, 10)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(18, 0, 10)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(20, 0, 12)</cell></li>
+      <li><thing>Heater</thing><cell>(20, 0, 10)</cell></li>
+      <li><thing>ElectricStove</thing><cell>(26, 0, 10)</cell></li>
+      <li><thing>Table2x2c</thing><stuff>WoodLog</stuff><cell>(30, 0, 10)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(29, 0, 10)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(32, 0, 10)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(30, 0, 12)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(31, 0, 12)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(34, 0, 12)</cell></li>
+      <li><thing>Heater</thing><cell>(24, 0, 12)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(40, 0, 10)</cell><medical>true</medical></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(42, 0, 10)</cell><medical>true</medical></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(45, 0, 10)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(49, 0, 12)</cell></li>
+      <li><thing>Heater</thing><cell>(49, 0, 10)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(10, 0, 27)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(16, 0, 27)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(10, 0, 31)</cell></li>
+      <li><thing>Heater</thing><cell>(16, 0, 31)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(10, 0, 36)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(16, 0, 36)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(10, 0, 40)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 40)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(10, 0, 45)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(16, 0, 45)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(10, 0, 48)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 48)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(16, 0, 48)</cell></li>
+      <li><thing>Battery</thing><cell>(23, 0, 27)</cell><batteryFraction>0.6</batteryFraction></li>
+      <li><thing>Battery</thing><cell>(25, 0, 27)</cell><batteryFraction>0.6</batteryFraction></li>
+      <li><thing>Battery</thing><cell>(23, 0, 30)</cell><batteryFraction>0.6</batteryFraction></li>
+      <li><thing>Battery</thing><cell>(25, 0, 30)</cell><batteryFraction>0.6</batteryFraction></li>
+      <li><thing>StandingLamp</thing><cell>(26, 0, 26)</cell></li>
+      <li><thing>WoodFiredGenerator</thing><cell>(23, 0, 36)</cell><fuelFraction>0.5</fuelFraction></li>
+      <li><thing>WoodFiredGenerator</thing><cell>(25, 0, 39)</cell><fuelFraction>0.5</fuelFraction></li>
+      <li><thing>HorseshoesPin</thing><stuff>Steel</stuff><cell>(20, 0, 33)</cell></li>
+      <li><thing>TextBook</thing><cell>(11, 0, 47)</cell></li>
+      <li><thing>TextBook</thing><cell>(14, 0, 47)</cell></li>
+    </buildings>
+    <conduits>
+      <li><start>(9, 0, 24)</start><length>42</length><alongX>true</alongX></li>
+      <li><start>(22, 0, 9)</start><length>15</length><alongX>false</alongX></li>
+      <li><start>(36, 0, 9)</start><length>15</length><alongX>false</alongX></li>
+      <li><start>(14, 0, 15)</start><length>9</length><alongX>false</alongX></li>
+      <li><start>(29, 0, 15)</start><length>9</length><alongX>false</alongX></li>
+      <li><start>(44, 0, 15)</start><length>9</length><alongX>false</alongX></li>
+      <li><start>(14, 0, 9)</start><length>6</length><alongX>false</alongX></li>
+      <li><start>(29, 0, 9)</start><length>6</length><alongX>false</alongX></li>
+      <li><start>(44, 0, 9)</start><length>6</length><alongX>false</alongX></li>
+      <li><start>(39, 0, 25)</start><length>10</length><alongX>false</alongX></li>
+      <li><start>(39, 0, 35)</start><length>14</length><alongX>false</alongX></li>
+      <li><start>(23, 0, 26)</start><length>8</length><alongX>false</alongX></li>
+      <li><start>(23, 0, 34)</start><length>7</length><alongX>false</alongX></li>
+      <li><start>(14, 0, 26)</start><length>8</length><alongX>false</alongX></li>
+      <li><start>(14, 0, 35)</start><length>8</length><alongX>false</alongX></li>
+      <li><start>(14, 0, 44)</start><length>7</length><alongX>false</alongX></li>
+      <li><start>(20, 0, 25)</start><length>26</length><alongX>false</alongX></li>
+    </conduits>
+    <!-- Editable stock is owned by native starting-thing parts in RR_Scenarios.xml. -->
+    <roles>
+      <li>
+        <id>operations</id><mustFight>false</mustFight>
+        <skills><Social>6</Social><Intellectual>4</Intellectual></skills>
+        <workTypes><li>Warden</li><li>Hauling</li></workTypes>
+      </li>
+      <li>
+        <id>research</id><mustFight>false</mustFight>
+        <skills><Intellectual>8</Intellectual><Crafting>4</Crafting></skills>
+        <workTypes><li>Research</li></workTypes>
+      </li>
+      <li>
+        <id>engineering</id><mustFight>false</mustFight>
+        <skills><Construction>8</Construction><Crafting>6</Crafting></skills>
+        <workTypes><li>Construction</li><li>Smithing</li><li>Crafting</li></workTypes>
+      </li>
+      <li>
+        <id>security</id><mustFight>true</mustFight>
+        <skills><Shooting>8</Shooting><Melee>4</Melee></skills>
+        <workTypes><li>Hauling</li></workTypes>
+      </li>
+      <li>
+        <id>medical_logistics</id><mustFight>false</mustFight>
+        <skills><Medicine>8</Medicine><Cooking>6</Cooking><Plants>4</Plants></skills>
+        <workTypes><li>Doctor</li><li>Cooking</li><li>Growing</li></workTypes>
+      </li>
+    </roles>
+  </RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
+  <!-- ==================================================================================== -->
+  <!-- FURNITURE AND KNICKKNACK STORE                                                       -->
+  <!--                                                                                      -->
+  <!-- Contract: docs/SCENARIOS.md, the furniture_knickknack_store card. A 50x50 shop with   -->
+  <!-- a sales floor, stockroom, office, staff room and a back room nobody uses, three       -->
+  <!-- ordinary people, and no corporation.                                                  -->
+  <!--                                                                                      -->
+  <!-- beginsInCorporationContact is FALSE and completedProjects is EMPTY, and both of those  -->
+  <!-- are the point. No clean-up team, no unsolicited courier, no research already done.     -->
+  <!-- Owner: "the other two scenerios need special treatment in theri layout and starts".    -->
+  <!-- Reaching contact is the achievement here, not the starting condition.                  -->
+  <!--                                                                                      -->
+  <!-- The threshold in the back room is an ordinary door, because that is exactly what a    -->
+  <!-- gate is in this mod before anybody designates it. Nothing here claims a breach system  -->
+  <!-- that does not exist; the shop simply has a door in the back that should not be there,  -->
+  <!-- and what it becomes is the player's decision.                                          -->
+  <!-- ==================================================================================== -->
+  <RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
+    <defName>RR_FurnitureStoreStart</defName>
+    <label>Furniture and Knickknack Store opening</label>
+    <scenarioId>furniture_knickknack_store</scenarioId>
+    <beginsInCorporationContact>false</beginsInCorporationContact>
+    <defaultCompanyName>Furniture and Knickknack</defaultCompanyName>
+    <scenarioVersion>1</scenarioVersion>
+    <completedProjects />
+    <mapSize>50</mapSize>
+    <outdoorTerrain>Soil</outdoorTerrain>
+    <floorTerrain>Concrete</floorTerrain>
+    <wallStuff>BlocksGranite</wallStuff>
+    <arrivalCell>(18, 0, 12)</arrivalCell>
+    <!-- The door in the back that should not be there. Naming it is what gives this
+         start a natural gate: a permanently open connection to a seeded coordinate,
+         registered at generation. One expected customer already went through it. -->
+    <emergenceDoorCell>(35, 0, 34)</emergenceDoorCell>
+    <stockCell>(34, 0, 16)</stockCell>
+    <!-- A shop is a building, not a compound: the outer rectangle is the premises itself,
+         roofed and floored, and the rooms inside it are partitions. The one-cell gaps
+         between them are the corridors, and they join into a ring so nothing is sealed. -->
+    <rooms>
+      <li><x>8</x><z>8</z><width>34</width><height>30</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>10</x><z>10</z><width>18</width><height>14</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>29</x><z>10</z><width>11</width><height>14</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>10</x><z>25</z><width>10</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>21</x><z>25</z><width>9</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+      <li><x>31</x><z>25</z><width>9</width><height>10</height><roofed>true</roofed><floor>true</floor></li>
+    </rooms>
+    <doors>
+      <li>(18, 0, 8)</li>
+      <li>(18, 0, 10)</li>
+      <li>(27, 0, 16)</li>
+      <li>(29, 0, 16)</li>
+      <li>(14, 0, 25)</li>
+      <li>(25, 0, 25)</li>
+      <li>(35, 0, 25)</li>
+      <li>(35, 0, 34)</li>
+    </doors>
+    <buildings>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 13)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(17, 0, 13)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(21, 0, 13)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(13, 0, 20)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(17, 0, 20)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(21, 0, 20)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(25, 0, 13)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(25, 0, 20)</cell></li>
+      <li><thing>Table2x2c</thing><stuff>WoodLog</stuff><cell>(24, 0, 17)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(32, 0, 13)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(36, 0, 13)</cell></li>
+      <li><thing>Shelf</thing><stuff>WoodLog</stuff><cell>(31, 0, 20)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(37, 0, 17)</cell></li>
+      <li><thing>WoodFiredGenerator</thing><cell>(36, 0, 20)</cell><fuelFraction>0.5</fuelFraction></li>
+      <li><thing>Battery</thing><cell>(33, 0, 17)</cell><batteryFraction>0.4</batteryFraction></li>
+      <li><thing>Table1x2c</thing><stuff>WoodLog</stuff><cell>(13, 0, 30)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(15, 0, 30)</cell></li>
+      <!-- Rotated south at 0.12.74-dev. At rotation 0 its interaction cell fell on the
+           staff room's north wall at (17,34), so NOBODY COULD EVER STAND AT IT, and
+           reaching the corporation is this scenario's whole achievement. Facing south it
+           sits against the same wall and the operator stands at (17,30). Found by
+           tools/check-start-layout.py the day that rule was written. -->
+      <li><thing>CommsConsole</thing><cell>(17, 0, 32)</cell><rotation>2</rotation></li>
+      <li><thing>StandingLamp</thing><cell>(12, 0, 32)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(23, 0, 27)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(25, 0, 27)</cell></li>
+      <li><thing>Bed</thing><stuff>WoodLog</stuff><cell>(27, 0, 27)</cell></li>
+      <li><thing>ElectricStove</thing><cell>(23, 0, 32)</cell></li>
+      <li><thing>Table2x2c</thing><stuff>WoodLog</stuff><cell>(26, 0, 32)</cell></li>
+      <li><thing>Stool</thing><stuff>WoodLog</stuff><cell>(28, 0, 32)</cell></li>
+      <li><thing>Heater</thing><cell>(22, 0, 30)</cell></li>
+      <li><thing>StandingLamp</thing><cell>(33, 0, 32)</cell></li>
+    </buildings>
+    <conduits>
+      <li><start>(33, 0, 22)</start><length>14</length><alongX>false</alongX></li>
+      <li><start>(14, 0, 24)</start><length>22</length><alongX>true</alongX></li>
+      <li><start>(28, 0, 12)</start><length>13</length><alongX>false</alongX></li>
+      <li><start>(17, 0, 24)</start><length>9</length><alongX>false</alongX></li>
+      <li><start>(23, 0, 24)</start><length>9</length><alongX>false</alongX></li>
+    </conduits>
+    <!-- Three ordinary people, not a trained crew. The contract's owner/manager, employee and
+         night guard, mapped onto company roles the rest of the mod already understands, because
+         a role here is an assignment rather than a class. -->
+    <roles>
+      <li>
+        <id>operations</id><mustFight>false</mustFight>
+        <skills><Social>7</Social><Intellectual>3</Intellectual></skills>
+        <workTypes><li>Warden</li><li>Hauling</li></workTypes>
+      </li>
+      <li>
+        <id>medical_logistics</id><mustFight>false</mustFight>
+        <skills><Cooking>5</Cooking><Medicine>3</Medicine><Plants>3</Plants></skills>
+        <workTypes><li>Cooking</li><li>Doctor</li><li>Growing</li></workTypes>
+      </li>
+      <li>
+        <id>security</id><mustFight>true</mustFight>
+        <skills><Shooting>5</Shooting><Melee>4</Melee></skills>
+        <workTypes><li>Hauling</li></workTypes>
+      </li>
+    </roles>
+    <!-- A shop's economy, not a research branch's. No corporate allocation: 200 silver in the
+         till and whatever the stock is worth. Wages and overhead are three people and a
+         building, which is why they are a fraction of Async's. -->
+    <initialFundingUsd>200000</initialFundingUsd>
+    <dailyWageUsd>300</dailyWageUsd>
+    <dailyOverheadUsd>1500</dailyOverheadUsd>
+    <surveyRewardUsd>500000</surveyRewardUsd>
+    <surveyBonusUsd>100000</surveyBonusUsd>
+  </RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
+
+  <!-- ==================================================================================== -->
+  <!-- SOLO / GROUP - THE INSIDE START                                                      -->
+  <!--                                                                                      -->
+  <!-- Contract: docs/SCENARIOS.md, the lone_survivor card. The stable scenario ID is kept   -->
+  <!-- because saves depend on it; the NAME is solo/group, on owner direction: "remember     -->
+  <!-- the other one is solo/group start.. group have been known to end up together inside". -->
+  <!--                                                                                      -->
+  <!-- The map IS a Backrooms coordinate, wall to wall, so there is no layout to declare.    -->
+  <!-- No corporation, no research, no facility, no gate and no way home. 1 to 5 people,     -->
+  <!-- the player's choice, through the native config page.                                  -->
+  <!--                                                                                      -->
+  <!-- Funding is zero and overhead is zero, and both are deliberate: there is no company     -->
+  <!-- here to run an account or bill a wage. Nobody is being paid and nobody is billing.     -->
+  <!-- ==================================================================================== -->
+  <RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
+    <defName>RR_SoloGroupStart</defName>
+    <label>Solo or group, inside</label>
+    <scenarioId>lone_survivor</scenarioId>
+    <beginsInCorporationContact>false</beginsInCorporationContact>
+    <defaultCompanyName>The ones who got in</defaultCompanyName>
+    <scenarioVersion>1</scenarioVersion>
+    <completedProjects />
+    <insideStart>true</insideStart>
+    <insideStartDepth>1</insideStartDepth>
+    <mapSize>60</mapSize>
+    <outdoorTerrain>Soil</outdoorTerrain>
+    <floorTerrain>Concrete</floorTerrain>
+    <wallStuff>BlocksGranite</wallStuff>
+    <!-- The surface map holds ONE small concrete shell with ONE door, and nothing else. That
+         door is the place the Backrooms comes up, and it is where they will come out. Everything
+         a facility needs, they build.
+
+         Reworked in 0.12.2-dev: the starting map used to BE the coordinate, which could never
+         carry a registered exit. Now the coordinate is real and generated beside this map, and
+         SoloGroupOpening moves everybody into it after registering the way out. -->
+    <arrivalCell>(30, 0, 29)</arrivalCell>
+    <stockCell>(30, 0, 31)</stockCell>
+    <emergenceDoorCell>(30, 0, 27)</emergenceDoorCell>
+    <rooms>
+      <li><x>27</x><z>27</z><width>7</width><height>7</height><roofed>true</roofed><floor>true</floor></li>
+    </rooms>
+    <doors>
+      <li>(30, 0, 27)</li>
+    </doors>
+    <buildings />
+    <conduits />
+    <roles>
+      <li>
+        <id>operations</id><mustFight>false</mustFight>
+        <skills><Social>3</Social><Intellectual>3</Intellectual></skills>
+        <workTypes><li>Hauling</li></workTypes>
+      </li>
+    </roles>
+    <initialFundingUsd>0</initialFundingUsd>
+    <dailyWageUsd>0</dailyWageUsd>
+    <dailyOverheadUsd>0</dailyOverheadUsd>
+    <surveyRewardUsd>500000</surveyRewardUsd>
+    <surveyBonusUsd>100000</surveyBonusUsd>
+  </RimroomsAsyncIndustries.Scenario.RimroomsStartDef>
+
+</Defs>

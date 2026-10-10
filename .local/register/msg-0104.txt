@@ -1,0 +1,58 @@
+The register checked backwards, and a description you can read (0.10.4-dev)
+
+Owner direction: "add a memory and a law to always check the registry
+of mods before building something to see what if anything applies, and
+do this retro actively dfor regress too".
+
+A memory, a LAW in CONSTRAINTS.md indexed in .claude/CLAUDE.md, and a
+tool the LAW needs. A LAW that requires opening a browser and
+scrolling a 294-row table gets skipped exactly when it is
+inconvenient, so tools/register-query.py makes the register answerable
+from the command line. It immediately found a parsing trap: the HTML
+carries two tables over the same 294 mods with different layouts, the
+second putting a Steam id where the system family belongs. A naive
+parse returns 589 rows and would have made every family filter miss
+half its matches while appearing to work.
+
+The backwards pass found a real defect. Register row 78, Draftable
+Animals - Releashed, is in the owner's profile. 0.9.4-dev let player
+animals cross a gate and its eligibility check returned early for
+animals before testing Drafted, so a drafted animal could cross while
+a drafted colonist could not. Vanilla cannot draft an animal, so this
+read as dead code and is only reachable on somebody else's mod list,
+which is exactly the class of defect the register exists to surface.
+Fixed in both the crossing service and the traversal policy.
+
+Three more results recorded. The stance-classifier bug now has a named
+example: row 78 reads Required while its own review reads optional, so
+the Stance column is not trustworthy alone and the review is. Pursuit
+verified independent of row 200, Search and Destroy, whose review
+requires that authored threat behaviour remain independent. Roof
+containment verified against row 188, Removable Mt.Rock Roof Patch,
+because BackroomsContainment already re-roofs any cell that loses its
+roof whatever removed it.
+
+Separately, the About description had become a single unbroken line of
+6,724 characters, one sentence appended per checkpoint for twenty-odd
+checkpoints. Rewritten into four titled sections and half the length,
+which fixes RimWorld's own description panel as well as any viewer.
+
+An XSLT stylesheet was tried first and was the wrong answer. Chromium
+blocks XSLT loaded from a file:// URL, so Edge showed a blank page
+instead of raw XML, strictly worse than the problem. Reverted
+completely and replaced with tools/make-readable-html.py, which writes
+standalone styled HTML into outputs/readable/ with no external
+references.
+
+Sweeping for other walls found 42 player-facing strings over 220
+characters, including the scenario description and both welcome
+letters, which are the first thing anybody reads. All reflowed. A wall
+rule now fails the build on any displayed text past 420 characters
+with no paragraph break, proved by planting one. The sweep also caught
+"the machine" still meaning the gate in three places; it is banned as
+a phrase now, while machining table stays because it is Core content.
+
+159 C# source files, 79 approved package files. Zero warnings, zero
+errors. Assembly SHA-256 reproduced by two clean recompiles. All six
+checkers pass. No new def, asset, patch operation or work type. No
+game launched, no test run, no RimSort profile touched.

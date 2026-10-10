@@ -724,11 +724,14 @@ namespace RimroomsAsyncIndustries.Procurement
                 { capacityFailure = "RR_Proc_ReceivingStockpileFull"; break; }
                 int requestedCount = Math.Min(item.stackCount, remainingReceivingCapacity);
 
-                bool isPreferredTarget = StoreUtility.TryFindBestBetterStoreCellFor(item, carrier, order.receivingMap,
-                    StoragePriority.Unstored, Faction.OfPlayer, out IntVec3 bestCell, needAccurateResult: false) &&
-                    storageCells.Contains(bestCell);
-                if (!isPreferredTarget)
-                { capacityFailure = "RR_Proc_ReceivingStockpileNotPreferred"; break; }
+                // **No "is this the zone hauling would pick" gate.** It refused every delivery
+                // while any shelf -- a storage building, never a zone, so never a choosable
+                // receiving stockpile -- outranked the receiving zone: with the colony's
+                // resources on shelves (owner, 2026-10-07: "you always have to have all resources
+                // on shelves") 2,000 paid-for steel sat in orbit as AwaitingReceivingSpace
+                // (2026-10-08). The capacity above is the real requirement. Where the crew
+                // carries the staged stacks afterwards is ordinary hauling: a stack is settled
+                // the moment it leaves its staging cell, whichever storage it goes to.
 
                 List<IntVec3> stagingCells = FindStagingCells(order.receivingMap, order.receivingZone, carrier, item.def);
                 if (stagingCells.Count == 0)

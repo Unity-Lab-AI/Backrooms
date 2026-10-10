@@ -1,0 +1,277 @@
+##############################################################################################################
+SECTION lines 422-459  (5456 bytes)
+##############################################################################################################
+## Fifth launch findings — 2026-09-30
+
+Owner, verbatim: **"okay check it the store and pawns are there now but i dont see a natural gate
+thats suppose to be on the back wall of one of the storage rooms so that they can eneter theri
+300x300 gate ie the stargate mode that prcedurally generated the backrooms of diffent levels with
+thir natual gate spawns to different levels within"**
+
+
+
+  The site failed in `ValidateNativePowerNetwork`, which required `count(def == lightDef)` to equal `Rooms.Count + Rooms.Count(service_passage or utility_room)`. The extra lamps in that sum are `RoomContentBuilder`'s hard-coded **`StandingLamp`**; `BackroomsPalette` switched `lightDef` to **`WallLamp`** at **0.7.8-dev**. `climateRoom` guarantees at least one such room exists, so the shortfall was arithmetic, not chance: **no Backrooms coordinate could generate for thirty-nine checkpoints**, and no proof caught it because they read source text and nothing had ever run the generator.
+
+  The validator now checks the lights **actually placed** and sweeps **every `CompPowerTrader` on the map** — it names no def and predicts no count. And a power fault is **reported, never fatal**: a dark, cold coordinate is playable, a missing one costs the player the gate. `ValidatePlacedLayout` stays fatal. Record `implementation/NATURAL_GATE_UNBLOCKED_IMPLEMENTATION.md`, **28 of 28** plants caught.
+
+
+
+
+- [ ] **"and everything doesnt have to be square rooms and rectangle halways and u can use walls as pillars making the 0 level rooms be grand large spaces and leas than 60-100 romms and this can propigate depper with the wild variatiosn of material typeds in all items equaipment walls floors lights furnature and benches that are found everywher deeper in with wild random events and layouts and spawns to find and loot!!!!!!"** — **OPEN. This REVISES the room-count answer given an hour earlier and it is the better call.** Taken apart into what each clause actually requires:
+
+  | Clause, verbatim | What it means in the generator |
+  |---|---|
+  | *"everything doesnt have to be square rooms and rectangle halways"* | a room's `Bounds` stays a rect for bookkeeping, but the **carved shape** does not: L, T, cross and ragged-edged rooms, and corridors that change width and bend |
+  | *"u can use walls as pillars"* | interior `ThingDefOf.Wall` on a support lattice. **This is the thing that makes grand spaces possible at all** — `RoofCollapseUtility.RoofMaxSupportDistance` is **6.9**, so a roofed span wider than ~13 cells needs something holding it up, and a pillar is exactly that |
+  | *"making the 0 level rooms be grand large spaces"* | shallow depth is **few, very large, pillared halls** — not the tidy 10-16 cell boxes the planner builds today |
+  | *"leas than 60-100 romms"* | **supersedes the 60-100 dense-warren answer.** Fewer rooms, each far bigger. The warren idea moves inward rather than being dropped |
+  | *"this can propigate depper"* | the variation is a **function of depth**, which `BackroomsPalette` and `Derange` already are. Same axis, more of it |
+  | *"wild variatiosn of material typeds in all items equaipment walls floors lights furnature and benches"* | `CoordinateMaterials` already picks stuff per coordinate; widen it across **every** placed category and let the spread grow with depth |
+  | *"found everywher deeper in"* | material variety is discovered content, so what a room is **built from** is part of the loot |
+  | *"with wild random events and layouts and spawns to find and loot!!!!!!"* | `AnomalyEventService`, `InhabitantService` and `RoomArchetypeService` all exist; the layouts and the loot density scale inward with the rest |
+
+  **What stands from the four earlier answers:** levels are **300x300**; `threshold_room` / `office_copy` / `return_gallery` stay **unique** while other families **repeat**; **new structural families** are authored as layout and dressing only with **no new ThingDefs**; **4-6 onward gates** per level with `MaximumNaturalDepth` **3 to 6**; **fresh save**, the 60x60 path dropped.
+
+  **What changes:** *"leas than 60-100 romms"* replaces the 60-100 count, and grand pillared halls at shallow depth replace the uniform small-room grid. The 10x10 planning grid at 19-cell spacing was sized for the old shape and is superseded with it — a grand hall does not fit in a 19-cell slot.
+
+- [ ] **SUPERSEDED IN PART, same day, by the row above** -- the *"leas than 60-100 romms"* direction replaces this row's 60-100 count and its uniform small-room grid. Kept whole because the size, family, gate-count, depth-cap and save decisions in it all still stand.
+- [ ] **"theri 300x300 gate ie the stargate mode that prcedurally generated the backrooms of diffent levels with thir natual gate spawns to different levels within"** — **OPEN, and fully specified by the owner across four questions this checkpoint.** Levels become **300×300** (from 60×60); **60–100 rooms** in a dense warren on a **10×10** planning grid at the existing 19-cell spacing; **threshold_room / office_copy / return_gallery stay unique**, the other five families **repeat**, and **new structural families** are authored (flooded_room, stairwell, dead_end, pillar_hall) — **layout and dressing only, no new ThingDefs**; **4–6 onward gates per level**, one per ~15 rooms, with `MaximumNaturalDepth` **3 → 6**; and a **fresh save**, dropping the 60×60 path entirely for one shape, the simplest code and the cleanest proofs.
+
+---
+
+
+##############################################################################################################
+SECTION lines 460-479  (2085 bytes)
+##############################################################################################################
+## Coordinate rebuild, stage one — 2026-09-30 (0.12.49-dev)
+
+
+
+
+
+- [ ] **"dont let them go more than 5 remember the games mechanics and limits built in if they find a gate to a world map tile or a deeper backrroms and they have 5 mpas they should gett a warning this gate is blocked your holding open too many gates, but per scerio styled"**, clarified by **"5 is the limit of other colonies available so a backrooms level should be one colonly bacskicly in my thinking"** — **OPEN, stage two, and it SUPERSEDES the LRU-eviction answer given minutes earlier.**
+
+  A hard cap with **no eviction** is strictly better: nothing the player looted or built ever resets, memory is bounded by construction, and the limit is **diegetic** rather than an apology about memory.
+
+  **And the owner's clarification grounds the number in Core.** `Prefs.MaxNumberOfPlayerSettlements` is a player option, a slider from **1 to 5, default 5**, enforced by `SettleUtility` as `count >= Prefs.MaxNumberOfPlayerSettlements`. Core counts only `map.IsPlayerHome && map.Parent is Settlement` plus gravship landings, so a `RimroomsDestinationMapParent` is **invisible to it**. So the budget is read from that pref rather than hard-coded, and a coordinate map counts against it — *"a backrooms level should be one colonly bacskicly"*. A player who sets the slider to 3 gets 3.
+
+  *"per scerio styled"* means the budget belongs on the scenario, not a global constant.
+
+  **This ships together with raising onward gates to 4-6 and `MaximumNaturalDepth` 3 to 6**, because the cap without the gates is pointless and the gates without the cap is what kills the game: `RimroomsDestinationMapParent.ShouldRemoveMapNow` always returns false, so at 90,000 cells and ~70,000 mineables per level, hundreds of reachable levels against a `MaximumCoordinates` of 512 would be fatal.
+
+- [ ] **still open from the same direction** — non-rectangular rooms and corridors; and the wild variation of materials across items, equipment, walls, floors, lights, furniture and benches, with the events, layouts and loot deeper in.
+
+---
+
+
+##############################################################################################################
+SECTION lines 480-494  (1326 bytes)
+##############################################################################################################
+## Coordinate rebuild, stages two to four — 2026-09-30 (0.12.50-dev)
+
+
+
+
+
+
+
+
+- [ ] **"how do they turn them off to use the machine gates for more controll and aiming deeper?"** / **"get 5 natural gates u cant use a machine gate"** — **OPEN, and deliberately NOT half-built. Next checkpoint, first thing.** The owner chose an **Operations held-places list with Release**. Releasing a place is not a UI problem; it needs (1) a **save-schema field on `CoordinateRecord`**, because `EnsureSite` deliberately refuses to regenerate a coordinate whose rooms were surveyed and only a flag can distinguish a deliberate release from a broken reference; (2) map teardown that orphans neither the world object, the `Site` reference, nor a portal edge pointing in; (3) a refusal set — crew present, crossing in flight, or the headquarters. Getting any of those wrong produces an unreachable place or a dead record, which is the exact defect class that cost thirty-nine checkpoints. **Mitigation meanwhile: discovering gates is free** — no map is generated until somebody crosses — so the cap is only met after five places are held open.
+
+- [ ] **still open from the same direction** — the wild variation of materials across items, equipment, walls, floors, lights, furniture and benches, with the events, layouts and loot deeper in.
+
+---
+
+
+##############################################################################################################
+SECTION lines 495-513  (2523 bytes)
+##############################################################################################################
+## Releasing a place — 2026-09-30 (0.12.51-dev)
+
+
+  **And the trap was worse than the previous record said.** That record claimed discovering a gate was free because no map existed until somebody crossed. **It was wrong:** `Discover` calls `RegisterNaturalAddress`, which calls `EnsureSite` **immediately**, because a natural edge is registered against the far side's own `ReturnAnchor` and that `Thing` does not exist until the map does. **A discovery costs a slot at the moment it is made**, so the budget check in `Discover` is load-bearing rather than over-eager, and five discoveries really do lock a player out of their machine gates. The previous record is **annotated, not rewritten**, per invariant 135.
+
+  A natural gate is permanently open (invariant 12) and is never closed. What is released is **the space behind it**. The door stays, still marked, and **remembers which place it led to** on its own comp — written at release while the edge still says so, because the edge has to be removed and is the only other record of the pairing.
+
+  **The teardown order is the whole of the safety, and it is asserted as an ordering:** the doors are told where they led **before** the edges are removed, and the edges are removed **before** the map is torn down. Reverse either pair and a record points at something that no longer exists, which is this project's most expensive defect class.
+
+  **`releasedByPlayer` is the only thing that can tell a deliberate release from a broken reference** — both look identical from outside, no site and surveyed rooms — and `EnsureSite`'s explored-graph guard exempts exactly that and nothing else. It still refuses a competing owner or a live map, and the exemption is **spent the moment the place exists again**, because an exemption that outlives its reason is a hole.
+
+  Refusals name themselves: the headquarters, crew inside (**a prisoner or an animal counts**), a crossing in flight, or a place with no live map. Re-opening goes through the same `RegisterNaturalAddress` path that first created it, is **disabled rather than hidden** at the budget, and **only forgets the shelved place on success** — forgetting on failure would strand it for ever over a transient refusal.
+
+  Record `implementation/RELEASE_A_PLACE_IMPLEMENTATION.md`. **88 of 88** planted faults caught.
+
+- [ ] **still open from the same direction** — the wild variation of materials across items, equipment, walls, floors, lights, furniture and benches, with the events, layouts and loot deeper in.
+
+---
+
+
+##############################################################################################################
+SECTION lines 514-560  (3902 bytes)
+##############################################################################################################
+## The first walked level — 2026-09-30 (0.12.61-dev) — DONE
+
+**IT WORKED. The owner is in the Backrooms for the first time, on the ninth launch:**
+**"okay it fucking worked!!! im in the backrooms!!! but issues..."**
+
+Owner, verbatim, in full:
+
+> **"1. i explored it all and there were zero weird events or people, there were zero portals to
+> be discovered. as in the didfferent scernios they all should have an additional portal to other
+> maps and levels... and i love the backrooms level i looked at and went into one issue not enough
+> rooms and not enough loot and not enough weird stuff like a room with a lost person or a room
+> full of bodies or suppplies or a labratory ofr class room or hospital of manufactuing room or
+> tool sheed or weapons locker with loot and supplies anssd furnuture all ot of it randomly like
+> and scary freaky spooky like. . its currently really nice but the furnature is only in the four
+> corners of the rooms that nots very random. 2. there is a weird route thing name a self in one of
+> the rooms and this is kinda weird and odd and we probably havent gotten to a routing system yet
+> for emergency exit and glow pods with the company start but lets try and fix this so the normal
+> yellow backrooms look isnt the whole floor but the main spanw room and going deeping in can mean
+> the numner of branch hallways and rooms distancing from the main portal spawn in the back rooms
+> continuw on into the map with variations and oddity and events and locations and places that vary
+> more even on the first level. cant have a whole backrooms be nothing but what it currently is if
+> u look at the game and where Gee is at it needs to be more maze liek and scary inducing beyond
+> the main starting themed opening room and have more natural portals guaranteeed so the backrooms
+> never ends \"persay\""**
+
+> **"every backrooms instance need a protal to the world map and a deeper in portal"**
+
+**MEASURED FROM THE LIVE MAP, so the scale of the gap is known rather than guessed.** The minimap
+shows **nine rectangular rooms on straight corridors**, and the planner explains it exactly:
+`slots = MinSlotsPerAxis + (depth - 1)` is **3** at depth 1, so a 3x3 grid of nine slots, of which
+`chain` takes six and spurs take three. **Nine rooms, all boxes, one serpentine corridor.**
+
+- [ ] **"every backrooms instance need a protal to the world map and a deeper in portal"** — a hard guarantee of **two** natural gates per instance: one out to the world map, one deeper. Not a chance roll.
+- [ ] **"there were zero portals to be discovered"** and **"have more natural portals guaranteeed so the backrooms never ends persay"**
+- [ ] **"not enough rooms"** — nine is not a Backrooms level
+- [ ] **"it needs to be more maze liek and scary inducing beyond the main starting themed opening room"**
+- [ ] **"the normal yellow backrooms look isnt the whole floor but the main spanw room"**
+- [ ] **"going deeping in can mean the numner of branch hallways and rooms distancing from the main portal spawn in the back rooms continuw on into the map with variations and oddity and events and locations and places that vary more even on the first level"**
+- [ ] **"not enough loot"**
+- [ ] **"not enough weird stuff like a room with a lost person or a room full of bodies or suppplies or a labratory ofr class room or hospital of manufactuing room or tool sheed or weapons locker with loot and supplies anssd furnuture"**
+- [ ] **"all ot of it randomly like and scary freaky spooky like"**
+- [ ] **"the furnature is only in the four corners of the rooms that nots very random"**
+- [ ] **"zero weird events or people"**
+- [ ] **"there is a weird route thing name a self in one of the rooms and this is kinda weird and odd"** — owner's own read: *"we probably havent gotten to a routing system yet for emergency exit and glow pods with the company start but lets try and fix this"*
+
+---
+
+
+##############################################################################################################
+SECTION lines 561-586  (1698 bytes)
+##############################################################################################################
+## Lights and geometry — 2026-09-30 (0.12.61-dev) — DONE
+
+Owner, verbatim:
+
+> **"and we need more lights and mixedered varies of lights but the main grand themed backrooms
+> universe rooms need like a wall light on every column wall used as in the universe of backrooms
+> the basic rooms are well lit"**
+
+> **"and you can have back to back roomes and mazes of halways of varied widtchs and lengs and odd
+> variers walls and contructions making narrows , expansies, triangle, octangones, rombones, all
+> the geomentry and mixetrues and odd contructions of doors walls corners deadends doors to now
+> where not just doors on 4 cosides of nothing but square rooms"**
+
+- [ ] **"we need more lights and mixedered varies of lights"**
+- [ ] **"the main grand themed backrooms universe rooms need like a wall light on every column wall used"** — the pillar lattice already exists in `RoomLayoutPlanner.PillarCells`, so every pillar is a known cell with a wall to hang a lamp on
+- [ ] **"as in the universe of backrooms the basic rooms are well lit"** — brightness is part of the theme, not a convenience
+- [ ] **"you can have back to back roomes"** — rooms sharing a wall, with no corridor between
+- [ ] **"mazes of halways of varied widtchs and lengs"**
+- [ ] **"odd variers walls and contructions making narrows , expansies"**
+- [ ] **"triangle, octangones, rombones, all the geomentry and mixetrues"**
+- [ ] **"odd contructions of doors walls corners deadends"**
+- [ ] **"doors to now where"** — a door that opens onto solid rock or a sealed closet
+- [ ] **"not just doors on 4 cosides of nothing but square rooms"** — the current rule is literally a doorway at the midpoint of each of four walls
+
+---
+
+
+##############################################################################################################
+SECTION lines 587-605  (1169 bytes)
+##############################################################################################################
+## The lab name comes out, and every level becomes a maze - 2026-10-01 (0.12.68-dev, 0.12.69-dev) - DONE
+
+Owner, verbatim:
+
+> **"take the Unity Lab AI and the Unity AI Lab out of all refrences and nameing but we will keep
+> the repos as is for now. especially remove the Unitylabai from the mod information that i see on
+> Rimsort ie the package id and folder naming and such and files, and there is one issue all the
+> backrooms so far are just one lone strain of perals arangement that snakes back and forth across
+> the map like one series line... i want them to be mazes like xcrazy like all levels mazes do you
+> unerstand! lsd crazy shaped mazes and facilitys and :\"buildings and neighboorhoods and
+> complexes and shools and hospitals and military and storages need loot inside of them too"**
+
+- [~] **"all the backrooms so far are just one lone strain of perals arangement that snakes back
+  and forth across the map like one series line"** - **the owner is describing the algorithm
+  exactly.** `RoomLayoutPlanner.Build` walks the slot grid row-major with alternating direction
+  and calls it a *serpentine*; it is one line that snakes, by construction
+
+---
+
+
+##############################################################################################################
+SECTION lines 606-622  (792 bytes)
+##############################################################################################################
+## One battery was the whole reserve - 2026-10-01 (0.12.77-dev) - DONE
+
+Owner, verbatim, from a running game:
+
+> **"its the same problem as before: the laboratory address for that is not open.... thats just
+> clicking on the portal and trying to send them through not working,,, and using operations
+> clicking send pawns through which i think is a power porblem but you can check the game current
+> running,, looks like only being able to connect 1 battery isnt anough and there should be no
+> loimit"**
+
+**The owner's diagnosis is correct and the mechanism is worse than the symptom suggests.**
+
+- [ ] **`returnReserveCapacityWattDays` is 2 and a Core `Battery` holds 600**, so the bind-time
+  *ReserveTooSmall* refusal is **not** the cause. Checked and ruled out rather than assumed
+
+---
+
+
+##############################################################################################################
+SECTION lines 623-663  (2468 bytes)
+##############################################################################################################
+## The doc sweep picked back up, and a site that does not pop like a text wall - 2026-10-01
+
+Owner, verbatim:
+
+> **"i docs and pages for when we deploy on github"**
+
+> **"we were doing the massive update and corrections to content style and formate of all the docs
+> pertaining to that doc push earlier that we neeed to pick back up on and docs and pages when we
+> deploy the wiki and docs on github"**
+
+and at the two forks, verbatim:
+
+> **"docs/ root on this repo, github.io for now"**
+
+> **"the beautiful and masterfully way paossible so the thing needs to NOT pop like a text wall"**
+
+- [ ] **Style and format across the thirteen WIKI pages is the remaining half**, and it belongs with
+  the site build below rather than here, because *"NOT pop like a text wall"* is a layout answer as
+  much as a prose one.
+- [ ] **"and docs and pages when we deploy the wiki and docs on github"** - the deploy half.
+- [ ] **"docs/ root on this repo, github.io for now"** - Pages serves `docs/` on this repository.
+  `_config.yml` keeps `include: wiki` and the working material excluded. **CNAME support authored
+  now, the domain left open** - no document names a URL the deploy does not have.
+- [ ] **"the beautiful and masterfully way paossible so the thing needs to NOT pop like a text
+  wall"** - `jekyll-theme-primer` is a text wall with a margin. Real layout and stylesheet, and the
+  thirteen pages restructured so each one is scannable rather than read from the top.
+- [ ] **The generator stays internal, by the finding that opened this.** `outputs/readable/` renders
+  `TODO.html` and `NOW.html` - the work ledger - to standalone HTML. Nothing publishes them today
+  because `_config.yml` includes `wiki` alone, but TODO row 270 names
+  `tools/make-readable-html.py` as the site's seed, and pointing it at the site would publish the
+  ledger. **It stays an internal reading convenience and is never wired to the published tree.**
+- [ ] **`check-doc-conformance.py` must cover the published site** (row 271), so a page cannot claim
+  a version or a branch the build does not have.
+
+**Mod register.** Checked before designing: it bears on this as the **source** for what
+`COMPATIBILITY.md` and the wiki's `mods.md` may claim - `RR-COMPAT` carries 293 of the 295 rows and
+`RR-DLC` 40 - and the standing no-compatibility-claim rule means those pages state **declared
+requirements**, never tested-together claims. Nothing else in the register applies to a docs sweep.
+
+---
+

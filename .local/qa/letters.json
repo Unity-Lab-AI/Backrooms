@@ -1,0 +1,92 @@
+{
+ "success": true,
+ "currentGameTick": 693172,
+ "totalCount": 1,
+ "returnedCount": 1,
+ "truncated": false,
+ "letters": [
+  {
+   "id": "Letter_8",
+   "type": "Verse.StandardLetter",
+   "letterDef": "PositiveEvent",
+   "label": "Resocialization offer",
+   "text": "Offer by Reekeek.",
+   "arrivalTick": 690000,
+   "ageTicks": 3172,
+   "canDismissWithRightClick": true,
+   "shouldAutomaticallyOpenLetter": false,
+   "relatedFaction": "Decay Crew",
+   "debugInfo": null,
+   "lookTargets": {
+    "isValid": true,
+    "any": true,
+    "targetCount": 1,
+    "targetsTruncated": false,
+    "primaryTarget": {
+     "kind": "pawn",
+     "id": "Thing_Human76476",
+     "label": "Reekeek",
+     "thingType": "Verse.Pawn",
+     "defName": "Human",
+     "mapId": "Map_0",
+     "mapIndex": 0,
+     "position": {
+      "x": 115,
+      "z": 162
+     }
+    },
+    "targets": [
+     {
+      "kind": "pawn",
+      "id": "Thing_Human76476",
+      "label": "Reekeek",
+      "thingType": "Verse.Pawn",
+      "defName": "Human",
+      "mapId": "Map_0",
+      "mapIndex": 0,
+      "position": {
+       "x": 115,
+       "z": 162
+      }
+     }
+    ]
+   },
+   "choiceCount": 2,
+   "choices": [
+    {
+     "index": 1,
+     "text": "Close",
+     "disabled": false,
+     "disabledReason": null,
+     "closesDialog": true,
+     "hasAction": true,
+     "hasLink": false
+    },
+    {
+     "index": 2,
+     "text": "Jump to location",
+     "disabled": false,
+     "disabledReason": null,
+     "closesDialog": true,
+     "hasAction": true,
+     "hasLink": false
+    }
+   ]
+  }
+ ],
+ "operation": {
+  "OperationId": "op_19d531921bd340efb930dd7822baed5e",
+  "CapabilityId": "rimbridge.core/notifications/list-letters",
+  "Status": 2,
+  "Success": true,
+  "StartedAtUtc": "2026-10-08T13:41:28.8577216+00:00",
+  "CompletedAtUtc": "2026-10-08T13:41:28.8698582+00:00",
+  "DurationMs": 12,
+  "Result": null,
+  "HasResult": true,
+  "ResultWasTruncated": false,
+  "Warnings": [],
+  "Error": null,
+  "Metadata": {}
+ }
+}
