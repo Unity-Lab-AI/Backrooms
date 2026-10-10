@@ -7,14 +7,14 @@ chat and bottom bar covered its right side and bottom. This fits the capture to 
 the overlay full-frame on top.
 """
 import obsws_python as obs
-GAME = {"x": 12, "y": 12, "w": 1472, "h": 789}
+GAME = {"x": 12, "y": 12, "w": 1403, "h": 789}   # 16:9, the game's real 3840x2160: fills the panel edge to edge
 c = obs.ReqClient(host="127.0.0.1", port=4455, timeout=5)
 scene = "Live"
 items = c.get_scene_item_list(scene).scene_items
 ids = {i["sourceName"]: i["sceneItemId"] for i in items}
 c.set_scene_item_transform(scene, ids["RimWorld (game only)"], {
     "positionX": GAME["x"], "positionY": GAME["y"], "alignment": 5,
-    "boundsType": "OBS_BOUNDS_SCALE_INNER", "boundsWidth": GAME["w"], "boundsHeight": GAME["h"], "boundsAlignment": 0,
+    "boundsType": "OBS_BOUNDS_STRETCH", "boundsWidth": GAME["w"], "boundsHeight": GAME["h"], "boundsAlignment": 0,
     "cropLeft": 0, "cropRight": 0, "cropTop": 0, "cropBottom": 0})
 c.set_scene_item_transform(scene, ids["Unity overlay"], {
     "positionX": 0, "positionY": 0, "alignment": 5,

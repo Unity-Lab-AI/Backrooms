@@ -68,7 +68,7 @@ def fresh(fact):
     """Unity's own voice (owner, 2026-10-09: "quit being so robot in schat you a human goth coder chick"):
     first person, casual, like talking to friends on a stream -- not narration, no 'behold'."""
     import difflib, urllib.request
-    fact = re.sub(r"Unity is", "I am", fact)
+    fact = re.sub(r"\bUnity is\b", "I am", fact)
     try: hist = json.load(open(sb.HIST, encoding="utf-8"))
     except Exception: hist = []
     for attempt in range(3):
@@ -97,10 +97,10 @@ def fresh(fact):
             line = json.loads(urllib.request.urlopen(req, timeout=40).read())["response"].strip().strip('"').split(chr(10))[0]
         except Exception: break
         line = line.replace('"', "").strip()
-        line = re.sub(r"Unity is", "I'm", line); line = re.sub(r"Unity's", "my", line); line = re.sub(r"Unity", "I", line)
+        line = re.sub(r"\bUnity is\b", "I'm", line); line = re.sub(r"\bUnity's\b", "my", line); line = re.sub(r"\bUnity\b", "I", line)
         low = line.lower()
         if difflib.SequenceMatcher(None, low, fact.lower()).ratio() > 0.75: continue   # a bare echo of the prompt
-        if not line or len(line.split()) > 30 or any(re.search(r"%s" % w, low) for w in sb.BANNED): continue
+        if not line or len(line.split()) > 30 or any(re.search(r"\b%s" % w, low) for w in sb.BANNED): continue
         if any(w in low for w in ("behold", "cosmos", " lo,", "witness")): continue
         if any(n not in fact for n in re.findall(r"\d+", line)): continue
         # Owner, 2026-10-10: "your streamer script is not working well, it bariely everer updates".  What it
@@ -113,7 +113,7 @@ def fresh(fact):
         # a colonist's name is not evidence the line is about the fact: "Unity is crafting some epic gear"
         # matched on the word Unity alone and went out, inventing the crafting. Names are excluded from the
         # keys, and the line must still be first person -- she IS one of the colonists.
-        if re.search(r"(unity|gee|scar)\s+(is|was|has|will)", low): continue
+        if re.search(r"\b(unity|gee|scar)\s+(is|was|has|will)\b", low): continue
         keys = {w for w in re.findall(r"[a-z]{4,}", fact.lower())
                 if w not in ("that", "this", "with", "they", "them", "then", "just", "line", "about", "right",
                              "chat", "short", "greet", "name", "said", "viewer", "answer", "what", "true", "very",

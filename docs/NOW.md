@@ -64,6 +64,10 @@ Services under the switch: `rimworld` (started, never stopped except by `stop`),
 
 **Tag table:** constants that never move (`FOOD_PANIC_DAYS 1`, `RIFLES_FOR_BIG_GAME 3`, `LAMPS_PER_ROOM 2`, `ROCK_CELLS_AROUND_ROOMS 2`, `SPINE_WIDTH 3`, `MOUNTAIN_DOORS_IN 1`, `FIREBREAK_WIDTH 3`, `NEVER_HUNT`); variables recomputed from colony size each scan and written back (`FOOD_MIN_DAYS`, `FOOD_COMFORT_DAYS`, `MEAL_BILL_TARGET`, `WOOD_RESERVE`, `MEDICINE_RESERVE`, `BEDS_NEEDED`). Routing test **12/12**.
 
+## New game, no clicks (2026-10-10)
+
+Owner: *"wtf it didnt do the fucking map set up with faction adv settings pollution seed name none of it"*. `start-scenario.py` only picks the scenario row and stops at the storyteller; the mod's **`WorldSetupDriver`** does every page after that from `RimroomsAutomation/newgame.request`: Cassandra Classic / Community builder / reload anytime; seed (Unity's pick), **pollution 0**, factions — only the normal pirate gang, plus the cannibal tribe and the nudist tribe; **300×300, Spring**, a mountainous temperate forest tile (rainforest, then large hills, as fallbacks); the company page acknowledged; the faction and settlement named by Unity. Steps log to `newgame.result`. keep-playing retries at most twice and never loops world generation.
+
 ## Armed, fires on its own
 
 - **`.local/qa/_new_colony.request`** = `Async Industries`. `keep-playing.py` fires `start-scenario.py "Async Industries"` the moment the bridge answers (it answers at the main menu — no window, no focus needed). Never a save, never the quick-test colony.
@@ -73,7 +77,7 @@ Services under the switch: `rimworld` (started, never stopped except by `stop`),
 
 ## Stream
 
-- OBS canvas **1920×1080, true 16:9**, with the whole 3840×2054 game fitted full-width (thin bars top and bottom). The 1920×1027 canvas got its sides cut by Twitch's 16:9 player — owner: *"as you can see the twitch window is still cut off on the sides"*. `.local/qa/obs-fit-16x9.py` re-applies it (OBS closed). `--startstreaming`, `--disable-shutdown-check`, closed gracefully, never force-killed.
+- OBS canvas **1920×1080**; the overlay's game panel is **1403×789 = 16:9**, the game's real 3840×2160, and the capture fills it edge to edge, no crop, no bars, nothing under the frame. `.local/obs/obs-fit-16x9.py` writes it into OBS's files and **golive runs it before every launch**; `.local/obs/obs-fit-panel.py` re-applies it live over the OBS websocket. Owner: *"make sure what ever is grabing rimworld screen displays the full thing edge to edge top to bottom"* / *"in twitch"*.
 - The Twitch window never asks for permissions (`--deny-permission-prompts`); the PiP prompt the owner denied was that window.
 - Voice: a real person — 25, emo goth, cold coffee, asides allowed, **never an invented game event**, never third person, never silent past **30 s**, talks between runs instead of dying.
 - **Likeness locked:** `.claude/likeness/unity-approved-2026-10-09.png` is the approved look; `unity-likeness-2026-10-09-locked.png` is the reference every frame is img2img'd from at seed 1031. **Do not re-render the reference; restore from the copy.**
