@@ -86,7 +86,7 @@ def fresh(fact):
                   "say behold, lo, witness, cosmos, indeed, truly or fellow. First person always (I, me, my "
                   "crew), never your own name in the third person. ONE spoken line, at most 20 words, about "
                   "this and nothing else: \"%s\". You may add your own feeling about it, but invent NO events, "
-                  "names or numbers that are not in that fact. No swearing, nothing degrading. Don't reuse "
+                  "names or numbers that are not in that fact, and NEVER say you did, built, set up or powered anything unless the fact says it is done. No swearing, nothing degrading. Don't reuse "
                   "these recent lines: %s. Reply with the line only."
                   % (fact, " | ".join(hist[-8:])))
         try:
@@ -196,7 +196,7 @@ def state_facts():
         names = [c.get("name") for c in crew if c.get("name")]
         if names:
             facts.append("my crew is %s, %d of us, fresh off the drop" % (", ".join(names), len(names)))
-            facts.append("the clock is stopped on purpose while I set up storage, beds and food for %s" % ", ".join(names))
+            facts.append("I have NOT set up storage, beds or food yet; the clock stays stopped until I do, for %s" % ", ".join(names))
         lets = [l.get("label") for l in call("rimworld/list_letters").get("letters", []) if l.get("label")]
         # a waiting letter is news ONCE, not a topic every 20 s (live: "authorization" six lines running)
         global _told_letters
@@ -204,7 +204,7 @@ def state_facts():
         except NameError: _told_letters = set()
         fresh_lets = [l for l in lets if l not in _told_letters]
         if fresh_lets:
-            facts.append("a message is waiting for me: " + fresh_lets[-1]); _told_letters.add(fresh_lets[-1])
+            facts.append("a letter just arrived titled '%s' -- I have only read it, I have not acted on it" % fresh_lets[-1]); _told_letters.add(fresh_lets[-1])
     except BaseException:
         pass
     if not facts:
