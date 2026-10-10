@@ -40,14 +40,22 @@ def pipes():
     if _t2i is None:
         import torch
         from diffusers import StableDiffusionPipeline, StableDiffusionImg2ImgPipeline, DPMSolverMultistepScheduler
-        _t2i = StableDiffusionPipeline.from_single_file(CKPT, torch_dtype=torch.float16, safety_checker=None).to("cuda")
+        # Owner, 2026-10-10: "i think u can double up some major processas and still leave room for rimworld to
+        # run 14gb is using alot" -- the GPU had 1 GB of 16 free with the stream, RimWorld, OBS and Ollama on it.
+        # A webcam frame is wanted about once every 90 s, so the pipeline lives in system RAM and only the layer
+        # being executed rides the GPU: it frees roughly 4 GB of VRAM between frames at the cost of a few seconds
+        # per render, which leaves the local model room to load without swapping.
+        _t2i = StableDiffusionPipeline.from_single_file(CKPT, torch_dtype=torch.float16, safety_checker=None)
         _t2i.scheduler = DPMSolverMultistepScheduler.from_config(_t2i.scheduler.config)
+        _t2i.enable_model_cpu_offload()
+        _t2i.enable_attention_slicing()
         _i2i = StableDiffusionImg2ImgPipeline(**_t2i.components)
     return _t2i, _i2i
 
 
 def render(req):
     import torch
+    torch.cuda.empty_cache()
     from PIL import Image
     t2i, i2i = pipes()
     seed = int(req.get("seed") or SEED)

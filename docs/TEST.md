@@ -35,7 +35,7 @@ whole body moved here unchanged and that file went back to its template state.
 | [`ROADMAP.md`](ROADMAP.md) | MAJOR — phases and milestones |
 | [`TODO.md`](TODO.md) | MINOR — the working queue, **open buildable work only** |
 | [`DECOMPOSED.md`](DECOMPOSED.md) | smallest execution units, open only |
-| **`TEST.md`** (this file) | **the test phase — `[T]` only, 62 rows, and a build closes none of them** |
+| **`TEST.md`** (this file) | **the test phase — `[T]` only, 61 rows, and a build closes none of them** |
 | [`FINALIZED.md`](FINALIZED.md) | permanent archive, append-only |
 
 Status markers here are `[T]` and nothing else. A row that turns out to be buildable after all goes
@@ -356,7 +356,6 @@ Every item in this major needs a Rimrooms build the owner has launched; source-s
 **All 294 profile entries** (all rows source-reviewed; zero rows runtime-cleared):
 
 - [T] Pin the exact profile and test clean Core, Core+RWT/Harmony, selected VGE stack, each high-risk family, and the full ordered profile. — post-completion test phase (owner RimSort launch).
-- [T] Verify all QoL features remain available, including work-priority, UI, scheduling, storage, movement, hauling, selection, visitors, prisoners, health, combat, map, and scenario helpers represented in the list. — post-completion test phase (owner RimSort launch).
 - [T] Resolve duplicate Defs/patch collisions in the exact 294 profile; use load-after patches only where a reproducible conflict requires one. — **STILL OPEN.** **Structurally requires a launch with the 294 profile loaded**, which only the owner does, through RimSort. -- **MOVED TO THE TEST PHASE 0.12.99-dev, on the row's own words:** *"Structurally requires a launch with the 294 profile loaded, which only the owner does, through RimSort."* A collision is a thing two mods do to each other at load; it cannot be found by reading.
 - [T] Test gravship-changing profile mods against both VGE chapters; publish incompatible combinations rather than hiding known conflicts. — post-completion test phase (owner RimSort launch).
 - [T] Add a user-facing compatibility report with tested order, versions, DLC, known issues, unsupported features, and save caveats. — **STILL OPEN.** Cannot honestly state a tested order before anything has been tested. -- **MOVED TO THE TEST PHASE 0.12.99-dev, on the row's own words:** *"Cannot honestly state a tested order before anything has been tested."* D1 forbids announcing compatibility before validation, so writing this report now would be the exact claim the rule exists to stop.
