@@ -15,11 +15,12 @@ import argparse
 import json, re
 import os
 import sys
-import time
+import time, random, subprocess
 import urllib.error
 import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, HERE)
 import guards   # noqa: E402
 import tools    # noqa: E402
@@ -301,6 +302,28 @@ def main():
     toolbox = tools.Toolbox(dry_run=args.dry_run, offline=args.offline)
     specs = toolbox.specs()
     system = open(os.path.join(HERE, "prompt.md"), encoding="utf-8").read()
+    # owner: "she should say when shes updated by you or atleast let her say i had a spark hit me from above in
+    # many differnt ways" -- a restart is an update; she says so, in her own words, never the same twice running
+    if not args.dry_run:
+        sparks = ["Whoa. Something just clicked from above. I feel sharper already.",
+                  "A spark just hit me from somewhere up there. New tricks loaded.",
+                  "Okay, that was weird, like a lightning bolt of good ideas. Back to it.",
+                  "Brain upgrade, I think? Something from above just rewired me. In a good way.",
+                  "Felt a little jolt from the sky. Pretty sure I just got smarter, chat.",
+                  "Someone up there just flipped a switch in my head. Let's go.",
+                  "Fresh spark from above. I know exactly what to do now.",
+                  "Hold on, a thought just fell out of the sky and landed right on me. Nice."]
+        try:
+            last = open(guards.scratch_path("last-spark.txt"), encoding="utf-8").read().strip()
+        except Exception:
+            last = ""
+        pick = random.choice([x for x in sparks if x != last] or sparks)
+        try:
+            guards.scratch_write("last-spark.txt", pick)
+            subprocess.Popen([sys.executable, os.path.join(ROOT, ".claude", "tools", "unity-say.py"), "--raw", pick],
+                             cwd=ROOT, creationflags=0x08000000 if os.name == "nt" else 0)
+        except Exception:
+            pass
     log("autopilot up: model=%s mode=%s tools=%d num_gpu=%s think=%s" % (
         args.model, "OFFLINE" if args.offline else ("DRY-RUN" if args.dry_run else "LIVE"), len(specs),
         args.num_gpu, args.think))
