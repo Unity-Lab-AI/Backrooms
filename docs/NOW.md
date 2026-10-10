@@ -11,7 +11,7 @@
 | `docs/PLAYBOOK.md` | every play order the owner has given, verbatim |
 | `docs/PLAYSCRIPT.md` | the running order of a run, plus every owner order of the last two days verbatim |
 | **`docs/playbook.gates.json`** | **the PLC ladder the local model plays by — 25 gates, tag table, her words as `why`** |
-| **`docs/playbook.rules.json`** | **89 owner orders distilled to one line each with the exact quote; the brief attaches the ones about the live rung** |
+| **`docs/playbook.rules.json`** | **140 owner orders (89 + 51 audited in from PLAYBOOK/PLAYSCRIPT, 2026-10-10, owner: *"you remember everything ive ever said about all setup and play right.. make the model local know it"*), one line each with the exact quote; the brief attaches the 10 most relevant to the live rung, ranked by topic match, not file order** |
 | **`docs/NOW.md`** (this file) | **the handoff — one record** |
 | `docs/FINALIZED.md` | permanent archive, append-only |
 
