@@ -40,6 +40,7 @@ if _os.name == "nt":
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
+QA = HERE
 ORDERS = os.path.join(ROOT, ".local", "autopilot", "owner-orders.txt")
 SERVICES = os.path.join(HERE, "services.py")
 PORT = int(os.environ.get("ADMIN_PORT", "4318"))
@@ -173,20 +174,11 @@ async function sendChat(){const t=document.getElementById('msg').value.trim();if
  const d=await j('/api/chat',{text:t});
  box.textContent=box.textContent.replace(/\\n\\.\\.\\.$/,'\\n')+ (d.reply||d.error||'');box.scrollTop=box.scrollHeight}
 async function queue(){const d=await j('/api/queue');
- document.getElementById('queue').textContent=(d.jobs||[]).map(x=>'* '+x).join('
-')+'
-
-last run:
-'+(d.log||'')}
+ document.getElementById('queue').textContent=(d.jobs||[]).map(x=>'* '+x).join('\\n')+'\\n\\nlast run:\\n'+(d.log||'')}
 async function popup(){const d=await j('/api/popup');const box=document.getElementById('popup');
  const card=document.getElementById('popcard');
  if(!d||!d.type){box.textContent='none';card.style.borderColor='#2a2a35';return}
- box.textContent=(d.type||'')+'
-
-'+((d.text||[]).join('
-'))+'
-
-options: '+((d.options||[]).join(' | '));
+ box.textContent=(d.type||'')+'\\n\\n'+((d.text||[]).join('\\n'))+'\\n\\noptions: '+((d.options||[]).join(' | '));
  card.style.borderColor='#ff5fa2'}
 refresh();queue();popup();setInterval(refresh,6000);setInterval(queue,15000);setInterval(popup,5000);
 </script>
@@ -248,6 +240,11 @@ class H(http.server.BaseHTTPRequestHandler):
                     f.write(chr(10) + "- TONIGHT, from the owner at GO: " + want + chr(10))
             return self._send(200, {"out": "GO received" + (" -- tonight: " + want if want else "")})
         if self.path == "/api/svc":
+            if body.get("action") == "start" and not body.get("name"):
+                # the owner's "start all" means GO: game, stream, colony -- not just "services already up"
+                if not os.path.exists(os.path.join(QA, "_go.request")):
+                    with open(os.path.join(QA, "_go.request"), "w", encoding="utf-8") as f: f.write("go")
+                    return self._send(200, {"out": "GO received -- launching the stream, then the game, then the colony"})
             with _lock:
                 return self._send(200, {"out": svc(body.get("action", "status"), body.get("name"))})
         if self.path == "/api/order":

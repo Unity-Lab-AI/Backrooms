@@ -145,7 +145,7 @@ def brief(toolbox, st, joins, msgs, runlist):
                 "hostile-on-map": ("raid", "draft", "embrasure", "prisoner", "capture", "tend", "arm"),
                 "dialog-open": ("pop", "pay", "visitor", "message", "letter"),
                 "letter-unread": ("message", "letter", "pop", "read"),
-                "new-colony": ("colony", "start", "scenario", "camp", "settle", "order of operation"),
+                "new-colony": ("world gen", "300x300", "spring", "scenario", "priorit", "colony start", "settle", "order of operation", "food"),
                 "game-paused": ("pause", "unpause", "shift", "set everything"),
                 "window-not-in-front": ("mouse", "screen", "click", "control", "cursor"),
                 "rung-2-power-and-cold": ("power", "ac ", "cooler", "freezer", "electric", "generator", "conduit"),
@@ -158,18 +158,24 @@ def brief(toolbox, st, joins, msgs, runlist):
                 "rung-6b-orbit-and-beyond": ("ship", "space", "orbit", "universe", "launch"),
                 "always": ("chat", "stream", "talk", "viewer", "voice", "image", "selfie", "highlight", "clean", "cuss"),
             }
-            _hits = []
-            for g in _gates:
+            # ranked, not first-come: a keyword in the rule's TOPIC counts three times one in its quotes, and the
+            # live rung (first gate) outranks the always-gate -- so the 140-rule book surfaces the rules that are
+            # actually about this moment instead of whichever happen to sit first in the file.
+            _scored = {}
+            for gi, g in enumerate(_gates):
                 keys = _TOPICS.get(g["id"], ())
+                weight = 2 if gi == 0 else 1
                 for r in _rules:
-                    blob = (r["topic"] + " " + " ".join(r["owner_words"])).lower()
-                    if any(k in blob for k in keys):
-                        q = r["owner_words"][0] if r["owner_words"] else r["rule"][:120]
-                        line = "  - %s: \"%s\"" % (r["topic"][:50], q[:150])
-                        if line not in _hits: _hits.append(line)
+                    topic = r["topic"].lower(); words = " ".join(r["owner_words"]).lower()
+                    score = sum(3 for k in keys if k in topic) + sum(1 for k in keys if k in words)
+                    if not score: continue
+                    q = r["owner_words"][0] if r["owner_words"] else r["rule"][:120]
+                    line = "  - %s: \"%s\"" % (r["topic"][:60], q[:150])
+                    _scored[line] = max(_scored.get(line, 0), score * weight)
+            _hits = [l for l, _s in sorted(_scored.items(), key=lambda kv: -kv[1])]
             if _hits:
                 _lines.append("THE OWNER'S OWN WORDS ON THIS (from the playscript):")
-                _lines.extend(_hits[:8])
+                _lines.extend(_hits[:10])
         except Exception:
             pass
         parts.append(chr(10).join(_lines))

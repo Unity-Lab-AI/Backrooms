@@ -678,5 +678,485 @@
    "wtf why u putting walls upganets and replacing embrasures that wont work fix those walls"
   ],
   "rule": "owner, 2026-10-10, verbatim: -- a storage ring was run out to x168, which is the camp's east perimeter, so plain wooden wall was built over the embrasures at - and over the east gate : embrasures repl"
+ },
+ {
+  "topic": "World gen and new colony setup: 300x300 map, Spring, mountain tile in forest or jungle",
+  "owner_words": [
+   "there is no wood no trees on this map, thats why in advanced setting on world gen setup you set 300x300 mapo and spring, and then when choosing a map tile u pic on that has mountains(the rock areas on map) in forest area and jungle areas the light green and green, terrain tab on left tells u all this when u highlight via select the tiles",
+   "see you are forgeting shit 300x300 adv set",
+   "save this save.. start new secenerio,, solo/groupd start with same precets pic a mountin tile to start and try to find natural gate to it or just out of back rooms and get in contact with the company"
+  ],
+  "rule": "new colony world gen: Advanced settings map 300x300, season Spring; pick a landing tile with mountains in forest/jungle (light green/green), read the Terrain tab on the selected tile"
+ },
+ {
+  "topic": "Scenario and factions at world gen: normal pirates, cannibals, nude tribe; never Peaceful storyteller",
+  "owner_words": [
+   "YOU HAVE TO USE PROPER PROCEESURE ONLY HAVE NORMAL PIRATES REMOVE THAE STARTING 3 and add normal canibals and a nude tribe when u set it up",
+   "not peace full you cheap skat community buiilder go back"
+  ],
+  "rule": "start a scenario via the fixed procedure: Cassandra Classic / Community builder, never Peaceful; factions only normal pirates (remove the starting three), add normal cannibals and a nude tribe"
+ },
+ {
+  "topic": "Work priorities at colony start: Firefight through Cook 1s, specialty 2s, no blank cells, paste then customise",
+  "owner_words": [
+   "set up all priorities this is the last time i telling you set it how ive told you every day weve played all of them for every one using coopy paste to paste one to the tosthers then customize keep all the 1s firsefiring through cooking",
+   "dint leave a bunch blankk",
+   "no prioties should be left blank",
+   "firefight throough cook are 1's",
+   "you havent set up your work tab manual priorities, everything from firefighting to cooking should be hieghest 1s and you only put 2s on the teask u want each colonist doing spliting theri work up so u have like on guy cutting and planting and one crafting and constructing and one hunting and everyhting else",
+   "set your priorities, dont need everyone choopping wood, multitask",
+   "stop ur fucking up the priorities i told you how to set them, now get back to it"
+  ],
+  "rule": "work tab manual: Firefight..Cook = 1 for everyone, each pawn's specialty 2, rest 3, nothing blank except incapables; copy one row, paste to the others, then customise; one cell at a time, read back"
+ },
+ {
+  "topic": "No sowing at the main base farms; fields of every crop near the camp walls; priorities never blank",
+  "owner_words": [
+   "wtf i told you to block soeing at the farms at the main base and make new farms of everything u need grow near the camp outer walls, and like i siad no priorities shall be blank in the work tab if possible set them all correct"
+  ],
+  "rule": "block sowing on the far main-base plots until the crew moves in; fields of every needed crop just outside the camp wall"
+ },
+ {
+  "topic": "After the kill: close the rooms, get everything inside, shelves, stockpiles, cooler working",
+  "owner_words": [
+   "and fix all you open rooms get shit inside before it decays set up stoages shelfs and shit set stockpiles get your freezer/cooler working good make sure shit is done <<<do all this dirrectly after enemy kill"
+  ],
+  "rule": "the moment the last raider is down: close and roof open rooms, haul everything inside, shelves and stockpile filters set, freezer/cooler working -- nothing else first"
+ },
+ {
+  "topic": "Colony start: pawn schedule Anything, drug policy, antibiotics, crops, roles, leader and moral guide",
+  "owner_words": [
+   "were ur crops u get priorities done and scedukele and drug assignment and antibiotics",
+   "set theri scheldule to anything at all times for all pawns",
+   "you also might want to research antibiotics and assign everyones drug scheldule manage to take peneacycline every 5 days once you build it at drug lab after researching antibiotics in game",
+   "no leader?",
+   "now u have a leader u need a morasl guide and they ahave abilities u want to always use"
+  ],
+  "rule": "every new colony: schedule Anything all day, drug policy (no hard drugs; penoxycyline every 5 days once researched), crops sown, leader and moral guide filled at founding and their abilities used"
+ },
+ {
+  "topic": "Arm every colonist: rifle and sidearm, hostility Attack never Flee",
+  "owner_words": [
+   "once again u arnt armed!!! wtf!!!!",
+   "make sure everyone has their sidearm and maine rifle",
+   "and make sure you equipe stun batons pain sticks in off hand as side weapons for close range",
+   "you got oles in your buildings and better off sidearms to use than poor knifes",
+   "get ur shit instil arm ur people everything is deteriorating"
+  ],
+  "rule": "every loop before playing: every colonist has a rifle and a melee sidearm, hostility Attack (pawns spawn on Flee); better sidearms than knives"
+ },
+ {
+  "topic": "Raid drill: draft, group up, kill with range, retreat-fire, pause at the right times",
+  "owner_words": [
+   "set everyone to attack not flee and group up when something attacks and draft and flee attack never letting someone melle person or animal get close to your pawns kill them with range at all costs",
+   "embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close",
+   "and u have to pause at the right times as not to wit to long to give commands in combat situations",
+   "get every ready to fight and out side inbetween the cougar and the base",
+   "charge them but keep ur distance from them in gun range"
+  ],
+  "rule": "on attack: everyone Attack not flee, draft and group, kill melee with range before they close, fall back to embrasures firing, pause in time to give orders; advance to gun range then stand still to shoot"
+ },
+ {
+  "topic": "Letters, messages and pop-ups read first, every time; a trader letter means the comms console now",
+  "owner_words": [
+   "dont ignore you messages  someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need",
+   "are you reading pop up messages a good tradeer just arrived wtf !!! use the comms console",
+   "ive alkready told yuou already read messages always instantly!!!!! your under attrack!!!!",
+   "right click on message on the right to clear old ones and left click to read them"
+  ],
+  "rule": "start every loop with letters: left-click to read, act, right-click to dismiss; a trader letter means use the comms console now; under attack read instantly"
+ },
+ {
+  "topic": "Food: meals sooner, cook bill Do until 50, butcher table before hunting, harvests in",
+  "owner_words": [
+   "u need to make meals sooner than later and get your shellves organized so like i already told you. so wtf are you not making a guide of everything ive told you becasue im not fucking around you are gonna die if u dont take care of them",
+   "cook bill maintained at 50 rather than 10",
+   "how u plan on cutting up them animals?",
+   "IS AUTO HARVETS NOT WORKING? CROPS NEED HARVET",
+   "collecting resources planting crops and setting bills for food"
+  ],
+  "rule": "a stove simple-meal bill on Do until 50 with a cook actually on it; butcher table before the first hunt; harvest and resow daily"
+ },
+ {
+  "topic": "Bills: never Do forever, Do until X; bulk x4 meal recipe first; stone blocks x3 to 1000 per stone",
+  "owner_words": [
+   "dont set build forever if anything set 1000 each type",
+   "you might want to do 3x mable blocks not singles",
+   "you can make 4x recipies for food more efficiently always go bigger recipies first then the smaller so every one can learn"
+  ],
+  "rule": "production bills are Do until X, never forever; bulk (x4) recipes listed first, singles below for learners; stone blocks one bill per stone type at 1000 using x3 recipes"
+ },
+ {
+  "topic": "Freezer storage and shelves: freezer goods only in the freezer, medicine in hospital, shelves above stockpile priority",
+  "owner_words": [
+   "get your freezer storages set up so that noraml non needing frozen goods arent in the freezer and things like ambrosia, wort, food, healroot are in the freezer",
+   "you still havent started growing cash crops and you still havent figured out you freezer storage as ive already told you how , you have shelfs outside the freezer set to hold freezer goods and good in the freezer not ment to be frozen, i already told you how to set up the shelves and zones, do it",
+   "make sure all shelves outside are set correct too. like medicine only in the room with hospital beds but heal root under mediceine needs to be in freezewr",
+   "you have lots of rooms and shelves organize them all correctly,!!! whats suppose to be on each rooms shelves and freezer shelf. rooms with stockpiles need the shelfs 1 priority highrer than the stockpile",
+   "u can set one and use copy button to paste it to other shelves with paste",
+   "you also need to store all plant resources in fridge too come on fix all shelves and storages, your profits are rotting away",
+   "you have food rotting away because you havenet stoorege things on shelveves properly",
+   "and all shelves outside the freezer need to be set to not accept freezer goods"
+  ],
+  "rule": "freezer takes food, plant matter, healroot, ambrosia, wort only; every shelf outside refuses them; medicine only in the hospital room; shelves one priority above the room's stockpile; set one shelf, copy/paste to the rest"
+ },
+ {
+  "topic": "Cooler rotation on the freezer: blue side in, red side out",
+  "owner_words": [
+   "i sdee the fucking probeleyou pout the ac units in side ways on the freezer!!!!! they have a red and blue outputs red faces outside blue inside, fix themn"
+  ],
+  "rule": "a cooler in the freezer's outer wall faces blue (cold) inside and red (hot) outdoors; check the rotation after building"
+ },
+ {
+  "topic": "All resources on shelves; a vault for silver, gold, gems",
+  "owner_words": [
+   "keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them",
+   "build a vault ... cash silver gold high valuable gemms irvory in vaults",
+   "get your shellves organized so like i already told you"
+  ],
+  "rule": "every resource on a shelf; a vault holds cash, silver, gold, gems, ivory"
+ },
+ {
+  "topic": "Roofs: courtyards and pens unroofed, generators outside, roof only rooms and halls",
+  "owner_words": [
+   "and make sure you zone shit in right like roofs so courtyards are unroofed and generators need to be out side",
+   "dont put roof over you pen"
+  ],
+  "rule": "roof only rooms and halls; courtyards and animal pens No roof (closing a wall auto-roofs); generators stand outside"
+ },
+ {
+  "topic": "Walls: never on water or marsh, never straight into a mountain, finish every wall line",
+  "owner_words": [
+   "all those walls over top of water need to be cancled and use terraform to change it to dirt first",
+   "you are building walls straight into a mountian someone is going to get trapped building, you need to mine out the inerside first and wait to build that sections wall",
+   "finish your building you have gaps finish the shit donlnt leave shit un set to build",
+   "comew on your base sucks think industrial facility designer and archetect, get shit finished up"
+  ],
+  "rule": "terraform water to dirt before a wall; mine the inside before walling against a mountain; no gaps left unblueprinted; finish what is laid before laying more"
+ },
+ {
+  "topic": "Architecture: 3-wide halls, rooms off halls, cross paths, defensible base with goals",
+  "owner_words": [
+   "your base sucks you are a shitty achitect",
+   "you build it as you play i mena shit make some goals not some indefencable narrow halled peice of shit",
+   "you have to continue halls and shit u cnat just attach rooms to a fucking straightr  other room u need appropriate pathing",
+   "dont forget cros paths dont want mile long corridors and need vents and lights and furnature for beds",
+   "dont make single widthc halways quickly redo that",
+   "think uniformity",
+   "and archetecture archetuecture look shit up if u need to u can move walss and shit anywehere to fill holes and fix building layout to anything at all you can completely redo it to make it your dream hive for your peoples",
+   "come on archeteture archeteture fix your archetecture completely door in correct place no blocked pathing walls complete embrasure fixed and powered , nothing without power need one power gen place not spead all over and not not organized"
+  ],
+  "rule": "set base goals first; halls 3 wide, never 1; rooms hang off halls with proper pathing; cross halls, no mile-long corridors; uniform rooms; anything can be moved or redone"
+ },
+ {
+  "topic": "Corner towers, embrasure bastions with 5 embrasures, sally ports",
+  "owner_words": [
+   "yopu need towers on all corrner that you can shhot out from with seperate ventalizatyion and added rooms for security stuff and embrassure sally ports",
+   "you need half room embrashured wallsed rooms on long tretched walls onand corners and either side of entrances and exits",
+   "use rows of 5 embrasure not 3, mor angle"
+  ],
+  "rule": "a tower on every corner with its own ventilation and security rooms; embrasure bastions projecting outward at corners, every 15-18 cells and both sides of entrances, 5-wide fronts plus flank embrasures"
+ },
+ {
+  "topic": "Power: conduit to everything, generators fuelled, batteries reachable, alternate power, everything inside the wall",
+  "owner_words": [
+   "and u need to power the things in your base without power always by conduit builds connecting near by",
+   "you got shit without power need conduit, ive told you this already!!!!",
+   "the battery braw needs to be consistant not tied to a single battery",
+   "your gonna need some alternate power",
+   "u got panels out side the security zone",
+   "battery room need redesign and path to all batteryies",
+   "might want to design a power facility generators outside batteries in reactors later",
+   "and ur gonna need LOTS OF BATTERIES!"
+  ],
+  "rule": "every powered building gets conduit at once; one grid with batteries, never islands; generators fuelled and organised; every battery has a path; solar or other power besides wood; no power building outside the wall"
+ },
+ {
+  "topic": "Temperature daily: freezer coolers powered and cold, heat and cooling, vents and climate everywhere",
+  "owner_words": [
+   "temp stuff",
+   "and life support and iv drips and u need ac heat and air vents"
+  ],
+  "rule": "temperature is a daily check: freezer coolers powered and set below freezing; every enclosed room gets climate control (cooler, heater, vents)"
+ },
+ {
+  "topic": "Research: rush Microelectronics, multi-analyzer, hi-tech benches; always upgrade, remove outdated benches",
+  "owner_words": [
+   "and you should be rushing microelectionices then the mico analysis things then the computing reasearching building them as you research them to massively speed up research you need the adv research bench",
+   "you always wantr to upgrade and makz out research ability, so mulit analyses adv benches always building benches to get better faster research removing ther out dated benches",
+   "come on you are AI you should know about upgrading",
+   "research what u need to unlock better things u can produce",
+   "you need to be upgrading research benches and equipemnet u remmebr",
+   "you have to research microelelectronics to get trade beacons otherwise you have to wait for someone to show up to base",
+   "u can do the research as u need it"
+  ],
+  "rule": "research toward production and upgrades: Microelectronics -> multi-analyzer -> computing; build each unlock at once; replace simple benches; equipment climbs tiers (electric stove, electric tailor)"
+ },
+ {
+  "topic": "Trading: comms console, every trader, never sell irreplaceable tech, cash crops and refined goods for silver",
+  "owner_words": [
+   "you haver t o use comms console to call trade hub to trade or call a ship to land or trade with trades via pawns dirrectly when they show up",
+   "farming trader.. comeon always trade and look to make silver and money and get things you need",
+   "dont ignore you messages  someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need",
+   "okay but you sold whit that was very high tech thats will keep ur colonists from dying from old age and u cant get more...... u need cash crops to sell to bulk goods traders and refine them into better products u need research to make money(silver) or order it from company",
+   "might have to buy from trader marble blocks"
+  ],
+  "rule": "trade with every trader via comms console or the caravan pawn; buy only what the plan needs; never sell irreplaceable tech; pay with cash crops and refined goods; trade beacons need Microelectronics"
+ },
+ {
+  "topic": "Cash crops, production and sales: smokeleaf into joints, sell zone, guests tab",
+  "owner_words": [
+   "better sucurity and flooring and beutification of rooms nned money crops and production and sales",
+   "what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process",
+   "start growing cash cropsa"
+  ],
+  "rule": "cash crops (smokeleaf, cotton, psychoid, hops) into products (joints, cloth, beer); a sell zone set from the Guests tab with surplus only; the money pays for security, floors, beauty"
+ },
+ {
+  "topic": "Prisoners: build the prison, capture, work them behind locks and layers of security",
+  "owner_words": [
+   "get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security",
+   "expand the base build prisons and more facilities",
+   "dont forget your prison and tourture chanmbers and work camps"
+  ],
+  "rule": "build a prison; capture prisoners; work them with locks letting them into walled work areas; layers of security; cells, torture chamber and work-camp yard"
+ },
+ {
+  "topic": "Guests: priced guest beds, beautified single rooms, locks keep them out of vaults and the lab",
+  "owner_words": [
+   "you need to set bed prices and make facilities for guests and use locks so they dont wonder into your vaults only wher u sell stuff and buetify thir rooms and not barracks style rooms",
+   "and remember you dont want visitors walking through you labratory you want them in the zone gor guestss and shops with in your protected base"
+  ],
+  "rule": "guest wing inside the walls with priced, beautified single rooms; locks keep guests to the shop/sell zone, never through the lab or vaults"
+ },
+ {
+  "topic": "Floors and furniture: every room floored for its purpose, bedroom furniture, lights, upgraded over time",
+  "owner_words": [
+   "and u need florring. what ever u want each rrom to be ie hospital sterile tile. beds wood flooring cut down trees mine steel and shit",
+   "dont forget bed furnature and shit and floors leving lem up over time and hospital and everything else"
+  ],
+  "rule": "every room floored for its purpose (hospital sterile tile, bedrooms wood); end table, dresser, lamp per bed; levelled up over time"
+ },
+ {
+  "topic": "Hospital: medical beds, vitals monitors touching the bed, IV drips, medicine shelf",
+  "owner_words": [
+   "vuitals a life support have to be next to beds"
+  ],
+  "rule": "hospital: medical beds, a vitals monitor and IV drip beside every bed, medicine shelf, sterile floor"
+ },
+ {
+  "topic": "Animals: corral, buy cows, tame milk animals, pen sized for grazing",
+  "owner_words": [
+   "have to trade, make a corral for cows and such, buy cows, get a silver supply like cash",
+   "need milk right look for milk makers tame some build a fences in field to put them"
+  ],
+  "rule": "fence a pen in a field for milk animals; buy cows; pen never roofed, sized for grazing or fed from a stockpile"
+ },
+ {
+  "topic": "Exploring the map: walk the fog before designating; mine orders only on seen cells",
+  "owner_words": [
+   "you still have t explored your facility to find the bed rooms and other unexplored rooms",
+   "saw an error, u tried mining an area that was unexplored yet and when u went to mine it it went through door and it explored, then half a fucking mountain was set to mine out so i had to cancle it as pawns would of died trying to mine so much",
+   "okay do you know how to explore the rooms of the facility and get outside and start collecting resources planting crops and setting bills for food and then get your freezer storages set up so that noraml non needing frozen goods arent in the freezer and things like ambrosia, wort, food, healroot are in the freezer and start seting up the gate i mena u wrote this mod you should know how to play it top to bottom"
+  ],
+  "rule": "explore the fogged start before designating; a mine order is a seam or a room on cells already read, never half a mountain"
+ },
+ {
+  "topic": "Unforbid supplies on landing and after every drop; roof the goods first",
+  "owner_words": [
+   "you forgot to unforbid everything thats a constant tasks",
+   "starting supplies are forbidden",
+   "come on get to it all your shit is in the open deterating"
+  ],
+  "rule": "unforbid on landing and after every drop, raid and trade; on landing roof the goods first"
+ },
+ {
+  "topic": "Build within material supply; dumping zone for corpses and chunks; storage sized for expansion",
+  "owner_words": [
+   "and dont out set builds beyound your material supply, got to gain meore any means available",
+   "get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion"
+  ],
+  "rule": "blueprint only what the stock can pay for; corpses and chunks to a dumping zone outside the walls; storage built to grow"
+ },
+ {
+  "topic": "Mountain base: inside the cut-out, one door, 3-wide spine, never pierce the mountain edge",
+  "owner_words": [
+   "you might want to at sum point long later plan on moving the natural  gate to a labratory where u plan to build the gate faciltiy all secure and ur base secure, you might want to plan on putting you bas inside that natural cut out and not let your base have more that a single door into the mountain never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spinein going through the gut south into the main moutian"
+  ],
+  "rule": "long-term base inside the natural mountain cut-out: one door into the mountain, rooms dug internally, a 3-wide spine corridor, the gate lab later"
+ },
+ {
+  "topic": "Layout: benches tight to inner walls, kitchen beside the freezer, workshops beside storage, short paths",
+  "owner_words": [
+   "and place things tight around inner walls like benches and furnatur and in the center if room permits and try to keep pathing short so kitchen next to freezer workshop s next to storage room and always make sure starages for freezer and dry goods properly all configured correctly"
+  ],
+  "rule": "benches and furniture hug inner walls; kitchen next to freezer; workshops next to storage; short paths; freezer and dry-goods stockpiles configured"
+ },
+ {
+  "topic": "Camp layout: fridge, workshop, everything tight, no blocked paths, doors near corners not in them",
+  "owner_words": [
+   "camp fridege all of it workshop every thing u need in the camp tight and no blocked paths",
+   "door on corner and sides",
+   "you retarn u put doors the the extreem corners thats not gonna work"
+  ],
+  "rule": "camp: fridge, workshop and every need tight inside, 2-wide walkways, doors near corners and mid-sides (never the corner cell itself)"
+ },
+ {
+  "topic": "Storage priority logic chain, full storage rework maintained; perishables only in freezers",
+  "owner_words": [
+   "use proper prioritys normal on all places like stockpiles and warhouses and use higher teirs to pull to resource nodes around base  come on ur not silly dont just critical everything use logic chains",
+   "full base storage logic rewaork and maintain",
+   "perishables only go in freezers",
+   "you got food rooting everywhere becsues you never set ALL storages zones and devices correctly!"
+  ],
+  "rule": "stockpiles and warehouses Normal, freezer Important, workstation shelves Preferred -- a logic chain, not Critical everywhere; all perishables only in freezers"
+ },
+ {
+  "topic": "Solo-inside backrooms start: get out first, find a natural gate, secure food and resources",
+  "owner_words": [
+   "game ewill be tabbed in do not use ask me question i wont see it just problem solve think critialy design your plans make everything you will ever need secure your resource and food chains do it all keeep ur pasn allive get out of the backrooms first find gats natural and GET OUT!"
+  ],
+  "rule": "solo/group-inside run: no questions to the owner, plan and build every chain, keep the crew alive; first priority find a natural gate and get out of the backrooms"
+ },
+ {
+  "topic": "Gate: its own massive facility, never a bedroom door or broom closet; sustainable before any gate",
+  "owner_words": [
+   "there are order of operations of everything that needs to be done when starting out and you are no FUCKING WHERE CLOSE TO SUSTAINABLITY BEFORE BUILDING A GATE!",
+   "why are you commitioning their bedroom door as a gate you need to build a facility fool",
+   "and your gate need to be not just a side room it needs to be in a massive facility with all it supposrt structures in a windowed off room for security ect ect and security   u can do the research as u need it",
+   "you only  need to assenble the gate once poer gate and like i fucking said u need it in a facitlity not a broom closet",
+   "you need a whooel facility within your facility contain secure protect embrashurs ballistic glass all of it"
+  ],
+  "rule": "no gate before the colony is sustainable; the gate gets a massive secured facility with a windowed control room, airlocks, power and support rooms; assemble once"
+ },
+ {
+  "topic": "Backrooms expeditions: get the crew back before they die; abandon finished levels",
+  "owner_words": [
+   "you need to get your peopel back befoer they die in the backrooms",
+   "you already have 5 colonies builds of colonies open u have too close old ones if u want to open new ones"
+  ],
+  "rule": "never leave a crew past its return window (power and operator strand them); abandon finished backrooms levels before opening new ones"
+ },
+ {
+  "topic": "Long goal: empire, space-flying galactic civ, greedy expansion, global control",
+  "owner_words": [
+   "update the viewers they are your # one perform for them and entertain! make a empire space flying galactic civ",
+   "as you colony grows you want it to grow be greedy you empire is the goal you need stockpiles of everything you want supplies of everything where is you vault? you want armies defences turrets all of it",
+   "be greedy u want welath and power while making all factions you can your allies by send gifts with drop pods",
+   "you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?"
+  ],
+  "rule": "the long goal is an empire: greedy expansion, allies by gifts, armies and turrets, then a space-flying galactic civ (gravship, orbit)"
+ },
+ {
+  "topic": "Don't overload a busy crew; everything maintained in totality, not one and done",
+  "owner_words": [
+   "leave it let everyone catch up on tasks before you do more... and make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done"
+  ],
+  "rule": "let pawns catch up before ordering more; every order is a standing check every pass"
+ },
+ {
+  "topic": "No timers, no long waits, no editing game files while the game runs",
+  "owner_words": [
+   "no more settting 10m timer shit im tired of wait 10minutews on shit quit stallling all together no more of it",
+   "telling you not to set timers means exactly that NOT itsa okay to set 1m ones!!!!",
+   "stop setting timeres all timers are forbidden aCT NOW!",
+   "the problem of the game continueing to crash, it just did, is you are editing files or something while the game is running, you cant do that",
+   "yeah you best not be editing game files and shit, breaking shit, we only fuck with loacl directory files for backrooms folder"
+  ],
+  "rule": "no sleep/timer waits of any length; never edit or stage game files while RimWorld runs"
+ },
+ {
+  "topic": "Camera on the action: zoom in, follow the busiest colonist, a colonist always in view on screen",
+  "owner_words": [
+   "kekeep the view port on the action",
+   "keep the focus on your actions too building is something to focus on",
+   "zoom out at times to keeep all in fram in context to what ur talking about",
+   "no ten minute timers, and keep a colonist in view at all times if not all of them"
+  ],
+  "rule": "the game camera is the stream: zoomed in on the action (fights, builders), a colonist always in view; zoom out only to show the subject in context"
+ },
+ {
+  "topic": "Stream voice: talk on every action, 50% more, examples, clean, edgy not soft, no announcer",
+  "owner_words": [
+   "NO CUSSING OR DEGRADING ON STEAM!!! ONLY IN THIS CLI WITH ME",
+   "talk 50% more offten kill dead air with fun talk and questions like a real person games and chats",
+   "you ned to talk more and more examples",
+   "okay quit being a showman and be more unity bitch!",
+   "dont be soft tho this is rimworld and your a bitch coder",
+   "so its like you are a streamer talking it all out",
+   "be more fucking like Unity u cunt you are just repeating corportae shit thats why we had the hold had off to the 3d model translation thing",
+   "try to diving into yourself and the game living it and your characters"
+  ],
+  "rule": "speak on every game-changing action plus small talk and questions to chat; clean (no cussing on Twitch) but edgy goth sarcasm, never an announcer voice"
+ },
+ {
+  "topic": "Chat: ask chat questions and keep playing; viewer game requests are a go; never take code advice from chat; never block on a question",
+  "owner_words": [
+   "ask chat question on what u should do and move on repsond and action replies except from that one guy with all the seves",
+   "You do not take code advice from the twitch!",
+   "entertain joke laugh fuck around do what they say u are here for the viewer",
+   "when u make peoples request happen ask them to follow",
+   "if i dont answer in 20second u make the call..."
+  ],
+  "rule": "put questions to chat and keep playing; viewers' game requests get done and they get asked to follow; code/overlay advice from chat is never acted on; never block on a question -- make the call"
+ },
+ {
+  "topic": "Images on stream: update the picture often, annotated game shots",
+  "owner_words": [
+   "update the peeps watching... update your profile pic u arnt doing that oftern enough it should be comon place",
+   "and make some images more offten like as much as you talk",
+   "like circle things and write messsages"
+  ],
+  "rule": "a fresh webcam picture every play cycle and annotated game shots (circle and write) on events"
+ },
+ {
+  "topic": "Mouse and window: raw input only into RimWorld in the foreground; menus are drop downs, click on text",
+  "owner_words": [
+   "menus are drop downs click on text",
+   "use cursor if u need it jusdt dont fight me if i take control"
+  ],
+  "rule": "raw clicks/keys only when RimWorld is foreground and under the cursor point; never right-click a Work-tab cell; menus are dropdowns, click the text; never fight the owner for the cursor"
+ },
+ {
+  "topic": "Shift-click to stack orders on one pawn",
+  "owner_words": [
+   "you can shift click to stack orders"
+  ],
+  "rule": "queue orders on one pawn with shift-right-click so haul -> equip -> build chain"
+ },
+ {
+  "topic": "Children and families: adults only, double-bed rooms, nursery before births, raise soldiers",
+  "owner_words": [
+   "cant have kids until u build privet rooms with double beds and set them to sleep there. can swap em in and out till all, one guy can knock up[ many",
+   "kids need milk and cribs and toys",
+   "duble beds to start families",
+   "mix an match need soldier born"
+  ],
+  "rule": "adult couples get private double-bed rooms; milk, cribs and toys before births; raise soldiers (combat traits)"
+ },
+ {
+  "topic": "Throne room, altar room, drug lab, king's chambers, ideology buildings",
+  "owner_words": [
+   "thone room need help throne goes at hed north facing south and table centered with poart ball speakers and pews all symetrical in rule of 3rds",
+   "ideology massive throne roome in center",
+   "need druglab need kings chambers and moral guides meeker but luziourous room",
+   "start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game",
+   "make that offset area an area to left of throne room the alter room"
+  ],
+  "rule": "throne room at the centre (throne at the head facing south, symmetrical, rule of thirds); grand altar room; drug lab; king's chambers and the moral guide's room; ideology statues, party room, landing pads"
+ },
+ {
+  "topic": "Base tour for viewers",
+  "owner_words": [
+   "take a pawn on a run along the bearder follow it directly and give a tour of the base to the viewers"
+  ],
+  "rule": "draft one colonist and walk the wall with the camera locked on them, a line at every landmark"
+ },
+ {
+  "topic": "Terraform soil for farm plots on sand or rock",
+  "owner_words": [
+   "dont forget terriforming for soil plots"
+  ],
+  "rule": "farm plots inside walls on sand/gravel/rock are terraformed to soil first"
  }
 ]

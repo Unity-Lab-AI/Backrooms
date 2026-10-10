@@ -175,7 +175,9 @@ def read_inbox(pos):
 
 try: pos = os.path.getsize(INBOX)
 except Exception: pos = 0
-greeted = set(); seen_letters = set(l.get("letterId") for l in call("rimworld/list_letters").get("letters", []))
+greeted = set()
+try: seen_letters = set(l.get("letterId") for l in call("rimworld/list_letters").get("letters", []))
+except Exception: seen_letters = set()   # no game yet at the press: she still talks, letters start fresh
 while True:
     try:
         pos, msgs = read_inbox(pos)
@@ -188,7 +190,7 @@ while True:
             else:
                 facts = "; ".join(state_facts()[:3])
                 speak(fresh("viewer %s said in chat: \"%s\". Answer %s by name, briefly and honestly. What is true right now: %s"
-                               % (who, text[:160], who, facts or "the crew is building their jungle camp")))
+                               % (who, text[:160], who, facts or "nothing new on the map this second")))
         try: letters = call("rimworld/list_letters").get("letters", [])
         except Exception: letters = []
         for l in letters:
