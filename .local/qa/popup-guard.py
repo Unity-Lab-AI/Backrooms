@@ -60,7 +60,7 @@ while True:
             if visit and ("visit" in body or "guest" in body or "arrived" in body):
                 # owner, 2026-10-09: "that one was to accept visitor if u refussed that pop up non will arrive until u set it in hospitality tab"
                 call("rimworld/click_ui_target", {"targetId": visit["targetId"]}); print("visitors welcomed:", visit.get("label"), flush=True)
-                subprocess.run([sys.executable, SAY, "--raw", "Visitors at the gate, chat. Come on in, make yourselves at home."], env=dict(os.environ, UNITY_NO_GLANCE="1"))
+                subprocess.run([sys.executable, SAY, "Visitors at the gate, chat. Come on in, make yourselves at home."], env=dict(os.environ, UNITY_NO_GLANCE="1"))
             elif any(k in t for k in HARMLESS) and set(l for l in labs if l) & {"OK", "Close", "Accept", "Confirm"} and not set(labs) - {"OK", "Close", "Accept", "Confirm", "Randomize", None} - set(l for l in labs if l and len(l) > 25):
                 btn = next(o for o in buttons() if o.get("label") in ("OK", "Close", "Accept", "Confirm"))
                 call("rimworld/click_ui_target", {"targetId": btn["targetId"]}); print("accepted", t, flush=True)
@@ -71,13 +71,13 @@ while True:
                 # owner, 2026-10-09: "anser them most are shit never pay them" -- refuse, decline, ignore; never pay
                 btn = next(o for o in buttons() if (o.get("label") or "").split(" (")[0].strip().lower() in REFUSE)
                 call("rimworld/click_ui_target", {"targetId": btn["targetId"]}); print("refused", t, btn.get("label"), flush=True)
-                subprocess.run([sys.executable, SAY, "--raw", "Somebody wanted something from me just now. The answer is no. We do not pay."], env=dict(os.environ, UNITY_NO_GLANCE="1"))
+                subprocess.run([sys.executable, SAY, "Somebody wanted something from me just now. The answer is no. We do not pay."], env=dict(os.environ, UNITY_NO_GLANCE="1"))
             else:
                 json.dump({"ts": time.time(), "type": t, "text": [l for l in labs if l and len(l) > 25][:4], "options": [l for l in labs if l and len(l) <= 25][:12]}, open(FLAG, "w"))
                 if t not in told:
                     told.add(t); print("needs a decision:", t, [l for l in labs if l][:8], flush=True)
-                    subprocess.run([sys.executable, SAY, "--raw", "Ooh, a choice just popped up, chat. Give me a second to think about it."], env=dict(os.environ, UNITY_NO_GLANCE="1"))
+                    subprocess.run([sys.executable, SAY, "Ooh, a choice just popped up, chat. Give me a second to think about it."], env=dict(os.environ, UNITY_NO_GLANCE="1"))
     except Exception:
         try: s, buf = session()
         except Exception: pass
-    time.sleep(3)
+    time.sleep(6)

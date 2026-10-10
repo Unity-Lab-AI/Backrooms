@@ -44,7 +44,7 @@ QA = HERE
 ORDERS = os.path.join(ROOT, ".local", "autopilot", "owner-orders.txt")
 SERVICES = os.path.join(HERE, "services.py")
 PORT = int(os.environ.get("ADMIN_PORT", "4318"))
-MODEL = os.environ.get("ADMIN_MODEL", "dolphin3:8b")
+MODEL = os.environ.get("ADMIN_MODEL", "unity-local")
 
 bspec = importlib.util.spec_from_file_location("b", os.path.join(HERE, "bridge.py"))
 bridge = importlib.util.module_from_spec(bspec); bspec.loader.exec_module(bridge)
@@ -113,7 +113,7 @@ def ask(text):
         with open(ORDERS, "a", encoding="utf-8") as f:
             f.write("\n- OWNER, typed in the panel chat (binding next turn): " + text.strip()[:400] + "\n")
     body = {"model": MODEL, "system": system, "prompt": text, "stream": False, "keep_alive": "30m",
-            "options": {"num_ctx": 4096, "num_predict": 220, "temperature": 0.7}}
+            "options": {"num_ctx": 8192, "num_predict": 220, "temperature": 0.7}}
     req = urllib.request.Request("http://127.0.0.1:11435/api/generate", data=json.dumps(body).encode(),
                                  headers={"Content-Type": "application/json"})
     return json.loads(urllib.request.urlopen(req, timeout=180).read()).get("response", "").strip()
@@ -157,7 +157,8 @@ PAGE = """<!doctype html><meta charset=utf-8><title>Unity mission control</title
   <div class=card style=border-color:#ff5fa2><b>Ready?</b>
    <small>&nbsp;Unity waits here. Tell her what you want tonight, then GO -- the game launches, the stream goes live, the colony starts.</small>
    <textarea id=want rows=2 placeholder="e.g. company start, equator tile, food first"></textarea>
-   <div class=row><button onclick=go()>GO</button></div>
+   <div class=row><button onclick=go()>GO</button>
+    <button onclick=newColony() title="Abandon this colony and start a fresh company colony, set up the owner's way">NEW COLONY</button></div>
    <pre id=goout></pre>
   </div>
   <div class=card style=margin-top:14px><b>Orders to the autopilot</b>
@@ -191,6 +192,8 @@ async function one(a,n){document.getElementById('svcout').textContent='working..
  const d=await j('/api/svc',{action:a,name:n});document.getElementById('svcout').textContent=d.out;refresh()}
 async function go(){const t=document.getElementById('want').value.trim();
  const d=await j('/api/go',{text:t});document.getElementById('goout').textContent=d.out}
+async function newColony(){if(!confirm('Start a brand-new colony? The current one is abandoned.'))return;
+ const d=await j('/api/newcolony',{});document.getElementById('goout').textContent=d.out}
 async function sendOrder(){const t=document.getElementById('ord').value.trim();if(!t)return;
  const d=await j('/api/order',{text:t});document.getElementById('ordout').textContent=d.out;document.getElementById('ord').value=''}
 async function sendChat(){const t=document.getElementById('msg').value.trim();if(!t)return;
@@ -264,6 +267,11 @@ class H(http.server.BaseHTTPRequestHandler):
                 with open(ORDERS, "a", encoding="utf-8") as f:
                     f.write(chr(10) + "- TONIGHT, from the owner at GO: " + want + chr(10))
             return self._send(200, {"out": "GO received" + (" -- tonight: " + want if want else "")})
+        if self.path == "/api/newcolony":
+            # owner: "i dont know how to call it u have to do it and tell me how for next time" -- one button
+            with open(os.path.join(QA, "_new_colony.request"), "w", encoding="utf-8") as f:
+                f.write("Async Industries" + chr(10) + "force")
+            return self._send(200, {"out": "new colony requested -- she announces it and the setup runs within a minute"})
         if self.path == "/api/svc":
             if body.get("action") == "start" and not body.get("name"):
                 # the owner's "start all" means GO: game, stream, colony -- not just "services already up"

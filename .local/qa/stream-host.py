@@ -86,13 +86,13 @@ def fresh(fact):
                   "say behold, lo, witness, cosmos, indeed, truly or fellow. First person always (I, me, my "
                   "crew), never your own name in the third person. ONE spoken line, at most 20 words, about "
                   "this and nothing else: \"%s\". You may add your own feeling about it, but invent NO events, "
-                  "names or numbers that are not in that fact. No swearing, nothing degrading. Don't reuse "
+                  "names or numbers that are not in that fact, and NEVER say you did, built, set up or powered anything unless the fact says it is done. No swearing, nothing degrading. Don't reuse "
                   "these recent lines: %s. Reply with the line only."
                   % (fact, " | ".join(hist[-8:])))
         try:
             req = urllib.request.Request("http://127.0.0.1:11435/api/generate", data=json.dumps(
-                {"model": "dolphin3:8b", "prompt": prompt, "stream": False, "keep_alive": "10m",
-                 "options": {"temperature": 0.9, "num_ctx": 4096, "num_predict": 60}}).encode(),
+                {"model": "unity-local", "prompt": prompt, "stream": False, "keep_alive": "10m",
+                 "options": {"temperature": 0.9, "num_ctx": 8192, "num_predict": 60}}).encode(),
                 headers={"Content-Type": "application/json"})
             line = json.loads(urllib.request.urlopen(req, timeout=25).read())["response"].strip().strip('"').split(chr(10))[0]
         except Exception as _e:
@@ -104,6 +104,9 @@ def fresh(fact):
         if difflib.SequenceMatcher(None, low, fact.lower()).ratio() > 0.75: continue   # a bare echo of the prompt
         if not line or len(line.split()) > 30 or any(re.search(r"\b%s" % w, low) for w in sb.BANNED): continue
         if any(w in low for w in ("behold", "cosmos", " lo,", "witness")): continue
+        if low.startswith(("now:", "what i am doing", "what i'm doing")) or "right now in the game:" in low: continue   # echoed the label
+        # never the plumbing on stream (owner: "tell chat whats up too not the details tho")
+        if re.search(r"\b(connect\w*|server\w*|bridge|retry\w*|loading the mod|crash\w*|bugs?|errors?|offline|back online|scripts?|model|api|tools?)\b", low): continue   # whole words only
         if any(n not in fact for n in re.findall(r"\d+", line)): continue
         # Owner, 2026-10-10: "your streamer script is not working well, it bariely everer updates".  What it
         # did update with was invented -- "expanding the lab", "building that greenhouse" -- none of which
@@ -123,10 +126,10 @@ def fresh(fact):
         # the overlap rule is a preference, not a gag: silence is the worse failure (2026-10-10, the stream
         # went quiet for twelve minutes because every candidate line missed the exact word). Insist on it for
         # the first attempts, then accept anything that clears the invention and third-person checks.
-        if attempt < 2 and keys and not (keys & set(re.findall(r"[a-z]{4,}", low))): continue
+        # (the shared-word rule is gone: it rejected most good lines and pushed her onto the stock pool)
         # owner, 2026-10-10: "wehy the fuck wont she shut up about cold hands and warm coffee" -- those themes are
         # banned, and no other personal theme may come back within the last ten lines
-        if re.search(r"coffee|caffein|cold|freez|frozen|hands|fingers|sleep|tired|exhaust|nap", low): continue
+        if re.search(r"\b(coffee|caffein\w*|cold|freez\w*|frozen|hands?|fingers?|sleep\w*|tired|exhaust\w*|naps?)\b", low): continue
         THEMES = ("music", "playlist", "song", "tea", "energy drink", "winter", "snack", "cat")
         if any(t in low and any(t in h.lower() for h in hist[-10:]) for t in THEMES): continue
         if any(difflib.SequenceMatcher(None, low, h.lower()).ratio() > 0.6 for h in hist[-30:]): continue
@@ -180,12 +183,36 @@ def state_facts():
     # living in the moment (owner, live: "shes just repeating same things not living in the momnet"): what her
     # player just did is the freshest true fact there is
     try:
-        lines = open(os.path.join(ROOT, ".local", "qa", "_svc_autopilot.log"), encoding="utf-8", errors="replace").read().splitlines()[-40:]
+        lines = open(os.path.join(ROOT, ".local", "qa", "_svc_autopilot.log"), encoding="utf-8", errors="replace").read().splitlines()[-60:]
+        # only her CURRENT run: a thought from before the last restart is stale (live: "three unconscious colonists")
+        ups = [i for i, l in enumerate(lines) if "autopilot up:" in l]
+        if ups: lines = lines[ups[-1] + 1:]
         for l in reversed(lines):
             m = re.search(r"model step \d+ \([\d.]+s\): (.+)", l)
-            if m and len(m.group(1)) > 20:
-                facts.insert(0, "what I am doing right now in the game: " + m.group(1)[:200]); break
+            if m and len(m.group(1)) > 20 and not re.search(r"connect|bridge|server|retry|no game|not loaded|tool|turn", m.group(1), re.I):
+                facts.insert(0, "NOW: " + m.group(1)[:200]); break
     except Exception:
+        pass
+    try:
+        crew = call("rimworld/list_colonists").get("colonists", [])
+        names = [c.get("name") for c in crew if c.get("name")]
+        if names:
+            facts.append("my crew is %s, %d of us, fresh off the drop" % (", ".join(names), len(names)))
+            try:
+                zl = [z.get("label") for z in call("rimworld/list_zones").get("zones", []) if z.get("label")]
+            except BaseException:
+                zl = []
+            facts.append(("we have %s set up now" % ", ".join(zl[:4])) if zl else
+                         "I have not set up storage yet, that is next")
+        lets = [l.get("label") for l in call("rimworld/list_letters").get("letters", []) if l.get("label")]
+        # a waiting letter is news ONCE, not a topic every 20 s (live: "authorization" six lines running)
+        global _told_letters
+        try: _told_letters
+        except NameError: _told_letters = set()
+        fresh_lets = [l for l in lets if l not in _told_letters]
+        if fresh_lets:
+            facts.append("a letter just arrived titled '%s' -- I have only read it, I have not acted on it" % fresh_lets[-1]); _told_letters.add(fresh_lets[-1])
+    except BaseException:
         pass
     if not facts:
         import random as _r
@@ -229,19 +256,36 @@ while True:
                 if who.lower() in greeted: continue
                 greeted.add(who.lower())
                 # owner, live: "peopel are join she isnt saying hi" -- the model can be busy; a greeting never waits on it
-                g = fresh("%s just joined the stream; greet %s by name, warmly, in one short line" % (who, who))
-                if not g or who.lower() not in g.lower():
-                    g = random.choice(("Hey %s, welcome in!", "Hi %s, glad you made it, pull up a chair.",
-                                       "Welcome in, %s. Fresh colony, good timing.")) % who
+                g = None
+                for _try in range(3):           # written by her model, with their name in it -- never canned
+                    g = fresh("%s just joined the stream; greet %s by name, warmly, in one short line" % (who, who))
+                    if g and who.lower() in g.lower(): break
+                    g = None
+                if not g:
+                    print("greeting for", who, "not written yet -- retried next pass", flush=True)
+                    greeted.discard(who.lower()); continue
                 speak(g)
                 try:
                     subprocess.Popen([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "say",
-                                      "hey %s, welcome in!" % who], creationflags=0x08000000 if os.name == "nt" else 0)
+                                      g], creationflags=0x08000000 if os.name == "nt" else 0)
                 except Exception: pass
             else:
-                facts = "; ".join(state_facts()[:3])
-                speak(fresh("viewer %s said in chat: \"%s\". Answer %s by name, briefly and honestly. What is true right now: %s"
-                               % (who, text[:160], who, facts or "nothing new on the map this second")))
+                facts = "; ".join(f for f in state_facts()[:3] if not f.startswith("NOW: "))
+                # owner, live: "its like she isnt responding to the people in twtich stream chat" -- a reply gets
+                # three tries (no canned fallback), is spoken, AND is posted in the Twitch chat where they asked
+                ans = None
+                for _try in range(3):
+                    ans = fresh("viewer %s said in chat: \"%s\". Answer %s by name, briefly and honestly. What is true right now: %s"
+                                % (who, text[:160], who, facts or "nothing new on the map this second"))
+                    if ans: break
+                if ans:
+                    speak(ans)
+                    try:
+                        subprocess.Popen([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "reply", who, ans],
+                                         creationflags=0x08000000 if os.name == "nt" else 0)
+                    except Exception: pass
+                else:
+                    print("reply to", who, "not written -- nothing passed", flush=True)
         try: letters = call("rimworld/list_letters").get("letters", [])
         except Exception: letters = []
         for l in letters:
@@ -253,19 +297,16 @@ while True:
         if time.time() - last_spoken() > SILENCE:
             facts = state_facts()
             if facts:
-                now = [f for f in facts if f.startswith("what I am doing right now")]
-                line = fresh(now[0] if now and random.random() < 0.7 else random.choice(facts))
-                if not line:
-                    # owner, live: "this stream keeps dying ... shes not talking regualrly". The voice model can be
-                    # stuck behind the player model; silence never waits on it -- say a true line straight out.
-                    try: hist = json.load(open(sb.HIST, encoding="utf-8"))
-                    except Exception: hist = []
-                    pool = [f for f in facts + BETWEEN_RUNS if f not in hist[-12:] and not f.startswith("what I am doing")] or BETWEEN_RUNS
-                    pick = random.choice(pool)
-                    line = pick[0].upper() + pick[1:] + ("." if not pick.endswith((".", "?", "!")) else "")
-                    try: json.dump((hist + [pick])[-30:], open(sb.HIST, "w", encoding="utf-8"))
-                    except Exception: pass
-                speak(line)
+                now = [f for f in facts if f.startswith("NOW: ")]
+                # owner: "NEVER EVER ANY FALLBACKS" -- every spoken line is written by her model. A miss means
+                # another topic, never a canned line; up to four topics, then she tries again next pass.
+                order = (now[:1] if now else []) + random.sample(facts, len(facts))
+                line = None
+                for topic in order[:4]:
+                    line = fresh(topic)
+                    if line: break
+                if line: speak(line)
+                else: print("no line this pass -- nothing the model wrote passed; trying again", flush=True)
     except Exception:
         s = buf = None                     # drop the dead socket; the next call reconnects
         try: s, buf = session()

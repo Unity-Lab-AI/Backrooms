@@ -86,7 +86,7 @@ def say(line):
     if _DIRTY.search(line or ""):
         print(stamp(), "refused to say an unclean line:", (line or "")[:60], flush=True); return
     try:
-        subprocess.Popen([sys.executable, SAY, "--raw", line], cwd=ROOT,
+        subprocess.Popen([sys.executable, SAY, line], cwd=ROOT,
                          env=dict(os.environ, UNITY_NO_GLANCE="1"),
                          **({"creationflags": 0x00000200 | 0x00000008} if os.name == "nt" else {"start_new_session": True}))
     except Exception:
@@ -122,9 +122,13 @@ def model_needs(passes):
     # 2b. the model runs below normal priority: Windows shares every core, and this way the game, OBS and the voice
     # always win a contended core while the model still gets every spare cycle (owner: "what about windows will it
     # share"). Ollama starts a new llama-server per model load, so it is re-applied every pass.
-    if os.name == "nt":
+    global _last_prio
+    try: _last_prio
+    except NameError: _last_prio = 0
+    if os.name == "nt" and time.time() - _last_prio > 300:     # a PowerShell launch every pass was itself a cost
+        _last_prio = time.time()
         subprocess.run(["powershell", "-NoProfile", "-Command",
-                        "Get-Process llama-server -EA SilentlyContinue | ?{ $_.PriorityClass -ne 'BelowNormal' } | %{ $_.PriorityClass='BelowNormal' }"],
+                        "Get-Process llama-server -EA SilentlyContinue | ?{ $_.PriorityClass -ne 'BelowNormal' } | %{ $_.PriorityClass='BelowNormal' }; Get-Process RimWorldWin64,obs64 -EA SilentlyContinue | ?{ $_.PriorityClass -ne 'AboveNormal' } | %{ $_.PriorityClass='AboveNormal' }"],
                        capture_output=True, text=True, creationflags=0x08000000)
     # 3. its own process: if the player died, restart it
     out = subprocess.run([sys.executable, SERVICES, "status"], cwd=ROOT, capture_output=True, text=True,
@@ -218,6 +222,13 @@ while True:
             print(stamp(), "GO received:", want[:120], flush=True)
             # never read the owner's directive aloud -- it is an order to her, not a line for the stream
             say("Got it. Launching the game and going live. Give me a minute while two hundred mods wake up.")
+            # a NEW stream each start (owner: "make sure it starts a new stream"): fresh title, then OBS live
+            try:
+                subprocess.run([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "title",
+                                "Unity Plays RimWorld -- fresh company colony, " + time.strftime("%b %d")],
+                               cwd=ROOT, capture_output=True, text=True, timeout=90, **NOWIN)
+            except Exception as e:
+                print(stamp(), "title not set:", e, flush=True)
             # live FIRST, so the stream carries the game's loading screens, then the game
             subprocess.run([sys.executable, SERVICES_PY, "golive"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
             subprocess.run([sys.executable, SERVICES_PY, "game"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
@@ -228,9 +239,15 @@ while True:
         if os.path.exists(req) and _bridge_up():
             try: already = len(gates.state().get("crew") or [])
             except Exception: already = 0
-            if already > 0:     # a colony is already on the map: never go back to the menu over it
+            body = open(req, encoding="utf-8").read()
+            if already > 0 and "force" not in body:     # never go back to the menu over a colony unless ordered
                 os.remove(req); print(stamp(), "colony already on the map -- request cleared", flush=True); continue
-            scen = (open(req, encoding="utf-8").read().strip() or "Async Industries")
+            if "force" in body:                         # ordered redo: honour it once, then it is a normal request
+                open(req, "w", encoding="utf-8").write(body.replace("force", "").strip())
+                for f_ in ("_setup_hold.flag", "_new_colony.request.tries"):
+                    try: os.remove(os.path.join(HERE, f_))
+                    except OSError: pass
+            scen = (open(req, encoding="utf-8").read().strip().split(chr(10))[0] or "Async Industries")
             print(stamp(), "new colony requested (%s) and the window is up -- starting it" % scen, flush=True)
             say("Right, new colony. Company start, clean map, and this time I feed everyone before I build anything pretty.")
             # Owner: "wtf it didnt do the fucking map set up with faction adv settings pollution seed name none of
@@ -248,8 +265,8 @@ while True:
             def pick(what, fallback):
                 try:
                     import urllib.request as _u
-                    body = {"model": "dolphin3:8b", "stream": False, "keep_alive": "30m",
-                            "options": {"temperature": 1.0, "num_predict": 12, "num_ctx": 2048},
+                    body = {"model": "unity-local", "stream": False, "keep_alive": "30m",
+                            "options": {"temperature": 1.0, "num_predict": 12, "num_ctx": 8192},
                             "prompt": "You are Unity, a 25 year old emo goth streamer. Give " + what +
                                       ". Reply with the name only, one to three words, letters and spaces only, clean."}
                     out = json.loads(_u.urlopen(_u.Request("http://127.0.0.1:11435/api/generate", json.dumps(body).encode(),
@@ -268,7 +285,7 @@ while True:
                 "seed=%s\nfaction=%s\nsettlement=%s\ncompany=Async Industries\nideo=Godsmultiplayer\npreset=Preset3\ncoverage=0.3\n" % (seed, faction, settlement))
             print(stamp(), "new game request: seed=%s faction=%s settlement=%s" % (seed, faction, settlement), flush=True)
             say("New planet seed is %s. Setting it up the way I always do, spring, three hundred square, mountains." % seed)
-            r = subprocess.run([sys.executable, os.path.join(HERE, "start-scenario.py"), scen, "--stop-at", "SelectStoryteller"],
+            r = subprocess.run([sys.executable, os.path.join(HERE, "start-scenario.py"), scen, "--stop-at", "ChooseIdeoPreset|SelectStoryteller"],
                                cwd=ROOT, capture_output=True, text=True, timeout=600, **NOWIN)
             print(stamp(), "start-scenario ->", (r.stdout or r.stderr).strip().splitlines()[-2:], flush=True)
             crew = 0
@@ -298,16 +315,47 @@ while True:
                 _s, _b = gates._session()
                 _r = gates.bridge.exchange(_s, _b, "tools/call", {"name": "rimworld/get_ui_state", "arguments": {}})
                 _r = _r.get("result", _r); _r = _r.get("structuredContent", _r)
-                _top = str(_r.get("topWindowType") or "")
+                # the open TAB, not the top window: the minimap sits on top and hid the Operations panel underneath
+                _top = str(_r.get("openMainTabType") or "")
                 # only a real tab panel (Operations, Work, Research...) -- never the inspect pane or the minimap
                 if ("MainTabWindow" in _top and not any(k in _top for k in ("Inspect", "MiniMap", "Minimap"))
                         and not _r.get("floatMenuOpen")):
-                    gates.bridge.exchange(_s, _b, "tools/call", {"name": "rimworld/press_cancel", "arguments": {}})
+                    gates.bridge.exchange(_s, _b, "tools/call", {"name": "rimworld/close_window", "arguments": {"windowType": _top}})
                     print(stamp(), "closed a main tab left open (%s) -- pawn buttons visible again" % _r.get("topWindowType"), flush=True)
             except Exception:
                 pass
         firing, st = gates.decide()
+        # owner: "exploring is not finished ... it never went through EVERY DOOR". Until the mod reports nothing left,
+        # re-send explore every 3 minutes (each call queues every colonist through the nearest doors and fog edge)
+        global _last_explore, _explore_done
+        try: _last_explore
+        except NameError: _last_explore, _explore_done = 0, False
+        if not _explore_done and st.get("ticks_moving") and time.time() - _last_explore > 180:
+            _last_explore = time.time()
+            try:
+                auto = os.path.join(os.path.expandvars(r"%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Config"), "RimroomsAutomation")
+                with open(os.path.join(auto, "inbox.jsonl"), "a", encoding="utf-8") as f:
+                    f.write(json.dumps({"cmd": "explore"}) + chr(10))
+                time.sleep(3)
+                last = open(os.path.join(auto, "outbox.jsonl"), encoding="utf-8", errors="replace").read().splitlines()[-1]
+                print(stamp(), "auto-explore:", last[:220], flush=True)
+                if "nothing left to explore" in last: _explore_done = True
+            except Exception as e:
+                print(stamp(), "auto-explore failed:", e, flush=True)
         hold = os.path.join(HERE, "_setup_hold.flag")
+        # keep the HUD alive: if OBS is up and the overlay has not been reloaded for 10 minutes, reload it once --
+        # a browser source that loaded while the studio was down stays blank forever otherwise
+        global _last_overlay
+        try: _last_overlay
+        except NameError: _last_overlay = 0
+        if time.time() - _last_overlay > 600:
+            try:
+                import obsws_python as _obs, socket as _so
+                _so.create_connection(("127.0.0.1", 4455), timeout=1).close()
+                _obs.ReqClient(host="127.0.0.1", port=4455, timeout=4).press_input_properties_button("Unity overlay", "refreshnocache")
+                _last_overlay = time.time()
+            except Exception:
+                pass
         if os.path.exists(hold) and st.get("ticks_moving"):
             os.remove(hold)
             print(stamp(), "setup hold ended: time was started on purpose", flush=True)

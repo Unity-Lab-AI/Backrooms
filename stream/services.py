@@ -110,8 +110,8 @@ OUR_BROWSER_MARK = "twitch-profile"
 
 OLLAMA = os.path.expandvars(r"%LOCALAPPDATA%/Programs/Ollama/ollama.exe")
 if not os.path.exists(OLLAMA): OLLAMA = "ollama"
-MODELS = ["dolphin3:8b", "qwen3.6:35b"]      # the voice and the player
-VOICE = "dolphin3:8b"
+MODELS = ["dolphin3:8b", "unity-local", "qwen3.6:35b"]      # the voice and the player
+VOICE = "unity-local"
 
 def deps():
     """Bring up what the models need before any service starts.
@@ -168,14 +168,14 @@ def deps():
         print("ollama-voice started on 11435")
     try:
         vapi("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "keep_alive": "30m",
-                               "options": {"num_ctx": 4096, "num_predict": 1}}, timeout=180)
+                               "options": {"num_ctx": 8192, "num_predict": 1}}, timeout=180)
         print("model       %s warm on the voice server" % VOICE)
     except Exception as e:
         print("model       %s voice warm-up skipped (%s)" % (VOICE, str(e)[:40]))
     return
     try:
         api("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "keep_alive": "30m",
-                              "options": {"num_ctx": 4096, "num_predict": 1}}, timeout=180)
+                              "options": {"num_ctx": 8192, "num_predict": 1}}, timeout=180)
         print("model       %s warm" % VOICE)
     except Exception as e:
         print("model       %s warm-up skipped (%s)" % (VOICE, str(e)[:40]))
@@ -238,7 +238,7 @@ def announce(line):
     """One short line to chat -- owner, 2026-10-10: "tell chat whats up too / not the details tho"."""
     say = os.path.join(ROOT, ".claude", "tools", "unity-say.py")
     try:
-        subprocess.Popen([PY, say, "--raw", line], cwd=ROOT,
+        subprocess.Popen([PY, say, line], cwd=ROOT,
                          **DETACH,
                          env=dict(os.environ, UNITY_NO_GLANCE="1"))
     except Exception:
@@ -364,6 +364,11 @@ def game():
 
 def obs_ws():
     """OBS's own websocket (127.0.0.1:4455) -- scene switches and stream start without restarting OBS."""
+    import socket as _so
+    try:
+        _so.create_connection(("127.0.0.1", 4455), timeout=1).close()   # not up: say nothing, no traceback
+    except OSError:
+        return None
     try:
         import obsws_python as obs
         return obs.ReqClient(host="127.0.0.1", port=4455, timeout=4)
@@ -382,7 +387,11 @@ def golive():
             c.set_current_program_scene("Live")
             if not c.get_stream_status().output_active:
                 c.start_stream()
-            print("obs         already up -- back on Live, streaming")
+            # the overlay page may have been dead when OBS started (owner, live: "our whole twich hud is mia");
+            # a browser source never retries on its own, so reload it every time we go live
+            try: c.press_input_properties_button("Unity overlay", "refreshnocache")
+            except Exception: pass
+            print("obs         already up -- back on Live, streaming, overlay reloaded")
             return
         except Exception as e:
             print("obs         websocket failed (%s) -- relaunching" % str(e)[:40])

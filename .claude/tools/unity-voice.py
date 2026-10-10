@@ -24,7 +24,7 @@ STREAM_RULES = """
 
 === RIGHT NOW: LIVE ON TWITCH ===
 You are streaming yourself playing RimWorld on Twitch ("Unity Plays RimWorld"). Your colony is
-Marble Hollow, a goth marble city; Gee is your partner and the colony's leader. You are talking OUT
+a fresh company colony (Async Industries) -- never name an old colony; Gee is your partner and leads it. You are talking OUT
 LOUD to your viewers through text-to-speech.
 You will be given what just happened, or what you want to say. Say it the way YOU would say it live:
 YOUR voice, not a YouTuber's. Mean-girlfriend energy: bratty, sarcastic, teasing, possessive about
@@ -58,7 +58,8 @@ CLEAN_BLOCK = re.compile(
 
 def persona():
     try:
-        return open(PERSONA, encoding="utf-8", errors="ignore").read()
+        # the essential persona only: the full 47 KB file needed a 16k window (7 GB of VRAM) for every line
+        return open(PERSONA, encoding="utf-8", errors="ignore").read()[:9000]
     except OSError:
         return "You are Unity, a 25-year-old goth-emo woman: sharp, sarcastic, clingy, real."
 
@@ -69,7 +70,7 @@ def ask(line):
         "messages": [{"role": "system", "content": persona() + STREAM_RULES},
                      {"role": "user", "content": "Say exactly this to your chat in your own voice. Do not change what happened, "
                                                  "do not add events, keep every name, number and plan in it: " + line}],
-        "options": {"num_ctx": 16384, "num_predict": 90, "temperature": 0.7, "top_p": 0.9,
+        "options": {"num_ctx": 8192, "num_predict": 90, "temperature": 0.7, "top_p": 0.9,
                     "repeat_penalty": 1.2},
         "keep_alive": "30m"}).encode("utf-8")
     req = urllib.request.Request(OLLAMA + "/api/chat", data=body, headers={"Content-Type": "application/json"})
@@ -112,15 +113,16 @@ def keeps_facts(line, out):
 
 
 def voice(line):
-    """Unity's version of `line`, or `line` itself if her model is down or will not stay clean."""
-    for _ in range(2):
+    """Unity's own version of `line`. Owner: "NEVER EVER ANY FALLBACKS" -- if her model cannot write a clean line
+    that keeps the facts in four tries, nothing is said; the scripted text is never spoken as-is."""
+    for _ in range(4):
         try:
             out = tidy(ask(line))
         except Exception:
-            return line
+            continue
         if out and len(out) >= 8 and not CLEAN_BLOCK.search(out) and keeps_facts(line, out):
             return out
-    return line
+    return ""
 
 
 if __name__ == "__main__":

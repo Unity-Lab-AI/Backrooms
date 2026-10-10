@@ -192,6 +192,14 @@ namespace RimroomsAsyncIndustries.Automation
                 case "set_area": return SetArea(map, a);
                 case "day_one": return DayOne(map);
                 case "stockpile_filter": return StockpileFilter(map, a);
+                case "rooms": return SetupTools.Rooms(map);
+                case "explore": return SetupTools.Explore(map);
+                case "stockpile_room": return SetupTools.StockpileRoom(map, a);
+                case "beds": return SetupTools.Beds(map);
+                case "shelves": return SetupTools2.Shelves(map);
+                case "stove": return SetupTools2.Stove(map);
+                case "crops": return SetupTools2.Crops(map, a);
+                case "hunt": return SetupTools2.Hunt(map);
                 default: return "refused: unknown cmd " + cmd;
             }
         }
