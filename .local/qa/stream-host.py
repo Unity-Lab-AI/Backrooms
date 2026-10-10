@@ -136,7 +136,7 @@ def fresh(fact):
                     "down a ", "lost a", "missing", "slime", "explod",
                     # scenes she made up ("smoldering ruins", "the goat got in the kitchen", "turn on the lights")
                     "smolder", "ruin", "smok", "goat", "kitchen", "lights", "alien",
-                    "crafted", "mods", "spider", "hive", "infest", "insect", "sounds", "noise", "monster", "creature")
+                    "crafted", "mods", "starv", "spider", "hive", "infest", "insect", "sounds", "noise", "monster", "creature")
         if any(w in low for w in INVENTED) and not any(w in fact.lower() for w in INVENTED): continue
         # a colonist's name is not evidence the line is about the fact: "Unity is crafting some epic gear"
         # matched on the word Unity alone and went out, inventing the crafting. Names are excluded from the
@@ -224,7 +224,7 @@ def state_facts():
         try:
             left = max(0, int(open(until).read().strip()) - int(time.time())) // 60
             facts = ["I am on a break while I get trained to play RimWorld better and talk more like myself; "
-                     "the countdown on screen says about %d minutes left" % left]
+                     "I will be back on the stream in about %d minutes" % left]
         except Exception:
             facts = []
     return facts
