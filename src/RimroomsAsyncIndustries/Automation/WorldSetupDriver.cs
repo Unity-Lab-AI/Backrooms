@@ -103,8 +103,14 @@ namespace RimroomsAsyncIndustries.Automation
                     case Page_SelectStartingSite p: Site(p); break;
                     case Dialog_NamePlayerFactionAndSettlement d: Names(d, req); return;
                     case Page p when p.GetType().Name == "Page_RimroomsCompanySetup": Company(p, req); break;
-                    case Page p when p is Page_ChooseIdeoPreset || p is Page_ConfigureStartingPawns:
-                        if (!Advance(p, p.GetType().Name)) { nextCheck = Time.realtimeSinceStartup + 5f; return; }   // retry, never mark a refused page done
+                    case Page_ChooseIdeoPreset p:
+                        if (!LoadIdeo(p, req)) { nextCheck = Time.realtimeSinceStartup + 5f; return; }
+                        break;
+                    case Page_ConfigureStartingPawns p:
+                        if (!OpenPrepareCarefully(p)) { nextCheck = Time.realtimeSinceStartup + 5f; return; }
+                        break;
+                    case Page p when p.GetType().Name == "PagePrepareCarefully":
+                        if (!LoadPreset(p, req)) { nextCheck = Time.realtimeSinceStartup + 5f; return; }
                         break;
                     default: return;   // the scenario page and anything unknown are not ours
                 }
@@ -150,6 +156,15 @@ namespace RimroomsAsyncIndustries.Automation
                 t.GetField("seedString", Any)?.SetValue(p, seed);
             }
             t.GetField("pollution", Any)?.SetValue(p, 0f);
+            // owner: "30% aas ive taught u with allthe other settings also" -- coverage 30%, the rest Normal
+            float coverage = 0.3f;
+            if (req.TryGetValue("coverage", out string cov)) { float.TryParse(cov, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out coverage); }
+            t.GetField("planetCoverage", Any)?.SetValue(p, coverage);
+            foreach (string f in new[] { "rainfall", "temperature", "population" })
+            {
+                FieldInfo fi = t.GetField(f, Any);
+                if (fi != null && fi.FieldType.IsEnum) { fi.SetValue(p, Enum.Parse(fi.FieldType, "Normal")); }
+            }
 
             var factions = t.GetField("factions", Any)?.GetValue(p) as List<FactionDef>;
             if (factions != null)
@@ -211,6 +226,61 @@ namespace RimroomsAsyncIndustries.Automation
             handled.Add(d.ID);
             Report("named: faction '" + faction + "', settlement '" + settlement + "' -- done");
             File.Delete(RequestPath);
+        }
+
+        /// <summary>Page.DoNext's base behaviour, without the page's own override (the ideology page overrides it).</summary>
+        private static void BaseNext(Page page)
+        {
+            if (page.next != null) { Find.WindowStack.Add(page.next); }
+            page.nextAct?.Invoke();
+            page.Close(true);
+        }
+
+        /// <summary>The saved ideoligion, loaded exactly as the page's own Load button does (owner: "Godsmultiplayer").</summary>
+        private static bool LoadIdeo(Page_ChooseIdeoPreset page, Dictionary<string, string> req)
+        {
+            if (!req.TryGetValue("ideo", out string name) || string.IsNullOrWhiteSpace(name)) { name = "Godsmultiplayer"; }
+            string path = GenFilePaths.AbsPathForIdeo(name);
+            if (!File.Exists(path)) { Report("ideology: no saved ideoligion '" + name + "' at " + path); return false; }
+            if (!GameDataSaveLoader.TryLoadIdeo(path, out Ideo ideo) || ideo == null) { Report("ideology: '" + name + "' failed to load"); return false; }
+            ideo = IdeoGenerator.InitLoadedIdeo(ideo);
+            Find.IdeoManager.classicMode = false;
+            typeof(Page_ChooseIdeoPreset).GetMethod("AssignIdeoToPlayer", Any).Invoke(page, new object[] { ideo });
+            Find.IdeoManager.RemoveUnusedStartingIdeos();
+            Find.Scenario.PostIdeoChosen();
+            if (page.next != null) { page.next.prev = page; }
+            BaseNext(page);
+            Report("ideology: loaded '" + ideo.name + "' from " + name + " -> next");
+            return true;
+        }
+
+        /// <summary>Opens Prepare Carefully on the pawns page, the way its own button does (owner: the crew comes from a preset).</summary>
+        private static bool OpenPrepareCarefully(Page_ConfigureStartingPawns page)
+        {
+            Type mod = GenTypes.GetTypeInAnyAssembly("EdB.PrepareCarefully.Mod");
+            object instance = mod?.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public)?.GetValue(null);
+            MethodInfo start = mod?.GetMethod("Start", Any);
+            if (instance == null || start == null)
+            {
+                Report("crew: Prepare Carefully is not loaded -- advancing with the scenario's own crew");
+                return Advance(page, page.GetType().Name);
+            }
+            start.Invoke(instance, new object[] { page });
+            Report("crew: Prepare Carefully opened");
+            return true;
+        }
+
+        /// <summary>Loads the saved preset into Prepare Carefully and starts, which hands on to the next page (owner: Preset3).</summary>
+        private static bool LoadPreset(Page pcPage, Dictionary<string, string> req)
+        {
+            if (!req.TryGetValue("preset", out string preset) || string.IsNullOrWhiteSpace(preset)) { preset = "Preset3"; }
+            object controller = pcPage.GetType().GetProperty("Controller", Any)?.GetValue(pcPage);
+            if (controller == null) { Report("crew: Prepare Carefully has no controller yet"); return false; }
+            controller.GetType().GetMethod("LoadPreset", Any).Invoke(controller, new object[] { preset });
+            controller.GetType().GetMethod("StartGame", Any).Invoke(controller, null);
+            pcPage.Close(false);
+            Report("crew: preset '" + preset + "' loaded -> start");
+            return true;
         }
 
         private static PlanetTile PickTile(string[] biomes, Hilliness wanted)
