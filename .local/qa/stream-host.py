@@ -152,7 +152,7 @@ def fresh(fact):
         # (the shared-word rule is gone: it rejected most good lines and pushed her onto the stock pool)
         # owner, 2026-10-10: "wehy the fuck wont she shut up about cold hands and warm coffee" -- those themes are
         # banned, and no other personal theme may come back within the last ten lines
-        if re.search(r"\b(coffee|caffein\w*|cold|freez\w*|frozen|hands?|fingers?|sleep\w*|asleep|awake|doz\w*|napping|resting|snooz\w*|yawn\w*|nodding off|tired|exhaust\w*|naps?)\b", low): continue
+        if re.search(r"\b(coffee|caffein\w*|cold|freez\w*|frozen|hands?|fingers?|sleep\w*|asleep|awake|in bed|doz\w*|napping|resting|snooz\w*|yawn\w*|nodding off|tired|exhaust\w*|naps?)\b", low): continue
         THEMES = ("music", "playlist", "song", "tea", "energy drink", "winter", "snack", "cat")
         if any(t in low and any(t in h.lower() for h in hist[-10:]) for t in THEMES): continue
         if any(difflib.SequenceMatcher(None, low, h.lower()).ratio() > 0.6 for h in hist[-30:]): continue

@@ -195,6 +195,7 @@ def gates_bridge_pause(on):
 
 SERVICES_PY = os.path.join(ROOT, "stream", "services.py")
 GO = os.path.join(HERE, "_go.request")
+RESUME = os.path.join(HERE, "_resume.request")
 NOWIN = {"creationflags": 0x08000000} if os.name == "nt" else {}
 asked = False
 went = False      # GO handled in this run (a GO armed before start must go live too, not only one answered after asking)
@@ -231,9 +232,10 @@ while True:
             try: os.remove(GO)
             except OSError: pass
             # never read the owner's directive aloud -- it is an order to her, not a line for the stream
-            say("fact: a new stream is starting and the game is loading about two hundred mods")
+            say("fact: the game is loading about two hundred mods" if os.path.exists(RESUME) else "fact: a new stream is starting and the game is loading about two hundred mods")
             # a NEW stream each start (owner: "make sure it starts a new stream"): fresh title, then OBS live
             try:
+                if os.path.exists(RESUME): raise RuntimeError("resume keeps the current stream title")
                 subprocess.run([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "title",
                                 "Unity Plays RimWorld -- fresh company colony, " + time.strftime("%b %d, %I:%M %p")],
                                cwd=ROOT, capture_output=True, text=True, timeout=90, **NOWIN)
@@ -242,7 +244,25 @@ while True:
             # live FIRST, so the stream carries the game's loading screens, then the game
             subprocess.run([sys.executable, SERVICES_PY, "golive"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
             subprocess.run([sys.executable, SERVICES_PY, "game"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
-            open(os.path.join(HERE, "_new_colony.request"), "w", encoding="utf-8").write("Async Industries")
+            if not os.path.exists(RESUME):          # a resume loads the saved colony instead of making a new one
+                open(os.path.join(HERE, "_new_colony.request"), "w", encoding="utf-8").write("Async Industries")
+        # owner: "brb massive update to my systems game is save so we will be right back at it" -- a restart that
+        # resumes: .local/qa/_resume.request holds the save name; once the game answers, that save is loaded
+        if os.path.exists(RESUME) and _bridge_up():
+            name = open(RESUME, encoding="utf-8").read().strip() or "Unity-autosave"
+            try:
+                s_, b_ = gates._session()
+                r_ = gates.bridge.exchange(s_, b_, "tools/call", {"name": "rimworld/load_game_ready", "arguments": {
+                    "saveName": name, "readiness": "playable", "pauseIfNeeded": True, "timeoutMs": 300000}})
+                print(stamp(), "resumed save", name, "->", str(r_)[:160], flush=True)
+                os.remove(RESUME)
+                for f_ in ("_new_colony.request", "_new_colony.request.tries"):
+                    try: os.remove(os.path.join(HERE, f_))
+                    except OSError: pass
+                say("fact: I am back after a big upgrade to my own systems; the colony is loaded right where we left it")
+            except Exception as e:
+                print(stamp(), "resume not loaded yet:", str(e)[:120], flush=True)
+            time.sleep(10); continue
         req = os.path.join(HERE, "_new_colony.request")
         # start-scenario drives RimWorld's own pages through click_ui_target, which is an API call and works
         # whether or not the window has focus -- so this waits for the BRIDGE, not for the owner's screen.
