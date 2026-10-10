@@ -27,10 +27,10 @@
 
 | | |
 |---|---|
-| **Start** | `stream/windows/start.bat` · `stream/linux/start.sh` — Ollama + both models (voice pre-warmed), every service, **OBS already live**, the game, the overlay, and **the admin panel opens on screen** |
-| **Stop** | `stream/windows/stop.bat` · `stop.sh` — kills **by name first** (`llama-server`, `ollama`, `obs64`, `RimWorldWin64`), then the sweep, then **prints the GPU** to prove the memory came back. **Never touches the owner's browsers** |
-| **Panel** | `http://127.0.0.1:4318/` (`stream/windows/admin.bat`) — services with start/stop, colony with **days of food**, a waiting pop-up, what needs the window, **ORDERS** (appended to `owner-orders.txt`, binding next turn), **CHAT** straight to the model |
-| Engine | `stream/services.py` — tracked; `.local/` is the dev surface |
+| **Start** | `windows/start.bat` · `linux/start.sh` — **in the Backrooms root, not nested** (owner: *"dont nest the windows and linix folder deep they should be in the backrooms folder"*). Ollama + both models (voice pre-warmed), every service, the overlay, **the admin panel opens on screen** — then she asks **Ready?**; the game and the broadcast wait for **GO** |
+| **Stop** | `windows/stop.bat` · `linux/stop.sh` — kills **by name first** (`llama-server`, `ollama`, `obs64`, `RimWorldWin64`), then the sweep, then **prints the GPU** to prove the memory came back. **Never touches the owner's browsers** |
+| **Panel** | `http://127.0.0.1:4318/` (`windows/admin.bat` · `linux/admin.sh`) — services with start/stop, colony with **days of food**, a waiting pop-up, what needs the window, **ORDERS** (appended to `owner-orders.txt`, binding next turn), **CHAT** straight to the model |
+| Engine | `stream/services.py` — tracked; `.local/` is the dev surface. The old root `Stream Start.cmd` / `Stream Stop.cmd` now call the same `windows\*.bat` — one engine, no second standard |
 
 Services under the switch: `rimworld` (started, never stopped except by `stop`), `obs`, `twitchui`, `studio`, `face`, `twitch`, `host`, `popups`, `clock`, `heat`, `camdir`, `followcrew`, `cursorjobs`, `keepgoing`, `autopilot`, `admin`. All detached, all windowless.
 
@@ -89,8 +89,16 @@ A room with no roof is not a room · blueprints need material on site or the paw
 | Colony | **none** — equator camp abandoned (0.02 days of food at the end); company colony armed |
 | Game | down (killed on the owner's order); the switch starts it |
 | Stack | down; **16/16 verified** against the files |
-| Branch | `feature/bug-testing`, last commit **e3afb40**, pushed to `github` |
+| Branch | **cascaded 2026-10-10:** `feature/bug-testing` a13d86d → PR #1 → `develop` b932ea0 → PR #2 → `main` 3d4e535, all on `github`. `.local/` scripts ship (secrets, profiles, caches, binaries excluded). **ONE STANDARD, 2026-10-10:** GitHub's default branch was the stale `Main` (48a8f8b) — a case collision with `main` that broke `git fetch` on Windows and would have pointed any deploy or clone at the wrong code. Fixed: default branch set to **`main`**, `Main` deleted, its history kept as **`archive/Main-do-not-use`**; the same stale `Develop` (48a8f8b) was archived as **`archive/Develop-do-not-use`** and deleted. The remote now carries exactly `main`, `develop`, the feature branches and `archive/*` — no case variants; `git fetch` is clean. Owner: *"make it one only maybe archive the other with do not use"*. The one we use is **`main`** (3d4e535) |
 | Forgejo | still refuses on access rights |
 | TEST | 62 → **59** tonight: QoL feature availability, the weird route thing, duplicate Defs on the clean 294 load. Two live-log defects in TODO: `ITab_Bills` float-menu NRE, out-of-bounds explosion spam. World-exit return gate proved; its open half (name the destination before committing) stays `[~]` |
 
-**Next action is the owner's: press `start.bat`.**
+## On the press, 2026-10-10
+
+**Owner, verbatim:** *"when it starts up it should ask me if im ready to start the stream and game and what i want not just random do everything"* / *"when i press start i want you monitoring the model and what it does and fixing things on the fly restarting if need be till we get it right but let it learna bit beforee calling fails"*.
+
+So `start.bat` brings up the stack and the panel and **stops there**: no game, no broadcast, no colony. Unity asks — out loud and in the panel's **Ready?** card — *"Are we starting the stream and the game? Tell me what you want tonight and hit GO."* The owner types tonight's directive and presses **GO**: the directive is appended to `owner-orders.txt` as binding, then `keep-playing` launches the game (`services.py game`), relaunches OBS live (`services.py golive`), and arms the company colony.
+
+Claude's job on the press: **watch the model, not drive it** — read `_svc_autopilot.log`, `_svc_keepgoing.log`, `_svc_host.log` and the outbox; fix a real fault on the fly; restart a service only when it is actually wedged; and **let her learn a bit before calling anything a failure** — one bad turn is not a bug, a repeated one is.
+
+**Next action is the owner's: press `windows\start.bat`, answer her, press GO.**

@@ -128,7 +128,13 @@ PAGE = """<!doctype html><meta charset=utf-8><title>Unity mission control</title
    <pre id=queue>loading...</pre></div>
  </div>
  <div>
-  <div class=card><b>Orders to the autopilot</b>
+  <div class=card style=border-color:#ff5fa2><b>Ready?</b>
+   <small>&nbsp;Unity waits here. Tell her what you want tonight, then GO -- the game launches, the stream goes live, the colony starts.</small>
+   <textarea id=want rows=2 placeholder="e.g. company start, equator tile, food first"></textarea>
+   <div class=row><button onclick=go()>GO</button></div>
+   <pre id=goout></pre>
+  </div>
+  <div class=card style=margin-top:14px><b>Orders to the autopilot</b>
    <small>&nbsp;appended to owner-orders.txt, binding on its next turn</small>
    <textarea id=ord rows=4 placeholder="e.g. get everything inside and close the east wall before anything else"></textarea>
    <div class=row><button onclick=sendOrder()>send order</button></div>
@@ -157,6 +163,8 @@ async function all(a){document.getElementById('svcout').textContent='working...'
  const d=await j('/api/svc',{action:a});document.getElementById('svcout').textContent=d.out;refresh()}
 async function one(a,n){document.getElementById('svcout').textContent='working...';
  const d=await j('/api/svc',{action:a,name:n});document.getElementById('svcout').textContent=d.out;refresh()}
+async function go(){const t=document.getElementById('want').value.trim();
+ const d=await j('/api/go',{text:t});document.getElementById('goout').textContent=d.out}
 async function sendOrder(){const t=document.getElementById('ord').value.trim();if(!t)return;
  const d=await j('/api/order',{text:t});document.getElementById('ordout').textContent=d.out;document.getElementById('ord').value=''}
 async function sendChat(){const t=document.getElementById('msg').value.trim();if(!t)return;
@@ -230,6 +238,15 @@ class H(http.server.BaseHTTPRequestHandler):
         n = int(self.headers.get("Content-Length") or 0)
         try: body = json.loads(self.rfile.read(n) or b"{}")
         except Exception: body = {}
+        if self.path == "/api/go":
+            # Owner, 2026-10-10: "when it starts up it should ask me if im ready to start the stream and game
+            # and what i want not just random do everything". This is the answer: GO plus tonight's directive.
+            want = (body.get("text") or "").strip()
+            with open(os.path.join(QA, "_go.request"), "w", encoding="utf-8") as f: f.write(want or "go")
+            if want:
+                with open(ORDERS, "a", encoding="utf-8") as f:
+                    f.write(chr(10) + "- TONIGHT, from the owner at GO: " + want + chr(10))
+            return self._send(200, {"out": "GO received" + (" -- tonight: " + want if want else "")})
         if self.path == "/api/svc":
             with _lock:
                 return self._send(200, {"out": svc(body.get("action", "status"), body.get("name"))})
