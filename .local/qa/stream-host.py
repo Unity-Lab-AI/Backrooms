@@ -38,7 +38,7 @@ def _owner_handles():
     try: return {l.strip().lower() for l in open(f, encoding="utf-8") if l.strip()}
     except Exception: return set()
 OWNER = _owner_handles()
-SILENCE = 30
+SILENCE = 18      # owner: 30 s is the max, and the max should be rare
 
 spec = importlib.util.spec_from_file_location("sb", os.path.join(HERE, "stream-beat.py")); sb = importlib.util.module_from_spec(spec)
 sys.argv = [sys.argv[0]]; spec.loader.exec_module(sb)
@@ -68,10 +68,10 @@ def fresh(fact):
     """Unity's own voice (owner, 2026-10-09: "quit being so robot in schat you a human goth coder chick"):
     first person, casual, like talking to friends on a stream -- not narration, no 'behold'."""
     import difflib, urllib.request
-    fact = re.sub(r"Unity is", "I am", fact)
+    fact = re.sub(r"\bUnity is\b", "I am", fact)
     try: hist = json.load(open(sb.HIST, encoding="utf-8"))
     except Exception: hist = []
-    for _ in range(3):
+    for attempt in range(3):
         # Owner, 2026-10-10: "u are not streaming like a emo goth chick 25 girl would" -- short, punchy, teasing,
         # gamer-girl cadence, never a narrator and never a press release.
         # Owner, 2026-10-10, verbatim: "it need s emo goth looking, girl like anccedotes and shit make her
@@ -97,10 +97,10 @@ def fresh(fact):
             line = json.loads(urllib.request.urlopen(req, timeout=40).read())["response"].strip().strip('"').split(chr(10))[0]
         except Exception: break
         line = line.replace('"', "").strip()
-        line = re.sub(r"Unity is", "I'm", line); line = re.sub(r"Unity's", "my", line); line = re.sub(r"Unity", "I", line)
+        line = re.sub(r"\bUnity is\b", "I'm", line); line = re.sub(r"\bUnity's\b", "my", line); line = re.sub(r"\bUnity\b", "I", line)
         low = line.lower()
         if difflib.SequenceMatcher(None, low, fact.lower()).ratio() > 0.75: continue   # a bare echo of the prompt
-        if not line or len(line.split()) > 30 or any(re.search(r"%s" % w, low) for w in sb.BANNED): continue
+        if not line or len(line.split()) > 30 or any(re.search(r"\b%s" % w, low) for w in sb.BANNED): continue
         if any(w in low for w in ("behold", "cosmos", " lo,", "witness")): continue
         if any(n not in fact for n in re.findall(r"\d+", line)): continue
         # Owner, 2026-10-10: "your streamer script is not working well, it bariely everer updates".  What it
@@ -113,7 +113,7 @@ def fresh(fact):
         # a colonist's name is not evidence the line is about the fact: "Unity is crafting some epic gear"
         # matched on the word Unity alone and went out, inventing the crafting. Names are excluded from the
         # keys, and the line must still be first person -- she IS one of the colonists.
-        if re.search(r"(unity|gee|scar)\s+(is|was|has|will)", low): continue
+        if re.search(r"\b(unity|gee|scar)\s+(is|was|has|will)\b", low): continue
         keys = {w for w in re.findall(r"[a-z]{4,}", fact.lower())
                 if w not in ("that", "this", "with", "they", "them", "then", "just", "line", "about", "right",
                              "chat", "short", "greet", "name", "said", "viewer", "answer", "what", "true", "very",
@@ -145,7 +145,25 @@ BETWEEN_RUNS = [
     "I am between colonies right now, about to start a fresh one as the company",
     "my coffee is cold and the loading bar is still going",
     "fresh map in a minute, and this time I feed everybody before I build anything pretty",
-    "two hundred mods have to wake up before I can play, so bear with me"]
+    "two hundred mods have to wake up before I can play, so bear with me",
+    # true things about tonight's plan and herself -- enough of them that the repeat filter never runs her dry
+    "the plan tonight is a three hundred by three hundred map, spring start, forest with mountains",
+    "I want a mountain base this time, one door in, a three wide hallway down the middle",
+    "food first, always, the last colony starved and I am not doing that again",
+    "I want chat to tell me what the crew should build first once we land -- put it to them as a question",
+    "I cannot decide between hunting early or farming early and chat gets a vote -- put it to them as a question",
+    "work priorities go in on day one, firefighting through cooking set to top for everyone",
+    "a roofed room for the food before anything pretty, rot is the enemy",
+    "the company is called Async Industries and the crew works for it",
+    "my coffee is cold again and I refuse to get up",
+    "I have a playlist going that is way too sad for a farming game",
+    "my hands are freezing, the room is cold and the stream is warm",
+    "I am curious what music chat is listening to -- put it to them as a question",
+    "I keep a list of every mistake from the last colony and it is long",
+    "the loading bar is moving, I promise, slowly",
+    "anyone new in chat, say hi, I see you",
+    "I eventually want this crew in space, but tonight it is dirt and berries",
+    "chat gets to nickname the first colonist who does something dumb -- put it to them as a question"]
 
 def state_facts():
     facts = []
