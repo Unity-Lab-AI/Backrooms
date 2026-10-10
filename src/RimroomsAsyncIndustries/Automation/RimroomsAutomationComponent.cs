@@ -196,6 +196,10 @@ namespace RimroomsAsyncIndustries.Automation
                 case "explore": return SetupTools.Explore(map);
                 case "stockpile_room": return SetupTools.StockpileRoom(map, a);
                 case "beds": return SetupTools.Beds(map);
+                case "shelves": return SetupTools2.Shelves(map);
+                case "stove": return SetupTools2.Stove(map);
+                case "crops": return SetupTools2.Crops(map, a);
+                case "hunt": return SetupTools2.Hunt(map);
                 default: return "refused: unknown cmd " + cmd;
             }
         }
