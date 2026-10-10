@@ -68,8 +68,15 @@ def ask(line):
     body = json.dumps({
         "model": MODEL, "stream": False,
         "messages": [{"role": "system", "content": persona() + STREAM_RULES},
-                     {"role": "user", "content": "Say exactly this to your chat in your own voice. Do not change what happened, "
-                                                 "do not add events, keep every name, number and plan in it: " + line}],
+                     {"role": "user", "content": (
+                         # owner: "dont want her corporate butllshit scripted responses anymore" -- a fact, not a
+                         # script: she writes the whole line herself, her take, her words
+                         ("This is what is happening right now: " + line[5:].strip() + ". Talk to your chat about it "
+                          "in your own words: one or two short sentences, your own take on it, like a real streamer "
+                          "girl, not an announcer, no corporate tone. Do not add events that are not in it.")
+                         if line.lower().startswith("fact:") else
+                         ("Say exactly this to your chat in your own voice. Do not change what happened, "
+                          "do not add events, keep every name, number and plan in it: " + line))}],
         "options": {"num_ctx": 8192, "num_predict": 90, "temperature": 0.7, "top_p": 0.9,
                     "repeat_penalty": 1.2},
         "keep_alive": "30m"}).encode("utf-8")
@@ -120,7 +127,7 @@ def voice(line):
             out = tidy(ask(line))
         except Exception:
             continue
-        if out and len(out) >= 8 and not CLEAN_BLOCK.search(out) and keeps_facts(line, out):
+        if out and len(out) >= 8 and not CLEAN_BLOCK.search(out) and keeps_facts(re.sub(r"(?i)^fact:", "", line), out):
             return out
     return ""
 

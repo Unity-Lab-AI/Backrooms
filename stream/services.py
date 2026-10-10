@@ -438,16 +438,16 @@ elif cmd == "restart" and ONE:
 elif cmd == "start":
     deps(); start(); print("---"); status()
     if os.environ.get("NO_ANNOUNCE") != "1" and os.environ.get("GO_LIVE") == "1":
-        announce("We are live, chat. Everything is up and I am back on the colony.")
+        announce("fact: the stream is live and the colony is back")
 elif cmd == "stop":
-    announce("That is me for tonight. Thanks for sitting with me."); time.sleep(3); stop()
+    announce("fact: the stream is ending for now"); time.sleep(3); stop()
 elif cmd == "restart":
     # owner: the stream must never drop for a restart -- OBS stays live on the BRB scene, the rest restarts
     c = obs_ws()
     if c is not None:
         try: c.set_current_program_scene("BRB"); print("obs         on BRB, still streaming")
         except Exception: pass
-    announce("Be right back, chat. Quick reset, the stream stays up.")
+    announce("fact: a short reset, the stream stays up")
     keep = ("obs64", "twitch-profile")
     names = [n for n in KILL_BY_NAME if n != "obs64"]
     if WINDOWS:

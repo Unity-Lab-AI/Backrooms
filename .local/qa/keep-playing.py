@@ -185,9 +185,9 @@ def day_one(auto):
         # of things required beforoe the firest unpause". Day one never unpauses: the game holds until she has done
         # the whole first-unpause checklist and unpauses it herself.
         open(os.path.join(HERE, "_setup_hold.flag"), "w").write(stamp())
-        say("Crew basics are set. The clock stays stopped until I have the stockpiles, shelves, bills and beds sorted.")
+        say("fact: crew work, schedule and drug settings are done; the game stays paused until storage, shelves, beds and the stove are done")
     else:
-        say("Holding the pause until my crew is properly set up.")
+        say("fact: the game is paused until the crew is set up")
 
 def gates_bridge_pause(on):
     s, buf = gates._session()
@@ -211,7 +211,7 @@ while True:
             if not asked:
                 asked = True
                 open(flag, "w").write(stamp())
-                say("Hey. Everything is up and I am ready. Are we starting the stream and the game? Tell me what you want tonight and hit GO.")
+                say("fact: everything is up; waiting for the owner to press GO to start the stream and the game")
                 print(stamp(), "asked the owner for GO; waiting", flush=True)
             time.sleep(10); continue
         if asked:
@@ -221,7 +221,7 @@ while True:
             want = open(GO, encoding="utf-8").read().strip()
             print(stamp(), "GO received:", want[:120], flush=True)
             # never read the owner's directive aloud -- it is an order to her, not a line for the stream
-            say("Got it. Launching the game and going live. Give me a minute while two hundred mods wake up.")
+            say("fact: a new stream is starting and the game is loading about two hundred mods")
             # a NEW stream each start (owner: "make sure it starts a new stream"): fresh title, then OBS live
             try:
                 subprocess.run([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "title",
@@ -249,7 +249,7 @@ while True:
                     except OSError: pass
             scen = (open(req, encoding="utf-8").read().strip().split(chr(10))[0] or "Async Industries")
             print(stamp(), "new colony requested (%s) and the window is up -- starting it" % scen, flush=True)
-            say("Right, new colony. Company start, clean map, and this time I feed everyone before I build anything pretty.")
+            say("fact: starting a brand new colony; food comes first")
             # Owner: "wtf it didnt do the fucking map set up with faction adv settings pollution seed name none of
             # it". start-scenario only picks the scenario row; every page after it is done by the mod itself
             # (WorldSetupDriver): Cassandra / Community builder / reload anytime, seed, pollution 0, factions
@@ -259,7 +259,7 @@ while True:
             tries = int(open(req + ".tries").read()) if os.path.exists(req + ".tries") else 0
             if tries >= 2:
                 print(stamp(), "new colony failed twice -- stopping, NOT regenerating worlds; see newgame.result", flush=True)
-                say("Setup is fighting me, so I am stopping it before it eats the night. Fixing it properly.")
+                say("fact: the new game setup failed; trying it again")
                 os.remove(req); continue
             open(req + ".tries", "w").write(str(tries + 1))
             def pick(what, fallback):
@@ -284,7 +284,7 @@ while True:
             open(os.path.join(auto, "newgame.request"), "w", encoding="utf-8").write(
                 "seed=%s\nfaction=%s\nsettlement=%s\ncompany=Async Industries\nideo=Godsmultiplayer\npreset=Preset3\ncoverage=0.3\n" % (seed, faction, settlement))
             print(stamp(), "new game request: seed=%s faction=%s settlement=%s" % (seed, faction, settlement), flush=True)
-            say("New planet seed is %s. Setting it up the way I always do, spring, three hundred square, mountains." % seed)
+            say("fact: the new world seed is %s; spring, mountains and forest" % seed)
             r = subprocess.run([sys.executable, os.path.join(HERE, "start-scenario.py"), scen, "--stop-at", "ChooseIdeoPreset|SelectStoryteller"],
                                cwd=ROOT, capture_output=True, text=True, timeout=600, **NOWIN)
             print(stamp(), "start-scenario ->", (r.stdout or r.stderr).strip().splitlines()[-2:], flush=True)
@@ -311,7 +311,7 @@ while True:
                 except Exception: pass
                 _explore_done = False
                 day_one(auto)
-                say("We are down. %s, spring, forest and mountains. Food first." % settlement)
+                say("fact: the crew has landed at %s; spring, forest and mountains" % settlement)
             else:
                 print(stamp(), "no colonists on a map yet -- the colony request stays armed", flush=True)
 

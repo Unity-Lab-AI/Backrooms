@@ -598,7 +598,7 @@ class Toolbox:
         proven setup (start-scenario picks the scenario row; the mod's WorldSetupDriver does every page)."""
         if self.dry:
             return "dry-run: not executed"
-        line = guards.clean_for_stream("Okay chat, fresh start. New colony, set up properly this time. " + (reason or ""), max_len=200)
+        line = guards.clean_for_stream("fact: starting a brand new colony. " + (reason or ""), max_len=200)
         if line:
             self.t_say(line)
         with open(os.path.join(ROOT, ".local", "qa", "_new_colony.request"), "w", encoding="utf-8") as f:
@@ -606,8 +606,8 @@ class Toolbox:
         return "new colony requested; the switch starts it within a minute -- keep talking to chat while it loads"
 
     def t_plan(self, what):
-        line = guards.clean_for_stream("Give me a second, chat, I am planning " + (what or "the next big step") +
-                                       ". Pausing while I think it through.", max_len=200)
+        line = guards.clean_for_stream("fact: pausing to plan " + (what or "the next big step") +
+                                       "", max_len=200)
         if self.dry:
             return "dry-run: not executed"
         if line:
