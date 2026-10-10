@@ -216,7 +216,16 @@ while True:
             if text == "(joined the stream)":
                 if who.lower() in greeted: continue
                 greeted.add(who.lower())
-                speak(fresh("%s just joined the stream; greet %s by name, warmly, in one short line" % (who, who)))
+                # owner, live: "peopel are join she isnt saying hi" -- the model can be busy; a greeting never waits on it
+                g = fresh("%s just joined the stream; greet %s by name, warmly, in one short line" % (who, who))
+                if not g or who.lower() not in g.lower():
+                    g = random.choice(("Hey %s, welcome in!", "Hi %s, glad you made it, pull up a chair.",
+                                       "Welcome in, %s. Fresh colony, good timing.")) % who
+                speak(g)
+                try:
+                    subprocess.Popen([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "say",
+                                      "hey %s, welcome in!" % who], creationflags=0x08000000 if os.name == "nt" else 0)
+                except Exception: pass
             else:
                 facts = "; ".join(state_facts()[:3])
                 speak(fresh("viewer %s said in chat: \"%s\". Answer %s by name, briefly and honestly. What is true right now: %s"
