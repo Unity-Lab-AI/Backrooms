@@ -92,7 +92,10 @@ def fresh(fact):
         try:
             # the same system/user split her voice shell was trained on (training/build_voice.py): persona and
             # rules as the system turn, the "ONE spoken line ..." request as the user turn
-            cut = prompt.find("ONE spoken line")
+            # ...but only once the trained voice is loaded: the untrained base just parrots the fact back when
+            # asked that way, so until then it gets the whole prompt as one user turn
+            trained = os.path.exists(os.path.join(ROOT, "training", "models", "unity-voice.Q4_K_M.gguf.applied"))
+            cut = prompt.find("ONE spoken line") if trained else -1
             msgs = ([{"role": "system", "content": prompt[:cut].strip()}, {"role": "user", "content": prompt[cut:]}]
                     if cut > 0 else [{"role": "user", "content": prompt}])
             req = urllib.request.Request("http://127.0.0.1:11435/api/chat", data=json.dumps(

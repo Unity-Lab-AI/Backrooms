@@ -21,7 +21,7 @@ if ! have setup; then
 fi
 export HF_HUB_ENABLE_HF_TRANSFER=1
 # the 35B base (~70 GB) downloads while the voice trains, so the player stage starts at once
-if ! have "train-player"; then
+if ! have "train-player" && [[ "${SHELLS:-voice player}" == *player* ]]; then
   (huggingface-cli download Qwen/Qwen3.6-35B-A3B --exclude "*.pth" >$W/prefetch.log 2>&1 || hf download Qwen/Qwen3.6-35B-A3B >>$W/prefetch.log 2>&1) &
 fi
 
@@ -36,7 +36,7 @@ to_gguf() {   # $1 kind
   fi
 }
 
-for k in voice player; do
+for k in ${SHELLS:-voice player}; do   # one pod per shell: SHELLS=player or SHELLS=voice
   if ! have "train-$k"; then python $W/pod/train.py $k; done_ "train-$k"; fi
   # the 35B base download is no longer needed once merged (frees ~70 GB before the gguf steps)
   if [ "$k" = player ]; then rm -rf "${HF_HOME:-$HOME/.cache/huggingface}/hub/models--Qwen--Qwen3.6-35B-A3B"; fi
