@@ -16,6 +16,10 @@
   on a mountain jungle tile it landed where nobody could walk. Owner: *"thats not suppose to
   happen a no return gate"*. It now stands near the arrival, on a cell the arrival can reach on
   foot, or the walk-out is refused before anybody moves.
+- **Haulers now carry through a gate.** Every family of connected work shared one planning
+  cooldown per colonist, so the first connected planner reached in work order (firefighting) used
+  it, found nothing, and every later one -- hauling included -- was skipped for good. Supplies on
+  the Backrooms side never came home. The cooldown is now per colonist per family.
 
 ## 0.13.0-dev - 2026-10-08 - Company deliveries land while shelves outrank the stockpile
 

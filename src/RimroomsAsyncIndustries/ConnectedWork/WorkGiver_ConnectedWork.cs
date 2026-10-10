@@ -41,7 +41,7 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             // One commitment per worker, across both record kinds. Someone sent through
             // a gate to build must not also be promised a haul: it would abandon one of
             // the two, and which one it abandoned would depend on job-search timing.
-            if (committed || work.ActiveDeploymentFor(pawn) != null || !work.MayPlanFor(pawn))
+            if (committed || work.ActiveDeploymentFor(pawn) != null || !work.MayPlanFor(pawn, AdapterId))
             { return true; }
             // Nothing to plan against until this branch actually remembers a gate.
             RimroomsPortalNetwork network = Network();
@@ -76,11 +76,11 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 if (!ContinueOnly || intent.AdapterId != AdapterId) { return null; }
                 return Continue(intent, adapter, pawn, work);
             }
-            if (ContinueOnly || !work.MayPlanFor(pawn)) { return null; }
+            if (ContinueOnly || !work.MayPlanFor(pawn, AdapterId)) { return null; }
             // A worker already deployed somewhere is doing local work there on purpose.
             // Planning a carry trip for it would pull it straight back off that site.
             if (work.ActiveDeploymentFor(pawn) != null) { return null; }
-            work.NotePlanningPass(pawn);
+            work.NotePlanningPass(pawn, AdapterId);
             intent = adapter.TryPlan(pawn, work);
             return intent == null ? null : Continue(intent, adapter, pawn, work);
         }
