@@ -124,8 +124,14 @@ def model_needs(passes):
                          creationflags=0x08000000 if os.name == "nt" else 0).stdout
     for line in out.splitlines():
         if line.startswith("autopilot") and "DOWN" in line:
+            # a restart by hand leaves it DOWN for ~2 s; confirm it is still down before starting, or two players race up
+            time.sleep(8)
+            again = subprocess.run([sys.executable, SERVICES, "status"], cwd=ROOT, capture_output=True, text=True,
+                                   creationflags=0x08000000 if os.name == "nt" else 0).stdout
+            if any(l.startswith("autopilot") and "DOWN" not in l for l in again.splitlines()):
+                break
             print(stamp(), "the player is down -- restarting it", flush=True)
-            subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1"), capture_output=True, text=True, timeout=900,
+            subprocess.run([sys.executable, SERVICES, "start", "autopilot"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1"), capture_output=True, text=True, timeout=900,
                        creationflags=0x08000000 if os.name == "nt" else 0)
             break
     # 3b. the bridge guards (pop-ups, clock, heat, click queue, voice) exit when there is no game -- which is the
