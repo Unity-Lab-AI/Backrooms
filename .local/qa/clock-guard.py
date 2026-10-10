@@ -67,7 +67,7 @@ while True:
             elif raid:
                 print(stamp(), "frozen at", t1, "-- a raid letter is live, leaving it to the owner", flush=True)
             else:
-                ok = call("rimworld/set_time_speed", {"speed": "Fast"}).get("success")
+                ok = call("rimworld/set_time_speed", {"speed": "Normal"}).get("success")
                 print(stamp(), "frozen at", t1, "with nothing to answer -- running time again:", ok, flush=True)
     except Exception as e:
         print(stamp(), "bridge hiccup:", str(e)[:80], flush=True)
