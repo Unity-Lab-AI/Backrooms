@@ -60,7 +60,7 @@ SERVICES = [
     ("followcrew",  ".local/qa/follow-crew.py",         [PYW, os.path.join(QA if "QA" in globals() else HERE, "follow-crew.py")]),
     ("cursorjobs",  ".local/qa/cursor-jobs.py",         [PYW, os.path.join(QA, "cursor-jobs.py")]),
     ("keepgoing",   ".local/qa/keep-playing.py",        [PYW, "-u", os.path.join(QA if "QA" in globals() else HERE, "keep-playing.py")]),
-    ("autopilot",   ".local/autopilot/autopilot.py",    [PYW, "-u", os.path.join(ROOT, ".local/autopilot/autopilot.py"), "--num-gpu", "0"]),
+    ("autopilot",   ".local/autopilot/autopilot.py",    [PYW, "-u", os.path.join(ROOT, ".local/autopilot/autopilot.py"), "--num-gpu", os.environ.get("AUTOPILOT_NUM_GPU", "8")]),
     ("admin",       "admin.py",               [PYW, "-u", os.path.join(HERE, "admin.py")]),
 ]
 # Runs once, pins the overlay window topmost and exits -- fired on start, never reported as a service.
@@ -167,14 +167,14 @@ def deps():
             except Exception: pass
         print("ollama-voice started on 11435")
     try:
-        vapi("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "keep_alive": "30m",
+        vapi("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "think": False, "keep_alive": "30m",
                                "options": {"num_ctx": 8192, "num_predict": 1}}, timeout=180)
         print("model       %s warm on the voice server" % VOICE)
     except Exception as e:
         print("model       %s voice warm-up skipped (%s)" % (VOICE, str(e)[:40]))
     return
     try:
-        api("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "keep_alive": "30m",
+        api("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "think": False, "keep_alive": "30m",
                               "options": {"num_ctx": 8192, "num_predict": 1}}, timeout=180)
         print("model       %s warm" % VOICE)
     except Exception as e:

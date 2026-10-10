@@ -88,8 +88,16 @@ def gather_chat(st):
         st["last_ts"] = max(r["ts"] for r in rows)
     greeted = set(st["greeted"])
     joins, msgs = [], []
+    # the owner's handle is secret on stream: their chat lines reach her as orders (owner-orders), never as a
+    # viewer to answer by name (live: she replied "me either forever" to the owner's handle)
+    try:
+        owner = open(os.path.join(ROOT, ".local", "tw", "owner.txt"), encoding="utf-8").read().strip().lower()
+    except OSError:
+        owner = ""
     for r in rows:
         who = (r.get("who") or "").strip()
+        if owner and who.lower() == owner:
+            continue
         cid = int(str(r.get("key", "v0"))[1:] or 0)
         if "(joined the stream)" in (r.get("text") or ""):
             if who.lower() not in greeted:
