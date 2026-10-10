@@ -56,6 +56,32 @@ def latest_action():
     return None
 
 
+def latest_pawn():
+    """The pawn named in her newest tool call (priorities, assign, orders), if it was in the last minute."""
+    try:
+        with open(PLAYER_LOG, "rb") as f:
+            f.seek(max(0, os.path.getsize(PLAYER_LOG) - 20000))
+            lines = f.read().decode("utf-8", "replace").splitlines()
+    except OSError:
+        return None
+    now = datetime.now()
+    for ln in reversed(lines):
+        m = TOOL_LINE.match(ln)
+        if not m:
+            continue
+        t = datetime.combine(now.date(), datetime.strptime(m.group(1), "%H:%M:%S").time())
+        if (now - t).total_seconds() > ACTION_HOLD:
+            return None
+        try:
+            a = json.loads(m.group(3))
+        except Exception:
+            continue
+        if isinstance(a, dict) and a.get("pawn"):
+            return a["pawn"]
+    return None
+
+
+turn = 0
 last_framed = None
 while True:
     try: f = json.load(open(FIGHT))
@@ -73,12 +99,17 @@ while True:
                     last_framed = (x, z, w, h)
             else:
                 last_framed = None
+                # a real pawn, one at a time -- the middle of the crew was often bare dirt between them
+                # (owner: "she is stuck looking at dirt"); the pawn she just worked on goes first
                 r = bridge("rimworld/list_colonists", {})
                 r = r.get("result", r); r = r.get("structuredContent", r) if isinstance(r, dict) else {}
-                pos = [c["position"] for c in r.get("colonists", []) if c.get("position")]
-                if pos:
-                    x = round(sum(p["x"] for p in pos) / len(pos)); z = round(sum(p["z"] for p in pos) / len(pos))
-                    bridge("rimworld/jump_camera_to_cell", {"x": x, "z": z})
+                names = [c.get("name") for c in r.get("colonists", []) if c.get("factionIsPlayer", True) and c.get("name")]
+                focus = latest_pawn()
+                if focus in names:
+                    names.remove(focus); names.insert(0, focus)
+                if names:
+                    turn = (turn + 1) % len(names) if focus not in names[:1] or turn else 0
+                    bridge("rimworld/jump_camera_to_pawn", {"pawnName": names[turn % len(names)]})
     except Exception:
         pass
     time.sleep(5 if last_framed else 30)
