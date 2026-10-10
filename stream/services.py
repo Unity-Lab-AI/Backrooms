@@ -238,7 +238,7 @@ def announce(line):
     """One short line to chat -- owner, 2026-10-10: "tell chat whats up too / not the details tho"."""
     say = os.path.join(ROOT, ".claude", "tools", "unity-say.py")
     try:
-        subprocess.Popen([PY, say, "--raw", line], cwd=ROOT,
+        subprocess.Popen([PY, say, line], cwd=ROOT,
                          **DETACH,
                          env=dict(os.environ, UNITY_NO_GLANCE="1"))
     except Exception:

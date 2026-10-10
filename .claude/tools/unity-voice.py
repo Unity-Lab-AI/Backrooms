@@ -112,15 +112,16 @@ def keeps_facts(line, out):
 
 
 def voice(line):
-    """Unity's version of `line`, or `line` itself if her model is down or will not stay clean."""
-    for _ in range(2):
+    """Unity's own version of `line`. Owner: "NEVER EVER ANY FALLBACKS" -- if her model cannot write a clean line
+    that keeps the facts in four tries, nothing is said; the scripted text is never spoken as-is."""
+    for _ in range(4):
         try:
             out = tidy(ask(line))
         except Exception:
-            return line
+            continue
         if out and len(out) >= 8 and not CLEAN_BLOCK.search(out) and keeps_facts(line, out):
             return out
-    return line
+    return ""
 
 
 if __name__ == "__main__":

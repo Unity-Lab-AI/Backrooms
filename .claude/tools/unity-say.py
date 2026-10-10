@@ -52,7 +52,7 @@ def main():
             uv = importlib.util.module_from_spec(spec); spec.loader.exec_module(uv)
             text = uv.voice(text)
         except Exception:
-            pass
+            text = ""          # never the scripted text as-is (owner: "NEVER EVER ANY FALLBACKS")
     text = speakable(text)
     if not text: return
     post(text)

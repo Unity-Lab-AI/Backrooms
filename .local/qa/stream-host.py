@@ -240,14 +240,18 @@ while True:
                 if who.lower() in greeted: continue
                 greeted.add(who.lower())
                 # owner, live: "peopel are join she isnt saying hi" -- the model can be busy; a greeting never waits on it
-                g = fresh("%s just joined the stream; greet %s by name, warmly, in one short line" % (who, who))
-                if not g or who.lower() not in g.lower():
-                    g = random.choice(("Hey %s, welcome in!", "Hi %s, glad you made it, pull up a chair.",
-                                       "Welcome in, %s. Fresh colony, good timing.")) % who
+                g = None
+                for _try in range(3):           # written by her model, with their name in it -- never canned
+                    g = fresh("%s just joined the stream; greet %s by name, warmly, in one short line" % (who, who))
+                    if g and who.lower() in g.lower(): break
+                    g = None
+                if not g:
+                    print("greeting for", who, "not written yet -- retried next pass", flush=True)
+                    greeted.discard(who.lower()); continue
                 speak(g)
                 try:
                     subprocess.Popen([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "say",
-                                      "hey %s, welcome in!" % who], creationflags=0x08000000 if os.name == "nt" else 0)
+                                      g], creationflags=0x08000000 if os.name == "nt" else 0)
                 except Exception: pass
             else:
                 facts = "; ".join(state_facts()[:3])
@@ -265,30 +269,15 @@ while True:
             facts = state_facts()
             if facts:
                 now = [f for f in facts if f.startswith("what I am doing right now")]
-                line = fresh(now[0] if now and random.random() < 0.7 else random.choice(facts))
-                if not line:
-                    # owner, live: "this stream keeps dying ... shes not talking regualrly". The voice model can be
-                    # stuck behind the player model; silence never waits on it -- say a true line straight out.
-                    try: hist = json.load(open(sb.HIST, encoding="utf-8"))
-                    except Exception: hist = []
-                    used_path = os.path.join(HERE, "_pool_used.json")
-                    try: used = json.load(open(used_path, encoding="utf-8"))
-                    except Exception: used = {}
-                    now_t = time.time()
-                    pool = [f for f in facts + BETWEEN_RUNS
-                            if not f.startswith("what I am doing") and now_t - used.get(f, 0) > 2700]
-                    if not pool:
-                        line = None
-                        speak(line); raise RuntimeError("stock pool exhausted for now")
-                    used[random.choice(pool)] = now_t
-                    pool = [max(used, key=used.get)]
-                    try: json.dump(used, open(used_path, "w", encoding="utf-8"))
-                    except Exception: pass
-                    pick = random.choice(pool)
-                    line = pick[0].upper() + pick[1:] + ("." if not pick.endswith((".", "?", "!")) else "")
-                    try: json.dump((hist + [pick])[-30:], open(sb.HIST, "w", encoding="utf-8"))
-                    except Exception: pass
-                speak(line)
+                # owner: "NEVER EVER ANY FALLBACKS" -- every spoken line is written by her model. A miss means
+                # another topic, never a canned line; up to four topics, then she tries again next pass.
+                order = (now[:1] if now else []) + random.sample(facts, len(facts))
+                line = None
+                for topic in order[:4]:
+                    line = fresh(topic)
+                    if line: break
+                if line: speak(line)
+                else: print("no line this pass -- nothing the model wrote passed; trying again", flush=True)
     except Exception:
         s = buf = None                     # drop the dead socket; the next call reconnects
         try: s, buf = session()

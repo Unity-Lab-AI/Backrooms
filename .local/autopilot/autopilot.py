@@ -279,9 +279,7 @@ def turn(toolbox, st, args, system, specs):
         if who in toolbox.greeted_this_tick or who in greeted:
             greeted.add(who)
             continue
-        name = guards.clean_viewer_name(j["viewer"])
-        toolbox._speak(("Hi %s, welcome in, pull up a chair." % name) if name else "Hi, welcome in, pull up a chair.",
-                       reply_to=j["chat_id"])
+        # no canned greeting from the player (owner: "NEVER EVER ANY FALLBACKS"); the voice writes greetings
         greeted.add(who)
     st["greeted"] = sorted(greeted)[-500:]
     st["pending"] = [m for m in msgs if m["viewer"].lower() not in toolbox.greeted_this_tick
@@ -342,7 +340,7 @@ def main():
         pick = random.choice([x for x in sparks if x != last] or sparks)
         try:
             guards.scratch_write("last-spark.txt", pick)
-            subprocess.Popen([sys.executable, os.path.join(ROOT, ".claude", "tools", "unity-say.py"), "--raw", pick],
+            subprocess.Popen([sys.executable, os.path.join(ROOT, ".claude", "tools", "unity-say.py"), pick],
                              cwd=ROOT, creationflags=0x08000000 if os.name == "nt" else 0)
         except Exception:
             pass

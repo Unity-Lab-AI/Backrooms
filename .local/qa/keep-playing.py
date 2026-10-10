@@ -86,7 +86,7 @@ def say(line):
     if _DIRTY.search(line or ""):
         print(stamp(), "refused to say an unclean line:", (line or "")[:60], flush=True); return
     try:
-        subprocess.Popen([sys.executable, SAY, "--raw", line], cwd=ROOT,
+        subprocess.Popen([sys.executable, SAY, line], cwd=ROOT,
                          env=dict(os.environ, UNITY_NO_GLANCE="1"),
                          **({"creationflags": 0x00000200 | 0x00000008} if os.name == "nt" else {"start_new_session": True}))
     except Exception:
