@@ -277,8 +277,8 @@ while True:
                     return None
             # the stream is clean: a name she reads out loud may not be a slur, atrocity or real-world violence
             # (her model once picked the seed "terrorist")
-            _TOUCHY = re.compile(r"terror|nazi|hitler|isis|jihad|genocid|holocaust|rape|suicid|bomb|massacre|"
-                                 r"shoot|murder|kill|slave|lynch|pedo|cartel|nigg|fag|retard", re.I)
+            _TOUCHY = _re.compile(r"terror|nazi|hitler|isis|jihad|genocid|holocaust|rape|suicid|bomb|massacre|"
+                                 r"shoot|murder|kill|slave|lynch|pedo|cartel|nigg|fag|retard", _re.I)
             _pick = pick
             def pick(what, fallback):
                 for _ in range(4):
