@@ -81,7 +81,7 @@ def ollama_chat(model, messages, tool_specs, opts):
     body = {"model": model, "messages": messages, "tools": tool_specs, "stream": False,
             "keep_alive": opts["keep_alive"],
             "options": {"num_ctx": opts["num_ctx"], "temperature": 0.5, "top_p": 0.9, "use_mlock": True,   # owner: lots of RAM -- keep it locked in, never paged
-                        "num_thread": int(os.environ.get("AUTOPILOT_THREADS", "8"))}}   # 8 = physical cores; 14 made turns slower (threads stall on each other when the game takes a core)
+                        "num_thread": int(os.environ.get("AUTOPILOT_THREADS", "6"))}}   # 8 = physical cores; 14 made turns slower (threads stall on each other when the game takes a core)
     if opts.get("num_gpu") is not None:
         body["options"]["num_gpu"] = opts["num_gpu"]
     if opts.get("think") is not None:
