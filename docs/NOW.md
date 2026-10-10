@@ -93,4 +93,12 @@ A room with no roof is not a room · blueprints need material on site or the paw
 | Forgejo | still refuses on access rights |
 | TEST | 62 → **59** tonight: QoL feature availability, the weird route thing, duplicate Defs on the clean 294 load. Two live-log defects in TODO: `ITab_Bills` float-menu NRE, out-of-bounds explosion spam. World-exit return gate proved; its open half (name the destination before committing) stays `[~]` |
 
-**Next action is the owner's: press `start.bat`.**
+## On the press, 2026-10-10
+
+**Owner, verbatim:** *"when it starts up it should ask me if im ready to start the stream and game and what i want not just random do everything"* / *"when i press start i want you monitoring the model and what it does and fixing things on the fly restarting if need be till we get it right but let it learna bit beforee calling fails"*.
+
+So `start.bat` brings up the stack and the panel and **stops there**: no game, no broadcast, no colony. Unity asks — out loud and in the panel's **Ready?** card — *"Are we starting the stream and the game? Tell me what you want tonight and hit GO."* The owner types tonight's directive and presses **GO**: the directive is appended to `owner-orders.txt` as binding, then `keep-playing` launches the game (`services.py game`), relaunches OBS live (`services.py golive`), and arms the company colony.
+
+Claude's job on the press: **watch the model, not drive it** — read `_svc_autopilot.log`, `_svc_keepgoing.log`, `_svc_host.log` and the outbox; fix a real fault on the fly; restart a service only when it is actually wedged; and **let her learn a bit before calling anything a failure** — one bad turn is not a bug, a repeated one is.
+
+**Next action is the owner's: press `start.bat`, answer her, press GO.**

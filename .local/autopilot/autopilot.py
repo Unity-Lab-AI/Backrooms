@@ -174,8 +174,8 @@ def brief(toolbox, st, joins, msgs, runlist):
             pass
         parts.append(chr(10).join(_lines))
 
-    except Exception as _e:
-        parts.append("GATES UNAVAILABLE (%s) -- fall back to the owner orders above." % str(_e)[:100])
+    except BaseException as _e:                  # SystemExit included: the brief must never kill the turn
+        parts.append("GATES UNAVAILABLE (%s) -- no game yet; follow the owner orders above and keep the stream alive." % str(_e)[:100])
 
     if st["memory"]:
         parts.append("WHAT YOU DID RECENTLY:\n" + "\n".join("- " + m for m in st["memory"][-8:]))
