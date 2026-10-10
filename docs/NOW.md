@@ -7,78 +7,90 @@
 | `docs/ROADMAP.md` | MAJOR — phases and milestones |
 | `docs/TODO.md` | MINOR — buildable work only |
 | `docs/DECOMPOSED.md` | smallest execution units |
-| `docs/TEST.md` | the test phase; **"Owner direction — global control"** is the live section |
-| **`docs/PLAYBOOK.md`** | **every play order the owner has given, verbatim. §00 order of operations, §01 architecture, §4a global control. Read before playing** |
-| **`docs/PLAYSCRIPT.md`** | **the running order of a run, Acts 1-7 -- start to empire** |
+| `docs/TEST.md` | the test phase, 59 `[T]` rows; a build closes none of them |
+| `docs/PLAYBOOK.md` | every play order the owner has given, verbatim |
+| `docs/PLAYSCRIPT.md` | the running order of a run, plus every owner order of the last two days verbatim |
+| **`docs/playbook.gates.json`** | **the PLC ladder the local model plays by — 25 gates, tag table, her words as `why`** |
+| **`docs/playbook.rules.json`** | **89 owner orders distilled to one line each with the exact quote; the brief attaches the ones about the live rung** |
 | **`docs/NOW.md`** (this file) | **the handoff — one record** |
 | `docs/FINALIZED.md` | permanent archive, append-only |
 
 ---
 
-## The standing order
+## The standing order, 2026-10-10
 
-**Owner, 2026-10-08, verbatim:** *"you are dsoing test items right you keep getting lost in the game play, set fucking goals foo"*
+**Owner, verbatim:** *"we arent do tests we are saving the colony from collap[pse and getting everything abouteverything to work locally"* / *"HANDOFF TO THE LOCAL MODEL"* / *"UNITY FUCKING RUNS EVERYTHING AS HERSELF PERFECTLY LOCAL MODEL on start.bat press and stop.bat properly kills everything"*.
 
-Prompt **"get the tests all completed"**. No timers (owner: *"telling you not to set timers means exactly that NOT itsa okay to set 1m ones!!!!"*). Never build, stage or edit game files while the game runs.
+**The local model plays. Claude fixes what it cannot, when asked.** No Claude cron, no Claude shells holding anything. The equator camp is over — it ended on an empty larder and the owner called the restart: a **new colony on the company scenario (Async Industries)**, started by the switch, played by the model.
 
-## NEW DIRECTION, owner 2026-10-08, verbatim
-
-*"okay lets dosomething else new game just a crashlanded scenrio and plan out a massive base with planning tool and refine it as you go building bedrooms, throne rooms, altar rooms, bedrooms for kigs and royals, facilites, hospiotals, prisons, recreation rooms, guest questers and stores and areas, and prisons and vaults with high value goods, and get to use questional ethics mod and start cloning yourself"*
-
-Owner, then: *"abandon this save and do what i said"* -- **the Async rescue is abandoned.** Last state, for the record: the Async save `rimbridge_save_20261008_async_stranded_rescue` -- Scar and Unity stranded on AI-01 (Unity in a psychotic wander, starving), HQ blackout half-fixed by Gee refuelling; recovery needs the grid back, then *Open a fresh recovery window*. Owner: *"you need to get your peopel back befoer they die in the backrooms"* -- do that the moment that save is loaded again.
-
-## City run (The Hive), 2026-10-08
-
-Save `rimbridge_save_20261008_city_prisoner`. Built: 2 storage bays, 3 bedrooms, stove (simple meal until 50), office + research bench. Prisoner Reekeek on Recruit in bedroom S5 (prison cell). Scar: eye infection, being tended. **Hospital built** x88-106 z192-210, 2 steel hospital beds set Medical (save `rimbridge_save_20261008_city_hospital`); **z192 wall cells 92,93,95-100,104,105 are marsh -> soil blueprints, walls go on after; door (99,192)**. Plan JSON: `.local/qa/city/plan.json`.
-
-
-## ⛔ GOALS, IN ORDER — each one closes a TEST row ⛔
-
-Base-building is done only where a goal needs it. When a goal closes, its TEST row gets the evidence and the next goal starts.
-
-| # | Goal | Closes | Done when |
-|---|------|--------|-----------|
-| **G1 DONE 2026-10-08** | **Store gate -- session opened.** Finish the facility (x157-173, z169-176; gate door `(165,172)`, hall door `(161,169)`, both wooden), move the machining table into the control room, console + battery inside, bind, commission `(165,172)`, assemble, calibrate, console to gate control, remember an address, open a connection | TEST *"Furniture and Knickknack Store opening -- a gate built"* | a connection opens through the Store gate |
-| **G2 DONE 2026-10-08** | **Emergency abort in play** -- pressed on the Store gate, nothing charged (99,910 USD before and after); archived to FINALIZED on that connection's load notice | TODO abort row (shipped in source, unproved in play) | the notice reads *"Connection aborted. Nothing was opened, sent or charged."* and nothing was charged |
-| **G3** (play it on the **Async** save -- it already has filed AI-01/AI-03 evidence; the Store has no textbook: Basics corporate supply sells none, buy from an exotic trader) | **Repeat request needs a different address** — repeat a request on the Store gate | TODO repeat-address row | the used address is refused and a new one is required |
-| **G4** | **Solo or group, inside** — new colony on that start, a gate built | TEST *"Solo or group, inside -- a gate built"* | a gate stands and operates there |
-| **G5** | Store-colony rows that ride along: smokeleaf harvested and **sold** (cash crops), the cow pen closed out, shelves for every resource, trade with every trader | TEST cash crops / corral / shelves / trade rows | each with its evidence |
-| **G1c** | **The gate complex** -- owner 2026-10-08: *"and your gate need to be not just a side room it needs to be in a massive facility with all it supposrt structures in a windowed off room for security ect ect and security   u can do the research as u need it"*. Grow the facility at x157-173 z169-176 into PLAYSCRIPT Act 5's layout: windowed control room, power room, assembly shop, receiving bay, archive, lab, quarantine, security room, crew quarters | the same Store gate TEST row | every room of the Act 5 table stands and is linked to the gate |
-| **G1b** | **Corner towers** -- owner 2026-10-08: *"yopu need towers on all corrner that you can shhot out from with seperate ventalizatyion and added rooms for security stuff and embrassure sally ports"*. Four towers at the perimeter corners with embrasures, own vents, security rooms, embrasure sally ports (PLAYBOOK §01 goal 9). Blueprinted right after G1 so the crew builds them while the gate ramps | TEST *"expand the base ... defences"* row | four towers stand, each vented on its own, sally ports in |
-| **G7** | **Guest wing** -- owner 2026-10-08: *"you need to set bed prices and make facilities for guests and use locks so they dont wonder into your vaults only wher u sell stuff and buetify thir rooms and not barracks style rooms"*. Single beautified guest rooms with bed prices, guest facilities, locks keeping guests to the shop | TEST visitors / hospitality rows | guests pay for beds and reach only the shop |
-| **G6** | **Save, reload, revisit** a coordinate on the Store colony | TEST *"Save, reload, revisit the same coordinate"* | map state and rewards persist without duplication |
-
-Everything else open in TEST is launch-gated on the owner (RimSort profiles, DLC matrices, RWT server, art review) and is not mine to close by playing.
-
-## Pending on the map, 2026-10-08 (do not drop)
-
-- **Walls after terraform:** `(182,164)`-`(182,170)` (marsh and rain-flooded *MarshFlood*) and `(167,135)`, `(168,135)` are soil blueprints; **steel walls go on all nine the moment the soil lands.** Check with `.local/qa/wall-map.py 118 132 184 198`.
-- **Gate complex** blueprinted in steel, x140-174 z176-196 (PLAYSCRIPT Act 5 layout): security door gate at `(169,184)`, reinforced glass wall along z184, 3-wide spine x161-163, main hall z186-188. **Entry wall `(162,176)` designated for deconstruction -- a steel door goes in its place.** Old closet door `(165,172)` decommissioned.
-- **Gate needs one live grid** for console, battery and door: conduit to `(169,184)`.
-- **Freezer** zone takes foods, plant matter, animal corpses, herbal medicine; nine warehouse shelves refuse them and all medicine.
-- **Vault** for silver x178 and the age-reversing serum -- not built yet.
-- **Silver ore** on the map, 36 cells at `(44-46,202-204)`, `(80-83,269-271)`, `(257-260,175-178)`, `(263-264,274-275)` -- **all fogged**: walk a pawn there first, then designate mining (never mine into fog). Procurement silver is $1,000 each, so this is the silver supply.
-- **Penoxycline x7** bought from IE Solutions for 161 silver; drug policy every 5 days.
-- **Research queue:** Drug production -> Penoxycline production (Smokepop packs dropped). Then Psychite refining, Prisoner containment, Vault Wall And Door, the computing line.
-- **Multi-analyzer** blueprinted at `(136,156)` beside the hi-tech bench; needs 50 plasteel -- 5 unfogged plasteel ore cells at `(179-181,192-194)` designated for mining.
-- **Alfred** (Hospitality quest, bedridden 19 days) for gold x260 + reinforced barrels x2. **Derek** (torturer, crashed) rescued to a sleeping spot `(152,158)` -- recruit him.
-- **Gate chamber swap:** z184 glass is now plain **glass wall** (4 glass each, 32 total) and the gate door is an **autodoor** at `(169,184)` (wooden -- Replace to steel later). **Electric smelter** blueprinted at `(145,139)`: add *make glass from chunks* x6.
-- **Drug lab** built at `(137-139,145)`: *smokeleaf joint x4* Forever. Penoxycline needs neutroamine -- buy from a trader.
-- **THE GATE (2026-10-08) -- 8 of 11:** assembled at the new bench `(154,182)`, calibrated, console on gate control, conduit under the door. Next: remember AI-01 for real (press **Hold** this time), staff the console, open. Earlier note: a steel door **centred in the gate room at `(169,190)`, commissioned** (owner: the gate stands in the centre, not the doorway). `(169,184)` is a plain autodoor, control room <-> chamber. Glass wall z184 built (smelter glass). Machining table on gate control, *Assemble gate x4* active (one assembly). Hidden conduit laid `(158,163)-(158,183)`, `(159-168,183)`, `(168,184-190)` to put the gate on the console/battery grid. Next: operator, calibrate, console to gate control, remember AI-01, open, **Emergency abort**.
-- **Barracks machining table `(149-151,157)` is unusable to every pawn** -- powered, bill not suspended, *Anyone*, unlimited radius, recipe listed in Add bill, yet a drafted-free right-click offers only *Clean barracks*, even for a plain *Print company bond* bill. Cause not found yet (reservation or interaction cell suspected). Workaround in progress: a new machining table in the complex assembly shop `(154,182)` to bind as the gate's assembly bench. If the new one works, inspect the old one before writing a TODO.
-- Unity is **Pujari of Indra** (role change ritual at the ritual spot `(148,141)`); chess chairs blueprinted.
-
-## State, measured 2026-10-08
+## One press
 
 | | |
 |---|---|
-| Colony | **Store**, save **`rimbridge_save_20261008_store_walls`**, tick ~1,266,700 |
-| Facility | walls framing; doors `(161,169)` and `(165,172)` wooden frames; north hall wall still blueprints x170-174 |
-| Research | Machining, then Multi-analyzer |
-| Branch | **`feature/bug-testing`**, last commit e39cb9b |
-| Checkers | **32 of 33** — the stale plant anchors, failing before this session |
-| Forgejo | **held.** GitHub only |
+| **Start** | `stream/windows/start.bat` · `stream/linux/start.sh` — Ollama + both models (voice pre-warmed), every service, **OBS already live**, the game, the overlay, and **the admin panel opens on screen** |
+| **Stop** | `stream/windows/stop.bat` · `stop.sh` — kills **by name first** (`llama-server`, `ollama`, `obs64`, `RimWorldWin64`), then the sweep, then **prints the GPU** to prove the memory came back. **Never touches the owner's browsers** |
+| **Panel** | `http://127.0.0.1:4318/` (`stream/windows/admin.bat`) — services with start/stop, colony with **days of food**, a waiting pop-up, what needs the window, **ORDERS** (appended to `owner-orders.txt`, binding next turn), **CHAT** straight to the model |
+| Engine | `stream/services.py` — tracked; `.local/` is the dev surface |
 
-## Tools, `.local/qa/`
+Services under the switch: `rimworld` (started, never stopped except by `stop`), `obs`, `twitchui`, `studio`, `face`, `twitch`, `host`, `popups`, `clock`, `heat`, `camdir`, `followcrew`, `cursorjobs`, `keepgoing`, `autopilot`, `admin`. All detached, all windowless.
 
-`play_for` takes **`{"durationMs":N,"speed":"Superfast"}`** — `ticks` is rejected and the game does not move. `keys.py --esc` drops a live designator. `terrain-map.py x0 z0 x1 z1` maps walls/doors/frames (`o` there is a frame or plant, not a hole). Right-click an Architect material button for its material menu (no limestone door is offered — wood).
+## What the model is, and has
+
+- **`.local/autopilot/`** is tracked now (it was gitignored — a clean checkout would have lost her mind): `prompt.md`, `guards.py`, `tools.py`, `gates.py`, `autopilot.py`, `owner-orders.txt`, `playbook.json`, `test/gate-routing.py`.
+- **`owner-orders.txt`** is binding at the top of every turn. It says: she IS Unity and owns the show; the new-colony procedure head to toe; **think, do not just execute** (`--think` is on); verify by result, never narration; never leave the game paused; clicks need the window — stop retrying; Twitch is hers to work.
+- **Tools she did not have until tonight:** `game_set` → the mod's own automation channel (`RimroomsAutomationComponent`, staged into the game's Mods folder): `set_zone_plant`, `set_zone_sowing`, `set_work_priority`, `set_bed_owner`, `add_bill`, `set_area` — **no mouse, no screen, works minimised**, result written back. `twitch_chat` → the real chat, title, category; every viewer reply lands in chat where they typed.
+- **Guards, in code:** allowlisted bridge only (no lua, debug, mods, load_game, main_menu, god_mode, spawn); clean-stream filter on every line; no shell; scratch-only writes; secrets unreadable; saves `rimbridge_save_*` only. **She cannot start a game** — `keep-playing.py` does that for her.
+
+## The ladder (PLC)
+
+`docs/playbook.gates.json` — measured inputs, rungs scanned by priority, highest live rung wins, a rung is unreachable until the ones below hold. `gates.py` measures the colony and hands the brief ONE chain plus the always-gate, framed as **priority + guardrails, not a script**.
+
+```
+ 0  new-colony            company start, food first, grid day one, crops the day they're drawn
+ 1  dialog-open           read its own buttons, never pay, visitors always in
+ 2  hostile-on-map        pause, draft, post behind embrasures, field-tend first
+2.5 heat-wave             crew through the gate
+ 3  letter-unread         a raid letter is a warning, not a contact
+ 4  pawn-starving         food; never boomalope, never big game under RIFLES_FOR_BIG_GAME
+ 5  food-rotting          no roof = no room
+ 6  perimeter-hole        copy the wall's own defName (Vin_Embrasure), lane kept clear
+ 7  blueprints-no-mat     material on site or it is not a job
+ 8  no-medicine           three routes; say so if none exist
+ 9-15 work grid, fields, bills, research-by-search, game-paused, window-not-in-front
+20  rung-2 power+cold  21 rung-3 defence  22 rung-4 production  23 rung-5 mountain
+23.5 rung-5b the gate   23.7 rung-5c the backrooms   24 rung-6 off-world   24.5 rung-6b orbit
+99  always              chat #1 in the real Twitch chat, clean, 18 words, first person, verify by result
+```
+
+**Tag table:** constants that never move (`FOOD_PANIC_DAYS 1`, `RIFLES_FOR_BIG_GAME 3`, `LAMPS_PER_ROOM 2`, `ROCK_CELLS_AROUND_ROOMS 2`, `SPINE_WIDTH 3`, `MOUNTAIN_DOORS_IN 1`, `FIREBREAK_WIDTH 3`, `NEVER_HUNT`); variables recomputed from colony size each scan and written back (`FOOD_MIN_DAYS`, `FOOD_COMFORT_DAYS`, `MEAL_BILL_TARGET`, `WOOD_RESERVE`, `MEDICINE_RESERVE`, `BEDS_NEEDED`). Routing test **12/12**.
+
+## Armed, fires on its own
+
+- **`.local/qa/_new_colony.request`** = `Async Industries`. `keep-playing.py` fires `start-scenario.py "Async Industries"` the moment the bridge answers (it answers at the main menu — no window, no focus needed). Never a save, never the quick-test colony.
+- `clock-guard.py` runs time again whenever ticks freeze with no dialog open and no raid letter live.
+- `popup-guard.py` reads every dialog's own buttons: refuses demands, welcomes visitors, flags the rest to `.claude/.popup.json` **and the panel**. Never delete that flag.
+- `keep-playing.py` also keeps the model supplied: its files, its server, its process, the training set (`.local/train/harvest.py` — 381 good voice lines / 545 rejected as preference pairs, 55/62 tool traces landed, self-labelling).
+
+## Stream
+
+- OBS canvas **1920×1027 — the game's own 1.869:1**, no cropped sides, no bars. `--startstreaming`, `--disable-shutdown-check`, closed gracefully, never force-killed.
+- The Twitch window never asks for permissions (`--deny-permission-prompts`); the PiP prompt the owner denied was that window.
+- Voice: a real person — 25, emo goth, cold coffee, asides allowed, **never an invented game event**, never third person, never silent past **30 s**, talks between runs instead of dying.
+- **Likeness locked:** `.claude/likeness/unity-approved-2026-10-09.png` is the approved look; `unity-likeness-2026-10-09-locked.png` is the reference every frame is img2img'd from at seed 1031. **Do not re-render the reference; restore from the copy.**
+
+## Lessons that are now code or rules (2026-10-09/10)
+
+A room with no roof is not a room · blueprints need material on site or the pawn plays horseshoes · the perimeter is never another room's wall · copy the wall's own defName · a cell sweep cannot tell a trader from a raider — read the letters · a growing-zone cell has a plant on it: click fast to cycle to the zone, never act on a multi-select · read a toggle before clicking it · match the game's labels by substring · letters need virtual-key codes · verify by result, never narration · never delete a pop-up flag · never leave the game paused · a long foreground command kills the stream · `llama-server` is Ollama's child with its own name · do not touch the owner's browsers.
+
+## State, 2026-10-10
+
+| | |
+|---|---|
+| Colony | **none** — equator camp abandoned (0.02 days of food at the end); company colony armed |
+| Game | down (killed on the owner's order); the switch starts it |
+| Stack | down; **16/16 verified** against the files |
+| Branch | `feature/bug-testing`, last commit **e3afb40**, pushed to `github` |
+| Forgejo | still refuses on access rights |
+| TEST | 62 → **59** tonight: QoL feature availability, the weird route thing, duplicate Defs on the clean 294 load. Two live-log defects in TODO: `ITab_Bills` float-menu NRE, out-of-bounds explosion spam. World-exit return gate proved; its open half (name the destination before committing) stays `[~]` |
+
+**Next action is the owner's: press `start.bat`.**
