@@ -17,7 +17,7 @@ What the page gives:
 Nothing here reaches the internet. It binds to 127.0.0.1 only, it never touches RimWorld itself, and the
 orders file is the only thing it writes.
 """
-import http.server, importlib.util, json, os, socket, subprocess, sys, threading, urllib.request, uuid
+import http.server, importlib.util, json, os, re, socket, subprocess, sys, threading, urllib.request, uuid
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -90,6 +90,9 @@ PAGE = """<!doctype html><meta charset=utf-8><title>Unity mission control</title
    <pre id=svcout></pre>
   </div>
   <div class=card style=margin-top:14px><b>Colony</b><pre id=colony>loading...</pre></div>
+  <div class=card style=margin-top:14px><b>Needs the game window</b>
+   <small>&nbsp;these only work when RimWorld is the front window</small>
+   <pre id=queue>loading...</pre></div>
  </div>
  <div>
   <div class=card><b>Orders to the autopilot</b>
@@ -128,7 +131,13 @@ async function sendChat(){const t=document.getElementById('msg').value.trim();if
  document.getElementById('msg').value='';
  const d=await j('/api/chat',{text:t});
  box.textContent=box.textContent.replace(/\\n\\.\\.\\.$/,'\\n')+ (d.reply||d.error||'');box.scrollTop=box.scrollHeight}
-refresh();setInterval(refresh,6000);
+async function queue(){const d=await j('/api/queue');
+ document.getElementById('queue').textContent=(d.jobs||[]).map(x=>'* '+x).join('
+')+'
+
+last run:
+'+(d.log||'')}
+refresh();queue();setInterval(refresh,6000);setInterval(queue,15000);
 </script>
 """
 
@@ -143,6 +152,18 @@ class H(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path in ("/", "/index.html"):
             return self._send(200, PAGE.encode("utf-8"), "text/html; charset=utf-8")
+        if self.path == "/api/queue":
+            # what still needs the game window, and what the queue said last time it ran
+            jobs, log = [], ""
+            try:
+                src = open(os.path.join(QA, "cursor-jobs.py"), encoding="utf-8").read()
+                m = re.search(r"JOBS = \[(.+?)\]", src, re.S)
+                if m: jobs = re.findall(r'\("([^"]+)"', m.group(1))
+            except Exception as e: jobs = ["(cannot read cursor-jobs.py: %s)" % str(e)[:60]]
+            try:
+                log = "".join(open(os.path.join(QA, "_svc_cursorjobs.log"), encoding="utf-8", errors="replace").readlines()[-8:])
+            except Exception: log = "(the queue has not run yet -- it waits for RimWorld to be the front window)"
+            return self._send(200, {"jobs": jobs, "log": log})
         if self.path == "/api/status":
             out = svc("status")
             services = []
