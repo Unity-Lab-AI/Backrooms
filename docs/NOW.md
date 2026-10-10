@@ -11,7 +11,7 @@
 | `docs/PLAYBOOK.md` | every play order the owner has given, verbatim |
 | `docs/PLAYSCRIPT.md` | the running order of a run, plus every owner order of the last two days verbatim |
 | **`docs/playbook.gates.json`** | **the PLC ladder the local model plays by — 25 gates, tag table, her words as `why`** |
-| **`docs/playbook.rules.json`** | **89 owner orders distilled to one line each with the exact quote; the brief attaches the ones about the live rung** |
+| **`docs/playbook.rules.json`** | **140 owner orders (89 + 51 audited in from PLAYBOOK/PLAYSCRIPT, 2026-10-10, owner: *"you remember everything ive ever said about all setup and play right.. make the model local know it"*), one line each with the exact quote; the brief attaches the 10 most relevant to the live rung, ranked by topic match, not file order** |
 | **`docs/NOW.md`** (this file) | **the handoff — one record** |
 | `docs/FINALIZED.md` | permanent archive, append-only |
 
@@ -73,7 +73,7 @@ Services under the switch: `rimworld` (started, never stopped except by `stop`),
 
 ## Stream
 
-- OBS canvas **1920×1027 — the game's own 1.869:1**, no cropped sides, no bars. `--startstreaming`, `--disable-shutdown-check`, closed gracefully, never force-killed.
+- OBS canvas **1920×1080, true 16:9**, with the whole 3840×2054 game fitted full-width (thin bars top and bottom). The 1920×1027 canvas got its sides cut by Twitch's 16:9 player — owner: *"as you can see the twitch window is still cut off on the sides"*. `.local/qa/obs-fit-16x9.py` re-applies it (OBS closed). `--startstreaming`, `--disable-shutdown-check`, closed gracefully, never force-killed.
 - The Twitch window never asks for permissions (`--deny-permission-prompts`); the PiP prompt the owner denied was that window.
 - Voice: a real person — 25, emo goth, cold coffee, asides allowed, **never an invented game event**, never third person, never silent past **30 s**, talks between runs instead of dying.
 - **Likeness locked:** `.claude/likeness/unity-approved-2026-10-09.png` is the approved look; `unity-likeness-2026-10-09-locked.png` is the reference every frame is img2img'd from at seed 1031. **Do not re-render the reference; restore from the copy.**
@@ -98,6 +98,8 @@ A room with no roof is not a room · blueprints need material on site or the paw
 **Owner, verbatim:** *"when it starts up it should ask me if im ready to start the stream and game and what i want not just random do everything"* / *"when i press start i want you monitoring the model and what it does and fixing things on the fly restarting if need be till we get it right but let it learna bit beforee calling fails"*.
 
 So `start.bat` brings up the stack and the panel and **stops there**: no game, no broadcast, no colony. Unity asks — out loud and in the panel's **Ready?** card — *"Are we starting the stream and the game? Tell me what you want tonight and hit GO."* The owner types tonight's directive and presses **GO**: the directive is appended to `owner-orders.txt` as binding, then `keep-playing` launches the game (`services.py game`), relaunches OBS live (`services.py golive`), and arms the company colony.
+
+**A name means that service only (fixed on the first press, 2026-10-10):** `services.py start|stop|restart <name>` used to ignore the name and cycle the WHOLE rig — so restarting the voice also closed and relaunched OBS, Ollama and every service, and the panel's per-row start/stop buttons did the same. Now a name touches only that service (OBS is asked to close, never killed); no name still means the whole rig. The bridge guards (`popups`, `clock`, `heat`, `cursorjobs`, `host`) exit while there is no game — `keep-playing` brings them back once the bridge answers after GO, and asks for GO only once per press.
 
 Claude's job on the press: **watch the model, not drive it** — read `_svc_autopilot.log`, `_svc_keepgoing.log`, `_svc_host.log` and the outbox; fix a real fault on the fly; restart a service only when it is actually wedged; and **let her learn a bit before calling anything a failure** — one bad turn is not a bug, a repeated one is.
 

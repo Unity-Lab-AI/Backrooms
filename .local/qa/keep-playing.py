@@ -123,6 +123,14 @@ def model_needs(passes):
             subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, capture_output=True, text=True, timeout=900,
                        creationflags=0x08000000 if os.name == "nt" else 0)
             break
+    # 3b. the bridge guards (pop-ups, clock, heat, click queue, voice) exit when there is no game -- which is the
+    # whole wait before GO. Once the bridge answers, bring back any that died; start is idempotent.
+    BRIDGE_SVCS = ("host", "popups", "clock", "heat", "cursorjobs")
+    dead = [l.split()[0] for l in out.splitlines() if l.split() and l.split()[0] in BRIDGE_SVCS and "DOWN" in l]
+    if dead and _bridge_up():
+        print(stamp(), "bridge is up and these died waiting for it:", ", ".join(dead), "-- bringing them back", flush=True)
+        subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, capture_output=True, text=True, timeout=900,
+                       creationflags=0x08000000 if os.name == "nt" else 0)
     # 4. the training set that teaches the next model, grown from what just happened
     if passes % 60 == 0 and os.path.exists(TRAIN):
         r = subprocess.run([sys.executable, TRAIN], cwd=ROOT, capture_output=True, text=True, timeout=600,
@@ -141,34 +149,69 @@ while True:
         # Owner, 2026-10-10: "it should ask me if im ready to start the stream and game and what i want not
         # just random do everything". Ask once, out loud and on the panel, then wait for GO.
         if not os.path.exists(GO):
+            flag = os.path.join(HERE, "_asked.flag")
+            if not asked and os.path.exists(flag) and time.time() - os.path.getmtime(flag) < 7200:
+                asked = True      # already asked this press; a restart of this loop must not ask twice
             if not asked:
                 asked = True
+                open(flag, "w").write(stamp())
                 say("Hey. Everything is up and I am ready. Are we starting the stream and the game? Tell me what you want tonight and hit GO.")
                 print(stamp(), "asked the owner for GO; waiting", flush=True)
             time.sleep(10); continue
         if asked:
             asked = False
+            try: os.remove(os.path.join(HERE, "_asked.flag"))
+            except OSError: pass
             want = open(GO, encoding="utf-8").read().strip()
             print(stamp(), "GO received:", want[:120], flush=True)
             say("Got it. Launching the game and going live." if want in ("", "go")
                 else "Got it: %s. Launching the game and going live." % want[:80])
-            subprocess.run([sys.executable, SERVICES_PY, "game"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
+            # live FIRST, so the stream carries the game's loading screens, then the game
             subprocess.run([sys.executable, SERVICES_PY, "golive"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
+            subprocess.run([sys.executable, SERVICES_PY, "game"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
             open(os.path.join(HERE, "_new_colony.request"), "w", encoding="utf-8").write("Async Industries")
         req = os.path.join(HERE, "_new_colony.request")
         # start-scenario drives RimWorld's own pages through click_ui_target, which is an API call and works
         # whether or not the window has focus -- so this waits for the BRIDGE, not for the owner's screen.
         if os.path.exists(req) and _bridge_up():
+            try: already = len(gates.state().get("crew") or [])
+            except Exception: already = 0
+            if already > 0:     # a colony is already on the map: never go back to the menu over it
+                os.remove(req); print(stamp(), "colony already on the map -- request cleared", flush=True); continue
             scen = (open(req, encoding="utf-8").read().strip() or "Async Industries")
             print(stamp(), "new colony requested (%s) and the window is up -- starting it" % scen, flush=True)
             say("Right, new colony. Company start, clean map, and this time I feed everyone before I build anything pretty.")
-            r = subprocess.run([sys.executable, os.path.join(HERE, "start-scenario.py"), scen],
-                               cwd=ROOT, capture_output=True, text=True, timeout=1800,
-                               creationflags=0x08000000 if os.name == "nt" else 0)
-            print(stamp(), "start-scenario:", (r.stdout or r.stderr).strip().splitlines()[-3:], flush=True)
-            if r.returncode == 0:
+            # Owner: "in advanced setting on world gen setup you set 300x300 mapo and spring, and then when
+            # choosing a map tile u pic on that has mountains ... in forest area and jungle areas". The pages up to
+            # the globe are clicked; the globe page is set by the mod itself (WorldSetupDriver): 300x300, Spring,
+            # a mountainous forest or jungle tile, then its own Next. Then the remaining pages are clicked.
+            def run(args):
+                r = subprocess.run([sys.executable, os.path.join(HERE, "start-scenario.py")] + args,
+                                   cwd=ROOT, capture_output=True, text=True, timeout=1800, **NOWIN)
+                print(stamp(), "start-scenario", " ".join(args), "->", (r.stdout or r.stderr).strip().splitlines()[-2:], flush=True)
+                return r
+            run([scen, "--stop-at", "SelectStartingSite"])
+            auto = os.path.join(os.path.expandvars(r"%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Config"), "RimroomsAutomation")
+            os.makedirs(auto, exist_ok=True)
+            res = os.path.join(auto, "setup.result")
+            if os.path.exists(res): os.remove(res)
+            open(os.path.join(auto, "setup.request"), "w").write("next")
+            for _ in range(60):
+                time.sleep(1)
+                if os.path.exists(res): break
+            got = open(res, encoding="utf-8").read().strip() if os.path.exists(res) else "no answer from the mod"
+            print(stamp(), "world setup:", got, flush=True)
+            if got.startswith("ok"):
+                time.sleep(3); run(["--resume"])
+            # done only when there is a crew on a map -- a script that stopped short is not a colony
+            try: crew = len(gates.state().get("crew") or [])
+            except Exception: crew = 0
+            if crew > 0:
                 os.remove(req)
-                print(stamp(), "new colony started -- the request is cleared", flush=True)
+                print(stamp(), "new colony started (%d colonists) -- the request is cleared" % crew, flush=True)
+                say("We are down. Fresh company colony, spring, forest and mountains. Food first.")
+            else:
+                print(stamp(), "no colonists on a map yet -- the colony request stays armed", flush=True)
 
 
         firing, st = gates.decide()

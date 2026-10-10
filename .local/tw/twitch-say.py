@@ -59,19 +59,21 @@ def main():
             return
 
         # title and category live on the creator dashboard's stream manager
-        pg = page_for(ctx, "dashboard/stream", "https://dashboard.twitch.tv/u/%s/stream-manager" % CHANNEL)
+        pg = page_for(ctx, "dashboard.twitch.tv", "https://dashboard.twitch.tv/u/%s/stream-manager" % CHANNEL)
         edit = pg.locator('button:has-text("Edit Stream Info"), [aria-label*="Edit Stream Info"]').first
         if edit.count(): edit.click(); time.sleep(2)
 
         if what in ("title", "golive"):
             title = clean(" ".join(sys.argv[2:]) or "Unity Plays RimWorld")
-            box = pg.locator('[data-a-target="stream-title-field"], input[name="title"]').first
+            box = pg.locator('#edit-broadcast-title-formgroup, [data-a-target="stream-title-field"]').first
             if box.count():
                 box.click(); box.fill(""); box.type(title, delay=12); print("title set:", title)
+            else:
+                raise SystemExit("refused: the title box was not found -- nothing saved")
 
         if what in ("category", "golive"):
             cat = " ".join(sys.argv[2:]) if what == "category" else "RimWorld"
-            box = pg.locator('[data-a-target="stream-game-field"], input[placeholder*="category" i]').first
+            box = pg.locator('#Category-Selector, [data-a-target="stream-game-field"]').first
             if box.count():
                 box.click(); box.fill(""); box.type(cat, delay=12); time.sleep(2)
                 pg.keyboard.press("ArrowDown"); pg.keyboard.press("Enter"); print("category set:", cat)

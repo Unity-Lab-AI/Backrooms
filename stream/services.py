@@ -218,11 +218,12 @@ def announce(line):
     except Exception:
         pass
 
-def start():
+def start(only=None):
     found = running()
     env = dict(os.environ, OWNER_LENT_MOUSE="1", PYTHONUNBUFFERED="1", STUDIO_PERSIST="1")
     if os.environ.get("TWITCH_CHANNEL") is None: env["TWITCH_CHANNEL"] = "unityplaysrimworld"
     for name, frag, cmd in SERVICES:
+        if only and name != only: continue
         if found.get(frag):
             print("%-11s already up (%s)" % (name, found[frag][0])); continue
         log = open(os.path.join(QA, "_svc_%s.log" % name), "ab", buffering=0)
@@ -230,12 +231,17 @@ def start():
                          **DETACH, env=env)
         print("%-11s started" % name); time.sleep(0.6)
     for name, frag, cmd, cwd in EXTRAS:
+        if only and name != only: continue
+        if name == "obs" and os.environ.get("GO_LIVE") != "1":
+            # OBS opens ONCE, at GO, already streaming -- never opened early and relaunched (that made two)
+            print("%-11s waiting for GO" % name); continue
         if found.get(frag): print("%-11s already up (%s)" % (name, found[frag][0])); continue
         if not os.path.exists(cmd[0]): print("%-11s SKIPPED (not installed: %s)" % (name, cmd[0])); continue
         log = open(os.path.join(QA, "_svc_%s.log" % name), "ab", buffering=0)
         subprocess.Popen(cmd, cwd=cwd or ROOT, stdout=log, stderr=log,
                          **DETACH, env=env)
         print("%-11s started" % name); time.sleep(1.0)
+    if only: return                       # one service: no overlay, no game, no panel, no bridge report
     for cmd in ONE_SHOTS:
         if os.path.exists(cmd[-1]):
             log = open(os.path.join(QA if "QA" in dir() else HERE, "_svc_oneshot.log"), "ab", buffering=0)
@@ -266,6 +272,23 @@ def start():
         print("rimbridge   UP   (RimWorld is running and the API answers)")
     except Exception:
         print("rimbridge   DOWN (launch RimWorld yourself -- this switch never touches the game)")
+
+def stop_one(name):
+    """Stop ONE named service and nothing else (OBS asked to close, never killed)."""
+    frag = next((f for n, f, *_ in SERVICES + EXTRAS + START_ONLY if n == name), None)
+    if frag is None: print("no service called", name); return
+    pids = running().get(frag, [])
+    if not pids: print("%-11s already down" % name); return
+    if WINDOWS:
+        verb = "$null = $pr.CloseMainWindow()" if name == "obs" else "Stop-Process -Id $p -Force"
+        subprocess.run(["powershell", "-NoProfile", "-Command",
+                        "foreach ($p in %s) { try { $pr = Get-Process -Id $p -ErrorAction Stop; %s } catch {} }"
+                        % (",".join(map(str, pids)), verb)], capture_output=True, text=True)
+    else:
+        for p in pids:
+            try: os.kill(p, 15)
+            except Exception: pass
+    print("%-11s stopped (%s)" % (name, " ".join(map(str, pids))))
 
 def stop():
     # the model runner first: it holds the GPU and it is nobody's child in the command-line table
@@ -317,20 +340,43 @@ def golive():
     """Relaunch OBS streaming. Called by keep-playing once the owner has said GO."""
     os.environ["GO_LIVE"] = "1"
     if WINDOWS:
-        subprocess.run(["taskkill", "/IM", "obs64.exe"], capture_output=True, text=True); time.sleep(6)
+        # asked to close (a forced kill makes OBS offer safe mode); wait until it is really gone
+        subprocess.run(["powershell", "-NoProfile", "-Command",
+                        "Get-Process obs64 -ErrorAction SilentlyContinue | ForEach-Object { $null = $_.CloseMainWindow() }"],
+                       capture_output=True, text=True)
+        subprocess.run(["taskkill", "/IM", "obs64.exe"], capture_output=True, text=True)
+        for _ in range(20):
+            time.sleep(1)
+            if "obs64" not in subprocess.run(["tasklist"], capture_output=True, text=True).stdout: break
+        else:
+            # still there (tray ignores close): force it; --disable-shutdown-check stops the safe-mode prompt
+            subprocess.run(["taskkill", "/F", "/IM", "obs64.exe"], capture_output=True, text=True); time.sleep(2)
     else:
         subprocess.run(["pkill", "-f", "obs"], capture_output=True, text=True); time.sleep(3)
     found = running()
     for name, frag, cmd, cwd in EXTRAS:
         if name != "obs": continue
         log = open(os.path.join(QA if "QA" in globals() else HERE, "_svc_obs.log"), "ab", buffering=0)
+        # a stale crash sentinel makes OBS stop on a safe-mode question and never stream; clear it
+        import shutil
+        shutil.rmtree(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(cmd[0]))),
+                                   "config", "obs-studio", ".sentinel"), ignore_errors=True)
+        # the command was built at import, before GO_LIVE was set -- add the flag here
+        if "--startstreaming" not in cmd: cmd = list(cmd) + ["--startstreaming"]
         subprocess.Popen(cmd, cwd=cwd or ROOT, stdout=log, stderr=log, **DETACH)
         print("obs         relaunched LIVE")
 
 cmd = (sys.argv[1] if len(sys.argv) > 1 else "status").lower()
 if cmd == "game": game(); raise SystemExit
 if cmd == "golive": golive(); raise SystemExit
-if cmd == "start":
+ONE = sys.argv[2].lower() if len(sys.argv) > 2 else None   # a name means THAT service only, never the rig
+if cmd == "start" and ONE:
+    start(ONE)
+elif cmd == "stop" and ONE:
+    stop_one(ONE)
+elif cmd == "restart" and ONE:
+    stop_one(ONE); time.sleep(2); start(ONE)
+elif cmd == "start":
     deps(); start(); print("---"); status(); announce("We are live, chat. Everything is up and I am back on the colony.")
 elif cmd == "stop":
     announce("That is me for tonight. Thanks for sitting with me."); time.sleep(3); stop()
