@@ -14,7 +14,7 @@ CFG = {
     "voice": dict(base="unsloth/Qwen3-8B", data=["voice.jsonl", "voice_stream.jsonl"], seq=3072, r=32, epochs=3, lr=1.5e-4, bs=8, ga=2,
                   targets=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]),
     # attention (full + linear) and the shared expert: every layer learns, the 256 routed experts stay as they are
-    "player": dict(base="Qwen/Qwen3.6-35B-A3B", data=["player.jsonl", "knowledge_game.jsonl", "knowledge_mods.jsonl", "knowledge_code.jsonl"], seq=20480, r=32, epochs=1, lr=1e-4, bs=1, ga=8,
+    "player": dict(base="Qwen/Qwen3.6-35B-A3B", data=["player.jsonl", "knowledge_game.jsonl", "knowledge_mods.jsonl", "knowledge_code.jsonl", "knowledge_walkthrough.jsonl"], seq=20480, r=32, epochs=1, lr=1e-4, bs=1, ga=8,
                    targets=["q_proj", "k_proj", "v_proj", "o_proj", "in_proj_qkv", "in_proj_z", "out_proj",
                             "gate_proj", "up_proj", "down_proj"]),
 }[KIND]
