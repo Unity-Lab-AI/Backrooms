@@ -56,9 +56,11 @@ SERVICES = [
     ("popups",      ".local/qa/popup-guard.py",         [PYW, os.path.join(QA, "popup-guard.py")]),
     ("clock",       ".local/qa/clock-guard.py",         [PYW, "-u", os.path.join(QA if "QA" in globals() else HERE, "clock-guard.py")]),
     ("heat",        ".local/qa/heat-guard.py",          [PYW, os.path.join(QA, "heat-guard.py")]),
+    ("camdir",      ".local/qa/cam-director.py",        [PYW, os.path.join(QA if "QA" in globals() else HERE, "cam-director.py")]),
+    ("followcrew",  ".local/qa/follow-crew.py",         [PYW, os.path.join(QA if "QA" in globals() else HERE, "follow-crew.py")]),
     ("cursorjobs",  ".local/qa/cursor-jobs.py",         [PYW, os.path.join(QA, "cursor-jobs.py")]),
     ("keepgoing",   ".local/qa/keep-playing.py",        [PYW, "-u", os.path.join(QA if "QA" in globals() else HERE, "keep-playing.py")]),
-    ("autopilot",   ".local/autopilot/autopilot.py",    [PYW, "-u", os.path.join(ROOT, ".local/autopilot/autopilot.py"), "--num-gpu", "0"]),
+    ("autopilot",   ".local/autopilot/autopilot.py",    [PYW, "-u", os.path.join(ROOT, ".local/autopilot/autopilot.py"), "--num-gpu", "0", "--think"]),
     ("admin",       "admin.py",               [PYW, "-u", os.path.join(HERE, "admin.py")]),
 ]
 # Runs once, pins the overlay window topmost and exits -- fired on start, never reported as a service.
