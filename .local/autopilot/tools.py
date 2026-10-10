@@ -345,11 +345,18 @@ class Toolbox:
                          "with the window minimised. cmd is one of set_zone_plant (x,z,plant e.g. Plant_Rice), "
                          "set_zone_sowing (x,z,allow), set_work_priority (pawn,work,level 0-4), set_bed_owner "
                          "(x,z,owner colonist|prisoner|slave), add_bill (x,z,recipe e.g. CookMealSimple,count), "
-                         "set_area (pawn,area label or empty). The result comes back from the game: read it.",
-                         S({"cmd": {"type": "string", "enum": ["set_zone_plant", "set_zone_sowing", "set_work_priority",
+                         "set_area (pawn,area label or empty). SETUP, one call each, no clicking: explore (every pawn "
+                         "through every door, digs into sealed rooms -- repeat until it says nothing left), rooms (lists "
+                         "explored rooms), stockpile_room (room id, mode food|nofood -- a stockpile filling that room), "
+                         "stockpile_filter (x,z,mode food|nofood|all, priority), beds, shelves, stove, crops (plant), "
+                         "hunt, day_one. The result comes back from the game: read it.",
+                         S({"cmd": {"type": "string", "enum": ["explore", "rooms", "stockpile_room", "stockpile_filter",
+                                                               "beds", "shelves", "stove", "crops", "hunt", "day_one",
+                                                               "set_zone_plant", "set_zone_sowing", "set_work_priority",
                                                                "set_bed_owner", "add_bill", "set_area"]},
                             "x": i, "z": i, "plant": s, "allow": b, "pawn": s, "work": s, "level": i,
-                            "owner": s, "recipe": s, "count": i, "area": s}, ["cmd"]), self.t_game_set),
+                            "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s},
+                          ["cmd"]), self.t_game_set),
             "twitch_chat": ("[STREAM] Type into the REAL Twitch chat (not just out loud). action: say | reply (needs "
                             "viewer) | title | category. Every line is filtered clean or refused.",
                             S({"action": {"type": "string", "enum": ["say", "reply", "title", "category"]},
@@ -558,7 +565,7 @@ class Toolbox:
         payload = {"cmd": cmd}
         for k, v in kw.items():
             if v is None or v == "": continue
-            if k in ("pawn", "work", "owner", "area", "plant", "recipe") and not re.fullmatch(r"[A-Za-z0-9_ .-]{1,60}", str(v)):
+            if k in ("pawn", "work", "owner", "area", "plant", "recipe", "room", "mode", "priority") and not re.fullmatch(r"[A-Za-z0-9_ .-]{1,60}", str(v)):
                 raise GuardError("bad value for " + k)
             payload[k] = v
         if cmd == "set_work_priority" and not (0 <= int(payload.get("level", -1)) <= 4):
