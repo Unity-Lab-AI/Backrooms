@@ -79,6 +79,7 @@ Owner: *"SAVE ALL THIS STUFF SO IT STARTS WITH uNITY PLAY RIMWORLD"* -- double-c
 - **Never click a toggle blind: read its state first.** Clicking `Allow sowing` twice puts sowing back on, so a second "fix" pass undoes the first.
 - **Match the game's own labels, by case-insensitive substring** -- the `Plant:` menu does not say *"Plant berry"*, and with 294 mods the strings are not guessable. Same for bills (*simple meal*, *butcher*).
 - **Real typing needs virtual-key codes:** `ord('e')` is not a key. Send `ord(c.upper())` for letters, `0x20` for space, `0xBD` for minus -- a digits-only helper silently types nothing into a search box.
+- **The camp perimeter is never another room's wall.** Running an interior room's ring out to the perimeter builds plain wall over embrasures and gates (done 2026-10-10 at x168: embrasures and the east gate walled shut), and a wall one cell inside the perimeter seals the crew away from their own firing lane. An interior room uses the perimeter as its outer side and places no wall of its own there.
 - **A room with no roof is not a room:** a cooler in an unroofed "room" cools open sky and food dumped outside rots. Mark the roof area, let it build, then judge the cooling.
 - **Research by the search box, not by dragging the tree** -- owner: *"its like u are open research skeen and dragging the wrong dirrectgion to explore it not using the search at all"*.
 - **Bills are "Do until you have X" with no skill restriction** -- everyone trains on them, and X is raised as the colony grows.
