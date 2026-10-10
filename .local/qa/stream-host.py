@@ -38,7 +38,7 @@ def _owner_handles():
     try: return {l.strip().lower() for l in open(f, encoding="utf-8") if l.strip()}
     except Exception: return set()
 OWNER = _owner_handles()
-SILENCE = 30
+SILENCE = 18      # owner: 30 s is the max, and the max should be rare
 
 spec = importlib.util.spec_from_file_location("sb", os.path.join(HERE, "stream-beat.py")); sb = importlib.util.module_from_spec(spec)
 sys.argv = [sys.argv[0]]; spec.loader.exec_module(sb)
@@ -71,7 +71,7 @@ def fresh(fact):
     fact = re.sub(r"Unity is", "I am", fact)
     try: hist = json.load(open(sb.HIST, encoding="utf-8"))
     except Exception: hist = []
-    for _ in range(3):
+    for attempt in range(3):
         # Owner, 2026-10-10: "u are not streaming like a emo goth chick 25 girl would" -- short, punchy, teasing,
         # gamer-girl cadence, never a narrator and never a press release.
         # Owner, 2026-10-10, verbatim: "it need s emo goth looking, girl like anccedotes and shit make her
