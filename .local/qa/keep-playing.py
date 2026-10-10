@@ -166,8 +166,9 @@ while True:
             print(stamp(), "GO received:", want[:120], flush=True)
             say("Got it. Launching the game and going live." if want in ("", "go")
                 else "Got it: %s. Launching the game and going live." % want[:80])
-            subprocess.run([sys.executable, SERVICES_PY, "game"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
+            # live FIRST, so the stream carries the game's loading screens, then the game
             subprocess.run([sys.executable, SERVICES_PY, "golive"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
+            subprocess.run([sys.executable, SERVICES_PY, "game"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
             open(os.path.join(HERE, "_new_colony.request"), "w", encoding="utf-8").write("Async Industries")
         req = os.path.join(HERE, "_new_colony.request")
         # start-scenario drives RimWorld's own pages through click_ui_target, which is an API call and works

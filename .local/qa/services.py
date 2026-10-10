@@ -231,6 +231,9 @@ def start(only=None):
         print("%-11s started" % name); time.sleep(0.6)
     for name, frag, cmd, cwd in EXTRAS:
         if only and name != only: continue
+        if name == "obs" and os.environ.get("GO_LIVE") != "1":
+            # OBS opens ONCE, at GO, already streaming -- never opened early and relaunched (that made two)
+            print("%-11s waiting for GO" % name); continue
         if found.get(frag): print("%-11s already up (%s)" % (name, found[frag][0])); continue
         if not os.path.exists(cmd[0]): print("%-11s SKIPPED (not installed: %s)" % (name, cmd[0])); continue
         log = open(os.path.join(HERE, "_svc_%s.log" % name), "ab", buffering=0)
@@ -336,13 +339,25 @@ def golive():
     """Relaunch OBS streaming. Called by keep-playing once the owner has said GO."""
     os.environ["GO_LIVE"] = "1"
     if WINDOWS:
-        subprocess.run(["taskkill", "/IM", "obs64.exe"], capture_output=True, text=True); time.sleep(6)
+        # asked to close (a forced kill makes OBS offer safe mode); wait until it is really gone
+        subprocess.run(["powershell", "-NoProfile", "-Command",
+                        "Get-Process obs64 -ErrorAction SilentlyContinue | ForEach-Object { $null = $_.CloseMainWindow() }"],
+                       capture_output=True, text=True)
+        subprocess.run(["taskkill", "/IM", "obs64.exe"], capture_output=True, text=True)
+        for _ in range(20):
+            time.sleep(1)
+            if "obs64" not in subprocess.run(["tasklist"], capture_output=True, text=True).stdout: break
+        else:
+            # still there (tray ignores close): force it; --disable-shutdown-check stops the safe-mode prompt
+            subprocess.run(["taskkill", "/F", "/IM", "obs64.exe"], capture_output=True, text=True); time.sleep(2)
     else:
         subprocess.run(["pkill", "-f", "obs"], capture_output=True, text=True); time.sleep(3)
     found = running()
     for name, frag, cmd, cwd in EXTRAS:
         if name != "obs": continue
         log = open(os.path.join(QA if "QA" in globals() else HERE, "_svc_obs.log"), "ab", buffering=0)
+        # the command was built at import, before GO_LIVE was set -- add the flag here
+        if "--startstreaming" not in cmd: cmd = list(cmd) + ["--startstreaming"]
         subprocess.Popen(cmd, cwd=cwd or ROOT, stdout=log, stderr=log, **DETACH)
         print("obs         relaunched LIVE")
 
