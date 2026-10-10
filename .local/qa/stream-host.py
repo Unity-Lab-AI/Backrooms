@@ -119,7 +119,7 @@ def fresh(fact):
                     "down a ", "lost a", "missing", "slime", "explod",
                     # scenes she made up ("smoldering ruins", "the goat got in the kitchen", "turn on the lights")
                     "smolder", "ruin", "smok", "goat", "kitchen", "lights", "alien",
-                    "spider", "hive", "infest", "insect", "sounds", "noise", "monster", "creature")
+                    "crafted", "mods", "spider", "hive", "infest", "insect", "sounds", "noise", "monster", "creature")
         if any(w in low for w in INVENTED) and not any(w in fact.lower() for w in INVENTED): continue
         # a colonist's name is not evidence the line is about the fact: "Unity is crafting some epic gear"
         # matched on the word Unity alone and went out, inventing the crafting. Names are excluded from the
