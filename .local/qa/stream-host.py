@@ -198,8 +198,13 @@ def state_facts():
             facts.append("my crew is %s, %d of us, fresh off the drop" % (", ".join(names), len(names)))
             facts.append("the clock is stopped on purpose while I set up storage, beds and food for %s" % ", ".join(names))
         lets = [l.get("label") for l in call("rimworld/list_letters").get("letters", []) if l.get("label")]
-        if lets:
-            facts.append("a message is waiting for me: " + lets[-1])
+        # a waiting letter is news ONCE, not a topic every 20 s (live: "authorization" six lines running)
+        global _told_letters
+        try: _told_letters
+        except NameError: _told_letters = set()
+        fresh_lets = [l for l in lets if l not in _told_letters]
+        if fresh_lets:
+            facts.append("a message is waiting for me: " + fresh_lets[-1]); _told_letters.add(fresh_lets[-1])
     except BaseException:
         pass
     if not facts:
