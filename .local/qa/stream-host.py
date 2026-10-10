@@ -106,7 +106,7 @@ def fresh(fact):
         if any(w in low for w in ("behold", "cosmos", " lo,", "witness")): continue
         # never the plumbing on stream (owner: "tell chat whats up too not the details tho")
         if re.search(r"connect|server|bridge|retry|retrying|loading the mod|crash|bug|error|offline|back online|"
-                     r"script|model|api|turn|tool", low): continue
+                     r"script|model|api|turn\b|tool", low): continue
         if any(n not in fact for n in re.findall(r"\d+", line)): continue
         # Owner, 2026-10-10: "your streamer script is not working well, it bariely everer updates".  What it
         # did update with was invented -- "expanding the lab", "building that greenhouse" -- none of which
