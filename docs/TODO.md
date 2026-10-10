@@ -158,3 +158,4 @@ The model decides WHAT; mod commands (RimroomsAutomationComponent / SetupTools*)
 - [ ] **Batch 4 -- building:** close a room (walls + door + roof), 3-wide halls, the mountain base layout, firebreaks, power conduit as one string.
 - [ ] **Batch 5 -- power, research, people, trade:** generator + batteries, research by the playbook's order, prisoners, guests and bed prices, leader/moral guide roles and rituals, trading by comms console.
 - [ ] **Then** a LoRA on the clean traces these tools produce (the owner's "agent train").
+- [ ] **Efficiency pass** -- owner, verbatim: *"and u need to shot for efficiency 14gig and 98% cpu is crazy but i get it isuppose"*. Measure per-process CPU/RAM/VRAM with the stream live; cut what costs most for least (pollers like the camera director and crew-follow, the webcam renderer's cadence, voice-model calls per minute); fewer model steps per job via the setup tools; consider the player at fewer threads when idle.
