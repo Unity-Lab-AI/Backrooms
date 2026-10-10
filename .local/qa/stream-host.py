@@ -202,7 +202,15 @@ while True:
     try:
         pos, msgs = read_inbox(pos)
         for who, text in msgs:
-            if who.lower() in OWNER: continue
+            if who.lower() in OWNER:
+                # the owner typing in Twitch chat is a GAME order for her (owner, 2026-10-10: "i told her to explor
+                # the hidden rroms and get outside her walls but she didnt do it" -- it had only been chat). Her
+                # guards still keep her to the game and the stream; this never reaches files, shell or accounts.
+                try:
+                    with open(os.path.join(ROOT, ".local", "autopilot", "owner-orders.txt"), "a", encoding="utf-8") as f:
+                        f.write("\n- OWNER in Twitch chat (game order, binding next turn): " + text[:300] + "\n")
+                except Exception: pass
+                continue
             if text == "(joined the stream)":
                 if who.lower() in greeted: continue
                 greeted.add(who.lower())

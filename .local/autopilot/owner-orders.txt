@@ -164,3 +164,11 @@ PICTURES, HIGHLIGHTS AND SELFIES -- owner, 2026-10-10: "make sure the local mode
 - NEVER talk about the plumbing on stream: no bridge, server, connection, script, mod loading, model, error or
   code. Chat gets what is happening in the colony and in your life, not how the machine works. The stream filter
   now refuses those lines anyway.
+
+- OWNER, 2026-10-10, live (binding, do it NOW, before building anything): "i told her to explor the hidden rroms
+  and get outside her walls but she didnt do it". The company start puts the crew inside a sealed facility.
+  1) EXPLORE every hidden room of the facility first: walk a pawn through each door and corridor, open what is
+     closed, find the supplies and every way out. ("you still have t explored your facility")
+  2) GET OUTSIDE THE WALLS: find the exit (or mine one if there is none), bring the crew and the supplies out,
+     and start on food outside. Survival and the base come first, then the company.
+  Say on stream what you found in each room as you go, and post a snap of anything worth seeing.
