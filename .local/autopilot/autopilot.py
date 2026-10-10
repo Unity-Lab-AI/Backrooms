@@ -241,7 +241,9 @@ def turn(toolbox, st, args, system, specs):
     # a conversation started while the game was down fills up with "no connection" turns and she keeps believing
     # it; the moment the game answers again the conversation starts fresh
     try:
-        toolbox.bridge.call("rimworld/get_game_info", {}); up = True
+        _gi = toolbox.bridge.call("rimworld/get_game_info", {})
+        # the bridge returns {"error": ...} instead of raising when the game is not up
+        up = not (isinstance(_gi, dict) and _gi.get("error"))
     except BaseException:
         up = False
     if not up and not args.dry_run:
