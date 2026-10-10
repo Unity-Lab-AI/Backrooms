@@ -240,6 +240,11 @@ class H(http.server.BaseHTTPRequestHandler):
                     f.write(chr(10) + "- TONIGHT, from the owner at GO: " + want + chr(10))
             return self._send(200, {"out": "GO received" + (" -- tonight: " + want if want else "")})
         if self.path == "/api/svc":
+            if body.get("action") == "start" and not body.get("name"):
+                # the owner's "start all" means GO: game, stream, colony -- not just "services already up"
+                if not os.path.exists(os.path.join(QA, "_go.request")):
+                    with open(os.path.join(QA, "_go.request"), "w", encoding="utf-8") as f: f.write("go")
+                    return self._send(200, {"out": "GO received -- launching the stream, then the game, then the colony"})
             with _lock:
                 return self._send(200, {"out": svc(body.get("action", "status"), body.get("name"))})
         if self.path == "/api/order":

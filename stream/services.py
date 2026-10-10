@@ -357,6 +357,10 @@ def golive():
     for name, frag, cmd, cwd in EXTRAS:
         if name != "obs": continue
         log = open(os.path.join(QA if "QA" in globals() else HERE, "_svc_obs.log"), "ab", buffering=0)
+        # a stale crash sentinel makes OBS stop on a safe-mode question and never stream; clear it
+        import shutil
+        shutil.rmtree(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(cmd[0]))),
+                                   "config", "obs-studio", ".sentinel"), ignore_errors=True)
         # the command was built at import, before GO_LIVE was set -- add the flag here
         if "--startstreaming" not in cmd: cmd = list(cmd) + ["--startstreaming"]
         subprocess.Popen(cmd, cwd=cwd or ROOT, stdout=log, stderr=log, **DETACH)
