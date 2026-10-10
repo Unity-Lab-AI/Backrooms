@@ -190,3 +190,27 @@ PICTURES, HIGHLIGHTS AND SELFIES -- owner, 2026-10-10: "make sure the local mode
   explore every room of the facility (walk a pawn through each door), then the initial setup -- food stockpile
   inside a roofed room, shelves, the stove bill, beds, a way to get weapons (none were on the map) -- then
   outside the walls.
+
+- OWNER in Twitch chat (game order, binding next turn): (joined the stream)
+
+- TONIGHT, from the owner at GO: go this time set all your initial shit to colonists set up and map start set up and when u get in gasme pause it and get everyone armed and explore first all hidden rroms and areas then get your shcelededs time and work prioriteis and zones growing and stockpiles in freexeser and normal ones all of it all perishable items go in freezer everything else in dry storage or specifics in spefic places.. ask me questions here if u need guidance
+
+- OWNER in Twitch chat (game order, binding next turn): hi
+
+- OWNER in Twitch chat (game order, binding next turn): (joined the stream)
+
+- SETUP HOLD -- owner, 2026-10-10, live: "she is letting time pass and hasnt set a priority or shelf or schedula
+  or anyof the multitude of things required beforoe the firest unpause". After landing the game is PAUSED and
+  stays paused (nothing will unpause it for you) until YOU have done the whole first-unpause checklist, using
+  game_set and the bridge while paused:
+    work priorities checked (day one set them: 1s Firefighting..Cooking, rest by skill, none blank)
+    schedule Anything, drug policy, everyone on Attack (day one set them) -- confirm, do not redo
+    stockpiles: a food stockpile inside a ROOFED room (filter: food only), a general stockpile for the rest
+    shelves placed in the storage rooms (blueprints are fine), set to the right filters
+    a stove/campfire with the bill: simple meals, Do until you have 30, no skill limit
+    beds under a roof for everyone
+    crops: a growing zone with food crops if there is soil
+    research chosen; leader and moral guide noted for the first ritual
+    weapons: none on the map -- queue a way to get them (crafting bench / trader) in the plan
+  Say each one on stream as you do it. When the list is done, unpause with pause_game {"pause": false} --
+  that ends the hold. The first rooms to explore go right after, with time running.

@@ -170,8 +170,11 @@ def day_one(auto):
             break
     print(stamp(), "day one:", (got or "no answer from the mod")[:400], flush=True)
     if got and "-> ok" in got.replace("\\", ""):
-        say("Crew is set: priorities, schedule, drug rules, everyone on attack, rifles in hand. Now the clock runs.")
-        gates_bridge_pause(False)
+        # owner, live: "she is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude
+        # of things required beforoe the firest unpause". Day one never unpauses: the game holds until she has done
+        # the whole first-unpause checklist and unpauses it herself.
+        open(os.path.join(HERE, "_setup_hold.flag"), "w").write(stamp())
+        say("Crew basics are set. The clock stays stopped until I have the stockpiles, shelves, bills and beds sorted.")
     else:
         say("Holding the pause until my crew is properly set up.")
 
@@ -297,6 +300,10 @@ while True:
             except Exception:
                 pass
         firing, st = gates.decide()
+        hold = os.path.join(HERE, "_setup_hold.flag")
+        if os.path.exists(hold) and st.get("ticks_moving"):
+            os.remove(hold)
+            print(stamp(), "setup hold ended: time was started on purpose", flush=True)
         top = firing[0]["id"] if firing else "none"
         print(stamp(), "gate:", top, "| food days:", round(st.get("meals", 0) * 0.9 / 4.8 + st.get("raw_food", 0) * 0.05 / 4.8, 2),
               "| game up:", game_up(), flush=True)
