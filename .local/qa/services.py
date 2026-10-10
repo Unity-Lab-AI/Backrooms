@@ -376,7 +376,9 @@ elif cmd == "stop" and ONE:
 elif cmd == "restart" and ONE:
     stop_one(ONE); time.sleep(2); start(ONE)
 elif cmd == "start":
-    deps(); start(); print("---"); status(); announce("We are live, chat. Everything is up and I am back on the colony.")
+    deps(); start(); print("---"); status()
+    if os.environ.get("NO_ANNOUNCE") != "1" and os.environ.get("GO_LIVE") == "1":
+        announce("We are live, chat. Everything is up and I am back on the colony.")
 elif cmd == "stop":
     announce("That is me for tonight. Thanks for sitting with me."); time.sleep(3); stop()
 elif cmd == "restart":
