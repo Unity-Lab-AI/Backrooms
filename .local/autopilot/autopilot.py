@@ -66,7 +66,7 @@ def ollama_chat(model, messages, tool_specs, opts):
     body = {"model": model, "messages": messages, "tools": tool_specs, "stream": False,
             "keep_alive": opts["keep_alive"],
             "options": {"num_ctx": opts["num_ctx"], "temperature": 0.5, "top_p": 0.9,
-                        "num_thread": int(os.environ.get("AUTOPILOT_THREADS", "14"))}}   # owner: "use as many as possible" -- 14 of 16 threads, 2 left for the game and the stream
+                        "num_thread": int(os.environ.get("AUTOPILOT_THREADS", "8"))}}   # 8 = physical cores; 14 made turns slower (threads stall on each other when the game takes a core)
     if opts.get("num_gpu") is not None:
         body["options"]["num_gpu"] = opts["num_gpu"]
     if opts.get("think") is not None:
@@ -202,6 +202,15 @@ def brief(toolbox, st, joins, msgs, runlist):
     parts.append("GAME STATE:\n" + toolbox.t_state())
     if runlist:
         parts.append("MAINTENANCE LIST (first FIX is your goal):\n" + runlist[-2500:])
+    # her scratch pad (owner: "does it need a scratch pad?") -- the plan she keeps between turns, near the end so
+    # the unchanging prefix above stays cached; she rewrites it with the note tool, name pad.md
+    try:
+        pad = open(guards.scratch_path("pad.md"), encoding="utf-8").read()[:2500]
+        parts.append("YOUR SCRATCH PAD (scratch/pad.md, your plan between turns). Do the first unticked item, then "
+                     "rewrite the whole pad with the note tool (name pad.md, append false), ticking it [x] and adding "
+                     "what you learned:" + chr(10) + pad)
+    except Exception:
+        pass
     parts.append("TURN %d. Follow the order of operations." % st["tick"])
     return "\n\n".join(parts)
 
