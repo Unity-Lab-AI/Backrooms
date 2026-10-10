@@ -113,7 +113,10 @@ def fresh(fact):
         # exist.  A line has to be about the fact it was given: it must share a real word with it, and it may
         # not name anything the colony does not have.
         INVENTED = ("lab", "laborator", "greenhouse", "factory", "reactor", "spaceship", "ship", "rocket",
-                    "mech", "robot", "drone", "turret", "nuke", "portal", "quantum", "server")
+                    "mech", "robot", "drone", "turret", "nuke", "portal", "quantum", "server",
+                    # calamities she made up on stream ("buildings on fire", "down a crew member", "alien slime")
+                    "fire", "burn", "flame", "dead", "died", "dying", "killed", "raid", "injur", "bleed",
+                    "down a ", "lost a", "missing", "slime", "explod")
         if any(w in low for w in INVENTED) and not any(w in fact.lower() for w in INVENTED): continue
         # a colonist's name is not evidence the line is about the fact: "Unity is crafting some epic gear"
         # matched on the word Unity alone and went out, inventing the crafting. Names are excluded from the
