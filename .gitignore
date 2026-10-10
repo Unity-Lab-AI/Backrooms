@@ -101,3 +101,12 @@ __pycache__/
 .claude/.camera.json
 .claude/.cam-highlight.json
 .claude/.popup.json
+
+# the local model's own brain is tracked; its scratch and secrets are not
+!.local/
+!.local/autopilot/
+!.local/autopilot/**
+.local/autopilot/scratch/
+.local/autopilot/secret-words.txt
+.local/autopilot/*.log
+.local/autopilot/__pycache__/
