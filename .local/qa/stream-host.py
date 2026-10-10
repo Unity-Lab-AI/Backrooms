@@ -145,7 +145,25 @@ BETWEEN_RUNS = [
     "I am between colonies right now, about to start a fresh one as the company",
     "my coffee is cold and the loading bar is still going",
     "fresh map in a minute, and this time I feed everybody before I build anything pretty",
-    "two hundred mods have to wake up before I can play, so bear with me"]
+    "two hundred mods have to wake up before I can play, so bear with me",
+    # true things about tonight's plan and herself -- enough of them that the repeat filter never runs her dry
+    "the plan tonight is a three hundred by three hundred map, spring start, forest with mountains",
+    "I want a mountain base this time, one door in, a three wide hallway down the middle",
+    "food first, always, the last colony starved and I am not doing that again",
+    "ask chat what the crew should build first once we land",
+    "ask chat if they would rather I hunt early or farm early",
+    "work priorities go in on day one, firefighting through cooking set to top for everyone",
+    "a roofed room for the food before anything pretty, rot is the enemy",
+    "the company is called Async Industries and the crew works for it",
+    "my coffee is cold again and I refuse to get up",
+    "I have a playlist going that is way too sad for a farming game",
+    "my hands are freezing, the room is cold and the stream is warm",
+    "ask chat what music they are listening to right now",
+    "I keep a list of every mistake from the last colony and it is long",
+    "the loading bar is moving, I promise, slowly",
+    "anyone new in chat, say hi, I see you",
+    "I eventually want this crew in space, but tonight it is dirt and berries",
+    "ask chat to name the first colonist who does something dumb"]
 
 def state_facts():
     facts = []
