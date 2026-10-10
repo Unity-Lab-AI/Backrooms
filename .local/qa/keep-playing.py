@@ -272,9 +272,19 @@ while True:
                     out = json.loads(_u.urlopen(_u.Request("http://127.0.0.1:11435/api/generate", json.dumps(body).encode(),
                                      {"Content-Type": "application/json"}), timeout=60).read())["response"]
                     out = "".join(ch for ch in out.strip().split(chr(10))[0] if ch.isalpha() or ch == " ").strip()[:24]
-                    return out if out and not _DIRTY.search(out) else fallback
+                    return out if out and not _DIRTY.search(out) and not _TOUCHY.search(out) else None
                 except Exception:
-                    return fallback
+                    return None
+            # the stream is clean: a name she reads out loud may not be a slur, atrocity or real-world violence
+            # (her model once picked the seed "terrorist")
+            _TOUCHY = re.compile(r"terror|nazi|hitler|isis|jihad|genocid|holocaust|rape|suicid|bomb|massacre|"
+                                 r"shoot|murder|kill|slave|lynch|pedo|cartel|nigg|fag|retard", re.I)
+            _pick = pick
+            def pick(what, fallback):
+                for _ in range(4):
+                    got = _pick(what, fallback)
+                    if got: return got
+                return fallback
             seed = pick("a one word seed for a new RimWorld planet", "nightshade").replace(" ", "").lower()
             faction = pick("a name for your colony's faction", "Pink Static")
             settlement = pick("a name for your first settlement, a mountain hideout", "Hollow Spire")
