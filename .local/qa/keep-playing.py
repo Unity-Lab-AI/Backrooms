@@ -274,6 +274,19 @@ while True:
                 print(stamp(), "no colonists on a map yet -- the colony request stays armed", flush=True)
 
 
+        # an open main tab (minimap, Operations, Work...) hides every selected pawn's buttons -- Draft included.
+        # Owner, live: "three peopel are there its selecting them but no pawn options apear like draft". Tabs the
+        # scripts or the model left open are closed whenever the owner is not at the game window.
+        if not game_up():
+            try:
+                _s, _b = gates._session()
+                _r = gates.bridge.exchange(_s, _b, "tools/call", {"name": "rimworld/get_ui_state", "arguments": {}})
+                _r = _r.get("result", _r); _r = _r.get("structuredContent", _r)
+                if _r.get("mainTabOpen") and not _r.get("floatMenuOpen"):
+                    gates.bridge.exchange(_s, _b, "tools/call", {"name": "rimworld/press_cancel", "arguments": {}})
+                    print(stamp(), "closed a main tab left open (%s) -- pawn buttons visible again" % _r.get("topWindowType"), flush=True)
+            except Exception:
+                pass
         firing, st = gates.decide()
         top = firing[0]["id"] if firing else "none"
         print(stamp(), "gate:", top, "| food days:", round(st.get("meals", 0) * 0.9 / 4.8 + st.get("raw_food", 0) * 0.05 / 4.8, 2),
