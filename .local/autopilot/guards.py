@@ -201,9 +201,17 @@ def clean_for_stream(text, max_len=320):
     if len(t) > max_len:
         cut = t[:max_len]
         t = cut[:cut.rfind(" ")] if " " in cut else cut
-    if len(t) < 2 or CLEAN_BLOCK.search(t) or EXTRA_BLOCK.search(t):
+    if len(t) < 2 or CLEAN_BLOCK.search(t) or EXTRA_BLOCK.search(t) or TECH_BLOCK.search(t):
         return None
     return t
+
+
+# Owner, 2026-10-10: "tell chat whats up too not the details tho" -- and live, she told chat "the bridge server is
+# being a total brat again and refusing connections, so I can't load the Backrooms mod". The plumbing is never
+# stream material (and that line was not even true). A line that talks about it is not said at all.
+TECH_BLOCK = re.compile(r"\b(bridge|server|servers|connection|connections|socket|port|api|script|scripts|"
+                        r"python|ollama|model|tokens?|prompt|mod loader|load(?:ing)? the (?:backrooms )?mod|"
+                        r"rimbridge|automation|autopilot|crash(?:ed|ing)?|bug(?:gy|s)?|error|exception|code)\b", re.I)
 
 
 def clean_viewer_name(who):

@@ -80,6 +80,15 @@ namespace RimroomsAsyncIndustries.Automation
         {
             if (Time.realtimeSinceStartup < nextCheck) { return; }
             nextCheck = Time.realtimeSinceStartup + 1f;
+            // a paused game does not tick, so the command channel is served from here while paused
+            try
+            {
+                if (Current.ProgramState == ProgramState.Playing && Find.TickManager != null && Find.TickManager.Paused)
+                {
+                    RimroomsAutomationComponent.ProcessInbox();
+                }
+            }
+            catch (Exception e) { Log.Warning("[Rimrooms][Automation] paused inbox: " + e.Message); }
             try
             {
                 if (!File.Exists(RequestPath) || Find.WindowStack == null || LongEventHandler.AnyEventNowOrWaiting) { return; }

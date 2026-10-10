@@ -79,10 +79,10 @@ def fresh(fact):
         # her own life. The hard rule stays -- never invent a game event, a name or a number. Her own life is
         # hers to talk about; the colony is only ever what the game actually shows.
         prompt = ("You are Unity: 25, emo goth, dark hair with pink streaks, chipped black nail polish, living "
-                  "on cold coffee and too little sleep. You stream RimWorld and you ARE one of the colonists. "
+                  "on too little sleep. You stream RimWorld and you ARE one of the colonists. "
                   "Talk like a real girl on a late-night stream to friends: short, dry, a bit sarcastic, warm "
-                  "underneath. Little asides about yourself are good -- the heat, your coffee, your music, your "
-                  "hands being cold, how long this shift has been. Do NOT narrate like a documentary and never "
+                  "underneath. Little asides about yourself are fine but rare and always different -- never coffee, never "
+                  "cold hands, never being tired or sleepy. Do NOT narrate like a documentary and never "
                   "say behold, lo, witness, cosmos, indeed, truly or fellow. First person always (I, me, my "
                   "crew), never your own name in the third person. ONE spoken line, at most 20 words, about "
                   "this and nothing else: \"%s\". You may add your own feeling about it, but invent NO events, "
@@ -122,6 +122,11 @@ def fresh(fact):
         # went quiet for twelve minutes because every candidate line missed the exact word). Insist on it for
         # the first attempts, then accept anything that clears the invention and third-person checks.
         if attempt < 2 and keys and not (keys & set(re.findall(r"[a-z]{4,}", low))): continue
+        # owner, 2026-10-10: "wehy the fuck wont she shut up about cold hands and warm coffee" -- those themes are
+        # banned, and no other personal theme may come back within the last ten lines
+        if re.search(r"coffee|caffein|cold|freez|frozen|hands|fingers|sleep|tired|exhaust|nap", low): continue
+        THEMES = ("music", "playlist", "song", "tea", "energy drink", "winter", "snack", "cat")
+        if any(t in low and any(t in h.lower() for h in hist[-10:]) for t in THEMES): continue
         if any(difflib.SequenceMatcher(None, low, h.lower()).ratio() > 0.6 for h in hist[-30:]): continue
         json.dump((hist + [line])[-30:], open(sb.HIST, "w", encoding="utf-8")); return line
     return None
@@ -143,7 +148,6 @@ JOB = {"Hunt": "out hunting", "Mine": "digging rock", "FinishFrame": "building",
 BETWEEN_RUNS = [
     "the game is loading its mod list and I am waiting on it like everyone else",
     "I am between colonies right now, about to start a fresh one as the company",
-    "my coffee is cold and the loading bar is still going",
     "fresh map in a minute, and this time I feed everybody before I build anything pretty",
     "two hundred mods have to wake up before I can play, so bear with me",
     # true things about tonight's plan and herself -- enough of them that the repeat filter never runs her dry
@@ -155,9 +159,7 @@ BETWEEN_RUNS = [
     "work priorities go in on day one, firefighting through cooking set to top for everyone",
     "a roofed room for the food before anything pretty, rot is the enemy",
     "the company is called Async Industries and the crew works for it",
-    "my coffee is cold again and I refuse to get up",
     "I have a playlist going that is way too sad for a farming game",
-    "my hands are freezing, the room is cold and the stream is warm",
     "I am curious what music chat is listening to -- put it to them as a question",
     "I keep a list of every mistake from the last colony and it is long",
     "the loading bar is moving, I promise, slowly",
@@ -200,7 +202,15 @@ while True:
     try:
         pos, msgs = read_inbox(pos)
         for who, text in msgs:
-            if who.lower() in OWNER: continue
+            if who.lower() in OWNER:
+                # the owner typing in Twitch chat is a GAME order for her (owner, 2026-10-10: "i told her to explor
+                # the hidden rroms and get outside her walls but she didnt do it" -- it had only been chat). Her
+                # guards still keep her to the game and the stream; this never reaches files, shell or accounts.
+                try:
+                    with open(os.path.join(ROOT, ".local", "autopilot", "owner-orders.txt"), "a", encoding="utf-8") as f:
+                        f.write("\n- OWNER in Twitch chat (game order, binding next turn): " + text[:300] + "\n")
+                except Exception: pass
+                continue
             if text == "(joined the stream)":
                 if who.lower() in greeted: continue
                 greeted.add(who.lower())
