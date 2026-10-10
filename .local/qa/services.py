@@ -363,6 +363,11 @@ def game():
 
 def obs_ws():
     """OBS's own websocket (127.0.0.1:4455) -- scene switches and stream start without restarting OBS."""
+    import socket as _so
+    try:
+        _so.create_connection(("127.0.0.1", 4455), timeout=1).close()   # not up: say nothing, no traceback
+    except OSError:
+        return None
     try:
         import obsws_python as obs
         return obs.ReqClient(host="127.0.0.1", port=4455, timeout=4)
