@@ -160,7 +160,23 @@ class Toolbox:
         self.local = self._local_tools()
 
     # -- tool specs for Ollama --------------------------------------------------------------------------------
+    # The tools that actually play the colony. Owner: "no she has to do it" -- so she has to be fast, and 72 tool
+    # definitions (~9k tokens) were re-read on CPU every turn. Camera minutiae, UI layout, tab and save plumbing
+    # stay registered (a call to them still works) but are not offered in the prompt.
+    CORE = {"game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "plan", "webcam", "snap",
+            "twitch_chat", "note", "read_doc", "run_list", "empire_pass", "play_slices",
+            "game_apply_architect_designator", "game_select_architect_designator", "game_list_architect_designators",
+            "game_list_architect_categories", "game_set_zone_target", "game_list_zones", "game_list_areas",
+            "game_get_cell_info", "game_get_cells_info", "game_select_pawn", "game_set_draft", "game_execute_gizmo",
+            "game_list_selected_gizmos", "game_get_context_menu_options", "game_execute_context_menu_option",
+            "game_right_click_cell", "game_drag_cell", "game_list_letters", "game_open_letter", "game_dismiss_letter",
+            "game_pause_game", "game_set_time_speed", "game_jump_camera_to_cell", "game_list_colonists",
+            "game_take_screenshot", "game_list_alerts", "game_close_window", "game_press_accept"}
+
     def specs(self):
+        return [sp for sp in self._all_specs() if sp["function"]["name"] in self.CORE]
+
+    def _all_specs(self):
         specs = []
         for name, t in sorted(self.bridge_schemas.items()):
             params = json.loads(json.dumps(t.get("inputSchema") or {"type": "object", "properties": {}}))
@@ -276,6 +292,10 @@ class Toolbox:
             "reply_chat": ("[STREAM] Answer a Twitch viewer by name, out loud and in the overlay chat. chat_id is the "
                            "number given with their message.", S({"chat_id": i, "viewer": s, "text": s},
                                                                   ["chat_id", "viewer", "text"]), self.t_reply),
+            "plan": ("Big planning only (a new base layout, a raid plan, the mountain move, the gate, the space push). "
+                     "Owner: \"thinking only for massive plaanning needs and she voice it first and pouses\". Say on "
+                     "stream what you are planning, the game is paused, and your NEXT turn thinks deeply. Never for "
+                     "ordinary moves.", S({"what": s}, ["what"]), self.t_plan),
             "webcam": ("[STREAM] Re-render Unity's webcam with a mood and a short clean caption (raids, deaths, wins, "
                        "chat moments).", S({"mood": {"type": "string", "enum": list(MOODS)}, "caption": s},
                                            ["mood", "caption"]), self.t_webcam),
@@ -423,7 +443,9 @@ class Toolbox:
         if self.dry:
             log("DRY-RUN would game_set", payload)
             return "dry-run: not executed"
-        return run_script("automate", ["raw", json.dumps(payload)], timeout=90)
+        # every value goes as a quoted string: the mod's flat reader swallowed the rest of the line after a bare
+        # number ('"level": 1, "pawn": "Gee"' came back "no colonist"); the mod parses numbers out of strings fine
+        return run_script("automate", ["raw", json.dumps({k: str(v) for k, v in payload.items()})], timeout=90)
 
     def t_twitch(self, action, text, viewer=None):
         clean = guards.clean_for_stream(text, max_len=400)
@@ -439,6 +461,20 @@ class Toolbox:
             log("DRY-RUN would twitch", args)
             return "dry-run: not executed"
         return run_script("twitch", args, timeout=90)
+
+    def t_plan(self, what):
+        line = guards.clean_for_stream("Give me a second, chat, I am planning " + (what or "the next big step") +
+                                       ". Pausing while I think it through.", max_len=200)
+        if self.dry:
+            return "dry-run: not executed"
+        if line:
+            self.t_say(line)
+        try:
+            self.bridge.call("rimworld/pause_game", {"pause": True})
+        except Exception:
+            pass
+        self.think_next = True
+        return "paused and announced; your next turn thinks deeply -- plan it, then unpause when the plan is set"
 
     def t_webcam(self, mood, caption):
         if mood not in MOODS:

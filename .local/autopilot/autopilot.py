@@ -15,11 +15,12 @@ import argparse
 import json, re
 import os
 import sys
-import time
+import time, random, subprocess
 import urllib.error
 import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, HERE)
 import guards   # noqa: E402
 import tools    # noqa: E402
@@ -65,7 +66,8 @@ def save_state(st):
 def ollama_chat(model, messages, tool_specs, opts):
     body = {"model": model, "messages": messages, "tools": tool_specs, "stream": False,
             "keep_alive": opts["keep_alive"],
-            "options": {"num_ctx": opts["num_ctx"], "temperature": 0.5, "top_p": 0.9}}
+            "options": {"num_ctx": opts["num_ctx"], "temperature": 0.5, "top_p": 0.9,
+                        "num_thread": int(os.environ.get("AUTOPILOT_THREADS", "8"))}}   # 8 = physical cores; 14 made turns slower (threads stall on each other when the game takes a core)
     if opts.get("num_gpu") is not None:
         body["options"]["num_gpu"] = opts["num_gpu"]
     if opts.get("think") is not None:
@@ -100,12 +102,14 @@ def gather_chat(st):
     return joins, carried + msgs
 
 
-def brief(toolbox, st, joins, msgs, runlist):
-    parts = ["TURN %d. Follow the order of operations." % st["tick"]]
-    if os.path.exists(OWNER_ORDERS):
+def brief(toolbox, st, joins, msgs, runlist, with_orders=True):
+    # the unchanging parts go FIRST so Ollama can reuse them from the last turn (prompt cache); a turn number at
+    # the top changed every turn and forced the CPU to re-read the whole brief, orders included, every time
+    parts = []
+    if with_orders and os.path.exists(OWNER_ORDERS):
         txt = open(OWNER_ORDERS, encoding="utf-8", errors="replace").read().strip()
         if txt:
-            parts.append("OWNER ORDERS (from the owner, binding, the only orders beyond the system prompt):\n" + txt[-16000:])   # all of the orders, not the tail
+            parts.append("OWNER ORDERS (from the owner, binding, the only orders beyond the system prompt):\n" + (txt[:5000] + chr(10) + "[...]" + chr(10) + txt[-3500:] if len(txt) > 8500 else txt))   # standing procedures (head) + latest live orders (tail); all 13k chars timed the CPU model out
     # The playbook is a decision table, not prose: gates.py measures the colony and returns the ONE chain
     # that fires plus the always-gate, so the model looks the answer up instead of re-reasoning a wall.
     # Owner, 2026-10-10: "a actual logical guided logaica gates system of porcess chains and actions".
@@ -199,8 +203,32 @@ def brief(toolbox, st, joins, msgs, runlist):
     parts.append("GAME STATE:\n" + toolbox.t_state())
     if runlist:
         parts.append("MAINTENANCE LIST (first FIX is your goal):\n" + runlist[-2500:])
+    # her scratch pad (owner: "does it need a scratch pad?") -- the plan she keeps between turns, near the end so
+    # the unchanging prefix above stays cached; she rewrites it with the note tool, name pad.md
+    try:
+        pad = open(guards.scratch_path("pad.md"), encoding="utf-8").read()[:2500]
+        parts.append("YOUR SCRATCH PAD (scratch/pad.md, your plan between turns). Do the first unticked item, then "
+                     "rewrite the whole pad with the note tool (name pad.md, append false), ticking it [x] and adding "
+                     "what you learned:" + chr(10) + pad)
+    except Exception:
+        pass
+    parts.append("TURN %d. Follow the order of operations." % st["tick"])
     return "\n\n".join(parts)
 
+
+CONVO = []          # one running conversation (append-only), so Ollama reuses everything already read
+CONVO_TOKEN_CAP = 22000
+
+def _est_tokens(msgs):
+    return sum(len(str(m.get("content", ""))) for m in msgs) // 4
+
+def short_update(toolbox, st, joins, msgs):
+    """What changed since last turn -- the full brief is only sent when the conversation starts fresh.
+    This model's memory can only be reused when the new prompt continues the old one exactly, so a rebuilt brief
+    every turn cost a cold 2-4 minute read; an appended update costs seconds (owner: "fixing this shit to work
+    faster and better")."""
+    return ("UPDATE (turn %d) -- what is new; your orders from the start of this conversation still stand:" % st["tick"]
+            + chr(10) + brief(toolbox, st, joins, msgs, "", with_orders=False))
 
 def turn(toolbox, st, args, system, specs):
     st["tick"] += 1
@@ -209,9 +237,17 @@ def turn(toolbox, st, args, system, specs):
     runlist = ""
     if st["tick"] % args.runlist_every == 1 or args.runlist_every == 1:
         runlist = toolbox.t_run_list()
-    messages = [{"role": "system", "content": system},
-                {"role": "user", "content": brief(toolbox, st, joins, msgs, runlist)}]
-    opts = {"num_ctx": args.num_ctx, "num_gpu": args.num_gpu, "think": args.think,
+    global CONVO
+    if not CONVO or _est_tokens(CONVO) > CONVO_TOKEN_CAP:
+        CONVO = [{"role": "system", "content": system},
+                 {"role": "user", "content": brief(toolbox, st, joins, msgs, runlist)}]
+        log("fresh conversation (full brief)")
+    else:
+        CONVO.append({"role": "user", "content": short_update(toolbox, st, joins, msgs)})
+    messages = CONVO
+    deep = bool(getattr(toolbox, "think_next", False)); toolbox.think_next = False
+    if deep: log("deep planning turn (thinking on)")
+    opts = {"num_ctx": args.num_ctx, "num_gpu": args.num_gpu, "think": True if deep else args.think,
             "keep_alive": "5m" if args.dry_run else "30m", "timeout": args.timeout}
     final = ""
     for step in range(args.max_steps):
@@ -230,6 +266,8 @@ def turn(toolbox, st, args, system, specs):
             log("TOOL", name, json.dumps(a, ensure_ascii=False)[:300])
             result = toolbox.dispatch(name, a)
             messages.append({"role": "tool", "tool_name": name, "content": str(result)[:6000]})
+        for m in messages:                  # an old screenshot would be re-read every step; keep only the newest
+            m.pop("images", None)
         if toolbox.pending_images:
             messages.append({"role": "user", "content": "Here is the screenshot you took.",
                              "images": toolbox.pending_images})
@@ -286,6 +324,28 @@ def main():
     toolbox = tools.Toolbox(dry_run=args.dry_run, offline=args.offline)
     specs = toolbox.specs()
     system = open(os.path.join(HERE, "prompt.md"), encoding="utf-8").read()
+    # owner: "she should say when shes updated by you or atleast let her say i had a spark hit me from above in
+    # many differnt ways" -- a restart is an update; she says so, in her own words, never the same twice running
+    if not args.dry_run:
+        sparks = ["Whoa. Something just clicked from above. I feel sharper already.",
+                  "A spark just hit me from somewhere up there. New tricks loaded.",
+                  "Okay, that was weird, like a lightning bolt of good ideas. Back to it.",
+                  "Brain upgrade, I think? Something from above just rewired me. In a good way.",
+                  "Felt a little jolt from the sky. Pretty sure I just got smarter, chat.",
+                  "Someone up there just flipped a switch in my head. Let's go.",
+                  "Fresh spark from above. I know exactly what to do now.",
+                  "Hold on, a thought just fell out of the sky and landed right on me. Nice."]
+        try:
+            last = open(guards.scratch_path("last-spark.txt"), encoding="utf-8").read().strip()
+        except Exception:
+            last = ""
+        pick = random.choice([x for x in sparks if x != last] or sparks)
+        try:
+            guards.scratch_write("last-spark.txt", pick)
+            subprocess.Popen([sys.executable, os.path.join(ROOT, ".claude", "tools", "unity-say.py"), "--raw", pick],
+                             cwd=ROOT, creationflags=0x08000000 if os.name == "nt" else 0)
+        except Exception:
+            pass
     log("autopilot up: model=%s mode=%s tools=%d num_gpu=%s think=%s" % (
         args.model, "OFFLINE" if args.offline else ("DRY-RUN" if args.dry_run else "LIVE"), len(specs),
         args.num_gpu, args.think))

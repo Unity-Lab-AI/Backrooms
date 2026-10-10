@@ -60,7 +60,7 @@ SERVICES = [
     ("followcrew",  ".local/qa/follow-crew.py",         [PYW, os.path.join(QA if "QA" in globals() else HERE, "follow-crew.py")]),
     ("cursorjobs",  ".local/qa/cursor-jobs.py",         [PYW, os.path.join(QA, "cursor-jobs.py")]),
     ("keepgoing",   ".local/qa/keep-playing.py",        [PYW, "-u", os.path.join(QA if "QA" in globals() else HERE, "keep-playing.py")]),
-    ("autopilot",   ".local/autopilot/autopilot.py",    [PYW, "-u", os.path.join(ROOT, ".local/autopilot/autopilot.py"), "--num-gpu", "0", "--think"]),
+    ("autopilot",   ".local/autopilot/autopilot.py",    [PYW, "-u", os.path.join(ROOT, ".local/autopilot/autopilot.py"), "--num-gpu", "0"]),
     ("admin",       "admin.py",               [PYW, "-u", os.path.join(HERE, "admin.py")]),
 ]
 # Runs once, pins the overlay window topmost and exits -- fired on start, never reported as a service.
@@ -147,6 +147,32 @@ def deps():
             subprocess.Popen([OLLAMA, "pull", m], stdout=log, stderr=log,
                              **DETACH)
             print("model       %s pulling in the background" % m)
+    # the voice gets its OWN Ollama on 11435 (owner, live: "she is cycling through the smae fucking responses"):
+    # on the shared server every voice line queued behind the 35B player and timed out, so she fell back to a
+    # small fixed pool. Two servers, two queues; the voice never waits on the player.
+    def vapi(path, data=None, timeout=8):
+        req = urllib.request.Request("http://127.0.0.1:11435" + path,
+                                     data=(json.dumps(data).encode() if data else None),
+                                     headers={"Content-Type": "application/json"})
+        return urllib.request.urlopen(req, timeout=timeout).read()
+    try:
+        vapi("/api/version"); print("ollama-voice already up")
+    except Exception:
+        log = open(os.path.join(QA, "_svc_ollama_voice.log"), "ab", buffering=0)
+        subprocess.Popen([OLLAMA, "serve"], stdout=log, stderr=log, env=dict(os.environ, OLLAMA_HOST="127.0.0.1:11435"),
+                         **DETACH)
+        for _ in range(40):
+            time.sleep(1)
+            try: vapi("/api/version"); break
+            except Exception: pass
+        print("ollama-voice started on 11435")
+    try:
+        vapi("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "keep_alive": "30m",
+                               "options": {"num_ctx": 4096, "num_predict": 1}}, timeout=180)
+        print("model       %s warm on the voice server" % VOICE)
+    except Exception as e:
+        print("model       %s voice warm-up skipped (%s)" % (VOICE, str(e)[:40]))
+    return
     try:
         api("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "keep_alive": "30m",
                               "options": {"num_ctx": 4096, "num_predict": 1}}, timeout=180)

@@ -119,6 +119,13 @@ def model_needs(passes):
         subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1"), capture_output=True, text=True, timeout=900,
                        creationflags=0x08000000 if os.name == "nt" else 0)
         return
+    # 2b. the model runs below normal priority: Windows shares every core, and this way the game, OBS and the voice
+    # always win a contended core while the model still gets every spare cycle (owner: "what about windows will it
+    # share"). Ollama starts a new llama-server per model load, so it is re-applied every pass.
+    if os.name == "nt":
+        subprocess.run(["powershell", "-NoProfile", "-Command",
+                        "Get-Process llama-server -EA SilentlyContinue | ?{ $_.PriorityClass -ne 'BelowNormal' } | %{ $_.PriorityClass='BelowNormal' }"],
+                       capture_output=True, text=True, creationflags=0x08000000)
     # 3. its own process: if the player died, restart it
     out = subprocess.run([sys.executable, SERVICES, "status"], cwd=ROOT, capture_output=True, text=True,
                          creationflags=0x08000000 if os.name == "nt" else 0).stdout
@@ -170,8 +177,11 @@ def day_one(auto):
             break
     print(stamp(), "day one:", (got or "no answer from the mod")[:400], flush=True)
     if got and "-> ok" in got.replace("\\", ""):
-        say("Crew is set: priorities, schedule, drug rules, everyone on attack, rifles in hand. Now the clock runs.")
-        gates_bridge_pause(False)
+        # owner, live: "she is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude
+        # of things required beforoe the firest unpause". Day one never unpauses: the game holds until she has done
+        # the whole first-unpause checklist and unpauses it herself.
+        open(os.path.join(HERE, "_setup_hold.flag"), "w").write(stamp())
+        say("Crew basics are set. The clock stays stopped until I have the stockpiles, shelves, bills and beds sorted.")
     else:
         say("Holding the pause until my crew is properly set up.")
 
@@ -242,7 +252,7 @@ while True:
                             "options": {"temperature": 1.0, "num_predict": 12, "num_ctx": 2048},
                             "prompt": "You are Unity, a 25 year old emo goth streamer. Give " + what +
                                       ". Reply with the name only, one to three words, letters and spaces only, clean."}
-                    out = json.loads(_u.urlopen(_u.Request("http://127.0.0.1:11434/api/generate", json.dumps(body).encode(),
+                    out = json.loads(_u.urlopen(_u.Request("http://127.0.0.1:11435/api/generate", json.dumps(body).encode(),
                                      {"Content-Type": "application/json"}), timeout=60).read())["response"]
                     out = "".join(ch for ch in out.strip().split(chr(10))[0] if ch.isalpha() or ch == " ").strip()[:24]
                     return out if out and not _DIRTY.search(out) else fallback
@@ -297,6 +307,10 @@ while True:
             except Exception:
                 pass
         firing, st = gates.decide()
+        hold = os.path.join(HERE, "_setup_hold.flag")
+        if os.path.exists(hold) and st.get("ticks_moving"):
+            os.remove(hold)
+            print(stamp(), "setup hold ended: time was started on purpose", flush=True)
         top = firing[0]["id"] if firing else "none"
         print(stamp(), "gate:", top, "| food days:", round(st.get("meals", 0) * 0.9 / 4.8 + st.get("raw_food", 0) * 0.05 / 4.8, 2),
               "| game up:", game_up(), flush=True)
