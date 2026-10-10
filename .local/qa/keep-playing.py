@@ -197,6 +197,7 @@ SERVICES_PY = os.path.join(ROOT, "stream", "services.py")
 GO = os.path.join(HERE, "_go.request")
 NOWIN = {"creationflags": 0x08000000} if os.name == "nt" else {}
 asked = False
+went = False      # GO handled in this run (a GO armed before start must go live too, not only one answered after asking)
 passes = 0
 while True:
     try:
@@ -214,7 +215,8 @@ while True:
                 say("fact: everything is up; waiting for the owner to press GO to start the stream and the game")
                 print(stamp(), "asked the owner for GO; waiting", flush=True)
             time.sleep(10); continue
-        if asked:
+        if not went:
+            went = True
             asked = False
             try: os.remove(os.path.join(HERE, "_asked.flag"))
             except OSError: pass
