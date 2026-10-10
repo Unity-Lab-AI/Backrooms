@@ -376,7 +376,14 @@ def main():
         if args.once or (args.turns and n >= args.turns):
             break
         if not busy:
-            time.sleep(args.gap)
+            # rest when calm (owner: "cpu is burning at 99%"): while her pad still has open setup items she works
+            # back to back; once everything on it is ticked she thinks every 45 s instead, unless chat is waiting
+            try:
+                pad = open(guards.scratch_path("pad.md"), encoding="utf-8").read()
+                calm = "- [ ]" not in pad
+            except Exception:
+                calm = False
+            time.sleep(45 if calm else args.gap)
     log("autopilot stopped")
 
 

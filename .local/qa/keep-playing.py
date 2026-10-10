@@ -122,7 +122,11 @@ def model_needs(passes):
     # 2b. the model runs below normal priority: Windows shares every core, and this way the game, OBS and the voice
     # always win a contended core while the model still gets every spare cycle (owner: "what about windows will it
     # share"). Ollama starts a new llama-server per model load, so it is re-applied every pass.
-    if os.name == "nt":
+    global _last_prio
+    try: _last_prio
+    except NameError: _last_prio = 0
+    if os.name == "nt" and time.time() - _last_prio > 300:     # a PowerShell launch every pass was itself a cost
+        _last_prio = time.time()
         subprocess.run(["powershell", "-NoProfile", "-Command",
                         "Get-Process llama-server -EA SilentlyContinue | ?{ $_.PriorityClass -ne 'BelowNormal' } | %{ $_.PriorityClass='BelowNormal' }; Get-Process RimWorldWin64,obs64 -EA SilentlyContinue | ?{ $_.PriorityClass -ne 'AboveNormal' } | %{ $_.PriorityClass='AboveNormal' }"],
                        capture_output=True, text=True, creationflags=0x08000000)
@@ -218,6 +222,13 @@ while True:
             print(stamp(), "GO received:", want[:120], flush=True)
             # never read the owner's directive aloud -- it is an order to her, not a line for the stream
             say("Got it. Launching the game and going live. Give me a minute while two hundred mods wake up.")
+            # a NEW stream each start (owner: "make sure it starts a new stream"): fresh title, then OBS live
+            try:
+                subprocess.run([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "title",
+                                "Unity Plays RimWorld -- fresh company colony, " + time.strftime("%b %d")],
+                               cwd=ROOT, capture_output=True, text=True, timeout=90, **NOWIN)
+            except Exception as e:
+                print(stamp(), "title not set:", e, flush=True)
             # live FIRST, so the stream carries the game's loading screens, then the game
             subprocess.run([sys.executable, SERVICES_PY, "golive"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
             subprocess.run([sys.executable, SERVICES_PY, "game"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
