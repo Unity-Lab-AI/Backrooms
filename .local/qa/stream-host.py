@@ -204,6 +204,8 @@ while True:
     try:
         pos, msgs = read_inbox(pos)
         for who, text in msgs:
+            if who.lower() in ("unityplaysrimworld", os.environ.get("TWITCH_CHANNEL", "unityplaysrimworld").lower()):
+                continue                  # her own chat lines come back through the bridge; never answer herself
             if who.lower() in OWNER:
                 # the owner typing in Twitch chat is a GAME order for her (owner, 2026-10-10: "i told her to explor
                 # the hidden rroms and get outside her walls but she didnt do it" -- it had only been chat). Her
