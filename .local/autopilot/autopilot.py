@@ -105,7 +105,7 @@ def brief(toolbox, st, joins, msgs, runlist):
     if os.path.exists(OWNER_ORDERS):
         txt = open(OWNER_ORDERS, encoding="utf-8", errors="replace").read().strip()
         if txt:
-            parts.append("OWNER ORDERS (from the owner, binding, the only orders beyond the system prompt):\n" + txt[-16000:])   # all of the orders, not the tail
+            parts.append("OWNER ORDERS (from the owner, binding, the only orders beyond the system prompt):\n" + (txt[:5000] + chr(10) + "[...]" + chr(10) + txt[-3500:] if len(txt) > 8500 else txt))   # standing procedures (head) + latest live orders (tail); all 13k chars timed the CPU model out
     # The playbook is a decision table, not prose: gates.py measures the colony and returns the ONE chain
     # that fires plus the always-gate, so the model looks the answer up instead of re-reasoning a wall.
     # Owner, 2026-10-10: "a actual logical guided logaica gates system of porcess chains and actions".
