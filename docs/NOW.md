@@ -89,7 +89,7 @@ A room with no roof is not a room · blueprints need material on site or the paw
 | Colony | **none** — equator camp abandoned (0.02 days of food at the end); company colony armed |
 | Game | down (killed on the owner's order); the switch starts it |
 | Stack | down; **16/16 verified** against the files |
-| Branch | `feature/bug-testing`, last commit **e3afb40**, pushed to `github` |
+| Branch | **cascaded 2026-10-10:** `feature/bug-testing` a13d86d → PR #1 → `develop` b932ea0 → PR #2 → `main` 3d4e535, all on `github`. `.local/` scripts ship (secrets, profiles, caches, binaries excluded). **Open hazard:** the remote carries both `Main` (stale, 48a8f8b) and `main` — a case collision that breaks `git fetch` on Windows; `Main` should be deleted (owner's call) |
 | Forgejo | still refuses on access rights |
 | TEST | 62 → **59** tonight: QoL feature availability, the weird route thing, duplicate Defs on the clean 294 load. Two live-log defects in TODO: `ITab_Bills` float-menu NRE, out-of-bounds explosion spam. World-exit return gate proved; its open half (name the destination before committing) stays `[~]` |
 
