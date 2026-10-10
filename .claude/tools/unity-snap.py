@@ -62,6 +62,17 @@ def text(d, xy, s, size, color):
     d.text((x, y), s, font=f, fill=color)
 
 
+def _mark_highlight():
+    """The webcam panel shows a highlight for at most ~20 s, then cam-director.py puts Unity back up (owner,
+    2026-10-09: "leave the profile pic of ur up more and the slide show highlights just intermittently for liek
+    20 second max so it settle on a new you doing things")."""
+    try:
+        import json as _j, time as _t
+        _j.dump({"ts": _t.time()}, open(os.path.join(ROOT, ".claude", ".cam-highlight.json"), "w"))
+    except Exception:
+        pass
+
+
 def main():
     a = sys.argv[1:]
     x, z, w, h, caption = int(a[0]), int(a[1]), int(a[2]), int(a[3]), a[4]
@@ -91,6 +102,7 @@ def main():
                                                   "caption": caption}).encode(),
                                  headers={"Content-Type": "application/json"})
     print(urllib.request.urlopen(req, timeout=60).read().decode())
+    _mark_highlight()
     # owner: "keep a colonist in view at all times" -- hand the camera back to the crew; but in a fight the
     # camera goes back on the enemy (owner, 2026-10-09: "focus on the fucking action no t the fucking middle of
     # the base"): step.py --hostiles writes .claude/.fight.json with the framed rect every slice

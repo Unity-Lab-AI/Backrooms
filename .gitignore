@@ -99,3 +99,4 @@ __pycache__/
 .claude/.stream-lines.json
 .claude/.fight.json
 .claude/.camera.json
+.claude/.cam-highlight.json

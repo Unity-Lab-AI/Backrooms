@@ -57,7 +57,10 @@ def main():
     if not text: return
     post(text)
     # a picture with every line (owner: "make some images more offten like as much as you talk")
-    if not os.environ.get("UNITY_NO_GLANCE"):   # a caller with its own highlighted shot (tour-base.py) sets this
+    _gl = os.path.join(HERE, "..", ".cam-highlight.json")
+    try: _recent = time.time() - json.load(open(_gl)).get("ts", 0) < 90
+    except Exception: _recent = False
+    if not os.environ.get("UNITY_NO_GLANCE") and not _recent:   # highlights stay occasional; Unity's face holds the panel   # a caller with its own highlighted shot (tour-base.py) sets this
         subprocess.Popen([sys.executable, os.path.join(HERE, "unity-glance.py"), text],
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     speak = [sys.executable, os.path.join(HERE, "unity-speak.py")] + ([] if wait else ["--bg"]) + [text]

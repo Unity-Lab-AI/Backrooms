@@ -16,6 +16,16 @@ FONT = "C:/Windows/Fonts/Inkfree.ttf"
 PINK = (255, 70, 160)
 
 
+def _mark_highlight():
+    """The webcam panel shows a highlight for at most ~20 s, then cam-director.py puts Unity back up (owner,
+    2026-10-09: "leave the profile pic of ur up more and the slide show highlights just intermittently for liek
+    20 second max so it settle on a new you doing things")."""
+    try:
+        import json as _j, time as _t
+        _j.dump({"ts": _t.time()}, open(os.path.join(ROOT, ".claude", ".cam-highlight.json"), "w"))
+    except Exception:
+        pass
+
 def call(tool, args=None):
     o = subprocess.run([sys.executable, BRIDGE, "call", tool, json.dumps(args or {})],
                        capture_output=True, text=True, timeout=60).stdout
@@ -92,6 +102,7 @@ def main():
                                                   "caption": caption}).encode(),
                                  headers={"Content-Type": "application/json"})
     urllib.request.urlopen(req, timeout=60).read()
+    _mark_highlight()
 
 
 if __name__ == "__main__":
