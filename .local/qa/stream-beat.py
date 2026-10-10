@@ -90,8 +90,8 @@ def fresh(fact):
                   "lines: %s. Reply with the line only."
                   % (fact, "End it by asking chat a fun question about it. " if ask else "", " | ".join(hist[-8:])))
         try:
-            req = urllib.request.Request("http://127.0.0.1:11434/api/generate", data=json.dumps(
-                {"model": "dolphin3:8b", "prompt": prompt, "stream": False, "keep_alive": "10m",
+            req = urllib.request.Request("http://127.0.0.1:11435/api/generate", data=json.dumps(
+                {"model": "unity-local", "prompt": prompt, "stream": False, "think": False, "keep_alive": "10m",
                  "options": {"temperature": 1.0, "num_ctx": 4096, "num_predict": 60}}).encode(),
                 headers={"Content-Type": "application/json"})
             line = json.loads(urllib.request.urlopen(req, timeout=40).read())["response"].strip().strip('"').split(chr(10))[0]
