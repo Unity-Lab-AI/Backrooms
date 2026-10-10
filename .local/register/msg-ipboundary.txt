@@ -1,0 +1,43 @@
+Record the owner-approved public-repo exception to the .claude/ boundary
+
+The 0.10.7-dev cascade was blocked by pre-tool-public-repo-guard.cjs.
+gh repo view reported Unity-Lab-AI/Backrooms as visibility PUBLIC, and
+this repository tracks 132 files under .claude/. The guard is
+multi-remote paranoid, so the Forgejo push was blocked too. Nothing was
+pushed.
+
+It was raised rather than worked around, and the answer was that the
+LAW's premise does not hold here. The rule protects .claude/ as private
+lab IP; the owner's decision is that in this project the whole root
+folder is the artefact being published, with only caches, logs, temps
+and generated output excluded. That is consistent with the standing
+decision that this repo tracks .claude/ at all.
+
+Recorded as a narrow named exception rather than a bypass, because a
+bypass has to be repeated at every push and leaves nothing to review.
+
+claude_ip_boundary lives in this project's own .claude/project-config.json
+and carries the owner's verbatim words, the approver, the date and the
+exact approved remote URL. The hook reads it and still enforces
+owner == Unity-Lab-AI: approving a public repo is not approving somebody
+else's account. Approval is by exact URL, so a remote added later does
+not inherit it -- what is approved is a specific repository somebody
+looked at. Malformed or missing config means no exception, because a
+parse failure is uncertainty and uncertainty blocks. The exemption is
+written to stderr on every run, because an exception nobody sees is an
+exception nobody reviews.
+
+Documented as its own section in CONSTRAINTS.md listing what it does not
+relax, indexed in CLAUDE.md, audit entry in FINALIZED.md, direction
+recorded verbatim in TODO.md, and written to project memory so a future
+session does not re-litigate a settled decision.
+
+Not to be copied to the upstream template or to another project. If a
+different repository trips the guard, the correct move is the one taken
+here: ask the owner and stop.
+
+The LAW #0 checker caught its own gap during this change: the audit
+entry quoted a direction that had not yet reached TODO.md, and the build
+failed until it did.
+
+Seven checkers pass. No source, no def, no asset changed.

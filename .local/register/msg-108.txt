@@ -1,0 +1,54 @@
+A gate's facility is the equipment linked into it (0.10.8-dev)
+
+Shelves, analysers, research benches and tool cabinets link to a gate
+the way furniture connects to a bed. Select the gate and Core's own link
+lines show what is connected, solid when a link is working and faded when
+it is not, using Core's own inactive material.
+
+RimWorld already has exactly this relationship and it could not be
+reused. All of the geometry lives on the facility side:
+CompProperties_Facility defaults to maxDistance 8f and requiresLOS true,
+read from decompiled Core, and the consumer comp carries one field with
+no control over either. Reaching far and passing through walls is the
+opposite of both, so reusing Core's comps would have meant editing
+MultiAnalyzer and ToolCabinet and changing vanilla research linking for
+every player and every other mod. The links are ours and Core's comps
+are untouched, so a multi-analyzer linked to a gate still boosts a
+research bench in the ordinary way.
+
+The register said nothing to integrate with and one thing to avoid. Rows
+254, 256 and 257 are wall-mounted facility-linking furniture and row 184
+changes room sizing. That is the reason above, found before designing
+rather than after.
+
+Most of the direction was already true for other reasons. Manual
+connection, unlimited reach and the same-power-net requirement were all
+already how the gate's original three providers worked --
+SameNativeHeadquartersThing never had a distance or line-of-sight test,
+and NativePowerConnected already required the battery and console to
+share a net. What this adds is multiples where the old shape allowed
+exactly one of each, the three roles, and the drawn lines.
+
+The def name was not what it reads like. Multianalyzer is a
+ResearchProjectDef; the building is MultiAnalyzer with a capital A.
+RimWorld validates neither, so the wrong one loads clean, appears in the
+picker and silently matches nothing. Found by enumerating the installed
+game data, and now the first assertion in the proof.
+
+The power rule applies to anything that has a power component and to
+nothing else, because a Shelf has no network to be on and requiring one
+would make the archive role permanently unfillable. Two of six candidates
+are powered and four are not; the proof asserts both halves are non-empty
+so neither the rule nor its exemption can quietly become dead code.
+
+Inactive links are kept rather than dropped: a player who loses power for
+an hour has not un-designated their facility. Unlinking is allowed
+mid-opening while binding a provider is not, because a link grants no
+charge and no work and releasing one can never strand anybody.
+
+proof-gate-links.py asserts twenty claims and all held, sanity-tested by
+planting the real casing mistake and an overlapping role and confirming
+each failed. No Core def was patched at all.
+
+160 C# files, 84 package files, zero warnings. Seven checkers pass.
+Assembly reproduced by two clean recompiles. No game launched.

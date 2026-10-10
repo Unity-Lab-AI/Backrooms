@@ -1,0 +1,69 @@
+Study what you contain, through a gate (0.6.6-dev)
+
+A researcher now crosses a gate to study a contained entity on the other side.
+Thematically the most apt family in the work layer: a company that reaches
+unstable spaces through a machine gate, holds what it finds and learns from it.
+A containment facility behind a portal is the premise of the mod, and until now
+nobody would walk to one. Twenty-eight families, twenty of them deployments.
+
+Core hands the candidate half over directly, and this is the cleanest split so
+far. WorkGiver_StudyBase.PotentialWorkThingsGlobal is
+Find.StudyManager.GetStudiableThingsAndPlatforms(pawn.Map) -- it takes the map as
+an argument -- and that method is a pure read of a per-map cache that returns an
+empty set for a map it does not know and mutates nothing. So asking about a map
+nobody stands on is exact rather than reimplemented, with no risk of touching
+Core's scan state from a remote probe.
+
+EverStudiable and CurrentlyStudiable were read in source for the same reason and
+are also safe: between them they consult the studied thing, its parent holder,
+its own comps, the player-set prisoner interaction mode and the global tick.
+Neither takes a pawn and neither reads any worker's map. Left to arrival:
+CanReserve on both the platform and the held pawn, because Core reserves both.
+
+An empty platform is not work -- the platform is the target but the entity held
+on it is the studiable thing, the same substitution Core makes. Core then
+dereferences TryGetComp<CompStudiable>() without a null check, trusting its
+cache; this null-checks anyway, because a remote probe that threw would take
+down an unrelated work scan on the worker's own map.
+
+Also fixes a second shipped defect, and it is the same shape as the last one.
+The two childcare giver defs referenced the Biotech-only Childcare work type
+with no MayRequire, and have done since 0.6.4-dev. On a Core-only install that
+is an unresolved cross-reference at load -- a red error in a mod whose entire
+stated position is that it needs nothing but base Core. The C# side had always
+been right, using GetNamedSilentFail; only the XML half was missing, and nothing
+checked it. Careful C# beside a def that quietly contradicts it, for the second
+checkpoint running.
+
+The existing compliance check could never have caught it: it looks for DLC
+package ids, and a def reading <workType>Childcare</workType> never mentions
+Biotech at all. tools/check-dlc-gating.py now indexes every defName under
+RimWorld/Data/*/Defs/**, treats anything not defined by Core as DLC-only, and
+fails on an ungated reference. 6,063 DLC-only defs indexed, 4 references in the
+package, all gated. Reading the game's own data rather than a maintained list is
+the point -- a list would rot exactly the way the thing it checks rotted.
+Verified by removing a gate, confirming the failure was reported, and restoring.
+
+Anomaly's other work deliberately gets no family of its own: ExtractBioferrite
+and DoctorTendToEntities are Doctor givers, and ActivitySuppression,
+ExecuteEntity, ReleaseEntity and InterrogatePrisoner are Warden givers. Both
+work types already have deployments, so a worker who crosses for tending or
+wardening does this work locally on arrival.
+
+Register consulted first, per standing method. Row 8 Anomaly is optional native
+touchpoints with Rimrooms supplying its own containment loops, so the campaign
+must stay whole without the expansion -- which is what an unavailable provider
+gives. Rows 138, 140 and 39 were checked and none touches this route.
+
+115 C# source files, 76 approved package files unchanged, zero warnings, zero
+errors. Assembly SHA-256
+238DA7119BECD99E080312C23FAC129E6996C805AD2A48A1E2405656CF86DEA0 reproduced by
+two full recompiles after deleting obj/ and bin/. Every RR_ key resolves, every
+giverClass resolves, all 28 priority pairs name real defs, check-dlc-gating and
+audit-gate0 both pass with zero errors.
+
+Doc-rot sweep: two rot rows had come to contradict each other on the family
+count, so they are merged into one that says to update the number in place
+rather than adding another row beside it.
+
+No game was launched, no test was run, no RimSort mod list was changed.

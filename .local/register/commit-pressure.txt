@@ -1,0 +1,80 @@
+Origin completeness, and the weight of being somewhere wrong (0.7.4-dev)
+
+Two systems from one owner direction: finish the odd-origin model, and add the
+psychological layer that makes the odd/ordinary split matter beyond selling.
+
+The owner floated marking things at the gate and immediately doubted it -- "maybe
+mark it at the gate but idk". The doubt was right, so it was not built. Gate
+marking is a laundering route: carry ordinary cotton in, carry it out, it is now
+odd. And it fails the owner's very next clause, "it should be odd when in the
+backrooms too", because nothing would be odd until it crossed.
+
+What generation-time marking really missed was everything meant by "everything in
+it entirety": rock mined out of a coordinate's walls, material from a
+deconstructed partition, plants cut in its rooms, meat butchered from something
+found there. None of that is generated content.
+
+So a three-state origin replaces the boolean -- Unknown, Backrooms, Outside --
+stamped the first time a thing exists anywhere. That closes the laundering route
+by construction rather than by a rule: by the time a colonist hauls cotton
+through a gate it was stamped Outside back in the colony and can never become
+odd, which means anything appearing on a Backrooms map still Unknown genuinely
+came into existence there. Mined rock, deconstruction returns, cut plants and
+butchered meat all become odd with no special case for any of them.
+
+One seam is named rather than fought. Haul ordinary steel in, build a wall,
+deconstruct it, and the returns are odd -- but deconstruction refunds about half,
+so the cycle loses material every time and is economically irrational.
+
+The pressure is the piece that ties the mod together. Until now odd versus
+ordinary was purely economic, and this makes it psychological: it gives the
+player a reason to carry ordinary material into a coordinate rather than only
+carrying odd material out. The tension is real, because every ordinary thing
+hauled in to make the place bearable is a thing that was not sold. It also
+finally gives the forward base a purpose -- thirty-one work families could
+already work across a gate, and this is what makes it worth building somewhere
+for them to do it from.
+
+Saved as ticks per person rather than a thought with a timer, so the penalty
+decays on leaving instead of snapping back. An hour down there follows somebody
+home, which forces shift rotation instead of one colonist living there forever.
+Minus one on arrival as a floor nothing removes; minus ten at 216,000 ticks,
+which is one real hour at normal speed and exactly double the gate's opening
+window, so both systems measure time in the same unit. Recovery runs at double
+the accumulation rate.
+
+Shelter is scored from the pawn's actual surroundings rather than a research
+unlock or a stat. A stat would have been easier and would have meant nothing; the
+only honest reading of "real materials in their surroundings" is to go and look.
+Ordinary-origin construction weighs most, then an enclosed room, then ordinary
+seating or a bed, then light. The best a player can build slows accumulation to a
+fifth and never to zero, because a perfectly appointed room in a coordinate is
+still a room in a coordinate. Fixtures found in place score nothing, which is the
+entire point.
+
+Applied to the player's people and anyone they carried in, not to generated
+inhabitants. The owner said "all pawns"; the honest reading is everybody who does
+not belong there, since a native is not unsettled by its own home and nothing
+reads its mood anyway.
+
+A checker gap was found and closed in the same change. This checkpoint introduced
+the package's first workerClass reference and nothing verified that such a class
+exists -- a def naming a missing type fails at load with a red error.
+check-package-integrity now resolves every RimroomsAsyncIndustries type named by
+workerClass, compClass, giverClass, thingClass, driverClass or a Class attribute
+against the C# source, verified by deliberately corrupting the name, confirming
+the failure, and restoring it.
+
+125 C# source files, 79 approved package files, zero warnings, zero errors. One
+ThoughtDef added, which is a mechanics definition anticipated by owner decision
+18 where it names pawn hediffs explicitly. No new gameplay ThingDef, no asset, no
+patch operation, no new work type. Assembly SHA-256
+67843DA1A84F9B609B7BA4FBFADC29FA8E2C3C3F279919A4588E125E188A0716 reproduced by
+two full recompiles after deleting obj/ and bin/. All four checkers pass.
+
+Still open and named in TODO.md rather than deferred: the whole credit and bond
+layer -- denominations from 10 to 1,000,000, the bench bills, greedy
+highest-denomination payout, the credit beacon, and the exchange paying above
+market for odd resources.
+
+No game was launched, no test was run, no RimSort mod list was changed.

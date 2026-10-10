@@ -1,0 +1,50 @@
+A gate is a door and nothing else (0.9.0-dev)
+
+M2 existing-content replacement, first pass. Chosen as the first of the
+four remaining majors because it deletes defs, so anything built
+against content about to be removed would be built twice. It also
+removes the gate component's second geometry model, so the multi-cell
+gate work that follows is written once rather than written and then
+rewritten.
+
+Eight legacy defs retired to the historical archive: the custom gate
+machine, control console, emergency cutoff and generator, plus the
+unused site lamp, climate unit, field analysis bench and institutional
+carpet. Four of the eight had no C# consumer whatsoever and had been
+shipping textures nobody could ever see. The package drops from 92 to
+79 files, thirteen of them gone, seven of those textures.
+
+Nothing a player can do was removed. Every retired object had already
+been replaced by an ordinary Core object the player designates.
+
+The dead cutoff component is deleted outright: its only host def was
+RR_EmergencyCutoff and its gate lookup searched for RR_MachineGate.
+The control station no longer guesses which gate is its own either; a
+station is bound explicitly through the designation UI, and "nearest"
+stopped being the right answer once a branch could run two gates.
+
+Two checkers earned their place in the same checkpoint. Retiring the
+textures left three live C# references to textures that no longer
+ship, and check-package-integrity.py passed clean: its texture check
+read only XML, and from disk only asked the weaker question of whether
+every shipped file has a reference. It now scans C# for
+ContentFinder<Texture2D>.Get as well, and it was validated by catching
+three real defects already in the tree rather than by planting one.
+audit-gate0.py then caught seven documentation links pointing at the
+four files that had moved to the archive.
+
+Held back for its own reviewable checkpoint: the sixty-odd
+IsNativeProvider branches whose else-side is now unreachable. A diff
+that says only "remove the dead branch" is reviewable in a way a mixed
+one is not.
+
+Still open in M2 and named in TODO.md: the field gear, which carries
+real mechanics the owner has explicitly refused to drop and so needs
+capability replacements before its defs can go; RR_QuietPursuer; and
+the staff PawnKinds and their recipes.
+
+155 C# source files, 79 approved package files. Zero warnings, zero
+errors. Assembly SHA-256 reproduced by two clean recompiles. All four
+checkers pass, 1,207 keyed references resolving. Nothing was added: no
+new def, asset, patch operation or work type. No game launched, no
+test run, no RimSort profile touched.

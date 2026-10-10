@@ -1,0 +1,65 @@
+The company clears the site, and the mod declares what it needs (0.12.76-dev)
+
+When everyone at the laboratory goes down, The Company arrives. Not when they
+die - when they are all down. The squad leaves nobody standing who was there,
+buries the dead where the ground will take a grave and burns them where it will
+not, repairs the damage, shuts every connection at the gate, takes every bond on
+every map, draws up to 25,000,000 for restocking the petty cash, and leaves three
+people and a crate. The player never loses the game.
+
+The owner's first question found two false statements in my own handoff. "are u
+shure zero goon squad code is written weve gone over this before by a different
+name" - I had written ZERO on the strength of src/ matching the last checkpoint,
+which proves only that this session wrote none. proof-facility-relief.py is proof
+FIVE and two of its claims contradicted the direction. And Pyre is Ideology, not
+Core: that check ran against the installed game instead of against Core, and for
+a Core-only mod that is the whole distinction. It read as a pass because it
+answered the wrong question.
+
+The owner's own scoping then saved both of those claims. "this only happens for
+the lab secnerio for now" means the squad is a separate path, forking above the
+relief's trigger, so the store and solo branches keep five staff and a death-only
+trigger. Both old claims hold untouched and the comment carrying the old reasoning
+is scoped rather than deleted - it is still true about the path it guards.
+
+The grave does not fit indoors, and that was measured rather than discovered at
+runtime. Core's Grave is (1,2) and needs Diggable; ten Core terrains carry it and
+every constructed floor is excluded. So burial goes to open ground and the
+fallback is destruction. No crematorium is built: a bill needs a worker and
+nobody is alive to work it.
+
+The mod now declares 294 hard dependencies - five expansions and 289 mods, each
+with a name and a link - plus 295 loadAfter entries, generated from the owner's
+own ModsConfig.xml read-only, with a cycle check over every active mod's four
+load-order tags. Declaring them exposed a defect nobody was looking for: the
+package sat at position 197 of 296, with 99 mods loading after it, and a patch
+cannot see a def from a mod that loads later.
+
+check-register-compliance.py refused all of it with "the package must load and run
+against Core alone". The checker was not defective; its premise was, and the
+register is guidance rather than law by the owner's own standing correction. A
+prohibition became an assertion instead of being deleted. check-dlc-gating.py's
+rule survives and matters more, because MayRequire is the same graceful guard in
+XML that GetNamedSilentFail is in C# - only its stated reason was stale, and a
+reason nobody believes is worse than no reason.
+
+Then the sixth instance of an instrument reading its own prose, and the first that
+was mine: the fix script searched its result for the phrase it had removed, and
+the replacement prose quotes that phrase in the sentence retiring it. The write
+had landed; the verification was the defect. A second of the same family followed
+- "Pawn" not in register is a substring test wearing a type test's clothes, and
+it is false, because NoteLostPawn contains those letters.
+
+The three prep items are closed. LostPawnRegister holds a List<string> and cannot
+remove player control by construction, but proof-stranded-crew.py had eleven
+claims and not one mentioned it, so three claims make it permanent. Review is the
+fourth workflow, recorded as additive fields rather than a sixth EvidenceStatus,
+and ships with a button in the same checkpoint. Staff prior exposure was a fact
+NoteReturnedFromField already knew and threw away; it is kept per person by load
+id now and spent on the dial once, where the branch's own familiarity compounds.
+
+210 C# files, 92 package files, zero warnings, zero errors. Assembly SHA-256
+B3B0B052445A706CF8A1F1BED154C9CA813B756AA019F773B7C26EE2225F6774, measured after
+the version bump and reproduced by two clean rebuilds. Sixteen checkers pass,
+forty-eight proofs hold, 27 of 27 and 20 of 20 and 7 of 7 planted faults caught in
+the three new suites, 738 plant anchors findable.

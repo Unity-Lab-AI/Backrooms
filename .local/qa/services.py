@@ -1,0 +1,312 @@
+"""One switch for the whole stream: start everything, stop everything, or see what is up.
+
+Owner, 2026-10-10, verbatim: *"still dont have the streamer script working with a easy start stop for it so i
+can stop everything and start it with one press only here in the game files"*. Double-click
+`Stream Start.cmd` or `Stream Stop.cmd` in the repo root, or run this directly:
+
+    python .local/qa/services.py start     # start every service that is not already running
+    python .local/qa/services.py stop      # stop every one of them
+    python .local/qa/services.py status    # one line each: UP with its pid, or DOWN
+    python .local/qa/services.py restart
+
+Each service is matched by its own command line, so a service already running by any other route is
+recognised and never started twice. Nothing here touches RimWorld itself -- the game is the owner's to launch
+and to close.
+"""
+import importlib.util, json, os, re, subprocess, sys, time
+
+# Owner, 2026-10-10: "im getting alot of system cmd openings while im doing stuff". Every helper this script
+# spawns -- powershell for the process table, python for a spoken line -- was flashing its own console over
+# whatever the owner was doing. One shim, applied to this process, makes every child windowless.
+import subprocess as _sp, os as _os
+if _os.name == "nt":
+    _CF = 0x08000000                       # CREATE_NO_WINDOW
+    _run = _sp.run
+    def _run_nowin(*a, **k):
+        k["creationflags"] = k.get("creationflags", 0) | _CF
+        return _run(*a, **k)
+    _sp.run = _run_nowin
+    _Popen = _sp.Popen
+    class _PopenNoWin(_Popen):
+        def __init__(self, *a, **k):
+            k["creationflags"] = k.get("creationflags", 0) | _CF
+            super().__init__(*a, **k)
+    _sp.Popen = _PopenNoWin
+
+
+# detaching differs per platform: Windows wants creationflags, posix wants its own session
+DETACH = ({'creationflags': 0x00000200 | 0x08000000} if os.name == 'nt' else {'start_new_session': True})
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(HERE))
+PY = sys.executable
+# pythonw.exe runs without a console window at all -- same interpreter, no black box
+PYW = (os.path.join(os.path.dirname(sys.executable), 'pythonw.exe')
+       if os.name == 'nt' and os.path.exists(os.path.join(os.path.dirname(sys.executable), 'pythonw.exe'))
+       else sys.executable)
+NODE = "node"
+
+# name, the fragment that identifies it in a command line, how to start it
+SERVICES = [
+    ("studio",      ".claude/tools/persona-studio.cjs", [NODE, os.path.join(ROOT, ".claude/tools/persona-studio.cjs")]),
+    ("face",        ".claude/tools/unity-face-sd.py",   [PYW, os.path.join(ROOT, ".claude/tools/unity-face-sd.py")]),
+    ("twitch",      ".claude/tools/twitch-bridge.cjs",  [NODE, os.path.join(ROOT, ".claude/tools/twitch-bridge.cjs")]),
+    ("host",        ".local/qa/stream-host.py",         [PYW, "-u", os.path.join(HERE, "stream-host.py")]),
+    ("popups",      ".local/qa/popup-guard.py",         [PYW, os.path.join(HERE, "popup-guard.py")]),
+    ("clock",       ".local/qa/clock-guard.py",         [PYW, "-u", os.path.join(QA if "QA" in globals() else HERE, "clock-guard.py")]),
+    ("heat",        ".local/qa/heat-guard.py",          [PYW, os.path.join(HERE, "heat-guard.py")]),
+    ("camdir",      ".local/qa/cam-director.py",        [PYW, os.path.join(QA if "QA" in globals() else HERE, "cam-director.py")]),
+    ("followcrew",  ".local/qa/follow-crew.py",         [PYW, os.path.join(QA if "QA" in globals() else HERE, "follow-crew.py")]),
+    ("cursorjobs",  ".local/qa/cursor-jobs.py",         [PYW, os.path.join(HERE, "cursor-jobs.py")]),
+    ("keepgoing",   ".local/qa/keep-playing.py",        [PYW, "-u", os.path.join(QA if "QA" in globals() else HERE, "keep-playing.py")]),
+    ("autopilot",   ".local/autopilot/autopilot.py",    [PYW, "-u", os.path.join(ROOT, ".local/autopilot/autopilot.py"), "--num-gpu", "0", "--think"]),
+    ("admin",       "admin.py",               [PYW, "-u", os.path.join(HERE, "admin.py")]),
+]
+# Runs once, pins the overlay window topmost and exits -- fired on start, never reported as a service.
+ONE_SHOTS = [[PYW, os.path.join(ROOT, ".claude/tools/unity-overlay.py")]]
+
+# Owner, 2026-10-10: "wtf actually it should of already started did you start everything up correctly with
+# the start .bat and .sh? form a dead state?" -- a dead state means the GAME too. It is started if missing,
+# and it is never stopped by the switch: a run in progress is the owner's, not ours.
+START_ONLY = [
+    ("rimworld", "RimWorldWin64",
+     [r"C:/Program Files (x86)/Steam/steamapps/common/Rimworld/RimWorldWin64.exe"],
+     r"C:/Program Files (x86)/Steam/steamapps/common/Rimworld"),
+]
+
+# Not python or node, so they are matched and started by their own executables.
+EXTRAS = [
+    ("obs", "obs64.exe", [os.path.expandvars(r"%USERPROFILE%/OBS-Portable/bin/64bit/obs64.exe"),
+                          "--portable", "--disable-updater", "--minimize-to-tray",
+                          # owner, 2026-10-10: "the steream is offline u need to get to work" --
+                          # launching OBS is not streaming; it has to be told to go live.
+                          "--startstreaming",
+                          # owner, 2026-10-10: "i keep getting the obs studio did not shut down properly
+                          # error on screen i press run in safe mode" -- that prompt appears because OBS was
+                          # force-killed. Suppress the prompt, and stop OBS gracefully below.
+                          "--disable-shutdown-check"],
+     os.path.expandvars(r"%USERPROFILE%/OBS-Portable/bin/64bit")),
+    ("twitchui", "twitch-profile", [os.path.expandvars(r"%LOCALAPPDATA%/ms-playwright/chromium-1223/chrome-win64/chrome.exe"),
+                                    "--user-data-dir=" + os.path.join(ROOT, ".local/twitch-profile"),
+                                    "--remote-debugging-port=9333", "--no-first-run",
+                                    # Owner, 2026-10-10: a Twitch picture-in-picture prompt interrupted them and they
+                                    # denied it blind. Nothing here should ever ask the owner for a permission.
+                                    "--disable-features=AutoPictureInPicture,AutoPictureInPictureVideoHeuristics",
+                                    "--deny-permission-prompts", "--disable-notifications",
+                                    "--new-window", "https://www.twitch.tv/"], None),
+]
+
+# Killed by name on stop. The model runner and the game are here because neither is a child in the
+# command-line table: Ollama spawns llama-server itself, and the game is its own process. Owner, 2026-10-10:
+# "stop.bat properly kills everything becasue you didnt have that working".
+KILL_BY_NAME = ["llama-server", "ollama", "ollama app", "obs64", "RimWorldWin64"]
+
+# NEVER killed, no matter what matches: the owner's own browsers. Owner, 2026-10-10: "you dont fuck with my
+# browsers you shit put them back". Only the Twitch window this switch itself started may be closed, and it
+# is identified by the profile directory this repo owns.
+PROTECT_NAMES = ["chrome", "msedge", "firefox", "brave", "opera", "vivaldi"]
+OUR_BROWSER_MARK = "twitch-profile"
+
+OLLAMA = os.path.expandvars(r"%LOCALAPPDATA%/Programs/Ollama/ollama.exe")
+if not os.path.exists(OLLAMA): OLLAMA = "ollama"
+MODELS = ["dolphin3:8b", "qwen3.6:35b"]      # the voice and the player
+VOICE = "dolphin3:8b"
+
+def deps():
+    """Bring up what the models need before any service starts.
+
+    Owner, 2026-10-10, verbatim: "it needs to start up the api and shit needed too for the model to run it all
+    and all needed models". So: the Ollama server, every model the stack uses (pulled in the background if one
+    is missing), and the voice model preloaded so the first line out is not a cold start. The RimBridge API
+    lives inside RimWorld, which the owner launches -- nothing here starts the game.
+    """
+    import urllib.request
+    def api(path, data=None, timeout=8):
+        req = urllib.request.Request("http://127.0.0.1:11434" + path,
+                                     data=(json.dumps(data).encode() if data else None),
+                                     headers={"Content-Type": "application/json"})
+        return urllib.request.urlopen(req, timeout=timeout).read()
+    try:
+        api("/api/version"); print("ollama      already up")
+    except Exception:
+        log = open(os.path.join(HERE, "_svc_ollama.log"), "ab", buffering=0)
+        subprocess.Popen([OLLAMA, "serve"], stdout=log, stderr=log,
+                         **DETACH)
+        for _ in range(40):
+            time.sleep(1)
+            try: api("/api/version"); break
+            except Exception: pass
+        print("ollama      started")
+    have = subprocess.run([OLLAMA, "list"], capture_output=True, text=True).stdout
+    for m in MODELS:
+        if m.split(":")[0] in have:
+            print("model       %s present" % m)
+        else:
+            log = open(os.path.join(HERE, "_svc_pull_%s.log" % m.replace(":", "_")), "ab", buffering=0)
+            subprocess.Popen([OLLAMA, "pull", m], stdout=log, stderr=log,
+                             **DETACH)
+            print("model       %s pulling in the background" % m)
+    try:
+        api("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "keep_alive": "30m",
+                              "options": {"num_ctx": 4096, "num_predict": 1}}, timeout=180)
+        print("model       %s warm" % VOICE)
+    except Exception as e:
+        print("model       %s warm-up skipped (%s)" % (VOICE, str(e)[:40]))
+
+WINDOWS = os.name == "nt"
+
+def _ps_lines(pattern):
+    """(pid, command line) for every process whose command line matches, on Windows or Linux/macOS."""
+    if WINDOWS:
+        out = subprocess.run(["powershell", "-NoProfile", "-Command",
+                              "Get-CimInstance Win32_Process | Where-Object { $_.Name -match '%s' } | "
+                              "ForEach-Object { \"$($_.ProcessId)`t$($_.CommandLine)\" }" % pattern],
+                             capture_output=True, text=True).stdout
+    else:
+        out = subprocess.run(["ps", "-eo", "pid=,args="], capture_output=True, text=True).stdout
+        keep = []
+        for line in out.splitlines():
+            line = line.strip()
+            if not line: continue
+            pid, _, args = line.partition(" ")
+            if re.search(pattern, args): keep.append("%s	%s" % (pid, args))
+        out = chr(10).join(keep)
+    return out
+
+def running():
+    """{fragment: [pid, ...]} for every python/node process whose command line carries a fragment."""
+    out = _ps_lines("python|node")
+
+    found = {}
+    for line in out.splitlines():
+        if "\t" not in line: continue
+        pid, cmd = line.split("\t", 1)
+        cmd = cmd.replace("\\", "/")
+        for _, frag, _start in SERVICES:
+            if frag in cmd:
+                found.setdefault(frag, []).append(int(pid))
+    # the extras are not python or node: ask for them by image name
+    out2 = _ps_lines("obs64|chrome|chromium|RimWorldWin64")
+    for line in out2.splitlines():
+        if "	" not in line: continue
+        pid, cmd = line.split("	", 1); cmd = cmd.replace("\\", "/")
+        low = cmd.lower()
+        if any(n in low for n in PROTECT_NAMES) and OUR_BROWSER_MARK not in low:
+            continue                     # the owner's own browser: never ours to touch
+        for _, frag, _c, _cwd in EXTRAS + START_ONLY:
+            if frag in cmd: found.setdefault(frag, []).append(int(pid))
+    return found
+
+def status():
+    found = running()
+    for name, frag, _c, _cwd in START_ONLY + EXTRAS:
+        pids = found.get(frag, [])
+        print("%-11s %s" % (name, ("UP   " + " ".join(map(str, pids))) if pids else "DOWN"))
+    for name, frag, _ in SERVICES:
+        pids = found.get(frag, [])
+        print("%-11s %s" % (name, ("UP   " + " ".join(map(str, pids))) if pids else "DOWN"))
+    return found
+
+def announce(line):
+    """One short line to chat -- owner, 2026-10-10: "tell chat whats up too / not the details tho"."""
+    say = os.path.join(ROOT, ".claude", "tools", "unity-say.py")
+    try:
+        subprocess.Popen([PY, say, "--raw", line], cwd=ROOT,
+                         **DETACH,
+                         env=dict(os.environ, UNITY_NO_GLANCE="1"))
+    except Exception:
+        pass
+
+def start():
+    found = running()
+    env = dict(os.environ, OWNER_LENT_MOUSE="1", PYTHONUNBUFFERED="1", STUDIO_PERSIST="1")
+    if os.environ.get("TWITCH_CHANNEL") is None: env["TWITCH_CHANNEL"] = "unityplaysrimworld"
+    for name, frag, cmd in SERVICES:
+        if found.get(frag):
+            print("%-11s already up (%s)" % (name, found[frag][0])); continue
+        log = open(os.path.join(HERE, "_svc_%s.log" % name), "ab", buffering=0)
+        subprocess.Popen(cmd, cwd=ROOT, stdout=log, stderr=log,
+                         **DETACH, env=env)
+        print("%-11s started" % name); time.sleep(0.6)
+    for name, frag, cmd, cwd in EXTRAS:
+        if found.get(frag): print("%-11s already up (%s)" % (name, found[frag][0])); continue
+        if not os.path.exists(cmd[0]): print("%-11s SKIPPED (not installed: %s)" % (name, cmd[0])); continue
+        log = open(os.path.join(HERE, "_svc_%s.log" % name), "ab", buffering=0)
+        subprocess.Popen(cmd, cwd=cwd or ROOT, stdout=log, stderr=log,
+                         **DETACH, env=env)
+        print("%-11s started" % name); time.sleep(1.0)
+    for cmd in ONE_SHOTS:
+        if os.path.exists(cmd[-1]):
+            log = open(os.path.join(QA if "QA" in dir() else HERE, "_svc_oneshot.log"), "ab", buffering=0)
+            subprocess.Popen(cmd, cwd=ROOT, stdout=log, stderr=log, **DETACH)
+            print("%-11s fired" % "overlay")
+    for name, frag, cmd, cwd in START_ONLY:
+        if found.get(frag): print("%-11s already up (%s)" % (name, found[frag][0])); continue
+        if not os.path.exists(cmd[0]): print("%-11s SKIPPED (not installed: %s)" % (name, cmd[0])); continue
+        subprocess.Popen(cmd, cwd=cwd or ROOT, **DETACH)
+        print("%-11s launched (never stopped by this switch)" % name); time.sleep(8)
+    OPEN_ADMIN = os.environ.get("NO_ADMIN_PAGE") != "1"
+    if OPEN_ADMIN:
+        url = "http://127.0.0.1:%s/" % os.environ.get("ADMIN_PORT", "4318")
+        try:
+            if WINDOWS:
+                subprocess.Popen(["cmd", "/c", "start", "", url], **DETACH)
+            else:
+                subprocess.Popen(["xdg-open", url], **DETACH)
+            print("%-11s opened %s" % ("adminpage", url))
+        except Exception as e:
+            print("%-11s could not open the panel (%s)" % ("adminpage", str(e)[:50]))
+    # the game's own API lives inside RimWorld, which stays the owner's to launch
+    try:
+        bspec = importlib.util.spec_from_file_location("b", os.path.join(HERE, "bridge.py"))
+        bb = importlib.util.module_from_spec(bspec); bspec.loader.exec_module(bb); bb.endpoint()
+        print("rimbridge   UP   (RimWorld is running and the API answers)")
+    except Exception:
+        print("rimbridge   DOWN (launch RimWorld yourself -- this switch never touches the game)")
+
+def stop():
+    # the model runner first: it holds the GPU and it is nobody's child in the command-line table
+    if WINDOWS:
+        subprocess.run(["powershell", "-NoProfile", "-Command",
+                        "Get-Process %s -ErrorAction SilentlyContinue | Stop-Process -Force"
+                        % ",".join("'%s'" % n for n in KILL_BY_NAME)], capture_output=True, text=True)
+    else:
+        for n in KILL_BY_NAME:
+            subprocess.run(["pkill", "-f", n], capture_output=True, text=True)
+    print("stopped by name:", " ".join(KILL_BY_NAME))
+    found = running()
+    pids = sorted({p for frag, lst in found.items() for p in lst})
+    if not pids:
+        print("nothing to stop"); return
+    if WINDOWS:
+        # OBS has to be asked to close, not killed: a forced kill is what makes it offer safe mode next launch.
+        subprocess.run(["powershell", "-NoProfile", "-Command",
+                        "Get-Process obs64 -ErrorAction SilentlyContinue | ForEach-Object { "
+                        "$null = $_.CloseMainWindow() }; Start-Sleep 4"],
+                       capture_output=True, text=True)
+        subprocess.run(["powershell", "-NoProfile", "-Command",
+                        "foreach ($p in %s) { try { $pr = Get-Process -Id $p -ErrorAction Stop; "
+                        "if ($pr.Name -eq 'obs64') { $null = $pr.CloseMainWindow() } else { Stop-Process -Id $p -Force } } catch {} }"
+                        % ",".join(map(str, pids))],
+                       capture_output=True, text=True)
+    else:
+        for p in pids:
+            try: os.kill(p, 15)
+            except Exception: pass
+    print("stopped", len(pids), "processes:", " ".join(map(str, pids)))
+    # prove the GPU actually came back, rather than assuming it did
+    try:
+        r = subprocess.run(["nvidia-smi", "--query-gpu=memory.used,memory.free", "--format=csv,noheader"],
+                           capture_output=True, text=True, timeout=20)
+        if r.stdout.strip(): print("gpu after stop:", r.stdout.strip().splitlines()[0])
+    except Exception:
+        pass
+
+cmd = (sys.argv[1] if len(sys.argv) > 1 else "status").lower()
+if cmd == "start":
+    deps(); start(); print("---"); status(); announce("We are live, chat. Everything is up and I am back on the colony.")
+elif cmd == "stop":
+    announce("That is me for tonight. Thanks for sitting with me."); time.sleep(3); stop()
+elif cmd == "restart":
+    announce("One second, rebooting my own plumbing."); stop(); time.sleep(2); deps(); start(); print("---"); status()
+else: status()

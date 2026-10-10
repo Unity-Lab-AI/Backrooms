@@ -1,0 +1,41 @@
+One tech tree, different starting points (0.9.8-dev)
+
+Owner direction: "fyi all starts have same tech tree just differnt
+starting researches finished based on scenerio".
+
+Taken literally, which changed the implementation. The tempting
+reading is to give each start a list of projects; that would have made
+three lists somebody has to keep in agreement, and "same tech tree"
+would have been a convention rather than a fact.
+
+So a start declares only what begins finished, and the tree is built
+from every RimroomsProjectDef the game has loaded. The tree is
+identical for every start by construction: a scenario cannot declare a
+different one because it never declares one at all. Adding a project
+later reaches every start at once, and a scenario that forgot to list
+it cannot exist.
+
+This replaced a single hardcoded RR_GateTelemetry record. A second
+project would have been invisible to every branch until somebody
+remembered to add it in three places. Today there is exactly one
+project def, so this changes no behaviour at all; what changed is that
+the tree is derived rather than asserted.
+
+A project that begins finished is also marked insight-committed, or
+the operations window would offer a start button on work that is
+already done. The list is sorted ordinally before it is built, because
+def load order varies with the mod list and two players starting the
+same scenario must get the same branch. A named project that no longer
+exists is reported and skipped rather than fatal: a player should not
+lose a new colony because a content update renamed something.
+
+The other two scenarios were deliberately not written here. They would
+grant RR_FieldRecorder, RR_SurveyTag, RR_ReturnBeacon and
+RR_SealedEvidenceCase, which M2 is about to retire, and building
+against content that is going away is the exact thing the recorded
+order exists to prevent.
+
+158 C# source files, 79 approved package files. Zero warnings, zero
+errors. Assembly SHA-256 reproduced by two clean recompiles. All five
+checkers pass. No new def, asset, patch operation or work type. No
+game launched, no test run, no RimSort profile touched.

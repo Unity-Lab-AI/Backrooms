@@ -1,0 +1,74 @@
+A locked door said nothing, and no start shipped the book (0.12.78-dev)
+
+The owner reported two blockers from a running game and told me to stop guessing
+and read it. The bridge was working the whole time - port 5174 with a token, both
+printed in the log - and I had been probing four wrong ports over plain HTTP. What
+was genuinely missing is the thing they asked for: the read allowlist had five
+selectors and not one of them read a message, so "look at those messages" was not
+answerable by the instrument. Five parameterless reads added, plus a bounded
+cell-rect read and camera state. Still read-only.
+
+The live gate then answered everything in one inspect string. Two thousand four
+hundred watt-days of capacity is four batteries summed, so the previous
+checkpoint's net-wide fix was working. Five hundred and thirty-three stored
+against forty-nine point five nine needed, so power was never the problem - the
+"bunch of shit about power" is the inspect readout, not a refusal. And the first
+line was Door locked.
+
+OrderCrossing validated the approach cell, which is on the near side, and never
+asked whether the door would open. So a crew was ordered somewhere they could
+reach through something they could not pass, with no reason given. The question
+goes through Core's Building_Door.PawnCanOpen, which is public and virtual, so the
+owner's gate - a door another mod re-classed - answers for itself, and nothing
+here names that mod or references its assembly. That is register row 77's own
+disposition, applied directly for the first time.
+
+The second blocker is worse because it was permanent. Every dispatch requires one
+Core TextBook. The laboratory start spawned a hundred and twelve fixtures across
+seventeen types and not one book, the Store spawns twenty-seven and none, and the
+solo start spawns nothing at all. The recorder was folded into the book at
+0.12.24-dev and the stock was never updated, so the first dispatch refused on
+every fresh start, forever. The laboratory carries two now, and for the starts
+that begin with nothing the corporation sends them: deterministic, on a calibrated
+gate, and only while no book exists anywhere the branch can reach - a floor, a
+shelf, or a pack on either side of an open connection. That last test is what
+stops it being a tap.
+
+The quest to go through their own gate already reached every start and is asserted
+now rather than assumed. The request line contains no scenario id anywhere, and
+the claim for it is negative and derived, because a positive claim listing three
+scenarios would pass while a fourth was quietly excluded.
+
+Two things I published to the owner were wrong, and both were the same mistake -
+comparing counts without reading footprints. I said they had hand-laid about a
+hundred power conduits and that the start wires almost nothing; I had counted
+seventeen runs against a hundred and ninety-one cells. Expanded, the runs are two
+hundred and five, and live is a hundred and ninety-one plus fourteen hidden, which
+is two hundred and five exactly. They added none. I also said they had added ten
+shelves; a shelf is one by two, so nineteen live against twenty-eight authored
+means nine were removed. Same shape as the grave footprint caught earlier the same
+day by reading Core's own size, except this time it was not caught before it
+reached them.
+
+What they actually changed, measured with the facility origin solved at one
+hundred and twenty by one hundred and twenty: nothing was moved. Conduits, glass,
+generators, machining table, smithy, research benches and glow pods are all
+exactly as authored, including the console and bench repositioned at 0.12.74-dev.
+Every delta is fewer, consistent with deconstruction. And exactly one door was
+added, at facility-relative fifty-one by twenty-four, through the compound's east
+perimeter wall at the dead end of the service corridor. No authored door was
+missing. It is authored now.
+
+proof-corporate-contact.py had never been planted against - one of the oldest
+proofs in the battery with nothing testing whether its claims could fail, which is
+the same shape as the defect beside it. Suite twenty-one, 12 of 12. The new claims
+caught two of their own defects before shipping: a door claim that asserted the
+call and not the act, defeated by a false guard, and a plant that tested a mod
+name inside a comment the proof strips.
+
+212 C# files, 92 package files, zero warnings, zero errors. Assembly SHA-256
+80A40D4655E2D6AF1A7CD3861F341431CD6D8C2FCCE7265FD4487D94BF92F759, measured after
+the version bump and reproduced by two clean rebuilds. Sixteen checkers pass,
+forty-nine proofs hold, 771 plant anchors findable.
+
+Not staged: the owner has the game open and no stage was asked for.

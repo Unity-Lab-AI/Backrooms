@@ -1,0 +1,52 @@
+Every surface the game speaks through (0.10.5-dev)
+
+RimWorld does not have one voice for displayed text. It has a different
+convention per surface, and Core is consistent about them to a degree
+that is easy to violate without noticing: a float menu row ends with a
+full stop 7% of the time, an explanatory tooltip 93% of the time. Core's
+own keyed files are organised by surface where ours are organised by
+system, and the conventions were lost in the gap.
+
+Six strings were written in the wrong register. Five right-click rows
+were sentences; one of them was a 98-character row carrying a
+two-sentence instruction. The row now states only the condition and the
+instruction moved to the button's tooltip, which is the surface that
+exists for instructions.
+
+check-display-style.py is the seventh checker. It classifies each key by
+the call site that displays it rather than by its name, because a name
+does not say where a string appears, and it prints a census of every
+surface RimWorld displays text on including the ones at zero. That
+census is how the alerts readout was found empty: every warning this mod
+gave was either a letter a player can dismiss and lose, or an inspect
+line a player has to already be looking at.
+
+Three alerts now. Recovery overdue at critical, return window closing at
+high and still actionable, no gate operator at medium and colony-wide so
+that keeping a spare door designated does not nag. No def, no asset, no
+Harmony: AlertsReadout walks typeof(Alert).AllLeafSubclasses(), verified
+by decompiling it.
+
+Register row 146 changed the design. It was the only applicable row in
+295, and its review carries the author's own note about a possible small
+alert-check cost. Core calls GetReport on a rotating one-in-twenty-four
+schedule, so three alerts would mean three building sweeps forever. They
+share one cached sweep per game tick, keyed on the tick and the game
+object, because keying on the tick alone hands a second save loaded at
+the same tick the first save's despawned components.
+
+The checker's first run reported seven faults that were not faults, and
+the baselines were wrong rather than the text. Letter bodies had been
+measured from Letters.xml alone at a maximum of 385 when Core's incident
+letters reach 666; tooltips from GameplayCommands.xml alone at 204 when
+Core's explanatory strings reach 894. One good tooltip was flagged for
+being four characters over a ceiling that never existed. Measure a
+surface, never a file. Both rules were then sanity-tested by planting a
+fault on each and confirming it fired.
+
+The inspect pane is counted and deliberately not ruled on, and the report
+says so in words: Core builds inspect lines from strings scattered across
+its keyed files and there is no clean population to measure against.
+
+160 C# files, 80 package files, zero warnings. Seven checkers pass.
+Assembly reproduced by two clean recompiles. No game launched.

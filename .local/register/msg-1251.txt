@@ -1,0 +1,85 @@
+Letting a place go, so a machine gate can aim deeper (0.12.51-dev)
+
+Owner question: "yeah so if the player discovers and goes through a natural
+gate how do they turn them off to use the machine gates for more controll and
+aiming deeper?", and the trap named plainly: "get 5 natural gates u cant use
+a machine gate". Asked how, they chose an Operations held-places list with a
+Release button.
+
+A correction is owed first, and it makes the trap worse than the previous
+record said. That record claimed discovering a gate was free because no map
+existed until somebody crossed. It is wrong.
+NaturalFrontierService.Discover calls
+PortalAddressService.RegisterNaturalAddress, which calls
+DestinationService.EnsureSite immediately, because a natural edge is
+registered against the far side's own ReturnAnchor and that Thing does not
+exist until the map does. A discovery costs a slot at the moment it is made.
+So the budget check in Discover is load-bearing rather than over-eager, and
+five discoveries really do lock a player out of their own machine gates,
+exactly as described. That is why this shipped now instead of next
+checkpoint. The prior record is annotated rather than rewritten.
+
+A natural gate is permanently open and is never closed. What a release lets
+go of is the space behind it. The door stays: still there, still marked, and
+remembering which place it led to on its own comp.
+
+The pairing has to move before the edge is removed. The edge is what records
+that this door goes to that coordinate, and every endpoint of it lives on the
+map about to be torn down, so the edge must go - which makes it the only
+other record of the pairing. Remove it first and the door becomes an ordinary
+marked door with the place behind it unreachable for ever. So the release
+writes the coordinate id onto the door's comp while the edge still says so.
+
+The order is the whole of the safety, and the proof asserts it as an ordering
+by index rather than as the presence of three calls: doors told where they
+led, then edges removed, then the map and world object torn down. Reverse
+either pair and a record points at something that no longer exists.
+
+releasedByPlayer exists to answer one question that cannot otherwise be
+answered. EnsureSite rightly refuses to rebuild a coordinate that has no site
+but whose rooms were surveyed, because a broken reference must not replace an
+already explored graph. A deliberate release is indistinguishable from that
+unless it says so. The exemption covers that and nothing else: a competing
+owner or a live map still refuses with the flag set, and the flag is cleared
+the moment the place is generated again, because an exemption that outlives
+its reason is a hole.
+
+The coordinate record and its rooms are kept, so re-opening returns to the
+same place - the same rooms in the same shape. Its contents are not, because
+the interior regenerates from the seed. That is the honest price of not
+holding it open, and it is why this is a deliberate action with a red
+confirmation that counts the items first rather than the eviction timer the
+owner considered and rejected. A release that discarded the graph would hand
+the player a different place back, which is worse than either.
+
+Refusals name themselves: the headquarters, crew inside, a crossing in
+flight, or a place with no live map. A prisoner or an animal counts as
+somebody inside, because a released map takes its contents with it.
+
+Re-opening is a gizmo on the door that led there, calling
+RegisterNaturalAddress - the same path that created the place, so there is no
+second implementation to drift. It is disabled rather than hidden at the
+budget, because a player at their limit needs to see what they are at the
+limit of, and it only forgets the shelved place on success: forgetting on
+failure would strand it for ever over a transient refusal.
+
+The pane lists the colonies too, because they are the other half of the
+budget and a player counting slots needs to see why three of five are gone
+before they blame the Backrooms. Neither outcome of pressing Release is
+silent.
+
+Two plants found two more loose claims of mine, both the duplicate-string
+trap: the EnsureSite call appears twice in PortalAddressService so a presence
+test survived deleting one, and connections.Remove( did not match a planted
+connections.RemoveAll(. Counted and widened. That trap is now the single most
+recurrent failure mode in this project's proofs, and the rule it keeps
+teaching is to count what should exist rather than test that something does.
+
+200 C# files, 91 package files, zero warnings, zero errors. Assembly SHA-256
+378493F20F4B7CD8BB932608073434CC00315C00EE94567C50FE995CCADF1A79, reproduced
+by two clean recompiles. Thirteen checkers pass, forty-one proofs hold, 88 of
+88 planted faults caught.
+
+Still open from the same direction: the wild variation of materials across
+items, equipment, walls, floors, lights, furniture and benches, with the
+events, layouts and loot deeper in.

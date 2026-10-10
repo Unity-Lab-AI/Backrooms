@@ -1,0 +1,71 @@
+DEFERRED.md is closed, and the Backrooms gets a reason to go back in
+
+Owner direction, and the second time it has been given:
+
+    un deffer everything in defferments.md and put it all back in the todod
+    properly LIKE I SAID NOTHING SHALL BE DEFFERED
+
+All 43 open rows moved into TODO.md byte-for-byte, under the major that owns
+each one. Thirty-eight are ordinary open work; five are [T] under the post-
+completion test phase. DEFERRED.md now holds zero open rows and carries a banner
+forbidding new ones, because the file refilling is exactly the failure being
+called out.
+
+Worth being straight about the split rather than agreeing flatteringly: of the
+43, only five were test rows. The other thirty-eight were real build work parked
+behind an owning step instead of done. Three homes now exist for work not being
+done right now, and no fourth -- build it, put it in TODO.md under its major, or
+ask immediately with multiple choice and a write-in. A genuine fork is a
+question, never a deferment.
+
+Three of those rows were genuine forks and were asked rather than migrated, and
+one answer went well past the question.
+
+Odd origin (decision 23). Anything carried out of a Backrooms coordinate is
+marked "(odd)", and contracts, quests and missions demand odd goods by origin --
+the owner's own examples are 1000 (odd) cotton and 10 uninstalled electric
+stoves (odd). This is the answer to why a player ever goes back in. It converts
+the thirty-one existing cross-map work families into an economy: an odd-only
+contract cannot be filled from the colony stockpile at any price, only by going
+in, working the space and hauling it out. It gives ordinary Core resources a
+second tier of value without inventing a single new item, and it stays inside the
+content-reuse policy because the marker is a comp added by PatchOperationAdd plus
+a saved flag. The harder half is named up front rather than discovered later: the
+owner's example is an uninstalled building, so the marker has to survive
+uninstall and rebuild.
+
+Floors recovered when lifted is settled as Rimrooms floors only, so installing
+the mod never changes an existing colony's vanilla floors.
+
+A clean development-save break is declared (decision 24), so M2 may delete every
+custom Def with no migration written. The owner's reason is recorded because it
+is the whole justification: no save has ever been made, and the prep-era RimWorld
+Together server and saves have nothing to do with how this mod will work. Note
+the boundary -- decision 21 made migration a standing obligation from the first
+published version, so this is the last free break.
+
+The Quiet Pursuer keeps its rules and loses its art (decision 25), rebinding to
+an existing Core pawn presentation. No new art exception is opened.
+
+New checker: tools/check-package-integrity.py, step 5e of the ritual. Phase 6
+opens with a row demanding validation of def references, patch targets, load
+folders, package metadata, textures and clean-install structure. Three of those
+were already covered by the keyed-strings, DLC-gating and gate0 checkers; the
+rest was covered by nothing. Its first run found About.xml declaring modVersion
+0.7.1-dev while its own player-facing description still opened "Development build
+0.6.4-dev", seven checkpoints stale, because nobody reads a description against a
+version field by hand. Four of its other seven findings were the checker being
+wrong rather than the package -- abstract parents declare via Name= and not
+defName, RR_CalibrateGate is legitimately both a JobDef and a WorkGiverDef,
+LoadFolders.xml belongs at the mod root by design, and a def named inside an XML
+comment is prose. All four were fixed in the checker and are explained where they
+sit, since each is a trap the next scanner would fall into too.
+
+That closes the M6a package-validation row for real rather than by assertion.
+
+Build: 0.7.1-dev, zero warnings, zero errors, 76 approved package files. All four
+checkers pass -- package-integrity PASS, keyed strings 1,104 literal references
+all resolving with zero argument mismatches, DLC gating clean, audit-gate0 PASS
+with zero errors.
+
+No game was launched, no test was run, no RimSort mod list was changed.

@@ -1,0 +1,41 @@
+{
+ "success": false,
+ "message": "A category id is required.",
+ "devModeEnabled": false,
+ "godMode": false,
+ "state": {
+  "programState": "Playing",
+  "inEntryScene": false,
+  "hasCurrentGame": true,
+  "currentMapId": "Map_0",
+  "currentMapIndex": 0,
+  "mapCount": 1,
+  "longEventPending": false,
+  "paused": true,
+  "timeSpeed": "Paused",
+  "screenFading": false,
+  "fadeOverlayAlpha": 0.0,
+  "gameDataReady": true,
+  "mapDataReady": true,
+  "currentMapReady": true,
+  "screenFadeClear": true,
+  "playable": true,
+  "visualReady": true,
+  "automationReady": true
+ },
+ "operation": {
+  "OperationId": "op_c8f9651cda6047e9b9914eabcbdf9534",
+  "CapabilityId": "rimbridge.optional/architect/list-architect-designators",
+  "Status": 2,
+  "Success": true,
+  "StartedAtUtc": "2026-10-08T20:16:15.8939088+00:00",
+  "CompletedAtUtc": "2026-10-08T20:16:15.905438+00:00",
+  "DurationMs": 11,
+  "Result": null,
+  "HasResult": true,
+  "ResultWasTruncated": false,
+  "Warnings": [],
+  "Error": null,
+  "Metadata": {}
+ }
+}

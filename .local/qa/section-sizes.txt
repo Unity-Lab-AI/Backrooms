@@ -1,0 +1,11 @@
+BYTES    ROWS   CENSUS                     SECTION
+----------------------------------------------------------------------------------------------------------------------
+7840     16     [ ]10  [~]6   [T]0   prose 3321   In progress
+24315    52     [ ]38  [~]11  [T]3   prose 10000  Pending
+5511     10     [ ]10  [~]0   [T]0   prose 3240   Public face: the site, the Workshop page and the col
+1670     2      [ ]2   [~]0   [T]0   prose 966    Owner decisions, 2026-09-29 — the three reserved que
+38624    78     [ ]18  [~]28  [T]31  prose 12673  Owner directions recorded late
+25       0      [ ]0   [~]0   [T]0   prose 25     TOMBSTONES
+
+prose inside sections whose titles are dated checkpoint records: 0.0 KB
+whole file: 78.6 KB

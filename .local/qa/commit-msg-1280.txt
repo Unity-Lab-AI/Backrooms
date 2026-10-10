@@ -1,0 +1,53 @@
+Architect gets its corner back, and the queue stopped being an archive (0.12.80-dev)
+
+Two fixes and one ledger reset.
+
+The Operations tab had taken the far-left slot off Architect, so reaching for
+Architect out of habit opened Operations. RR_MainButtons.xml goes order 0 to 5,
+between Core's Architect at 1 and Work at 10, so Core's own sort puts Architect
+back at far left and Operations immediately right of it. One field on this
+package's own def; no PatchOperation against a Core def, which would fight every
+row of the Interface family at once. The proof claim now asserts BOTH bounds,
+because one bound passes a value that re-breaks the other end, and a third plant
+was added for order 0 taking the slot back. 57 of 57 caught.
+
+The Furniture & Knickknack Store granted MealSimple 24. It is MealSurvivalPack
+100 now. It was the only scenario granting a simple meal, and a simple meal
+spoils, so the start handed the player two dozen meals and quietly took them
+back. Both defs verified present in the installed game data before the swap.
+
+The starting-goods spawn is STILL OPEN and no fix was written on a hunch. A
+9,216-cell sweep through the bridge against the live process found none of the
+Store's consumable grants: no Silver 200, no WoodLog 200, no Cloth 120, no
+MedicineHerbal 8, no Gun_Revolver, 6 Steel against 80 - while every shop fixture
+was present. Prepare Carefully's equipment and the scenario grants share the same
+PlayerStartingThings() enumeration, so one break explains both halves of the
+report. ScenPart_RimroomsArrival has two silent return sites before it ever calls
+base.GenerateIntoMap; that is where to look, on a fresh start against a staged
+0.12.80-dev.
+
+The queues now hold open work only, by owner direction. docs/TODO.md went 493.8 KB
+to 79 KB and docs/DECOMPOSED.md 30.6 KB to 4.1 KB. Three things came out: 727 [x]
+rows; nine sections titled as dated checkpoint records, whose 38 open rows were
+carried forward; and finished work written inside open rows, where one [~] row was
+3,796 characters of which about 3,000 were six completed build passes.
+DECOMPOSED.md had claimed "Complete - moved to FINALIZED" over 56 entries with zero
+hits in FINALIZED.md - it asserted a transfer that never happened.
+
+docs/NOW.md is one record again, 3,053 lines to 131, with nine stacked handoff
+records archived. FINALIZED-BEFORE-DELETE gained its missing half as a LAW: the
+removal is mandatory, not optional, and verbatim is proved by a byte-for-byte
+reassembly identity rather than by reading the output.
+
+check-doc-conformance rule 6 is scoped to a delimited archived-queue region so an
+archived direction is not read as one that never reached the queue; a direction
+acted on and never queued still fails. proof-housekeeping reads the archive now and
+additionally asserts the row is gone from the queue, which the single-file read
+could not express.
+
+NOT STAGED: stage-mod.ps1 refuses while RimWorld is running and the session was
+live throughout. It refused correctly. The game folder holds 0.12.78-dev, so
+neither fix is testable until it is staged.
+
+211 C# files, 92 package files, zero warnings, zero errors. Sixteen checkers pass,
+forty-nine proofs hold. No game was launched.

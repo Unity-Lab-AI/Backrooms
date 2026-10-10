@@ -1,0 +1,66 @@
+The exchange, and credits back out as paper (0.7.7-dev)
+
+Selling physical valuables to the parent corporation for credits, and drawing
+credits back out as bonds. This closes the money loop: credits now have a source,
+a physical form, a store and a sink.
+
+The rate is the whole design. Odd goods go at one and a half times market, which
+is the owner's answer and is justified on its own terms: the corporation cannot
+source them anywhere else, and the player paid for them in gate time, power and
+risk rather than in silver. Ordinary valuables go at eighty-five percent,
+because the company is instant with no trader, no caravan and no travel, and it
+takes a cut for that.
+
+Traders therefore stay the better price for ordinary goods if you are willing to
+wait for one, and that is deliberate rather than an oversight. A company paying
+full market would make every trader who buys valuables pointless and would make
+the convenience free. Paying above market for odd and below for ordinary is what
+keeps the two economies pulling in different directions instead of one swallowing
+the other. It also finally gives gold and silver a job: until now a vault of gold
+was dead weight until a trader turned up wanting it.
+
+Value comes from each thing's own MarketValue, so the exchange tracks the game's
+economy and any mod that reprices anything, rather than a table this mod would
+have to maintain against 294 others.
+
+The exchange runs on a designated credit beacon's radius and takes everything
+tradeable inside it, because that contract already exists: a Core trade beacon
+already means that what is in the circle is what is on the table. It borrows a
+mental model the player has rather than inventing selection rules, and the radius
+is the control. The gizmo shows the split before committing -- item count, total,
+and how much of it is the odd premium.
+
+Bonds in range are never sold. A bond is already credits, banking one is a
+different action with a different meaning, and quietly selling a million-credit
+bond at eighty-five percent would be a way to destroy a player's money by
+accident. Pawns and corpses are excluded outright. Everything is valued first,
+then destroyed, then posted as a single transaction, which is the same shape bond
+banking uses so that a reload mid-sale cannot credit a subset twice.
+
+For withdrawal the denomination ladder is the menu, filtered to what the account
+can cover and ordered largest first. There is no number to type, no slider, and
+no way to ask for an amount that cannot be represented: pick a rung, get one bond
+of that size. That is honest about what is happening, because the corporation
+prints a specific instrument rather than dispensing change. Withdrawing a larger
+sum is what IssueBonds is for, and it still pays out largest-first.
+
+The loop now runs end to end. Cross a gate and haul things out, and they are odd.
+An odd-supply contract wants them by origin and cannot be filled from your own
+fields, or sell them at the beacon above market because nobody else has them.
+Credits land in the account. Draw them as bonds, store them in a vault, lose them
+in a fire. Spend them on catalogue access, which decides what the corporation
+will sell you, which makes the next coordinate survivable -- and the pressure
+system means you need ordinary material down there to work at all.
+
+137 C# source files, 84 approved package files, zero warnings, zero errors. No
+new def of any kind, no asset, no patch operation, no new work type; eleven keyed
+strings added to an existing file. Assembly SHA-256
+ED36F5C73ADAF2C11230F0B22210B238386859C5D6CEB1FD3329CD97309CC617 reproduced by
+two full recompiles after deleting obj/ and bin/. All four checkers pass.
+
+Still open and named in TODO.md rather than deferred: a confirmation step on the
+beacon sale, which is a large irreversible action with only a gizmo click in
+front of it; and balance for both the catalogue access fees and the exchange
+rates, neither of which has any play behind it.
+
+No game was launched, no test was run, no RimSort mod list was changed.

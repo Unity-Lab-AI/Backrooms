@@ -1,0 +1,64 @@
+A shop with a door in the back (0.11.9-dev)
+
+The second selectable start, from the furniture_knickknack_store card in
+SCENARIOS.md, and a correction to the first one.
+
+The Furniture and Knickknack Store: a 50x50 shop with a sales floor,
+stockroom, office, staff room and a back room nobody uses. Three ordinary
+people - owner/manager, employee, night guard - 200 silver in the till, and a
+shop's stock. No corporate allocation, wages and overhead a fraction of a
+research branch's.
+
+No corporation contact and no completed research, and those two are the whole
+point. No clean-up team, no unsolicited courier, nothing already learned.
+Nobody is watching this place and nothing is coming if it goes wrong, and as
+of 0.11.7 through 0.11.9 that absence is a real mechanical difference rather
+than a line in a design document.
+
+The threshold in the back room is an ordinary Core door, because that is
+exactly what a gate is in this mod before somebody designates it. Nothing here
+claims a breach system that does not exist.
+
+Async Industries began with ZERO completed research, contradicting the
+direction it was written under: "Async industries starts with this tech
+research and other basic gate techs it needs to operate and begin researching
+and gate operations at basic levels". Asked rather than guessed. Owner's
+answer: all seven tier 0 branch roots plus RR_GateTelemetry. Consequence named
+before the choice and taken knowingly - Telemetry puts PortalWindowTier at 1,
+the floor at which something may follow a crew out, so Async is exposed to
+incursion from its first opening.
+
+ConfigErrors demanded exactly five starting roles, with an Async-specific
+message, as a rule for every start. The Store opens with three and the
+solo/group start with as few as one. Relaxed to one to five.
+
+A seventh proof, and it earned itself immediately: it found THREE new-game
+crashes in a layout that built with zero warnings and passed all eight
+checkers. A 2x2 WoodFiredGenerator and a Battery sitting on the stockroom's
+south wall, then a shelf colliding with the moved generator.
+GenStep_Headquarters throws on each and nothing else can see it. Building
+sizes are read from Core's own ThingDefs, so a 1x1 assumption cannot hide a
+2x2.
+
+It also asserts the failure that does NOT throw: a sealed room. The map
+generates, the colony starts, and part of the shop can never be entered,
+forever, silently. Flood-fill from the arrival cell through doors and open
+ground; removing one door fails it.
+
+An assertion was wrong and the source was right, for the third time this
+session. The wall rule said a wall must not land inside another room's
+interior - which would have failed the Async headquarters, which ships and
+works. GenStep_Headquarters throws only on an edifice collision. Restated: two
+rooms must not share a wall cell. An assertion written from what the code
+looks like is a guess; one written from what the code throws on is a fact.
+
+Register checked first: Interface, scenario setup and quality of life, 11
+rows. Row 85, EdB Prepare Carefully, applies and the existing design already
+answers it - the native config page goes first, every starting item is a
+native ScenPart_StartingThing_Defined, and the mod's own scen parts are
+visible=false and carry only the layout and the branch.
+
+Build 0.11.9-dev, 167 C# files, 86 package files, 0 warnings, 0 errors.
+Assembly 490158EDEF1F88F2E060E70E127567C9DB4351C988021C5B765650FDA46661CE
+reproduced by two clean recompiles. Eight checkers pass, seven proofs hold,
+the new one fault-planted four ways. No game was launched.

@@ -1,0 +1,144 @@
+{
+  "status": "partial",
+  "captured_at_utc": "2026-10-01T23:35:33+00:00",
+  "client": "RimroomsReadOnlyQA/2",
+  "limitations": [
+    "Caller-supplied PID and log pairing cannot be proven by this client.",
+    "A successful handshake is not Rimrooms compatibility evidence.",
+    "Read results are sequential observations, not an atomic game snapshot.",
+    "Warnings are the latest 50 retained journal entries, not the entire startup log."
+  ],
+  "process": {
+    "pid": 26128,
+    "executable": "RimWorldWin64.exe"
+  },
+  "endpoint": {
+    "host": "127.0.0.1",
+    "port": 5174
+  },
+  "authentication_token_present": true,
+  "selected_reads": [
+    "ping",
+    "camera",
+    "maps"
+  ],
+  "protocol": "gabp/1",
+  "calls": [
+    {
+      "selector": "ping",
+      "tool": "rimbridge/ping",
+      "result": {
+        "message": "pong",
+        "timestamp": "2026-10-01T23:35:33.7798996Z",
+        "operation": {
+          "OperationId": "op_91650170faac4427b5504eb15c2bddf1",
+          "CapabilityId": "rimbridge.core/diagnostics/ping",
+          "Status": 2,
+          "Success": true,
+          "StartedAtUtc": "2026-10-01T23:35:33.7798996+00:00",
+          "CompletedAtUtc": "2026-10-01T23:35:33.7798996+00:00",
+          "DurationMs": 0,
+          "Result": null,
+          "HasResult": true,
+          "ResultWasTruncated": false,
+          "Warnings": [],
+          "Error": null,
+          "Metadata": {}
+        }
+      },
+      "evidence_truncations": 0
+    },
+    {
+      "selector": "camera",
+      "tool": "rimworld/get_camera_state",
+      "result": {
+        "success": true,
+        "map": "0",
+        "mapId": "Map_0",
+        "mapIndex": 0,
+        "rootSize": 17.6724052,
+        "zoomRootSize": 17.6724052,
+        "zoomRange": "Middle",
+        "sizeRange": {
+          "min": 11.0,
+          "max": 60.0
+        },
+        "cameraZoomExtensionEnabled": false,
+        "mapPosition": {
+          "x": 150,
+          "z": 152
+        },
+        "viewRect": {
+          "minX": 118,
+          "minZ": 133,
+          "maxX": 183,
+          "maxZ": 170,
+          "width": 66,
+          "height": 38
+        },
+        "operation": {
+          "OperationId": "op_cfa22968610946298fc004dccfa494a0",
+          "CapabilityId": "rimbridge.core/view/get-camera-state",
+          "Status": 2,
+          "Success": true,
+          "StartedAtUtc": "2026-10-01T23:35:33.7804028+00:00",
+          "CompletedAtUtc": "2026-10-01T23:35:33.7939549+00:00",
+          "DurationMs": 13,
+          "Result": null,
+          "HasResult": true,
+          "ResultWasTruncated": false,
+          "Warnings": [],
+          "Error": null,
+          "Metadata": {}
+        }
+      },
+      "evidence_truncations": 0
+    }
+  ],
+  "session": {
+    "agentId": "gabp-server",
+    "app": {
+      "name": "RimBridgeServer",
+      "version": "2.1.1.0"
+    },
+    "capabilities": {
+      "methods": [
+        "session/hello",
+        "tools/list",
+        "tools/call",
+        "events/subscribe",
+        "events/unsubscribe",
+        "attention/current",
+        "attention/ack"
+      ],
+      "events": [
+        "attention/updated",
+        "system/status",
+        "rimbridge.operation",
+        "attention/cleared",
+        "attention/opened",
+        "system/log",
+        "rimbridge.log"
+      ],
+      "resources": []
+    },
+    "schemaVersion": "1.0"
+  },
+  "evidence_truncations": 0,
+  "available_allowlisted_tools": [
+    "rimbridge/get_bridge_status",
+    "rimbridge/list_logs",
+    "rimbridge/ping",
+    "rimworld/get_camera_state",
+    "rimworld/get_game_info",
+    "rimworld/get_mod_configuration_status",
+    "rimworld/get_selection_semantics",
+    "rimworld/list_alerts",
+    "rimworld/list_colonists",
+    "rimworld/list_letters",
+    "rimworld/list_messages"
+  ],
+  "requested_tools_missing_from_live_list": [
+    "rimworld/list_maps"
+  ]
+}

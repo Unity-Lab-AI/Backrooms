@@ -1,0 +1,93 @@
+{
+ "success": true,
+ "count": 4,
+ "zones": [
+  {
+   "id": "Zone_0",
+   "label": "Growing zone 1",
+   "baseLabel": "Growing zone",
+   "inspectLabel": "Growing zone 1",
+   "className": "RimWorld.Zone_Growing",
+   "cellCount": 90,
+   "hidden": false,
+   "position": {
+    "x": 135,
+    "z": 133
+   }
+  },
+  {
+   "id": "Zone_3",
+   "label": "Growing zone 2",
+   "baseLabel": "Growing zone",
+   "inspectLabel": "Growing zone 2",
+   "className": "RimWorld.Zone_Growing",
+   "cellCount": 43,
+   "hidden": false,
+   "position": {
+    "x": 131,
+    "z": 126
+   }
+  },
+  {
+   "id": "Zone_1",
+   "label": "Stockpile zone 1",
+   "baseLabel": "Stockpile zone",
+   "inspectLabel": "Stockpile zone 1",
+   "className": "RimWorld.Zone_Stockpile",
+   "cellCount": 30,
+   "hidden": false,
+   "position": {
+    "x": 171,
+    "z": 156
+   }
+  },
+  {
+   "id": "Zone_2",
+   "label": "Stockpile zone 2",
+   "baseLabel": "Stockpile zone",
+   "inspectLabel": "Stockpile zone 2",
+   "className": "RimWorld.Zone_Stockpile",
+   "cellCount": 6,
+   "hidden": false,
+   "position": {
+    "x": 145,
+    "z": 145
+   }
+  }
+ ],
+ "state": {
+  "programState": "Playing",
+  "inEntryScene": false,
+  "hasCurrentGame": true,
+  "currentMapId": "Map_0",
+  "currentMapIndex": 0,
+  "mapCount": 2,
+  "longEventPending": false,
+  "paused": true,
+  "timeSpeed": "Paused",
+  "screenFading": false,
+  "fadeOverlayAlpha": 0.0,
+  "gameDataReady": true,
+  "mapDataReady": true,
+  "currentMapReady": true,
+  "screenFadeClear": true,
+  "playable": true,
+  "visualReady": true,
+  "automationReady": true
+ },
+ "operation": {
+  "OperationId": "op_d27e3132412045ec873a47697a3d6b49",
+  "CapabilityId": "rimbridge.optional/architect/list-zones",
+  "Status": 2,
+  "Success": true,
+  "StartedAtUtc": "2026-10-08T08:56:14.4754093+00:00",
+  "CompletedAtUtc": "2026-10-08T08:56:14.4874869+00:00",
+  "DurationMs": 12,
+  "Result": null,
+  "HasResult": true,
+  "ResultWasTruncated": false,
+  "Warnings": [],
+  "Error": null,
+  "Metadata": {}
+ }
+}

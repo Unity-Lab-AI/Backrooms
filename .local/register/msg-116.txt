@@ -1,0 +1,54 @@
+The second time you do a thing should be cheaper (0.11.6-dev)
+
+Research tier 2: seven projects, one per branch, each requiring its tier 1
+sibling and a completed distortion log. Tier 1 asked only for route logs
+because it is about having been through once; this band is about having been
+through often enough for something to have gone wrong.
+
+Standby Discipline halves what a designated gate costs to keep while closed.
+Relief Watch cuts what an unattended ramp bleeds to a quarter. Reference
+Standards takes two fifths off calibration work. Known Address deepens the
+familiarity discount on a coordinate the branch has dialled before.
+Containment Protocol raises the aperture tier something must have before it
+can follow a crew out. Forward Dispatch halves the time a shipment waits
+before it leaves. Specialist Recruitment halves the hiring cooldown.
+
+Nothing in this band supersedes anything. Every project moves a knob no other
+project touches, so two cards never have to explain each other.
+
+Three of the seven knobs the previous handoff called "already identified" were
+verified hollow and replaced. stablePowerTicksRequired is 60 ticks, one
+second. MaximumOpenOrders is a private sanity cap of 100 open orders.
+Catalogue maxOrderQuantity is already 500 to a million per row. All three
+would have PASSED proof-research-branches.py, because the capability would
+have been read by real code - it would simply have moved a number no player
+could observe. A live read site is not a live effect.
+
+Two things that would have gone quiet:
+
+- Idle draw is read in two places, what the gate reports and what it spends.
+  The capability now lives in one property both call, so the readout can never
+  lie about the drain.
+- Forward Dispatch would have switched Relays off. The lead-time clamp kept a
+  shipment from arriving before it left by reading the raw dispatch delay; it
+  now measures against the effective value, or a branch holding both would
+  have been pinned at the old floor.
+
+No custom storyteller, on owner direction at the fork. A StorytellerDef is an
+exclusive slot, it needs portrait art the no-new-art rule forbids, and there
+is no intelligence in one to borrow. The owner's decision is both: a
+guaranteed floor in our own component for the clean-up team, and an
+IncidentDef surface so the player's chosen storyteller paces the lighter
+world-facing events. This mod currently has zero IncidentDefs.
+
+Register checked first: the Research and staff development family holds six
+rows and none applies, because every one of them operates on
+ResearchProjectDef and the vanilla research tab while these are
+RimroomsProjectDef in the Operations tab.
+
+Build 0.11.6-dev, 162 C# files, 85 package files, 0 warnings, 0 errors.
+Assembly 018417AEA123B3894A44F9007535ACED27AC6FE09E972DFAFC3E29F427ADA71A
+reproduced by two clean recompiles. Eight checkers pass; doc conformance
+caught a stale README version. Four proofs hold, and proof-research-branches
+was fault-planted in both directions and failed correctly both times. No game
+was launched.

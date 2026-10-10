@@ -1,0 +1,49 @@
+Something is not where you left it (0.10.3-dev)
+
+Owner direction: "you should be reviewing the prep materials and
+registry for especially backroom themed items equip,memntn and questes
+and logic and game paly and factions and random events and backrooms
+make ups you should be doing deep dives into the univers's make up of
+backrroms to properly design all the sustems events and specialities
+involved with this mod".
+
+So this was found by reading the prep material rather than by
+inventing something. UNIVERSE_ADAPTATION.md lists five ways an
+ordinary interior is made uncanny: a shifted doorway, impossible
+adjacency, a repeated hall, changed room dimensions, and a feature
+that has moved since the last visit. Checked one by one, four were
+built and the fifth was not, and it is the only one that depends on
+the player's own memory rather than on the geometry.
+
+It is not the rearrangement anomaly. RR_Anomaly_Rearrangement moves
+loose items during a session at depth four and above and announces
+itself. This moves fixtures between visits, silently, at any depth a
+coordinate has been opened twice. Opposites on purpose: an anomaly you
+are told about is a thing that happened to you, and a chair that is
+somewhere else is a thing that happened while you were not there.
+
+The proof changed the design. The first version fired on every single
+return, 100% across 4,000 simulated visits, which is mechanical rather
+than uncanny because a player would simply learn that coming back
+moves things. The unease depends on not being sure whether you
+misremembered, so a once-per-visit roll now leaves roughly a third of
+returns exactly as they were: 66.7% change something, a first visit
+never does across 500 seeds, and a sparsely dressed room still fires
+on 267 of 400 returns.
+
+Nothing is told to the player. No letter, no message, no alert, only a
+company log entry, so the discovery is checkable after the fact rather
+than announced before it. This does not breach the warning-first rule,
+which governs threats: a bench in a different corner cannot hurt
+anybody.
+
+Never anything the player built or owns, since ownership is the whole
+test and generation places things with no faction. Never the return
+threshold. Never a door or a room edge, so a moved fixture cannot seal
+a route. Only furnishings move, so the layout fingerprint is untouched
+and a revisited coordinate still re-plans byte-identically.
+
+159 C# source files, 79 approved package files. Zero warnings, zero
+errors. Assembly SHA-256 reproduced by two clean recompiles. All six
+checkers pass. No new def, asset, patch operation or work type. No
+game launched, no test run, no RimSort profile touched.

@@ -28,9 +28,9 @@ Assemblies/*.pdb
 # checker FOURTEEN and it runs the planner for real, which is the only thing in this battery that
 # can see a feature go absent -- and a checker whose source a clone does not get is a checker that
 # silently stops existing. Its bin/ and obj/ stay out; they are build output.
-.local/*
+
 !.local/register/
-.local/register/*
+
 !.local/register/proof-*.py
 !.local/register/plant-*.py
 # `build-dependencies.py` joined them at 0.12.79-dev, and it is the third instance of this exact
@@ -45,7 +45,7 @@ Assemblies/*.pdb
 # measurement that reports whether any living document has drifted back to a false claim. A rule
 # whose plant a clone does not get is a rule that silently stops being guarded.
 !.local/qa/
-.local/qa/*
+
 !.local/qa/plant-retirement-scope.py
 !.local/qa/measure-dependency-claims.py
 !.local/harness/
@@ -103,10 +103,46 @@ __pycache__/
 .claude/.popup.json
 
 # the local model's own brain is tracked; its scratch and secrets are not
-!.local/
-!.local/autopilot/
-!.local/autopilot/**
+
 .local/autopilot/scratch/
 .local/autopilot/secret-words.txt
 .local/autopilot/*.log
 .local/autopilot/__pycache__/
+
+# .local ships: the scripts people need to recreate the whole rig. These do not:
+.local/twitch-profile/
+.local/dl/
+.local/tmp/
+.local/**/scratch/
+.local/**/__pycache__/
+.local/**/*.log
+.local/**/*.lock
+.local/**/_*.json
+.local/**/_*.png
+.local/**/_*.txt
+.local/**/*.pyc
+.local/autopilot/secret-words.txt
+.local/harness/**/bin/
+.local/harness/**/obj/
+.local/**/*.env
+.local/**/*.pem
+.local/**/*.key
+
+.local/export/
+.local/train/*.jsonl
+.local/tw/owner.txt
+.local/**/*.png
+.local/**/*.jpg
+.local/**/*.rws
+.local/**/*.zip
+.local/**/*.exe
+.local/**/*.dll
+.local/**/node_modules/
+
+# not ours to ship: decompiled game code, package caches, SDK, build harness
+.local/decomp/
+.local/nuget/
+.local/dotnet/
+.local/harness/
+.local/qa/backup-*/
+.local/tools/

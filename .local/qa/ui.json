@@ -1,0 +1,2720 @@
+{
+ "success": true,
+ "captureId": 130,
+ "capturedFrame": 1073775,
+ "capturedAtUtc": "2026-10-08T22:56:22.5982713Z",
+ "surfaceCount": 3,
+ "surfaces": [
+  {
+   "captureTargetId": "ui-surface:130:1",
+   "surfaceTargetId": "window:0:DubsMintMinimap.MainTabWindow_MiniMap",
+   "surfaceKind": "window",
+   "type": "DubsMintMinimap.MainTabWindow_MiniMap",
+   "title": null,
+   "label": null,
+   "semanticKind": null,
+   "semanticDetails": null,
+   "rect": {
+    "x": 1617.0,
+    "y": 49.0,
+    "width": 300.0,
+    "height": 325.0
+   },
+   "screenRect": {
+    "x": 1617.0,
+    "y": 49.0,
+    "width": 300.0,
+    "height": 325.0
+   },
+   "elementCount": 5,
+   "actionableElementCount": 3,
+   "elements": [
+    {
+     "targetId": "ui-element:130:1:1",
+     "kind": "group",
+     "source": "widgets.begin_group",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 0.0,
+      "y": 0.0,
+      "width": 300.0,
+      "height": 325.0
+     },
+     "screenRect": {
+      "x": 1617.0,
+      "y": 49.0,
+      "width": 300.0,
+      "height": 325.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:1:2",
+     "kind": "icon_button",
+     "source": "widgets.button_image",
+     "label": null,
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 0.0,
+      "y": 0.0,
+      "width": 25.0,
+      "height": 25.0
+     },
+     "screenRect": {
+      "x": 1617.0,
+      "y": 49.0,
+      "width": 25.0,
+      "height": 25.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:1:3",
+     "kind": "icon_button",
+     "source": "widgets.button_image",
+     "label": null,
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 27.0,
+      "y": 0.0,
+      "width": 25.0,
+      "height": 25.0
+     },
+     "screenRect": {
+      "x": 1644.0,
+      "y": 49.0,
+      "width": 25.0,
+      "height": 25.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:1:4",
+     "kind": "icon_button",
+     "source": "widgets.button_image",
+     "label": null,
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 275.0,
+      "y": 0.0,
+      "width": 25.0,
+      "height": 25.0
+     },
+     "screenRect": {
+      "x": 1892.0,
+      "y": 49.0,
+      "width": 25.0,
+      "height": 25.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:1:5",
+     "kind": "scroll_view",
+     "source": "widgets.begin_scroll_view",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 1.0,
+      "y": 26.0,
+      "width": 298.0,
+      "height": 298.0
+     },
+     "screenRect": {
+      "x": 1618.0,
+      "y": 75.0,
+      "width": 298.0,
+      "height": 298.0
+     },
+     "scroll": {
+      "offsetX": 0.0,
+      "offsetY": 0.0,
+      "maxOffsetX": 0.0,
+      "maxOffsetY": 0.0,
+      "canScrollX": false,
+      "canScrollY": false,
+      "atLeft": true,
+      "atRight": true,
+      "atTop": true,
+      "atBottom": true,
+      "viewportRect": {
+       "x": 1.0,
+       "y": 26.0,
+       "width": 298.0,
+       "height": 298.0
+      },
+      "viewportScreenRect": {
+       "x": 1618.0,
+       "y": 75.0,
+       "width": 298.0,
+       "height": 298.0
+      },
+      "contentRect": {
+       "x": 1.0,
+       "y": 26.0,
+       "width": 298.0,
+       "height": 298.0
+      }
+     }
+    }
+   ]
+  },
+  {
+   "captureTargetId": "ui-surface:130:2",
+   "surfaceTargetId": "main-tab:RR_Operations",
+   "surfaceKind": "main_tab",
+   "type": "RimroomsAsyncIndustries.UI.MainTabWindow_Operations",
+   "title": null,
+   "label": "Operations",
+   "semanticKind": null,
+   "semanticDetails": null,
+   "rect": {
+    "x": 0.0,
+    "y": 412.0,
+    "width": 820.0,
+    "height": 580.0
+   },
+   "screenRect": {
+    "x": 0.0,
+    "y": 412.0,
+    "width": 820.0,
+    "height": 580.0
+   },
+   "elementCount": 216,
+   "actionableElementCount": 34,
+   "elements": [
+    {
+     "targetId": "ui-element:130:2:1",
+     "kind": "group",
+     "source": "widgets.begin_group",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 18.0,
+      "y": 18.0,
+      "width": 784.0,
+      "height": 544.0
+     },
+     "screenRect": {
+      "x": 18.0,
+      "y": 430.0,
+      "width": 784.0,
+      "height": 544.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:2",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Overview",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 12.0,
+      "y": 12.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 442.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:3",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Personnel",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 164.0,
+      "y": 12.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "screenRect": {
+      "x": 182.0,
+      "y": 442.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:4",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Contracts",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 316.0,
+      "y": 12.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "screenRect": {
+      "x": 334.0,
+      "y": 442.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:5",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Ledger",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 468.0,
+      "y": 12.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "screenRect": {
+      "x": 486.0,
+      "y": 442.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:6",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Atlas",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 620.0,
+      "y": 12.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "screenRect": {
+      "x": 638.0,
+      "y": 442.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:7",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Activity",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 12.0,
+      "y": 48.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 478.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:8",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Investigation",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 164.0,
+      "y": 48.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "screenRect": {
+      "x": 182.0,
+      "y": 478.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:9",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Machine",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 316.0,
+      "y": 48.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "screenRect": {
+      "x": 334.0,
+      "y": 478.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:10",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Expedition",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 468.0,
+      "y": 48.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "screenRect": {
+      "x": 486.0,
+      "y": 478.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:11",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Facilities",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 620.0,
+      "y": 48.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "screenRect": {
+      "x": 638.0,
+      "y": 478.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:12",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Procurement",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 12.0,
+      "y": 84.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 514.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:13",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Sites",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 164.0,
+      "y": 84.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "screenRect": {
+      "x": 182.0,
+      "y": 514.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:14",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Places",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 316.0,
+      "y": 84.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "screenRect": {
+      "x": 334.0,
+      "y": 514.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:15",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Help",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 468.0,
+      "y": 84.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "screenRect": {
+      "x": 486.0,
+      "y": 514.0,
+      "width": 148.0,
+      "height": 32.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:16",
+     "kind": "scroll_view",
+     "source": "widgets.begin_scroll_view",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 12.0,
+      "y": 128.0,
+      "width": 760.0,
+      "height": 404.0
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 558.0,
+      "width": 760.0,
+      "height": 404.0
+     },
+     "scroll": {
+      "offsetX": 0.0,
+      "offsetY": 0.0,
+      "maxOffsetX": 0.0,
+      "maxOffsetY": 1753.5,
+      "canScrollX": false,
+      "canScrollY": true,
+      "atLeft": true,
+      "atRight": true,
+      "atTop": true,
+      "atBottom": false,
+      "viewportRect": {
+       "x": 12.0,
+       "y": 128.0,
+       "width": 760.0,
+       "height": 404.0
+      },
+      "viewportScreenRect": {
+       "x": 30.0,
+       "y": 558.0,
+       "width": 760.0,
+       "height": 404.0
+      },
+      "contentRect": {
+       "x": 0.0,
+       "y": 0.0,
+       "width": 740.0,
+       "height": 2157.5
+      }
+     }
+    },
+    {
+     "targetId": "ui-element:130:2:17",
+     "kind": "listing",
+     "source": "listing.begin",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 0,
+     "parentTargetId": null,
+     "rect": {
+      "x": 0.0,
+      "y": 0.0,
+      "width": 740.0,
+      "height": 2157.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 558.0,
+      "width": 740.0,
+      "height": 2157.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:18",
+     "kind": "group",
+     "source": "widgets.begin_group",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 0.0,
+      "width": 740.0,
+      "height": 2157.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 558.0,
+      "width": 740.0,
+      "height": 2157.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:19",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Company Operations",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 0.0,
+      "width": 740.0,
+      "height": 29.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 558.0,
+      "width": 740.0,
+      "height": 29.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:20",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Company Operations",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 0.0,
+      "width": 740.0,
+      "height": 29.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 558.0,
+      "width": 740.0,
+      "height": 29.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:21",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 0.0,
+      "width": 740.0,
+      "height": 29.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 558.0,
+      "width": 740.0,
+      "height": 29.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:22",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Company Operations",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 0.0,
+      "width": 740.0,
+      "height": 29.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 558.0,
+      "width": 740.0,
+      "height": 29.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:23",
+     "kind": "spacing",
+     "source": "listing.gap",
+     "label": null,
+     "valueText": "12",
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 31.5,
+      "width": 740.0,
+      "height": 12.0
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 589.5,
+      "width": 740.0,
+      "height": 12.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:24",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Company: Gloom Collective",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 43.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 601.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:25",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Company: Gloom Collective",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 43.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 601.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:26",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 43.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 601.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:27",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Company: Gloom Collective",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 43.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 601.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:28",
+     "kind": "button",
+     "source": "listing_standard.button_text",
+     "label": "Rename company",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 67.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 625.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:29",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 99.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 657.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:30",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Company Account: 35,065,000 USD",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 99.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 657.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:31",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Company Account: 35,065,000 USD",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 99.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 657.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:32",
+     "kind": "gap_line",
+     "source": "listing.gap_line",
+     "label": null,
+     "valueText": "12",
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 120.5,
+      "width": 740.0,
+      "height": 12.0
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 678.5,
+      "width": 740.0,
+      "height": 12.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:33",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Procurement and receiving",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 132.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 690.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:34",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Procurement and receiving",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 132.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 690.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:35",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 132.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 690.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:36",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Procurement and receiving",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 132.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 690.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:37",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 156.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 714.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:38",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Branch USD balance: $35,065,000",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 156.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 714.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:39",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Branch USD balance: <color=#DBB40CFF>$35</color>,065,000",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 156.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 714.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:40",
+     "kind": "gap_line",
+     "source": "listing.gap_line",
+     "label": null,
+     "valueText": "12",
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 177.5,
+      "width": 740.0,
+      "height": 12.0
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 735.5,
+      "width": 740.0,
+      "height": 12.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:41",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 189.5,
+      "width": 740.0,
+      "height": 30.0
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 747.5,
+      "width": 740.0,
+      "height": 30.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:42",
+     "kind": "button",
+     "source": "widgets.button_text",
+     "label": "Item: Industrial components",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": false,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 189.5,
+      "width": 740.0,
+      "height": 30.0
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 747.5,
+      "width": 740.0,
+      "height": 30.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:43",
+     "kind": "spacing",
+     "source": "listing.gap",
+     "label": null,
+     "valueText": "2",
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 219.5,
+      "width": 740.0,
+      "height": 2.0
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 777.5,
+      "width": 740.0,
+      "height": 2.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:44",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Industrial components. The limiting part of almost every machine worth having, and the one thing a branch is most likely to be short of at the worst moment.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 221.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 779.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:45",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 221.5,
+      "width": 740.0,
+      "height": 37.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 779.5,
+      "width": 740.0,
+      "height": 37.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:46",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Industrial components. The limiting part of almost every machine worth having, and the one thing a branch is most likely to be short of at the worst moment.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 221.5,
+      "width": 740.0,
+      "height": 37.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 779.5,
+      "width": 740.0,
+      "height": 37.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:47",
+     "kind": "button",
+     "source": "listing_standard.button_text",
+     "label": "Receiving stockpile: Stockpile zone 1",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 261.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 819.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:48",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Quantity to request",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 293.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 851.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:49",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Quantity to request",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 293.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 851.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:50",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 293.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 851.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:51",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Quantity to request",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 293.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 851.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:52",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 316.5,
+      "width": 740.0,
+      "height": 30.0
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 874.5,
+      "width": 740.0,
+      "height": 30.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:53",
+     "kind": "text_field",
+     "source": "widgets.text_field",
+     "label": null,
+     "valueText": "150",
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 316.5,
+      "width": 740.0,
+      "height": 30.0
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 874.5,
+      "width": 740.0,
+      "height": 30.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:54",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Estimate: 150 items, $3,000,000, 1 stacks at the current setting, approximately 90.0 kg.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 346.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 904.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:55",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Estimate: 150 items, <color=#DBB40CFF>$3</color>,000,000, 1 stacks at the current setting, approximately 90.0 kg.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 346.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 904.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:56",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 346.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 904.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:57",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Estimate: 150 items, <color=#DBB40CFF>$3</color>,000,000, 1 stacks at the current setting, approximately 90.0 kg.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 346.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 904.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:58",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Delivery target: Stockpile zone 1",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 370.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 928.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:59",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Delivery target: Stockpile zone 1",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 370.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 928.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:60",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 370.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 928.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:61",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Delivery target: Stockpile zone 1",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 370.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 928.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:62",
+     "kind": "button",
+     "source": "listing_standard.button_text",
+     "label": "Create supplier quote",
+     "valueText": null,
+     "actionable": true,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 393.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 951.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:63",
+     "kind": "gap_line",
+     "source": "listing.gap_line",
+     "label": null,
+     "valueText": "12",
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 425.5,
+      "width": 740.0,
+      "height": 12.0
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 983.5,
+      "width": 740.0,
+      "height": 12.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:64",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Open quotes",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 437.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 995.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:65",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Open quotes",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 437.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 995.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:66",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 437.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 995.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:67",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Open quotes",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 437.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 995.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:68",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "No open quotes. Request one to see prices and delivery terms.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 461.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1019.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:69",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "No open quotes. Request one to see prices and delivery terms.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 461.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1019.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:70",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 461.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1019.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:71",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "No open quotes. Request one to see prices and delivery terms.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 461.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1019.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:72",
+     "kind": "gap_line",
+     "source": "listing.gap_line",
+     "label": null,
+     "valueText": "12",
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 484.5,
+      "width": 740.0,
+      "height": 12.0
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1042.5,
+      "width": 740.0,
+      "height": 12.0
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:73",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Orders and physical shipment receipts",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 496.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1054.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:74",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Orders and physical shipment receipts",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 496.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1054.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:75",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 496.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1054.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:76",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Orders and physical shipment receipts",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 496.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1054.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:77",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Safely archived: 0 settled order(s) (0 delivered, 0 cancelled/refunded; 0 items delivered total). Their company ledger entries and monotonic order IDs remain.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 520.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1078.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:78",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Safely archived: 0 settled order(s) (0 delivered, 0 cancelled/refunded; 0 items delivered total). Their company ledger entries and monotonic order IDs remain.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 520.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1078.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:79",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 520.0,
+      "width": 740.0,
+      "height": 37.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1078.0,
+      "width": 740.0,
+      "height": 37.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:80",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Safely archived: 0 settled order(s) (0 delivered, 0 cancelled/refunded; 0 items delivered total). Their company ledger entries and monotonic order IDs remain.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 520.0,
+      "width": 740.0,
+      "height": 37.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1078.0,
+      "width": 740.0,
+      "height": 37.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:81",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Retained order history page 1 of 1",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 559.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1117.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:82",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Retained order history page 1 of 1",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 559.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1117.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:83",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 559.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1117.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:84",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Retained order history page 1 of 1",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 559.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1117.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:85",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "rr-branch-228e4dd5a9124d47882d007c7061513f:Procurement:000007 \u2014 Component: 150 ordered, 0 delivered, 150 still held; paid; waiting for supplier dispatch",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 583.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1141.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:86",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "rr-branch-228e4dd5a9124d47882d007c7061513f:Procurement:000007 \u2014 Component: 150 ordered, 0 delivered, 150 still held; paid; waiting for supplier dispatch",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 583.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1141.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:87",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 583.0,
+      "width": 740.0,
+      "height": 37.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1141.0,
+      "width": 740.0,
+      "height": 37.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:88",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "rr-branch-228e4dd5a9124d47882d007c7061513f:Procurement:000007 \u2014 Component: 150 ordered, 0 delivered, 150 still held; paid; waiting for supplier dispatch",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 583.0,
+      "width": 740.0,
+      "height": 37.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1141.0,
+      "width": 740.0,
+      "height": 37.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:89",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Quoted total: $2,700,000. Receiving stockpile: Stockpile zone 1. Dispatch day 1; arrival day 3.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 622.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1180.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:90",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Quoted total: <color=#DBB40CFF>$2</color>,700,000. Receiving stockpile: Stockpile zone 1. Dispatch day 1; arrival day 3.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 622.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1180.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:91",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 622.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1180.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:92",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Quoted total: <color=#DBB40CFF>$2</color>,700,000. Receiving stockpile: Stockpile zone 1. Dispatch day 1; arrival day 3.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 622.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1180.5,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:93",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Remaining cargo now uses about 1 stack(s), at current limit 500; this can change when the active stack setting changes.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 646.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1204.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:94",
+     "kind": "label",
+     "source": "listing_standard.label",
+     "label": "Remaining cargo now uses about 1 stack(s), at current limit 500; this can change when the active stack setting changes.",
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 646.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1204.0,
+      "width": 740.0,
+      "height": 21.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:95",
+     "kind": "slot",
+     "source": "listing.get_rect",
+     "label": null,
+     "valueText": null,
+     "actionable": false,
+     "clipCapable": true,
+     "isChecked": null,
+     "disabled": null,
+     "depth": 1,
+     "parentTargetId": "ui-element:130:2:17",
+     "rect": {
+      "x": 0.0,
+      "y": 646.0,
+      "width": 740.0,
+      "height": 37.5
+     },
+     "screenRect": {
+      "x": 30.0,
+      "y": 1204.0,
+      "width": 740.0,
+      "height": 37.5
+     },
+     "scroll": null
+    },
+    {
+     "targetId": "ui-element:130:2:96",
+     "kind": "label",
+     "source": "widgets.label",
+     "label": "Remaining cargo now uses about 1 stack(s), at current limit 50

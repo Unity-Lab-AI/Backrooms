@@ -1,0 +1,41 @@
+Bringing a gate up is work (0.8.9-dev)
+
+Opening a laboratory connection is no longer a button. The assigned
+operator brings the gate up at the console over time, at their own
+working speed, with the progress shown on the console.
+
+Every entry point routes through the one ramp: dialling a remembered
+address, opening a session from the operations window, and opening
+after registering. There is exactly one way a laboratory gate opens,
+so the ramp cannot be skipped by choosing a different button.
+
+The ramp climbs only while the gate is genuinely held, by the same
+conditions a live opening is held by, and bleeds otherwise. At zero it
+lapses with the address kept. Required work falls with every previous
+connection to the same address, down to a floor, which turns the gate
+address book into its learned routes and gives pinning something real
+to protect. A finished ramp waits fully charged rather than being
+discarded when the battery is momentarily short.
+
+Decay was first written as a flat rate per tick with a comment claiming
+it was slower than progress. It was not: at low Intellectual a
+technician would have lost charge faster than they could build it,
+making a slow operator's gate impossible rather than slow. The offline
+proof rejected it on that assertion. Decay is now a fraction of the
+observed climb rate, so the guarantee holds for every operator by
+construction rather than by luck.
+
+A designated gate is a blue door with a blue glow around it. This
+needed no new component and no new patch operation: ThingWithComps
+honours ThingComp.ForceColor(), and the gate component is already on
+the door, so every other door in the game is untouched. A colour the
+player painted on still wins. The aura already existed but only
+appeared while open; it is now the gate's permanent identity.
+
+Natural gates are unchanged and again needed no new guard.
+
+155 C# source files, 92 approved package files. Zero warnings, zero
+errors. Assembly SHA-256 reproduced by two clean recompiles. All four
+checkers pass, 1,214 keyed references resolving. No new def of any
+kind, no asset, no patch operation, no new job def, no new work type.
+No game launched, no test run, no RimSort profile touched.

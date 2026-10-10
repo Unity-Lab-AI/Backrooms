@@ -1,0 +1,63 @@
+The shape of the place, and hallways (0.8.6-dev)
+
+The room-shape half of the echo direction, outstanding since 0.8.1-dev and the
+last named loose end. Deep coordinates are no longer built to a tidy grid: rooms
+stretch, shrink and go wrong, they go wronger the further in they sit, some take
+the proportions of rooms the branch actually built, and a good number are
+deliberate hallways.
+
+The fingerprint problem was the whole difficulty. Layout planning is re-run to
+verify a saved graph against its fingerprint, so a planner that consulted the
+colony's current rooms would replan a coordinate differently the moment the
+player built an extension -- and that coordinate would then fail its own
+fingerprint check and refuse to generate. So echoed dimensions are captured once,
+at discovery, and saved on the coordinate. Never read live. That is also the
+better fiction: the place copied what it saw when it opened, not what you have
+built since.
+
+Existing coordinates are untouched by design. roomLibraryVersion already existed
+for exactly this and already feeds the fingerprint, so new coordinates are
+version two and everything discovered before plans byte-identically to how it
+always did.
+
+Shallow stays regular, deliberately. Depth one does not derange at all, because
+the yellow rooms read as a place precisely because they are monotonous and
+regular, and deranging them would throw away the image the whole setting rests
+on. The wrongness is something the player travels toward.
+
+Hallways are made deliberately rather than hoped for. A corridor is one of the
+two shapes the setting is actually built on, and leaving it to a symmetric
+stretch roll would have produced one rarely and by accident. It gets its own
+branch: long and narrow on one axis, which the room dresser then fills as a
+corridor rather than as a hall.
+
+Deranged must not collapse into broken. Every dimension is clamped to eight
+through seventeen, because rooms sit nineteen cells apart on the planning grid
+and anything wider would overlap its neighbour -- at which point the candidate
+validator would reject every layout, the planner would fall back to the plain
+one, and the feature would silently become a no-op while appearing to work. That
+was not left to trust: the placement formula was replicated offline and every
+clamped width and height combination from eight to seventeen checked for overlap
+and for map bounds, with zero violations and extents of one to fifty-five inside
+a sixty by sixty map. The check was re-run after the hallway shapes were added.
+
+Two parts of the direction were already met and are said so rather than rebuilt.
+Furnishing rooms with their proper equipment, and items, are both already covered
+by the archetype library from 0.7.9-dev: fourteen archetypes filling rooms by
+capability, including item slots drawn from thing categories, so a workshop gets
+benches and material and a ward gets beds and medicine. The furnishing half was
+not outstanding; only the mapping is.
+
+151 C# source files, 91 approved package files, zero warnings, zero errors. No
+new def of any kind, no asset, no patch operation, no new work type. Assembly
+SHA-256 69B3038E29E875357360DCD7E81F54F999EBE270792627B6C5FAED2FBEA4DF15
+reproduced by two full recompiles after deleting obj/ and bin/. All four checkers
+pass.
+
+Newly open and named in TODO.md rather than deferred: archetypes are not yet
+constrained by structural family, so a hallway can currently be furnished as a
+nursery -- hallways now exist as a shape, and teaching the dresser that a
+corridor is a corridor is the next piece; and facilities as larger functional
+spaces distinct from rooms and corridors.
+
+No game was launched, no test was run, no RimSort mod list was changed.

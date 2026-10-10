@@ -1,0 +1,20 @@
+{
+ "success": false,
+ "message": "A capability id or alias is required.\r\nParameter name: idOrAlias",
+ "requestedId": null,
+ "operation": {
+  "OperationId": "op_c9b63e43a65a4dfc9c9f10606fd29341",
+  "CapabilityId": "rimbridge.core/diagnostics/get-capability",
+  "Status": 2,
+  "Success": true,
+  "StartedAtUtc": "2026-10-08T17:32:18.9006555+00:00",
+  "CompletedAtUtc": "2026-10-08T17:32:18.924316+00:00",
+  "DurationMs": 23,
+  "Result": null,
+  "HasResult": true,
+  "ResultWasTruncated": false,
+  "Warnings": [],
+  "Error": null,
+  "Metadata": {}
+ }
+}

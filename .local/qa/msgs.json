@@ -1,0 +1,23 @@
+{
+ "success": true,
+ "currentGameTick": 1420673,
+ "totalCount": 0,
+ "returnedCount": 0,
+ "truncated": false,
+ "messages": [],
+ "operation": {
+  "OperationId": "op_56221e43c37e4764a327052f4b9d95fc",
+  "CapabilityId": "rimbridge.core/notifications/list-messages",
+  "Status": 2,
+  "Success": true,
+  "StartedAtUtc": "2026-10-08T08:40:01.196657+00:00",
+  "CompletedAtUtc": "2026-10-08T08:40:01.2056737+00:00",
+  "DurationMs": 9,
+  "Result": null,
+  "HasResult": true,
+  "ResultWasTruncated": false,
+  "Warnings": [],
+  "Error": null,
+  "Metadata": {}
+ }
+}

@@ -1,0 +1,58 @@
+The corporation does not write off a branch (0.11.7-dev)
+
+The clean-up team, and the guaranteed-floor half of the owner's decision at the
+storyteller fork: "Both - guaranteed floor, storyteller flavour".
+
+A branch in corporation contact that loses every living staff member gets a
+clean-up team on all-access passes. Hostiles are removed from the site, five
+replacement staff are requisitioned one per company role, and a basic supply
+drop lands with them. No cap and no escalation: the corporation "will put up
+with anything", and a rescue that gets stingier is a deadline wearing a
+different hat.
+
+Deliberately not an IncidentDef. A storyteller decides whether and when to
+fire one, and "facilities never die" admits neither question. The storyteller
+half is a separate surface and is next.
+
+Five PawnKindDefs were already written and read by nothing. The whole RR_*Staff
+set - operations, research, engineering, security, medical logistics - authored
+with skill ranges matching the five company roles exactly, loaded and validated
+every run, mentioned by no source file. The queue called them "unbuilt". They
+were built and orphaned, which is more dangerous, because an orphaned def looks
+finished from every angle except the one nobody checks. Third instance of the
+same shape this session.
+
+Three decisions inside it:
+
+- It fires on "no employed staff alive ANYWHERE", never "alive here". A crew
+  standing in a Backrooms coordinate is alive and the facility is not dead, so
+  a player who takes everybody through a gate never comes home to a relief team
+  and a duplicate payroll. Downed is also not dead, which closes the obvious
+  exploit by definition rather than by a counter-measure.
+- Hostiles are removed, not killed. A clean-up team that left forty corpses on
+  the floor of a facility with nobody in it to haul them has not cleaned
+  anything up, and the rot would land on the replacement crew.
+- reliefCount is a record and lastReliefTick is a timestamp. The proof asserts
+  nothing compares either against a limit.
+
+Core facts read from the decompiled assembly rather than remembered:
+GameEnder.gameEnding is a public field, so no Harmony is needed; Core clears it
+itself whenever a map holds a free colonist; the game-over countdown is 400
+ticks and the relief is checked every 60.
+
+Not routed through the hiring pipeline, whose job is matching onboarding
+receipts against a saved quote. There is no charge here - the corporation pays
+for its own rescue - and using that path would have meant inventing a receipt.
+
+Register checked first across world threat and event pacing, faction standing,
+scenario setup and recovery systems. Row 199, Safely Hidden Away, changes how
+the game reasons about colonists who are not present, which is exactly the
+state this must not mistake for a dead facility; that rule is asserted rather
+than commented.
+
+A fifth proof, fault-planted four ways and correct on every one.
+
+Build 0.11.7-dev, 163 C# files, 85 package files, 0 warnings, 0 errors.
+Assembly 307D02D075BBBF4256FB019BF848E6705400D4F40EF79DA5E26EE11802BB2CCC
+reproduced by two clean recompiles. Eight checkers pass, five proofs hold. No
+game was launched.

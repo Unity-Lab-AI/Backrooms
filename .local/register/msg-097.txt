@@ -1,0 +1,50 @@
+Some places are bigger than a room (0.9.7-dev)
+
+Owner direction: "facilitys" - larger functional spaces, as distinct
+from rooms and corridors.
+
+Every room rolled its own kind independently, so a coordinate could
+put a laboratory bench in one room, a bed in the next and a smithy in
+the third. Each room was fine and the place was nothing: there was no
+laboratory, only a room with a bench in it.
+
+A facility is a contiguous run of two to four rooms taken off the
+coordinate's own saved graph and dressed as the same kind. No new def
+type and no new content, just the same fourteen archetypes chosen once
+for a group instead of once per room. Resolution is through an anchor,
+the lowest room index in the group, so every member asks the same
+question and gets the same answer, and nothing is stored: the
+assignment is recomputed identically from the saved graph and seed
+rather than written down, so it cannot fall out of step with the
+graph.
+
+Coherence makes a deep coordinate worse rather than tidier. A
+recognisable institution that is wrong is far worse than a jumble,
+because a jumble has nothing to violate. The derangement still applies
+on top, so a three-room nursery turns up where no nursery could be,
+furnished at a tech level nobody there should have had.
+
+Depth 1 is untouched, the threshold room is never part of one, and a
+facility is assembled only from rooms that were going to be dressed
+anyway, so the required-quiet guarantee holds by construction rather
+than by a separate check that could drift from it.
+
+Proved, because this is exactly how a generator ships a no-op. Half of
+every coordinate is a required quiet room and one more is the
+threshold, so the pool is small before any roll happens; every
+constraint could be individually reasonable and the assembly could
+still never form a group, which would look precisely like a working
+feature. 2,800 simulated coordinates across seven sizes assert that
+facilities form in 53.9% of them, that every group is contiguous
+through the graph, bounded two to four, anchored at its lowest index,
+never consumes a quiet or threshold room, leaves the quiet guarantee
+intact, and replans identically from the same seed.
+
+EligibleShare was compared at 0.45, 0.50, 0.60 and 0.70. The code kept
+0.45 and the proof was changed to match it. A proof testing different
+numbers than the code is worthless.
+
+158 C# source files, 79 approved package files. Zero warnings, zero
+errors. Assembly SHA-256 reproduced by two clean recompiles. All five
+checkers pass. No new def, asset, patch operation or work type. No
+game launched, no test run, no RimSort profile touched.

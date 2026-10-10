@@ -1,0 +1,63 @@
+Things that happen, and the echo reaching items (0.8.4-dev)
+
+The events half of "wild waky carzxzy creepy things when u add places and
+events". The places shipped four checkpoints ago; events had been named as
+outstanding ever since rather than quietly dropped.
+
+Seven of them, and every one has an answer the player can actually perform,
+because the frozen threat rules demand one: readable warning, learnable rule, at
+least one countermeasure, no unavoidable instant failure.
+
+The lights case is the best of them. CompFlickable.SwitchIsOn has a public
+setter, so the event switches every light off using vanilla's own flick switch --
+which means the countermeasure is vanilla too and the player already knows how to
+perform it. That is a far better answer than a bespoke darkness mechanic. Cold is
+answered by clothing, a heater or leaving. Seepage is answered by the cleaning
+family, which already crosses a gate. Rearranged things are moved and never
+destroyed. Presence does nothing at all, and exists so that a quiet band still
+has texture.
+
+Nothing here can trap anybody. No effect damages a pawn, destroys a thing or
+blocks a route, and the threshold room is excluded from every effect, always --
+that is the no-unavoidable-instant-failure rule made concrete rather than
+promised, because whatever happens, walking back out is still possible.
+
+Rearrangement moves loose items only and never fixtures, because the clue system
+records a landmark per room and moving one would quietly break a trail a player
+is following. It refuses to move bonds, since a player's money is not scenery,
+and a failed move puts the item back rather than leaving it unspawned.
+
+Bounded and non-replaying: at most two events per visit, and a non-repeatable one
+is recorded on the coordinate so a revisit resumes rather than replays. A space a
+player knows should not perform its party trick every single time they walk in;
+that turns an unsettling event into a chore.
+
+The construction echo now reaches items and equipment, following the direction
+that arrived mid-build. Production benches were already covered as buildings, but
+items needed a different test and getting it right mattered: faction ownership
+cannot work for them, because a stack of steel in a colony stockpile has a null
+faction exactly like one lying in a Backrooms corridor. Origin is the right test
+instead and it already existed -- anything stamped Outside came into existence
+somewhere the player was, which excludes a coordinate's own contents by the same
+stroke and stops the place echoing its own things back at itself. Bonds are never
+echoed.
+
+The comment-dash checker earned itself back. Two of the new def files failed to
+parse because of a double hyphen inside an XML comment, and the check added in
+0.7.6-dev caught it and named the rule and the line rather than leaving the
+parser's useless "not well-formed (invalid token)" at a column. That is the
+second time this exact trap has been hit since the check was written, and the
+first time it cost nothing to diagnose.
+
+149 C# source files, 91 approved package files, zero warnings, zero errors. No
+new gameplay ThingDef, no asset, no patch operation, no new work type. Assembly
+SHA-256 5A5FE6070667CF540A2A4F4C7DD3227DFD5BFC71F175056E3798D3DC3FBD55D1
+reproduced by two full recompiles after deleting obj/ and bin/. All four checkers
+pass.
+
+Still open and named in TODO.md rather than deferred: inhabitant echoes, which is
+the place copying the player's people rather than their things and is a different
+thing entirely; and echoed room shapes, which touch the saved layout fingerprint
+and therefore generation's validation path.
+
+No game was launched, no test was run, no RimSort mod list was changed.

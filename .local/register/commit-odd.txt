@@ -1,0 +1,72 @@
+Odd origin: what comes out of the Backrooms is marked (0.7.2-dev)
+
+The owner's own design, given as the answer to a narrow question about floors and
+going a long way past it:
+
+    we can add a flag to item from the back rooms like (odd) or something like
+    that and have quests and missions and contracts and stuff for like 1000
+    (odd) cotton or like 10 uninstalled electic stoves(odd) ... that can give
+    reason for the players to have to advance and excplore and haul and use the
+    spaces iin the backrooms
+
+Why it is worth building first. Thirty-one cross-map work families have been
+moving real goods through a gate since 0.5.0, and nothing in the game has ever
+asked for those goods by where they came from. A contract demanding odd cotton
+cannot be filled from the colony's own fields at any price, only by going in,
+working the space and hauling it out. That converts the existing work engine into
+an economy and gives ordinary Core resources a second tier of value without
+inventing a single item, texture or resource, which keeps it inside the
+content-reuse policy rather than being an exception to it.
+
+Three laundering routes existed and all three are closed before shipping, because
+the mark is the thing a player would most like to forge.
+
+A marked stack must never merge with an unmarked one, and the danger runs both
+ways: odd absorbing ordinary would manufacture odd goods out of colony stock and
+defeat every contract at once, while ordinary absorbing odd would destroy goods
+somebody crossed a gate to fetch. Core has the exact hook and it is used rather
+than worked around -- ThingWithComps.CanStackWith consults every comp's
+AllowStackWith and gates TryAbsorbStack, verified in source. Splitting is the
+second route, closed by PostSplitOff carrying the mark onto the piece.
+
+The third is the design one. Marking anything that spawns on a Backrooms map
+would be an open route: haul a thousand ordinary cotton in, drop it, pick it up,
+walk out with a thousand odd cotton. So exactly one place applies a mark -- once,
+at the end of generation, before the map can be reached. That is the whole
+security model and any future code that marks a thing elsewhere reopens it.
+
+The owner's own example is an uninstalled stove rather than a resource.
+Uninstalling wraps the building in a MinifiedThing whose InnerThing is the
+original, so the comp and its saved flag travel untouched. What that costs is
+that every read has to look through the wrapper, since asking a MinifiedThing
+directly reports every uninstalled stove as ordinary.
+
+The marker is appended to ThingDef.comps at startup rather than by an XML patch.
+The direction is deliberately open-ended -- "for all things materials and
+resources ect ect" -- so it has to reach every carryable thing in the loaded
+game, including items from the other 274 mods. PatchOperationAdd can only append
+to a comps node that already exists, and most item defs have none, so a patch
+would have applied to an arbitrary subset and failed silently on the rest.
+Appending at startup is purely additive: no def replaced, nothing removed, no
+other mod's files touched. Two filters keep it honest -- the def must actually
+instantiate comps, because a thingClass that is not a ThingWithComps never builds
+its comp list and the marker would be dead weight that looks like it works; and
+the thing must be carryable out, meaning an item or an uninstallable building.
+
+Four Core hooks carry the whole feature with no Harmony and no patch to a Core
+method: AllowStackWith, PostSplitOff, TransformLabel and PostExposeData. The
+"(odd)" is a keyed string, so the word itself stays a translation decision.
+
+Not covered, and named in TODO.md rather than deferred: the contracts that will
+demand odd goods, and materials recovered by deconstructing a marked building --
+uninstall preserves the mark because the building survives, deconstruct destroys
+it and spawns fresh resources through GenLeaving, which exposes no public hook.
+
+122 C# source files, 77 approved package files, zero warnings, zero errors. No
+patch operation added, no asset, no new work type, no new gameplay ThingDef.
+Assembly SHA-256 CC35332D69E4C9E4CF75A790B8C82641C2315A6CE113EDD6C927B5E1935A2A6D
+reproduced by two full recompiles after deleting obj/ and bin/. All four checkers
+pass: package-integrity PASS, 1,138 keyed strings with zero duplicates and 1,107
+references all resolving, DLC gating clean, audit-gate0 PASS with zero errors.
+
+No game was launched, no test was run, no RimSort mod list was changed.
