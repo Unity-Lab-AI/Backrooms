@@ -100,3 +100,4 @@ __pycache__/
 .claude/.fight.json
 .claude/.camera.json
 .claude/.cam-highlight.json
+.claude/.popup.json
