@@ -13,12 +13,15 @@ while os.path.exists(F):
         left = max(0, until - int(time.time()))
         h, m, sec = left // 3600, (left % 3600) // 60, left % 60
         eta = ("%d:%02d:%02d" % (h, m, sec)) if left > 0 else "any minute now"
-        msg = ("Technical difficulties, honest version:\n"
-               "Unity is being trained to play RimWorld properly\n"
-               "and to talk to you like herself, not a script.\n\n"
-               "Back in about  %s" % eta)
-        if c is None: c = o.ReqClient(host="127.0.0.1", port=4455, timeout=5)
-        c.set_input_settings("BRB text", {"text": msg}, True)
+        # the message sits in "BRB text", the ticking clock in its own big "BRB clock" (owner: "i dont see the
+        # live clock in the stream")
+        if c is None:
+            c = o.ReqClient(host="127.0.0.1", port=4455, timeout=5)
+            c.set_input_settings("BRB text", {"text": "Technical difficulties, honest version:\n"
+                                                      "I am being trained to play RimWorld properly\n"
+                                                      "and to talk to you like myself, not a script.\n\n"
+                                                      "Back in about"}, True)
+        c.set_input_settings("BRB clock", {"text": eta}, True)
     except Exception:
         c = None
     time.sleep(1)
