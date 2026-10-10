@@ -99,6 +99,8 @@ A room with no roof is not a room · blueprints need material on site or the paw
 
 So `start.bat` brings up the stack and the panel and **stops there**: no game, no broadcast, no colony. Unity asks — out loud and in the panel's **Ready?** card — *"Are we starting the stream and the game? Tell me what you want tonight and hit GO."* The owner types tonight's directive and presses **GO**: the directive is appended to `owner-orders.txt` as binding, then `keep-playing` launches the game (`services.py game`), relaunches OBS live (`services.py golive`), and arms the company colony.
 
+**A name means that service only (fixed on the first press, 2026-10-10):** `services.py start|stop|restart <name>` used to ignore the name and cycle the WHOLE rig — so restarting the voice also closed and relaunched OBS, Ollama and every service, and the panel's per-row start/stop buttons did the same. Now a name touches only that service (OBS is asked to close, never killed); no name still means the whole rig. The bridge guards (`popups`, `clock`, `heat`, `cursorjobs`, `host`) exit while there is no game — `keep-playing` brings them back once the bridge answers after GO, and asks for GO only once per press.
+
 Claude's job on the press: **watch the model, not drive it** — read `_svc_autopilot.log`, `_svc_keepgoing.log`, `_svc_host.log` and the outbox; fix a real fault on the fly; restart a service only when it is actually wedged; and **let her learn a bit before calling anything a failure** — one bad turn is not a bug, a repeated one is.
 
 **Next action is the owner's: press `windows\start.bat`, answer her, press GO.**

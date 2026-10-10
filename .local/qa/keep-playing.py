@@ -123,6 +123,14 @@ def model_needs(passes):
             subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, capture_output=True, text=True, timeout=900,
                        creationflags=0x08000000 if os.name == "nt" else 0)
             break
+    # 3b. the bridge guards (pop-ups, clock, heat, click queue, voice) exit when there is no game -- which is the
+    # whole wait before GO. Once the bridge answers, bring back any that died; start is idempotent.
+    BRIDGE_SVCS = ("host", "popups", "clock", "heat", "cursorjobs")
+    dead = [l.split()[0] for l in out.splitlines() if l.split() and l.split()[0] in BRIDGE_SVCS and "DOWN" in l]
+    if dead and _bridge_up():
+        print(stamp(), "bridge is up and these died waiting for it:", ", ".join(dead), "-- bringing them back", flush=True)
+        subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, capture_output=True, text=True, timeout=900,
+                       creationflags=0x08000000 if os.name == "nt" else 0)
     # 4. the training set that teaches the next model, grown from what just happened
     if passes % 60 == 0 and os.path.exists(TRAIN):
         r = subprocess.run([sys.executable, TRAIN], cwd=ROOT, capture_output=True, text=True, timeout=600,
@@ -141,13 +149,19 @@ while True:
         # Owner, 2026-10-10: "it should ask me if im ready to start the stream and game and what i want not
         # just random do everything". Ask once, out loud and on the panel, then wait for GO.
         if not os.path.exists(GO):
+            flag = os.path.join(HERE, "_asked.flag")
+            if not asked and os.path.exists(flag) and time.time() - os.path.getmtime(flag) < 7200:
+                asked = True      # already asked this press; a restart of this loop must not ask twice
             if not asked:
                 asked = True
+                open(flag, "w").write(stamp())
                 say("Hey. Everything is up and I am ready. Are we starting the stream and the game? Tell me what you want tonight and hit GO.")
                 print(stamp(), "asked the owner for GO; waiting", flush=True)
             time.sleep(10); continue
         if asked:
             asked = False
+            try: os.remove(os.path.join(HERE, "_asked.flag"))
+            except OSError: pass
             want = open(GO, encoding="utf-8").read().strip()
             print(stamp(), "GO received:", want[:120], flush=True)
             say("Got it. Launching the game and going live." if want in ("", "go")
