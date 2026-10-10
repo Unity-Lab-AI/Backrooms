@@ -104,6 +104,9 @@ def fresh(fact):
         if difflib.SequenceMatcher(None, low, fact.lower()).ratio() > 0.75: continue   # a bare echo of the prompt
         if not line or len(line.split()) > 30 or any(re.search(r"\b%s" % w, low) for w in sb.BANNED): continue
         if any(w in low for w in ("behold", "cosmos", " lo,", "witness")): continue
+        # never the plumbing on stream (owner: "tell chat whats up too not the details tho")
+        if re.search(r"connect|server|bridge|retry|retrying|loading the mod|crash|bug|error|offline|back online|"
+                     r"script|model|api|turn|tool", low): continue
         if any(n not in fact for n in re.findall(r"\d+", line)): continue
         # Owner, 2026-10-10: "your streamer script is not working well, it bariely everer updates".  What it
         # did update with was invented -- "expanding the lab", "building that greenhouse" -- none of which
@@ -183,7 +186,7 @@ def state_facts():
         lines = open(os.path.join(ROOT, ".local", "qa", "_svc_autopilot.log"), encoding="utf-8", errors="replace").read().splitlines()[-40:]
         for l in reversed(lines):
             m = re.search(r"model step \d+ \([\d.]+s\): (.+)", l)
-            if m and len(m.group(1)) > 20:
+            if m and len(m.group(1)) > 20 and not re.search(r"connect|bridge|server|retry|no game|not loaded|tool|turn", m.group(1), re.I):
                 facts.insert(0, "what I am doing right now in the game: " + m.group(1)[:200]); break
     except Exception:
         pass
