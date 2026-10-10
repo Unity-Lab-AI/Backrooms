@@ -38,3 +38,9 @@ Enforced in code, under the model, in `.local/autopilot/guards.py` -- the model 
   passwords, credentials, keys and the Twitch profile are unreadable -- so it cannot see the stream key or
   any account secret. Saves are forced to the `rimbridge_save_` prefix.
 - **It never edits the mod or writes code.** That is the reason it exists in this shape.
+
+## Restart without dropping the stream
+
+`windowsestart.bat` / `linux/restart.sh` restart everything **except the broadcast**: OBS switches to the BRB
+scene and keeps streaming, so viewers never see Twitch's network error. She asks Ready? again, and GO switches the
+stream back to Live (GO never relaunches an OBS that is already up). Only **stop** ends the broadcast.
