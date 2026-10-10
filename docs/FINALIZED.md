@@ -19246,3 +19246,20 @@ One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus 
 - [x] Resolve duplicate Defs/patch collisions in the exact 294 profile; use load-after patches only where a reproducible conflict requires one. — **STILL OPEN.** **Structurally requires a launch with the 294 profile loaded**, which only the owner does, through RimSort. -- **MOVED TO THE TEST PHASE 0.12.99-dev, on the row's own words:** *"Structurally requires a launch with the 294 profile loaded, which only the owner does, through RimSort."* A collision is a thing two mods do to each other at load; it cannot be found by reading. -- **THE LAUNCH HAPPENED AND THE LOAD IS CLEAN, 2026-10-09.** The row says a collision cannot be found by reading, only by loading, and that load is what this run is: the owner launched the full profile through RimSort and the equator colony has been played on it all evening. The live `Player.log` carries the startup phase -- `[Rimrooms][Build] 0.13.0-dev development package loaded`, `[Rimrooms][Generation] Fixture tells attached to 1802 definitions`, `[Rimrooms] odd-origin marker attached to 2770 thing definitions` -- and across it there are **zero** of every collision signature: no `Duplicate def`, no `XML error`, no `Could not resolve cross-reference`, no texture or asset load failure. **So no load-after patch was added**, which is precisely what the row asks for: use one *only where a reproducible conflict requires one*, and none did. The errors the log does carry are unrelated to def resolution and are recorded as their own open bugs in `docs/TODO.md` -- `Verse.FloatMenu` throwing a `NullReferenceException` inside `RimWorld.ITab_Bills+<FillTab>b__2` when an Add-bill option is chosen, and out-of-bounds `Explosion` spawn spam -- both runtime faults in profile mods, neither a Def or patch collision.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - the presses in the Backrooms root, and the cascade made current (2026-10-10)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+Two `[~]` rows closed and moved out of `docs/TODO.md`; the monitoring row stays open there until the owner presses start and the run is watched. Removal proved by reassembly (kept lines + the rows at their original index == the original file).
+
+> moved from `### Owner direction, 2026-10-10 -- the presses live in the Backrooms root, and the cascade must be current` in `docs/TODO.md`
+
+- [x] **"where the fuck is the windows and linix filies i told you to put in the backrooms rfolder" / "dont nest the windows and linix folder deep they should be in the backrooms folder"** -- they were nested at `stream/windows/` and `stream/linux/`. Moved to the Backrooms root as `windows/{start,stop,admin}.bat` and `linux/{start,stop,admin}.sh`, each resolving the engine one level up (`stream/services.py`); the old root `Stream Start.cmd` / `Stream Stop.cmd` (which called the `.local/qa` copy -- a second standard) now call the `windows\*.bat` pair; `stream/README.md`, `docs/NOW.md` and the `keep-playing.py` docstring point at the new paths; a grep for the old paths returns nothing outside the one-shot script.
+- [x] **"are you surue cascade to main is current on backrrooms and mod repos"** -- it was NOT: `github/main` (3d4e535) and `github/develop` (b932ea0) were four commits behind `feature/bug-testing` (d48acb35, the ask-first press). There is no separate mod repo: the mod is `Mod/Rimrooms - Async Industries` and `src/RimroomsAsyncIndustries` inside this repo, and the tracked DLL is byte-identical (md5 acbdc227) to the one staged in the game's Mods folder, with the automation component in it. Cascade re-run after this commit: feature -> develop -> main by PR.
+
+<!-- archived-queue:end -->

@@ -2,7 +2,7 @@
 
 Owner, 2026-10-10, verbatim: *"this should be started auto like on the bat starts and stops and .sh's"*. The
 loop that kept the work moving used to be a cron inside Claude's session, which dies with that session. This
-is the same loop as a service: it starts with `stream/windows/start.bat` or `stream/linux/start.sh` and stops
+is the same loop as a service: it starts with `windows/start.bat` or `linux/start.sh` and stops
 with the stop pair, like everything else.
 
 Every pass it evaluates the gate table (docs/playbook.gates.json via gates.py) against measured state and

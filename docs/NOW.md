@@ -27,10 +27,10 @@
 
 | | |
 |---|---|
-| **Start** | `stream/windows/start.bat` · `stream/linux/start.sh` — Ollama + both models (voice pre-warmed), every service, **OBS already live**, the game, the overlay, and **the admin panel opens on screen** |
-| **Stop** | `stream/windows/stop.bat` · `stop.sh` — kills **by name first** (`llama-server`, `ollama`, `obs64`, `RimWorldWin64`), then the sweep, then **prints the GPU** to prove the memory came back. **Never touches the owner's browsers** |
-| **Panel** | `http://127.0.0.1:4318/` (`stream/windows/admin.bat`) — services with start/stop, colony with **days of food**, a waiting pop-up, what needs the window, **ORDERS** (appended to `owner-orders.txt`, binding next turn), **CHAT** straight to the model |
-| Engine | `stream/services.py` — tracked; `.local/` is the dev surface |
+| **Start** | `windows/start.bat` · `linux/start.sh` — **in the Backrooms root, not nested** (owner: *"dont nest the windows and linix folder deep they should be in the backrooms folder"*). Ollama + both models (voice pre-warmed), every service, the overlay, **the admin panel opens on screen** — then she asks **Ready?**; the game and the broadcast wait for **GO** |
+| **Stop** | `windows/stop.bat` · `linux/stop.sh` — kills **by name first** (`llama-server`, `ollama`, `obs64`, `RimWorldWin64`), then the sweep, then **prints the GPU** to prove the memory came back. **Never touches the owner's browsers** |
+| **Panel** | `http://127.0.0.1:4318/` (`windows/admin.bat` · `linux/admin.sh`) — services with start/stop, colony with **days of food**, a waiting pop-up, what needs the window, **ORDERS** (appended to `owner-orders.txt`, binding next turn), **CHAT** straight to the model |
+| Engine | `stream/services.py` — tracked; `.local/` is the dev surface. The old root `Stream Start.cmd` / `Stream Stop.cmd` now call the same `windows\*.bat` — one engine, no second standard |
 
 Services under the switch: `rimworld` (started, never stopped except by `stop`), `obs`, `twitchui`, `studio`, `face`, `twitch`, `host`, `popups`, `clock`, `heat`, `camdir`, `followcrew`, `cursorjobs`, `keepgoing`, `autopilot`, `admin`. All detached, all windowless.
 
@@ -101,4 +101,4 @@ So `start.bat` brings up the stack and the panel and **stops there**: no game, n
 
 Claude's job on the press: **watch the model, not drive it** — read `_svc_autopilot.log`, `_svc_keepgoing.log`, `_svc_host.log` and the outbox; fix a real fault on the fly; restart a service only when it is actually wedged; and **let her learn a bit before calling anything a failure** — one bad turn is not a bug, a repeated one is.
 
-**Next action is the owner's: press `start.bat`, answer her, press GO.**
+**Next action is the owner's: press `windows\start.bat`, answer her, press GO.**
