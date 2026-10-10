@@ -184,7 +184,10 @@ def state_facts():
     # living in the moment (owner, live: "shes just repeating same things not living in the momnet"): what her
     # player just did is the freshest true fact there is
     try:
-        lines = open(os.path.join(ROOT, ".local", "qa", "_svc_autopilot.log"), encoding="utf-8", errors="replace").read().splitlines()[-40:]
+        lines = open(os.path.join(ROOT, ".local", "qa", "_svc_autopilot.log"), encoding="utf-8", errors="replace").read().splitlines()[-60:]
+        # only her CURRENT run: a thought from before the last restart is stale (live: "three unconscious colonists")
+        ups = [i for i, l in enumerate(lines) if "autopilot up:" in l]
+        if ups: lines = lines[ups[-1] + 1:]
         for l in reversed(lines):
             m = re.search(r"model step \d+ \([\d.]+s\): (.+)", l)
             if m and len(m.group(1)) > 20 and not re.search(r"connect|bridge|server|retry|no game|not loaded|tool|turn", m.group(1), re.I):
