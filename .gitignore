@@ -150,3 +150,5 @@ __pycache__/
 .local/autopilot/traces/
 training/models/
 training/preflight/
+training/sources/
+training/_fetch.log
