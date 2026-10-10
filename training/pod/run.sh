@@ -12,11 +12,6 @@ if ! have setup; then
   pip install -q --upgrade pip
   pip install -q "unsloth" "unsloth_zoo" datasets trl hf_transfer
   pip install -q "transformers>=5" || true
-  # fast kernels for the 35B's linear-attention layers; without them every step falls back to slow PyTorch
-  if [[ "${SHELLS:-voice player}" == *player* ]]; then
-    pip install -q flash-linear-attention || true
-    pip install -q causal-conv1d --no-build-isolation || true
-  fi
   git clone -q --depth 1 https://github.com/ggml-org/llama.cpp $W/llama.cpp
   pip install -q -e $W/llama.cpp/gguf-py sentencepiece
   # only the quantizer is needed, CPU build is enough
@@ -25,6 +20,14 @@ if ! have setup; then
   done_ setup
 fi
 export HF_HUB_ENABLE_HF_TRANSFER=1
+# fast kernels for the 35B's linear-attention layers; without them every step falls back to slow PyTorch
+# (measured 52 s/step, ~5 h). Its own stage so a pod whose setup is already done still gets them.
+if [[ "${SHELLS:-voice player}" == *player* ]] && ! have kernels; then
+  pip install -q flash-linear-attention || true
+  MAX_JOBS=16 pip install -q causal-conv1d --no-build-isolation || true
+  python -c "import fla, causal_conv1d; print('fast kernels ok')" || echo "fast kernels missing"
+  done_ kernels
+fi
 # the 35B base (~70 GB) downloads while the voice trains, so the player stage starts at once
 if ! have "train-player" && [[ "${SHELLS:-voice player}" == *player* ]]; then
   (huggingface-cli download Qwen/Qwen3.6-35B-A3B --exclude "*.pth" >$W/prefetch.log 2>&1 || hf download Qwen/Qwen3.6-35B-A3B >>$W/prefetch.log 2>&1) &
