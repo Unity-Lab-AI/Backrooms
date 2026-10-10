@@ -198,7 +198,12 @@ def state_facts():
         names = [c.get("name") for c in crew if c.get("name")]
         if names:
             facts.append("my crew is %s, %d of us, fresh off the drop" % (", ".join(names), len(names)))
-            facts.append("I have NOT set up storage, beds or food yet; the clock stays stopped until I do, for %s" % ", ".join(names))
+            try:
+                zl = [z.get("label") for z in call("rimworld/list_zones").get("zones", []) if z.get("label")]
+            except BaseException:
+                zl = []
+            facts.append(("we have %s set up now" % ", ".join(zl[:4])) if zl else
+                         "I have not set up storage yet, that is next")
         lets = [l.get("label") for l in call("rimworld/list_letters").get("letters", []) if l.get("label")]
         # a waiting letter is news ONCE, not a topic every 20 s (live: "authorization" six lines running)
         global _told_letters
