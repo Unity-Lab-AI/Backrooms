@@ -106,8 +106,7 @@ def fresh(fact):
         if any(w in low for w in ("behold", "cosmos", " lo,", "witness")): continue
         if low.startswith(("now:", "what i am doing", "what i'm doing")) or "right now in the game:" in low: continue   # echoed the label
         # never the plumbing on stream (owner: "tell chat whats up too not the details tho")
-        if re.search(r"connect|server|bridge|retry|retrying|loading the mod|crash|bug|error|offline|back online|"
-                     r"script|model|api|turn\b|tool", low): continue
+        if re.search(r"\b(connect\w*|server\w*|bridge|retry\w*|loading the mod|crash\w*|bugs?|errors?|offline|back online|scripts?|model|api|tools?)\b", low): continue   # whole words only
         if any(n not in fact for n in re.findall(r"\d+", line)): continue
         # Owner, 2026-10-10: "your streamer script is not working well, it bariely everer updates".  What it
         # did update with was invented -- "expanding the lab", "building that greenhouse" -- none of which
@@ -130,7 +129,7 @@ def fresh(fact):
         # (the shared-word rule is gone: it rejected most good lines and pushed her onto the stock pool)
         # owner, 2026-10-10: "wehy the fuck wont she shut up about cold hands and warm coffee" -- those themes are
         # banned, and no other personal theme may come back within the last ten lines
-        if re.search(r"coffee|caffein|cold|freez|frozen|hands|fingers|sleep|tired|exhaust|nap", low): continue
+        if re.search(r"\b(coffee|caffein\w*|cold|freez\w*|frozen|hands?|fingers?|sleep\w*|tired|exhaust\w*|naps?)\b", low): continue
         THEMES = ("music", "playlist", "song", "tea", "energy drink", "winter", "snack", "cat")
         if any(t in low and any(t in h.lower() for h in hist[-10:]) for t in THEMES): continue
         if any(difflib.SequenceMatcher(None, low, h.lower()).ratio() > 0.6 for h in hist[-30:]): continue
