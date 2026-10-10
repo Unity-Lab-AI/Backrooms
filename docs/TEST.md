@@ -35,7 +35,7 @@ whole body moved here unchanged and that file went back to its template state.
 | [`ROADMAP.md`](ROADMAP.md) | MAJOR — phases and milestones |
 | [`TODO.md`](TODO.md) | MINOR — the working queue, **open buildable work only** |
 | [`DECOMPOSED.md`](DECOMPOSED.md) | smallest execution units, open only |
-| **`TEST.md`** (this file) | **the test phase — `[T]` only, 63 rows, and a build closes none of them** |
+| **`TEST.md`** (this file) | **the test phase — `[T]` only, 62 rows, and a build closes none of them** |
 | [`FINALIZED.md`](FINALIZED.md) | permanent archive, append-only |
 
 Status markers here are `[T]` and nothing else. A row that turns out to be buildable after all goes
@@ -405,7 +405,6 @@ Contracts: [`OPERATIONS_ACTION_CONTRACTS.md`](OPERATIONS_ACTION_CONTRACTS.md), [
 
 That second message is what shaped the palette: a single global look could only ever deliver half the direction, so the look is a **function of depth**. Record: [`implementation/BACKROOMS_PALETTE_IMPLEMENTATION.md`](implementation/BACKROOMS_PALETTE_IMPLEMENTATION.md).
 
-- [T] **"so that a solo group has ability to build and get supplies on backrroms instances and find a way out before dying"** — **THE ARITHMETIC GUARANTEES IT AS OF 0.8.0-dev**, as three properties rather than tuning: an **absolute** cap of three simultaneous encounters at any depth and any wealth; **half of every coordinate's rooms bare by count rather than by chance**, so an unlucky run of rolls cannot produce a space with something in every room; and a first visit always quiet. Shallow coordinates are also capped below the top band regardless of wealth. **Stays in progress until inhabitants exist and the condition can actually be observed.** — **an acceptance condition on the whole generator, not a nice-to-have.** A high-tier coordinate that cannot be survived solo by building, supplying and finding a way out has failed this direction regardless of how good it looks. — **RECLASSIFIED TO THE TEST PHASE 0.12.98-dev, on the row's own condition.** It says it stays in progress *"until inhabitants exist and the condition can actually be observed"*. **Inhabitants exist** — twelve defs, wanderers through to the dead and the psychotic — and the three guarantees are constants in source rather than tuning: `MaxSimultaneousEncounters = 3`, half of every coordinate's rooms bare by count, and a quiet first visit. **So nothing buildable remains; what remains is watching it**, which is the owner's launch and belongs in the test phase rather than the working queue.
 
 ### Owner direction — the 294-mod register must actually work and be human navigable (2026-09-29)
 

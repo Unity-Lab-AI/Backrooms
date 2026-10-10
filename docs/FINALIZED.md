@@ -19182,3 +19182,19 @@ Everything below is in **original queue order**. A `> moved from` line marks eac
 Build at the time of the move: **0.13.0-dev**. No source file was touched by this change; it moves ledger rows only.
 
 <!-- archived-queue:end -->
+
+---
+
+## Archived from the queue - the solo group builds, gets supplies and finds a way out (2026-10-08)
+
+<!-- archived-queue:begin -->
+
+**Verbatim owner direction (2026-10-02, three items):** *"we need to move all finished items to finalized.md from the todo, the todods sahll never hold completed items, they are always to be moved to finalized first then deleted from the todods once confirmed virbatium transfer"*
+
+One `[x]` row moved out of `docs/TEST.md`; its text is the row as it stood plus the closing evidence, and the removal from TEST.md was proved by reassembly (kept lines + this row at its original index == the original file).
+
+> moved from `## Public face: the site, the Workshop page and the collection` in `docs/TEST.md`
+
+- [x] **"so that a solo group has ability to build and get supplies on backrroms instances and find a way out before dying"** — **THE ARITHMETIC GUARANTEES IT AS OF 0.8.0-dev**, as three properties rather than tuning: an **absolute** cap of three simultaneous encounters at any depth and any wealth; **half of every coordinate's rooms bare by count rather than by chance**, so an unlucky run of rolls cannot produce a space with something in every room; and a first visit always quiet. Shallow coordinates are also capped below the top band regardless of wealth. **Stays in progress until inhabitants exist and the condition can actually be observed.** — **an acceptance condition on the whole generator, not a nice-to-have.** A high-tier coordinate that cannot be survived solo by building, supplying and finding a way out has failed this direction regardless of how good it looks. — **RECLASSIFIED TO THE TEST PHASE 0.12.98-dev, on the row's own condition.** It says it stays in progress *"until inhabitants exist and the condition can actually be observed"*. **Inhabitants exist** — twelve defs, wanderers through to the dead and the psychotic — and the three guarantees are constants in source rather than tuning: `MaxSimultaneousEncounters = 3`, half of every coordinate's rooms bare by count, and a quiet first visit. **So nothing buildable remains; what remains is watching it**, which is the owner's launch and belongs in the test phase rather than the working queue. **CLOSED IN PLAY 2026-10-09 (equator colony, solo/group inside start, Cassandra Community builder, 300x300):** Gee, Scar and Unity started inside coordinate AI-02 with no sight of the exit. They surveyed doors, found the opening's natural way home (the blue door at (270,150) in the refogged threshold hall, east side), and crossed to the surface shell on Map_0 alive. Supplies came out through it by connected hauling (shell stockpile received components, a survival meal pack, steel and wood), and the crew built three beds and a fueled stove on the surface. The first visit was quiet -- no encounter met the crew. Build, get supplies, find a way out before dying: observed. Defects found on the way and fixed: drafted ordered crossing, cross-gate hauling starved by a shared cooldown, no-return world exits, one unreachable optional room refusing a coordinate.
+
+<!-- archived-queue:end -->
