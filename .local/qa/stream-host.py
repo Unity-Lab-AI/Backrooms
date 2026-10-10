@@ -332,6 +332,12 @@ while True:
             last_recap = time.time()
             # a rundown needs more than one 20-word line: her announcement voice writes two or three sentences
             subprocess.run([sys.executable, SAY, "fact: " + recap_fact()], env=dict(os.environ, UNITY_NO_GLANCE="1"))
+            names = sorted(SEEN)[:5]
+            if names:     # the names get their own line, so the rundown can never drop them
+                for _ in range(3):
+                    g = fresh("shout out the people hanging out in chat by name and thank them for being here: " + ", ".join(names))
+                    if g and all(n.lower() in g.lower() for n in names[:2]):
+                        speak(g); break
         if time.time() - last_spoken() > SILENCE:
             facts = state_facts()
             if facts:
