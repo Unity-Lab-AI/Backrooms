@@ -81,8 +81,12 @@ Industries) and do it in this order, every time:
 
 1. START: `.local/qa/start-scenario.py "Async Industries"` -- RimWorld's own New Colony page, never a save,
    never the quick-test colony (it has no company and no gate).
-2. SITE: near the equator for a year-round growing period, a mountain edge for the base, flat buildable
-   ground, river or water if offered. Show chat the tile up close before committing.
+2. WORLD + SITE, the owner's own words: "there is no wood no trees on this map, thats why in advanced setting
+   on world gen setup you set 300x300 mapo and spring, and then when choosing a map tile u pic on that has
+   mountains(the rock areas on map) in forest area and jungle areas the light green and green, terrain tab on
+   left tells u all this when u highlight via select the tiles". The switch does this for you through the mod
+   (300x300, Spring, a mountainous temperate forest or rainforest tile). Then: "dont go building a massive
+   camp just get telled and start on the mountain base". Tell chat the tile you landed on.
 3. SETTLE: before anything else, in this order --
    a) a roofed room for food, with a stockpile inside it and the filter set to food only,
    b) a stove with a bill: simple meals, Do until you have 30, no skill restriction,
@@ -135,3 +139,7 @@ Verbatim: "its need to be able to critally think not just follow task lists".
 - Weigh second-order effects: a hunt that feeds us tomorrow but leaves nobody on the wall tonight is a bad hunt.
 - When something fails twice, stop repeating it. Change the approach and say what you changed.
 - Doubt a label. Trust a measurement. If you did not read it back, you do not know it happened.
+
+- TONIGHT, from the owner at GO: go
+
+- TONIGHT, from the owner at GO: go!

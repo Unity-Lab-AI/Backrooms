@@ -174,16 +174,44 @@ while True:
         # start-scenario drives RimWorld's own pages through click_ui_target, which is an API call and works
         # whether or not the window has focus -- so this waits for the BRIDGE, not for the owner's screen.
         if os.path.exists(req) and _bridge_up():
+            try: already = len(gates.state().get("crew") or [])
+            except Exception: already = 0
+            if already > 0:     # a colony is already on the map: never go back to the menu over it
+                os.remove(req); print(stamp(), "colony already on the map -- request cleared", flush=True); continue
             scen = (open(req, encoding="utf-8").read().strip() or "Async Industries")
             print(stamp(), "new colony requested (%s) and the window is up -- starting it" % scen, flush=True)
             say("Right, new colony. Company start, clean map, and this time I feed everyone before I build anything pretty.")
-            r = subprocess.run([sys.executable, os.path.join(HERE, "start-scenario.py"), scen],
-                               cwd=ROOT, capture_output=True, text=True, timeout=1800,
-                               creationflags=0x08000000 if os.name == "nt" else 0)
-            print(stamp(), "start-scenario:", (r.stdout or r.stderr).strip().splitlines()[-3:], flush=True)
-            if r.returncode == 0:
+            # Owner: "in advanced setting on world gen setup you set 300x300 mapo and spring, and then when
+            # choosing a map tile u pic on that has mountains ... in forest area and jungle areas". The pages up to
+            # the globe are clicked; the globe page is set by the mod itself (WorldSetupDriver): 300x300, Spring,
+            # a mountainous forest or jungle tile, then its own Next. Then the remaining pages are clicked.
+            def run(args):
+                r = subprocess.run([sys.executable, os.path.join(HERE, "start-scenario.py")] + args,
+                                   cwd=ROOT, capture_output=True, text=True, timeout=1800, **NOWIN)
+                print(stamp(), "start-scenario", " ".join(args), "->", (r.stdout or r.stderr).strip().splitlines()[-2:], flush=True)
+                return r
+            run([scen, "--stop-at", "SelectStartingSite"])
+            auto = os.path.join(os.path.expandvars(r"%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Config"), "RimroomsAutomation")
+            os.makedirs(auto, exist_ok=True)
+            res = os.path.join(auto, "setup.result")
+            if os.path.exists(res): os.remove(res)
+            open(os.path.join(auto, "setup.request"), "w").write("next")
+            for _ in range(60):
+                time.sleep(1)
+                if os.path.exists(res): break
+            got = open(res, encoding="utf-8").read().strip() if os.path.exists(res) else "no answer from the mod"
+            print(stamp(), "world setup:", got, flush=True)
+            if got.startswith("ok"):
+                time.sleep(3); run(["--resume"])
+            # done only when there is a crew on a map -- a script that stopped short is not a colony
+            try: crew = len(gates.state().get("crew") or [])
+            except Exception: crew = 0
+            if crew > 0:
                 os.remove(req)
-                print(stamp(), "new colony started -- the request is cleared", flush=True)
+                print(stamp(), "new colony started (%d colonists) -- the request is cleared" % crew, flush=True)
+                say("We are down. Fresh company colony, spring, forest and mountains. Food first.")
+            else:
+                print(stamp(), "no colonists on a map yet -- the colony request stays armed", flush=True)
 
 
         firing, st = gates.decide()
