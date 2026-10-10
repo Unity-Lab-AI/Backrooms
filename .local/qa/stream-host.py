@@ -94,7 +94,7 @@ def fresh(fact):
                 {"model": "dolphin3:8b", "prompt": prompt, "stream": False, "keep_alive": "10m",
                  "options": {"temperature": 0.9, "num_ctx": 4096, "num_predict": 60}}).encode(),
                 headers={"Content-Type": "application/json"})
-            line = json.loads(urllib.request.urlopen(req, timeout=90).read())["response"].strip().strip('"').split(chr(10))[0]
+            line = json.loads(urllib.request.urlopen(req, timeout=25).read())["response"].strip().strip('"').split(chr(10))[0]
         except Exception as _e:
             # the player model shares Ollama and can hold it for a while; say why, then let the next pass retry
             print("voice model did not answer:", str(_e)[:80], flush=True); break
@@ -156,18 +156,18 @@ BETWEEN_RUNS = [
     "the plan tonight is a three hundred by three hundred map, spring start, forest with mountains",
     "I want a mountain base this time, one door in, a three wide hallway down the middle",
     "food first, always, the last colony starved and I am not doing that again",
-    "I want chat to tell me what the crew should build first once we land -- put it to them as a question",
-    "I cannot decide between hunting early or farming early and chat gets a vote -- put it to them as a question",
+    "chat, what should the crew build first once we are out of these rooms?",
+    "hunting early or farming early, chat? I genuinely cannot decide",
     "work priorities go in on day one, firefighting through cooking set to top for everyone",
     "a roofed room for the food before anything pretty, rot is the enemy",
     "the company is called Async Industries and the crew works for it",
     "I have a playlist going that is way too sad for a farming game",
-    "I am curious what music chat is listening to -- put it to them as a question",
+    "what is everyone listening to right now?",
     "I keep a list of every mistake from the last colony and it is long",
     "the loading bar is moving, I promise, slowly",
     "anyone new in chat, say hi, I see you",
     "I eventually want this crew in space, but tonight it is dirt and berries",
-    "chat gets to nickname the first colonist who does something dumb -- put it to them as a question"]
+    "chat, you get to nickname the first colonist who does something dumb. Who is it going to be?"]
 
 def state_facts():
     facts = []
@@ -242,7 +242,19 @@ while True:
             speak(fresh("a game event just happened: %s -- %s" % (lab, body)))
         if time.time() - last_spoken() > SILENCE:
             facts = state_facts()
-            if facts: speak(fresh(random.choice(facts)))
+            if facts:
+                line = fresh(random.choice(facts))
+                if not line:
+                    # owner, live: "this stream keeps dying ... shes not talking regualrly". The voice model can be
+                    # stuck behind the player model; silence never waits on it -- say a true line straight out.
+                    try: hist = json.load(open(sb.HIST, encoding="utf-8"))
+                    except Exception: hist = []
+                    pool = [f for f in facts + BETWEEN_RUNS if f not in hist[-12:]] or facts
+                    pick = random.choice(pool)
+                    line = pick[0].upper() + pick[1:] + ("." if not pick.endswith((".", "?", "!")) else "")
+                    try: json.dump((hist + [pick])[-30:], open(sb.HIST, "w", encoding="utf-8"))
+                    except Exception: pass
+                speak(line)
     except Exception:
         s = buf = None                     # drop the dead socket; the next call reconnects
         try: s, buf = session()
