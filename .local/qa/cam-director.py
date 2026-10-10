@@ -25,7 +25,10 @@ done = 0.0
 while True:
     try: ts = json.load(open(HL)).get("ts", 0)
     except Exception: ts = 0
-    if ts > done and time.time() - ts >= 20:
+    # owner: "cpu is burning at 99% ... gigs on gpu are nearly pegged". Every spoken line marks a highlight, and this
+    # used to render a NEW Stable Diffusion face ~20 s after each one (about 3 renders a minute). Now a fresh face is
+    # rendered at most every 4 minutes; in between nothing is generated at all.
+    if ts > done and time.time() - ts >= 20 and time.time() - done >= 240:
         m, cap = mood(); subprocess.run([sys.executable, CAM, m, cap]); done = time.time()
         print("unity back up:", m, cap, flush=True)
-    time.sleep(3)
+    time.sleep(10)

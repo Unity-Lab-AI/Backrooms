@@ -267,8 +267,15 @@ def main(argv=None):
         # ordinary text button rather than the window's accept action. So it is clicked by name.
         for page in range(12):
             before = window_types(session)
-            if args.stop_at and before and args.stop_at in before[0]:
-                print("start-scenario: stopped at %s as asked" % before[0])
+            # any open window, not just the top one: a small overlay above the page made this miss the storyteller,
+            # and the script then clicked the ideology page through with the default (no ideoligion loaded)
+            # several pages may be named, split by "|": stop at whichever opens first. The ideology page comes right
+            # after the scenario page, BEFORE the storyteller -- stopping only at the storyteller clicked it through
+            # with the default and the owner's ideoligion was never loaded.
+            stops = [x for x in (args.stop_at or "").split("|") if x]
+            hit = next((w for w in before if any(x in w for x in stops)), None)
+            if hit:
+                print("start-scenario: stopped at %s as asked" % hit)
                 return 0
             # Satisfy whatever this page requires before asking it to advance.
             for choice in PAGE_CHOICES.get(before[0] if before else "", ()):

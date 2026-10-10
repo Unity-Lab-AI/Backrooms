@@ -66,8 +66,8 @@ def save_state(st):
 def ollama_chat(model, messages, tool_specs, opts):
     body = {"model": model, "messages": messages, "tools": tool_specs, "stream": False,
             "keep_alive": opts["keep_alive"],
-            "options": {"num_ctx": opts["num_ctx"], "temperature": 0.5, "top_p": 0.9,
-                        "num_thread": int(os.environ.get("AUTOPILOT_THREADS", "8"))}}   # 8 = physical cores; 14 made turns slower (threads stall on each other when the game takes a core)
+            "options": {"num_ctx": opts["num_ctx"], "temperature": 0.5, "top_p": 0.9, "use_mlock": True,   # owner: lots of RAM -- keep it locked in, never paged
+                        "num_thread": int(os.environ.get("AUTOPILOT_THREADS", "6"))}}   # 8 = physical cores; 14 made turns slower (threads stall on each other when the game takes a core)
     if opts.get("num_gpu") is not None:
         body["options"]["num_gpu"] = opts["num_gpu"]
     if opts.get("think") is not None:
@@ -217,7 +217,7 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True):
 
 
 CONVO = []          # one running conversation (append-only), so Ollama reuses everything already read
-CONVO_TOKEN_CAP = 22000
+CONVO_TOKEN_CAP = 56000   # a bigger window costs only RAM; every reset costs a 2-minute cold read
 
 def _est_tokens(msgs):
     return sum(len(str(m.get("content", ""))) for m in msgs) // 4
@@ -237,7 +237,21 @@ def turn(toolbox, st, args, system, specs):
     runlist = ""
     if st["tick"] % args.runlist_every == 1 or args.runlist_every == 1:
         runlist = toolbox.t_run_list()
-    global CONVO
+    global CONVO, _WAS_DOWN
+    # a conversation started while the game was down fills up with "no connection" turns and she keeps believing
+    # it; the moment the game answers again the conversation starts fresh
+    try:
+        toolbox.bridge.call("rimworld/get_game_info", {}); up = True
+    except BaseException:
+        up = False
+    if not up and not args.dry_run:
+        # no game: do not think about it (it fills her memory and pad with "bridge down"); wait and check again
+        _WAS_DOWN = True
+        time.sleep(20)
+        return False
+    if up and globals().get("_WAS_DOWN"):
+        CONVO = []; log("game is back -- conversation reset")
+    _WAS_DOWN = not up
     if not CONVO or _est_tokens(CONVO) > CONVO_TOKEN_CAP:
         CONVO = [{"role": "system", "content": system},
                  {"role": "user", "content": brief(toolbox, st, joins, msgs, runlist)}]
@@ -248,7 +262,7 @@ def turn(toolbox, st, args, system, specs):
     deep = bool(getattr(toolbox, "think_next", False)); toolbox.think_next = False
     if deep: log("deep planning turn (thinking on)")
     opts = {"num_ctx": args.num_ctx, "num_gpu": args.num_gpu, "think": True if deep else args.think,
-            "keep_alive": "5m" if args.dry_run else "30m", "timeout": args.timeout}
+            "keep_alive": "5m" if args.dry_run else -1, "timeout": args.timeout}
     final = ""
     for step in range(args.max_steps):
         t0 = time.time()
@@ -279,9 +293,7 @@ def turn(toolbox, st, args, system, specs):
         if who in toolbox.greeted_this_tick or who in greeted:
             greeted.add(who)
             continue
-        name = guards.clean_viewer_name(j["viewer"])
-        toolbox._speak(("Hi %s, welcome in, pull up a chair." % name) if name else "Hi, welcome in, pull up a chair.",
-                       reply_to=j["chat_id"])
+        # no canned greeting from the player (owner: "NEVER EVER ANY FALLBACKS"); the voice writes greetings
         greeted.add(who)
     st["greeted"] = sorted(greeted)[-500:]
     st["pending"] = [m for m in msgs if m["viewer"].lower() not in toolbox.greeted_this_tick
@@ -301,7 +313,7 @@ def main():
     ap.add_argument("--turns", type=int, default=0, help="stop after N turns (0 = forever)")
     ap.add_argument("--max-steps", type=int, default=12, help="model tool-call rounds per turn")
     ap.add_argument("--runlist-every", type=int, default=3, help="run the maintenance list every N turns")
-    ap.add_argument("--num-ctx", type=int, default=int(os.environ.get("AUTOPILOT_NUM_CTX", 32768)))
+    ap.add_argument("--num-ctx", type=int, default=int(os.environ.get("AUTOPILOT_NUM_CTX", 65536)))
     ap.add_argument("--num-gpu", type=int, default=None,
                     help="GPU layers for Ollama (0 = CPU only, no VRAM taken from the stream). Default: Ollama decides; "
                          "dry-run defaults to 0")
@@ -342,7 +354,7 @@ def main():
         pick = random.choice([x for x in sparks if x != last] or sparks)
         try:
             guards.scratch_write("last-spark.txt", pick)
-            subprocess.Popen([sys.executable, os.path.join(ROOT, ".claude", "tools", "unity-say.py"), "--raw", pick],
+            subprocess.Popen([sys.executable, os.path.join(ROOT, ".claude", "tools", "unity-say.py"), pick],
                              cwd=ROOT, creationflags=0x08000000 if os.name == "nt" else 0)
         except Exception:
             pass
@@ -364,7 +376,14 @@ def main():
         if args.once or (args.turns and n >= args.turns):
             break
         if not busy:
-            time.sleep(args.gap)
+            # rest when calm (owner: "cpu is burning at 99%"): while her pad still has open setup items she works
+            # back to back; once everything on it is ticked she thinks every 45 s instead, unless chat is waiting
+            try:
+                pad = open(guards.scratch_path("pad.md"), encoding="utf-8").read()
+                calm = "- [ ]" not in pad
+            except Exception:
+                calm = False
+            time.sleep(45 if calm else args.gap)
     log("autopilot stopped")
 
 

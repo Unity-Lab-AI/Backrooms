@@ -39,7 +39,7 @@ while True:
             if lid in seen: continue
             seen.add(lid)
             if "heat wave" in lab.lower():
-                subprocess.run([sys.executable, os.path.join(ROOT, ".claude", "tools", "unity-say.py"), "--raw",
+                subprocess.run([sys.executable, os.path.join(ROOT, ".claude", "tools", "unity-say.py"),
                                 "Heat wave, chat! Everybody into the backrooms right now, it is nice and cool in there. Go go go."])
                 for c in call("rimworld/list_colonists").get("colonists", []):
                     if c.get("mapId") != "Map_0": continue
@@ -51,4 +51,4 @@ while True:
     except Exception as e:
         try: s, buf = session()
         except Exception: pass
-    time.sleep(5)
+    time.sleep(15)

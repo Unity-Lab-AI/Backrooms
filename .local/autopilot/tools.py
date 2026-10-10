@@ -163,7 +163,7 @@ class Toolbox:
     # The tools that actually play the colony. Owner: "no she has to do it" -- so she has to be fast, and 72 tool
     # definitions (~9k tokens) were re-read on CPU every turn. Camera minutiae, UI layout, tab and save plumbing
     # stay registered (a call to them still works) but are not offered in the prompt.
-    CORE = {"game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "plan", "webcam", "snap",
+    CORE = {"new_colony", "game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "plan", "webcam", "snap",
             "twitch_chat", "note", "read_doc", "run_list", "empire_pass", "play_slices",
             "game_apply_architect_designator", "game_select_architect_designator", "game_list_architect_designators",
             "game_list_architect_categories", "game_set_zone_target", "game_list_zones", "game_list_areas",
@@ -292,6 +292,10 @@ class Toolbox:
             "reply_chat": ("[STREAM] Answer a Twitch viewer by name, out loud and in the overlay chat. chat_id is the "
                            "number given with their message.", S({"chat_id": i, "viewer": s, "text": s},
                                                                   ["chat_id", "viewer", "text"]), self.t_reply),
+            "new_colony": ("Start a brand-new colony on the company scenario, set up the owner's way (world 30%, 300x300, "
+                           "Spring, pollution 0, factions, mountainous forest tile, the Godsmultiplayer ideoligion, the "
+                           "Preset3 crew, day one). ONLY when the owner orders it. It abandons the current colony.",
+                           S({"reason": s}, ["reason"]), self.t_new_colony),
             "plan": ("Big planning only (a new base layout, a raid plan, the mountain move, the gate, the space push). "
                      "Owner: \"thinking only for massive plaanning needs and she voice it first and pouses\". Say on "
                      "stream what you are planning, the game is paused, and your NEXT turn thinks deeply. Never for "
@@ -461,6 +465,19 @@ class Toolbox:
             log("DRY-RUN would twitch", args)
             return "dry-run: not executed"
         return run_script("twitch", args, timeout=90)
+
+    def t_new_colony(self, reason):
+        """Owner: "redo with new colony till its fucking correct and the model should be doing all this use the admin
+        chat to tell it". The guards keep her off the main menu, so she asks for the new game and the switch runs the
+        proven setup (start-scenario picks the scenario row; the mod's WorldSetupDriver does every page)."""
+        if self.dry:
+            return "dry-run: not executed"
+        line = guards.clean_for_stream("Okay chat, fresh start. New colony, set up properly this time. " + (reason or ""), max_len=200)
+        if line:
+            self.t_say(line)
+        with open(os.path.join(ROOT, ".local", "qa", "_new_colony.request"), "w", encoding="utf-8") as f:
+            f.write("Async Industries" + chr(10) + "force")
+        return "new colony requested; the switch starts it within a minute -- keep talking to chat while it loads"
 
     def t_plan(self, what):
         line = guards.clean_for_stream("Give me a second, chat, I am planning " + (what or "the next big step") +

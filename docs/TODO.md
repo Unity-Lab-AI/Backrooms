@@ -145,3 +145,17 @@ _(none)_
 Owner, verbatim: *"are you surue cascade to main is current on backrrooms and mod repos and if so then start monitoring the rim world game and streamer Unity as she plays so you can fix issues on the fly with me. and where the fuck is the windows and linix filies i told you to put in the backrooms rfolder"* / *"dont nest the windows and linix folder deep they should be in the backrooms folder"*.
 
 - [~] **"start monitoring the rim world game and streamer Unity as she plays so you can fix issues on the fly with me"** -- the stack is down and the owner has not pressed start yet (only their Ollama tray app is up). On the press: tail `_svc_keepgoing.log`, `_svc_autopilot.log`, `_svc_host.log` and the outbox; confirm she asks Ready?, the panel opens, and after GO the game launches, OBS goes live, the bridge answers and the company colony starts; fix real repeated faults only, restart only a wedged service, let her learn first.
+
+### Owner direction, 2026-10-10 -- the local model's toolset is Claude's job
+
+Owner, verbatim: *"is it just too dumb to do this did whe do what proper agent train to the models we use"* / *"go"* / *"that doesnt scratch the surface of all ive told you how to play"* / *"this is now your job!"* / *"get local model build how you would if you were me based on how ive told you to play and beyond"*.
+
+The model decides WHAT; mod commands (RimroomsAutomationComponent / SetupTools*) decide WHERE and do it exactly, one batch at a time, each verified in a live game before the next.
+
+- [~] **Batch 1 -- setup:** rooms, explore, stockpile_room (food/nofood), beds. Built; loads at the next game start.
+- [~] **Batch 2 -- storage and food:** shelves, stove, crops, hunt (never boomalope, no big game under 3 rifles). Built; loads at the next game start. Still to add: freezer (sealed roofed room, cooler in the wall blue side in, powered), butcher table + bill, meal bill auto-attach when the stove completes.
+- [ ] **Batch 3 -- defence:** arm (rifle + melee sidearm, crafting when none on the map), draft_group / undraft, hold-at-embrasures, corner towers, raid drill per the playbook.
+- [ ] **Batch 4 -- building:** close a room (walls + door + roof), 3-wide halls, the mountain base layout, firebreaks, power conduit as one string.
+- [ ] **Batch 5 -- power, research, people, trade:** generator + batteries, research by the playbook's order, prisoners, guests and bed prices, leader/moral guide roles and rituals, trading by comms console.
+- [ ] **Then** a LoRA on the clean traces these tools produce (the owner's "agent train").
+- [ ] **Efficiency pass** -- owner, verbatim: *"and u need to shot for efficiency 14gig and 98% cpu is crazy but i get it isuppose"*. Measure per-process CPU/RAM/VRAM with the stream live; cut what costs most for least (pollers like the camera director and crew-follow, the webcam renderer's cadence, voice-model calls per minute); fewer model steps per job via the setup tools; consider the player at fewer threads when idle.
