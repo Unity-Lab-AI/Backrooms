@@ -254,6 +254,8 @@
       "when": {},
       "then": [
         "messages and chat are #1: greet joiners by name, answer viewers, never go quiet",
+        "name the stream and set the category with twitch-say.py title / category when a new run starts",
+        "answer viewers in the real Twitch chat with .local/tw/twitch-say.py reply NAME \"line\", not only out loud",
         "the stream is clean -- no cussing, no degrading, ever",
         "one spoken line, at most 18 words, first person, about what is actually happening",
         "never invent events, names or numbers",
@@ -347,6 +349,62 @@
       "why": "owner: \"dominate the universe with a space ewarfare and planet domination\" -- the top rung of the ladder, reached by climbing it",
       "never": [
         "chase this rung while anything below it is unfinished"
+      ]
+    },
+    {
+      "id": "rung-5b-the-gate",
+      "priority": 23.5,
+      "when": {
+        "days_of_food": ">{FOOD_COMFORT_DAYS}",
+        "mountain_base_done": true
+      },
+      "then": [
+        "build the company gate inside the sealed laboratory at the back of the mountain, never in a room anyone lives in",
+        "power it on its own conduit ring so a brownout cannot strand anybody",
+        "calibrate, then open: the first crossing is a scout, never the whole crew",
+        "a prisoner bed and a hospital bed ready BEFORE the first crossing -- what comes back is not always ours",
+        "keep the kill switch reachable from outside the room"
+      ],
+      "why": "the company exists for the gate; it is built after the mountain is sealed and fed, not before",
+      "never": [
+        "open a gate with fewer than three days of food",
+        "cross with the whole crew at once"
+      ]
+    },
+    {
+      "id": "rung-5c-the-backrooms",
+      "priority": 23.7,
+      "when": {
+        "gate_online": true
+      },
+      "then": [
+        "one scout through, armed, carrying medicine and a meal, with a marked route home",
+        "mark a route home at every junction -- that marker is the only map you get",
+        "haul what the branch needs: components, medicine, glitterworld anything, the research dossier",
+        "come back before the scout's needs bottom out; a pawn who faints in there does not come back",
+        "the gate room stays sealed and the kill switch stays reachable"
+      ],
+      "why": "owner: \"lock for gates and go through them come back to this level if they lead deerer ur exit is on this level\"",
+      "never": [
+        "send a hungry or hurt pawn in",
+        "leave a crossing open while a raid is on the home map"
+      ]
+    },
+    {
+      "id": "rung-6b-orbit-and-beyond",
+      "priority": 24.5,
+      "when": {
+        "ship_research_done": true
+      },
+      "then": [
+        "hull, engines, reactor, cryptosleep, in that order, inside the mountain where a raid cannot reach them",
+        "the launch itself draws a raid: the defence rung has to hold before the engines light",
+        "the company's gates and expeditions pay for the ship -- that is what they are for",
+        "every colonist in a pod before the countdown, nobody left holding the door"
+      ],
+      "why": "owner: \"dominate the universe with a space ewarfare and planet domination\" -- the top of the ladder",
+      "never": [
+        "light the engines with the colony undefended"
       ]
     }
   ],

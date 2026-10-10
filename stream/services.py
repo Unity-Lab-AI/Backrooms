@@ -95,6 +95,17 @@ EXTRAS = [
                                     "--new-window", "https://www.twitch.tv/"], None),
 ]
 
+# Killed by name on stop. The model runner and the game are here because neither is a child in the
+# command-line table: Ollama spawns llama-server itself, and the game is its own process. Owner, 2026-10-10:
+# "stop.bat properly kills everything becasue you didnt have that working".
+KILL_BY_NAME = ["llama-server", "ollama", "ollama app", "obs64", "RimWorldWin64"]
+
+# NEVER killed, no matter what matches: the owner's own browsers. Owner, 2026-10-10: "you dont fuck with my
+# browsers you shit put them back". Only the Twitch window this switch itself started may be closed, and it
+# is identified by the profile directory this repo owns.
+PROTECT_NAMES = ["chrome", "msedge", "firefox", "brave", "opera", "vivaldi"]
+OUR_BROWSER_MARK = "twitch-profile"
+
 OLLAMA = os.path.expandvars(r"%LOCALAPPDATA%/Programs/Ollama/ollama.exe")
 if not os.path.exists(OLLAMA): OLLAMA = "ollama"
 MODELS = ["dolphin3:8b", "qwen3.6:35b"]      # the voice and the player
@@ -178,6 +189,9 @@ def running():
     for line in out2.splitlines():
         if "	" not in line: continue
         pid, cmd = line.split("	", 1); cmd = cmd.replace("\\", "/")
+        low = cmd.lower()
+        if any(n in low for n in PROTECT_NAMES) and OUR_BROWSER_MARK not in low:
+            continue                     # the owner's own browser: never ours to touch
         for _, frag, _c, _cwd in EXTRAS + START_ONLY:
             if frag in cmd: found.setdefault(frag, []).append(int(pid))
     return found
@@ -230,6 +244,17 @@ def start():
         if not os.path.exists(cmd[0]): print("%-11s SKIPPED (not installed: %s)" % (name, cmd[0])); continue
         subprocess.Popen(cmd, cwd=cwd or ROOT, **DETACH)
         print("%-11s launched (never stopped by this switch)" % name); time.sleep(8)
+    OPEN_ADMIN = os.environ.get("NO_ADMIN_PAGE") != "1"
+    if OPEN_ADMIN:
+        url = "http://127.0.0.1:%s/" % os.environ.get("ADMIN_PORT", "4318")
+        try:
+            if WINDOWS:
+                subprocess.Popen(["cmd", "/c", "start", "", url], **DETACH)
+            else:
+                subprocess.Popen(["xdg-open", url], **DETACH)
+            print("%-11s opened %s" % ("adminpage", url))
+        except Exception as e:
+            print("%-11s could not open the panel (%s)" % ("adminpage", str(e)[:50]))
     # the game's own API lives inside RimWorld, which stays the owner's to launch
     try:
         bspec = importlib.util.spec_from_file_location("b", os.path.join(QA, "bridge.py"))
@@ -239,9 +264,17 @@ def start():
         print("rimbridge   DOWN (launch RimWorld yourself -- this switch never touches the game)")
 
 def stop():
+    # the model runner first: it holds the GPU and it is nobody's child in the command-line table
+    if WINDOWS:
+        subprocess.run(["powershell", "-NoProfile", "-Command",
+                        "Get-Process %s -ErrorAction SilentlyContinue | Stop-Process -Force"
+                        % ",".join("'%s'" % n for n in KILL_BY_NAME)], capture_output=True, text=True)
+    else:
+        for n in KILL_BY_NAME:
+            subprocess.run(["pkill", "-f", n], capture_output=True, text=True)
+    print("stopped by name:", " ".join(KILL_BY_NAME))
     found = running()
-    protect = {frag for _n, frag, _c, _cwd in START_ONLY}
-    pids = sorted({p for frag, lst in found.items() if frag not in protect for p in lst})
+    pids = sorted({p for frag, lst in found.items() for p in lst})
     if not pids:
         print("nothing to stop"); return
     if WINDOWS:
@@ -260,12 +293,19 @@ def stop():
             try: os.kill(p, 15)
             except Exception: pass
     print("stopped", len(pids), "processes:", " ".join(map(str, pids)))
+    # prove the GPU actually came back, rather than assuming it did
+    try:
+        r = subprocess.run(["nvidia-smi", "--query-gpu=memory.used,memory.free", "--format=csv,noheader"],
+                           capture_output=True, text=True, timeout=20)
+        if r.stdout.strip(): print("gpu after stop:", r.stdout.strip().splitlines()[0])
+    except Exception:
+        pass
 
 cmd = (sys.argv[1] if len(sys.argv) > 1 else "status").lower()
 if cmd == "start":
     deps(); start(); print("---"); status(); announce("We are live, chat. Everything is up and I am back on the colony.")
 elif cmd == "stop":
-    announce("That is me done for now, chat. Thanks for hanging out, I will be back."); time.sleep(3); stop()
+    announce("That is me for tonight. Thanks for sitting with me."); time.sleep(3); stop()
 elif cmd == "restart":
-    announce("Quick reboot, chat. Back in a second."); stop(); time.sleep(2); deps(); start(); print("---"); status()
+    announce("One second, rebooting my own plumbing."); stop(); time.sleep(2); deps(); start(); print("---"); status()
 else: status()
