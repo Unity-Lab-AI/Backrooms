@@ -119,6 +119,13 @@ def model_needs(passes):
         subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1"), capture_output=True, text=True, timeout=900,
                        creationflags=0x08000000 if os.name == "nt" else 0)
         return
+    # 2b. the model runs below normal priority: Windows shares every core, and this way the game, OBS and the voice
+    # always win a contended core while the model still gets every spare cycle (owner: "what about windows will it
+    # share"). Ollama starts a new llama-server per model load, so it is re-applied every pass.
+    if os.name == "nt":
+        subprocess.run(["powershell", "-NoProfile", "-Command",
+                        "Get-Process llama-server -EA SilentlyContinue | ?{ $_.PriorityClass -ne 'BelowNormal' } | %{ $_.PriorityClass='BelowNormal' }"],
+                       capture_output=True, text=True, creationflags=0x08000000)
     # 3. its own process: if the player died, restart it
     out = subprocess.run([sys.executable, SERVICES, "status"], cwd=ROOT, capture_output=True, text=True,
                          creationflags=0x08000000 if os.name == "nt" else 0).stdout
