@@ -90,11 +90,16 @@ def fresh(fact):
                   "these recent lines: %s. Reply with the line only."
                   % (fact, " | ".join(hist[-8:])))
         try:
-            req = urllib.request.Request("http://127.0.0.1:11435/api/generate", data=json.dumps(
-                {"model": "unity-local", "prompt": prompt, "stream": False, "think": False, "keep_alive": "10m",
+            # the same system/user split her voice shell was trained on (training/build_voice.py): persona and
+            # rules as the system turn, the "ONE spoken line ..." request as the user turn
+            cut = prompt.find("ONE spoken line")
+            msgs = ([{"role": "system", "content": prompt[:cut].strip()}, {"role": "user", "content": prompt[cut:]}]
+                    if cut > 0 else [{"role": "user", "content": prompt}])
+            req = urllib.request.Request("http://127.0.0.1:11435/api/chat", data=json.dumps(
+                {"model": "unity-local", "messages": msgs, "stream": False, "think": False, "keep_alive": "10m",
                  "options": {"temperature": 0.9, "num_ctx": 8192, "num_predict": 60}}).encode(),
                 headers={"Content-Type": "application/json"})
-            line = json.loads(urllib.request.urlopen(req, timeout=25).read())["response"].strip().strip('"').split(chr(10))[0]
+            line = json.loads(urllib.request.urlopen(req, timeout=25).read())["message"]["content"].strip().strip('"').split(chr(10))[0]
         except Exception as _e:
             # the player model shares Ollama and can hold it for a while; say why, then let the next pass retry
             print("voice model did not answer:", str(_e)[:80], flush=True); break
