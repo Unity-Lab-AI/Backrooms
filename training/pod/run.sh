@@ -12,6 +12,11 @@ if ! have setup; then
   pip install -q --upgrade pip
   pip install -q "unsloth" "unsloth_zoo" datasets trl hf_transfer
   pip install -q "transformers>=5" || true
+  # fast kernels for the 35B's linear-attention layers; without them every step falls back to slow PyTorch
+  if [[ "${SHELLS:-voice player}" == *player* ]]; then
+    pip install -q flash-linear-attention || true
+    pip install -q causal-conv1d --no-build-isolation || true
+  fi
   git clone -q --depth 1 https://github.com/ggml-org/llama.cpp $W/llama.cpp
   pip install -q -e $W/llama.cpp/gguf-py sentencepiece
   # only the quantizer is needed, CPU build is enough
