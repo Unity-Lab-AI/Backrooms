@@ -147,7 +147,7 @@ def model_needs(passes):
             break
     # 3b. the bridge guards (pop-ups, clock, heat, click queue, voice) exit when there is no game -- which is the
     # whole wait before GO. Once the bridge answers, bring back any that died; start is idempotent.
-    BRIDGE_SVCS = ("host", "popups", "clock", "heat", "cursorjobs")
+    BRIDGE_SVCS = ("host", "popups", "clock", "heat")   # cursorjobs retired: her player does those jobs through the API; the mouse burst only fought her and left the game paused
     dead = [l.split()[0] for l in out.splitlines() if l.split() and l.split()[0] in BRIDGE_SVCS and "DOWN" in l]
     if dead and _bridge_up():
         print(stamp(), "bridge is up and these died waiting for it:", ", ".join(dead), "-- bringing them back", flush=True)
