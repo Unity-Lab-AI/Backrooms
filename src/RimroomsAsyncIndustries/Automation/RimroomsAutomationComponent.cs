@@ -200,6 +200,7 @@ namespace RimroomsAsyncIndustries.Automation
                 case "stove": return SetupTools2.Stove(map);
                 case "crops": return SetupTools2.Crops(map, a);
                 case "hunt": return SetupTools2.Hunt(map);
+                case "assign": return Assign(map, a);
                 default: return "refused: unknown cmd " + cmd;
             }
         }
@@ -290,6 +291,33 @@ namespace RimroomsAsyncIndustries.Automation
 
             return "ok: " + crew.Count + " colonists -- work 1s Firefighter..Cooking, rest by skill, none blank; schedule Anything; drugs '" +
                    (policy?.label ?? "none") + "'; hostility Attack; arming: " + (notes.Count > 0 ? string.Join("; ", notes) : "everyone already armed");
+        }
+
+        /// <summary>
+        /// The Assign tab with no clicking (owner: food Fine, medical best, Attack).
+        ///   {"cmd":"assign","pawn":"Gee" (empty = everyone),"food":"Fine","medicine":"Best","hostility":"Attack"}
+        /// </summary>
+        private static string Assign(Map map, Dictionary<string, string> a)
+        {
+            a.TryGetValue("pawn", out string who);
+            a.TryGetValue("food", out string food);
+            a.TryGetValue("medicine", out string med);
+            a.TryGetValue("hostility", out string host);
+            List<Pawn> crew = map.mapPawns.FreeColonistsSpawned
+                .Where(p => string.IsNullOrEmpty(who) || p.LabelShort.Equals(who, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (crew.Count == 0) return "refused: no colonist " + who;
+            FoodPolicy fp = Current.Game.foodRestrictionDatabase.AllFoodRestrictions
+                .FirstOrDefault(f => f.label.Equals(string.IsNullOrEmpty(food) ? "Fine" : food, StringComparison.OrdinalIgnoreCase));
+            if (fp == null) return "refused: no food policy " + food + " (have: " +
+                string.Join(", ", Current.Game.foodRestrictionDatabase.AllFoodRestrictions.Select(f => f.label)) + ")";
+            if (!Enum.TryParse(string.IsNullOrEmpty(med) ? "Best" : med, true, out MedicalCareCategory mc)) return "refused: medicine is NoCare|NoMeds|HerbalOrWorse|NormalOrWorse|Best";
+            if (!Enum.TryParse(string.IsNullOrEmpty(host) ? "Attack" : host, true, out HostilityResponseMode hr)) return "refused: hostility is Ignore|Flee|Attack";
+            foreach (Pawn p in crew)
+            {
+                if (p.foodRestriction != null) p.foodRestriction.CurrentFoodPolicy = fp;
+                if (p.playerSettings != null) { p.playerSettings.medCare = mc; p.playerSettings.hostilityResponse = hr; }
+            }
+            return "ok: " + string.Join(", ", crew.Select(p => p.LabelShort)) + " -- food " + fp.label + ", medicine " + mc + ", hostility " + hr;
         }
 
         /// <summary>
