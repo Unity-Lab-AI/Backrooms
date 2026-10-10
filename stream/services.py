@@ -288,7 +288,10 @@ def start(only=None):
         if not os.path.exists(cmd[0]): print("%-11s SKIPPED (not installed: %s)" % (name, cmd[0])); continue
         subprocess.Popen(cmd, cwd=cwd or ROOT, **DETACH)
         print("%-11s launched (never stopped by this switch)" % name); time.sleep(8)
-    OPEN_ADMIN = os.environ.get("NO_ADMIN_PAGE") != "1"
+    # the panel opens once, on the full start (start.bat) -- not on every single-service start or restart, which
+    # opened a new "mission control" tab each time a helper was revived (owner: "why does mission control tab keep
+    # constantly opening?")
+    OPEN_ADMIN = os.environ.get("NO_ADMIN_PAGE") != "1" and only is None
     if OPEN_ADMIN:
         url = "http://127.0.0.1:%s/" % os.environ.get("ADMIN_PORT", "4318")
         try:
