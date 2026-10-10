@@ -124,7 +124,7 @@ def model_needs(passes):
     # share"). Ollama starts a new llama-server per model load, so it is re-applied every pass.
     if os.name == "nt":
         subprocess.run(["powershell", "-NoProfile", "-Command",
-                        "Get-Process llama-server -EA SilentlyContinue | ?{ $_.PriorityClass -ne 'BelowNormal' } | %{ $_.PriorityClass='BelowNormal' }"],
+                        "Get-Process llama-server -EA SilentlyContinue | ?{ $_.PriorityClass -ne 'BelowNormal' } | %{ $_.PriorityClass='BelowNormal' }; Get-Process RimWorldWin64,obs64 -EA SilentlyContinue | ?{ $_.PriorityClass -ne 'AboveNormal' } | %{ $_.PriorityClass='AboveNormal' }"],
                        capture_output=True, text=True, creationflags=0x08000000)
     # 3. its own process: if the player died, restart it
     out = subprocess.run([sys.executable, SERVICES, "status"], cwd=ROOT, capture_output=True, text=True,
