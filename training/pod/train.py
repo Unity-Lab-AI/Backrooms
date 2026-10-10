@@ -11,7 +11,7 @@ import json, os, sys, time
 KIND = sys.argv[1]
 W = "/workspace"
 CFG = {
-    "voice": dict(base="unsloth/Qwen3-8B", data=["voice.jsonl", "voice_stream.jsonl"], seq=3072, r=32, epochs=3, lr=1.5e-4, bs=8, ga=2,
+    "voice": dict(base="unsloth/Qwen3-8B", data=["voice.jsonl", "voice_stream.jsonl"], seq=3072, r=32, epochs=3, lr=1.5e-4, bs=16, ga=1,
                   targets=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]),
     # attention (full + linear) and the shared expert: every layer learns, the 256 routed experts stay as they are
     "player": dict(base="Qwen/Qwen3.6-35B-A3B", data=["player.jsonl", "knowledge_game.jsonl", "knowledge_mods.jsonl", "knowledge_code.jsonl", "knowledge_walkthrough.jsonl"], seq=20480, r=32, epochs=1, lr=1e-4, bs=1, ga=8,
@@ -70,14 +70,25 @@ for line in _lines():
 ds = Dataset.from_list(rows).shuffle(seed=7)
 print("examples", len(ds), "skipped", skipped, "longest tokens", max(len(r["input_ids"]) for r in rows), flush=True)
 
+def _args(**kw):
+    """TrainingArguments with only the settings this transformers version accepts (the pod installs the newest;
+    a renamed setting must not kill a paid run)."""
+    import inspect
+    ok = set(inspect.signature(TrainingArguments.__init__).parameters)
+    dropped = sorted(k for k in kw if k not in ok)
+    if dropped:
+        print("TrainingArguments: not supported here, skipped:", dropped, flush=True)
+    return TrainingArguments(**{k: v for k, v in kw.items() if k in ok})
+
+
 trainer = Trainer(
     model=model, train_dataset=ds,
     data_collator=DataCollatorForSeq2Seq(tok, padding=True, label_pad_token_id=-100),
-    args=TrainingArguments(per_device_train_batch_size=CFG["bs"], gradient_accumulation_steps=CFG["ga"],
-                           num_train_epochs=CFG["epochs"], learning_rate=CFG["lr"], lr_scheduler_type="cosine",
-                           warmup_ratio=0.03, logging_steps=5, save_strategy="no", bf16=True, optim="adamw_8bit",
-                           weight_decay=0.0, seed=7, output_dir=os.path.join(W, "ckpt", KIND), report_to="none",
-                           group_by_length=True, remove_unused_columns=False))
+    args=_args(per_device_train_batch_size=CFG["bs"], gradient_accumulation_steps=CFG["ga"],
+               num_train_epochs=CFG["epochs"], learning_rate=CFG["lr"], lr_scheduler_type="cosine",
+               warmup_steps=10, logging_steps=5, save_strategy="no", bf16=True, optim="adamw_8bit",
+               weight_decay=0.0, seed=7, output_dir=os.path.join(W, "ckpt", KIND), report_to="none",
+               group_by_length=True, remove_unused_columns=False, dataloader_num_workers=4))
 trainer.train()
 print("trained in %.1f min" % ((time.time() - t0) / 60), flush=True)
 
