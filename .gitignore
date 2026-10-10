@@ -147,3 +147,4 @@ __pycache__/
 .local/qa/backup-*/
 .local/tools/
 .local/qa/_asked.flag
+.local/autopilot/traces/

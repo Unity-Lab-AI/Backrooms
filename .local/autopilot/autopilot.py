@@ -282,6 +282,20 @@ def turn(toolbox, st, args, system, specs):
             log("TOOL", name, json.dumps(a, ensure_ascii=False)[:300])
             result = toolbox.dispatch(name, a)
             messages.append({"role": "tool", "tool_name": name, "content": str(result)[:6000]})
+            # owner: train her on RimWorld (a LoRA). Every step is kept with the state she saw, the call and the
+            # game's answer; the good ones get picked out later as training examples.
+            try:
+                last_user = next((m.get("content", "") for m in reversed(messages) if m.get("role") == "user"), "")
+                tdir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "traces")
+                os.makedirs(tdir, exist_ok=True)
+                with open(os.path.join(tdir, time.strftime("%Y-%m-%d") + ".jsonl"), "a", encoding="utf-8") as tf:
+                    tf.write(json.dumps({"ts": time.time(), "state": str(last_user)[-4000:],
+                                         "said": msg.get("content") or "", "tool": name, "args": a,
+                                         "result": str(result)[:2000],
+                                         "refused": str(result).startswith(("REFUSED", "refused", "error", "bad arguments", "unknown tool"))},
+                                        ensure_ascii=False) + "\n")
+            except Exception:
+                pass
         for m in messages:                  # an old screenshot would be re-read every step; keep only the newest
             m.pop("images", None)
         if toolbox.pending_images:
