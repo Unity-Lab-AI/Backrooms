@@ -20,6 +20,10 @@ if ! have setup; then
   done_ setup
 fi
 export HF_HUB_ENABLE_HF_TRANSFER=1
+# the 35B base (~70 GB) downloads while the voice trains, so the player stage starts at once
+if ! have "train-player"; then
+  (huggingface-cli download Qwen/Qwen3.6-35B-A3B --exclude "*.pth" >$W/prefetch.log 2>&1 || hf download Qwen/Qwen3.6-35B-A3B >>$W/prefetch.log 2>&1) &
+fi
 
 to_gguf() {   # $1 kind
   local k=$1
