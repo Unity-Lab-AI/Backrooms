@@ -274,7 +274,7 @@ while True:
                 "seed=%s\nfaction=%s\nsettlement=%s\ncompany=Async Industries\nideo=Godsmultiplayer\npreset=Preset3\ncoverage=0.3\n" % (seed, faction, settlement))
             print(stamp(), "new game request: seed=%s faction=%s settlement=%s" % (seed, faction, settlement), flush=True)
             say("New planet seed is %s. Setting it up the way I always do, spring, three hundred square, mountains." % seed)
-            r = subprocess.run([sys.executable, os.path.join(HERE, "start-scenario.py"), scen, "--stop-at", "SelectStoryteller"],
+            r = subprocess.run([sys.executable, os.path.join(HERE, "start-scenario.py"), scen, "--stop-at", "ChooseIdeoPreset|SelectStoryteller"],
                                cwd=ROOT, capture_output=True, text=True, timeout=600, **NOWIN)
             print(stamp(), "start-scenario ->", (r.stdout or r.stderr).strip().splitlines()[-2:], flush=True)
             crew = 0
