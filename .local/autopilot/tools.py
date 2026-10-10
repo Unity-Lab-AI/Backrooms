@@ -228,6 +228,13 @@ class Toolbox:
         args = guards.check_bridge(name, args)
         if name in ("rimworld/list_letters", "rimworld/open_letter", "rimworld/dismiss_letter"):
             self._mark_letters_seen()
+        if name == "rimworld/execute_context_menu_option":
+            # live, 10-10: she clicked option 1 of a menu that was not there, turn after turn ("quest accepted")
+            m = self.bridge.call("rimworld/get_context_menu_options", {})
+            m = m.get("result", m); m = m.get("structuredContent", m) if isinstance(m, dict) else {}
+            if m.get("success") is False or not (m.get("options") or m.get("menuOptions") or m.get("items") or m.get("success")):
+                raise GuardError("no context menu is open -- nothing was clicked. Letters are read with game_open_letter "
+                                 "(real ids from game_list_letters) and answered by their own buttons, not a menu option")
         # owner: "why did she unpause beforee seeting all the pawn settings" -- time stays stopped until she
         # has marked pawns_set and assign_set true on her ladder (ladder_set mark) after doing them.
         starts_time = (name == "rimworld/pause_game" and not args.get("pause", True)) or \
