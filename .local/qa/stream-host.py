@@ -265,9 +265,22 @@ while True:
                                       g], creationflags=0x08000000 if os.name == "nt" else 0)
                 except Exception: pass
             else:
-                facts = "; ".join(state_facts()[:3])
-                speak(fresh("viewer %s said in chat: \"%s\". Answer %s by name, briefly and honestly. What is true right now: %s"
-                               % (who, text[:160], who, facts or "nothing new on the map this second")))
+                facts = "; ".join(f for f in state_facts()[:3] if not f.startswith("NOW: "))
+                # owner, live: "its like she isnt responding to the people in twtich stream chat" -- a reply gets
+                # three tries (no canned fallback), is spoken, AND is posted in the Twitch chat where they asked
+                ans = None
+                for _try in range(3):
+                    ans = fresh("viewer %s said in chat: \"%s\". Answer %s by name, briefly and honestly. What is true right now: %s"
+                                % (who, text[:160], who, facts or "nothing new on the map this second"))
+                    if ans: break
+                if ans:
+                    speak(ans)
+                    try:
+                        subprocess.Popen([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "reply", who, ans],
+                                         creationflags=0x08000000 if os.name == "nt" else 0)
+                    except Exception: pass
+                else:
+                    print("reply to", who, "not written -- nothing passed", flush=True)
         try: letters = call("rimworld/list_letters").get("letters", [])
         except Exception: letters = []
         for l in letters:
