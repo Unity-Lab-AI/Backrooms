@@ -123,7 +123,7 @@ def fresh(fact):
         # the overlap rule is a preference, not a gag: silence is the worse failure (2026-10-10, the stream
         # went quiet for twelve minutes because every candidate line missed the exact word). Insist on it for
         # the first attempts, then accept anything that clears the invention and third-person checks.
-        if attempt < 2 and keys and not (keys & set(re.findall(r"[a-z]{4,}", low))): continue
+        # (the shared-word rule is gone: it rejected most good lines and pushed her onto the stock pool)
         # owner, 2026-10-10: "wehy the fuck wont she shut up about cold hands and warm coffee" -- those themes are
         # banned, and no other personal theme may come back within the last ten lines
         if re.search(r"coffee|caffein|cold|freez|frozen|hands|fingers|sleep|tired|exhaust|nap", low): continue
@@ -186,6 +186,17 @@ def state_facts():
             if m and len(m.group(1)) > 20:
                 facts.insert(0, "what I am doing right now in the game: " + m.group(1)[:200]); break
     except Exception:
+        pass
+    try:
+        crew = call("rimworld/list_colonists").get("colonists", [])
+        names = [c.get("name") for c in crew if c.get("name")]
+        if names:
+            facts.append("my crew is %s, %d of us, fresh off the drop" % (", ".join(names), len(names)))
+            facts.append("the clock is stopped on purpose while I set up storage, beds and food for %s" % ", ".join(names))
+        lets = [l.get("label") for l in call("rimworld/list_letters").get("letters", []) if l.get("label")]
+        if lets:
+            facts.append("a message is waiting for me: " + lets[-1])
+    except BaseException:
         pass
     if not facts:
         import random as _r
@@ -260,7 +271,19 @@ while True:
                     # stuck behind the player model; silence never waits on it -- say a true line straight out.
                     try: hist = json.load(open(sb.HIST, encoding="utf-8"))
                     except Exception: hist = []
-                    pool = [f for f in facts + BETWEEN_RUNS if f not in hist[-12:] and not f.startswith("what I am doing")] or BETWEEN_RUNS
+                    used_path = os.path.join(HERE, "_pool_used.json")
+                    try: used = json.load(open(used_path, encoding="utf-8"))
+                    except Exception: used = {}
+                    now_t = time.time()
+                    pool = [f for f in facts + BETWEEN_RUNS
+                            if not f.startswith("what I am doing") and now_t - used.get(f, 0) > 2700]
+                    if not pool:
+                        line = None
+                        speak(line); raise RuntimeError("stock pool exhausted for now")
+                    used[random.choice(pool)] = now_t
+                    pool = [max(used, key=used.get)]
+                    try: json.dump(used, open(used_path, "w", encoding="utf-8"))
+                    except Exception: pass
                     pick = random.choice(pool)
                     line = pick[0].upper() + pick[1:] + ("." if not pick.endswith((".", "?", "!")) else "")
                     try: json.dump((hist + [pick])[-30:], open(sb.HIST, "w", encoding="utf-8"))
