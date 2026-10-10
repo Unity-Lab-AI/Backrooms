@@ -90,7 +90,7 @@ def fresh(fact):
                   "these recent lines: %s. Reply with the line only."
                   % (fact, " | ".join(hist[-8:])))
         try:
-            req = urllib.request.Request("http://127.0.0.1:11434/api/generate", data=json.dumps(
+            req = urllib.request.Request("http://127.0.0.1:11435/api/generate", data=json.dumps(
                 {"model": "dolphin3:8b", "prompt": prompt, "stream": False, "keep_alive": "10m",
                  "options": {"temperature": 0.9, "num_ctx": 4096, "num_predict": 60}}).encode(),
                 headers={"Content-Type": "application/json"})

@@ -102,11 +102,11 @@ def gather_chat(st):
     return joins, carried + msgs
 
 
-def brief(toolbox, st, joins, msgs, runlist):
+def brief(toolbox, st, joins, msgs, runlist, with_orders=True):
     # the unchanging parts go FIRST so Ollama can reuse them from the last turn (prompt cache); a turn number at
     # the top changed every turn and forced the CPU to re-read the whole brief, orders included, every time
     parts = []
-    if os.path.exists(OWNER_ORDERS):
+    if with_orders and os.path.exists(OWNER_ORDERS):
         txt = open(OWNER_ORDERS, encoding="utf-8", errors="replace").read().strip()
         if txt:
             parts.append("OWNER ORDERS (from the owner, binding, the only orders beyond the system prompt):\n" + (txt[:5000] + chr(10) + "[...]" + chr(10) + txt[-3500:] if len(txt) > 8500 else txt))   # standing procedures (head) + latest live orders (tail); all 13k chars timed the CPU model out
@@ -216,6 +216,20 @@ def brief(toolbox, st, joins, msgs, runlist):
     return "\n\n".join(parts)
 
 
+CONVO = []          # one running conversation (append-only), so Ollama reuses everything already read
+CONVO_TOKEN_CAP = 22000
+
+def _est_tokens(msgs):
+    return sum(len(str(m.get("content", ""))) for m in msgs) // 4
+
+def short_update(toolbox, st, joins, msgs):
+    """What changed since last turn -- the full brief is only sent when the conversation starts fresh.
+    This model's memory can only be reused when the new prompt continues the old one exactly, so a rebuilt brief
+    every turn cost a cold 2-4 minute read; an appended update costs seconds (owner: "fixing this shit to work
+    faster and better")."""
+    return ("UPDATE (turn %d) -- what is new; your orders from the start of this conversation still stand:" % st["tick"]
+            + chr(10) + brief(toolbox, st, joins, msgs, "", with_orders=False))
+
 def turn(toolbox, st, args, system, specs):
     st["tick"] += 1
     toolbox.spoken, toolbox.greeted_this_tick, toolbox.pending_images = [], set(), []
@@ -223,8 +237,14 @@ def turn(toolbox, st, args, system, specs):
     runlist = ""
     if st["tick"] % args.runlist_every == 1 or args.runlist_every == 1:
         runlist = toolbox.t_run_list()
-    messages = [{"role": "system", "content": system},
-                {"role": "user", "content": brief(toolbox, st, joins, msgs, runlist)}]
+    global CONVO
+    if not CONVO or _est_tokens(CONVO) > CONVO_TOKEN_CAP:
+        CONVO = [{"role": "system", "content": system},
+                 {"role": "user", "content": brief(toolbox, st, joins, msgs, runlist)}]
+        log("fresh conversation (full brief)")
+    else:
+        CONVO.append({"role": "user", "content": short_update(toolbox, st, joins, msgs)})
+    messages = CONVO
     deep = bool(getattr(toolbox, "think_next", False)); toolbox.think_next = False
     if deep: log("deep planning turn (thinking on)")
     opts = {"num_ctx": args.num_ctx, "num_gpu": args.num_gpu, "think": True if deep else args.think,
@@ -246,6 +266,8 @@ def turn(toolbox, st, args, system, specs):
             log("TOOL", name, json.dumps(a, ensure_ascii=False)[:300])
             result = toolbox.dispatch(name, a)
             messages.append({"role": "tool", "tool_name": name, "content": str(result)[:6000]})
+        for m in messages:                  # an old screenshot would be re-read every step; keep only the newest
+            m.pop("images", None)
         if toolbox.pending_images:
             messages.append({"role": "user", "content": "Here is the screenshot you took.",
                              "images": toolbox.pending_images})

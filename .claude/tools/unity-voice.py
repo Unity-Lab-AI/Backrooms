@@ -17,7 +17,7 @@ import json, os, re, sys, urllib.request
 
 PROJECT = os.path.expanduser(r"~\Desktop\Unity 3D Equational Model\Unity 18+")
 PERSONA = os.path.join(PROJECT, "Unity1.txt")
-OLLAMA = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")
+OLLAMA = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11435")
 MODEL = os.environ.get("UNITY_VOICE_LLM", "unity-local")
 
 STREAM_RULES = """

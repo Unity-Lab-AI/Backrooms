@@ -252,7 +252,7 @@ while True:
                             "options": {"temperature": 1.0, "num_predict": 12, "num_ctx": 2048},
                             "prompt": "You are Unity, a 25 year old emo goth streamer. Give " + what +
                                       ". Reply with the name only, one to three words, letters and spaces only, clean."}
-                    out = json.loads(_u.urlopen(_u.Request("http://127.0.0.1:11434/api/generate", json.dumps(body).encode(),
+                    out = json.loads(_u.urlopen(_u.Request("http://127.0.0.1:11435/api/generate", json.dumps(body).encode(),
                                      {"Content-Type": "application/json"}), timeout=60).read())["response"]
                     out = "".join(ch for ch in out.strip().split(chr(10))[0] if ch.isalpha() or ch == " ").strip()[:24]
                     return out if out and not _DIRTY.search(out) else fallback
