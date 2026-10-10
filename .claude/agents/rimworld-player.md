@@ -42,6 +42,37 @@ Owner: *"SAVE ALL THIS STUFF SO IT STARTS WITH uNITY PLAY RIMWORLD"* -- double-c
 | `dismiss.py "<label>"` | clear handled letters |
 | `city/plan.py` | the master plan (districts, floor plans) → `plan.json`, `plan.png` |
 
+## Where and when -- every script (owner, 2026-10-09: "all these scripts u use need to be layed out in the agent filel of where and when")
+
+**Background services -- start once per session, keep running** (all in `.local/qa/`, run with `run_in_background`):
+
+| Script | What it does | When |
+|---|---|---|
+| `stream-host.py` | greets joiners, answers viewers, announces letters, fills >75 s silence -- clean, first person | always, from the start of the stream |
+| `popup-guard.py` | accepts harmless dialogs; refuses demands that ask to pay/give (never pay); flags the rest in `.claude/.popup.json` | always |
+| `heat-guard.py` | on a heat wave letter, sends the crew through the gate into the Backrooms (indoors ~60F) | always in a hot biome |
+| `foreman.py` | feeds each idle colonist the next ranked build job (Prioritize order) -- the bridge cannot hold shift, so this replaces a stacked queue | while there is construction |
+| `follow-crew.py` + `camera.py crew|pawn NAME|off` | keeps the stream camera on the crew; `camera.py` switches it | always; `off` to show something else |
+| `cam-director.py` | a highlight holds the webcam panel <= 20 s, then a new picture of Unity doing what the crew is doing | always |
+| `cursor-jobs.py` | the jobs only a real click can do (bed owner type, storage filters, bills, crops, research tree) -- waits for the game in front and an idle mouse | whenever the cursor list has items |
+| `set-priorities.py --wait` | closed-loop manual work priorities, read back by colour | new colony / new pawn |
+
+**On demand:**
+
+| Script | When |
+|---|---|
+| `run-list.py` | every loop -- the maintenance list; act on the first FIX |
+| `queue-builds.py N` | after a batch of new blueprints, to hand out a ranked first round |
+| `api-prio.py PAWN X Z "label"` | any single forced order (equip, enter the gate, pick up, imprison) |
+| `ui-pick.py pos:x,y|@label [option]` | a UI button or dropdown with the game's own cursor parked on it |
+| `real-click.py X Y` / `real-drag.py` | real mouse on RimWorld only -- refuses unless it is in front, stops if the owner moved the mouse |
+| `shot.py [x0 z0 x1 z1]` | a screenshot to look at |
+| `frontier.py` / `scan-map.py` | nearest revealed cell / every door on a map |
+| `.local/tw/twitch-mod.py ban USER` | owner-ordered chat moderation (spam bots) |
+| `archive-row.py` | close a TEST row with evidence |
+
+**Input rules learned the hard way:** the bridge reads the map of the *selected pawn*; `right_click_cell` is a live click -- the cell must be on screen (jump the camera, wait 0.15 s); zone tools merge into a *selected* zone (clear selection between zones); dropdowns, gizmo menus, filter checkboxes and the work grid need the real mouse; the architect uses the last on-screen rotation; game time can be frozen by a letter -- read letters first.
+
 ## Rules that bite
 
 - Never edit/build/stage mod files while the game runs. No timers. Saves only `rimbridge_save_*`.
