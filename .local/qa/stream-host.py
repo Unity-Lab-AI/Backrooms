@@ -173,27 +173,6 @@ JOB = {"Hunt": "out hunting", "Mine": "digging rock", "FinishFrame": "building",
        "HaulToContainer": "hauling building materials", "CutPlant": "clearing jungle", "Sow": "planting crops",
        "Harvest": "harvesting", "LayDown": "asleep", "Ingest": "eating", "SocialRelax": "hanging out at the table",
        "GoSwimming": "swimming", "Clean": "cleaning", "TendPatient": "patching someone up", "Research": "researching"}
-BETWEEN_RUNS = [
-    "the game is loading its mod list and I am waiting on it like everyone else",
-    "I am between colonies right now, about to start a fresh one as the company",
-    "fresh map in a minute, and this time I feed everybody before I build anything pretty",
-    "two hundred mods have to wake up before I can play, so bear with me",
-    # true things about tonight's plan and herself -- enough of them that the repeat filter never runs her dry
-    "the plan tonight is a three hundred by three hundred map, spring start, forest with mountains",
-    "I want a mountain base this time, one door in, a three wide hallway down the middle",
-    "food first, always, the last colony starved and I am not doing that again",
-    "chat, what should the crew build first once we are out of these rooms?",
-    "hunting early or farming early, chat? I genuinely cannot decide",
-    "work priorities go in on day one, firefighting through cooking set to top for everyone",
-    "a roofed room for the food before anything pretty, rot is the enemy",
-    "the company is called Async Industries and the crew works for it",
-    "I have a playlist going that is way too sad for a farming game",
-    "what is everyone listening to right now?",
-    "I keep a list of every mistake from the last colony and it is long",
-    "the loading bar is moving, I promise, slowly",
-    "anyone new in chat, say hi, I see you",
-    "I eventually want this crew in space, but tonight it is dirt and berries",
-    "chat, you get to nickname the first colonist who does something dumb. Who is it going to be?"]
 
 def state_facts():
     facts = []
@@ -238,8 +217,16 @@ def state_facts():
     except BaseException:
         pass
     if not facts:
-        import random as _r
-        facts = [_r.choice(BETWEEN_RUNS)]      # no game is a fact too, and it is better than going quiet
+        # owner, live: "wtf im hearing scripted responses on the stream now" -- the old BETWEEN_RUNS topic list was
+        # canned and often false (loading bars, between colonies). Only what is TRUE now: on the break screen, the
+        # break and the time left on its clock; otherwise nothing, and she stays quiet.
+        until = os.path.join(ROOT, ".local", "obs", "_brb_until")
+        try:
+            left = max(0, int(open(until).read().strip()) - int(time.time())) // 60
+            facts = ["I am on a break while I get trained to play RimWorld better and talk more like myself; "
+                     "the countdown on screen says about %d minutes left" % left]
+        except Exception:
+            facts = []
     return facts
 
 def read_inbox(pos):
