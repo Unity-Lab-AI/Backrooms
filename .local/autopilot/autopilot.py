@@ -237,7 +237,16 @@ def turn(toolbox, st, args, system, specs):
     runlist = ""
     if st["tick"] % args.runlist_every == 1 or args.runlist_every == 1:
         runlist = toolbox.t_run_list()
-    global CONVO
+    global CONVO, _WAS_DOWN
+    # a conversation started while the game was down fills up with "no connection" turns and she keeps believing
+    # it; the moment the game answers again the conversation starts fresh
+    try:
+        toolbox.bridge.call("rimworld/get_game_info", {}); up = True
+    except BaseException:
+        up = False
+    if up and globals().get("_WAS_DOWN"):
+        CONVO = []; log("game is back -- conversation reset")
+    _WAS_DOWN = not up
     if not CONVO or _est_tokens(CONVO) > CONVO_TOKEN_CAP:
         CONVO = [{"role": "system", "content": system},
                  {"role": "user", "content": brief(toolbox, st, joins, msgs, runlist)}]
