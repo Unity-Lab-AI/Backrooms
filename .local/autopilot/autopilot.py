@@ -65,7 +65,8 @@ def save_state(st):
 def ollama_chat(model, messages, tool_specs, opts):
     body = {"model": model, "messages": messages, "tools": tool_specs, "stream": False,
             "keep_alive": opts["keep_alive"],
-            "options": {"num_ctx": opts["num_ctx"], "temperature": 0.5, "top_p": 0.9}}
+            "options": {"num_ctx": opts["num_ctx"], "temperature": 0.5, "top_p": 0.9,
+                        "num_thread": int(os.environ.get("AUTOPILOT_THREADS", "8"))}}   # all 8 physical cores
     if opts.get("num_gpu") is not None:
         body["options"]["num_gpu"] = opts["num_gpu"]
     if opts.get("think") is not None:
@@ -101,7 +102,9 @@ def gather_chat(st):
 
 
 def brief(toolbox, st, joins, msgs, runlist):
-    parts = ["TURN %d. Follow the order of operations." % st["tick"]]
+    # the unchanging parts go FIRST so Ollama can reuse them from the last turn (prompt cache); a turn number at
+    # the top changed every turn and forced the CPU to re-read the whole brief, orders included, every time
+    parts = []
     if os.path.exists(OWNER_ORDERS):
         txt = open(OWNER_ORDERS, encoding="utf-8", errors="replace").read().strip()
         if txt:
@@ -199,6 +202,7 @@ def brief(toolbox, st, joins, msgs, runlist):
     parts.append("GAME STATE:\n" + toolbox.t_state())
     if runlist:
         parts.append("MAINTENANCE LIST (first FIX is your goal):\n" + runlist[-2500:])
+    parts.append("TURN %d. Follow the order of operations." % st["tick"])
     return "\n\n".join(parts)
 
 

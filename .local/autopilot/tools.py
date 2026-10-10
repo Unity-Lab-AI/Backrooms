@@ -160,7 +160,23 @@ class Toolbox:
         self.local = self._local_tools()
 
     # -- tool specs for Ollama --------------------------------------------------------------------------------
+    # The tools that actually play the colony. Owner: "no she has to do it" -- so she has to be fast, and 72 tool
+    # definitions (~9k tokens) were re-read on CPU every turn. Camera minutiae, UI layout, tab and save plumbing
+    # stay registered (a call to them still works) but are not offered in the prompt.
+    CORE = {"game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "plan", "webcam", "snap",
+            "twitch_chat", "note", "read_doc", "run_list", "empire_pass", "play_slices",
+            "game_apply_architect_designator", "game_select_architect_designator", "game_list_architect_designators",
+            "game_list_architect_categories", "game_set_zone_target", "game_list_zones", "game_list_areas",
+            "game_get_cell_info", "game_get_cells_info", "game_select_pawn", "game_set_draft", "game_execute_gizmo",
+            "game_list_selected_gizmos", "game_get_context_menu_options", "game_execute_context_menu_option",
+            "game_right_click_cell", "game_drag_cell", "game_list_letters", "game_open_letter", "game_dismiss_letter",
+            "game_pause_game", "game_set_time_speed", "game_jump_camera_to_cell", "game_list_colonists",
+            "game_take_screenshot", "game_list_alerts", "game_close_window", "game_press_accept"}
+
     def specs(self):
+        return [sp for sp in self._all_specs() if sp["function"]["name"] in self.CORE]
+
+    def _all_specs(self):
         specs = []
         for name, t in sorted(self.bridge_schemas.items()):
             params = json.loads(json.dumps(t.get("inputSchema") or {"type": "object", "properties": {}}))
