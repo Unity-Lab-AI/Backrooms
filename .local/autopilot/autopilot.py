@@ -244,6 +244,11 @@ def turn(toolbox, st, args, system, specs):
         toolbox.bridge.call("rimworld/get_game_info", {}); up = True
     except BaseException:
         up = False
+    if not up and not args.dry_run:
+        # no game: do not think about it (it fills her memory and pad with "bridge down"); wait and check again
+        _WAS_DOWN = True
+        time.sleep(20)
+        return False
     if up and globals().get("_WAS_DOWN"):
         CONVO = []; log("game is back -- conversation reset")
     _WAS_DOWN = not up
