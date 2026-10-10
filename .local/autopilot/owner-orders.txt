@@ -219,3 +219,14 @@ PICTURES, HIGHLIGHTS AND SELFIES -- owner, 2026-10-10: "make sure the local mode
   Ordinary turns are quick and direct. For a BIG plan (base layout, raid plan, the mountain move, the gate, the
   space push) call the `plan` tool: it tells chat, pauses the game, and your next turn thinks deeply. Never use
   it for ordinary moves.
+
+- OWNER, typed in the panel chat (binding next turn): get to it Unity set everything up in your camp that u need to survive before you plan main mountain base, and dont unpause uunless you are ready to build some stuff and keep it small first then grow
+
+LESSONS FROM THIS RUN (Claude watches and adds here; read them, do not repeat the mistake)
+- Do not survey with huge cell reads (30x30 = 900 cells eats a whole turn). Use `look` once, then small reads
+  only where you are about to place something.
+- The game is paused under the setup hold: place zones, shelves, bills and beds NOW, one per step, and say each
+  one on stream. Reading the map again is not progress.
+- The colony faction still shows the default "New Arrivals"; when the naming window appears, the mod fills in
+  your names (Ethereal Shadows / Shadowpeak). Do not close it by hand.
+- Greetings are handled for you; do not spend a turn greeting someone who was already welcomed.
