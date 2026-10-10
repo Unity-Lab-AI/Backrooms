@@ -225,7 +225,7 @@ while True:
             # a NEW stream each start (owner: "make sure it starts a new stream"): fresh title, then OBS live
             try:
                 subprocess.run([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "title",
-                                "Unity Plays RimWorld -- fresh company colony, " + time.strftime("%b %d")],
+                                "Unity Plays RimWorld -- fresh company colony, " + time.strftime("%b %d, %I:%M %p")],
                                cwd=ROOT, capture_output=True, text=True, timeout=90, **NOWIN)
             except Exception as e:
                 print(stamp(), "title not set:", e, flush=True)
