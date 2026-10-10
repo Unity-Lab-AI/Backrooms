@@ -20,7 +20,7 @@ JOBS = [  # gguf, base it was trained from, ollama host, target name, backup of 
 
 
 def ollama(host, *args, inp=None):
-    return subprocess.run(["ollama", *args], input=inp, capture_output=True, text=True, timeout=1800,
+    return subprocess.run(["ollama", *args], input=inp, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=1800,
                           env=dict(os.environ, OLLAMA_HOST=host), **NOWIN)
 
 
