@@ -99,6 +99,12 @@ def fresh(fact):
             # the player model shares Ollama and can hold it for a while; say why, then let the next pass retry
             print("voice model did not answer:", str(_e)[:80], flush=True); break
         line = line.replace('"', "").strip()
+        # no announcer openers (owner: no corporate scripted showman lines): "Hey guys,", "Alright, listen up,"
+        line = re.sub(r"^\W*(?:(?:hey|hi|yo|ok(?:ay)?|alright|so|oh|well)\W+)*(?:(?:guys|everyone|everybody|chat|"
+                      r"y'all|folks|listen up|team|crew)\W*)+", "", line, flags=re.I).strip()
+        if line[:1].islower(): line = line[:1].upper() + line[1:]
+        # crew counts she makes up ("Gee, Scar, and 3 more") -- the crew is only who the fact names
+        if re.search(r"(\d+|two|three|four|five|six) (more|others|other colonists|new)", line, re.I): continue
         line = re.sub(r"\bUnity is\b", "I'm", line); line = re.sub(r"\bUnity's\b", "my", line); line = re.sub(r"\bUnity\b", "I", line)
         low = line.lower()
         if difflib.SequenceMatcher(None, low, fact.lower()).ratio() > 0.75: continue   # a bare echo of the prompt
