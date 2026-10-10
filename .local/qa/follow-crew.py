@@ -103,13 +103,18 @@ while True:
                 # (owner: "she is stuck looking at dirt"); the pawn she just worked on goes first
                 r = bridge("rimworld/list_colonists", {})
                 r = r.get("result", r); r = r.get("structuredContent", r) if isinstance(r, dict) else {}
-                names = [c.get("name") for c in r.get("colonists", []) if c.get("factionIsPlayer", True) and c.get("name")]
+                cols = [c for c in r.get("colonists", []) if c.get("factionIsPlayer", True) and c.get("name") and c.get("position")]
+                where = {c["name"]: c["position"] for c in cols}
+                names = list(where)
                 focus = latest_pawn()
                 if focus in names:
                     names.remove(focus); names.insert(0, focus)
                 if names:
                     turn = (turn + 1) % len(names) if focus not in names[:1] or turn else 0
-                    bridge("rimworld/jump_camera_to_pawn", {"pawnName": names[turn % len(names)]})
+                    # to the pawn's CELL, never jump_camera_to_pawn: that call opens the Character Editor mod
+                    # (live: the editor kept reopening and stopping time)
+                    pos = where[names[turn % len(names)]]
+                    bridge("rimworld/jump_camera_to_cell", {"x": pos["x"], "z": pos["z"]})
     except Exception:
         pass
     time.sleep(5 if last_framed else 30)
