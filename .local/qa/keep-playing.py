@@ -79,7 +79,12 @@ def last_spoken():
     except Exception:
         return 0
 
+import re as _re
+_DIRTY = _re.compile(r"(fuck\w*|shit\w*|bitch\w*|damn|ass|hell|cunt|slut|whore|retard\w*|weed|stoned|high af)", _re.I)
 def say(line):
+    # THE STREAM IS CLEAN: nothing this loop speaks may carry a cuss word, whoever wrote it
+    if _DIRTY.search(line or ""):
+        print(stamp(), "refused to say an unclean line:", (line or "")[:60], flush=True); return
     try:
         subprocess.Popen([sys.executable, SAY, "--raw", line], cwd=ROOT,
                          env=dict(os.environ, UNITY_NO_GLANCE="1"),
@@ -164,8 +169,8 @@ while True:
             except OSError: pass
             want = open(GO, encoding="utf-8").read().strip()
             print(stamp(), "GO received:", want[:120], flush=True)
-            say("Got it. Launching the game and going live." if want in ("", "go")
-                else "Got it: %s. Launching the game and going live." % want[:80])
+            # never read the owner's directive aloud -- it is an order to her, not a line for the stream
+            say("Got it. Launching the game and going live. Give me a minute while two hundred mods wake up.")
             # live FIRST, so the stream carries the game's loading screens, then the game
             subprocess.run([sys.executable, SERVICES_PY, "golive"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
             subprocess.run([sys.executable, SERVICES_PY, "game"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
