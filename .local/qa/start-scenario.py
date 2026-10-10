@@ -267,8 +267,10 @@ def main(argv=None):
         # ordinary text button rather than the window's accept action. So it is clicked by name.
         for page in range(12):
             before = window_types(session)
-            if args.stop_at and before and args.stop_at in before[0]:
-                print("start-scenario: stopped at %s as asked" % before[0])
+            # any open window, not just the top one: a small overlay above the page made this miss the storyteller,
+            # and the script then clicked the ideology page through with the default (no ideoligion loaded)
+            if args.stop_at and any(args.stop_at in w for w in before):
+                print("start-scenario: stopped at %s as asked" % next(w for w in before if args.stop_at in w))
                 return 0
             # Satisfy whatever this page requires before asking it to advance.
             for choice in PAGE_CHOICES.get(before[0] if before else "", ()):
