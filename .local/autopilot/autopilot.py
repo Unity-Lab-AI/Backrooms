@@ -66,7 +66,7 @@ def save_state(st):
 def ollama_chat(model, messages, tool_specs, opts):
     body = {"model": model, "messages": messages, "tools": tool_specs, "stream": False,
             "keep_alive": opts["keep_alive"],
-            "options": {"num_ctx": opts["num_ctx"], "temperature": 0.5, "top_p": 0.9,
+            "options": {"num_ctx": opts["num_ctx"], "temperature": 0.5, "top_p": 0.9, "use_mlock": True,   # owner: lots of RAM -- keep it locked in, never paged
                         "num_thread": int(os.environ.get("AUTOPILOT_THREADS", "8"))}}   # 8 = physical cores; 14 made turns slower (threads stall on each other when the game takes a core)
     if opts.get("num_gpu") is not None:
         body["options"]["num_gpu"] = opts["num_gpu"]
@@ -217,7 +217,7 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True):
 
 
 CONVO = []          # one running conversation (append-only), so Ollama reuses everything already read
-CONVO_TOKEN_CAP = 22000
+CONVO_TOKEN_CAP = 56000   # a bigger window costs only RAM; every reset costs a 2-minute cold read
 
 def _est_tokens(msgs):
     return sum(len(str(m.get("content", ""))) for m in msgs) // 4
@@ -262,7 +262,7 @@ def turn(toolbox, st, args, system, specs):
     deep = bool(getattr(toolbox, "think_next", False)); toolbox.think_next = False
     if deep: log("deep planning turn (thinking on)")
     opts = {"num_ctx": args.num_ctx, "num_gpu": args.num_gpu, "think": True if deep else args.think,
-            "keep_alive": "5m" if args.dry_run else "30m", "timeout": args.timeout}
+            "keep_alive": "5m" if args.dry_run else -1, "timeout": args.timeout}
     final = ""
     for step in range(args.max_steps):
         t0 = time.time()
@@ -313,7 +313,7 @@ def main():
     ap.add_argument("--turns", type=int, default=0, help="stop after N turns (0 = forever)")
     ap.add_argument("--max-steps", type=int, default=12, help="model tool-call rounds per turn")
     ap.add_argument("--runlist-every", type=int, default=3, help="run the maintenance list every N turns")
-    ap.add_argument("--num-ctx", type=int, default=int(os.environ.get("AUTOPILOT_NUM_CTX", 32768)))
+    ap.add_argument("--num-ctx", type=int, default=int(os.environ.get("AUTOPILOT_NUM_CTX", 65536)))
     ap.add_argument("--num-gpu", type=int, default=None,
                     help="GPU layers for Ollama (0 = CPU only, no VRAM taken from the stream). Default: Ollama decides; "
                          "dry-run defaults to 0")
