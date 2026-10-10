@@ -304,11 +304,12 @@ while True:
                 _s, _b = gates._session()
                 _r = gates.bridge.exchange(_s, _b, "tools/call", {"name": "rimworld/get_ui_state", "arguments": {}})
                 _r = _r.get("result", _r); _r = _r.get("structuredContent", _r)
-                _top = str(_r.get("topWindowType") or "")
+                # the open TAB, not the top window: the minimap sits on top and hid the Operations panel underneath
+                _top = str(_r.get("openMainTabType") or "")
                 # only a real tab panel (Operations, Work, Research...) -- never the inspect pane or the minimap
                 if ("MainTabWindow" in _top and not any(k in _top for k in ("Inspect", "MiniMap", "Minimap"))
                         and not _r.get("floatMenuOpen")):
-                    gates.bridge.exchange(_s, _b, "tools/call", {"name": "rimworld/press_cancel", "arguments": {}})
+                    gates.bridge.exchange(_s, _b, "tools/call", {"name": "rimworld/close_window", "arguments": {"windowType": _top}})
                     print(stamp(), "closed a main tab left open (%s) -- pawn buttons visible again" % _r.get("topWindowType"), flush=True)
             except Exception:
                 pass
