@@ -236,7 +236,10 @@ class Toolbox:
                                                     "scratch", "ladder.json"), encoding="utf-8")).get("marks", {})
             except Exception:
                 marks = {}
-            if not (marks.get("pawns_set") and marks.get("assign_set")):
+            # owner's order: explore every room and door FIRST with time running, THEN pause and set the pawns.
+            # So time may run while exploring; once exploring is done it stays stopped until the pawns are set.
+            explored = os.path.exists(os.path.join(ROOT, ".local", "qa", "_explore_done.flag"))
+            if explored and not (marks.get("pawns_set") and marks.get("assign_set")):
                 raise GuardError("time stays stopped until every pawn's priorities, schedule, drugs and Assign tab "
                                  "are done -- then ladder_set mark pawns_set true and assign_set true, then unpause")
         if name == "rimworld/click_ui_target":

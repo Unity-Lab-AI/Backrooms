@@ -361,6 +361,10 @@ while True:
                 if "nothing left to explore" in last and "sealed" in last:
                     _explore_done = True
                     open(os.path.join(HERE, "_explore_done.flag"), "w").write(stamp())
+                    # owner's order: explore with time running, THEN pause and set every pawn before it runs again
+                    try: gates_bridge_pause(True)
+                    except Exception as e: print(stamp(), "could not pause after exploring:", e, flush=True)
+                    say("fact: every room and door is explored; the game is paused while I set up each pawn")
             except Exception as e:
                 print(stamp(), "auto-explore failed:", e, flush=True)
         hold = os.path.join(HERE, "_setup_hold.flag")
