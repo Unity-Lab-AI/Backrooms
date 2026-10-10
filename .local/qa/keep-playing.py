@@ -142,6 +142,37 @@ def model_needs(passes):
                            creationflags=0x08000000 if os.name == "nt" else 0)
         print(stamp(), "training set:", " | ".join(r.stdout.strip().splitlines()[:3]), flush=True)
 
+
+def day_one(auto):
+    """Owner: "she never armed any one and is just letting the game run with out seeting sechedul drugs storages
+    workschedule priorities". The clock does not run until the mod has set it all: pause, send day_one, read the
+    mod's own result, and only then let time go. The mod serves its command file while paused."""
+    try:
+        gates_bridge_pause(True)
+    except Exception as e:
+        print(stamp(), "could not pause before day one:", e, flush=True)
+    outbox = os.path.join(auto, "outbox.jsonl")
+    before = os.path.getsize(outbox) if os.path.exists(outbox) else 0
+    with open(os.path.join(auto, "inbox.jsonl"), "a", encoding="utf-8") as f:
+        f.write(json.dumps({"cmd": "day_one"}) + "\n")
+    got = None
+    for _ in range(30):
+        time.sleep(2)
+        if os.path.exists(outbox) and os.path.getsize(outbox) > before:
+            with open(outbox, encoding="utf-8", errors="replace") as f:
+                f.seek(before); got = f.read().strip()
+            break
+    print(stamp(), "day one:", (got or "no answer from the mod")[:400], flush=True)
+    if got and "-> ok" in got.replace("\\", ""):
+        say("Crew is set: priorities, schedule, drug rules, everyone on attack, rifles in hand. Now the clock runs.")
+        gates_bridge_pause(False)
+    else:
+        say("Holding the pause until my crew is properly set up.")
+
+def gates_bridge_pause(on):
+    s, buf = gates._session()
+    gates.bridge.exchange(s, buf, "tools/call", {"name": "rimworld/pause_game", "arguments": {"pause": bool(on)}})
+
 SERVICES_PY = os.path.join(ROOT, "stream", "services.py")
 GO = os.path.join(HERE, "_go.request")
 NOWIN = {"creationflags": 0x08000000} if os.name == "nt" else {}
@@ -237,6 +268,7 @@ while True:
                 try: os.remove(req + ".tries")
                 except OSError: pass
                 print(stamp(), "new colony started (%d colonists) -- the request is cleared" % crew, flush=True)
+                day_one(auto)
                 say("We are down. %s, spring, forest and mountains. Food first." % settlement)
             else:
                 print(stamp(), "no colonists on a map yet -- the colony request stays armed", flush=True)
