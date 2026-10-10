@@ -23,7 +23,10 @@ export HF_HUB_ENABLE_HF_TRANSFER=1
 # fast kernels for the 35B's linear-attention layers; without them every step falls back to slow PyTorch
 # (measured 52 s/step, ~5 h). Its own stage so a pod whose setup is already done still gets them.
 if [[ "${SHELLS:-voice player}" == *player* ]] && ! have kernels; then
-  pip install -q flash-linear-attention || true
+  # the image's torchaudio is built for an older torch; any import of it crashes, and transformers imports it
+  # on the way to the fast kernels -- nothing here uses audio, so it goes
+  pip uninstall -y -q torchaudio || true
+  pip install -q flash-linear-attention ninja || true
   MAX_JOBS=16 pip install -q causal-conv1d --no-build-isolation || true
   python -c "import fla, causal_conv1d; print('fast kernels ok')" || echo "fast kernels missing"
   done_ kernels
