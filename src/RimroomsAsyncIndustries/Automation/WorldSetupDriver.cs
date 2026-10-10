@@ -305,6 +305,14 @@ namespace RimroomsAsyncIndustries.Automation
         {
             PlanetLayer surface = Find.WorldGrid.Surface;
             if (surface == null) { return PlanetTile.Invalid; }
+            // owner: pollution 0 -- also never settle within 6 tiles of a polluted tile (the game asks "acidic smog,
+            // settle anyway?" and the setup stalls on it)
+            var polluted = new List<PlanetTile>();
+            for (int i = 0; i < surface.TilesCount; i++)
+            {
+                PlanetTile pt = new PlanetTile(i, surface);
+                if (Find.WorldGrid[pt].pollution > 0f) polluted.Add(pt);
+            }
             foreach (string biome in biomes)
             {
                 var found = new List<PlanetTile>();
@@ -314,6 +322,7 @@ namespace RimroomsAsyncIndustries.Automation
                     Tile t = Find.WorldGrid[candidate];
                     if (t.PrimaryBiome == null || t.PrimaryBiome.defName != biome || t.hilliness != wanted) { continue; }
                     if (Find.WorldObjects.AnyWorldObjectAt(candidate) || !TileFinder.IsValidTileForNewSettlement(candidate)) { continue; }
+                    if (polluted.Any(pt => Find.WorldGrid.ApproxDistanceInTiles(candidate, pt) < 6f)) { continue; }
                     found.Add(candidate);
                 }
                 if (found.Count > 0) { return found.RandomElement(); }
