@@ -166,6 +166,14 @@ def deps():
             try: vapi("/api/version"); break
             except Exception: pass
         print("ollama-voice started on 11435")
+    # Unity's trained shells (training/models/*.gguf) go into Ollama before anything warms or starts; a no-op
+    # once applied (owner: "when its done it all auto applies and can run with start.bat")
+    try:
+        r = subprocess.run([sys.executable, os.path.join(ROOT, "training", "apply.py")], capture_output=True,
+                           text=True, timeout=3600)
+        print((r.stdout or r.stderr).strip())
+    except Exception as e:
+        print("shells      apply skipped (%s)" % str(e)[:60])
     try:
         vapi("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "think": False, "keep_alive": "30m",
                                "options": {"num_ctx": 8192, "num_predict": 1}}, timeout=180)

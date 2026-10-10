@@ -46,7 +46,21 @@ if _os.name == "nt":
 
 
 OLLAMA = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")
-DEFAULT_MODEL = os.environ.get("AUTOPILOT_MODEL", "qwen3.6:35b")
+def _default_model():
+    """Her trained player shell when start.bat has applied it, else the base (training/apply.py)."""
+    if os.environ.get("AUTOPILOT_MODEL"):
+        return os.environ["AUTOPILOT_MODEL"]
+    try:
+        import urllib.request as _u
+        names = [m["name"] for m in json.loads(_u.urlopen("http://127.0.0.1:11434/api/tags", timeout=5).read())["models"]]
+        if any(n.split(":")[0] == "unity-player" for n in names):
+            return "unity-player"
+    except Exception:
+        pass
+    return "qwen3.6:35b"
+
+
+DEFAULT_MODEL = _default_model()
 STATE = "state.json"
 OWNER_ORDERS = os.path.join(HERE, "owner-orders.txt")     # written by the owner by hand; the autopilot only reads it
 

@@ -148,3 +148,5 @@ __pycache__/
 .local/tools/
 .local/qa/_asked.flag
 .local/autopilot/traces/
+training/models/
+training/preflight/
