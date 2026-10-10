@@ -73,7 +73,7 @@ Services under the switch: `rimworld` (started, never stopped except by `stop`),
 
 ## Stream
 
-- OBS canvas **1920×1027 — the game's own 1.869:1**, no cropped sides, no bars. `--startstreaming`, `--disable-shutdown-check`, closed gracefully, never force-killed.
+- OBS canvas **1920×1080, true 16:9**, with the whole 3840×2054 game fitted full-width (thin bars top and bottom). The 1920×1027 canvas got its sides cut by Twitch's 16:9 player — owner: *"as you can see the twitch window is still cut off on the sides"*. `.local/qa/obs-fit-16x9.py` re-applies it (OBS closed). `--startstreaming`, `--disable-shutdown-check`, closed gracefully, never force-killed.
 - The Twitch window never asks for permissions (`--deny-permission-prompts`); the PiP prompt the owner denied was that window.
 - Voice: a real person — 25, emo goth, cold coffee, asides allowed, **never an invented game event**, never third person, never silent past **30 s**, talks between runs instead of dying.
 - **Likeness locked:** `.claude/likeness/unity-approved-2026-10-09.png` is the approved look; `unity-likeness-2026-10-09-locked.png` is the reference every frame is img2img'd from at seed 1031. **Do not re-render the reference; restore from the copy.**
