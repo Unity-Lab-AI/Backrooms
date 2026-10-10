@@ -356,6 +356,8 @@ def golive():
     for name, frag, cmd, cwd in EXTRAS:
         if name != "obs": continue
         log = open(os.path.join(QA if "QA" in globals() else HERE, "_svc_obs.log"), "ab", buffering=0)
+        # the layout lives in OBS's own files and OBS is closed here: write it before every launch
+        subprocess.run([PY, os.path.join(ROOT, ".local", "obs", "obs-fit-16x9.py")], capture_output=True, text=True)
         # a stale crash sentinel makes OBS stop on a safe-mode question and never stream; clear it
         import shutil
         shutil.rmtree(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(cmd[0]))),
@@ -376,7 +378,9 @@ elif cmd == "stop" and ONE:
 elif cmd == "restart" and ONE:
     stop_one(ONE); time.sleep(2); start(ONE)
 elif cmd == "start":
-    deps(); start(); print("---"); status(); announce("We are live, chat. Everything is up and I am back on the colony.")
+    deps(); start(); print("---"); status()
+    if os.environ.get("NO_ANNOUNCE") != "1" and os.environ.get("GO_LIVE") == "1":
+        announce("We are live, chat. Everything is up and I am back on the colony.")
 elif cmd == "stop":
     announce("That is me for tonight. Thanks for sitting with me."); time.sleep(3); stop()
 elif cmd == "restart":

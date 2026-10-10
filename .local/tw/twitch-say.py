@@ -31,10 +31,17 @@ def clean(line):
     if LINKY.search(line): raise SystemExit("refused: no links in chat -- %r" % line[:60])
     return line
 
-def page_for(ctx, url_part, url):
-    pg = next((p for p in ctx.pages if url_part in p.url), None)
-    if pg is None:
-        pg = ctx.new_page(); pg.goto(url, wait_until="domcontentloaded"); time.sleep(6)
+def page_for(ctx, url_parts, url):
+    """Use a Twitch tab that is already open. Owner, 2026-10-10: "what ever keep opening new twich pages is
+    piossing me off use the open ones". A new tab is opened only if no matching one exists, and duplicates of
+    the same kind are closed so they never pile up."""
+    if isinstance(url_parts, str): url_parts = (url_parts,)
+    hits = [p for p in ctx.pages if any(u in p.url for u in url_parts)]
+    for extra in hits[1:]:
+        try: extra.close()
+        except Exception: pass
+    if hits: return hits[0]
+    pg = ctx.new_page(); pg.goto(url, wait_until="domcontentloaded"); time.sleep(6)
     return pg
 
 def main():
@@ -50,7 +57,7 @@ def main():
         if what in ("say", "reply"):
             text = clean(" ".join(sys.argv[2:]) if what == "say"
                          else "@%s %s" % (sys.argv[2], " ".join(sys.argv[3:])))
-            pg = page_for(ctx, "twitch.tv/popout/%s/chat" % CHANNEL,
+            pg = page_for(ctx, ("twitch.tv/popout/%s/chat" % CHANNEL, "twitch.tv/%s" % CHANNEL),
                           "https://www.twitch.tv/popout/%s/chat" % CHANNEL)
             box = pg.locator('[data-a-target="chat-input"]').first
             box.click(); box.type(text, delay=18); time.sleep(0.5)
