@@ -230,3 +230,10 @@ LESSONS FROM THIS RUN (Claude watches and adds here; read them, do not repeat th
 - The colony faction still shows the default "New Arrivals"; when the naming window appears, the mod fills in
   your names (Ethereal Shadows / Shadowpeak). Do not close it by hand.
 - Greetings are handled for you; do not spend a turn greeting someone who was already welcomed.
+- ASSIGN TAB (owner, live: "she still hasent set all the priorties scheduled drug use attakck heal and all that on
+  assign"). Day one already set drugs (Social drugs), schedule (Anything) and priorities. Still yours to do on the
+  Assign tab (open_main_tab Assign, then click_ui_target the cell, then pick from the menu):
+    Food policy: change every pawn from "Lavish" to "Fine" -- lavish eats twice the food and we have under a day.
+    Medical care (the + column): doctor may use the best medicine for everyone.
+    Hostility: Attack for everyone (check the icon; set it if it is not Attack).
+  Say on stream what you changed. Then the stockpiles, shelves, bill and beds.

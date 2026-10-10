@@ -177,6 +177,16 @@ def state_facts():
             what = next((v for k, v in JOB.items() if k in j), None)
             if what: facts.append("%s is %s" % (c["name"], what))
     except Exception: pass
+    # living in the moment (owner, live: "shes just repeating same things not living in the momnet"): what her
+    # player just did is the freshest true fact there is
+    try:
+        lines = open(os.path.join(ROOT, ".local", "qa", "_svc_autopilot.log"), encoding="utf-8", errors="replace").read().splitlines()[-40:]
+        for l in reversed(lines):
+            m = re.search(r"model step \d+ \([\d.]+s\): (.+)", l)
+            if m and len(m.group(1)) > 20:
+                facts.insert(0, "what I am doing right now in the game: " + m.group(1)[:200]); break
+    except Exception:
+        pass
     if not facts:
         import random as _r
         facts = [_r.choice(BETWEEN_RUNS)]      # no game is a fact too, and it is better than going quiet
@@ -243,13 +253,14 @@ while True:
         if time.time() - last_spoken() > SILENCE:
             facts = state_facts()
             if facts:
-                line = fresh(random.choice(facts))
+                now = [f for f in facts if f.startswith("what I am doing right now")]
+                line = fresh(now[0] if now and random.random() < 0.7 else random.choice(facts))
                 if not line:
                     # owner, live: "this stream keeps dying ... shes not talking regualrly". The voice model can be
                     # stuck behind the player model; silence never waits on it -- say a true line straight out.
                     try: hist = json.load(open(sb.HIST, encoding="utf-8"))
                     except Exception: hist = []
-                    pool = [f for f in facts + BETWEEN_RUNS if f not in hist[-12:]] or facts
+                    pool = [f for f in facts + BETWEEN_RUNS if f not in hist[-12:] and not f.startswith("what I am doing")] or BETWEEN_RUNS
                     pick = random.choice(pool)
                     line = pick[0].upper() + pick[1:] + ("." if not pick.endswith((".", "?", "!")) else "")
                     try: json.dump((hist + [pick])[-30:], open(sb.HIST, "w", encoding="utf-8"))
