@@ -361,8 +361,30 @@ def game():
         if not os.path.exists(cmd[0]): print("%-11s SKIPPED (not installed)" % name); return
         subprocess.Popen(cmd, cwd=cwd or ROOT, **DETACH); print("%-11s launched" % name)
 
+def obs_ws():
+    """OBS's own websocket (127.0.0.1:4455) -- scene switches and stream start without restarting OBS."""
+    try:
+        import obsws_python as obs
+        return obs.ReqClient(host="127.0.0.1", port=4455, timeout=4)
+    except Exception:
+        return None
+
 def golive():
-    """Relaunch OBS streaming. Called by keep-playing once the owner has said GO."""
+    """Go live. Called by keep-playing once the owner has said GO.
+
+    Owner, live: "twich shows network error that should never happen" -- closing OBS ends the broadcast and every
+    viewer sees a network error. If OBS is already up (a soft restart keeps it), switch back to Live and make
+    sure it is streaming; only a cold start launches it."""
+    c = obs_ws()
+    if c is not None:
+        try:
+            c.set_current_program_scene("Live")
+            if not c.get_stream_status().output_active:
+                c.start_stream()
+            print("obs         already up -- back on Live, streaming")
+            return
+        except Exception as e:
+            print("obs         websocket failed (%s) -- relaunching" % str(e)[:40])
     os.environ["GO_LIVE"] = "1"
     if WINDOWS:
         # asked to close (a forced kill makes OBS offer safe mode); wait until it is really gone
@@ -410,5 +432,24 @@ elif cmd == "start":
 elif cmd == "stop":
     announce("That is me for tonight. Thanks for sitting with me."); time.sleep(3); stop()
 elif cmd == "restart":
-    announce("One second, rebooting my own plumbing."); stop(); time.sleep(2); deps(); start(); print("---"); status()
+    # owner: the stream must never drop for a restart -- OBS stays live on the BRB scene, the rest restarts
+    c = obs_ws()
+    if c is not None:
+        try: c.set_current_program_scene("BRB"); print("obs         on BRB, still streaming")
+        except Exception: pass
+    announce("Be right back, chat. Quick reset, the stream stays up.")
+    keep = ("obs64", "twitch-profile")
+    names = [n for n in KILL_BY_NAME if n != "obs64"]
+    if WINDOWS:
+        subprocess.run(["powershell", "-NoProfile", "-Command",
+                        "Get-Process %s -ErrorAction SilentlyContinue | Stop-Process -Force" % ",".join("'%s'" % n for n in names)],
+                       capture_output=True, text=True)
+    found = running()
+    pids = sorted({pp for frag, lst in found.items() if not any(k in frag for k in keep) for pp in lst})
+    for pp in pids:
+        try:
+            subprocess.run(["taskkill", "/F", "/PID", str(pp)], capture_output=True, text=True) if WINDOWS else os.kill(pp, 15)
+        except Exception: pass
+    print("stopped", len(pids), "processes (OBS and the Twitch window kept)")
+    time.sleep(2); deps(); start(); print("---"); status()
 else: status()
