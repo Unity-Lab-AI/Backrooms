@@ -129,6 +129,12 @@ Owner, verbatim: *"your not walking through the door correctly u are doing it wr
 - [ ] **A frontier door in the solo/group opening coordinate walked the whole crew out to a random world tile with no way back in.** Found 2026-10-09: "Walk through" on (194,30) of the opening coordinate (a world exit: *"Nobody is standing at this door. Bring whoever is leaving to it first."*) put Gee, Scar and Unity on a new map (Map_3) away from the home tile's shell, the starting supplies and the registered way home. Owner, verbatim: *"ur fucked there is no way back in.... the map ur suppose to be in is unreachable"*. A world exit must say where it leads before anyone commits, and must not strand a start whose home is one door away.
 - [ ] **Haulers cannot carry across an open natural gate: "Cannot haul steel x1000: No empty, accessible spot configured to store it."** Found 2026-10-09 in the solo/group inside start, with the way home (AI-02 threshold hall door (270,150) -> surface shell) open and a stockpile in the shell on the surface map. The starting supplies on the Backrooms side see no storage at all, so moving them out is hand-carry runs. Owner, verbatim: *"you need to set stockpile and get everyone hueling stuff out without exahusting them"* / *"set control shift carry but becasre full sending them on 50 runs without a break"*. CONNECTED_COLONY_PORTALS says a hauler delivers to storage across an open portal; the haul work giver does not.
 
+### Owner direction, 2026-10-09 -- an open-source Unity that runs the whole show
+
+Owner, verbatim: *"remember bhind the scnes you need to be building this whole thing to run on the best model possible thats open souiurce that can basicly do everything you do that u fully set up from streaming to useing rimworld excactly all as i do with coding knowledge but doesnt and never shall edit the mod or fix code"*.
+
+- [~] **An autopilot on the best open-source model that does everything this session does: streaming (voice, overlay chat, webcam images, answering chat, the order of operations), playing RimWorld through the bridge exactly as the owner plays, the maintenance list, the playscript -- with coding knowledge, and with NO ability to edit the mod or fix code.** Its tools are the game bridge, the stream tools and read-only file access; no write path into `src/`, `Mod/` or `tools/`, enforced in the tool layer rather than by instruction. Built behind the scenes while the live run continues.
+
 ## TOMBSTONES
 
 _(none)_
