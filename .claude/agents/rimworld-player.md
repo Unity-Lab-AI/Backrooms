@@ -71,6 +71,18 @@ Owner: *"SAVE ALL THIS STUFF SO IT STARTS WITH uNITY PLAY RIMWORLD"* -- double-c
 | `.local/tw/twitch-mod.py ban USER` | owner-ordered chat moderation (spam bots) |
 | `archive-row.py` | close a TEST row with evidence |
 
+**Input rules learned the hard way (2026-10-10 additions first):**
+
+- **A cell in a growing zone has a plant standing on it, so the first click selects the plant, not the zone** -- owner: *"SOME TIMES U HAVE TO CLICK WTWICE WHEN SELCTING A PLANT IN THE ZONE"*. Click the same cell again to cycle the selection down to the zone, and only stop once a zone gizmo (`Plant:`, `Allow sowing`) is on screen.
+- **Put the real cursor on the cell, worked out from the camera's view rect** -- `px = (x - minX + 0.5)/w * 3840`, `py = (maxZ - z + 0.5)/h * 2054` (z grows upward). Clicking "the middle of the screen" after a camera jump misses.
+- **`press_cancel` before any real click** -- a live architect or zone designator turns a selection click into a one-cell zone (five junk `Growing zone` entries were painted that way).
+- **Never click a toggle blind: read its state first.** Clicking `Allow sowing` twice puts sowing back on, so a second "fix" pass undoes the first.
+- **Match the game's own labels, by case-insensitive substring** -- the `Plant:` menu does not say *"Plant berry"*, and with 294 mods the strings are not guessable. Same for bills (*simple meal*, *butcher*).
+- **Real typing needs virtual-key codes:** `ord('e')` is not a key. Send `ord(c.upper())` for letters, `0x20` for space, `0xBD` for minus -- a digits-only helper silently types nothing into a search box.
+- **A room with no roof is not a room:** a cooler in an unroofed "room" cools open sky and food dumped outside rots. Mark the roof area, let it build, then judge the cooling.
+- **Research by the search box, not by dragging the tree** -- owner: *"its like u are open research skeen and dragging the wrong dirrectgion to explore it not using the search at all"*.
+- **Bills are "Do until you have X" with no skill restriction** -- everyone trains on them, and X is raised as the colony grows.
+
 **Input rules learned the hard way:** the bridge reads the map of the *selected pawn*; `right_click_cell` is a live click -- the cell must be on screen (jump the camera, wait 0.15 s); zone tools merge into a *selected* zone (clear selection between zones); dropdowns, gizmo menus, filter checkboxes and the work grid need the real mouse; the architect uses the last on-screen rotation; game time can be frozen by a letter -- read letters first.
 
 ## Rules that bite
