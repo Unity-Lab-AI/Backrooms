@@ -226,6 +226,8 @@ class Toolbox:
 
     def _bridge(self, name, args):
         args = guards.check_bridge(name, args)
+        if name in ("rimworld/list_letters", "rimworld/open_letter", "rimworld/dismiss_letter"):
+            self._mark_letters_seen()
         # owner: "why did she unpause beforee seeting all the pawn settings" -- time stays stopped until she
         # has marked pawns_set and assign_set true on her ladder (ladder_set mark) after doing them.
         starts_time = (name == "rimworld/pause_game" and not args.get("pause", True)) or \
@@ -561,6 +563,22 @@ class Toolbox:
         bad = [r[-90:] for r in results if "-> ok" not in r]
         return "%s: %d/%d work types set (1s Firefighter..Cooking, rest as given, none blank)%s" % (
             pawn, ok, len(lines), ("; refused: " + " | ".join(bad[:3])) if bad else "")
+
+    def _mark_letters_seen(self):
+        """She has looked at the letters: the ones on screen now are handled for the ladder (gates.py)."""
+        try:
+            r = self.bridge.call("rimworld/list_letters", {})
+            r = r.get("result", r); r = r.get("structuredContent", r) if isinstance(r, dict) else {}
+            ids = [l.get("id") for l in r.get("letters", []) if l.get("id")]
+            p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scratch", "ladder.json")
+            try:
+                d = json.load(open(p, encoding="utf-8"))
+            except Exception:
+                d = {"marks": {}}
+            d["letters_seen"] = sorted(set(d.get("letters_seen", [])) | set(ids))
+            json.dump(d, open(p, "w", encoding="utf-8"), indent=1)
+        except Exception:
+            pass
 
     def t_game_set(self, cmd, **kw):
         """Owner, 2026-10-10: "fix that so it doesnt ever need the screen and MY DAMN MOUSE" / "build it into

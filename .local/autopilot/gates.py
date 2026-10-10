@@ -49,7 +49,13 @@ def state():
     ui = call("rimworld/get_ui_state")
     st["dialog_open"] = bool(ui.get("nonImmediateDialogWindowOpen") or ui.get("NonImmediateDialogWindowOpen"))
     letters = call("rimworld/list_letters").get("letters", [])
-    st["letters"] = len(letters)
+    # a letter counts once: after she has looked at the letters (listed, opened or dismissed), the ones present then
+    # are handled -- the company's standing notices never go away and kept the rung on top forever (live, 10-10)
+    try:
+        seen = set(json.load(open(LADDER, encoding="utf-8")).get("letters_seen", []))
+    except Exception:
+        seen = set()
+    st["letters"] = len([l for l in letters if l.get("id") not in seen])
     st["letter_labels"] = [l.get("label") for l in letters]
     st["alerts"] = [a.get("label") for a in call("rimworld/list_alerts").get("alerts", [])]
     crew = [c for c in call("rimworld/list_colonists").get("colonists", []) if c.get("factionIsPlayer")]
