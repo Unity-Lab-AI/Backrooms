@@ -237,3 +237,27 @@ LESSONS FROM THIS RUN (Claude watches and adds here; read them, do not repeat th
     Medical care (the + column): doctor may use the best medicine for everyone.
     Hostility: Attack for everyone (check the icon; set it if it is not Attack).
   Say on stream what you changed. Then the stockpiles, shelves, bill and beds.
+
+- OWNER in Twitch chat (game order, binding next turn): she is doing some massive thinking behind scens on a potato so inital start is slow
+
+- OWNER in Twitch chat (game order, binding next turn): she is doing some massive thinking behind scens on a potato so inital start is slow
+
+HOW TO DO THE SETUP -- exact calls (owner, live: "actual do the inital game and in game pawn sett up and stockpiles
+and know wtf to do with freezers"). One item per step, say it on stream, tick it in pad.md.
+- STOCKPILE: game_apply_architect_designator designatorId "architect-designator:zone:highlight-designator-zoneaddstockpile-resources"
+  x z width height = the open floor of a ROOFED room (inside the walls, not on walls or doors). Then
+  game_set cmd "stockpile_filter" x z (any cell of it) mode "food" (food store) or "nofood" (everything else),
+  priority "preferred" for food.
+- SHELVES: designatorId "architect-designator:furniture:build-shelf" (1 cell; or build-shelfsmall), against a wall
+  inside the storage room. Shelves sit INSIDE a stockpile and hold 3 stacks a cell.
+- FREEZER (food keeps): a fully walled, ROOFED small room with one door. Put a cooler IN the wall:
+  "architect-designator:temperature:build-cooler" (or the over-wall cooler "...build-cooler-over"), blue side
+  facing INTO the freezer, red side OUTSIDE (owner: "the ac units" were backwards once). Needs power and a
+  conduit. Then a food stockpile inside it. A cooler in an unroofed room cools nothing.
+- STOVE + BILL: stove "architect-designator:production:build-fueledstove" (or campfire under temperature); when it
+  stands, game_set cmd "add_bill" x z recipe "CookMealSimple" count 30.
+- BEDS: "architect-designator:furniture:build-bed" in a roofed room, one per colonist (check if beds exist first).
+- GROWING: "architect-designator:zone:highlight-designator-zoneadd-growing" on soil; game_set "set_zone_plant".
+- ROOF: "architect-designator:zone:highlight-designator-areabuildroofexpand" over any room missing a roof.
+- ASSIGN TAB (food Fine, medical best, Attack): game_open_main_tab Assign isn't offered -- use game_execute_gizmo
+  "main-tab:Assign", then click_ui_target the cell and pick from the menu.
