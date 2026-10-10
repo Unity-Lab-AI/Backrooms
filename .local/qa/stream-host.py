@@ -312,10 +312,22 @@ while True:
                 # another topic, never a canned line; up to four topics, then she tries again next pass.
                 order = (now[:1] if now else []) + random.sample(facts, len(facts))
                 line = None
+                # owner, live: "she need to enguague the viewer liek 200% more" -- two of every three lines talk TO
+                # chat about what is happening: a question, a vote on her next move, a call to lurkers -- and they go
+                # into Twitch chat too, so people can answer in text
+                engage = random.random() < 0.67
                 for topic in order[:4]:
-                    line = fresh(topic)
+                    line = fresh(("talk straight to chat about this and pull them in -- ask them a question, let them "
+                                  "vote on what you do next, or call out the lurkers to say hi: " + topic) if engage else topic)
                     if line: break
-                if line: speak(line)
+                if line:
+                    speak(line)
+                    if engage:
+                        try:
+                            subprocess.Popen([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "say", line],
+                                             creationflags=0x08000000 if os.name == "nt" else 0)
+                        except Exception:
+                            pass
                 else: print("no line this pass -- nothing the model wrote passed; trying again", flush=True)
     except Exception:
         s = buf = None                     # drop the dead socket; the next call reconnects
