@@ -260,14 +260,8 @@ while True:
                                capture_output=True, text=True, timeout=600,
                                creationflags=0x08000000 if os.name == "nt" else 0)
 
-        # the stream never sits silent: one line about what is actually happening, no invention
-        if time.time() - last_spoken() > QUIET_S:
-            crew = st.get("crew") or []
-            doing = next((c[1] for c in crew if c[1] and c[1] not in ("LayDown",)), None)
-            if doing:
-                say("Still grinding, chat. One of us is %s and my coffee went cold an hour ago." % doing.lower())
-            elif crew:
-                say("Quiet shift. Everyone is asleep, the camp is holding, and I am the only one still up.")
+        # silence is the host voice's job (stream-host.py); this loop no longer speaks filler lines
+
     except Exception as e:
         print(stamp(), "pass failed:", str(e)[:120], flush=True)
     time.sleep(20)
