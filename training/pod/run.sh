@@ -38,6 +38,8 @@ to_gguf() {   # $1 kind
 
 for k in voice player; do
   if ! have "train-$k"; then python $W/pod/train.py $k; done_ "train-$k"; fi
+  # the 35B base download is no longer needed once merged (frees ~70 GB before the gguf steps)
+  if [ "$k" = player ]; then rm -rf "${HF_HOME:-$HOME/.cache/huggingface}/hub/models--Qwen--Qwen3.6-35B-A3B"; fi
   to_gguf $k
   rm -rf $W/out/$k-merged          # free disk before the next stage
 done

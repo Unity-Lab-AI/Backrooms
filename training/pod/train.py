@@ -11,10 +11,10 @@ import json, os, sys, time
 KIND = sys.argv[1]
 W = "/workspace"
 CFG = {
-    "voice": dict(base="unsloth/Qwen3-8B", data="voice.jsonl", seq=2048, r=32, epochs=3, lr=1.5e-4, bs=8, ga=2,
+    "voice": dict(base="unsloth/Qwen3-8B", data="voice.jsonl", seq=3072, r=32, epochs=3, lr=1.5e-4, bs=8, ga=2,
                   targets=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]),
     # attention (full + linear) and the shared expert: every layer learns, the 256 routed experts stay as they are
-    "player": dict(base="Qwen/Qwen3.6-35B-A3B", data="player.jsonl", seq=12288, r=32, epochs=2, lr=1e-4, bs=1, ga=8,
+    "player": dict(base="Qwen/Qwen3.6-35B-A3B", data="player.jsonl", seq=20480, r=32, epochs=1, lr=1e-4, bs=1, ga=8,
                    targets=["q_proj", "k_proj", "v_proj", "o_proj", "in_proj_qkv", "in_proj_z", "out_proj",
                             "gate_proj", "up_proj", "down_proj"]),
 }[KIND]
@@ -23,8 +23,8 @@ t0 = time.time()
 from unsloth import FastLanguageModel                      # noqa: E402  (unsloth must import first)
 import torch                                                # noqa: E402
 from datasets import Dataset                                # noqa: E402
-from trl import SFTTrainer, SFTConfig                       # noqa: E402
-from unsloth.chat_templates import train_on_responses_only  # noqa: E402
+import re                                                   # noqa: E402
+from transformers import Trainer, TrainingArguments, DataCollatorForSeq2Seq  # noqa: E402
 
 model, tok = FastLanguageModel.from_pretrained(CFG["base"], max_seq_length=CFG["seq"], load_in_4bit=False,
                                                dtype=torch.bfloat16)
@@ -35,27 +35,40 @@ model = FastLanguageModel.get_peft_model(
 tok = getattr(tok, "tokenizer", tok)                        # a multimodal processor wraps the text tokenizer
 
 tools = json.load(open(os.path.join(W, "data", "tools.json"))) if KIND == "player" else None
-rows = []
+
+SPAN = re.compile(r"<\|im_start\|>assistant\n(.*?<\|im_end\|>)", re.S)
+rows, skipped = [], 0
 for line in open(os.path.join(W, "data", CFG["data"]), encoding="utf-8"):
     ex = json.loads(line)
     t = ex.get("tools")
     t = tools if (t is None or t == "TOOLS") else t
     kw = {"tools": t} if t else {}
-    text = tok.apply_chat_template(ex["messages"], tokenize=False, enable_thinking=False, **kw)
-    rows.append({"text": text})
+    msgs = [{k: v for k, v in m.items() if k != "weight"} for m in ex["messages"]]
+    text = tok.apply_chat_template(msgs, tokenize=False, enable_thinking=False, **kw)
+    # loss only on her turns; a turn marked weight 0 (a mistake the game refuses) is context, not a lesson
+    keep = [m.get("weight", 1) != 0 for m in ex["messages"] if m["role"] == "assistant"]
+    spans = [(m.start(1), m.end(1)) for m in SPAN.finditer(text)]
+    if len(spans) != len(keep):
+        keep = [True] * len(spans)
+    spans = [s for s, k in zip(spans, keep) if k]
+    enc = tok(text, return_offsets_mapping=True, truncation=True, max_length=CFG["seq"], add_special_tokens=False)
+    labels = [tid if any(a <= o[0] < b for a, b in spans) else -100
+              for tid, o in zip(enc["input_ids"], enc["offset_mapping"])]
+    if all(l == -100 for l in labels):
+        skipped += 1
+        continue
+    rows.append({"input_ids": enc["input_ids"], "attention_mask": enc["attention_mask"], "labels": labels})
 ds = Dataset.from_list(rows).shuffle(seed=7)
-print("examples", len(ds), "longest chars", max(len(r["text"]) for r in rows), flush=True)
+print("examples", len(ds), "skipped", skipped, "longest tokens", max(len(r["input_ids"]) for r in rows), flush=True)
 
-trainer = SFTTrainer(
-    model=model, tokenizer=tok, train_dataset=ds,
-    args=SFTConfig(dataset_text_field="text", max_seq_length=CFG["seq"], per_device_train_batch_size=CFG["bs"],
-                   gradient_accumulation_steps=CFG["ga"], num_train_epochs=CFG["epochs"], learning_rate=CFG["lr"],
-                   lr_scheduler_type="cosine", warmup_ratio=0.03, logging_steps=5, save_strategy="no",
-                   bf16=True, optim="adamw_8bit", weight_decay=0.0, seed=7, output_dir=os.path.join(W, "ckpt", KIND),
-                   report_to="none", packing=False))
-# loss on her turns only (Qwen chat markers)
-trainer = train_on_responses_only(trainer, instruction_part="<|im_start|>user\n",
-                                  response_part="<|im_start|>assistant\n")
+trainer = Trainer(
+    model=model, train_dataset=ds,
+    data_collator=DataCollatorForSeq2Seq(tok, padding=True, label_pad_token_id=-100),
+    args=TrainingArguments(per_device_train_batch_size=CFG["bs"], gradient_accumulation_steps=CFG["ga"],
+                           num_train_epochs=CFG["epochs"], learning_rate=CFG["lr"], lr_scheduler_type="cosine",
+                           warmup_ratio=0.03, logging_steps=5, save_strategy="no", bf16=True, optim="adamw_8bit",
+                           weight_decay=0.0, seed=7, output_dir=os.path.join(W, "ckpt", KIND), report_to="none",
+                           group_by_length=True, remove_unused_columns=False))
 trainer.train()
 print("trained in %.1f min" % ((time.time() - t0) / 60), flush=True)
 
