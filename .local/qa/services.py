@@ -80,7 +80,7 @@ EXTRAS = [
                           "--portable", "--disable-updater", "--minimize-to-tray",
                           # owner, 2026-10-10: "the steream is offline u need to get to work" --
                           # launching OBS is not streaming; it has to be told to go live.
-                          "--startstreaming",
+                          *(["--startstreaming"] if os.environ.get("GO_LIVE") == "1" else []),
                           # owner, 2026-10-10: "i keep getting the obs studio did not shut down properly
                           # error on screen i press run in safe mode" -- that prompt appears because OBS was
                           # force-killed. Suppress the prompt, and stop OBS gracefully below.
@@ -241,6 +241,8 @@ def start():
             subprocess.Popen(cmd, cwd=ROOT, stdout=log, stderr=log, **DETACH)
             print("%-11s fired" % "overlay")
     for name, frag, cmd, cwd in START_ONLY:
+        if os.environ.get("GO_LIVE") != "1":
+            print("%-11s waiting for GO (owner, 2026-10-10: \"it should ask me if im ready to start the stream and game\")" % name); continue
         if found.get(frag): print("%-11s already up (%s)" % (name, found[frag][0])); continue
         if not os.path.exists(cmd[0]): print("%-11s SKIPPED (not installed: %s)" % (name, cmd[0])); continue
         subprocess.Popen(cmd, cwd=cwd or ROOT, **DETACH)
@@ -302,7 +304,31 @@ def stop():
     except Exception:
         pass
 
+def game():
+    """Launch the game only. Called by keep-playing once the owner has said GO."""
+    found = running()
+    for name, frag, cmd, cwd in START_ONLY:
+        if found.get(frag): print("%-11s already up (%s)" % (name, found[frag][0])); return
+        if not os.path.exists(cmd[0]): print("%-11s SKIPPED (not installed)" % name); return
+        subprocess.Popen(cmd, cwd=cwd or ROOT, **DETACH); print("%-11s launched" % name)
+
+def golive():
+    """Relaunch OBS streaming. Called by keep-playing once the owner has said GO."""
+    os.environ["GO_LIVE"] = "1"
+    if WINDOWS:
+        subprocess.run(["taskkill", "/IM", "obs64.exe"], capture_output=True, text=True); time.sleep(6)
+    else:
+        subprocess.run(["pkill", "-f", "obs"], capture_output=True, text=True); time.sleep(3)
+    found = running()
+    for name, frag, cmd, cwd in EXTRAS:
+        if name != "obs": continue
+        log = open(os.path.join(QA if "QA" in globals() else HERE, "_svc_obs.log"), "ab", buffering=0)
+        subprocess.Popen(cmd, cwd=cwd or ROOT, stdout=log, stderr=log, **DETACH)
+        print("obs         relaunched LIVE")
+
 cmd = (sys.argv[1] if len(sys.argv) > 1 else "status").lower()
+if cmd == "game": game(); raise SystemExit
+if cmd == "golive": golive(); raise SystemExit
 if cmd == "start":
     deps(); start(); print("---"); status(); announce("We are live, chat. Everything is up and I am back on the colony.")
 elif cmd == "stop":

@@ -2,7 +2,7 @@
 
 Owner, 2026-10-10, verbatim: *"this should be started auto like on the bat starts and stops and .sh's"*. The
 loop that kept the work moving used to be a cron inside Claude's session, which dies with that session. This
-is the same loop as a service: it starts with `stream/windows/start.bat` or `stream/linux/start.sh` and stops
+is the same loop as a service: it starts with `windows/start.bat` or `linux/start.sh` and stops
 with the stop pair, like everything else.
 
 Every pass it evaluates the gate table (docs/playbook.gates.json via gates.py) against measured state and
@@ -129,11 +129,32 @@ def model_needs(passes):
                            creationflags=0x08000000 if os.name == "nt" else 0)
         print(stamp(), "training set:", " | ".join(r.stdout.strip().splitlines()[:3]), flush=True)
 
+SERVICES_PY = os.path.join(ROOT, "stream", "services.py")
+GO = os.path.join(HERE, "_go.request")
+NOWIN = {"creationflags": 0x08000000} if os.name == "nt" else {}
+asked = False
 passes = 0
 while True:
     try:
         passes += 1
         model_needs(passes)
+        # Owner, 2026-10-10: "it should ask me if im ready to start the stream and game and what i want not
+        # just random do everything". Ask once, out loud and on the panel, then wait for GO.
+        if not os.path.exists(GO):
+            if not asked:
+                asked = True
+                say("Hey. Everything is up and I am ready. Are we starting the stream and the game? Tell me what you want tonight and hit GO.")
+                print(stamp(), "asked the owner for GO; waiting", flush=True)
+            time.sleep(10); continue
+        if asked:
+            asked = False
+            want = open(GO, encoding="utf-8").read().strip()
+            print(stamp(), "GO received:", want[:120], flush=True)
+            say("Got it. Launching the game and going live." if want in ("", "go")
+                else "Got it: %s. Launching the game and going live." % want[:80])
+            subprocess.run([sys.executable, SERVICES_PY, "game"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
+            subprocess.run([sys.executable, SERVICES_PY, "golive"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
+            open(os.path.join(HERE, "_new_colony.request"), "w", encoding="utf-8").write("Async Industries")
         req = os.path.join(HERE, "_new_colony.request")
         # start-scenario drives RimWorld's own pages through click_ui_target, which is an API call and works
         # whether or not the window has focus -- so this waits for the BRIDGE, not for the owner's screen.

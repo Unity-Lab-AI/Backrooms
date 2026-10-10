@@ -25,7 +25,10 @@ bspec = importlib.util.spec_from_file_location("b", os.path.join(QA, "bridge.py"
 bridge = importlib.util.module_from_spec(bspec); bspec.loader.exec_module(bridge)
 
 def _session():
-    port, tok = bridge.endpoint()
+    try:
+        port, tok = bridge.endpoint()
+    except SystemExit as e:                      # "no live standalone bridge": a condition, not a reason to exit
+        raise RuntimeError(str(e))
     s = socket.create_connection(("127.0.0.1", port), timeout=120); buf = bytearray()
     bridge.exchange(s, buf, "session/hello", {"token": tok, "bridgeVersion": "gates/1",
                                               "platform": "windows", "launchId": str(uuid.uuid4())})
