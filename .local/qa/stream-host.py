@@ -321,13 +321,7 @@ while True:
                                   "vote on what you do next, or call out the lurkers to say hi: " + topic) if engage else topic)
                     if line: break
                 if line:
-                    speak(line)
-                    if engage:
-                        try:
-                            subprocess.Popen([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "say", line],
-                                             creationflags=0x08000000 if os.name == "nt" else 0)
-                        except Exception:
-                            pass
+                    speak(line)      # spoken only -- owner: "she is fucking posting everything in the twitch chast"
                 else: print("no line this pass -- nothing the model wrote passed; trying again", flush=True)
     except Exception:
         s = buf = None                     # drop the dead socket; the next call reconnects
