@@ -116,7 +116,7 @@ def model_needs(passes):
         urllib.request.urlopen("http://127.0.0.1:11434/api/version", timeout=6).read()
     except Exception:
         print(stamp(), "ollama is not answering -- bringing the stack back up", flush=True)
-        subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1"), capture_output=True, text=True, timeout=900,
+        subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1", NO_ADMIN_PAGE="1"), capture_output=True, text=True, timeout=900,
                        creationflags=0x08000000 if os.name == "nt" else 0)
         return
     # 2b. the model runs below normal priority: Windows shares every core, and this way the game, OBS and the voice
@@ -142,7 +142,7 @@ def model_needs(passes):
             if any(l.startswith("autopilot") and "DOWN" not in l for l in again.splitlines()):
                 break
             print(stamp(), "the player is down -- restarting it", flush=True)
-            subprocess.run([sys.executable, SERVICES, "start", "autopilot"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1"), capture_output=True, text=True, timeout=900,
+            subprocess.run([sys.executable, SERVICES, "start", "autopilot"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1", NO_ADMIN_PAGE="1"), capture_output=True, text=True, timeout=900,
                        creationflags=0x08000000 if os.name == "nt" else 0)
             break
     # 3b. the bridge guards (pop-ups, clock, heat, click queue, voice) exit when there is no game -- which is the
@@ -151,7 +151,7 @@ def model_needs(passes):
     dead = [l.split()[0] for l in out.splitlines() if l.split() and l.split()[0] in BRIDGE_SVCS and "DOWN" in l]
     if dead and _bridge_up():
         print(stamp(), "bridge is up and these died waiting for it:", ", ".join(dead), "-- bringing them back", flush=True)
-        subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1"), capture_output=True, text=True, timeout=900,
+        subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1", NO_ADMIN_PAGE="1"), capture_output=True, text=True, timeout=900,
                        creationflags=0x08000000 if os.name == "nt" else 0)
     # 4. the training set that teaches the next model, grown from what just happened
     if passes % 60 == 0 and os.path.exists(TRAIN):
