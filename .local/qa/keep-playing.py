@@ -8,7 +8,7 @@ with the stop pair, like everything else.
 Every pass it evaluates the gate table (docs/playbook.gates.json via gates.py) against measured state and
 acts on what it can do without a model in the loop:
 
-  * a gate fires that needs the cursor, and RimWorld is in front -> run the click queue once
+  * a gate fires that needs a mouse-down, RimWorld is open      -> run the click queue once (Unity's own mouse)
   * nothing has been said on stream for a while                 -> one short clean line about real state
   * days of food under one                                      -> make sure food work is designated
   * everything else                                             -> log which gate is live, so the log is the
@@ -49,6 +49,8 @@ QUIET_S = 30
 
 gspec = importlib.util.spec_from_file_location("gates", os.path.join(AP, "gates.py"))
 gates = importlib.util.module_from_spec(gspec); gspec.loader.exec_module(gates)
+aspec = importlib.util.spec_from_file_location("automate", os.path.join(HERE, "automate.py"))
+automate = importlib.util.module_from_spec(aspec); aspec.loader.exec_module(automate)
 
 u = ctypes.WinDLL("user32") if os.name == "nt" else None
 
@@ -71,6 +73,11 @@ def game_up():
     if not u: return False
     g = u.FindWindowW(None, "RimWorld by Ludeon Studios")
     return bool(g) and not u.IsIconic(g) and u.GetForegroundWindow() == g
+
+def game_open():
+    if not u: return False
+    g = u.FindWindowW(None, "RimWorld by Ludeon Studios")
+    return bool(g) and not u.IsIconic(g)
 
 def last_spoken():
     try:
@@ -168,19 +175,10 @@ def day_one(auto):
         gates_bridge_pause(True)
     except Exception as e:
         print(stamp(), "could not pause before day one:", e, flush=True)
-    outbox = os.path.join(auto, "outbox.jsonl")
-    before = os.path.getsize(outbox) if os.path.exists(outbox) else 0
-    with open(os.path.join(auto, "inbox.jsonl"), "a", encoding="utf-8") as f:
-        f.write(json.dumps({"cmd": "day_one"}) + "\n")
-    got = None
-    for _ in range(30):
-        time.sleep(2)
-        if os.path.exists(outbox) and os.path.getsize(outbox) > before:
-            with open(outbox, encoding="utf-8", errors="replace") as f:
-                f.seek(before); got = f.read().strip()
-            break
+    # the result is matched to this command by its id -- not to whatever line lands next in the outbox
+    got = automate.exchange([{"cmd": "day_one"}], wait_s=60)[0][1]
     print(stamp(), "day one:", (got or "no answer from the mod")[:400], flush=True)
-    if got and "-> ok" in got.replace("\\", ""):
+    if got and got.startswith("ok"):
         # owner, live: "she is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude
         # of things required beforoe the firest unpause". Day one never unpauses: the game holds until she has done
         # the whole first-unpause checklist and unpauses it herself.
@@ -197,6 +195,16 @@ SERVICES_PY = os.path.join(ROOT, "stream", "services.py")
 GO = os.path.join(HERE, "_go.request")
 RESUME = os.path.join(HERE, "_resume.request")
 NOWIN = {"creationflags": 0x08000000} if os.name == "nt" else {}
+# A GO is a request for this run. One left on disk for hours (a panel press while this loop was down, a crash
+# before it was consumed) would skip asking the owner and go live on a cold start; it is dropped instead.
+# Restart helpers write GO moments before the restart, well inside this window.
+GO_MAX_AGE_S = 3 * 3600
+try:
+    if os.path.exists(GO) and time.time() - os.path.getmtime(GO) > GO_MAX_AGE_S:
+        os.remove(GO)
+        print(stamp(), "dropped a stale GO from an earlier run -- asking the owner again", flush=True)
+except OSError:
+    pass
 asked = False
 went = False      # GO handled in this run (a GO armed before start must go live too, not only one answered after asking)
 passes = 0
@@ -295,11 +303,11 @@ while True:
             def pick(what, fallback):
                 try:
                     import urllib.request as _u
-                    body = {"model": "unity-local", "stream": False, "think": False, "keep_alive": "30m",
-                            "options": {"temperature": 1.0, "num_predict": 12, "num_ctx": 8192},
+                    body = {"model": os.environ.get("UNITY_VOICE_LLM", "unity-local"), "stream": False, "think": False, "keep_alive": "30m",
+                            "options": {"temperature": 1.0, "num_predict": 12, "num_ctx": int(os.environ.get("UNITY_VOICE_NUM_CTX", "8192"))},
                             "prompt": "You are Unity, a 25 year old emo goth streamer. Give " + what +
                                       ". Reply with the name only, one to three words, letters and spaces only, clean."}
-                    out = json.loads(_u.urlopen(_u.Request("http://127.0.0.1:11435/api/generate", json.dumps(body).encode(),
+                    out = json.loads(_u.urlopen(_u.Request(os.environ.get("UNITY_VOICE_URL", "http://127.0.0.1:11435") + "/api/generate", json.dumps(body).encode(),
                                      {"Content-Type": "application/json"}), timeout=60).read())["response"]
                     out = "".join(ch for ch in out.strip().split(chr(10))[0] if ch.isalpha() or ch == " ").strip()[:24]
                     return out if out and not _DIRTY.search(out) and not _TOUCHY.search(out) else None
@@ -381,11 +389,7 @@ while True:
         if not _explore_done and st.get("ticks_moving") and time.time() - _last_explore > 180:
             _last_explore = time.time()
             try:
-                auto = os.path.join(os.path.expandvars(r"%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Config"), "RimroomsAutomation")
-                with open(os.path.join(auto, "inbox.jsonl"), "a", encoding="utf-8") as f:
-                    f.write(json.dumps({"cmd": "explore"}) + chr(10))
-                time.sleep(3)
-                last = open(os.path.join(auto, "outbox.jsonl"), encoding="utf-8", errors="replace").read().splitlines()[-1]
+                last = automate.exchange([{"cmd": "explore"}], wait_s=20)[0][1] or "no answer from the mod"
                 print(stamp(), "auto-explore:", last[:220], flush=True)
                 # the ladder's explore rung clears only when nothing is left at all, sealed rooms included (v3 wording)
                 if "nothing left to explore" in last and "sealed" in last:
@@ -421,13 +425,14 @@ while True:
         # Owner, 2026-10-10: "lets get the local model starting a new coloy and everything as the company".
         # Starting a colony is pure UI -- the scenario page only answers a real window -- so the order is left
         # as a request file and fired the moment RimWorld is actually up, without waiting for anyone to notice.
-        # the jobs only a real cursor can do: run the queue once, but only while the window is actually in front
-        if top in CURSOR_GATES and game_up():
+        # the jobs only a mouse-down can do: run the queue once with Unity's own (posted) mouse -- the owner's
+        # cursor is never borrowed, so the window only has to be open, not in front
+        if top in CURSOR_GATES and game_open():
             lock = os.path.join(HERE, "_cursor_jobs.lock")
             if not os.path.exists(lock):
                 print(stamp(), "window is in front and", top, "needs the cursor -- running the click queue", flush=True)
                 subprocess.run([sys.executable, os.path.join(HERE, "cursor-jobs.py"), "--now"],
-                               cwd=ROOT, env=dict(os.environ, OWNER_LENT_MOUSE="1"),
+                               cwd=ROOT,
                                capture_output=True, text=True, timeout=600,
                                creationflags=0x08000000 if os.name == "nt" else 0)
 

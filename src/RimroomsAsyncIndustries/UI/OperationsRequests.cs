@@ -218,12 +218,12 @@ namespace RimroomsAsyncIndustries.UI
             listing.Gap(4f);
             if (record.Status == RequestStatus.Offered &&
                 listing.ButtonText("RR_Requests_Accept".Translate()))
-            { ShowResult(campaign.AcceptRequest(record.RequestDefName)); }
+            { ShowResult(campaign.AcceptRequest(record.Id)); }
 
             // Cancellation is a right the chart grants the player and denies the corporation, so
             // the button is always there while the request is open.
             if (listing.ButtonText("RR_Requests_Cancel".Translate()))
-            { ShowResult(campaign.CancelRequest(record.RequestDefName)); }
+            { ShowResult(campaign.CancelRequest(record.Id)); }
         }
 
         /// <summary>

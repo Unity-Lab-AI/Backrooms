@@ -204,11 +204,15 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
             if (workType == null) { return false; }
             BillStack stack = ((IBillGiver)giver).BillStack;
             if (stack == null) { return false; }
-            int count = stack.Count;
-            if (count > ConnectedBillScan.MaximumBillsPerGiver)
-            { count = ConnectedBillScan.MaximumBillsPerGiver; }
-            for (int index = 0; index < count; index++)
+            // A rotating window over the stack, so suspended or unworkable bills at the top
+            // cannot hide a workable one further down.
+            int windowStart = ConnectedWorkScan.WindowStart(stack.Count,
+                ConnectedBillScan.MaximumBillsPerGiver, pawn);
+            int examined = 0;
+            for (int index = windowStart; index < stack.Count; index++)
             {
+                if (examined >= ConnectedBillScan.MaximumBillsPerGiver) { break; }
+                examined++;
                 Bill bill = stack[index];
                 if (!ConnectedBillScan.OrdinaryProductionBill(bill, giver, map)) { continue; }
                 if (bill.recipe.requiredGiverWorkType != null &&

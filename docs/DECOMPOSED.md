@@ -1,5 +1,7 @@
 # DECOMPOSED — Decomposed Task List (Highly Broken-Down Tasks)
 
+> **This file is currently an empty template.** It holds no decomposed rows (checked 2026-10-10). Open work lives in [`TODO.md`](TODO.md) and launch-dependent rows in [`TEST.md`](TEST.md); older guides that point here for active slices (for example "steps 1–3 decomposed in `DECOMPOSED.md`" in `ROADMAP.md`) describe a state that has since been archived to [`FINALIZED.md`](FINALIZED.md).
+
 **Tier 3 of 4 — the DECOMPOSED task list.** The lowest-level execution-grain task list. Every minor task in `docs/TODO.md` decomposes into one or more decomposed tasks here when YOLO mode picks it up (or when Unity decomposes proactively).
 
 A decomposed task is the **smallest meaningful unit of work** — one file edit, one command, one verification step. If a decomposed task takes more than 15 minutes or touches more than one logical unit, it should be broken down further.

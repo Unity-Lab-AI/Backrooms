@@ -3,6 +3,7 @@ using RimroomsAsyncIndustries.Gate;
 using RimroomsAsyncIndustries.Threats;
 using RimWorld;
 using Verse;
+using Verse.AI;
 
 namespace RimroomsAsyncIndustries.Portals
 {
@@ -343,7 +344,8 @@ namespace RimroomsAsyncIndustries.Portals
             // an unfactioned wanderer is scenery rather than a threat.
             if (intruder.Faction == null || !intruder.Faction.HostileTo(Faction.OfPlayer))
             { return "RR_Incursion_NotEligible"; }
-            if (!gate.IsDesignated || gate.IsEmergency || string.IsNullOrEmpty(gate.PortalOpeningId))
+            if (!gate.IsDesignated || gate.IsEmergency || gate.KillSwitchThrown ||
+                string.IsNullOrEmpty(gate.PortalOpeningId))
             { return "RR_Incursion_NoOpening"; }
             if (gate.IncursionSpentThisOpening) { return "RR_Incursion_AlreadySpent"; }
             if (CoordinatePressureLadder.BandFor(coordinate, colonyWealth) < CoordinatePressureLadder.Band.Hostile)
@@ -452,6 +454,14 @@ namespace RimroomsAsyncIndustries.Portals
             if (!gate.IsDesignated || gate.IsEmergency || gate.KillSwitchThrown ||
                 string.IsNullOrEmpty(gate.PortalOpeningId))
             { return "RR_Egress_NoOpening"; }
+            // The door is still a door. Whatever Core and the access mods say about this pawn
+            // opening it applies here, and so does whether it can physically get to it.
+            if (gate.parent == null || !gate.parent.Spawned || gate.parent.Map != traveller.Map)
+            { return "RR_Egress_NotEligible"; }
+            Building_Door door = gate.parent as Building_Door;
+            if (door != null && !door.PawnCanOpen(traveller)) { return "RR_PortalTravel_DoorLocked"; }
+            if (!traveller.CanReach(gate.parent, PathEndMode.Touch, Danger.Deadly))
+            { return "RR_Egress_NotEligible"; }
             return FitFailureKey(traveller, gate.GateWidth, gate.GateOpeningDepth);
         }
     }

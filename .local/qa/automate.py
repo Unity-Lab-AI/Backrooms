@@ -14,7 +14,7 @@ DAMN MOUSE"* / *"build it into the mod if you have to"*. So it is built in:
 
 Results come back in the component's outbox, so nothing is reported as done on faith.
 """
-import json, os, sys, time
+import json, os, sys, time, uuid
 
 CONFIG = os.path.expandvars(r"%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Config")
 FOLDER = os.path.join(CONFIG, "RimroomsAutomation")
@@ -32,28 +32,60 @@ FAMINE = [("Gee", "Research", 4), ("Gee", "Cook", 1), ("Gee", "PlantCutting", 1)
           ("Scar", "PlantCutting", 1), ("Scar", "Cooking", 2), ("Scar", "Hauling", 2),
           ("Unity", "Hunting", 1), ("Unity", "PlantCutting", 1), ("Unity", "Hauling", 1)]
 
-def send(cmds):
+def map_arg(map_id):
+    """The bridge names maps 'Map_<n>'; the mod's optional "map" field takes the bare uniqueID n."""
+    m = str(map_id or "")
+    return m[4:] if m.startswith("Map_") else m
+
+
+def exchange(cmds, wait_s=40, map_id=None):
+    """Send commands and return [(command, result or None)] in order, each result matched to ITS command.
+
+    Every command carries its own "id"; the mod echoes it on the result line. A result line from an older build
+    without the id field still matches, because the mod echoes the command text (with the id inside) as well.
+    Nothing is taken from another caller's lines, from the inbox disappearing, or from a byte offset alone."""
     os.makedirs(FOLDER, exist_ok=True)
+    tag = uuid.uuid4().hex[:10]
+    sent = []
+    for i, c in enumerate(cmds):
+        c = dict(c)
+        m = c.pop("map", map_id)
+        # id and map go first, as quoted strings, so no bare value earlier on the line can swallow them
+        c = dict({"id": "%s-%d" % (tag, i)}, **({"map": map_arg(m)} if m not in (None, "") else {}), **c)
+        sent.append(c)
+    lines = {c["id"]: json.dumps(c) for c in sent}
+    echo = {i: l.replace('"', "'") + " -> " for i, l in lines.items()}
     before = os.path.getsize(OUTBOX) if os.path.exists(OUTBOX) else 0
     with open(INBOX, "a", encoding="utf-8") as f:
-        for c in cmds:
-            f.write(json.dumps(c) + "\n")
-    print("sent %d commands to %s" % (len(cmds), INBOX))
-    # the component eats the file within a second of game time; wait for the results it writes back
-    for _ in range(40):
+        for c in sent:
+            f.write(lines[c["id"]] + "\n")
+    got = {}
+    t0 = time.time()
+    while len(got) < len(sent) and time.time() - t0 < wait_s:
         time.sleep(1)
-        if not os.path.exists(INBOX):
-            break
-    else:
-        print("the command file is still there -- is the mod staged into the game's Mods folder, and is the game running?")
-        return
-    time.sleep(1)
-    if os.path.exists(OUTBOX):
+        if not os.path.exists(OUTBOX): continue
+        if os.path.getsize(OUTBOX) < before: before = 0           # the outbox was rotated: read it whole
         with open(OUTBOX, encoding="utf-8", errors="replace") as f:
-            f.seek(before)
-            for line in f:
-                try: print("  ", json.loads(line).get("result", line.strip())[:160])
-                except Exception: print("  ", line.strip()[:160])
+            f.seek(before); rows = f.read().splitlines()
+        for row in rows:
+            try: d = json.loads(row)
+            except Exception: continue
+            res = str(d.get("result", ""))
+            rid = d.get("id")
+            if rid in echo:
+                got[rid] = res[len(echo[rid]):] if res.startswith(echo[rid]) else res.split(" -> ", 1)[-1]
+            elif rid is None:
+                rid = next((i for i, e in echo.items() if res.startswith(e)), None)
+                if rid: got[rid] = res[len(echo[rid]):]
+    return [(c, got.get(c["id"])) for c in sent]
+
+
+def send(cmds, map_id=None):
+    print("sending %d commands to %s" % (len(cmds), INBOX))
+    out = exchange(cmds, map_id=map_id)
+    for c, r in out:
+        print("  ", "%s -> %s" % (c.get("cmd"), r if r is not None else "NO RESULT (is the mod staged and the game running?)")[:160])
+    return out
 
 def build(which):
     out = []

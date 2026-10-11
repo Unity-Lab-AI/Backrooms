@@ -282,10 +282,14 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
         {
             if (definition == null || map.designationManager == null || map.terrainGrid == null)
             { return false; }
+            int windowStart = work == null ? 0
+                : FieldworkScan.DesignationWindowStart(map, definition, pawn);
+            int position = 0;
             int examined = 0;
             foreach (Designation designation in
                 map.designationManager.SpawnedDesignationsOfDef(definition))
             {
+                if (position++ < windowStart) { continue; }
                 if (work != null && examined >= FieldworkScan.MaximumCandidates) { break; }
                 examined++;
                 IntVec3 cell = designation.target.Cell;
@@ -304,10 +308,14 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
             RimroomsConnectedWorkComponent work, DesignationDef definition, ThingRule rule)
         {
             if (definition == null || map.designationManager == null) { return false; }
+            int windowStart = work == null ? 0
+                : FieldworkScan.DesignationWindowStart(map, definition, pawn);
+            int position = 0;
             int examined = 0;
             foreach (Designation designation in
                 map.designationManager.SpawnedDesignationsOfDef(definition))
             {
+                if (position++ < windowStart) { continue; }
                 if (work != null && examined >= FieldworkScan.MaximumCandidates) { break; }
                 examined++;
                 Thing target = designation.target.Thing;

@@ -11,6 +11,16 @@ namespace RimroomsAsyncIndustries.Scenario
         public bool setupStarted;
         public bool setupComplete;
         public bool branchInitialized;
+
+        /// <summary>
+        /// Whether the start's opening (the inside start or the natural gate) finished. Separate
+        /// from <see cref="branchInitialized"/> so a failed opening can be retried. Read as true
+        /// on saves that predate it, which only ever saved after a finished start.
+        /// </summary>
+        public bool openingComplete;
+
+        /// <summary>The coordinate a first opening attempt created, reused by a retry.</summary>
+        public string openingCoordinateId;
         public string failure;
         public List<Pawn> staff = new List<Pawn>();
         public List<string> staffRoles = new List<string>();
@@ -83,6 +93,8 @@ namespace RimroomsAsyncIndustries.Scenario
             Scribe_Values.Look(ref setupStarted, "rr_setupStarted");
             Scribe_Values.Look(ref setupComplete, "rr_setupComplete");
             Scribe_Values.Look(ref branchInitialized, "rr_branchInitialized");
+            Scribe_Values.Look(ref openingComplete, "rr_openingComplete", true);
+            Scribe_Values.Look(ref openingCoordinateId, "rr_openingCoordinateId");
             Scribe_Values.Look(ref failure, "rr_setupFailure");
             Scribe_Collections.Look(ref staff, "rr_startStaff", LookMode.Reference);
             Scribe_Collections.Look(ref staffRoles, "rr_startRoles", LookMode.Value);

@@ -1,5 +1,7 @@
 ﻿# Content reuse and original-content policy
 
+> Current owner decisions across the project: [DECISIONS_CURRENT.md](DECISIONS_CURRENT.md).
+
 ## ⛔ SUPERSEDED IN PART, 2026-10-06. READ THIS BEFORE THE RULES BELOW ⛔
 
 **Binding owner direction, 2026-10-06, verbatim:** *"are we making our own items and benches and gates? becasue if so i fucking love it!"*, and, asked which way to take it, the owner chose **full reversal — our own items and benches** over sound-only, over gate-identity-only, and over leaving the 0.2.0 content archived. With it: *"remember things rotate"*.
@@ -39,11 +41,11 @@
 
 Every repurposed role needs a saved binding: functional role, actual provider package ID, existing Def name, reviewed version/source, prerequisite, a fallback built from Core content alone, player assignment/action, save ownership and failure recovery. Use the 294-row register and the exact per-mod review before depending on that mod's behavior. Modded objects should contribute useful function where supported; there is no requirement to replace them with Rimrooms equivalents.
 
-**The collection is mandatory now, and the fallbacks still have to exist.** Those sound contradictory and are not, because the owner chose both halves on 2026-10-01: declare every member of the collection in `About.xml` so a mod manager names anything missing, *and* keep looking content up by name so a player who ignored that warning degrades instead of crashing. The declaration is the promise; the fallback is what happens when the promise is broken anyway.
+**Superseded on 2026-10-03 by the owner's no-hard-dependency decision** ([D3/D4 rows](GATE_0_DECISIONS.md#decision-log)): the package declares no `modDependencies`; the fallbacks below are now the supported path, not only the broken-promise path. Kept as history: **The collection is mandatory now, and the fallbacks still have to exist.** Those sound contradictory and are not, because the owner chose both halves on 2026-10-01: declare every member of the collection in `About.xml` so a mod manager names anything missing, *and* keep looking content up by name so a player who ignored that warning degrades instead of crashing. The declaration is the promise; the fallback is what happens when the promise is broken anyway.
 
 So the rule that used to read *"retain a working Core route to campaign progression"* is retained — not as a supported way to play, but as the behaviour when a declared provider is absent at runtime. If Core has no literal version of a specialist object, use a clearly explained Core mechanism that delivers the same gameplay function, and never pretend a fallback has a capability it lacks.
 
-**What is retired is the old sentence's closing instruction, *"do not silently make all 294 mods mandatory."*** Nothing is silent about it: every requirement carries a display name and a way to obtain it, which is the opposite of the failure that line was written to prevent.
+*(Superseded on 2026-10-03 with the paragraph above: nothing is mandatory, so the retired instruction is moot rather than overruled.)* **What is retired is the old sentence's closing instruction, *"do not silently make all 294 mods mandatory."*** Nothing is silent about it: every requirement carries a display name and a way to obtain it, which is the opposite of the failure that line was written to prevent.
 
 Mappings are opt-in to the company's designated facilities and marked objects. Do not globally rename/rebalance every native workbench, turn ordinary component stacks into evidence, or change an unrelated colony by installing Rimrooms. Distinct object identity, split/merge behavior, loss, sale, recovery and save migration need explicit handling.
 
@@ -69,6 +71,6 @@ The two existing original menu candidates are available for this use. Record the
 
 ## Documentation and completion rule
 
-In older design inventories, names such as field recorder, survey tag, evidence case, gate console and laboratory describe gameplay roles. They no longer authorize a new physical Def/asset. Older original-asset tasks are superseded by provider selection, runtime binding, procedural arrangement, integration and reference cleanup. Source records about another mod's own content remain valid source evidence; do not rewrite their facts.
+In older design inventories, names such as field recorder, survey tag, evidence case, gate console and laboratory describe gameplay roles. They no longer authorize a new physical Def/asset. *(Superseded in part on 2026-10-06: a new Def with our own original art is permitted where the role warrants it, under the three conditions at the top of this file.)* *(Superseded on 2026-10-06 for original assets of our own.)* Older original-asset tasks are superseded by provider selection, runtime binding, procedural arrangement, integration and reference cleanup. Source records about another mod's own content remain valid source evidence; do not rewrite their facts.
 
 A reuse task is implemented only when its existing provider object is reachable through the actual player flow and the Rimrooms state/logic uses it. A source mapping alone is preparation. Compilation is build evidence; later owner-launched checks still establish behavior, saves, performance, visual readability and compatibility. Never reduce the full-mod goal to a mapping document or the current first slice.

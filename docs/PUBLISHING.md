@@ -2,7 +2,15 @@
 
 This is the procedure that works. It was written after doing it, not before. Follow it literally; every deviation the previous agents made (assuming an `origin` remote, lowercase branch names, creating local tracking branches and then a "receipt" file, trying to use the browser session for Git transport, using the other host's CLI against Forgejo) is a way it has failed before.
 
-> ## ⛔ PUBLICATION IS FOUR REPOSITORIES NOW, NOT TWO ⛔
+> ## SUPERSEDED IN PART ON 2026-10-10 — READ BEFORE ANY STEP BELOW
+>
+> **Branches:** the GitHub default branch is lowercase **`main`**. The stale capitalised `Main` was archived as **`archive/Main-do-not-use`** and `Develop` as **`archive/Develop-do-not-use`** on 2026-10-10 (owner: *"make it one only maybe archive the other with do not use"*). The cascade is `feature/*` → `develop` → `main` through pull requests. Every `Prep` / `Develop` / `Main` instruction below is superseded on 2026-10-10 by that standard and is kept as history; **never recreate a capitalised twin.**
+>
+> **Repositories:** there is no separate mod-only repository now (recorded 2026-10-10 in [`NOW.md`](NOW.md)); the four-repository / twelve-ref sections below are superseded and kept as history.
+>
+> **Still in force:** the Forgejo hold (2026-10-06) until the owner lifts it; no force-push; read back the refs actually pushed. **This file authorises no push.** Before any publication, inspect the actual remote refs and the latest direction in [`DECISIONS_CURRENT.md`](DECISIONS_CURRENT.md).
+
+> ## ⛔ PUBLICATION IS FOUR REPOSITORIES NOW, NOT TWO ⛔ *(superseded on 2026-10-10: no separate mod repository)*
 >
 > **Owner direction, 2026-10-05, verbatim:** *"and remember staging now includeds pushes to the mod only repo"*.
 >
@@ -75,13 +83,13 @@ So the cascade is **six refs** while the hold stands:
 | Host CLI | None. Do not point `gh` at it. Verify with `git ls-remote`. | `gh` works for visibility checks (`gh repo view Unity-Lab-AI/Backrooms --json visibility,owner`) and nothing else in this procedure. |
 | Push-to-create | **Disabled server-side.** The repo must already exist. It does. | n/a |
 | Visibility | Lab-owned host on the `.claude/` IP-boundary allowlist | **PUBLIC on purpose**, owner `Unity-Lab-AI`. The line here read `PRIVATE` until 0.12.79-dev and was wrong: the owner made it public deliberately — *"i made it public on purpose becasue thats how its suppose to be"* — and the exception is declared by exact URL in `.claude/project-config.json` under `claude_ip_boundary`. A new remote never inherits that approval |
-| Branches | `feature/bug-testing` (**the working branch since 2026-09-30**), `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` — **capitalised** | identical set, identical casing |
+| Branches | *Superseded on 2026-10-10:* lowercase `main`, `develop`, `feature/*`, plus `archive/*`. Historical: `feature/bug-testing` (**the working branch since 2026-09-30**), `feature/connected-colony-portals`, `Prep`, `Develop`, `Main` — **capitalised** | *Superseded on 2026-10-10:* default branch `main`; `Main`/`Develop` archived as `archive/Main-do-not-use` / `archive/Develop-do-not-use` |
 | Remote named `origin` | **does not exist** | **does not exist** |
 
 Consequences:
 
 - `git push` with no arguments fails. **Always name the remote and the branch.**
-- `.claude/project-config.json` names `main`/`develop`; those branches do not exist anywhere. The real integration branches are `Prep`, `Develop`, `Main`. Do not create lowercase twins.
+- *Superseded on 2026-10-10:* `main`/`develop` are now the real integration branches on GitHub, matching `.claude/project-config.json`; do not recreate capitalised twins. Historical: `.claude/project-config.json` names `main`/`develop`; those branches do not exist anywhere. The real integration branches are `Prep`, `Develop`, `Main`. Do not create lowercase twins.
 - `Prep`, `Develop`, `Main` normally have **no local branch**. You do not need one. Push by refspec from the feature branch (below). Only create a local branch when a merge is genuinely required (§4).
 - The `.claude/` IP-boundary hook fires on every `git add` / `commit` / `push` that touches `.claude/`. It passes the Forgejo remote by hostname and checks the GitHub remote through `gh`. If `gh` is logged out, the push is blocked until `gh auth login`.
 
@@ -113,6 +121,8 @@ git push github  feature/connected-colony-portals
 Read the output. `ssh: connect` / `Permission denied (publickey)` on Forgejo means the SSH key is not loaded or not registered; fix that, do not switch transports. `remote: Repository not found` on GitHub means `gh` is logged into the wrong account.
 
 ## 4. Cascade `feature → Prep → Develop → Main` on BOTH remotes, fast-forward only
+
+*Superseded on 2026-10-10 by the lowercase `feature/*` → `develop` → `main` pull-request cascade; Forgejo held. Kept as history.*
 
 First look at where the integration branches are:
 
@@ -173,6 +183,8 @@ All eight lines must show the same commit hash as local `HEAD` (Case A) or the e
 - `docs/NOW.md` Active section is reset to _(none)_ before the commit if the milestone closed the task.
 
 ## 7. One-screen version
+
+*Superseded on 2026-10-10: the loop below pushes capitalised branches and a mod-only repository that are no longer the standard. Do not run it as written. Kept as history.*
 
 **Two things were wrong with the version that used to be here**, and both are the kind that pass silently: the loop pushed three integration branches and not `feature/connected-colony-portals`, so it produced an eight-ref publish — the exact defect §5 warns about in its own words — and it said nothing about the mod-only repository, so running it published this repository and left the wiki and the downloadable mod behind.
 

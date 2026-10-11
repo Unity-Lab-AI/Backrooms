@@ -134,6 +134,10 @@ namespace RimroomsAsyncIndustries.Economy
             if (respawningAfterLoad || origin != ThingOrigin.Unknown) { return; }
             Map map = parent == null ? null : parent.Map;
             if (map == null) { return; }
+            // A coordinate still being generated is neither: its contents are left unstamped
+            // here and stamped by the generation pass when it finishes, which is the one place
+            // a coordinate's own furnishings and stock earn their mark.
+            if (OddOriginService.IsGeneratingBackroomsMap(map)) { return; }
             StampOrigin(OddOriginService.IsBackroomsMap(map)
                 ? ThingOrigin.Backrooms : ThingOrigin.Outside);
         }
@@ -167,15 +171,17 @@ namespace RimroomsAsyncIndustries.Economy
         }
 
         /// <summary>
-        /// Carries the mark onto a piece split off this stack. Core calls this after the split,
-        /// so the piece already exists and simply needs telling.
+        /// Carries the origin onto a piece split off this stack. Core calls this after the split
+        /// and before the piece is placed, so the piece already exists and simply needs telling.
+        /// Both directions: an ordinary piece split off on a coordinate must stay ordinary
+        /// rather than be stamped by where it is next put down.
         /// </summary>
         public override void PostSplitOff(Thing piece)
         {
             base.PostSplitOff(piece);
-            if (!IsOdd) { return; }
+            if (origin == ThingOrigin.Unknown) { return; }
             CompRimroomsOddOrigin split = piece == null ? null : piece.TryGetComp<CompRimroomsOddOrigin>();
-            if (split != null) { split.MarkOdd(); }
+            if (split != null) { split.StampOrigin(origin); }
         }
 
         /// <summary>

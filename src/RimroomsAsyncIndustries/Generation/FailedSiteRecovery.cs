@@ -100,6 +100,8 @@ namespace RimroomsAsyncIndustries.Company
             replacement.rooms = fallbackRooms;
             failed.status = CoordinateStatus.Unavailable;
             coordinates.Add(replacement);
+            InvalidateCoordinateIndex();
+            NoteCoordinateDiscovered(replacement);
             contract.coordinateId = replacement.id;
             caseRecord.coordinateId = replacement.id;
             RecordEvent("RR_Event_SiteReaddressed", receipt, failed.id, replacement.id);

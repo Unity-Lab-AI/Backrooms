@@ -197,7 +197,7 @@ python tools/check-queue-pointers.py                     # and this, which neith
 
 **A launch. The buildable queue is empty.**
 
-The 53 `[T]` rows live in **[`TEST.md`](TEST.md)** now and all need the game running — **the owner alone launches, sorts and publishes.**
+The 53 `[T]` rows live in **[`TEST.md`](../../../TEST.md)** now and all need the game running — **the owner alone launches, sorts and publishes.**
 
 **AND ONE THING IS NOT DONE, SAID PLAINLY BECAUSE THE OWNER ASKED WHETHER EVERYTHING WAS.** The master TODO, `PREPRODUCTION_AND_IMPLEMENTATION_TODO.md`, carries **66 unticked rows** — and they are not all runtime acceptance. Some are real open scope: applicant and talent pools, company roles and schedules and certifications, cafeteria and recreation and shift rotation, outpost and town-distortion starts, structured log categories, stable cross-save references. Others look built-but-unticked, and **nobody has reconciled which is which**. That reconciliation is itself a named open item in `ROADMAP.md` and it is the honest next piece of buildable work after a launch.
 

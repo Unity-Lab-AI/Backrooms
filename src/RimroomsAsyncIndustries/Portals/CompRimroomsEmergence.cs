@@ -235,102 +235,12 @@ namespace RimroomsAsyncIndustries.Portals
             }
         }
 
-        /// <summary>
-        /// **The Stargate mod's own gate, on both ends of this route, dialled by us.**
-        ///
-        /// Owner: *"we use the fucjkign stargate MOD but use a normal door"*, *"and connect them
-        /// together to the backrooms and the map"*, *"we just use our own dialing converstion in
-        /// the background"*, *"we still use the stargate mod as normal but we also use it for our
-        /// backrroms purposes"*.
-        ///
-        /// Three steps, and none of them touches their mod:
-        ///
-        /// 1. **both ends get their component.** The far anchor stands inside a coordinate, which
-        ///    is not an ordinary branch map, so it can never mark itself — the near side knows the
-        ///    edge, so it attaches both. Core's transporter goes on with it, and that is what
-        ///    makes colonists **haul the chosen materials to the door on their own**.
-        /// 2. **we dial.** Their address space is a `PlanetTile`, and this company already knows
-        ///    which door leads to which coordinate, so the conversion is reading the destination
-        ///    map's own address. No DHD, no player input.
-        /// 3. **it stays open**, because a natural gate is permanently open — invariant 12. Their
-        ///    wormhole times out on its own, so re-dialling an idle gate is what keeps the route
-        ///    a route rather than an appointment.
-        ///
-        /// Silent and harmless when the Stargate mod is absent: every call answers false and the
-        /// Backrooms behave exactly as they did before.
-        /// </summary>
-        private void RefreshStargate()
-        {
-            if (!StargateBridge.Available || parent == null || !parent.Spawned) { return; }
-            PortalConnectionRecord edge = EdgeFor();
-            if (edge == null || !IsLiveGate) { return; }
-
-            ThingWithComps near = parent;
-            ThingWithComps far = FarAnchor(edge);
-            // NATURAL on both ends: this is a way out that was always there, not a machine
-            // a player dialled, so neither end carries an unstable vortex.
-            StargateBridge.Attach(near, true);
-            if (far == null)
-            {
-                // **The likeliest silent stop, and it used to say nothing.** A destination below
-                // `DoorThresholdContentVersion` keeps a historical anchor that is not a door, so
-                // `as ThingWithComps` yields null and the route has no far end to put a gate on.
-                ReportGateState("the far end of this route is not a door, so no gate can be "
-                                + "attached there");
-                return;
-            }
-            if (far.Map == null)
-            {
-                ReportGateState("the far end is not on a loaded map");
-                return;
-            }
-            StargateBridge.Attach(far, true);
-
-            // Dialled only from this side, and only when nothing is already open. Their gate is
-            // one-way by design, so dialling a receiving end would fight their own rule rather
-            // than use it.
-            if (StargateBridge.IsOpen(near)) { return; }
-            if (StargateBridge.IsReceiving(near)) { ReportGateState("it is the receiving end"); return; }
-            if (StargateBridge.IsHibernating(near))
-            { ReportGateState("their mod has it hibernating, which means another stargate is on this map"); return; }
-            if (StargateBridge.On(near) == null)
-            { ReportGateState("their component did not attach to this door"); return; }
-            if (!StargateBridge.Dial(near, far.Map, 0))
-            { ReportGateState("the dial was refused"); }
-        }
-
-        /// <summary>Whether this gate has already explained itself once.</summary>
-        private bool reportedGateState;
-
-        /// <summary>
-        /// Say, once, why a live natural gate is not showing a wormhole.
-        ///
-        /// **Every refusal in this path used to be silent**, which is correct for a colony
-        /// without the Stargate mod and useless the moment something does not work. The owner's
-        /// report -- *"i do not see the portal fx from stargate"* -- came with a log containing
-        /// nothing at all, because this code was written to say nothing at all.
-        ///
-        /// `Log.Message`, not `Log.Error`: a gate that cannot dial is information, not a fault.
-        /// Once per door, because this runs on a tick.
-        /// </summary>
-        private void ReportGateState(string reason)
-        {
-            if (reportedGateState) { return; }
-            reportedGateState = true;
-            Log.Message("[Rimrooms][Stargate] " + parent.LabelShortCap + " at "
-                        + parent.Position + " is a live gate but is not showing a wormhole: "
-                        + reason + ".");
-        }
-
-        /// <summary>The door at the other end of this route, as a thing that can carry comps.</summary>
-        private ThingWithComps FarAnchor(PortalConnectionRecord edge)
-        {
-            if (edge == null) { return null; }
-            Thing first = edge.First == null ? null : edge.First.Anchor;
-            Thing second = edge.Second == null ? null : edge.Second.Anchor;
-            Thing other = first == parent ? second : first;
-            return other as ThingWithComps;
-        }
+        // **NO STARGATE-MOD COMPONENT IS EVER PUT ON THIS DOOR.** Their gate logic only knows its
+        // own `Building_Stargate`: it picks its own destination gate, starts no wormhole on a zero
+        // countdown, runs its own float-menu and loading transit outside this company's receipts,
+        // and a component added per instance is not rebuilt when a save loads. So a natural gate
+        // stays an ordinary door with the blue glow, and every crossing goes through
+        // `PortalTravelService.OrderCrossing`. Their mod keeps working on their own gates.
 
         /// <summary>How often a gate is asked whether it should look like one.</summary>
         private const int AppearanceInterval = 250;
@@ -360,9 +270,6 @@ namespace RimroomsAsyncIndustries.Portals
             if (parent.IsHashIntervalTick(AppearanceInterval, delta))
             {
                 RefreshGateAppearance();
-                // Same tick, same question. If the appearance and the wormhole were refreshed from
-                // different places they could disagree about whether this is a gate.
-                RefreshStargate();
                 return;
             }
             // **The aura's own cadence, and it asks the network nothing.** It reads the cached
@@ -383,7 +290,6 @@ namespace RimroomsAsyncIndustries.Portals
         {
             base.CompTickRare();
             RefreshGateAppearance();
-            RefreshStargate();
         }
 
         /// <summary>

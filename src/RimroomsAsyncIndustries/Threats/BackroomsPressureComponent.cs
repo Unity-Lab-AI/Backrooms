@@ -44,7 +44,15 @@ namespace RimroomsAsyncIndustries.Threats
             base.ExposeData();
             Scribe_Collections.Look(ref pawns, "rr_pressurePawns", LookMode.Reference);
             Scribe_Collections.Look(ref pressure, "rr_pressureTicks", LookMode.Value);
+            Scribe_Collections.Look(ref occupiedCoordinates, "rr_pressureOccupiedCoordinates", LookMode.Value);
             if (Scribe.mode != LoadSaveMode.PostLoadInit) { return; }
+            // A save from before this was recorded has no answer; whoever is already inside on
+            // the first sweep is treated as having arrived before the save, not as a new arrival.
+            if (occupiedCoordinates == null)
+            {
+                occupiedCoordinates = new List<string>();
+                occupancyUnknownAfterLoad = true;
+            }
             pawns = pawns ?? new List<Pawn>();
             pressure = pressure ?? new List<int>();
             // A dropped reference leaves a hole. Rebuild rather than trusting the pairing,
@@ -100,6 +108,11 @@ namespace RimroomsAsyncIndustries.Threats
                 }
                 NoteCoordinateHistory(map, occupantsHere);
             }
+            // A coordinate whose map has gone is no longer occupied; forgetting it means a later
+            // map for the same coordinate starts empty and its arrival is recorded.
+            occupiedCoordinates.RemoveAll(id => !sweptCoordinates.Contains(id));
+            sweptCoordinates.Clear();
+            occupancyUnknownAfterLoad = false;
 
             for (int index = pawns.Count - 1; index >= 0; index--)
             {
@@ -139,9 +152,17 @@ namespace RimroomsAsyncIndustries.Threats
             }
             if (coordinate == null) { return; }
 
-            bool wasOccupied;
-            occupiedLastSweep.TryGetValue(map, out wasOccupied);
+            sweptCoordinates.Add(coordinate.Id);
             bool isOccupied = occupants > 0;
+            bool wasOccupied;
+            if (!occupiedLastSweep.TryGetValue(map, out wasOccupied))
+            {
+                // First sweep of this map since load: resume from the saved state, so occupants
+                // who were already inside do not replay their arrival.
+                wasOccupied = occupancyUnknownAfterLoad
+                    ? isOccupied
+                    : occupiedCoordinates.Contains(coordinate.Id);
+            }
             if (isOccupied && !wasOccupied)
             {
                 coordinate.NoteOpened();
@@ -166,6 +187,9 @@ namespace RimroomsAsyncIndustries.Threats
             NoteLosses(map, coordinate);
             if (isOccupied) { coordinate.NoteOccupancy(Interval); }
             occupiedLastSweep[map] = isOccupied;
+            if (isOccupied)
+            { if (!occupiedCoordinates.Contains(coordinate.Id)) { occupiedCoordinates.Add(coordinate.Id); } }
+            else { occupiedCoordinates.Remove(coordinate.Id); }
         }
 
         private static RimroomsCampaignComponent campaignForHistory
@@ -205,11 +229,20 @@ namespace RimroomsAsyncIndustries.Threats
         }
 
         /// <summary>
-        /// Whether each Backrooms map had anybody in it on the previous sweep. Not saved: a
-        /// reload starting from "empty" costs at most one extra recorded visit the first time
-        /// somebody walks in, and saving it would be more state for no gain.
+        /// Whether each Backrooms map had anybody in it on the previous sweep. Runtime only; the
+        /// saved form is <see cref="occupiedCoordinates"/>, read on the first sweep after a load,
+        /// because treating existing occupants as fresh arrivals would replay arrival effects.
         /// </summary>
         private readonly Dictionary<Map, bool> occupiedLastSweep = new Dictionary<Map, bool>();
+
+        /// <summary>Saved. Coordinate ids that were occupied on the last sweep.</summary>
+        private List<string> occupiedCoordinates = new List<string>();
+
+        /// <summary>Not saved. Coordinate ids seen during the current sweep.</summary>
+        private readonly HashSet<string> sweptCoordinates = new HashSet<string>();
+
+        /// <summary>Not saved. True only after loading a save that predates the field above.</summary>
+        private bool occupancyUnknownAfterLoad;
 
         /// <summary>
         /// Who the pressure applies to.

@@ -33,7 +33,7 @@ if not call("rimworld/list_selected_gizmos").get("selectedCount"):
     w = vr["maxX"] - vr["minX"] + 1; h = vr["maxZ"] - vr["minZ"] + 1
     subprocess.run([sys.executable, os.path.join(HERE, "real-click.py"),
                     str(int((x - vr["minX"] + 0.5) / w * 3840.0)), str(int((vr["maxZ"] - z + 0.5) / h * 2054.0))],
-                   capture_output=True, text=True, env=dict(os.environ, OWNER_LENT_MOUSE="1"),
+                   capture_output=True, text=True,
                    creationflags=0x08000000 if os.name == "nt" else 0)
     time.sleep(0.4)
 
@@ -62,7 +62,7 @@ if g:
     rc = g["screenRect"]
     subprocess.run([sys.executable, os.path.join(HERE, "real-click.py"),
                     str(int((rc["x"] + rc["width"] / 2) * 2)), str(int((rc["y"] + rc["height"] / 2 - 30) * 2))],
-                   capture_output=True, text=True, env=dict(os.environ, OWNER_LENT_MOUSE="1"),
+                   capture_output=True, text=True,
                    creationflags=0x08000000 if os.name == "nt" else 0)
     time.sleep(0.6)
     labs = sorted({(o.get("label") or "").strip() for o in targets() if (o.get("label") or "").strip()})

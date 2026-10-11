@@ -262,8 +262,45 @@ namespace RimroomsAsyncIndustries.Company
         /// </summary>
         internal void AddContainmentObligation(string dayId, int dueTick)
         {
+            ReconcileContainedCustody();
             AddObligation(dayId + ":containment", "RR_Ledger_Containment",
                 DailyContainmentUsd, dueTick);
+        }
+        /// <summary>
+        /// Ends containment for every record whose thing the branch no longer holds, so the
+        /// daily charge stops with it.
+        ///
+        /// Containment only bills while the branch keeps the thing. A thing destroyed by any
+        /// route -- fire, a raid, a mod, a trader taking it -- leaves the record contained and
+        /// billing for nothing unless this runs. Run before each day's charge is raised. Lost
+        /// custody is read conservatively: only a destroyed thing, or one now held by another
+        /// faction's pawn, a passing ship or a settlement's stock, counts as gone.
+        /// </summary>
+        internal void ReconcileContainedCustody()
+        {
+            List<EvidenceRecord> contained = ContainedRecords().ToList();
+            for (int index = 0; index < contained.Count; index++)
+            {
+                EvidenceRecord record = contained[index];
+                if (StillHeldByBranch(record.Item)) { continue; }
+                record.MarkDisposition(EvidenceDisposition.Destroyed, Find.TickManager.TicksGame);
+                RecordEvent("RR_Event_ContainmentEnded", record.Id);
+            }
+        }
+
+        private static bool StillHeldByBranch(Thing item)
+        {
+            if (item == null || item.Destroyed) { return false; }
+            for (IThingHolder holder = item.ParentHolder; holder != null; holder = holder.ParentHolder)
+            {
+                Pawn pawn = holder as Pawn;
+                if (pawn != null && pawn.Faction != Faction.OfPlayer && !pawn.IsPrisonerOfColony) { return false; }
+                if (holder is PassingShip) { return false; }
+                RimWorld.Planet.Settlement settlement = holder as RimWorld.Planet.Settlement;
+                if (settlement != null && settlement.Faction != Faction.OfPlayer) { return false; }
+                if (holder is Map) { return true; }
+            }
+            return true;
         }
     }
 }

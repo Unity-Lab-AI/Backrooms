@@ -67,6 +67,30 @@ namespace RimroomsAsyncIndustries.Company
             return creation.EnsureOriginal(this, coordinate, map, cell);
         }
 
+        /// <summary>
+        /// A person arrived at a coordinate's site through an ordinary portal crossing. The first
+        /// arrival at a coordinate with no route record creates one, exactly as a dispatch would,
+        /// and saves the crossing as its owner so it can be secured, analysed and returned
+        /// without any expedition. A coordinate that already has a record keeps it untouched,
+        /// which leaves every record an expedition produced where it was.
+        /// </summary>
+        public CompanyActionResult NotePortalArrival(string coordinateId, Map arrivedOn, string operationId)
+        {
+            if (!CanOperate || string.IsNullOrEmpty(coordinateId) || arrivedOn == null)
+            { return CompanyActionResult.Refused("RR_Company_Inactive"); }
+            CoordinateRecord coordinate = coordinates.FirstOrDefault(c => c != null && c.id == coordinateId);
+            if (coordinate == null || coordinate.site == null || coordinate.site.Map != arrivedOn)
+            { return CompanyActionResult.Existing(); }
+            string id = coordinate.id + ":evidence:route";
+            if (FindEvidence(id) != null) { return CompanyActionResult.Existing(); }
+            CompanyActionResult result = EnsureRouteRecording(coordinate);
+            EvidenceRecord created = FindEvidence(id);
+            if (created != null && string.IsNullOrEmpty(created.sourceExpeditionId) &&
+                string.IsNullOrEmpty(created.sourcePortalOperationId))
+            { created.sourcePortalOperationId = operationId; }
+            return result;
+        }
+
         public CompanyActionResult RegisterRouteRecording(CoordinateRecord coordinate, Thing recording)
         {
             if (!CanOperate) { return CompanyActionResult.Refused("RR_Company_Inactive"); }

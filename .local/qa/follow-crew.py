@@ -101,7 +101,8 @@ while True:
                 last_framed = None
                 # a real pawn, one at a time -- the middle of the crew was often bare dirt between them
                 # (owner: "she is stuck looking at dirt"); the pawn she just worked on goes first
-                r = bridge("rimworld/list_colonists", {})
+                # only the map on screen: a cell on another map would frame the wrong spot here
+                r = bridge("rimworld/list_colonists", {"currentMapOnly": True})
                 r = r.get("result", r); r = r.get("structuredContent", r) if isinstance(r, dict) else {}
                 cols = [c for c in r.get("colonists", []) if c.get("factionIsPlayer", True) and c.get("name") and c.get("position")]
                 where = {c["name"]: c["position"] for c in cols}

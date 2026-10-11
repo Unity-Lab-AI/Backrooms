@@ -33,9 +33,13 @@ namespace RimroomsAsyncIndustries.Automation
     ///   {"cmd":"set_zone_plant","x":154,"z":116,"plant":"Plant_Rice"}
     ///   {"cmd":"set_zone_sowing","x":215,"z":174,"allow":false}
     ///   {"cmd":"set_work_priority","pawn":"Gee","work":"Research","level":4}
-    ///   {"cmd":"set_bed_owner","x":159,"z":151,"owner":"prisoner"}     owner: colonist|prisoner|slave|guest
+    ///   {"cmd":"set_bed_owner","x":159,"z":151,"owner":"prisoner"}     owner: colonist|prisoner|slave
     ///   {"cmd":"add_bill","x":155,"z":141,"recipe":"CookMealSimple","count":30}
     ///   {"cmd":"set_area","pawn":"Scar","area":"Camp"}                 area: a label, or "" for unrestricted
+    ///
+    /// Optional on every command: "id" (echoed back as an "id" field on the result line, so an agent can match
+    /// results to commands) and "map" (the map's uniqueID; without it the displayed map is used). Pawn commands
+    /// act on the pawn's own map. Commands beyond the per-pass cap stay queued for the next pass.
     ///
     /// What it will not do: it never spawns, never destroys, never edits a def, never touches the world map,
     /// and it refuses any command naming something it cannot find rather than guessing a near match.
@@ -56,6 +60,8 @@ namespace RimroomsAsyncIndustries.Automation
 
         private static string InboxPath => Path.Combine(FolderPath, "inbox.jsonl");
         private static string OutboxPath => Path.Combine(FolderPath, "outbox.jsonl");
+        private static string ClaimPath => Path.Combine(FolderPath, "inbox.claimed.jsonl");
+        private static string PendingPath => Path.Combine(FolderPath, "inbox.pending.jsonl");
 
         public RimroomsAutomationComponent(Game game)
         {
@@ -79,19 +85,50 @@ namespace RimroomsAsyncIndustries.Automation
         public static void ProcessInbox()
         {
             string inbox = InboxPath;
-            if (!File.Exists(inbox))
+            string pending = PendingPath;
+            if (!File.Exists(inbox) && !File.Exists(pending) && !File.Exists(ClaimPath))
             {
                 return;
             }
 
+            // The inbox is claimed by an atomic rename, so a line the agent appends while this runs lands in a
+            // fresh inbox instead of being deleted unread. Claimed lines join the pending spool, and only the
+            // first batch of the spool runs this pass; the remainder stays on disk for the next one.
             List<string> lines;
             try
             {
-                lines = File.ReadAllLines(inbox).Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
-                File.Delete(inbox);
+                string claimed = ClaimPath;
+                if (File.Exists(inbox) && !File.Exists(claimed))
+                {
+                    File.Move(inbox, claimed);
+                }
+
+                if (File.Exists(claimed))
+                {
+                    if (File.Exists(pending))
+                    {
+                        File.AppendAllLines(pending, File.ReadAllLines(claimed));
+                        File.Delete(claimed);
+                    }
+                    else
+                    {
+                        File.Move(claimed, pending);
+                    }
+                }
+
+                lines = File.ReadAllLines(pending).Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
+                if (lines.Count > MaximumCommandsPerPass)
+                {
+                    File.WriteAllLines(pending, lines.Skip(MaximumCommandsPerPass));
+                }
+                else
+                {
+                    File.Delete(pending);
+                }
             }
             catch (Exception e)
             {
+                // a file still open by the writer is simply tried again next pass
                 Log.Warning("[Rimrooms][Automation] could not read the command file: " + e.Message);
                 return;
             }
@@ -100,8 +137,10 @@ namespace RimroomsAsyncIndustries.Automation
             foreach (string line in lines.Take(MaximumCommandsPerPass))
             {
                 string result;
+                string id = null;
                 try
                 {
+                    Parse(line).TryGetValue("id", out id);
                     result = Execute(line);
                 }
                 catch (Exception e)
@@ -109,13 +148,15 @@ namespace RimroomsAsyncIndustries.Automation
                     result = "error: " + e.Message;
                 }
 
-                results.Add(Escape(line) + " -> " + Escape(result));
+                string row = "{\"result\":\"" + Escape(line) + " -> " + Escape(result) + "\"";
+                if (!string.IsNullOrEmpty(id)) row += ",\"id\":\"" + Escape(id) + "\"";
+                results.Add(row + "}");
             }
 
             try
             {
                 Directory.CreateDirectory(FolderPath);
-                File.AppendAllLines(OutboxPath, results.Select(r => "{\"result\":\"" + r + "\"}"));
+                File.AppendAllLines(OutboxPath, results);
             }
             catch (Exception e)
             {
@@ -135,8 +176,40 @@ namespace RimroomsAsyncIndustries.Automation
             var key = new StringBuilder();
             var val = new StringBuilder();
             bool inKey = false, inVal = false, quoted = false, haveKey = false;
-            foreach (char c in line)
+            for (int i = 0; i < line.Length; i++)
             {
+                char c = line[i];
+                // inside a quoted key or value, a backslash escapes the next character the JSON way
+                if (c == '\\' && (inKey || (inVal && quoted)) && i + 1 < line.Length)
+                {
+                    char next = line[++i];
+                    char decoded;
+                    switch (next)
+                    {
+                        case 'n': decoded = '\n'; break;
+                        case 't': decoded = '\t'; break;
+                        case 'r': decoded = '\r'; break;
+                        case 'b': decoded = '\b'; break;
+                        case 'f': decoded = '\f'; break;
+                        case 'u':
+                            if (i + 4 < line.Length &&
+                                int.TryParse(line.Substring(i + 1, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int code))
+                            {
+                                decoded = (char)code;
+                                i += 4;
+                            }
+                            else
+                            {
+                                decoded = 'u';
+                            }
+                            break;
+                        default: decoded = next; break;  // \" \\ \/ and anything else stand for themselves
+                    }
+
+                    (inKey ? key : val).Append(decoded);
+                    continue;
+                }
+
                 if (c == '"')
                 {
                     if (!inKey && !haveKey) { inKey = true; key.Clear(); continue; }
@@ -177,6 +250,17 @@ namespace RimroomsAsyncIndustries.Automation
             }
 
             Map map = HomeMap;
+            if (a.TryGetValue("map", out string mapId) && !string.IsNullOrEmpty(mapId))
+            {
+                if (!int.TryParse(mapId, NumberStyles.Integer, CultureInfo.InvariantCulture, out int uniqueId))
+                {
+                    return "refused: bad map " + mapId;
+                }
+
+                map = Find.Maps.FirstOrDefault(m => m.uniqueID == uniqueId);
+                if (map == null) return "refused: no map " + mapId;
+            }
+
             if (map == null)
             {
                 return "refused: no map";
@@ -505,6 +589,8 @@ namespace RimroomsAsyncIndustries.Automation
             Pawn pawn = FindColonist(name);
             if (pawn == null || pawn.playerSettings == null) return "refused: no colonist " + name;
             a.TryGetValue("area", out string label);
+            // the restriction is per map and is set on the pawn's own map, so the area has to come from that map
+            map = pawn.Map ?? map;
 
             if (string.IsNullOrWhiteSpace(label))
             {
@@ -514,7 +600,7 @@ namespace RimroomsAsyncIndustries.Automation
 
             Area area = map.areaManager.AllAreas.FirstOrDefault(
                 ar => ar.Label.Equals(label, StringComparison.OrdinalIgnoreCase));
-            if (area == null) return "refused: no area " + label;
+            if (area == null) return "refused: no area " + label + " on " + pawn.LabelShort + "'s map";
 
             pawn.playerSettings.AreaRestrictionInPawnCurrentMap = area;
             return "ok: " + pawn.LabelShort + " restricted to " + area.Label;

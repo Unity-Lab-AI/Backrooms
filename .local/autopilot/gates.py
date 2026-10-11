@@ -19,10 +19,10 @@ QA = os.path.join(ROOT, ".local", "qa")
 # the tracked copy under docs/ is the source of record; .local keeps a working copy for when docs is absent
 PLAYBOOK = next((p for p in (os.path.join(ROOT, "docs", "playbook.gates.json"),
                              os.path.join(HERE, "playbook.json")) if os.path.exists(p)), None)
-OURS = {"Gee", "Scar", "Unity"}
-
 bspec = importlib.util.spec_from_file_location("b", os.path.join(QA, "bridge.py"))
 bridge = importlib.util.module_from_spec(bspec); bspec.loader.exec_module(bridge)
+cspec = importlib.util.spec_from_file_location("camp", os.path.join(QA, "camp.py"))
+camp = importlib.util.module_from_spec(cspec); cspec.loader.exec_module(camp)
 
 def _session():
     try:
@@ -36,6 +36,7 @@ def _session():
 
 QA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), ".local", "qa")
 LADDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scratch", "ladder.json")   # her edits
+SETPOINTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scratch", "setpoints.json")   # measured, local
 
 def state():
     """Everything the gates ask about, measured -- never assumed."""
@@ -58,38 +59,55 @@ def state():
     st["letters"] = len([l for l in letters if l.get("id") not in seen])
     st["letter_labels"] = [l.get("label") for l in letters]
     st["alerts"] = [a.get("label") for a in call("rimworld/list_alerts").get("alerts", [])]
-    crew = [c for c in call("rimworld/list_colonists").get("colonists", []) if c.get("factionIsPlayer")]
+    every = call("rimworld/list_colonists").get("colonists", [])
+    crew = [c for c in every if c.get("factionIsPlayer")]
     st["crew"] = [(c["name"], c.get("job"), bool(c.get("drafted")), bool(c.get("downed"))) for c in crew]
-    home = next((c["name"] for c in crew if c.get("mapId") == "Map_0"), None)
-    if home: call("rimworld/select_pawn", {"pawnName": home})
-    meals = raw = wood = med = bp = 0; foes = 0; roofed = total = 0
-    for x in range(118, 196, 26):
-        for z in range(96, 176, 26):
-            for c in call("rimworld/get_cells_info", {"x": x, "z": z, "width": 26, "height": 26}).get("cells", []):
-                bp += len(c.get("blueprintBuildDefs") or [])
-                for t in c.get("things", []):
-                    d = t.get("defName") or ""; n = t.get("stackCount", 1)
-                    if d.startswith("Meal"): meals += n
-                    elif d.startswith("Raw"): raw += n
-                    elif d == "WoodLog": wood += n
-                    elif "Medicine" in d: med += n
-                    elif t.get("className") == "Verse.Pawn":
-                        nm = (t.get("label") or "").split("<")[0].strip()
-                        if nm and nm not in OURS and "," in (t.get("label") or ""): foes += 1
-                if 153 <= c["x"] <= 160 and 133 <= c["z"] <= 138:
-                    total += 1; roofed += 1 if c.get("roofDefName") else 0
-    st["days_of_food"] = round((meals * 0.9 + raw * 0.05) / (1.6 * max(1, len(crew))), 2)
-    st.update({"meals": meals, "raw_food": raw, "wood": wood, "medicine": med, "blueprints": bp,
-               "humanlikes_not_ours": foes,
-               "store_roofed_fraction": (roofed / total) if total else 1.0})
-    # a letter decides whether those humanlikes are a raid or a caravan: a sweep alone cannot tell
-    hostile_letter = any("raid" in (l or "").lower() for l in st["letter_labels"])
-    st["hostiles_on_map"] = foes if hostile_letter else 0
-    gaps = 0
-    for (xs, zs) in ([(x, 127) for x in range(137, 169)] + [(x, 154) for x in range(137, 169)] +
-                     [(137, z) for z in range(128, 154)] + [(168, z) for z in range(128, 154)]):
-        pass
-    st["wall_gaps"] = gaps          # measured by the camp sweep in cursor-jobs; left at 0 here to stay cheap
+    ours = camp.crew_names(crew)
+    home = camp.home_map(crew)
+    st["home_map"] = home
+    # the cell sweep can only read the map on screen. When that is not home, nothing is selected to switch to it
+    # (a poll must never move the player's selection): the camp numbers stay unmeasured and the rungs that need
+    # them do not fire this scan.
+    try:
+        here = call("rimworld/list_colonists", {"currentMapOnly": True}).get("colonists", [])
+    except Exception:
+        here = []
+    on_home = any(c.get("mapId") == home for c in here)
+    st["home_on_screen"] = on_home
+    if on_home:
+        meals = raw = wood = med = bp = 0; foes = 0; roofed = total = 0; power = defence = 0
+        minx, minz, maxx, maxz = camp.camp_rect(crew, home)
+        for x in range(minx, maxx + 1, 26):
+            for z in range(minz, maxz + 1, 26):
+                try:
+                    cells = call("rimworld/get_cells_info", {"x": x, "z": z, "width": 26, "height": 26}).get("cells", [])
+                except (Exception, SystemExit):
+                    cells = []                   # a block past the map edge reads as empty, not as a failed scan
+                for c in cells:
+                    bp += len(c.get("blueprintBuildDefs") or [])
+                    for t in c.get("things", []):
+                        d = t.get("defName") or ""; n = t.get("stackCount", 1)
+                        if d.startswith("Meal"): meals += n
+                        elif d.startswith("Raw"): raw += n
+                        elif d == "WoodLog": wood += n
+                        elif "Medicine" in d: med += n
+                        elif "Generator" in d or d in ("WindTurbine", "Battery", "GeothermalGenerator"): power += 1
+                        elif "Turret" in d or d in ("Sandbags", "Barricade") or "Embrasure" in d: defence += 1
+                        elif t.get("className") == "Verse.Pawn":
+                            nm = (t.get("label") or "").split("<")[0].strip()
+                            if nm and nm not in ours and "," in (t.get("label") or ""): foes += 1
+                    # the stores are the cells inside a food/main stockpile zone, read off the cell itself
+                    zone = json.dumps(c.get("zone") or "").lower()
+                    if "food" in zone or "main" in zone:
+                        total += 1; roofed += 1 if c.get("roofDefName") else 0
+        st["days_of_food"] = round((meals * 0.9 + raw * 0.05) / (1.6 * max(1, len(crew))), 2)
+        st.update({"meals": meals, "raw_food": raw, "wood": wood, "medicine": med, "blueprints": bp,
+                   "humanlikes_not_ours": foes, "has_power": power > 0, "defences_built": defence > 0})
+        if total: st["store_roofed_fraction"] = roofed / total
+        # a letter decides whether those humanlikes are a raid or a caravan: a sweep alone cannot tell
+        hostile_letter = any("raid" in (l or "").lower() for l in st["letter_labels"])
+        st["hostiles_on_map"] = foes if hostile_letter else 0
+    # wall_gaps is not measured here: the perimeter rung is disabled in the playbook rather than fed a fixed 0
     st["game_foreground"] = _foreground()
     # --- setup inputs (owner: "the whole logic gate chain like a plc ... use and edit on the fly") ---
     st["colony_exists"] = len(st["crew"]) > 0
@@ -150,9 +168,25 @@ def tags(book, st):
         if lo is not None: v = max(lo, v)
         if hi is not None: v = min(hi, v)
         v = round(v, 2) if isinstance(v, float) else v
-        spec["value"] = v           # maintained in place, so the file always shows the live setpoint
+        spec["value"] = v           # in memory only; the live setpoints are written to scratch/setpoints.json
         out[name] = v
     return out
+
+
+def _bound(expr, st, tagvals):
+    """A numeric bound: a number, a {TAG}, or a measured state/tag name. None when it cannot be resolved."""
+    e = expr.strip()
+    if e.startswith("{") and e.endswith("}"):
+        e = e[1:-1].strip()
+    try:
+        return float(e)
+    except ValueError:
+        pass
+    for src in (tagvals, st):
+        v = src.get(e)
+        if isinstance(v, (int, float)) and not isinstance(v, bool):
+            return float(v)
+    return None
 
 
 def _holds(cond, st, tagvals=None):
@@ -168,8 +202,11 @@ def _holds(cond, st, tagvals=None):
         elif isinstance(want, (int, float)):
             if got is None or got != want: return False
         elif isinstance(want, str) and want[:1] in "<>":
-            try: ref = float(want[1:])
-            except ValueError: continue          # symbolic bound (e.g. cost_of_blueprints): left to the model
+            ref = _bound(want[1:], st, tagvals or {})
+            if ref is None:
+                # an unresolved bound never passes silently: the rung does not fire and the reason is recorded
+                st.setdefault("unresolved_conditions", []).append("%s %s" % (key, want))
+                return False
             if got is None: return False
             if want[0] == ">" and not float(got) > ref: return False
             if want[0] == "<" and not float(got) < ref: return False
@@ -180,14 +217,22 @@ def decide(st=None, every=False):
     book = json.load(open(PLAYBOOK, encoding="utf-8"))
     tagvals = tags(book, st)
     st["tags"] = tagvals
+    # the playbook under docs/ is canonical and never rewritten by a read; the live setpoints go machine-local
     try:
-        json.dump(book, open(PLAYBOOK, "w", encoding="utf-8"), indent=2)   # write the maintained setpoints back
+        os.makedirs(os.path.dirname(SETPOINTS), exist_ok=True)
+        tmp = SETPOINTS + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump({"tags": tagvals, "ts": time.time()}, f, indent=1)
+        os.replace(tmp, SETPOINTS)
     except Exception:
         pass
     # open-ended (owner: "dont limit it leave it open ended for the full complete empire build not some starter
     # camp"): rungs she writes herself with ladder_set merge in every scan; hers replace a book rung of the same id
     mine = {g["id"]: g for g in (_ladder_file().get("gates") or []) if g.get("id") and "priority" in g}
     allg = [g for g in book["gates"] if g["id"] not in mine] + list(mine.values())
+    # a rung marked disabled has an input nothing measures yet; it never fires, and the reason is kept on the state
+    st["disabled_rungs"] = {g["id"]: g["disabled"] for g in allg if g.get("disabled")}
+    allg = [g for g in allg if not g.get("disabled")]
     hits = [g for g in sorted(allg, key=lambda g: g["priority"]) if _holds(g.get("when", {}), st, tagvals)]
     return (hits if every else hits[:1] + [g for g in hits if g["id"] == "always"][:1]), st
 

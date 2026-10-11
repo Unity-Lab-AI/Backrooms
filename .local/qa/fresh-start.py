@@ -24,7 +24,10 @@ def md5(p):
 
 
 def main():
-    print("1. stopping the stack")
+    print("1. telling chat, then stopping the stack")
+    subprocess.run([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "say",
+                    "Signing off for a brain upgrade. Next stream starts fresh with a brand new crash-landed colony. See you then!"],
+                   timeout=90)
     for f in (os.path.join(ROOT, ".local", "obs", "_brb_until"),):
         if os.path.exists(f):
             os.remove(f)                       # ends the countdown loop
@@ -44,7 +47,9 @@ def main():
         print("   no build at", DLL)
 
     print("3. arming a fresh colony and GO")
-    open(os.path.join(QA, "_new_colony.request"), "w").write("Async Industries\nforce")
+    # owner, 2026-10-10: "start fresh crashlanded scenerio no company or mod scenerio but still mod availible" --
+    # the vanilla start; the mod stays loaded. FRESH_SCENARIO picks another one.
+    open(os.path.join(QA, "_new_colony.request"), "w").write(os.environ.get("FRESH_SCENARIO", "Crashlanded") + "\nforce")
     open(os.path.join(QA, "_go.request"), "w").write("go")
 
     print("4. clearing per-colony state")

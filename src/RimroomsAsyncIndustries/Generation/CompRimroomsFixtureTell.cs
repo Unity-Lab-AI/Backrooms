@@ -101,5 +101,18 @@ namespace RimroomsAsyncIndustries.Generation
                 ? null : theirs.tell;
             return string.Equals(mine, theirTell, System.StringComparison.Ordinal);
         }
+
+        /// <summary>
+        /// Carries the tell onto a piece split off this stack, so a partial haul does not leave
+        /// an unmarked piece that can merge into ordinary stock.
+        /// </summary>
+        public override void PostSplitOff(Thing piece)
+        {
+            base.PostSplitOff(piece);
+            if (string.IsNullOrEmpty(tell)) { return; }
+            CompRimroomsFixtureTell split = piece == null
+                ? null : piece.TryGetComp<CompRimroomsFixtureTell>();
+            if (split != null) { split.tell = tell; }
+        }
     }
 }

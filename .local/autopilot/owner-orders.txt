@@ -289,3 +289,11 @@ and know wtf to do with freezers"). One item per step, say it on stream, tick it
 - OWNER in Twitch chat (game order, binding next turn): (joined the stream)
 
 - OWNER in Twitch chat (game order, binding next turn): cant wait
+
+- OWNER in Twitch chat (game order, binding next turn): (joined the stream)
+
+- OWNER, typed in the panel chat (binding next turn): ist job fix the broken wall segments and makse sure the food storage room is ac 's on walls more the bigger the room,  and set to correct temps for freeezers below zero with margin of extra
+ where are your wepons ? do you not have any make them something soon after crops in
+- A message box ("Sure, you can stay" / "No, please leave now") has frozen time for 5 minutes: call game_get_ui_layout and click one of those two buttons with click_ui_target before anything else.
+- RAID on the map now (Lacar Union letter): read the raid letter, draft the crew and fight or pull everyone indoors -- before any research letters.
+- RAID is real and NOW: letter Letter_11 "Raid: Lacar Union", raider Trebo (Thing_Human122270). Open Letter_11, draft Gee/Scar/Unity and attack Trebo -- before anything else.

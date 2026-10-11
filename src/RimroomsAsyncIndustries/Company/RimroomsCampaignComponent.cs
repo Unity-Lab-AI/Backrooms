@@ -12,8 +12,33 @@ namespace RimroomsAsyncIndustries.Company
     public sealed partial class RimroomsCampaignComponent : GameComponent, IRenameable
     {
         public const int CurrentSchemaVersion = 2;
-        // Bounded record growth. Visited coordinates are never removed to make room.
-        internal const int MaximumCoordinates = 512;
+        /// <summary>
+        /// How many discovered-but-never-entered coordinates the branch may hold at once.
+        ///
+        /// Coordinates live in three tiers. **Discovered** is the lifetime history, kept as the
+        /// running summary below and never capped. **Retained** is every record a crew has been
+        /// inside or that anything still points at: kept for good and never removed, so a revisit
+        /// always returns to the same place. **Active** is the set with a loaded map, bounded by
+        /// the open-map budget. Only the untouched frontier is bounded here, so the cap protects
+        /// the save from a runaway frontier without ever ending exploration.
+        /// </summary>
+        internal const int MaximumUnvisitedCoordinates = 512;
+
+        // Paid obligations folded out of the list once it grows long, as a count and a sum.
+        private int foldedObligationCount;
+        private long foldedObligationTotalUsd;
+
+        /// <summary>How many paid obligations have been folded into the summary, and their total.</summary>
+        public int FoldedObligationCount { get { return foldedObligationCount; } }
+        public long FoldedObligationTotalUsd { get { return foldedObligationTotalUsd; } }
+
+        // Lifetime discovery summary. Saved; an older save backfills from its records on load.
+        private int coordinatesDiscoveredTotal;
+        private int deepestDiscoveredDepth;
+
+        // Lookup by id. Not saved: rebuilt from the list whenever it is cold or stale.
+        private Dictionary<string, CoordinateRecord> coordinateIndex;
+        private int coordinateIndexCount = -1;
         private int schemaVersion = CurrentSchemaVersion;
         private string branchId;
         /// <summary>
@@ -279,6 +304,10 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Values.Look(ref corporationContact, "rr_corporationContact", false);
             Scribe_Values.Look(ref cutConnectionsOnBreach, "rr_cutConnectionsOnBreach", true);
             Scribe_Values.Look(ref breachResponded, "rr_breachResponded", false);
+            Scribe_Values.Look(ref coordinatesDiscoveredTotal, "rr_coordinatesDiscoveredTotal", 0);
+            Scribe_Values.Look(ref deepestDiscoveredDepth, "rr_deepestDiscoveredDepth", 0);
+            Scribe_Values.Look(ref foldedObligationCount, "rr_foldedObligationCount", 0);
+            Scribe_Values.Look(ref foldedObligationTotalUsd, "rr_foldedObligationTotalUsd", 0L);
             ExposeDebriefs();
             Scribe_Collections.Look(ref ledger, "rr_ledger", LookMode.Deep);
             Scribe_Collections.Look(ref staff, "rr_staff", LookMode.Deep);
@@ -329,6 +358,74 @@ namespace RimroomsAsyncIndustries.Company
             evidence = evidence ?? new List<EvidenceRecord>();
             projects = projects ?? new List<ProjectRecord>();
             events = events ?? new List<CompanyEventRecord>();
+            InvalidateCoordinateIndex();
+            // A save from before the summary existed never removed a coordinate, so its records
+            // are its whole discovery history.
+            if (coordinatesDiscoveredTotal < coordinates.Count) { coordinatesDiscoveredTotal = coordinates.Count; }
+            foreach (CoordinateRecord record in coordinates)
+            {
+                if (record != null && record.Depth > deepestDiscoveredDepth) { deepestDiscoveredDepth = record.Depth; }
+            }
+        }
+
+        /// <summary>Every coordinate this branch has ever discovered, including any later replaced.</summary>
+        public int CoordinatesDiscoveredTotal { get { return coordinatesDiscoveredTotal; } }
+
+        /// <summary>The deepest coordinate this branch has ever discovered.</summary>
+        public int DeepestDiscoveredDepth { get { return deepestDiscoveredDepth; } }
+
+        internal void NoteCoordinateDiscovered(CoordinateRecord record)
+        {
+            if (record == null) { return; }
+            if (coordinatesDiscoveredTotal < int.MaxValue) { coordinatesDiscoveredTotal++; }
+            if (record.Depth > deepestDiscoveredDepth) { deepestDiscoveredDepth = record.Depth; }
+        }
+
+        internal void InvalidateCoordinateIndex()
+        {
+            coordinateIndex = null;
+            coordinateIndexCount = -1;
+        }
+
+        /// <summary>The coordinate with this id, or null. Constant time after the first call.</summary>
+        internal CoordinateRecord FindCoordinate(string id)
+        {
+            if (string.IsNullOrEmpty(id)) { return null; }
+            if (coordinateIndex == null || coordinateIndexCount != coordinates.Count)
+            {
+                coordinateIndex = new Dictionary<string, CoordinateRecord>(StringComparer.Ordinal);
+                foreach (CoordinateRecord record in coordinates)
+                {
+                    // First wins, matching the linear search this replaces.
+                    if (record != null && record.id != null && !coordinateIndex.ContainsKey(record.id))
+                    { coordinateIndex.Add(record.id, record); }
+                }
+                coordinateIndexCount = coordinates.Count;
+            }
+            CoordinateRecord found;
+            return coordinateIndex.TryGetValue(id, out found) ? found : null;
+        }
+
+        /// <summary>
+        /// Coordinates nobody has entered and nothing refers to: no map, never opened, not
+        /// released, no surveyed room, and no contract or case naming them.
+        /// </summary>
+        private int CountUnvisitedCoordinates()
+        {
+            var referenced = new HashSet<string>(StringComparer.Ordinal);
+            foreach (ContractRecord contract in contracts)
+            { if (contract != null && !string.IsNullOrEmpty(contract.coordinateId)) { referenced.Add(contract.coordinateId); } }
+            foreach (CaseRecord record in cases)
+            { if (record != null && !string.IsNullOrEmpty(record.coordinateId)) { referenced.Add(record.coordinateId); } }
+            int count = 0;
+            foreach (CoordinateRecord record in coordinates)
+            {
+                if (record == null || record.site != null || record.openings > 0 || record.releasedByPlayer ||
+                    record.status != CoordinateStatus.Discovered || referenced.Contains(record.id)) { continue; }
+                if (record.rooms != null && record.rooms.Any(room => room != null && room.surveyed)) { continue; }
+                count++;
+            }
+            return count;
         }
 
         private void ValidateSavedState()
@@ -465,14 +562,21 @@ namespace RimroomsAsyncIndustries.Company
                 if (contract.requiredCount < 0 || contract.deliveredCount < 0)
                 { Fault("contract '" + template + "' has a negative count"); }
             }
+            // Ids are unique by this point (checked above), so a lookup by id gives the same answer
+            // the pairwise search did, without its quadratic cost on a long campaign.
+            var evidenceById = new Dictionary<string, EvidenceRecord>(StringComparer.Ordinal);
+            foreach (EvidenceRecord record in evidence) { evidenceById[record.id] = record; }
+            var caseById = new Dictionary<string, CaseRecord>(StringComparer.Ordinal);
+            foreach (CaseRecord record in cases) { caseById[record.id] = record; }
             valid &= cases.All(c => coordinateIds.Contains(c.coordinateId) && c.evidenceIds != null &&
                 c.evidenceIds.Count == c.evidenceIds.Distinct(StringComparer.Ordinal).Count() &&
-                c.evidenceIds.All(id => evidence.Any(e => e.id == id && e.caseId == c.id)));
+                c.evidenceIds.All(id => id != null && evidenceById.TryGetValue(id, out EvidenceRecord found) && found.caseId == c.id));
             valid &= evidence.All(e => coordinateIds.Contains(e.coordinateId) && caseIds.Contains(e.caseId) &&
-                cases.Any(c => c.id == e.caseId && c.coordinateId == e.coordinateId && c.evidenceIds.Contains(e.id)) &&
+                caseById.TryGetValue(e.caseId, out CaseRecord owner) && owner.coordinateId == e.coordinateId &&
+                owner.evidenceIds != null && owner.evidenceIds.Contains(e.id) &&
                 Enum.IsDefined(typeof(EvidenceStatus), e.status) && FiniteNonnegative(e.analysisWork) &&
                 !string.IsNullOrWhiteSpace(e.itemLoadId));
-            valid &= evidence.All(e => ValidObservationState(e, coordinates.FirstOrDefault(c => c.id == e.coordinateId)));
+            valid &= evidence.All(e => ValidObservationState(e, FindCoordinate(e.coordinateId)));
             valid &= projects.All(p => FiniteNonnegative(p.workDone) && !string.IsNullOrWhiteSpace(p.researchDefName) &&
                 (!p.completed || p.insightCommitted) && (!p.insightCommitted || !string.IsNullOrWhiteSpace(p.insightOperationId)));
             valid &= projects.Count(p => p.insightCommitted && !p.completed) <= 1;

@@ -32,7 +32,8 @@ REF_PROMPT = ("candid webcam photo of a 25 year old emo goth girl, youthful soft
               "bedroom, candid, realistic, detailed young face")
 
 _t2i = _i2i = None
-_lock = threading.Lock()
+_lock = threading.Lock()          # one render (and the one-time pipeline load) at a time on the GPU
+_waiting = threading.Semaphore(3)  # at most this many requests queued or rendering; the rest are refused
 
 
 def pipes():
@@ -54,26 +55,35 @@ def pipes():
 
 
 def render(req):
+    if not _waiting.acquire(blocking=False):
+        raise RuntimeError("busy: render queue full")
+    try:
+        with _lock:
+            return _render_locked(req)
+    finally:
+        _waiting.release()
+
+
+def _render_locked(req):
     import torch
-    torch.cuda.empty_cache()
     from PIL import Image
     t2i, i2i = pipes()
+    torch.cuda.empty_cache()
     seed = int(req.get("seed") or SEED)
     g = torch.Generator("cuda").manual_seed(seed)
     neg = req.get("negative_prompt") or NEG
-    with _lock:
-        if req.get("reference") or not os.path.exists(REF):
-            img = t2i(prompt=req.get("ref_prompt") or REF_PROMPT, negative_prompt=neg, num_inference_steps=30, guidance_scale=6.5,
-                      width=512, height=640, generator=g).images[0]
-            os.makedirs(os.path.dirname(REF), exist_ok=True)
-            img.save(REF)
-            if req.get("reference"):
-                return img
-        ref = Image.open(REF).convert("RGB")
-        prompt = (req.get("prompt") or "").strip() or REF_PROMPT
-        strength = float(req.get("strength") or 0.45)
-        return i2i(prompt=prompt, image=ref, strength=strength, negative_prompt=neg,
-                   num_inference_steps=30, guidance_scale=6.5, generator=g).images[0]
+    if req.get("reference") or not os.path.exists(REF):
+        img = t2i(prompt=req.get("ref_prompt") or REF_PROMPT, negative_prompt=neg, num_inference_steps=30, guidance_scale=6.5,
+                  width=512, height=640, generator=g).images[0]
+        os.makedirs(os.path.dirname(REF), exist_ok=True)
+        img.save(REF)
+        if req.get("reference"):
+            return img
+    ref = Image.open(REF).convert("RGB")
+    prompt = (req.get("prompt") or "").strip() or REF_PROMPT
+    strength = float(req.get("strength") or 0.45)
+    return i2i(prompt=prompt, image=ref, strength=strength, negative_prompt=neg,
+               num_inference_steps=30, guidance_scale=6.5, generator=g).images[0]
 
 
 class H(BaseHTTPRequestHandler):
@@ -90,6 +100,8 @@ class H(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
             n = int(self.headers.get("Content-Length") or 0)
+            if n > 1_000_000:
+                return self._send(413, {"error": "request too large"})
             req = json.loads(self.rfile.read(n) or b"{}")
             img = render(req)
             buf = io.BytesIO(); img.save(buf, format="PNG")

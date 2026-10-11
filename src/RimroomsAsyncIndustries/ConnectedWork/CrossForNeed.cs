@@ -88,6 +88,9 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         /// </summary>
         private const int AssumedNeedTicks = 15000;
 
+        /// <summary>How many maps a need route may pass through. A branch's graph is small.</summary>
+        private const int RouteMaximumMaps = 16;
+
         public CrossForNeedMapComponent(Map map) : base(map) { }
 
         public override void MapComponentTick()
@@ -254,35 +257,36 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                 ? null : Current.Game.GetComponent<RimroomsPortalNetwork>();
             if (network == null || network.HasStateFault) { return false; }
 
+            // Routed through the network's own graph search, so a natural gate and a chain of several
+            // connections count exactly as they do for work. Every timed leg on the route is a window
+            // that can close behind the pawn, so the tightest one is the one that has to cover the trip.
+            IReadOnlyList<PortalRouteStep> route;
+            if (network.FindRoute(map, destination, RouteMaximumMaps, PortalRouteSearch.MaximumOperationsPerAdvance,
+                    out route) != PortalNetworkResult.Success || route == null || route.Count == 0)
+            { return false; }
+
             int shortest = int.MaxValue;
-            List<Map> maps = Find.Maps;
-            if (maps == null) { return false; }
-            for (int outer = 0; outer < maps.Count; outer++)
+            for (int index = 0; index < route.Count; index++)
             {
-                Map host = maps[outer];
-                if (host == null || host.listerBuildings == null) { continue; }
-                List<Building> buildings = host.listerBuildings.allBuildingsColonist;
-                for (int index = 0; index < buildings.Count; index++)
-                {
-                    CompRimroomsGate gate = buildings[index] == null
-                        ? null : buildings[index].TryGetComp<CompRimroomsGate>();
-                    if (gate == null || !gate.IsDesignated || !gate.IsOpening || gate.IsEmergency) { continue; }
-                    if (string.IsNullOrEmpty(gate.PortalConnectionId)) { continue; }
-                    PortalConnectionRecord edge = network.Find(gate.PortalConnectionId);
-                    if (edge == null || edge.First == null || edge.Second == null) { continue; }
-                    // Either order: this pawn may be standing on either end of the connection.
-                    bool joins = (edge.First.Map == map && edge.Second.Map == destination)
-                        || (edge.Second.Map == map && edge.First.Map == destination);
-                    if (!joins) { continue; }
-                    // Indefinite. Nothing to run out, so no guard is needed -- invariant 12 paying for
-                    // itself rather than being a special case.
-                    if (gate.IsSustainedPortalSession) { return true; }
-                    int remaining = gate.OpeningTicksRemaining;
-                    if (remaining > 0 && remaining < shortest) { shortest = remaining; }
-                }
+                PortalRouteStep step = route[index];
+                PortalConnectionRecord edge = step == null ? null : step.Connection;
+                if (edge == null) { return false; }
+                // A natural connection has no window: nothing to run out, so no guard is needed.
+                if (edge.Kind == PortalConnectionKind.Natural) { continue; }
+                // Anything else whose lifetime is not a gate window is rounded against the crossing.
+                if (edge.Kind != PortalConnectionKind.Laboratory) { return false; }
+                CompRimroomsGate gate = edge.First == null || edge.First.Anchor == null
+                    ? null : edge.First.Anchor.TryGetComp<CompRimroomsGate>();
+                if (gate == null || !gate.IsDesignated || !gate.IsOpening || gate.IsEmergency) { return false; }
+                // Indefinite -- invariant 12 paying for itself rather than being a special case.
+                if (gate.IsSustainedPortalSession) { continue; }
+                int remaining = gate.OpeningTicksRemaining;
+                if (remaining <= 0) { return false; }
+                if (remaining < shortest) { shortest = remaining; }
             }
-            if (shortest == int.MaxValue) { return false; }
-            long required = (long)AssumedLegTicks * 2L + needTicks;
+            // Every leg permanent or sustained: no window anywhere on the way.
+            if (shortest == int.MaxValue) { return true; }
+            long required = (long)AssumedLegTicks * 2L * route.Count + needTicks;
             return shortest >= required;
         }
     }

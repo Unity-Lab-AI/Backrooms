@@ -172,11 +172,12 @@ namespace RimroomsAsyncIndustries.Company
 
             CompanySupplyDrop.Fill(payload, ReliefSupplyScale);
 
+            // Landed first and recorded second, so a drop that throws leaves no rescue on the
+            // books that put nobody on the map, and the next tick tries again from scratch.
+            if (!DeliverCompanyPayload(center, map, payload, arrived.Count)) { return; }
+
             reliefCount++;
             lastReliefTick = now;
-
-            DropPodUtility.DropThingsNear(center, map, payload, 110, false, false, true,
-                forbid: false);
 
             for (int index = 0; index < arrived.Count; index++)
             {
@@ -229,6 +230,45 @@ namespace RimroomsAsyncIndustries.Company
                 pawn.Destroy(DestroyMode.Vanish);
             }
             return doomed.Count;
+        }
+
+        /// <summary>
+        /// Drop a company payload whose first <paramref name="pawnCount"/> entries are the
+        /// arriving staff, and report whether any of them is now on the way or on the ground.
+        ///
+        /// The goods are the company's own stock, so they are stamped ordinary before they land,
+        /// wherever the headquarters stands. If the drop throws, whatever already went into a pod
+        /// is kept and still counts; anything that reached neither a pod nor the map is destroyed
+        /// and its slot set to null, so a half-finished drop never leaves a person in neither place.
+        /// </summary>
+        private static bool DeliverCompanyPayload(IntVec3 centre, Map map, List<Thing> payload, int pawnCount)
+        {
+            for (int index = pawnCount; index < payload.Count; index++)
+            { Economy.OddOriginService.StampOutside(payload[index]); }
+            try
+            {
+                DropPodUtility.DropThingsNear(centre, map, payload, 110, false, false, true,
+                    forbid: false);
+            }
+            catch (Exception error)
+            {
+                Log.Warning("[Rimrooms] company drop did not finish; keeping what landed: " + error);
+            }
+            bool anyone = false;
+            for (int index = 0; index < payload.Count; index++)
+            {
+                Thing thing = payload[index];
+                if (thing == null || thing.Destroyed) { payload[index] = null; continue; }
+                if (thing.Spawned || thing.ParentHolder != null)
+                {
+                    if (index < pawnCount) { anyone = true; }
+                    continue;
+                }
+                try { thing.Destroy(DestroyMode.Vanish); }
+                catch (Exception error) { Log.Warning("[Rimrooms] could not discard an undelivered company item: " + error); }
+                payload[index] = null;
+            }
+            return anyone;
         }
 
         private static IntVec3 ReliefDropCell(Map map)

@@ -77,7 +77,7 @@ def ask(line):
                          if line.lower().startswith("fact:") else
                          ("Say exactly this to your chat in your own voice. Do not change what happened, "
                           "do not add events, keep every name, number and plan in it: " + line))}],
-        "options": {"num_ctx": 8192, "num_predict": 90, "temperature": 0.7, "top_p": 0.9,
+        "options": {"num_ctx": int(os.environ.get("UNITY_VOICE_NUM_CTX", "8192")), "num_predict": 90, "temperature": 0.7, "top_p": 0.9,
                     "repeat_penalty": 1.2},
         "keep_alive": "30m"}).encode("utf-8")
     req = urllib.request.Request(OLLAMA + "/api/chat", data=body, headers={"Content-Type": "application/json"})

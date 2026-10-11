@@ -5,11 +5,22 @@ One press each, nothing to remember. The presses live in the **Backrooms root**:
 | Platform | Start | Stop | Panel |
 |---|---|---|---|
 | Windows | `windows\start.bat` | `windows\stop.bat` | `windows\admin.bat` |
-| Linux / macOS | `linux/start.sh` | `linux/stop.sh` | `linux/admin.sh` |
+| Linux / macOS | not supported -- the rig is Windows-only; `linux/*.sh` only print that and exit | | |
 
-All of them call `stream/services.py`, the engine (tracked here). `.local/qa/services.py` is the same file
-resolving its paths from the dev surface; the old root `Stream Start.cmd` / `Stream Stop.cmd` just call the
-`windows\*.bat` pair, so there is exactly one way the rig comes up and goes down.
+All of them call `stream/services.py`, the engine (tracked here). `.local/qa/services.py` and
+`.local/qa/admin.py` are thin wrappers that run the `stream/` files, not copies; the old root
+`Stream Start.cmd` / `Stream Stop.cmd` and `Unity Plays RimWorld.cmd` just call the `windows\*.bat` pair, so
+there is exactly one way the rig comes up and goes down. Start/stop/restart take a lock
+(`.local/qa/_svc_control.lock`), so two presses never race each other into double launches.
+
+**Panel token.** Every button in the panel that changes something (GO, new colony, services, orders, chat)
+carries a token made fresh each time the panel server starts, and requests must come addressed to
+`127.0.0.1`/`localhost` on the panel port. Reading status stays open. After the panel restarts, reload the
+page once -- an old tab gets "refused: reload the panel page".
+
+**Models.** `dolphin3:8b`, `qwen3:8b` (the voice base) and `qwen3.6:35b` are pulled if missing; `unity-local`
+is built on this machine and is only reported, never pulled. A failed `training/apply.py` is printed as
+NOT applied, and the previous models stay. A GO left on disk for more than three hours is dropped at startup.
 
 **Start** brings up Ollama and both models (the voice pre-warmed), OBS, the Twitch window, the studio, the
 webcam, chat, the host voice, the guards, the click queue, Unity the player, and the admin panel at
@@ -17,7 +28,9 @@ webcam, chat, the host voice, the guards, the click queue, Unity the player, and
 tonight. **GO** in the panel makes that binding, launches RimWorld, takes OBS live, and arms the company
 colony. Nothing goes live before GO.
 
-**Stop** kills by name first (`llama-server`, `ollama`, `obs64`, `RimWorldWin64`), then sweeps the services,
+**Stop** closes what it owns gracefully first -- OBS ends the broadcast over its websocket and is asked to close, the
+game is saved as `Unity-autosave` over the bridge and asked to close -- and only what is still up after
+`STOP_GRACE_S` (45 s) is killed by name (`llama-server`, `ollama`, `obs64`, `RimWorldWin64`); then it sweeps the services,
 then prints the GPU so you can see the memory came back. It never touches your browsers.
 
 Each service logs to `.local/qa/_svc_<name>.log`. Status any time: `python stream/services.py status`.
@@ -41,6 +54,7 @@ Enforced in code, under the model, in `.local/autopilot/guards.py` -- the model 
 
 ## Restart without dropping the stream
 
-`windowsestart.bat` / `linux/restart.sh` restart everything **except the broadcast**: OBS switches to the BRB
+`windows
+estart.bat` / `linux/restart.sh` restart everything **except the broadcast**: OBS switches to the BRB
 scene and keeps streaming, so viewers never see Twitch's network error. She asks Ready? again, and GO switches the
 stream back to Live (GO never relaunches an OBS that is already up). Only **stop** ends the broadcast.

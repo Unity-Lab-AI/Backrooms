@@ -92,7 +92,7 @@ namespace RimroomsAsyncIndustries.Automation
 
             var notes = new List<string>();
             var claimed = new HashSet<IntVec3>();
-            foreach (Pawn p in map.mapPawns.FreeColonistsSpawned.Where(p => !p.Downed && !p.InMentalState))
+            foreach (Pawn p in map.mapPawns.FreeColonistsSpawned.Where(Core.PawnOrderEligibility.FreeForAutonomousOrders))
             {
                 List<IntVec3> mine = targets.Where(t => !claimed.Contains(t))
                                             .OrderBy(t => t.DistanceToSquared(p.Position))
@@ -106,7 +106,7 @@ namespace RimroomsAsyncIndustries.Automation
                 notes.Add(p.LabelShort + " -> " + mine.Count + " stops from " + mine[0].x + "," + mine[0].z);
             }
             return notes.Count == 0
-                ? "refused: " + targets.Count + " places left to explore but none reachable right now"
+                ? "refused: " + targets.Count + " places left to explore but no free colonist can reach one right now (drafted, ordered, hungry or exhausted colonists are left alone)"
                 : "ok: exploring, " + targets.Count + " places left (doors + fog edge): " + string.Join("; ", notes) + " -- the game must run for them to walk";
         }
 
@@ -234,13 +234,29 @@ namespace RimroomsAsyncIndustries.Automation
             if (without.Count == 0) return "ok: everyone has a bed";
             ThingDef bed = ThingDefOf.Bed;
             ThingDef stuff = GenStuff.DefaultStuffFor(bed);
+
+            // sleeping places already coming: free built colonist beds nobody owns yet, and bed blueprints or frames
+            // still waiting to be built -- so repeating this command does not plan the same beds again
+            int freeBuilt = map.listerBuildings.allBuildingsColonist.OfType<Building_Bed>()
+                .Count(b => b.ForColonists && !b.Medical && b.def.building != null && b.def.building.bed_humanlike &&
+                            b.SleepingSlotsCount > b.OwnersForReading.Count);
+            int planned = map.listerThings.AllThings.Count(t =>
+                t.Faction == Faction.OfPlayer && (t.def.IsBlueprint || t.def.IsFrame) &&
+                t.def.entityDefToBuild is ThingDef built && built.IsBed && built.building != null && built.building.bed_humanlike);
+            int needed = without.Count - freeBuilt - planned;
+            if (needed <= 0)
+            {
+                return "ok: no new beds needed -- " + freeBuilt + " free bed(s) and " + planned +
+                       " planned for " + string.Join(", ", without.Select(p => p.LabelShort));
+            }
+
             var placed = new List<string>();
             foreach (Room r in IndoorRooms(map).Where(r => r.OpenRoofCount == 0 && FoggedShare(map, r) < 0.2f)
                                                .OrderByDescending(r => r.ContainedBeds.Count()))
             {
                 foreach (IntVec3 c in r.Cells.Where(x => FreeFloor(map, x)))
                 {
-                    if (placed.Count >= without.Count) break;
+                    if (placed.Count >= needed) break;
                     Rot4 rot = Rot4.South;
                     if (GenConstruct.CanPlaceBlueprintAt(bed, c, rot, map, false, null, null, stuff).Accepted)
                     {
@@ -248,7 +264,7 @@ namespace RimroomsAsyncIndustries.Automation
                         placed.Add(c.x + "," + c.z);
                     }
                 }
-                if (placed.Count >= without.Count) break;
+                if (placed.Count >= needed) break;
             }
             return placed.Count == 0
                 ? "refused: no free roofed, explored floor fits a bed -- explore first"

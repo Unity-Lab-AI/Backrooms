@@ -103,6 +103,7 @@
     },
     {
       "id": "perimeter-hole",
+      "disabled": "wall_gaps has no measurement from the bridge (a fixed 0 is not a reading)",
       "priority": 6,
       "when": {
         "wall_gaps": ">0"
@@ -116,6 +117,7 @@
     },
     {
       "id": "blueprints-but-no-material",
+      "disabled": "cost_of_blueprints has no measurement from the bridge",
       "priority": 7,
       "when": {
         "blueprints": ">0",
@@ -158,6 +160,7 @@
     },
     {
       "id": "work-priorities-unset",
+      "disabled": "grid_matches_plan has no measurement from the bridge",
       "priority": 10,
       "when": {
         "grid_matches_plan": false
@@ -173,6 +176,7 @@
     },
     {
       "id": "fields-wrong",
+      "disabled": "fields_all_default_crop has no measurement from the bridge",
       "priority": 11,
       "when": {
         "fields_all_default_crop": true
@@ -187,6 +191,7 @@
     },
     {
       "id": "bills-missing",
+      "disabled": "bill_rows has no measurement from the bridge",
       "priority": 12,
       "when": {
         "bill_rows": 0
@@ -200,6 +205,7 @@
     },
     {
       "id": "research-idle",
+      "disabled": "research_queue_empty has no measurement from the bridge",
       "priority": 13,
       "when": {
         "research_queue_empty": true
@@ -227,6 +233,7 @@
     },
     {
       "id": "window-not-in-front",
+      "disabled": "wants_click has no measurement",
       "priority": 15,
       "when": {
         "game_foreground": false,
@@ -312,6 +319,7 @@
     },
     {
       "id": "rung-5-the-mountain-base",
+      "disabled": "production_running has no measurement from the bridge",
       "priority": 23,
       "when": {
         "days_of_food": ">{FOOD_COMFORT_DAYS}",
@@ -328,6 +336,7 @@
     },
     {
       "id": "rung-6-off-world",
+      "disabled": "mountain_base_done has no measurement from the bridge",
       "priority": 24,
       "when": {
         "mountain_base_done": true
@@ -345,6 +354,7 @@
     },
     {
       "id": "rung-5b-the-gate",
+      "disabled": "mountain_base_done has no measurement from the bridge",
       "priority": 23.5,
       "when": {
         "days_of_food": ">{FOOD_COMFORT_DAYS}",
@@ -365,6 +375,7 @@
     },
     {
       "id": "rung-5c-the-backrooms",
+      "disabled": "gate_online has no measurement from the bridge",
       "priority": 23.7,
       "when": {
         "gate_online": true
@@ -384,6 +395,7 @@
     },
     {
       "id": "rung-6b-orbit-and-beyond",
+      "disabled": "ship_research_done has no measurement from the bridge",
       "priority": 24.5,
       "when": {
         "ship_research_done": true

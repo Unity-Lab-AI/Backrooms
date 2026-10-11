@@ -119,17 +119,62 @@ This cannot be undone.</RR_Exchange_SellConfirm>
   <RR_Integration_OpenWorld>Open the world map</RR_Integration_OpenWorld>
 
   <RR_Integration_VehicleFrameworkName>Vehicle Framework</RR_Integration_VehicleFrameworkName>
-  <RR_Integration_VehicleFrameworkPosition>Vehicles stay entirely the other mod's business. Nothing here needs one: a gate is opened on foot, a crew walks through it, and no route, contract or expedition will ever ask you for a vehicle.</RR_Integration_VehicleFrameworkPosition>
+  <RR_Integration_VehicleFrameworkPosition>Nothing here needs a vehicle: a gate is opened on foot and a crew walks through it. With it loaded, the company vehicles section opens its own cargo and caravan screens for vehicles at a company site. Vehicles never go through a gate.</RR_Integration_VehicleFrameworkPosition>
 
   <RR_Integration_RimWorldTogetherName>RimWorld Together</RR_Integration_RimWorldTogetherName>
-  <RR_Integration_RimWorldTogetherPosition>Each player runs their own company: their own facility, their own gate, their own discoveries, their own research and their own books. Visits and supply exchange are the other mod's features and work as it makes them work. There is no shared map, no shared research, and nothing here transfers a case file or a crew between companies.</RR_Integration_RimWorldTogetherPosition>
+  <RR_Integration_RimWorldTogetherPosition>Each player runs their own company: their own facility, their own gate, their own discoveries, their own research and their own books. Visits and supply exchange are the other mod's features and work as it makes them work. There is no shared map and no shared research, and that mod carries no company records. Branches swap signed dossier files instead, outside it, and a dossier is read-only on arrival.</RR_Integration_RimWorldTogetherPosition>
 
   <RR_Integration_GravshipOneName>Vanilla Gravship Expanded - Chapter 1</RR_Integration_GravshipOneName>
-  <RR_Integration_GravshipOnePosition>Orbital travel is a separate way to get about and stays that way. Its air, fuel, power, heat and crew systems are untouched. A gate remains the only way into the Backrooms, and nothing here reads or changes a gravship.</RR_Integration_GravshipOnePosition>
+  <RR_Integration_GravshipOnePosition>Orbital travel is a separate way to get about and stays that way. Its air, fuel, power, heat and crew systems are untouched. A gate remains the only way into the Backrooms. Nothing here changes a gravship; the company vehicles section only selects a company site's grav engine so its own launch is in front of you.</RR_Integration_GravshipOnePosition>
 
   <RR_Integration_VehiclesExpandedName>Vanilla Vehicles Expanded</RR_Integration_VehiclesExpandedName>
   <RR_Integration_VehiclesExpandedPosition>Use its vehicles for whatever you like - staging a team, moving stock, carrying somebody home. None of it is required and none of it is changed here.</RR_Integration_VehiclesExpandedPosition>
 
   <RR_Integration_GravshipTwoName>Vanilla Gravship Expanded - Chapter 2</RR_Integration_GravshipTwoName>
   <RR_Integration_GravshipTwoPosition>Its orbital combat, contracts and salvage are its own and are not patched. Nothing it fights will ever turn up in a Backrooms space: what lives in there is drawn only from this mod's own list of inhabitants, and that is checked on every build.</RR_Integration_GravshipTwoPosition>
+
+  <!-- Company vehicles and gravships: buttons onto the providers' own screens, refused with a reason otherwise. -->
+  <RR_Vehicle_Heading>Company vehicles on this map: {0}</RR_Vehicle_Heading>
+  <RR_Vehicle_Detail>These open the vehicle mod's own screens. Vehicles carry stock and crews between company sites over the world map; the gate is entered on foot.</RR_Vehicle_Detail>
+  <RR_Vehicle_FormCaravan>Send vehicles out from this site</RR_Vehicle_FormCaravan>
+  <RR_Vehicle_LoadCargo>Load cargo: {0} ({1} kg aboard)</RR_Vehicle_LoadCargo>
+  <RR_Vehicle_ThroughGate>Drive a vehicle through the gate</RR_Vehicle_ThroughGate>
+  <RR_Vehicle_FrameworkAbsent>Vehicle Framework is not loaded</RR_Vehicle_FrameworkAbsent>
+  <RR_Vehicle_NotCompanyVehicle>that is not one of the company's vehicles</RR_Vehicle_NotCompanyVehicle>
+  <RR_Vehicle_NotCompanyMap>this is not a company site on the surface</RR_Vehicle_NotCompanyMap>
+  <RR_Vehicle_NoneHere>there are no company vehicles here</RR_Vehicle_NoneHere>
+  <RR_Vehicle_CargoDialogMissing>the vehicle mod's cargo screen could not be opened</RR_Vehicle_CargoDialogMissing>
+  <RR_Vehicle_GateRefused>the gate only takes people on foot; the vehicle mod has no way through a portal</RR_Vehicle_GateRefused>
+  <RR_Gravship_SelectEngine>Select this site's grav engine</RR_Gravship_SelectEngine>
+  <RR_Gravship_Detail>The launch itself is the engine's own button, with all of its own checks.</RR_Gravship_Detail>
+  <RR_Gravship_OdysseyAbsent>Odyssey is not active</RR_Gravship_OdysseyAbsent>
+  <RR_Gravship_PocketMap>a gravship cannot launch from inside a Backrooms space</RR_Gravship_PocketMap>
+  <RR_Gravship_NoEngine>there is no grav engine at this site</RR_Gravship_NoEngine>
+
+  <!-- Branch dossiers: signed files swapped between co-op branches, read-only on arrival. -->
+  <RR_Dossier_Heading>Branch dossiers: {0} sent, {1} received</RR_Dossier_Heading>
+  <RR_Dossier_Detail>A signed summary of this branch's books, cases and evidence, written to {0}. Send the file to the other player any way you like. A received dossier changes nothing here; it is kept for reference.</RR_Dossier_Detail>
+  <RR_Dossier_Export>Write a dossier for this branch</RR_Dossier_Export>
+  <RR_Dossier_Exported>Dossier written: {0}</RR_Dossier_Exported>
+  <RR_Dossier_SendProvider>Send it through RimWorld Together</RR_Dossier_SendProvider>
+  <RR_Dossier_ProviderNoPath>RimWorld Together only moves items and people, and has no way for another mod to send records; use the file</RR_Dossier_ProviderNoPath>
+  <RR_Dossier_ProviderAbsent>RimWorld Together is not loaded; use the file</RR_Dossier_ProviderAbsent>
+  <RR_Dossier_SentPending>Dossier {0}: sent, no receipt yet</RR_Dossier_SentPending>
+  <RR_Dossier_SentAcknowledged>Dossier {0}: received by {1}</RR_Dossier_SentAcknowledged>
+  <RR_Dossier_Rewrite>Write dossier {0} again, unchanged</RR_Dossier_Rewrite>
+  <RR_Dossier_Import>Accept {0}</RR_Dossier_Import>
+  <RR_Dossier_Imported>Accepted: {0}</RR_Dossier_Imported>
+  <RR_Dossier_ReceivedRow>{0}, dossier {1}: {2} USD, {3} open and {4} closed cases, {5} evidence held, {6} analysed, {7} insights</RR_Dossier_ReceivedRow>
+  <RR_Dossier_UnsupportedSchema>Dossier records belong to another Rimrooms version. Keep the original save.</RR_Dossier_UnsupportedSchema>
+  <RR_Dossier_InvalidSave>Dossier records could not be reconciled. Dossiers are disabled to preserve them.</RR_Dossier_InvalidSave>
+  <RR_Dossier_BranchUnavailable>No operating company branch to write or accept dossiers.</RR_Dossier_BranchUnavailable>
+  <RR_Dossier_WriteFailed>The dossier file could not be written. Nothing was recorded.</RR_Dossier_WriteFailed>
+  <RR_Dossier_NotFound>That dossier file is not there.</RR_Dossier_NotFound>
+  <RR_Dossier_Malformed>That file is not a dossier this version can read. Nothing was recorded.</RR_Dossier_Malformed>
+  <RR_Dossier_BadSignature>That file's signature does not match its contents. It was altered or damaged; nothing was recorded.</RR_Dossier_BadSignature>
+  <RR_Dossier_OwnDossier>That is this branch's own dossier.</RR_Dossier_OwnDossier>
+  <RR_Dossier_Replay>That dossier, or a later one from the same branch, has already been accepted.</RR_Dossier_Replay>
+  <RR_Dossier_KeyChanged>That branch's dossiers were signed with a different key before. Nothing was recorded.</RR_Dossier_KeyChanged>
+  <RR_Dossier_ReceiptNotOurs>That receipt is for another branch.</RR_Dossier_ReceiptNotOurs>
+  <RR_Dossier_ReceiptUnknown>That receipt does not match any dossier this branch still keeps.</RR_Dossier_ReceiptUnknown>
 </LanguageData>

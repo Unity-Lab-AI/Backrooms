@@ -54,6 +54,9 @@ namespace RimroomsAsyncIndustries.Company
                 // that repeats an authored route adds a line to the card and nothing else.
                 if (routes.Any(existing => existing.kind == extra.kind &&
                     existing.thingDefName == extra.thingDefName)) { continue; }
+                // Nor one whose label key is already on the card. Settlement keys satisfied routes
+                // and baselines by label key, so two routes sharing one would read as one.
+                if (routes.Any(existing => existing.labelKey == extra.labelKey)) { continue; }
                 routes.Add(extra);
             }
             return routes;

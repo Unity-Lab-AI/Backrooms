@@ -54,6 +54,8 @@ namespace RimroomsAsyncIndustries.Automation
 
         private float nextCheck;
         private readonly HashSet<int> handled = new HashSet<int>();
+        private readonly Dictionary<int, int> refusals = new Dictionary<int, int>();
+        private const int MaximumAttemptsPerPage = 3;
         private static DateTime requestStamp;
         private static bool crewLoaded;
 
@@ -96,7 +98,7 @@ namespace RimroomsAsyncIndustries.Automation
                 if (!File.Exists(RequestPath) || Find.WindowStack == null || LongEventHandler.AnyEventNowOrWaiting) { return; }
                 // a fresh request starts a fresh run: nothing is handled yet and no crew is loaded
                 DateTime stamp = File.GetLastWriteTimeUtc(RequestPath);
-                if (stamp != requestStamp) { requestStamp = stamp; handled.Clear(); crewLoaded = false; }
+                if (stamp != requestStamp) { requestStamp = stamp; handled.Clear(); refusals.Clear(); crewLoaded = false; }
                 // the ideology page can sit UNDER the others (it opens right after the scenario page); it is
                 // handled first wherever it is, then the topmost unhandled page
                 var open = Find.WindowStack.Windows.Where(w => (w is Page || w is Dialog_NamePlayerFactionAndSettlement)
@@ -105,13 +107,14 @@ namespace RimroomsAsyncIndustries.Automation
                 if (top == null) { return; }
                 Dictionary<string, string> req = Request();
 
+                bool done = true;
                 switch (top)
                 {
-                    case Page_SelectStoryteller p: Storyteller(p); break;
-                    case Page_CreateWorldParams p: WorldParams(p, req); break;
-                    case Page_SelectStartingSite p: Site(p); break;
+                    case Page_SelectStoryteller p: done = Storyteller(p); break;
+                    case Page_CreateWorldParams p: done = WorldParams(p, req); break;
+                    case Page_SelectStartingSite p: done = Site(p); break;
                     case Dialog_NamePlayerFactionAndSettlement d: Names(d, req); return;
-                    case Page p when p.GetType().Name == "Page_RimroomsCompanySetup": Company(p, req); break;
+                    case Page p when p.GetType().Name == "Page_RimroomsCompanySetup": done = Company(p, req); break;
                     case Page_ChooseIdeoPreset p:
                         if (!LoadIdeo(p, req)) { nextCheck = Time.realtimeSinceStartup + 5f; return; }
                         break;
@@ -122,6 +125,17 @@ namespace RimroomsAsyncIndustries.Automation
                         if (!LoadPreset(p, req)) { nextCheck = Time.realtimeSinceStartup + 5f; return; }
                         break;
                     default: return;   // the scenario page and anything unknown are not ours
+                }
+
+                // a refused step is retried a few times rather than marked done; a page that keeps refusing is
+                // left to the caller with the refusal in the result file
+                if (!done)
+                {
+                    refusals.TryGetValue(top.ID, out int count);
+                    refusals[top.ID] = ++count;
+                    nextCheck = Time.realtimeSinceStartup + 5f;
+                    if (count < MaximumAttemptsPerPage) { return; }
+                    Report(top.GetType().Name + ": refused " + count + " times -- left for the caller");
                 }
 
                 handled.Add(top.ID);
@@ -144,31 +158,45 @@ namespace RimroomsAsyncIndustries.Automation
             return ok;
         }
 
-        private static void Storyteller(Page_SelectStoryteller p)
+        /// <summary>Sets a page field by reflection and says so in the result file when the field is not there.</summary>
+        private static bool SetField(Type type, object page, string name, object value)
+        {
+            FieldInfo field = type.GetField(name, Any);
+            if (field == null)
+            {
+                Report(type.Name + ": no field '" + name + "' -- setting skipped");
+                return false;
+            }
+            field.SetValue(page, value);
+            return true;
+        }
+
+        private static bool Storyteller(Page_SelectStoryteller p)
         {
             StorytellerDef teller = DefDatabase<StorytellerDef>.GetNamedSilentFail("Cassandra");
             DifficultyDef diff = DefDatabase<DifficultyDef>.GetNamedSilentFail("Easy");
-            typeof(Page_SelectStoryteller).GetField("storyteller", Any)?.SetValue(p, teller);
-            typeof(Page_SelectStoryteller).GetField("difficulty", Any)?.SetValue(p, diff);
-            typeof(Page_SelectStoryteller).GetField("difficultyValues", Any)?.SetValue(p, new Difficulty(diff));
+            if (teller == null || diff == null) { Report("storyteller: Cassandra or Easy not found"); return false; }
+            bool set = SetField(typeof(Page_SelectStoryteller), p, "storyteller", teller);
+            set &= SetField(typeof(Page_SelectStoryteller), p, "difficulty", diff);
+            set &= SetField(typeof(Page_SelectStoryteller), p, "difficultyValues", new Difficulty(diff));
             Find.GameInitData.permadeathChosen = true;
             Find.GameInitData.permadeath = false;   // reload anytime
-            Report("storyteller: Cassandra Classic, Community builder, reload anytime");
-            Advance(p, "storyteller");
+            Report("storyteller: Cassandra Classic, Community builder, reload anytime" + (set ? "" : " (some fields not set)"));
+            return Advance(p, "storyteller");
         }
 
-        private static void WorldParams(Page_CreateWorldParams p, Dictionary<string, string> req)
+        private static bool WorldParams(Page_CreateWorldParams p, Dictionary<string, string> req)
         {
             Type t = typeof(Page_CreateWorldParams);
             if (req.TryGetValue("seed", out string seed) && !string.IsNullOrWhiteSpace(seed))
             {
-                t.GetField("seedString", Any)?.SetValue(p, seed);
+                SetField(t, p, "seedString", seed);
             }
-            t.GetField("pollution", Any)?.SetValue(p, 0f);
+            SetField(t, p, "pollution", 0f);
             // owner: "30% aas ive taught u with allthe other settings also" -- coverage 30%, the rest Normal
             float coverage = 0.3f;
             if (req.TryGetValue("coverage", out string cov)) { float.TryParse(cov, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out coverage); }
-            t.GetField("planetCoverage", Any)?.SetValue(p, coverage);
+            SetField(t, p, "planetCoverage", coverage);
             foreach (string f in new[] { "rainfall", "temperature", "population" })
             {
                 FieldInfo fi = t.GetField(f, Any);
@@ -201,24 +229,24 @@ namespace RimroomsAsyncIndustries.Automation
                 Report("world: seed=" + (seed ?? "(page's)") + " pollution=0 factions " + before + " -> " + factions.Count +
                        " [" + string.Join(", ", factions.Where(f => f != null).Select(f => f.defName)) + "]");
             }
-            Advance(p, "world (generating)");
+            return Advance(p, "world (generating)");
         }
 
-        private static void Site(Page_SelectStartingSite p)
+        private static bool Site(Page_SelectStartingSite p)
         {
             Find.GameInitData.mapSize = MapSize;
             Find.GameInitData.startingSeason = Season.Spring;
             PlanetTile tile = PickTile(new[] { "TemperateForest", "TropicalRainforest" }, Hilliness.Mountainous);
             if (!tile.Valid) { tile = PickTile(new[] { "TemperateForest", "TropicalRainforest" }, Hilliness.LargeHills); }
-            if (!tile.Valid) { Report("site: refused -- no forest or jungle tile with mountains or large hills"); return; }
+            if (!tile.Valid) { Report("site: refused -- no forest or jungle tile with mountains or large hills"); return false; }
             Find.GameInitData.startingTile = tile;
             Find.WorldInterface.SelectedTile = tile;
             Tile t = Find.WorldGrid[tile];
             Report(string.Format("site: map {0}x{0}, Spring, tile {1} {2} {3}", MapSize, tile.tileId, t.PrimaryBiome?.defName, t.hilliness));
-            Advance(p, "site");
+            return Advance(p, "site");
         }
 
-        private static void Company(Page p, Dictionary<string, string> req)
+        private static bool Company(Page p, Dictionary<string, string> req)
         {
             if (!crewLoaded && p.prev is Page_ConfigureStartingPawns && GenTypes.GetTypeInAnyAssembly("EdB.PrepareCarefully.Mod") != null)
             {
@@ -226,7 +254,7 @@ namespace RimroomsAsyncIndustries.Automation
                 // Back to the pawns page (the page's own Back), so the preset is loaded first.
                 typeof(Page).GetMethod("DoBack", Any)?.Invoke(p, null);
                 Report("company setup: crew not loaded yet -- back to the pawns page");
-                return;
+                return true;   // this page closed; the next company page is a new window
             }
             p.GetType().GetField("reviewed", Any)?.SetValue(p, true);
             if (req.TryGetValue("company", out string company) && !string.IsNullOrWhiteSpace(company))
@@ -236,10 +264,12 @@ namespace RimroomsAsyncIndustries.Automation
             }
             // CanDoNext re-syncs roles and clears 'reviewed' when the roster changed, so acknowledge again after it
             MethodInfo can = p.GetType().GetMethod("CanDoNext", Any);
+            if (can == null) { Report("company setup: page has no CanDoNext"); return false; }
             bool ok = (bool)can.Invoke(p, null);
             if (!ok) { p.GetType().GetField("reviewed", Any)?.SetValue(p, true); ok = (bool)can.Invoke(p, null); }
             if (ok) { p.GetType().GetMethod("DoNext", Any)?.Invoke(p, null); }
             Report("company setup: acknowledged" + (ok ? " -> next" : " -> refused"));
+            return ok;
         }
 
         private void Names(Dialog_NamePlayerFactionAndSettlement d, Dictionary<string, string> req)

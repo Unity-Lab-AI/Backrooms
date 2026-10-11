@@ -1,7 +1,7 @@
 """Set a growing zone's crop through the real zone gizmo.   python .local/qa/set-crop.py X Z "Psychoid plant" """
 import os as _os, sys as _sys
-if _os.environ.get("OWNER_LENT_MOUSE") != "1":   # owner, 2026-10-09: "DONT FIGHT ME" -- real input locked
-    _sys.exit("REFUSED: real input is locked; ask the owner to lend the mouse first")
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+import own_mouse as om   # Unity's own mouse and keyboard: posted to the game window, never the owner's
 
 import importlib.util, os, subprocess, sys, time
 HERE = os.path.dirname(os.path.abspath(__file__)); PY = sys.executable
@@ -18,7 +18,7 @@ raw(g["screenRect"], -30)
 # fell through to the map). Type the crop into its search box, then click the one tile left: screenshot px.
 import ctypes
 u = ctypes.WinDLL("user32")
-def k(v): u.keybd_event(v, 0, 0, 0); time.sleep(0.03); u.keybd_event(v, 0, 2, 0); time.sleep(0.03)
+def k(v): om.key(v)
 subprocess.run([PY, os.path.join(HERE, "raw-click.py"), "1515", "558"], capture_output=True); time.sleep(0.3)
 for ch in crop.split()[0].upper(): k(ord(ch))
 time.sleep(0.5)
