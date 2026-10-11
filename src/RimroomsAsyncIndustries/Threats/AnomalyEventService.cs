@@ -268,14 +268,9 @@ namespace RimroomsAsyncIndustries.Threats
                 IntVec3 target = cells[(index * 37 + item.thingIDNumber) % cells.Count];
                 if (!target.InBounds(map) || !target.Standable(map)) { continue; }
                 if (target.GetFirstItem(map) != null) { continue; }
-                item.DeSpawn();
-                if (!GenPlace.TryPlaceThing(item, target, map, ThingPlaceMode.Near))
-                {
-                    // Put it back rather than leaving it nowhere. An event must never destroy
-                    // a player's property, and an unspawned thing is worse than a moved one.
-                    GenPlace.TryPlaceThing(item, cells[index % cells.Count], map, ThingPlaceMode.Near);
-                    continue;
-                }
+                // A failed or throwing placement puts it back rather than leaving it nowhere. An
+                // event must never destroy a player's property.
+                if (!Core.HeldCustody.Relocate(item, map, target, true)) { continue; }
                 moved++;
             }
             return moved > 0;

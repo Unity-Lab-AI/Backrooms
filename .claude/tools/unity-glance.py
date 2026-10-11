@@ -11,6 +11,17 @@ import base64, io, json, os, subprocess, sys, textwrap, urllib.request
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+def studio_token():
+    """Per-session token the studio server writes for its local helpers (needed for every POST)."""
+    try:
+        with open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".studio-token"),
+                  encoding="utf-8") as f:
+            return f.read().strip()
+    except OSError:
+        return ""
+
 BRIDGE = os.path.join(ROOT, ".local", "qa", "bridge.py")
 FONT = "C:/Windows/Fonts/Inkfree.ttf"
 PINK = (255, 70, 160)
@@ -100,7 +111,7 @@ def main():
     req = urllib.request.Request("http://127.0.0.1:4317/api/cam",
                                  data=json.dumps({"png": base64.b64encode(buf.getvalue()).decode(),
                                                   "caption": caption}).encode(),
-                                 headers={"Content-Type": "application/json"})
+                                 headers={"Content-Type": "application/json", "X-Studio-Token": studio_token()})
     urllib.request.urlopen(req, timeout=60).read()
     _mark_highlight()
 

@@ -28,7 +28,8 @@ claimed.
 
 ## What it is
 
-- A **gate** is an ordinary door you designate. No custom buildings, no new items.
+- A **gate** is an ordinary door you designate. The mod also adds some buildings and items of its own
+  (gate equipment, a records desk, a company journal) beside the ordinary ones.
 - Door width decides what fits: people, then pack animals, then anything.
 - Opening a **connection** is work an operator does at a console over time — not a button.
 - Everything through it is a **coordinate**: a saved address you can return to.

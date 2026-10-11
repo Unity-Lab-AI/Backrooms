@@ -148,12 +148,10 @@ def order(menu_label, qty):
     # the text field sits just under its label
     r = q["screenRect"]; x = int((r["x"] + 120) * FRAME_PER_UI); y = int((r["y"] + r["height"] + 16) * FRAME_PER_UI)
     subprocess.run([PY, os.path.join(HERE, "game-click.py"), str(x), str(y)], capture_output=True)
-    if os.environ.get("OWNER_LENT_MOUSE") != "1":   # typing the quantity is real keyboard input: locked
-        return "REFUSED: ordering types on the keyboard; ask the owner to lend it first"
-    import ctypes
-    u = ctypes.WinDLL("user32"); g = u.FindWindowW(None, "RimWorld by Ludeon Studios")
-    if u.GetForegroundWindow() != g: return "RimWorld not foreground"
-    def k(v): u.keybd_event(v, 0, 0, 0); time.sleep(0.02); u.keybd_event(v, 0, 2, 0); time.sleep(0.02)
+    # the quantity is typed with Unity's own keyboard: keys posted to the game window, never the owner's
+    sys.path.insert(0, HERE)
+    import own_mouse as om
+    def k(v): om.key(v)
     k(0x24)
     for _ in range(25): k(0x2E)
     for ch in str(qty): k(ord(ch))

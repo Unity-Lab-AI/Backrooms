@@ -211,14 +211,8 @@ namespace RimroomsAsyncIndustries.Portals
         {
             if (edge == null || Current.Game == null) { return false; }
             RimroomsPortalCrossingService crossings = Current.Game.GetComponent<RimroomsPortalCrossingService>();
-            if (crossings == null) { return false; }
-            IReadOnlyList<PortalCrossingReceipt> receipts = crossings.Receipts;
-            for (int index = 0; index < receipts.Count; index++)
-            {
-                PortalCrossingReceipt receipt = receipts[index];
-                if (receipt != null && receipt.ConnectionId == edge.Id) { return true; }
-            }
-            return false;
+            // A finished receipt guards nothing, so only live ones hold the repair back.
+            return crossings != null && crossings.IsConnectionInFlight(edge.Id);
         }
 
         public PortalRouteSearch BeginRouteSearch(Map source, Map destination)

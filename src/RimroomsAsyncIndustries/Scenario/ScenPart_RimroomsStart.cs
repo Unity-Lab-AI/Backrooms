@@ -137,13 +137,15 @@ namespace RimroomsAsyncIndustries.Scenario
             {
                 return CompanyActionResult.Refused(receipt == null ? "RR_Start_MissingSetup" : receipt.failure ?? "RR_Start_MissingSetup");
             }
-            if (receipt.branchInitialized) { return CompanyActionResult.Existing(); }
+            if (receipt.branchInitialized && receipt.openingComplete) { return CompanyActionResult.Existing(); }
+            RimroomsCampaignComponent company = Verse.Current.Game.GetComponent<RimroomsCampaignComponent>();
+            // The branch exists and only the opening failed: retry the opening alone.
+            if (receipt.branchInitialized) { return FinishOpening(receipt, company, map, CompanyActionResult.Applied()); }
             if (receipt.receiptVersion != 1 && receipt.receiptVersion != 2)
             { return CompanyActionResult.Refused("RR_Setup_UnknownReceipt"); }
             // Schema-1 physical receipts predate the native-arrival journal and remain valid.
             if (receipt.receiptVersion == 2 && !receipt.arrivalComplete)
             { return CompanyActionResult.Refused(receipt.failure ?? "RR_Setup_ArrivalIncomplete"); }
-            RimroomsCampaignComponent company = Verse.Current.Game.GetComponent<RimroomsCampaignComponent>();
             CompanyActionResult result = company.InitializeBranch(new BranchStartRequest
             {
                 ScenarioId = startDef.scenarioId,
@@ -168,16 +170,28 @@ namespace RimroomsAsyncIndustries.Scenario
                 return result;
             }
             receipt.branchInitialized = true;
+            receipt.openingComplete = false;
             receipt.failure = null;
-            // The solo/group opening, after the branch exists and before the welcome letter: it
-            // needs a live campaign to mint a coordinate against, and the player should not be
-            // told they have arrived until they are actually where they start.
-            string openingFailure = SoloGroupOpening.Open(startDef, company, map);
+            return FinishOpening(receipt, company, map, result);
+        }
+
+        /// <summary>
+        /// The solo/group opening, after the branch exists and before the welcome letter: it
+        /// needs a live campaign to mint a coordinate against, and the player should not be
+        /// told they have arrived until they are actually where they start. Recorded as done
+        /// only once it succeeds, so a failure leaves it retryable.
+        /// </summary>
+        private CompanyActionResult FinishOpening(HeadquartersSetupComponent receipt,
+            RimroomsCampaignComponent company, Map map, CompanyActionResult result)
+        {
+            string openingFailure = SoloGroupOpening.Open(startDef, company, map, ref receipt.openingCoordinateId);
             if (openingFailure != null)
             {
                 receipt.failure = openingFailure;
                 return CompanyActionResult.Refused(openingFailure);
             }
+            receipt.openingComplete = true;
+            receipt.failure = null;
             SetStartingRelations();
             Find.LetterStack.ReceiveLetter("RR_Start_WelcomeTitle".Translate(), "RR_Setup_Welcome".Translate(), LetterDefOf.NeutralEvent);
             return result;

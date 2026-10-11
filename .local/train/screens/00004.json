@@ -1,0 +1,26 @@
+{
+ "image": "00004.png",
+ "at": 1791665080.0511737,
+ "qa": [
+  {
+   "q": "Who is in the colonist bar at the top?",
+   "a": "Gee, Scar, Unity"
+  },
+  {
+   "q": "How many colonists are there?",
+   "a": "3"
+  },
+  {
+   "q": "Is the game paused?",
+   "a": "No, it is running at normal speed."
+  },
+  {
+   "q": "What letters are waiting on the right?",
+   "a": "Raid: The Barracuda Men; Visitors."
+  },
+  {
+   "q": "What alerts are showing?",
+   "a": "Low medicine; Not enough guest beds x10; Lord role unfilled; Tattered apparel."
+  }
+ ]
+}

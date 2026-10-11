@@ -95,8 +95,12 @@ namespace RimroomsAsyncIndustries.Company
             }
             if (total <= 0L) { return CompanyActionResult.Refused("RR_Exchange_NothingInRange"); }
 
-            string operationId = "rr.exchange." + map.uniqueID + "." + centre.x + "." + centre.z +
-                "." + (Find.TickManager == null ? 0 : Find.TickManager.TicksGame);
+            // Its own id, and the credit checked before anything is destroyed: a refused or
+            // duplicate post discovered after the goods are gone pays the player nothing for them.
+            string operationId = FreshOperationId("rr.exchange." + map.uniqueID + "." + centre.x + "." +
+                centre.z + "." + (Find.TickManager == null ? 0 : Find.TickManager.TicksGame));
+            string refusal = CreditRefusal(operationId, total);
+            if (refusal != null) { return CompanyActionResult.Refused(refusal); }
 
             for (int index = 0; index < taking.Count; index++)
             {
@@ -157,14 +161,35 @@ namespace RimroomsAsyncIndustries.Company
         }
 
         /// <summary>
+        /// Items held in containment: their records keep billing for them every day.
+        /// </summary>
+        private HashSet<Thing> BoundEvidenceItems()
+        {
+            var bound = new HashSet<Thing>();
+            for (int index = 0; index < evidence.Count; index++)
+            {
+                EvidenceRecord record = evidence[index];
+                if (record == null || record.Disposition != EvidenceDisposition.Contained) { continue; }
+                Thing item = record.Item;
+                if (item != null && !item.Destroyed) { bound.Add(item); }
+            }
+            return bound;
+        }
+
+        /// <summary>
         /// Everything in range the company will take.
         ///
         /// Bonds are skipped because a bond is already credits — banking one is a different
         /// action with a different meaning, and quietly selling a million-credit bond at 0.85
         /// would be a way to destroy a player's money by accident.
+        ///
+        /// Contained evidence is skipped too. Containment is the choice that keeps a thing off the
+        /// market, and selling it out from under the record would leave the branch paying a daily
+        /// charge for something that is gone. Destroying it from containment is the way out.
         /// </summary>
-        private static IEnumerable<Thing> ExchangeableIn(Map map, IntVec3 centre, float radius)
+        private IEnumerable<Thing> ExchangeableIn(Map map, IntVec3 centre, float radius)
         {
+            HashSet<Thing> bound = BoundEvidenceItems();
             foreach (IntVec3 cell in GenRadial.RadialCellsAround(centre, radius, true))
             {
                 if (!cell.InBounds(map)) { continue; }
@@ -178,6 +203,7 @@ namespace RimroomsAsyncIndustries.Company
                     if (thing.def.tradeability == Tradeability.None) { continue; }
                     if (BondService.FaceValueOf(thing) > 0L) { continue; }
                     if (thing.IsBurning()) { continue; }
+                    if (bound.Contains(thing)) { continue; }
                     yield return thing;
                 }
             }

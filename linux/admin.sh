@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Open Unity mission control -- the local admin page: processes, colony, Ready?/GO, orders to the model,
-# chat straight to her. Starts the rig first if it is not running, then opens the browser.
-cd "$(dirname "$0")/.." || exit 1
-python3 stream/services.py start >/dev/null 2>&1
-xdg-open http://127.0.0.1:4318/ 2>/dev/null || open http://127.0.0.1:4318/ 2>/dev/null
+# The stream rig is Windows-only: it drives RimWorldWin64.exe, OBS-Portable, the Windows audio stack and
+# Win32 input. This wrapper says so plainly instead of failing somewhere deep inside the scripts.
+# On Windows use the matching windows/*.bat launcher.
+echo "linux/admin.sh: the Unity stream rig runs on Windows only (RimWorldWin64, OBS-Portable, Win32 input/audio)." >&2
+echo "Run windows/admin.bat on the Windows machine instead." >&2
+exit 2

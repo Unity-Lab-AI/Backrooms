@@ -193,7 +193,11 @@ namespace RimroomsAsyncIndustries.Portals
                 string.IsNullOrEmpty(gate.PortalOpeningId))
             { return CompanyActionResult.Refused("RR_PortalTravel_NoSession"); }
             if (!gate.IsAwaitingRecovery) { return CompanyActionResult.Refused("RR_Gate_RecoveryWindowStillActive"); }
-            string operationId = gate.PortalConnectionId + ":emergency-return:" + gate.PortalOpeningId;
+            // The first attempt keeps the original id, so a recovery already receipted on an
+            // older save is still recognised; each later emergency gets its own attempt id.
+            int attempt = gate.PortalRecoveriesThisOpening;
+            string operationId = gate.PortalConnectionId + ":emergency-return:" + gate.PortalOpeningId +
+                (attempt == 0 ? string.Empty : ":" + attempt);
             return gate.RecoverPortalOpening(gate.PortalConnectionId, operationId);
         }
 
@@ -294,6 +298,16 @@ namespace RimroomsAsyncIndustries.Portals
             }
             PortalCrossingResult result = crossings.Cross(pawn, step, operationId);
             if (!result.Success && !string.IsNullOrEmpty(result.FailureKey)) { Report(result.FailureKey); }
+            // An ordinary visit to a coordinate starts its field record, as a dispatch would.
+            if (result.Success && !result.AlreadyApplied && result.Receipt != null)
+            {
+                RimroomsCampaignComponent campaign = Current.Game.GetComponent<RimroomsCampaignComponent>();
+                if (campaign != null)
+                {
+                    campaign.NotePortalArrival(result.Receipt.CoordinateId, result.Receipt.DestinationMap,
+                        result.Receipt.OperationId);
+                }
+            }
             EndSafely();
         }
 

@@ -17,6 +17,10 @@
   <RR_Proc_QuoteBurden>Quoted stack estimate: {0}. Current stack setting now gives {1}. Approximate total mass: {2} kg.</RR_Proc_QuoteBurden>
   <RR_Proc_QuoteTiming>Dispatch in {0} day(s); arrival in {1} day(s).</RR_Proc_QuoteTiming>
   <RR_Procurement_AcceptQuote>Accept and pay ${0}</RR_Procurement_AcceptQuote>
+  <RR_Procurement_DiscardQuote>Discard quote</RR_Procurement_DiscardQuote>
+  <RR_Procurement_QuotePage>Open quotes page {0} of {1}</RR_Procurement_QuotePage>
+  <RR_Procurement_PreviousQuotes>Newer quotes</RR_Procurement_PreviousQuotes>
+  <RR_Procurement_NextQuotes>Older quotes</RR_Procurement_NextQuotes>
   <RR_Proc_ConfirmPurchase>Accept the order for {0} x {1} at ${2}? It will be charged once and delivered to {3} on the quoted schedule.</RR_Proc_ConfirmPurchase>
   <RR_Procurement_OrderHistoryHeading>Orders and physical shipment receipts</RR_Procurement_OrderHistoryHeading>
   <RR_Proc_ArchiveSummary>Safely archived: {0} settled order(s) ({1} delivered, {2} cancelled/refunded; {3} items delivered total). Their company ledger entries and monotonic order IDs remain.</RR_Proc_ArchiveSummary>
@@ -63,7 +67,7 @@
   <RR_Proc_OrderLimit>Procurement order IDs are exhausted for this branch.</RR_Proc_OrderLimit>
   <RR_Proc_TooManyOpenOrders>Too many orders are awaiting delivery. Resolve existing orders before creating more.</RR_Proc_TooManyOpenOrders>
   <RR_Proc_OrderHistoryFull>All retained order records are active, ambiguous, or need ledger review, so none can be safely archived. Resolve existing shipments before ordering more; no records were discarded.</RR_Proc_OrderHistoryFull>
-  <RR_Proc_TooManyQuotes>Too many saved quotes are open. Accept or let an existing quote expire first.</RR_Proc_TooManyQuotes>
+  <RR_Proc_TooManyQuotes>Too many saved quotes are open. Accept or discard an existing quote first.</RR_Proc_TooManyQuotes>
   <RR_Proc_MassUnavailable>Core has no valid mass estimate for this item, so a safe physical quote cannot be prepared.</RR_Proc_MassUnavailable>
   <RR_Proc_QuoteUnavailable>This quote is missing, already accepted, or belongs to another company branch.</RR_Proc_QuoteUnavailable>
   <RR_Proc_OrphanedPayment>A matching prior purchase ledger entry exists without a trustworthy shipment order. No duplicate shipment will be delivered or recreated; preserve the ledger and request recovery review.</RR_Proc_OrphanedPayment>

@@ -83,6 +83,12 @@ namespace RimroomsAsyncIndustries.Generation
         private const int CellsPerSweep = 600;
 
         private int cursor;
+
+        /// <summary>
+        /// Saved. Cells whose contents have already been released. Each cell is released once, the
+        /// first time it is seen, so a thing the player forbids by hand afterwards stays forbidden.
+        /// </summary>
+        private BoolGrid released;
         private bool applicable;
         private bool applicableKnown;
 
@@ -116,9 +122,10 @@ namespace RimroomsAsyncIndustries.Generation
         /// <summary>
         /// Un-forbid what stands on cells that are no longer fogged.
         ///
-        /// **One direction only.** This never forbids anything, so a player who unforbids a thing
-        /// by hand keeps that decision, and a thing in a room still unseen is left exactly as the
-        /// generator placed it.
+        /// **One direction only, and once per cell.** This never forbids anything, so a player who
+        /// unforbids a thing by hand keeps that decision; and a cell is released only the first
+        /// time it is seen, so a player who forbids a thing later keeps that decision too. A thing
+        /// in a room still unseen is left exactly as the generator placed it.
         /// </summary>
         private void Release()
         {
@@ -127,6 +134,7 @@ namespace RimroomsAsyncIndustries.Generation
             // itself was checked by `Applicable`.
             int total = map.cellIndices.NumGridCells;
             if (total <= 0) { return; }
+            if (released == null || !released.MapSizeMatches(map)) { released = new BoolGrid(map); }
             int examined = 0;
             while (examined < CellsPerSweep && examined < total)
             {
@@ -134,7 +142,8 @@ namespace RimroomsAsyncIndustries.Generation
                 IntVec3 cell = map.cellIndices.IndexToCell(cursor);
                 cursor++;
                 examined++;
-                if (map.fogGrid.IsFogged(cell)) { continue; }
+                if (released[cursor - 1] || map.fogGrid.IsFogged(cell)) { continue; }
+                released[cursor - 1] = true;
                 System.Collections.Generic.List<Thing> things = cell.GetThingList(map);
                 for (int index = 0; index < things.Count; index++)
                 {
@@ -155,6 +164,9 @@ namespace RimroomsAsyncIndustries.Generation
             // The cursor is saved so a reload does not restart the sweep from zero and leave the
             // far half of a coordinate quiet for a minute longer than it should be.
             Scribe_Values.Look(ref cursor, "rr_unexploredWorkCursor", 0);
+            // older saves have no grid; it starts empty, so cells already in view are released
+            // once more on the next pass and never again
+            Scribe_Deep.Look(ref released, "rr_unexploredWorkReleased");
         }
     }
 }

@@ -32,15 +32,20 @@ namespace RimroomsAsyncIndustries.Portals
             if (campaign == null || !campaign.CanOperate) { yield break; }
 
             // Only a door that is actually an endpoint of a live connection on this map.
-            PortalConnectionRecord connection = ConnectionAt(door);
-            if (connection == null) { yield break; }
+            if (ConnectionAt(door, false) == null) { yield break; }
 
             var order = new Command_Action
             {
                 defaultLabel = "RR_DoorCross_Label".Translate(),
                 defaultDesc = "RR_DoorCross_Desc".Translate(),
                 icon = TexCommand.Install,
-                action = delegate { Find.WindowStack.Add(new FloatMenu(Options(connection, door))); },
+                // Resolved at the click, so the address chosen is the one open at that moment.
+                action = delegate
+                {
+                    PortalConnectionRecord connection = ConnectionAt(door, true);
+                    if (connection == null) { return; }
+                    Find.WindowStack.Add(new FloatMenu(Options(connection, door)));
+                },
             };
             yield return order;
         }
@@ -51,20 +56,26 @@ namespace RimroomsAsyncIndustries.Portals
         /// Read from the network rather than from anything saved on the door, so a door that has
         /// been moved or whose address was cleared stops offering the order immediately.
         /// </summary>
-        private static PortalConnectionRecord ConnectionAt(Thing door)
+        private static PortalConnectionRecord ConnectionAt(Thing door, bool preferOpen)
         {
             RimroomsPortalNetwork network = Current.Game == null
                 ? null : Current.Game.GetComponent<RimroomsPortalNetwork>();
             if (network == null || network.Connections == null) { return null; }
-            IReadOnlyList<PortalConnectionRecord> connections = network.Connections;
-            for (int index = 0; index < connections.Count; index++)
+            // A door can remember several addresses and only one is open at a time. The open one
+            // is the one meant; the first remembered is kept only as the fallback whose refusal
+            // the player is then shown.
+            PortalConnectionRecord fallback = null;
+            List<PortalConnectionRecord> local = PortalTravelService.LocalAddresses(door.Map);
+            for (int index = 0; index < local.Count; index++)
             {
-                PortalConnectionRecord connection = connections[index];
-                if (connection == null) { continue; }
-                if (connection.First != null && connection.First.Anchor == door) { return connection; }
-                if (connection.Second != null && connection.Second.Anchor == door) { return connection; }
+                PortalConnectionRecord connection = local[index];
+                PortalRouteStep step = PortalTravelService.StepFrom(connection, door.Map);
+                if (step == null || step.Source == null || step.Source.Anchor != door) { continue; }
+                if (!preferOpen) { return connection; }
+                if (network.ValidateRouteStep(step) == PortalNetworkResult.Success) { return connection; }
+                if (fallback == null) { fallback = connection; }
             }
-            return null;
+            return fallback;
         }
 
         /// <summary>

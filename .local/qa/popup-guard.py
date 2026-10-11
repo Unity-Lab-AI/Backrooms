@@ -32,9 +32,10 @@ def session():
 s, buf = session()
 def call(n, a=None):
     r = b.exchange(s, buf, "tools/call", {"name": n, "arguments": a or {}}); r = r.get("result", r); return r.get("structuredContent", r)
+INSPECT_TABS = {"Health", "Needs", "Bio", "Social", "Gear", "Log", "Character", "Training", "Prisoner", "Guest"}
 HARMLESS = ("Dialog_NamePlayerFactionAndSettlement", "Dialog_NamePlayerFaction", "Dialog_NamePlayerSettlement", "Dialog_MessageBox", "Dialog_Info")
 IGNORE = ("MainTabWindow", "MiniMap", "ImmediateWindow", "Page_", "Dialog_Options", "WorldInspectPane", "MapPreview")
-told = set()
+told = set(); since = {}
 REFUSE = {"refuse", "reject", "decline", "ignore", "no", "deny", "don't pay", "do not pay", "send away", "turn away", "not now", "dismiss"}
 KEEP = ("Dialog_Trade", "Dialog_FormCaravan", "Dialog_BillConfig", "Dialog_ManageAreas", "Dialog_Slider")
 def buttons():
@@ -52,15 +53,21 @@ while True:
         wins = [w for w in st.get("windows", []) if w.get("absorbInputAroundWindow") and not any(k in (w.get("type") or "") for k in IGNORE)]
         if not wins:
             if os.path.exists(FLAG): os.remove(FLAG)
+            since.clear()                      # the five-minute wait starts again for the next box
         for w in wins:
             t = w.get("type") or ""
             labs = [o.get("label") for o in buttons()]
             body = " ".join(l for l in labs if l and len(l) > 25).lower()
-            visit = next((o for o in buttons() if any(w in (o.get("label") or "").lower() for w in ("always let them come", "assure safety", "let them come", "welcome"))), None)
-            if visit and ("visit" in body or "guest" in body or "arrived" in body):
+            visit = next((o for o in buttons() if any(w in (o.get("label") or "").lower() for w in ("always let them come", "assure safety", "let them come", "welcome", "you can stay"))), None)
+            if visit and ("visit" in body or "guest" in body or "arrived" in body or "you can stay" in (visit.get("label") or "").lower()):
                 # owner, 2026-10-09: "that one was to accept visitor if u refussed that pop up non will arrive until u set it in hospitality tab"
                 call("rimworld/click_ui_target", {"targetId": visit["targetId"]}); print("visitors welcomed:", visit.get("label"), flush=True)
-                subprocess.run([sys.executable, SAY, "Visitors at the gate, chat. Come on in, make yourselves at home."], env=dict(os.environ, UNITY_NO_GLANCE="1"))
+                subprocess.run([sys.executable, SAY, "fact: visitors arrived at the colony and I welcomed them in"], env=dict(os.environ, UNITY_NO_GLANCE="1"))
+            elif (set(l for l in labs if l and len(l) <= 25) - INSPECT_TABS) <= {"OK", "Close", "Jump to location"} and                     set(l for l in labs if l) & {"OK", "Close"}:
+                # an info-only window (a notice she opened, a letter body): its only real choice is Close/OK -- close
+                # it so it cannot block her turn (live: the gate notice sat open seven minutes)
+                btn = next(o for o in buttons() if o.get("label") in ("OK", "Close"))
+                call("rimworld/click_ui_target", {"targetId": btn["targetId"]}); print("closed info window", t, flush=True)
             elif any(k in t for k in HARMLESS) and set(l for l in labs if l) & {"OK", "Close", "Accept", "Confirm"} and not set(labs) - {"OK", "Close", "Accept", "Confirm", "Randomize", None} - set(l for l in labs if l and len(l) > 25):
                 btn = next(o for o in buttons() if o.get("label") in ("OK", "Close", "Accept", "Confirm"))
                 call("rimworld/click_ui_target", {"targetId": btn["targetId"]}); print("accepted", t, flush=True)
@@ -71,12 +78,19 @@ while True:
                 # owner, 2026-10-09: "anser them most are shit never pay them" -- refuse, decline, ignore; never pay
                 btn = next(o for o in buttons() if (o.get("label") or "").split(" (")[0].strip().lower() in REFUSE)
                 call("rimworld/click_ui_target", {"targetId": btn["targetId"]}); print("refused", t, btn.get("label"), flush=True)
-                subprocess.run([sys.executable, SAY, "Somebody wanted something from me just now. The answer is no. We do not pay."], env=dict(os.environ, UNITY_NO_GLANCE="1"))
+                subprocess.run([sys.executable, SAY, "fact: someone demanded we pay them and I refused"], env=dict(os.environ, UNITY_NO_GLANCE="1"))
+            elif (time.time() - since.setdefault(t, time.time()) > 300
+                  and next((o for o in buttons() if any(k in (o.get("label") or "").lower() for k in ("you can stay", "can join", "let them join", "accept them"))), None)):
+                # live, 10-10: a "can they stay?" box froze the game ten minutes while her turns went elsewhere; a free
+                # extra colonist is the obvious yes for a crew of three, so after five minutes it is taken
+                btn = next(o for o in buttons() if any(k in (o.get("label") or "").lower() for k in ("you can stay", "can join", "let them join", "accept them")))
+                call("rimworld/click_ui_target", {"targetId": btn["targetId"]}); print("joiner accepted after 5 min", t, flush=True); since.pop(t, None)
+                subprocess.run([sys.executable, SAY, "fact: someone asked to join the colony and I said yes, they can stay"], env=dict(os.environ, UNITY_NO_GLANCE="1"))
             else:
                 json.dump({"ts": time.time(), "type": t, "text": [l for l in labs if l and len(l) > 25][:4], "options": [l for l in labs if l and len(l) <= 25][:12]}, open(FLAG, "w"))
                 if t not in told:
                     told.add(t); print("needs a decision:", t, [l for l in labs if l][:8], flush=True)
-                    subprocess.run([sys.executable, SAY, "Ooh, a choice just popped up, chat. Give me a second to think about it."], env=dict(os.environ, UNITY_NO_GLANCE="1"))
+                    subprocess.run([sys.executable, SAY, "fact: a choice just popped up in the game and I am thinking it over"], env=dict(os.environ, UNITY_NO_GLANCE="1"))
     except Exception:
         try: s, buf = session()
         except Exception: pass

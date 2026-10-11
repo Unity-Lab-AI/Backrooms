@@ -46,7 +46,21 @@ if _os.name == "nt":
 
 
 OLLAMA = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")
-DEFAULT_MODEL = os.environ.get("AUTOPILOT_MODEL", "qwen3.6:35b")
+def _default_model():
+    """Her trained player shell when start.bat has applied it, else the base (training/apply.py)."""
+    if os.environ.get("AUTOPILOT_MODEL"):
+        return os.environ["AUTOPILOT_MODEL"]
+    try:
+        import urllib.request as _u
+        names = [m["name"] for m in json.loads(_u.urlopen("http://127.0.0.1:11434/api/tags", timeout=5).read())["models"]]
+        if any(n.split(":")[0] == "unity-player" for n in names):
+            return "unity-player"
+    except Exception:
+        pass
+    return "qwen3.6:35b"
+
+
+DEFAULT_MODEL = _default_model()
 STATE = "state.json"
 OWNER_ORDERS = os.path.join(HERE, "owner-orders.txt")     # written by the owner by hand; the autopilot only reads it
 
@@ -67,7 +81,9 @@ def ollama_chat(model, messages, tool_specs, opts):
     body = {"model": model, "messages": messages, "tools": tool_specs, "stream": False,
             "keep_alive": opts["keep_alive"],
             "options": {"num_ctx": opts["num_ctx"], "temperature": 0.5, "top_p": 0.9, "use_mlock": True,   # owner: lots of RAM -- keep it locked in, never paged
-                        "num_thread": int(os.environ.get("AUTOPILOT_THREADS", "6"))}}   # 8 = physical cores; 14 made turns slower (threads stall on each other when the game takes a core)
+                        "num_thread": int(os.environ.get("AUTOPILOT_THREADS", "6")),
+                        # a turn with no cap ran past nine minutes on CPU (live, 10-10); a step is one short line + a tool call
+                        "num_predict": int(os.environ.get("AUTOPILOT_MAX_TOKENS", "1200"))}}   # 8 = physical cores; 14 made turns slower (threads stall on each other when the game takes a core)
     if opts.get("num_gpu") is not None:
         body["options"]["num_gpu"] = opts["num_gpu"]
     if opts.get("think") is not None:
@@ -88,8 +104,16 @@ def gather_chat(st):
         st["last_ts"] = max(r["ts"] for r in rows)
     greeted = set(st["greeted"])
     joins, msgs = [], []
+    # the owner's handle is secret on stream: their chat lines reach her as orders (owner-orders), never as a
+    # viewer to answer by name (live: she replied "me either forever" to the owner's handle)
+    try:
+        owner = open(os.path.join(ROOT, ".local", "tw", "owner.txt"), encoding="utf-8").read().strip().lower()
+    except OSError:
+        owner = ""
     for r in rows:
         who = (r.get("who") or "").strip()
+        if owner and who.lower() == owner:
+            continue
         cid = int(str(r.get("key", "v0"))[1:] or 0)
         if "(joined the stream)" in (r.get("text") or ""):
             if who.lower() not in greeted:
@@ -99,6 +123,10 @@ def gather_chat(st):
                      "new_viewer": who.lower() not in greeted})
     # messages not answered last turn get one more chance
     carried = [m for m in st.get("pending", []) if m["chat_id"] not in {x["chat_id"] for x in msgs}]
+    # joiners nobody greeted yet stay queued (a few turns) instead of being marked greeted unanswered
+    seen = {j["viewer"].lower() for j in joins}
+    joins = [j for j in st.get("pending_joins", [])
+             if j["viewer"].lower() not in greeted and j["viewer"].lower() not in seen] + joins
     return joins, carried + msgs
 
 
@@ -140,7 +168,7 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True):
                 "food-rotting-or-no-cold": ("roof", "cooler", "freezer", "fridge", "storage", "stockpile", "rot", "decay", "vent"),
                 "perimeter-hole": ("wall", "embrasure", "door", "corner", "firebreak", "lane"),
                 "blueprints-but-no-material": ("wood", "material", "blueprint", "chop", "build"),
-                "no-medicine": ("medic", "heal", "tend", "self-tend", "doctor"),
+                "no-medicine": ("medic", "heal", "self-tend", "doctor", "healroot"),   # plain "tend" pulled in the after-a-raid capture rule and she recited it every turn
                 "heat-wave": ("heat", "cooler", "temperature", "backrooms"),
                 "work-priorities-unset": ("priorit", "work tab", "firefight", "cook", "research"),
                 "fields-wrong": ("field", "crop", "sow", "potato", "zone", "plant"),
@@ -222,12 +250,35 @@ CONVO_TOKEN_CAP = 56000   # a bigger window costs only RAM; every reset costs a 
 def _est_tokens(msgs):
     return sum(len(str(m.get("content", ""))) for m in msgs) // 4
 
+_ORDERS_SEEN = [0]   # how much of the owner-orders file this conversation has already been given
+
+
+def _orders_text():
+    try:
+        return open(OWNER_ORDERS, encoding="utf-8", errors="replace").read()
+    except OSError:
+        return ""
+
+
+def new_orders():
+    """Owner orders added since this conversation last saw the file. A continuing turn used to carry none at all,
+    so an order written mid-conversation waited until the next fresh brief (minutes, sometimes never)."""
+    txt = _orders_text()
+    if len(txt) < _ORDERS_SEEN[0]:          # the file was rewritten: everything in it is new to her
+        _ORDERS_SEEN[0] = 0
+    delta = txt[_ORDERS_SEEN[0]:].strip()
+    _ORDERS_SEEN[0] = len(txt)
+    return delta[-3000:]
+
+
 def short_update(toolbox, st, joins, msgs):
     """What changed since last turn -- the full brief is only sent when the conversation starts fresh.
     This model's memory can only be reused when the new prompt continues the old one exactly, so a rebuilt brief
     every turn cost a cold 2-4 minute read; an appended update costs seconds (owner: "fixing this shit to work
     faster and better")."""
-    return ("UPDATE (turn %d) -- what is new; your orders from the start of this conversation still stand:" % st["tick"]
+    fresh = new_orders()
+    head = ("NEW OWNER ORDERS (binding, do these first):" + chr(10) + fresh + chr(10)) if fresh else ""
+    return (head + "UPDATE (turn %d) -- what is new; your orders from the start of this conversation still stand:" % st["tick"]
             + chr(10) + brief(toolbox, st, joins, msgs, "", with_orders=False))
 
 def turn(toolbox, st, args, system, specs):
@@ -241,7 +292,9 @@ def turn(toolbox, st, args, system, specs):
     # a conversation started while the game was down fills up with "no connection" turns and she keeps believing
     # it; the moment the game answers again the conversation starts fresh
     try:
-        toolbox.bridge.call("rimworld/get_game_info", {}); up = True
+        _gi = toolbox.bridge.call("rimworld/get_game_info", {})
+        # the bridge returns {"error": ...} instead of raising when the game is not up
+        up = not (isinstance(_gi, dict) and _gi.get("error"))
     except BaseException:
         up = False
     if not up and not args.dry_run:
@@ -255,6 +308,7 @@ def turn(toolbox, st, args, system, specs):
     if not CONVO or _est_tokens(CONVO) > CONVO_TOKEN_CAP:
         CONVO = [{"role": "system", "content": system},
                  {"role": "user", "content": brief(toolbox, st, joins, msgs, runlist)}]
+        _ORDERS_SEEN[0] = len(_orders_text())   # the full brief carried every order up to now
         log("fresh conversation (full brief)")
     else:
         CONVO.append({"role": "user", "content": short_update(toolbox, st, joins, msgs)})
@@ -280,6 +334,20 @@ def turn(toolbox, st, args, system, specs):
             log("TOOL", name, json.dumps(a, ensure_ascii=False)[:300])
             result = toolbox.dispatch(name, a)
             messages.append({"role": "tool", "tool_name": name, "content": str(result)[:6000]})
+            # owner: train her on RimWorld (a LoRA). Every step is kept with the state she saw, the call and the
+            # game's answer; the good ones get picked out later as training examples.
+            try:
+                last_user = next((m.get("content", "") for m in reversed(messages) if m.get("role") == "user"), "")
+                tdir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "traces")
+                os.makedirs(tdir, exist_ok=True)
+                with open(os.path.join(tdir, time.strftime("%Y-%m-%d") + ".jsonl"), "a", encoding="utf-8") as tf:
+                    tf.write(json.dumps({"ts": time.time(), "state": str(last_user)[-4000:],
+                                         "said": msg.get("content") or "", "tool": name, "args": a,
+                                         "result": str(result)[:2000],
+                                         "refused": str(result).startswith(("REFUSED", "refused", "error", "bad arguments", "unknown tool"))},
+                                        ensure_ascii=False) + "\n")
+            except Exception:
+                pass
         for m in messages:                  # an old screenshot would be re-read every step; keep only the newest
             m.pop("images", None)
         if toolbox.pending_images:
@@ -288,14 +356,20 @@ def turn(toolbox, st, args, system, specs):
             toolbox.pending_images = []
     # hard backstop for the owner's order "greet every new chatter by name": anyone the model skipped gets a line
     greeted = set(st["greeted"])
+    still = []
     for j in joins + [m for m in msgs if m["new_viewer"]]:
         who = j["viewer"].lower()
         if who in toolbox.greeted_this_tick or who in greeted:
             greeted.add(who)
             continue
-        # no canned greeting from the player (owner: "NEVER EVER ANY FALLBACKS"); the voice writes greetings
-        greeted.add(who)
+        # no canned greeting from the player (owner: "NEVER EVER ANY FALLBACKS"); the voice writes greetings.
+        # Not greeted is not done: a joiner waits for a later turn, up to three tries, then is let go.
+        if "text" not in j and j.get("tries", 0) < 2:
+            still.append(dict(j, tries=j.get("tries", 0) + 1))
+        else:
+            greeted.add(who)
     st["greeted"] = sorted(greeted)[-500:]
+    st["pending_joins"] = still[:10]
     st["pending"] = [m for m in msgs if m["viewer"].lower() not in toolbox.greeted_this_tick
                      and m not in st.get("pending", [])][:5]
     st["memory"].append(time.strftime("%H:%M ") + (final[:200] or "(no summary)") +

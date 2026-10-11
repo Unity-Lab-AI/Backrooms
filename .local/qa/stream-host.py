@@ -9,7 +9,9 @@ Runs in the background beside play and covers the four ways the stream went quie
 Every line goes through stream-beat.fresh() (local model, clean-stream filter, no repeats, no invented numbers)
 and unity-say.py --raw. The owner's own chat lines are never answered or named here.
 """
+from datetime import datetime
 import importlib.util, json, os, random, re, socket, subprocess, sys, time, uuid
+CREW_FACT = ""
 
 # Owner, 2026-10-10: "im getting alot of system cmd openings while im doing stuff". Every helper this script
 # spawns -- powershell for the process table, python for a spoken line -- was flashing its own console over
@@ -37,7 +39,20 @@ def _owner_handles():
     f = os.path.join(ROOT, ".local", "tw", "owner.txt")
     try: return {l.strip().lower() for l in open(f, encoding="utf-8") if l.strip()}
     except Exception: return set()
-OWNER = _owner_handles()
+def _secret_words():
+    """Words that must never be said or posted on stream (the owner's handle among them); never printed."""
+    out = []
+    for f in (os.path.join(ROOT, ".local", "autopilot", "secret-words.txt"), os.path.join(ROOT, ".local", "tw", "owner.txt")):
+        try: out += [l.strip() for l in open(f, encoding="utf-8") if len(l.strip()) >= 3 and not l.startswith("#")]
+        except Exception: pass
+    return out
+SECRETS = _secret_words()
+OWNER = _owner_handles() | {w.lower() for w in SECRETS}
+def scrub(line):
+    if not line: return line
+    for w in SECRETS:
+        line = re.sub(re.escape(w), "my friend", line, flags=re.I)
+    return line
 SILENCE = 18      # owner: 30 s is the max, and the max should be rare
 
 spec = importlib.util.spec_from_file_location("sb", os.path.join(HERE, "stream-beat.py")); sb = importlib.util.module_from_spec(spec)
@@ -57,12 +72,27 @@ try:
 except BaseException as _e:
     print("no bridge yet (%s) -- talking anyway, will reconnect" % str(_e)[:60], flush=True)
 
+def drop_session():
+    global s, buf
+    try:
+        if s is not None: s.close()
+    except Exception: pass
+    s = buf = None
+
 def call(n, a=None):
     global s, buf
     if s is None:
         try: s, buf = session()
         except BaseException: raise RuntimeError("no bridge")
-    r = b.exchange(s, buf, "tools/call", {"name": n, "arguments": a or {}}); r = r.get("result", r); return r.get("structuredContent", r)
+    try:
+        r = b.exchange(s, buf, "tools/call", {"name": n, "arguments": a or {}})
+    except BaseException as _e:
+        # bridge.py ends a dead or silent link with SystemExit, which the Exception handlers below never see:
+        # drop the socket here and turn it into an ordinary error, so the host lives and reconnects
+        if isinstance(_e, KeyboardInterrupt): raise
+        if not str(_e).startswith("bridge error:"): drop_session()   # a tool's own error leaves the link healthy
+        raise RuntimeError("bridge call failed: %s" % str(_e)[:80])
+    r = r.get("result", r); return r.get("structuredContent", r)
 
 def fresh(fact):
     """Unity's own voice (owner, 2026-10-09: "quit being so robot in schat you a human goth coder chick"):
@@ -85,23 +115,41 @@ def fresh(fact):
                   "cold hands, never being tired or sleepy. Do NOT narrate like a documentary and never "
                   "say behold, lo, witness, cosmos, indeed, truly or fellow. First person always (I, me, my "
                   "crew), never your own name in the third person. ONE spoken line, at most 20 words, about "
-                  "this and nothing else: \"%s\". You may add your own feeling about it, but invent NO events, "
+                  "this and nothing else: \"%s\". Say it IN YOUR OWN WORDS -- react to it, never repeat it back. Invent NO events, "
                   "names or numbers that are not in that fact, and NEVER say you did, built, set up or powered anything unless the fact says it is done. No swearing, nothing degrading. Don't reuse "
                   "these recent lines: %s. Reply with the line only."
                   % (fact, " | ".join(hist[-8:])))
         try:
-            req = urllib.request.Request("http://127.0.0.1:11435/api/generate", data=json.dumps(
-                {"model": "unity-local", "prompt": prompt, "stream": False, "keep_alive": "10m",
-                 "options": {"temperature": 0.9, "num_ctx": 8192, "num_predict": 60}}).encode(),
+            # the same system/user split her voice shell was trained on (training/build_voice.py): persona and
+            # rules as the system turn, the "ONE spoken line ..." request as the user turn
+            # ...but only once the trained voice is loaded: the untrained base just parrots the fact back when
+            # asked that way, so until then it gets the whole prompt as one user turn
+            trained = (os.path.exists(os.path.join(ROOT, "training", "models", "unity-voice.Q4_K_M.gguf.applied")) or
+                       bool(os.environ.get("UNITY_VOICE_LLM")))   # the brain was trained on the same split
+            cut = prompt.find("ONE spoken line") if trained else -1
+            msgs = ([{"role": "system", "content": prompt[:cut].strip()}, {"role": "user", "content": prompt[cut:]}]
+                    if cut > 0 else [{"role": "user", "content": prompt}])
+            req = urllib.request.Request(os.environ.get("UNITY_VOICE_URL", "http://127.0.0.1:11435") + "/api/chat", data=json.dumps(
+                {"model": os.environ.get("UNITY_VOICE_LLM", "unity-local"), "messages": msgs, "stream": False, "think": False, "keep_alive": "10m",
+                 "options": {"temperature": 0.9, "num_ctx": int(os.environ.get("UNITY_VOICE_NUM_CTX", "8192")), "num_predict": 60}}).encode(),
                 headers={"Content-Type": "application/json"})
-            line = json.loads(urllib.request.urlopen(req, timeout=25).read())["response"].strip().strip('"').split(chr(10))[0]
+            line = json.loads(urllib.request.urlopen(req, timeout=25).read())["message"]["content"].strip().strip('"').split(chr(10))[0]
         except Exception as _e:
             # the player model shares Ollama and can hold it for a while; say why, then let the next pass retry
             print("voice model did not answer:", str(_e)[:80], flush=True); break
         line = line.replace('"', "").strip()
+        # no announcer openers (owner: no corporate scripted showman lines): "Hey guys,", "Alright, listen up,"
+        line = re.sub(r"^\W*(?:(?:hey|hi|yo|ok(?:ay)?|alright|so|oh|well)\W+)*(?:(?:guys|everyone|everybody|chat|"
+                      r"y'all|folks|listen up|team|crew)\b\W*)+", "", line, flags=re.I).strip()
+        if line[:1].islower(): line = line[:1].upper() + line[1:]
+        # crew counts she makes up ("Gee, Scar, and 3 more") -- the crew is only who the fact names
+        if re.search(r"\b(\d+|two|three|four|five|six) (more|others|other colonists|new)\b", line, re.I): continue
         line = re.sub(r"\bUnity is\b", "I'm", line); line = re.sub(r"\bUnity's\b", "my", line); line = re.sub(r"\bUnity\b", "I", line)
         low = line.lower()
         if difflib.SequenceMatcher(None, low, fact.lower()).ratio() > 0.75: continue   # a bare echo of the prompt
+        # a parroted clause of the fact ("I have only read it, I have not acted on it") is a script, not her words
+        _fw = re.findall(r"[a-z']+", fact.lower()); _lw = " " + " ".join(re.findall(r"[a-z']+", low)) + " "
+        if any(" " + " ".join(_fw[k:k + 5]) + " " in _lw for k in range(max(0, len(_fw) - 4))): continue
         if not line or len(line.split()) > 30 or any(re.search(r"\b%s" % w, low) for w in sb.BANNED): continue
         if any(w in low for w in ("behold", "cosmos", " lo,", "witness")): continue
         if low.startswith(("now:", "what i am doing", "what i'm doing")) or "right now in the game:" in low: continue   # echoed the label
@@ -113,7 +161,13 @@ def fresh(fact):
         # exist.  A line has to be about the fact it was given: it must share a real word with it, and it may
         # not name anything the colony does not have.
         INVENTED = ("lab", "laborator", "greenhouse", "factory", "reactor", "spaceship", "ship", "rocket",
-                    "mech", "robot", "drone", "turret", "nuke", "portal", "quantum", "server")
+                    "mech", "robot", "drone", "turret", "nuke", "portal", "quantum", "server",
+                    # calamities she made up on stream ("buildings on fire", "down a crew member", "alien slime")
+                    "fire", "burn", "flame", "dead", "died", "dying", "killed", "raid", "injur", "bleed",
+                    "down a ", "lost a", "missing", "slime", "explod",
+                    # scenes she made up ("smoldering ruins", "the goat got in the kitchen", "turn on the lights")
+                    "smolder", "ruin", "smok", "goat", "kitchen", "lights", "alien",
+                    "crafted", "mods", "starv", "spider", "hive", "infest", "insect", "sounds", "noise", "monster", "creature")
         if any(w in low for w in INVENTED) and not any(w in fact.lower() for w in INVENTED): continue
         # a colonist's name is not evidence the line is about the fact: "Unity is crafting some epic gear"
         # matched on the word Unity alone and went out, inventing the crafting. Names are excluded from the
@@ -129,10 +183,18 @@ def fresh(fact):
         # (the shared-word rule is gone: it rejected most good lines and pushed her onto the stock pool)
         # owner, 2026-10-10: "wehy the fuck wont she shut up about cold hands and warm coffee" -- those themes are
         # banned, and no other personal theme may come back within the last ten lines
-        if re.search(r"\b(coffee|caffein\w*|cold|freez\w*|frozen|hands?|fingers?|sleep\w*|tired|exhaust\w*|naps?)\b", low): continue
-        THEMES = ("music", "playlist", "song", "tea", "energy drink", "winter", "snack", "cat")
-        if any(t in low and any(t in h.lower() for h in hist[-10:]) for t in THEMES): continue
+        if re.search(r"\b(coffee|caffein\w*|cold|freez\w*|frozen|hands?|fingers?|sleep\w*|asleep|awake|in bed|to bed|bedtime|good ?night|signing off|i.m out|on pause|tucked in|for the night|see you|bye|logging off|calling it|keep chatting|thanks for (hanging|watching)|doz\w*|napping|resting|snooz\w*|yawn\w*|nodding off|tired|exhaust\w*|naps?)\b", low): continue
+        THEMES = ("music", "playlist", "song", "tea", "energy drink", "winter", "snack", "cat", "landed", "hit the ground", "drop", "fresh", "three of us", "three people", "landed in", "scar and me", "gee and scar", "me, gee", "small crew", "tiny")
+        # punctuation stripped, so "Gee, Scar, and me" and "Gee, Scar and me" are the same theme
+        _n = lambda x: re.sub(r"\s+", " ", re.sub(r"[^a-z ]", " ", x.lower()))
+        # the topic rules are a preference: on the last try a line that repeats a topic beats dead air
+        if attempt < 2 and any(_n(t) in _n(low) and any(_n(t) in _n(h) for h in hist[-10:]) for t in THEMES + ("scar and me", "three of", "gee scar")): continue
+        # what the crew is actually doing may come back, just not in the last few lines (a ten-line ban on these
+        # silenced her: research and farming ARE the colony right now)
+        ACTS = ("guest bed", "growing zone", "table", "reading", "manual", "research")
+        if attempt < 2 and any(t in low and any(t in h.lower() for h in hist[-5:]) for t in ACTS): continue  # five lines, not three: "research" came back four lines running
         if any(difflib.SequenceMatcher(None, low, h.lower()).ratio() > 0.6 for h in hist[-30:]): continue
+        line = scrub(line)
         json.dump((hist + [line])[-30:], open(sb.HIST, "w", encoding="utf-8")); return line
     return None
 
@@ -150,27 +212,6 @@ JOB = {"Hunt": "out hunting", "Mine": "digging rock", "FinishFrame": "building",
        "HaulToContainer": "hauling building materials", "CutPlant": "clearing jungle", "Sow": "planting crops",
        "Harvest": "harvesting", "LayDown": "asleep", "Ingest": "eating", "SocialRelax": "hanging out at the table",
        "GoSwimming": "swimming", "Clean": "cleaning", "TendPatient": "patching someone up", "Research": "researching"}
-BETWEEN_RUNS = [
-    "the game is loading its mod list and I am waiting on it like everyone else",
-    "I am between colonies right now, about to start a fresh one as the company",
-    "fresh map in a minute, and this time I feed everybody before I build anything pretty",
-    "two hundred mods have to wake up before I can play, so bear with me",
-    # true things about tonight's plan and herself -- enough of them that the repeat filter never runs her dry
-    "the plan tonight is a three hundred by three hundred map, spring start, forest with mountains",
-    "I want a mountain base this time, one door in, a three wide hallway down the middle",
-    "food first, always, the last colony starved and I am not doing that again",
-    "chat, what should the crew build first once we are out of these rooms?",
-    "hunting early or farming early, chat? I genuinely cannot decide",
-    "work priorities go in on day one, firefighting through cooking set to top for everyone",
-    "a roofed room for the food before anything pretty, rot is the enemy",
-    "the company is called Async Industries and the crew works for it",
-    "I have a playlist going that is way too sad for a farming game",
-    "what is everyone listening to right now?",
-    "I keep a list of every mistake from the last colony and it is long",
-    "the loading bar is moving, I promise, slowly",
-    "anyone new in chat, say hi, I see you",
-    "I eventually want this crew in space, but tonight it is dirt and berries",
-    "chat, you get to nickname the first colonist who does something dumb. Who is it going to be?"]
 
 def state_facts():
     facts = []
@@ -189,7 +230,16 @@ def state_facts():
         if ups: lines = lines[ups[-1] + 1:]
         for l in reversed(lines):
             m = re.search(r"model step \d+ \([\d.]+s\): (.+)", l)
-            if m and len(m.group(1)) > 20 and not re.search(r"connect|bridge|server|retry|no game|not loaded|tool|turn", m.group(1), re.I):
+            # a step older than 45 s is not "now" any more -- she kept repeating one stale step (live: the
+            # tend-then-capture rule three lines running)
+            try:
+                age = (datetime.now() - datetime.combine(datetime.now().date(),
+                       datetime.strptime(l[:8], "%H:%M:%S").time())).total_seconds() % 86400
+            except Exception:
+                age = 0
+            if m and age > 45:
+                break
+            if m and len(m.group(1)) > 20 and not re.search(r"connect|bridge|server|retry|no game|not loaded|tool|turn|once it stands", m.group(1), re.I):
                 facts.insert(0, "NOW: " + m.group(1)[:200]); break
     except Exception:
         pass
@@ -197,7 +247,11 @@ def state_facts():
         crew = call("rimworld/list_colonists").get("colonists", [])
         names = [c.get("name") for c in crew if c.get("name")]
         if names:
-            facts.append("my crew is %s, %d of us, fresh off the drop" % (", ".join(names), len(names)))
+            # every pass carried this line and she kept opening on it ("fresh off the drop, Gee, Scar and me"); the
+            # catch-up still finds it, the idle lines only get it now and then
+            global CREW_FACT
+            CREW_FACT = "my crew is %s, %d of us" % (", ".join(names), len(names))
+            if random.random() < 0.2: facts.append(CREW_FACT)
             try:
                 zl = [z.get("label") for z in call("rimworld/list_zones").get("zones", []) if z.get("label")]
             except BaseException:
@@ -215,8 +269,16 @@ def state_facts():
     except BaseException:
         pass
     if not facts:
-        import random as _r
-        facts = [_r.choice(BETWEEN_RUNS)]      # no game is a fact too, and it is better than going quiet
+        # owner, live: "wtf im hearing scripted responses on the stream now" -- the old BETWEEN_RUNS topic list was
+        # canned and often false (loading bars, between colonies). Only what is TRUE now: on the break screen, the
+        # break and the time left on its clock; otherwise nothing, and she stays quiet.
+        until = os.path.join(ROOT, ".local", "obs", "_brb_until")
+        try:
+            left = max(0, int(open(until).read().strip()) - int(time.time())) // 60
+            facts = ["I am on a break while I get trained to play RimWorld better and talk more like myself; "
+                     "I will be back on the stream in about %d minutes" % left]
+        except Exception:
+            facts = []
     return facts
 
 def read_inbox(pos):
@@ -235,14 +297,48 @@ def read_inbox(pos):
 try: pos = os.path.getsize(INBOX)
 except Exception: pos = 0
 greeted = set()
+PENDING = []          # [who, text, tries]: chat not answered yet; retried on later passes, then given up
+PENDING_MAX, PENDING_TRIES = 20, 3
+SEEN = set()          # viewer names seen in chat or joins this run (never the owner's handle)
+RECAP_EVERY = 300     # owner: "she ... hasnet given a full run donwn catch up once and hasnt mentioned anyone by name"
+last_recap = time.time() - RECAP_EVERY + 60
+
+
+def recap_fact():
+    """A catch-up for whoever just arrived: the colony, what is done, what she is doing, and who is here."""
+    done = []
+    try:
+        pad = open(os.path.join(ROOT, ".local", "autopilot", "scratch", "pad.md"), encoding="utf-8").read()
+        done = [re.sub(r"\s+--.*$|\(.*?\)", "", l[3:]).strip()[:60] for l in pad.splitlines() if l.startswith("[x]")][:5]
+    except Exception:
+        pass
+    facts = state_facts()
+    now = next((f[5:] for f in facts if f.startswith("NOW: ")), "")
+    crew = CREW_FACT
+    names = sorted(SEEN)[:6]
+    parts = ["a quick catch-up for anyone who just got here, like a streamer would give: " + (crew or "a fresh colony")]
+    if done: parts.append("done so far: " + "; ".join(done))
+    if now: parts.append("right now: " + now)
+    if names: parts.append("and say hi by name to the people here: " + ", ".join(names))
+    return ". ".join(parts)
 try: seen_letters = set(l.get("letterId") for l in call("rimworld/list_letters").get("letters", []))
 except Exception: seen_letters = set()   # no game yet at the press: she still talks, letters start fresh
 while True:
     try:
         pos, msgs = read_inbox(pos)
-        for who, text in msgs:
+        PENDING.extend([w, t, 0] for w, t in msgs)
+        del PENDING[:-PENDING_MAX]
+        def later(item):
+            item[2] += 1
+            if item[2] < PENDING_TRIES: PENDING.append(item)
+            else: print("gave up on a chat line after %d tries" % PENDING_TRIES, flush=True)
+        for item in list(PENDING):
+            PENDING.remove(item)
+            who, text = item[0], item[1]
             if who.lower() in ("unityplaysrimworld", os.environ.get("TWITCH_CHANNEL", "unityplaysrimworld").lower()):
                 continue                  # her own chat lines come back through the bridge; never answer herself
+            if who.lower() not in OWNER:
+                SEEN.add(who)             # everyone who has talked or joined this stream, for the catch-up
             if who.lower() in OWNER:
                 # the owner typing in Twitch chat is a GAME order for her (owner, 2026-10-10: "i told her to explor
                 # the hidden rroms and get outside her walls but she didnt do it" -- it had only been chat). Her
@@ -263,7 +359,7 @@ while True:
                     g = None
                 if not g:
                     print("greeting for", who, "not written yet -- retried next pass", flush=True)
-                    greeted.discard(who.lower()); continue
+                    greeted.discard(who.lower()); later(item); continue
                 speak(g)
                 try:
                     subprocess.Popen([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "say",
@@ -285,7 +381,8 @@ while True:
                                          creationflags=0x08000000 if os.name == "nt" else 0)
                     except Exception: pass
                 else:
-                    print("reply to", who, "not written -- nothing passed", flush=True)
+                    print("reply to", who, "not written -- retried next pass", flush=True)
+                    later(item)
         try: letters = call("rimworld/list_letters").get("letters", [])
         except Exception: letters = []
         for l in letters:
@@ -294,6 +391,16 @@ while True:
             seen_letters.add(lid)
             lab = l.get("label") or ""; body = re.sub(r"\(\*[^)]*\)|\(/[^)]*\)", "", (l.get("text") or ""))[:220]
             speak(fresh("a game event just happened: %s -- %s" % (lab, body)))
+        if time.time() - last_recap > RECAP_EVERY:
+            last_recap = time.time()
+            # a rundown needs more than one 20-word line: her announcement voice writes two or three sentences
+            subprocess.run([sys.executable, SAY, "fact: " + recap_fact()], env=dict(os.environ, UNITY_NO_GLANCE="1"))
+            names = sorted(SEEN)[:5]
+            if names:     # the names get their own line, so the rundown can never drop them
+                for _ in range(3):
+                    g = fresh("shout out the people hanging out in chat by name and thank them for being here: " + ", ".join(names))
+                    if g and all(n.lower() in g.lower() for n in names[:2]):
+                        speak(g); break
         if time.time() - last_spoken() > SILENCE:
             facts = state_facts()
             if facts:
@@ -302,13 +409,19 @@ while True:
                 # another topic, never a canned line; up to four topics, then she tries again next pass.
                 order = (now[:1] if now else []) + random.sample(facts, len(facts))
                 line = None
+                # owner, live: "she need to enguague the viewer liek 200% more" -- two of every three lines talk TO
+                # chat about what is happening: a question, a vote on her next move, a call to lurkers -- and they go
+                # into Twitch chat too, so people can answer in text
+                engage = random.random() < 0.67
                 for topic in order[:4]:
-                    line = fresh(topic)
+                    line = fresh(("talk straight to chat about this and pull them in -- ask them a question, let them "
+                                  "vote on what you do next, or call out the lurkers to say hi: " + topic) if engage else topic)
                     if line: break
-                if line: speak(line)
+                if line:
+                    speak(line)      # spoken only -- owner: "she is fucking posting everything in the twitch chast"
                 else: print("no line this pass -- nothing the model wrote passed; trying again", flush=True)
     except Exception:
-        s = buf = None                     # drop the dead socket; the next call reconnects
+        drop_session()                     # drop the dead socket; the next call reconnects
         try: s, buf = session()
         except BaseException: pass
     time.sleep(3)

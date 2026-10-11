@@ -48,9 +48,12 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
             RimroomsConnectedWorkComponent work)
         {
             if (map == null || definition == null || map.designationManager == null) { return null; }
+            int windowStart = DesignationWindowStart(map, definition, pawn);
+            int position = 0;
             int examined = 0;
             foreach (Designation designation in map.designationManager.SpawnedDesignationsOfDef(definition))
             {
+                if (position++ < windowStart) { continue; }
                 if (examined >= MaximumCandidates) { break; }
                 examined++;
                 Thing target = designation.target.Thing;
@@ -71,9 +74,12 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
             RimroomsConnectedWorkComponent work)
         {
             if (map == null || definition == null || map.designationManager == null) { return false; }
+            int windowStart = DesignationWindowStart(map, definition, pawn);
+            int position = 0;
             int examined = 0;
             foreach (Designation designation in map.designationManager.SpawnedDesignationsOfDef(definition))
             {
+                if (position++ < windowStart) { continue; }
                 if (examined >= MaximumCandidates) { break; }
                 examined++;
                 IntVec3 cell = designation.target.Cell;
@@ -83,6 +89,23 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Where a bounded walk over this def's designations should start, so successive passes
+        /// cover every designation rather than re-reading the same first ones. Counting is a bare
+        /// walk over the designation list with no test per entry.
+        /// </summary>
+        internal static int DesignationWindowStart(Map map, DesignationDef definition, Pawn pawn)
+        {
+            if (map == null || definition == null || map.designationManager == null || pawn == null)
+            { return 0; }
+            int count = 0;
+            foreach (Designation designation in map.designationManager.SpawnedDesignationsOfDef(definition))
+            {
+                count++;
+            }
+            return ConnectedWorkScan.WindowStart(count, MaximumCandidates, pawn);
         }
 
         internal static bool WorkActive(Pawn pawn, WorkTypeDef workType)
@@ -293,8 +316,11 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
             // Sowing: the zone itself says whether it will accept sowing now...
             ThingDef wantedPlant = zone.GetPlantDefToGrow();
             bool sowWanted = zone.allowSow && zone.CanAcceptSowNow() && wantedPlant != null;
+            // A rotating window over the zone's cells: sown and growing cells stay in the zone, so
+            // a fixed first window would hide every later cell's work.
+            int windowStart = ConnectedWorkScan.WindowStart(cells.Count, MaximumCellsPerZone, pawn);
             int examined = 0;
-            for (int index = 0; index < cells.Count; index++)
+            for (int index = windowStart; index < cells.Count; index++)
             {
                 if (examined >= MaximumCellsPerZone) { break; }
                 examined++;

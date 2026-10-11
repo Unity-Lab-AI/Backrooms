@@ -25,7 +25,7 @@ namespace RimroomsAsyncIndustries.Portals
     /// <see cref="Generation.RimroomsDestinationMapParent.ShouldRemoveMapNow"/> returns **false,
     /// always** — a coordinate is a place you can go back to, so its map is never unloaded. That
     /// was free when a coordinate was 60x60. At **300x300** it is up to 90,000 cells carrying
-    /// roughly 70,000 mineable rocks, and `MaximumCoordinates` is **512**.
+    /// roughly 70,000 mineable rocks, and a long campaign keeps discovering more of them.
     ///
     /// The owner's first answer was to evict the least recently used map. They replaced it with
     /// this, and it is better on every count: **nothing the player looted or built ever resets**,

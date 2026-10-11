@@ -56,6 +56,8 @@
   <RR_UI_TelemetryRoom>Room {0}: {1}. Known connections: {2}.</RR_UI_TelemetryRoom>
   <RR_UI_TelemetryLocked>Gate Telemetry unlocks planning from your surveyed room records.</RR_UI_TelemetryLocked>
   <RR_UI_RetryCompanyRegistration>Register the prepared headquarters</RR_UI_RetryCompanyRegistration>
+  <RR_UI_OpeningIncomplete>The branch is registered, but the crew has not reached its starting coordinate.</RR_UI_OpeningIncomplete>
+  <RR_UI_RetryOpening>Retry the start opening</RR_UI_RetryOpening>
   <RR_Evidence_SiteUnavailable>The coordinate's existing map is unavailable. Recover its saved site before creating or moving evidence.</RR_Evidence_SiteUnavailable>
   <RR_Evidence_NoSafeSlot>No reachable evidence position was found in the generated office. Keep the gate closed and review the coordinate.</RR_Evidence_NoSafeSlot>
   <RR_Evidence_PreviousObjectMissing>This coordinate's evidence was already created. Its loss is preserved; revisiting does not create a second copy.</RR_Evidence_PreviousObjectMissing>
@@ -72,7 +74,7 @@
   <RR_UI_FieldLogHeader>Recorded field observations</RR_UI_FieldLogHeader>
   <RR_UI_NoFieldObservations>No witnessed observations have been recorded yet.</RR_UI_NoFieldObservations>
   <RR_UI_ObservationWitness>Witness: {0}. Branch day {1}. Recorder carried by {2}.</RR_UI_ObservationWitness>
-  <RR_UI_InterviewPrompt>Two crew do not agree about this. {0} can take both statements and file one of them as the company’s version; the other stays on the record either way.</RR_UI_InterviewPrompt>
+  <RR_UI_InterviewPrompt>Two crew do not agree about this. {0} can take both statements and file one of them as the company’s version. Filing is immediate from this pane; nobody is sent to do it as a job. The other account stays on the record either way.</RR_UI_InterviewPrompt>
   <RR_UI_InterviewBrief>{0} can settle this disagreement</RR_UI_InterviewBrief>
   <RR_UI_FileAccount>File {0}’s account</RR_UI_FileAccount>
   <RR_UI_AccountFiled>Filed: the company accepts {0}’s account, after an interview by {1} on day {2}. The other account remains on the record.</RR_UI_AccountFiled>
@@ -103,7 +105,7 @@
        second line. {0} is every analysed report this branch has not signed off, not just this
        one - that is what RecordsAwaitingReview was written for. -->
   <RR_UI_ReviewAwaitingBrief>Awaiting sign-off ({0})</RR_UI_ReviewAwaitingBrief>
-  <RR_UI_ReviewPrompt>{0} can review the report.</RR_UI_ReviewPrompt>
+  <RR_UI_ReviewPrompt>{0} can review the report. The sign-off is recorded immediately from this pane; nobody is sent to do it as a job.</RR_UI_ReviewPrompt>
   <RR_UI_SignOffReport>Review the report</RR_UI_SignOffReport>
   <RR_UI_ReviewEndorsed>Signed off by {0} on day {1}. The branch stands behind this report.</RR_UI_ReviewEndorsed>
   <RR_UI_ReviewReturned>Returned by {0} on day {1}. There was not enough on the record to stand behind.</RR_UI_ReviewReturned>

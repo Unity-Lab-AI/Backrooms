@@ -314,7 +314,11 @@ namespace RimroomsAsyncIndustries.Threats
         /// </summary>
         internal static bool CarriesRecordBook(Pawn pawn)
         {
-            return pawn?.inventory != null &&
+            if (pawn == null) { return false; }
+            // In the pack or in the hands: a book being carried is a book being carried.
+            if (pawn.carryTracker != null && CompRouteEvidence.IsSupportedCarrier(pawn.carryTracker.CarriedThing))
+            { return true; }
+            return pawn.inventory != null &&
                 pawn.inventory.innerContainer.Any(t => CompRouteEvidence.IsSupportedCarrier(t));
         }
         /// <summary>

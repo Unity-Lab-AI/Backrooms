@@ -18,6 +18,7 @@ namespace RimroomsAsyncIndustries.UI
         private string procurementQuantityBuffer = "100";
         private int procurementReceivingZoneId = -1;
         private int procurementOrderPage;
+        private int procurementQuotePage;
 
         private void DrawProcurement(Listing_Standard listing, RimroomsCampaignComponent campaign)
         {
@@ -68,7 +69,8 @@ namespace RimroomsAsyncIndustries.UI
             {
                 ThingDef itemDef = selectedCatalog.ItemDef;
                 long estimatedTotal = 0;
-                try { estimatedTotal = checked(selectedCatalog.unitPriceUsd * quantity); }
+                // The price the quote will actually charge, discounts included.
+                try { estimatedTotal = checked(procurement.EffectiveUnitPriceUsd(selectedCatalog) * quantity); }
                 catch (OverflowException) { quantityValid = false; }
                 if (quantity > selectedCatalog.maxOrderQuantity)
                 { listing.Label("RR_Proc_QuantityLimit".Translate(selectedCatalog.maxOrderQuantity)); quantityValid = false; }
@@ -102,9 +104,25 @@ namespace RimroomsAsyncIndustries.UI
             // line kept filtering on `ExpiresTick >= now` -- so an unset tick of 0 hid every quote
             // ever made, and the catalogue could not be bought from at all. Found playing,
             // 2026-10-07: three quotes in the save, none on the page.
-            List<ProcurementQuoteRecord> liveQuotes = procurement.Quotes.Reverse()
-                .Where(quote => quote != null && !quote.Accepted).Take(8).ToList();
+            //
+            // Paged rather than cut at the newest eight, so an older quote is still reachable to
+            // accept or discard instead of sitting unseen in the saved-quote cap.
+            const int quotePageSize = 8;
+            List<ProcurementQuoteRecord> allQuotes = procurement.Quotes.Reverse()
+                .Where(quote => quote != null && !quote.Accepted).ToList();
+            int quotePageCount = Math.Max(1, (allQuotes.Count + quotePageSize - 1) / quotePageSize);
+            procurementQuotePage = Mathf.Clamp(procurementQuotePage, 0, quotePageCount - 1);
+            List<ProcurementQuoteRecord> liveQuotes = allQuotes
+                .Skip(procurementQuotePage * quotePageSize).Take(quotePageSize).ToList();
             if (liveQuotes.Count == 0) { listing.Label("RR_Proc_NoOpenQuotes".Translate()); }
+            if (quotePageCount > 1)
+            {
+                listing.Label("RR_Procurement_QuotePage".Translate(procurementQuotePage + 1, quotePageCount));
+                if (procurementQuotePage > 0 && listing.ButtonText("RR_Procurement_PreviousQuotes".Translate()))
+                { procurementQuotePage--; }
+                if (procurementQuotePage + 1 < quotePageCount && listing.ButtonText("RR_Procurement_NextQuotes".Translate()))
+                { procurementQuotePage++; }
+            }
             foreach (ProcurementQuoteRecord quote in liveQuotes)
             {
                 ThingDef itemDef = DefDatabase<ThingDef>.GetNamedSilentFail(quote.ThingDefName);
@@ -126,6 +144,8 @@ namespace RimroomsAsyncIndustries.UI
                             ShowResult(procurement.AcceptQuote(campaign, captured.Id));
                         }));
                 }
+                if (listing.ButtonText("RR_Procurement_DiscardQuote".Translate()))
+                { ShowResult(procurement.DiscardQuote(campaign, quote.Id)); }
                 listing.Gap(8f);
             }
 

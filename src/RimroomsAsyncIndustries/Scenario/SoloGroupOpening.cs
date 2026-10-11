@@ -54,7 +54,8 @@ namespace RimroomsAsyncIndustries.Scenario
         /// the site, the emergence mark and the network edge all do — so a retry after a partial
         /// failure finishes the job rather than building a second one.
         /// </summary>
-        internal static string Open(RimroomsStartDef start, RimroomsCampaignComponent campaign, Map surface)
+        internal static string Open(RimroomsStartDef start, RimroomsCampaignComponent campaign, Map surface,
+            ref string coordinateId)
         {
             // **Any start that names a door gets a natural connection**, not only the
             // inside start. Before 0.12.45-dev this returned here unless `insideStart`, so the
@@ -67,10 +68,24 @@ namespace RimroomsAsyncIndustries.Scenario
 
             // 1. The coordinate. A stable id from the branch, so a reload or a retry resolves to
             //    the same space rather than minting a second one.
-            CoordinateRecord coordinate;
-            CompanyActionResult created = campaign.CreateDiscoveredCoordinate(
-                "opening", Math.Max(1, start.insideStartDepth), out coordinate);
-            if (!created.Success || coordinate == null) { return created.MessageKey ?? "RR_Generation_InvalidRequest"; }
+            // A retry after a failed attempt reuses the coordinate that attempt created rather
+            // than minting a second one.
+            CoordinateRecord coordinate = null;
+            if (!string.IsNullOrEmpty(coordinateId))
+            {
+                for (int index = 0; index < campaign.Coordinates.Count; index++)
+                {
+                    CoordinateRecord known = campaign.Coordinates[index];
+                    if (known != null && known.Id == coordinateId) { coordinate = known; break; }
+                }
+            }
+            if (coordinate == null)
+            {
+                CompanyActionResult created = campaign.CreateDiscoveredCoordinate(
+                    "opening", Math.Max(1, start.insideStartDepth), out coordinate);
+                if (!created.Success || coordinate == null) { return created.MessageKey ?? "RR_Generation_InvalidRequest"; }
+                coordinateId = coordinate.Id;
+            }
 
             // 2. The map for it, through the one path every gate destination already uses.
             Map inside;
@@ -190,14 +205,10 @@ namespace RimroomsAsyncIndustries.Scenario
             foreach (Pawn pawn in party)
             {
                 if (pawn.Destroyed || !pawn.Spawned) { continue; }
-                pawn.DeSpawn();
-                if (!GenPlace.TryPlaceThing(pawn, entry, inside, ThingPlaceMode.Near))
-                {
-                    // Put them back rather than leaving anybody unspawned. A start that loses a
-                    // colonist to a placement failure is worse than a start that opens on the
-                    // surface with the exit already registered.
-                    GenPlace.TryPlaceThing(pawn, entry, surface, ThingPlaceMode.Near);
-                }
+                // A failed or throwing placement puts them back on the surface rather than
+                // leaving anybody unspawned. A start that loses a colonist to a placement failure
+                // is worse than a start that opens on the surface with the exit already registered.
+                Core.HeldCustody.Relocate(pawn, inside, entry, true);
             }
 
             List<Thing> supplies = surface.listerThings.AllThings
@@ -208,9 +219,7 @@ namespace RimroomsAsyncIndustries.Scenario
             foreach (Thing thing in supplies)
             {
                 if (thing.Destroyed || !thing.Spawned) { continue; }
-                thing.DeSpawn();
-                if (!GenPlace.TryPlaceThing(thing, entry, inside, ThingPlaceMode.Near))
-                { GenPlace.TryPlaceThing(thing, entry, surface, ThingPlaceMode.Near); }
+                Core.HeldCustody.Relocate(thing, inside, entry, true);
             }
         }
     }

@@ -31,7 +31,12 @@ s, buf = session()
 def call(n, a=None):
     r = b.exchange(s, buf, "tools/call", {"name": n, "arguments": a or {}}); r = r.get("result", r)
     return r.get("structuredContent", r) if isinstance(r, dict) else r
-GATE = (149, 146); seen = set()
+cspec = importlib.util.spec_from_file_location("camp", os.path.join(HERE, "camp.py")); camp = importlib.util.module_from_spec(cspec); cspec.loader.exec_module(camp)
+GATE = tuple(camp.conf()["gate"]); seen = set()    # the gate cell is configuration (.local/qa/_camp.json)
+WAVE_MAX_S = 1200          # how long one heat wave keeps retrying the crew that has not crossed yet
+RETRY_S = 60               # a pawn ordered through the gate is ordered again if still home after this
+waves = {}                 # letter id -> (time the wave was first seen, home map then)
+ordered = {}               # pawn name -> time it was last ordered through the gate
 while True:
     try:
         for l in call("rimworld/list_letters").get("letters", []):
@@ -39,15 +44,30 @@ while True:
             if lid in seen: continue
             seen.add(lid)
             if "heat wave" in lab.lower():
+                # home is fixed when the wave arrives, while the crew is still there: once they cross, the map
+                # with most colonists is the Backrooms, not home
+                waves[lid] = (time.time(), camp.home_map(call("rimworld/list_colonists").get("colonists", [])))
                 subprocess.run([sys.executable, os.path.join(ROOT, ".claude", "tools", "unity-say.py"),
                                 "Heat wave, chat! Everybody into the backrooms right now, it is nice and cool in there. Go go go."])
-                for c in call("rimworld/list_colonists").get("colonists", []):
-                    if c.get("mapId") != "Map_0": continue
-                    call("rimworld/select_pawn", {"pawnName": c["name"]})
-                    call("rimworld/set_draft", {"pawnName": c["name"], "drafted": False})
-                    call("rimworld/right_click_cell", {"x": GATE[0], "z": GATE[1]})
-                    call("rimworld/execute_context_menu_option", {"label": "Enter the gate"})
-                print("heat wave: crew sent through the gate", flush=True)
+        for lid, (t0, home_map) in list(waves.items()):
+            home = [c for c in call("rimworld/list_colonists").get("colonists", [])
+                    if c.get("factionIsPlayer", True) and c.get("mapId") == home_map]
+            if not home:
+                # verified: nobody is left on the home map
+                print("heat wave: crew crossed through the gate", flush=True)
+                del waves[lid]; ordered.clear(); continue
+            if time.time() - t0 > WAVE_MAX_S:
+                print("heat wave: gave up, still home: %d" % len(home), flush=True)
+                del waves[lid]; ordered.clear(); continue
+            for c in home:
+                if time.time() - ordered.get(c["name"], 0) < RETRY_S: continue
+                call("rimworld/select_pawn", {"pawnName": c["name"]})
+                call("rimworld/set_draft", {"pawnName": c["name"], "drafted": False})
+                call("rimworld/right_click_cell", {"x": GATE[0], "z": GATE[1]})
+                r = call("rimworld/execute_context_menu_option", {"label": "Enter the gate"})
+                ordered[c["name"]] = time.time()
+                if isinstance(r, dict) and (r.get("isError") or r.get("success") is False):
+                    print("heat wave: order refused for one pawn, retrying later", flush=True)
     except Exception as e:
         try: s, buf = session()
         except Exception: pass

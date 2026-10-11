@@ -1,17 +1,21 @@
-"""Do the jobs only a real click can do, in one burst, the moment RimWorld is in front.
+"""Do the jobs only a mouse-down can do, in one burst, with Unity's OWN mouse.
 
-Owner, 2026-10-09: "use cursor if u need it jusdt dont fight me if i take control". Selection and command
-gizmos go through the bridge; the parts that only answer a real mouse-down (bed-owner menu, plant menu,
-storage filter checkboxes, bill menu) are real clicks, each guarded by real-click.py, which refuses when
-RimWorld is not foreground and stops the moment the owner has moved the mouse.
+Owner, 2026-10-10, verbatim: "im not loaining the mouse it need to have its OWN mouse!!!!!! that doesnt fight
+user input and deffers instantly before attempting recontol once settles d mouse". Selection and command
+gizmos go through the bridge; the parts that only answer a mouse-down (bed-owner menu, plant menu, storage
+filter checkboxes, bill menu) go through real-click.py, which posts the click to the RimWorld window -- the
+owner's cursor never moves and the game never has to be in front. Only when a posted click cannot select a map
+cell does select_cell fall back to real-click.py --real, which waits for the owner's input to settle and
+defers the instant they move.
 
-    python .local/qa/cursor-jobs.py            # waits for the game to be in front, then runs every job once
-    python .local/qa/cursor-jobs.py --now      # run now (refuses if not in front)
+    python .local/qa/cursor-jobs.py            # waits for the game window, then runs every job once
+    python .local/qa/cursor-jobs.py --now      # run now (refuses if the game window is not open)
 """
 import importlib.util, json, os, socket, subprocess, sys, time, uuid, ctypes
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 spec = importlib.util.spec_from_file_location("b", os.path.join(HERE, "bridge.py")); b = importlib.util.module_from_spec(spec); spec.loader.exec_module(b)
+cspec = importlib.util.spec_from_file_location("camp", os.path.join(HERE, "camp.py")); camp = importlib.util.module_from_spec(cspec); cspec.loader.exec_module(camp)
 port, tok = b.endpoint(); sock = socket.create_connection(("127.0.0.1", port), timeout=60); buf = bytearray()
 b.exchange(sock, buf, "session/hello", {"token": tok, "bridgeVersion": "cursorjobs/1", "platform": "windows", "launchId": str(uuid.uuid4())})
 u = ctypes.WinDLL("user32"); GAME = u.FindWindowW(None, "RimWorld by Ludeon Studios")
@@ -55,7 +59,8 @@ def call(n, a=None):
     return r.get("structuredContent", r) if isinstance(r, dict) else r
 
 def front():
-    return u.GetForegroundWindow() == GAME and not u.IsIconic(GAME)
+    """The game window is open and not minimised -- posted input needs nothing more, not even focus."""
+    return bool(GAME) and not u.IsIconic(GAME)
 
 def targets():
     out = []
@@ -83,16 +88,31 @@ def click_ui(x, y):
 def click_rect(rc, dy=0):
     click_ui(rc["x"] + rc["width"] / 2, rc["y"] + rc["height"] / 2 + dy)
 
+def crew():
+    return [c for c in call("rimworld/list_colonists").get("colonists", []) if c.get("factionIsPlayer", True)]
+
 def home_pawn():
-    cols = call("rimworld/list_colonists").get("colonists", [])
-    return next((c["name"] for c in cols if c["mapId"] == "Map_0"), None)
+    cols = crew(); home = camp.home_map(cols)
+    return next((c["name"] for c in cols if c.get("mapId") == home), None)
+
+def render_size():
+    """The game window's client area in pixels, read live; the configured size when it cannot be read."""
+    try:
+        import ctypes.wintypes
+        r = ctypes.wintypes.RECT()
+        if GAME and u.GetClientRect(GAME, ctypes.byref(r)) and r.right > 0 and r.bottom > 0:
+            return float(r.right), float(r.bottom)
+    except Exception:
+        pass
+    w, h = camp.conf().get("render", [3840, 2054]); return float(w), float(h)
 
 def cell_to_render(x, z):
-    """Where a map cell is on screen, from the camera's own view rect (render is 3840x2054; z grows upward)."""
+    """Where a map cell is on screen, from the camera's own view rect and the window's size (z grows upward)."""
     cam = call("rimworld/get_camera_state"); vr = cam["viewRect"]
     w = vr["maxX"] - vr["minX"] + 1; h = vr["maxZ"] - vr["minZ"] + 1
-    px = (x - vr["minX"] + 0.5) / w * 3840.0
-    py = (vr["maxZ"] - z + 0.5) / h * 2054.0
+    rw, rh = render_size()
+    px = (x - vr["minX"] + 0.5) / w * rw
+    py = (vr["maxZ"] - z + 0.5) / h * rh
     return px, py
 
 def select_cell(x, z):
@@ -103,22 +123,28 @@ def select_cell(x, z):
     call("rimworld/clear_selection"); call("rimworld/click_cell", {"x": x, "z": z}); time.sleep(0.3)
     if not call("rimworld/list_selected_gizmos").get("selectedCount"):
         # a bridge click does not select a zone or a bed (2026-10-09), and the camera centre was a guess that
-        # missed (2026-10-10: every job came back "no gizmo"). Put the real cursor exactly on the cell instead,
+        # missed (2026-10-10: every job came back "no gizmo"). Put a click exactly on the cell instead,
         # worked out from the camera's view rect, and click there.
         # Owner, 2026-10-10, verbatim: "you ar not selecting the crop zones correctly so ther for they are
         # all set wrong to all potatoes you have to click twice fast maybe more times id something is ther like
         # conduit". RimWorld cycles the selection through everything stacked on a cell when you click the same
         # spot again quickly -- plant, then conduit, then the zone underneath. So: click fast, repeatedly, and
         # stop the moment a ZONE gizmo is on screen. Slow clicks re-select the top thing instead of cycling.
+        # Unity's own (posted) mouse first; if that never selects anything, the owner's cursor through the
+        # settle-and-defer guard -- a deferral stops the burst instead of fighting for the pointer.
         px, py = cell_to_render(x, z)
-        for attempt in range(6):
-            r = subprocess.run([sys.executable, os.path.join(HERE, "real-click.py"), str(int(px)), str(int(py))],
-                               capture_output=True, text=True, env=dict(os.environ, OWNER_LENT_MOUSE="1"),
+        posted_selected = False
+        for attempt in range(9):
+            if attempt >= 6 and posted_selected: break   # posted clicks reach the game: no reason to borrow
+            extra = ["--real"] if attempt >= 6 else []
+            r = subprocess.run([sys.executable, os.path.join(HERE, "real-click.py"), str(int(px)), str(int(py))] + extra,
+                               capture_output=True, text=True,
                    creationflags=0x08000000 if os.name == "nt" else 0)
             if "click" not in (r.stdout + r.stderr):
                 raise Stop((r.stdout + r.stderr).strip())
             time.sleep(0.16)                      # fast: this is a double/triple click, not six separate ones
             sel = call("rimworld/list_selected_gizmos")
+            if not extra and sel.get("selectedCount", 0): posted_selected = True
             if sel.get("selectedCount", 0) > 1:
                 call("rimworld/clear_selection"); time.sleep(0.15); continue
             if any((o.get("label") or "").startswith(("Plant:", "Allow sowing", "For colonists", "For prisoners"))
@@ -148,7 +174,7 @@ def job_camp_area():
     """
     call("rimworld/open_main_tab", {"mainTabId": "main-tab:Assign"}); time.sleep(0.6)
     done = []
-    for who in ("Gee", "Scar", "Unity"):
+    for who in sorted(camp.crew_names(crew())):
         row = find(lambda l, o: l.startswith(who) and o["screenRect"]["x"] < 200)
         if not row: done.append(who + ":no-row"); continue
         y = row["screenRect"]["y"] + row["screenRect"]["height"] / 2
@@ -303,7 +329,7 @@ def job_research():
         if box is None: return "no search box"
         click_rect(box["screenRect"])
         r = subprocess.run([sys.executable, os.path.join(HERE, "type-neg.py"), name.split()[0].lower()],
-                           capture_output=True, text=True, env=dict(os.environ, OWNER_LENT_MOUSE="1"),
+                           capture_output=True, text=True,
                    creationflags=0x08000000 if os.name == "nt" else 0)
         if "typed" not in r.stdout: return "typing refused: " + (r.stdout + r.stderr).strip()[:60]
         time.sleep(0.6)
@@ -340,7 +366,7 @@ def job_bill_counts():
     if cnt:
         click_rect(cnt["screenRect"])
         subprocess.run([sys.executable, os.path.join(HERE, "type-neg.py"), str(TARGET)],
-                       capture_output=True, text=True, env=dict(os.environ, OWNER_LENT_MOUSE="1"),
+                       capture_output=True, text=True,
                    creationflags=0x08000000 if os.name == "nt" else 0)
     return "do-until-%d" % TARGET
 
@@ -357,7 +383,9 @@ def job_priorities():
             "Scar": {"Firefight": 1, "Patient": 1, "Construct": 1, "Craft": 2, "Smith": 2, "Tailor": 2},
             "Unity": {"Firefight": 1, "Patient": 1, "Mine": 1, "Hunt": 2, "Haul": 2, "Doctor": 2}}
     n = 0
+    live = camp.crew_names(crew())
     for who, cols in plan.items():
+        if who not in live or who not in row: continue     # the plan is per person; absent crew are skipped
         for c, want in cols.items():
             for _ in range(3 - want):
                 subprocess.run([sys.executable, os.path.join(HERE, "real-click.py"), str(int(col[c] / sc)), str(int(1380 + row[who] / sc))],
@@ -382,15 +410,10 @@ def job_ne_nosow():
 
 JOBS = [("trade: read the offer", job_trade_open), ("camp area", job_camp_area), ("crops", job_crops), ("research", job_research), ("bill counts", job_bill_counts), ("butcher bill", lambda: add_bill(152, 141, ["butcher creature", "butcher"])), ("food store", job_food_store), ("stove bill", lambda: add_bill(155, 141, ["simple meal", "fine meal", "meal"]))]
 
-def idle():
-    from ctypes import wintypes
-    a = wintypes.POINT(); u.GetCursorPos(ctypes.byref(a)); time.sleep(3); b = wintypes.POINT(); u.GetCursorPos(ctypes.byref(b))
-    return (a.x, a.y) == (b.x, b.y)
 if "--now" not in sys.argv:
-    while not (front() and idle()): time.sleep(1)
-    try: os.remove(os.path.join(HERE, "_cursor.json"))
-    except Exception: pass
-if not front(): sys.exit("REFUSED: RimWorld is not in front")
+    while not front():
+        time.sleep(1); GAME = u.FindWindowW(None, "RimWorld by Ludeon Studios")
+if not front(): sys.exit("REFUSED: the RimWorld window is not open")
 results = {}
 for name, job in JOBS:
     while os.path.exists(os.path.join(os.path.dirname(os.path.dirname(HERE)), ".claude", ".popup.json")): time.sleep(2)   # a pop-up wants a decision: wait
@@ -407,4 +430,5 @@ bad = {k: v for k, v in results.items()
 if bad:
     print("STILL PAUSED -- unfinished:", json.dumps(bad))
 else:
-    print("every job clean -> running time again:", call("rimworld/set_time_speed", {"speed": "Normal"}).get("success"))
+    # owner: only Unity or the owner unpauses -- a helper never runs time, even after a clean burst.
+    print("every job clean -- left paused (only Unity or the owner unpauses)")

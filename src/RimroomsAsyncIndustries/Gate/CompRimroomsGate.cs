@@ -432,6 +432,9 @@ namespace RimroomsAsyncIndustries.Gate
             // Before the opening block, because a ramp only exists while the gate is closed and
             // its completion is what opens one.
             TickSpinUp();
+            // A thrown cutoff closes the window before anything is allowed through it this tick.
+            if (IsOpening && string.IsNullOrEmpty(failureKey) && KillSwitchThrown)
+            { EnterEmergency("RR_NativeGate_KillSwitchThrown"); }
             Threats.GateIncursion.Tick(this);
             // **The other direction, on owner direction 2026-10-06.** Incursion is something following
             // your crew home; this is something on your map walking out through the open gate.

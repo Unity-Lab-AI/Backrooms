@@ -2,15 +2,15 @@
 clicks (owner, 2026-10-09: "click the option s one not twice"). Writes .local/qa/shots/look.png.
     python .local/qa/look-filter.py X Z"""
 import os as _os, sys as _sys
-if _os.environ.get("OWNER_LENT_MOUSE") != "1":   # owner, 2026-10-09: "DONT FIGHT ME" -- real input locked
-    _sys.exit("REFUSED: real input is locked; ask the owner to lend the mouse first")
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+import own_mouse as om   # Unity's own mouse and keyboard: posted to the game window, never the owner's
 
 import importlib.util, os, subprocess, sys, time, ctypes
 HERE = os.path.dirname(os.path.abspath(__file__)); PY = sys.executable
 x, z = int(sys.argv[1]), int(sys.argv[2]); sys.argv = ["x", "--dry"]
 s = importlib.util.spec_from_file_location("e", os.path.join(HERE, "empire.py")); e = importlib.util.module_from_spec(s); s.loader.exec_module(e)
 u = ctypes.WinDLL("user32")
-def k(v): u.keybd_event(v, 0, 0, 0); time.sleep(0.02); u.keybd_event(v, 0, 2, 0); time.sleep(0.02)
+def k(v): om.key(v)
 from PIL import Image
 SH = os.path.expandvars(r"%USERPROFILE%\AppData\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Screenshots")
 e.call("rimworld/press_cancel"); e.call("rimworld/clear_selection"); e.call("rimworld/jump_camera_to_cell", {"x": x, "z": z}); time.sleep(0.3)

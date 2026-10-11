@@ -131,9 +131,15 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
         {
             Area area = map.areaManager == null ? null : map.areaManager.BuildRoof;
             if (area == null || area.TrueCount == 0) { return false; }
+            // A rotating window, never a prefix: a finished cell stays in the area, so a fixed
+            // first window would hide every later mark for as long as the area exists.
+            int windowStart = work == null ? 0
+                : ConnectedWorkScan.WindowStart(area.TrueCount, MaximumCellsPerMap, pawn);
+            int position = 0;
             int examined = 0;
             foreach (IntVec3 cell in area.ActiveCells)
             {
+                if (position++ < windowStart) { continue; }
                 if (work != null && examined >= MaximumCellsPerMap) { break; }
                 examined++;
                 if (!cell.IsValid || !cell.InBounds(map) || cell.Fogged(map)) { continue; }
@@ -159,9 +165,15 @@ namespace RimroomsAsyncIndustries.ConnectedWork.Providers
         {
             Area area = map.areaManager == null ? null : map.areaManager.NoRoof;
             if (area == null || area.TrueCount == 0) { return false; }
+            // A rotating window, never a prefix: a finished cell stays in the area, so a fixed
+            // first window would hide every later mark for as long as the area exists.
+            int windowStart = work == null ? 0
+                : ConnectedWorkScan.WindowStart(area.TrueCount, MaximumCellsPerMap, pawn);
+            int position = 0;
             int examined = 0;
             foreach (IntVec3 cell in area.ActiveCells)
             {
+                if (position++ < windowStart) { continue; }
                 if (work != null && examined >= MaximumCellsPerMap) { break; }
                 examined++;
                 if (!cell.IsValid || !cell.InBounds(map) || cell.Fogged(map)) { continue; }

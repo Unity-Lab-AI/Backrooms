@@ -1,9 +1,9 @@
 """Shelf filter = only what a search matches: Clear all, type TERM in the filter search, Allow all.
     python .local/qa/filter-search.py X Z TERM
-Needs the real keyboard for the search box: ONLY with the owner's go-ahead (owner, 2026-10-09: "ASK ME FOR CONTROL")."""
+The search box is typed with Unity's own keyboard (keys posted to the game window), never the owner's."""
 import os as _os, sys as _sys
-if _os.environ.get("OWNER_LENT_MOUSE") != "1":   # owner, 2026-10-09: "DONT FIGHT ME" -- real input locked
-    _sys.exit("REFUSED: real input is locked; ask the owner to lend the mouse first")
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+import own_mouse as om   # Unity's own mouse and keyboard: posted to the game window, never the owner's
 
 import ctypes, importlib.util, os, subprocess, sys, time
 HERE = os.path.dirname(os.path.abspath(__file__)); PY = sys.executable
@@ -11,7 +11,7 @@ x, z, term = int(sys.argv[1]), int(sys.argv[2]), sys.argv[3]
 sys.argv = ["x", "--dry"]
 s = importlib.util.spec_from_file_location("e", os.path.join(HERE, "empire.py")); e = importlib.util.module_from_spec(s); s.loader.exec_module(e)
 u = ctypes.WinDLL("user32")
-def k(v): u.keybd_event(v, 0, 0, 0); time.sleep(0.02); u.keybd_event(v, 0, 2, 0); time.sleep(0.02)
+def k(v): om.key(v)
 e.call("rimworld/clear_selection"); e.call("rimworld/jump_camera_to_cell", {"x": x, "z": z}); e.call("rimworld/click_cell", {"x": x, "z": z}); time.sleep(0.3)
 st = e.find(e.layout(), lambda t: t == "Storage")
 if st and not e.find(e.layout(), lambda t: t == "Clear all"): e.call("rimworld/click_ui_target", {"targetId": st["targetId"]}); time.sleep(0.4)

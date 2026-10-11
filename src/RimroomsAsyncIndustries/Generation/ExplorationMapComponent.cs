@@ -83,7 +83,9 @@ namespace RimroomsAsyncIndustries.Generation
 
                 // Busy pawns are left alone. This is what makes twenty seconds mean twenty seconds.
                 if (pawn.CurJobDef != null && pawn.CurJobDef.defName == "RR_ExploreRoom") { continue; }
-                if (pawn.Downed || pawn.InMentalState) { continue; }
+                // Drafted, player-ordered, hungry or exhausted pawns are left alone too; the toggle
+                // stays on, so the next room is handed out once they are free again.
+                if (!Core.PawnOrderEligibility.FreeForAutonomousOrders(pawn)) { continue; }
                 // **No book, no exploring, and the pawn is told rather than left standing.** The
                 // survey is written into the record book; without one this would be a colonist
                 // walking a maze to no effect, which is the exact shape of defect the owner reported

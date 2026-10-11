@@ -170,15 +170,16 @@ namespace RimroomsAsyncIndustries.Company
         }
 
         /// <summary>The route recorded as having come true, or null.</summary>
-        private static RimroomsSuccessRoute FirstSatisfiedRoute(RequestRecord request,
+        private RimroomsSuccessRoute FirstSatisfiedRoute(RequestRecord request,
             RimroomsRequestDef definition)
         {
-            if (definition.successRoutes == null || request.SatisfiedRouteLabelKeys.Count == 0)
-            { return null; }
+            if (request.SatisfiedRouteLabelKeys.Count == 0) { return null; }
             string key = request.SatisfiedRouteLabelKeys[0];
-            for (int index = 0; index < definition.successRoutes.Count; index++)
+            // The same route set settlement evaluated, derived routes included.
+            List<RimroomsSuccessRoute> routes = OrderedRoutes(definition);
+            for (int index = 0; index < routes.Count; index++)
             {
-                RimroomsSuccessRoute route = definition.successRoutes[index];
+                RimroomsSuccessRoute route = routes[index];
                 if (route != null && route.labelKey == key) { return route; }
             }
             return null;

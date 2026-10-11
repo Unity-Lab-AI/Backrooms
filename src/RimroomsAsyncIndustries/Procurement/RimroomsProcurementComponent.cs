@@ -216,18 +216,9 @@ namespace RimroomsAsyncIndustries.Procurement
             long stackCount = ((long)quantity + stackLimit - 1L) / stackLimit;
             if (stackCount > MaximumPhysicalStacksPerOrder) { return CompanyActionResult.Refused("RR_Proc_StackCountLimit"); }
             long totalPrice;
-            // **RR_Cap_NegotiatedTerms** (Commerce and organisation, tier 0) takes a tenth off
-            // the catalogue price. Computed before the overflow guard so a discount can never
-            // turn a refused order into an accepted one by arithmetic.
-            long unitPrice = catalog.unitPriceUsd;
-            RimroomsCampaignComponent priceCampaign = Current.Game == null
-                ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
-            // **RR_Cap_Leases** (Commerce and organisation, tier 1) supersedes
-            // RR_Cap_NegotiatedTerms rather than stacking: a fifth off, not three tenths.
-            if (priceCampaign != null && priceCampaign.HasCapability("RR_Cap_Leases"))
-            { unitPrice -= unitPrice / 5; }
-            else if (priceCampaign != null && priceCampaign.HasCapability("RR_Cap_NegotiatedTerms"))
-            { unitPrice -= unitPrice / 10; }
+            // Computed before the overflow guard so a discount can never turn a refused order
+            // into an accepted one by arithmetic.
+            long unitPrice = EffectiveUnitPriceUsd(catalog);
             try { totalPrice = checked(unitPrice * quantity); }
             catch (OverflowException) { return CompanyActionResult.Refused("RR_Proc_PriceOverflow"); }
             if (totalPrice <= 0) { return CompanyActionResult.Refused("RR_Proc_PriceOverflow"); }
@@ -263,7 +254,8 @@ namespace RimroomsAsyncIndustries.Procurement
                 receivingMap = destination,
                 receivingZone = receivingZone,
                 quantity = quantity,
-                unitPriceUsd = catalog.unitPriceUsd,
+                // The unit price actually charged, so the quote's unit and total agree.
+                unitPriceUsd = unitPrice,
                 totalPriceUsd = totalPrice,
                 stackCountAtQuote = (int)stackCount,
                 estimatedMassKg = totalMass,
@@ -272,6 +264,52 @@ namespace RimroomsAsyncIndustries.Procurement
                 arrivalTick = arrivalTick
             };
             quotes.Add(created);
+            return CompanyActionResult.Applied();
+        }
+
+        /// <summary>
+        /// What one unit of a catalogue line costs this branch right now, discounts applied.
+        ///
+        /// **The one price every surface reads**: the order preview, the quote and the charge.
+        /// A preview working from the list price would promise one figure and the quote would
+        /// bill another.
+        /// </summary>
+        public long EffectiveUnitPriceUsd(RimroomsProcurementCatalogDef catalog)
+        {
+            if (catalog == null) { return 0L; }
+            long unitPrice = catalog.unitPriceUsd;
+            RimroomsCampaignComponent priceCampaign = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            // **RR_Cap_NegotiatedTerms** (Commerce and organisation, tier 0) takes a tenth off
+            // the catalogue price. **RR_Cap_Leases** (tier 1) supersedes it rather than
+            // stacking: a fifth off, not three tenths.
+            if (priceCampaign != null && priceCampaign.HasCapability("RR_Cap_Leases"))
+            { unitPrice -= unitPrice / 5; }
+            else if (priceCampaign != null && priceCampaign.HasCapability("RR_Cap_NegotiatedTerms"))
+            { unitPrice -= unitPrice / 10; }
+            return unitPrice;
+        }
+
+        /// <summary>
+        /// Throws away a quote the player no longer wants.
+        ///
+        /// **Quotes never expire, so this is the only way one leaves.** Without it the saved-quote
+        /// cap filled with abandoned quotes -- including ones whose stockpile had since gone and
+        /// so could never be accepted -- and the catalogue then refused every new quote for good.
+        /// A quote is a price, not a commitment, so discarding one costs nothing. An accepted
+        /// quote, or one a payment already names, is an order's paperwork and stays.
+        /// </summary>
+        public CompanyActionResult DiscardQuote(RimroomsCampaignComponent campaign, string quoteId)
+        {
+            CompanyActionResult available = CheckCampaign(campaign);
+            if (!available.Success) { return available; }
+            if (stateFaultKey != null) { return CompanyActionResult.Refused(stateFaultKey); }
+            ProcurementQuoteRecord quote = quotes.FirstOrDefault(candidate => candidate != null && candidate.id == quoteId);
+            if (quote == null || quote.accepted || quote.branchId != campaign.BranchId ||
+                orders.Any(order => order != null && order.id == quote.id) ||
+                FindLedgerEntry(campaign, quote.id + ":purchase") != null)
+            { return CompanyActionResult.Refused("RR_Proc_QuoteUnavailable"); }
+            quotes.Remove(quote);
             return CompanyActionResult.Applied();
         }
 
@@ -1223,6 +1261,8 @@ namespace RimroomsAsyncIndustries.Procurement
                     Investigation.CompRouteEvidence ordered =
                         item.TryGetComp<Investigation.CompRouteEvidence>();
                     if (ordered != null) { ordered.MarkCompanyIssued(); }
+                    // Bought from a supplier, so ordinary wherever it is delivered.
+                    Economy.OddOriginService.StampOutside(item);
                     if (item.stackCount < 1 || item.stackCount > item.def.stackLimit ||
                         !heldCargo.TryAdd(item, canMergeWithExistingStacks: false))
                     { item.Destroy(DestroyMode.Vanish); throw new InvalidOperationException("Shipment owner refused a bounded stack."); }

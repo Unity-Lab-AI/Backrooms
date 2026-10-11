@@ -1,7 +1,9 @@
 # TEST — the post-completion test phase
 
 **Tier 4 of 4, and the only tier whose rows a build cannot close.** Almost every row needs the game
-running, and **only the owner launches RimWorld, through RimSort**.
+running, and **only the owner launches RimWorld, through RimSort** *(superseded on 2026-10-06: the local
+player may launch and play — see [`DECISIONS_CURRENT.md`](DECISIONS_CURRENT.md); the owner's own saves are
+never overwritten)*.
 
 **Two rows were confirmed by reading rather than by launching** and are closed — *"All four get [T]
 rows"*, 2026-10-06, and two of those four needed no game. The file's premise is *a build cannot
@@ -28,14 +30,15 @@ closed on a letter that happened to arrive.
 test items to it to be done and clear todo , if its true all items are done."*
 
 It was true of [`TODO.md`](TODO.md): zero open, zero partial, and every remaining row `[T]`. So the
-whole body moved here unchanged and that file went back to its template state.
+whole body moved here unchanged and that file went back to its template state. *(True on 2026-10-06;
+superseded since — `TODO.md` holds new buildable rows again, 40 top-level rows on 2026-10-10.)*
 
 | Ledger | Grain |
 |--------|-------|
 | [`ROADMAP.md`](ROADMAP.md) | MAJOR — phases and milestones |
 | [`TODO.md`](TODO.md) | MINOR — the working queue, **open buildable work only** |
 | [`DECOMPOSED.md`](DECOMPOSED.md) | smallest execution units, open only |
-| **`TEST.md`** (this file) | **the test phase — `[T]` only, 59 rows, and a build closes none of them** |
+| **`TEST.md`** (this file) | **the test phase — `[T]` only, and a build closes none of them.** The row count is a hand-written label, not a computed receipt: 59 when counted on 2026-10-10; recount with `grep -c '^\s*- \[T\]' docs/TEST.md` |
 | [`FINALIZED.md`](FINALIZED.md) | permanent archive, append-only |
 
 Status markers here are `[T]` and nothing else. A row that turns out to be buildable after all goes

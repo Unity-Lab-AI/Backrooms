@@ -33,9 +33,13 @@ namespace RimroomsAsyncIndustries.Automation
     ///   {"cmd":"set_zone_plant","x":154,"z":116,"plant":"Plant_Rice"}
     ///   {"cmd":"set_zone_sowing","x":215,"z":174,"allow":false}
     ///   {"cmd":"set_work_priority","pawn":"Gee","work":"Research","level":4}
-    ///   {"cmd":"set_bed_owner","x":159,"z":151,"owner":"prisoner"}     owner: colonist|prisoner|slave|guest
+    ///   {"cmd":"set_bed_owner","x":159,"z":151,"owner":"prisoner"}     owner: colonist|prisoner|slave
     ///   {"cmd":"add_bill","x":155,"z":141,"recipe":"CookMealSimple","count":30}
     ///   {"cmd":"set_area","pawn":"Scar","area":"Camp"}                 area: a label, or "" for unrestricted
+    ///
+    /// Optional on every command: "id" (echoed back as an "id" field on the result line, so an agent can match
+    /// results to commands) and "map" (the map's uniqueID; without it the displayed map is used). Pawn commands
+    /// act on the pawn's own map. Commands beyond the per-pass cap stay queued for the next pass.
     ///
     /// What it will not do: it never spawns, never destroys, never edits a def, never touches the world map,
     /// and it refuses any command naming something it cannot find rather than guessing a near match.
@@ -56,6 +60,8 @@ namespace RimroomsAsyncIndustries.Automation
 
         private static string InboxPath => Path.Combine(FolderPath, "inbox.jsonl");
         private static string OutboxPath => Path.Combine(FolderPath, "outbox.jsonl");
+        private static string ClaimPath => Path.Combine(FolderPath, "inbox.claimed.jsonl");
+        private static string PendingPath => Path.Combine(FolderPath, "inbox.pending.jsonl");
 
         public RimroomsAutomationComponent(Game game)
         {
@@ -79,19 +85,50 @@ namespace RimroomsAsyncIndustries.Automation
         public static void ProcessInbox()
         {
             string inbox = InboxPath;
-            if (!File.Exists(inbox))
+            string pending = PendingPath;
+            if (!File.Exists(inbox) && !File.Exists(pending) && !File.Exists(ClaimPath))
             {
                 return;
             }
 
+            // The inbox is claimed by an atomic rename, so a line the agent appends while this runs lands in a
+            // fresh inbox instead of being deleted unread. Claimed lines join the pending spool, and only the
+            // first batch of the spool runs this pass; the remainder stays on disk for the next one.
             List<string> lines;
             try
             {
-                lines = File.ReadAllLines(inbox).Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
-                File.Delete(inbox);
+                string claimed = ClaimPath;
+                if (File.Exists(inbox) && !File.Exists(claimed))
+                {
+                    File.Move(inbox, claimed);
+                }
+
+                if (File.Exists(claimed))
+                {
+                    if (File.Exists(pending))
+                    {
+                        File.AppendAllLines(pending, File.ReadAllLines(claimed));
+                        File.Delete(claimed);
+                    }
+                    else
+                    {
+                        File.Move(claimed, pending);
+                    }
+                }
+
+                lines = File.ReadAllLines(pending).Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
+                if (lines.Count > MaximumCommandsPerPass)
+                {
+                    File.WriteAllLines(pending, lines.Skip(MaximumCommandsPerPass));
+                }
+                else
+                {
+                    File.Delete(pending);
+                }
             }
             catch (Exception e)
             {
+                // a file still open by the writer is simply tried again next pass
                 Log.Warning("[Rimrooms][Automation] could not read the command file: " + e.Message);
                 return;
             }
@@ -100,8 +137,10 @@ namespace RimroomsAsyncIndustries.Automation
             foreach (string line in lines.Take(MaximumCommandsPerPass))
             {
                 string result;
+                string id = null;
                 try
                 {
+                    Parse(line).TryGetValue("id", out id);
                     result = Execute(line);
                 }
                 catch (Exception e)
@@ -109,13 +148,15 @@ namespace RimroomsAsyncIndustries.Automation
                     result = "error: " + e.Message;
                 }
 
-                results.Add(Escape(line) + " -> " + Escape(result));
+                string row = "{\"result\":\"" + Escape(line) + " -> " + Escape(result) + "\"";
+                if (!string.IsNullOrEmpty(id)) row += ",\"id\":\"" + Escape(id) + "\"";
+                results.Add(row + "}");
             }
 
             try
             {
                 Directory.CreateDirectory(FolderPath);
-                File.AppendAllLines(OutboxPath, results.Select(r => "{\"result\":\"" + r + "\"}"));
+                File.AppendAllLines(OutboxPath, results);
             }
             catch (Exception e)
             {
@@ -135,8 +176,40 @@ namespace RimroomsAsyncIndustries.Automation
             var key = new StringBuilder();
             var val = new StringBuilder();
             bool inKey = false, inVal = false, quoted = false, haveKey = false;
-            foreach (char c in line)
+            for (int i = 0; i < line.Length; i++)
             {
+                char c = line[i];
+                // inside a quoted key or value, a backslash escapes the next character the JSON way
+                if (c == '\\' && (inKey || (inVal && quoted)) && i + 1 < line.Length)
+                {
+                    char next = line[++i];
+                    char decoded;
+                    switch (next)
+                    {
+                        case 'n': decoded = '\n'; break;
+                        case 't': decoded = '\t'; break;
+                        case 'r': decoded = '\r'; break;
+                        case 'b': decoded = '\b'; break;
+                        case 'f': decoded = '\f'; break;
+                        case 'u':
+                            if (i + 4 < line.Length &&
+                                int.TryParse(line.Substring(i + 1, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int code))
+                            {
+                                decoded = (char)code;
+                                i += 4;
+                            }
+                            else
+                            {
+                                decoded = 'u';
+                            }
+                            break;
+                        default: decoded = next; break;  // \" \\ \/ and anything else stand for themselves
+                    }
+
+                    (inKey ? key : val).Append(decoded);
+                    continue;
+                }
+
                 if (c == '"')
                 {
                     if (!inKey && !haveKey) { inKey = true; key.Clear(); continue; }
@@ -177,6 +250,17 @@ namespace RimroomsAsyncIndustries.Automation
             }
 
             Map map = HomeMap;
+            if (a.TryGetValue("map", out string mapId) && !string.IsNullOrEmpty(mapId))
+            {
+                if (!int.TryParse(mapId, NumberStyles.Integer, CultureInfo.InvariantCulture, out int uniqueId))
+                {
+                    return "refused: bad map " + mapId;
+                }
+
+                map = Find.Maps.FirstOrDefault(m => m.uniqueID == uniqueId);
+                if (map == null) return "refused: no map " + mapId;
+            }
+
             if (map == null)
             {
                 return "refused: no map";
@@ -200,6 +284,7 @@ namespace RimroomsAsyncIndustries.Automation
                 case "stove": return SetupTools2.Stove(map);
                 case "crops": return SetupTools2.Crops(map, a);
                 case "hunt": return SetupTools2.Hunt(map);
+                case "assign": return Assign(map, a);
                 default: return "refused: unknown cmd " + cmd;
             }
         }
@@ -290,6 +375,33 @@ namespace RimroomsAsyncIndustries.Automation
 
             return "ok: " + crew.Count + " colonists -- work 1s Firefighter..Cooking, rest by skill, none blank; schedule Anything; drugs '" +
                    (policy?.label ?? "none") + "'; hostility Attack; arming: " + (notes.Count > 0 ? string.Join("; ", notes) : "everyone already armed");
+        }
+
+        /// <summary>
+        /// The Assign tab with no clicking (owner: food Fine, medical best, Attack).
+        ///   {"cmd":"assign","pawn":"Gee" (empty = everyone),"food":"Fine","medicine":"Best","hostility":"Attack"}
+        /// </summary>
+        private static string Assign(Map map, Dictionary<string, string> a)
+        {
+            a.TryGetValue("pawn", out string who);
+            a.TryGetValue("food", out string food);
+            a.TryGetValue("medicine", out string med);
+            a.TryGetValue("hostility", out string host);
+            List<Pawn> crew = map.mapPawns.FreeColonistsSpawned
+                .Where(p => string.IsNullOrEmpty(who) || p.LabelShort.Equals(who, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (crew.Count == 0) return "refused: no colonist " + who;
+            FoodPolicy fp = Current.Game.foodRestrictionDatabase.AllFoodRestrictions
+                .FirstOrDefault(f => f.label.Equals(string.IsNullOrEmpty(food) ? "Fine" : food, StringComparison.OrdinalIgnoreCase));
+            if (fp == null) return "refused: no food policy " + food + " (have: " +
+                string.Join(", ", Current.Game.foodRestrictionDatabase.AllFoodRestrictions.Select(f => f.label)) + ")";
+            if (!Enum.TryParse(string.IsNullOrEmpty(med) ? "Best" : med, true, out MedicalCareCategory mc)) return "refused: medicine is NoCare|NoMeds|HerbalOrWorse|NormalOrWorse|Best";
+            if (!Enum.TryParse(string.IsNullOrEmpty(host) ? "Attack" : host, true, out HostilityResponseMode hr)) return "refused: hostility is Ignore|Flee|Attack";
+            foreach (Pawn p in crew)
+            {
+                if (p.foodRestriction != null) p.foodRestriction.CurrentFoodPolicy = fp;
+                if (p.playerSettings != null) { p.playerSettings.medCare = mc; p.playerSettings.hostilityResponse = hr; }
+            }
+            return "ok: " + string.Join(", ", crew.Select(p => p.LabelShort)) + " -- food " + fp.label + ", medicine " + mc + ", hostility " + hr;
         }
 
         /// <summary>
@@ -425,13 +537,29 @@ namespace RimroomsAsyncIndustries.Automation
 
         private static string AddBill(Map map, Dictionary<string, string> a)
         {
-            if (!Cell(a, map, out IntVec3 cell)) return "refused: bad cell";
-            Building_WorkTable table = cell.GetThingList(map).OfType<Building_WorkTable>().FirstOrDefault();
-            if (table == null) return "refused: no work table there";
             if (!a.TryGetValue("recipe", out string recipeName)) return "refused: no recipe";
-
-            RecipeDef recipe = DefDatabase<RecipeDef>.GetNamedSilentFail(recipeName) ??
-                               table.def.AllRecipes.FirstOrDefault(r =>
+            RecipeDef recipe = DefDatabase<RecipeDef>.GetNamedSilentFail(recipeName);
+            // the bill finds its own table: the given cell if a table is there, else the nearest BUILT table that can
+            // make the recipe -- she kept guessing stove cells ("no work table there", live 10-10)
+            Cell(a, map, out IntVec3 cell);
+            Building_WorkTable table = cell.IsValid && cell.InBounds(map)
+                ? cell.GetThingList(map).OfType<Building_WorkTable>().FirstOrDefault() : null;
+            if (table == null || (recipe != null && !table.def.AllRecipes.Contains(recipe)))
+            {
+                IntVec3 from = cell.IsValid && cell.InBounds(map) ? cell
+                    : (map.mapPawns.FreeColonistsSpawned.FirstOrDefault()?.Position ?? map.Center);
+                table = map.listerBuildings.allBuildingsColonist.OfType<Building_WorkTable>()
+                    .Where(t => recipe == null ? t.def.AllRecipes.Any(r => r.label.IndexOf(recipeName, StringComparison.OrdinalIgnoreCase) >= 0)
+                                               : t.def.AllRecipes.Contains(recipe))
+                    .OrderBy(t => t.Position.DistanceToSquared(from)).FirstOrDefault();
+                if (table == null)
+                {
+                    bool planned = map.listerThings.AllThings.Any(t => t.def.IsBlueprint || t.def.IsFrame);
+                    return "refused: no BUILT table can make " + recipeName +
+                           (planned ? " yet -- blueprints and frames cannot take bills; keep time running until it is built" : "");
+                }
+            }
+            recipe = recipe ?? table.def.AllRecipes.FirstOrDefault(r =>
                                    r.label.IndexOf(recipeName, StringComparison.OrdinalIgnoreCase) >= 0);
             if (recipe == null) return "refused: no recipe " + recipeName;
             if (!table.def.AllRecipes.Contains(recipe)) return "refused: " + table.LabelShort + " cannot make " + recipe.label;
@@ -451,7 +579,7 @@ namespace RimroomsAsyncIndustries.Automation
             // no skill restriction: owner, 2026-10-10 -- "so everyone can train and still get the most in one go"
             bill.allowedSkillRange = new IntRange(0, 20);
             table.BillStack.AddBill(bill);
-            return "ok: " + table.LabelShort + " now has " + recipe.label +
+            return "ok: " + table.LabelShort + " at " + table.Position.x + "," + table.Position.z + " now has " + recipe.label +
                    (bill.repeatMode == BillRepeatModeDefOf.TargetCount ? " until " + bill.targetCount : " forever");
         }
 
@@ -461,6 +589,8 @@ namespace RimroomsAsyncIndustries.Automation
             Pawn pawn = FindColonist(name);
             if (pawn == null || pawn.playerSettings == null) return "refused: no colonist " + name;
             a.TryGetValue("area", out string label);
+            // the restriction is per map and is set on the pawn's own map, so the area has to come from that map
+            map = pawn.Map ?? map;
 
             if (string.IsNullOrWhiteSpace(label))
             {
@@ -470,7 +600,7 @@ namespace RimroomsAsyncIndustries.Automation
 
             Area area = map.areaManager.AllAreas.FirstOrDefault(
                 ar => ar.Label.Equals(label, StringComparison.OrdinalIgnoreCase));
-            if (area == null) return "refused: no area " + label;
+            if (area == null) return "refused: no area " + label + " on " + pawn.LabelShort + "'s map";
 
             pawn.playerSettings.AreaRestrictionInPawnCurrentMap = area;
             return "ok: " + pawn.LabelShort + " restricted to " + area.Label;

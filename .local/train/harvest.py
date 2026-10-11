@@ -19,6 +19,13 @@ Two datasets come out of here, deliberately kept apart so neither degrades the o
 
     python .local/train/harvest.py            # writes .local/train/voice.jsonl and tools.jsonl
     python .local/train/harvest.py --stats    # counts only, no writing
+    python .local/train/harvest.py --promote  # also adds the reviewed good voice lines to the pod's training set
+
+Harvesting alone trains nothing: the pod only reads training/data/. --promote is the one deliberate step that
+copies voice lines which passed every rule above into training/data/voice_harvested.jsonl, deduplicated against
+everything already there and in voice.jsonl / voice_stream.jsonl, each row stamped with where it came from.
+Review that file's diff before pushing it; the next pod run picks it up. Tool steps are not promoted: a step
+that merely was not complained about is not proof it was right.
 """
 import glob, json, os, re, sys
 
@@ -102,3 +109,26 @@ with open(os.path.join(HERE, "rules.jsonl"), "w", encoding="utf-8") as f:
         f.write(json.dumps({"rule": x}) + "\n")
 
 print("wrote voice.jsonl, tools.jsonl, rules.jsonl in", HERE)
+
+if "--promote" in sys.argv:
+    data = os.path.join(ROOT, "training", "data")
+    dest = os.path.join(data, "voice_harvested.jsonl")
+    seen = set()
+    for name in ("voice.jsonl", "voice_stream.jsonl", "voice_harvested.jsonl"):
+        f = os.path.join(data, name)
+        if not os.path.exists(f): continue
+        for line in open(f, encoding="utf-8", errors="replace"):
+            try: msgs = json.loads(line).get("messages", [])
+            except Exception: continue
+            seen.update(" ".join(m.get("content", "").lower().split()) for m in msgs if m.get("role") == "assistant")
+    added = 0
+    with open(dest, "a", encoding="utf-8") as f:
+        for x in v:
+            key = " ".join(x["text"].lower().split())
+            if not x["ok"] or key in seen: continue
+            seen.add(key)
+            f.write(json.dumps({"source": "studio-outbox", "messages": [
+                {"role": "system", "content": sys_p}, {"role": "user", "content": "say the next line"},
+                {"role": "assistant", "content": x["text"]}]}) + "\n")
+            added += 1
+    print("promoted %d new voice lines into %s" % (added, dest))

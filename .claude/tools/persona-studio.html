@@ -141,7 +141,8 @@ const $ = (id) => document.getElementById(id);
 const feed = $("feed"), input = $("input"), sendBtn = $("send");
 
 function api(path, body) {
-  const opt = { method: body ? "POST" : "GET", headers: { "Content-Type": "application/json" } };
+  const opt = { method: body ? "POST" : "GET",
+                headers: { "Content-Type": "application/json", "X-Studio-Token": window.STUDIO_TOKEN || "" } };
   if (body) opt.body = JSON.stringify(body);
   return fetch(path, opt).then((r) => r.json());
 }
@@ -327,7 +328,7 @@ input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDef
 // no orphan persona-studio process lingers. sendBeacon survives page unload;
 // the server's poll-heartbeat watchdog is the backstop if this never fires.
 window.addEventListener("pagehide", () => {
-  try { navigator.sendBeacon("/api/shutdown"); } catch (e) { /* closing anyway */ }
+  try { navigator.sendBeacon("/api/shutdown?token=" + encodeURIComponent(window.STUDIO_TOKEN || "")); } catch (e) { /* closing anyway */ }
 });
 
 (async function init() {

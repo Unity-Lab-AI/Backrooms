@@ -208,6 +208,10 @@ namespace RimroomsAsyncIndustries.UI
             listing.GapLine();
             DrawIntegrations(listing);
             listing.GapLine();
+            DrawCompanyVehicles(listing, campaign);
+            listing.GapLine();
+            DrawDossiers(listing);
+            listing.GapLine();
 
             string filter = facilityCategory == null ? "RR_Fac_All".Translate().ToString() :
                 facilityCategory == "" ? "RR_Fac_Unclassified".Translate().ToString() :

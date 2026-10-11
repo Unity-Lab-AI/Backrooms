@@ -8,7 +8,7 @@ with the stop pair, like everything else.
 Every pass it evaluates the gate table (docs/playbook.gates.json via gates.py) against measured state and
 acts on what it can do without a model in the loop:
 
-  * a gate fires that needs the cursor, and RimWorld is in front -> run the click queue once
+  * a gate fires that needs a mouse-down, RimWorld is open      -> run the click queue once (Unity's own mouse)
   * nothing has been said on stream for a while                 -> one short clean line about real state
   * days of food under one                                      -> make sure food work is designated
   * everything else                                             -> log which gate is live, so the log is the
@@ -49,6 +49,8 @@ QUIET_S = 30
 
 gspec = importlib.util.spec_from_file_location("gates", os.path.join(AP, "gates.py"))
 gates = importlib.util.module_from_spec(gspec); gspec.loader.exec_module(gates)
+aspec = importlib.util.spec_from_file_location("automate", os.path.join(HERE, "automate.py"))
+automate = importlib.util.module_from_spec(aspec); aspec.loader.exec_module(automate)
 
 u = ctypes.WinDLL("user32") if os.name == "nt" else None
 
@@ -71,6 +73,11 @@ def game_up():
     if not u: return False
     g = u.FindWindowW(None, "RimWorld by Ludeon Studios")
     return bool(g) and not u.IsIconic(g) and u.GetForegroundWindow() == g
+
+def game_open():
+    if not u: return False
+    g = u.FindWindowW(None, "RimWorld by Ludeon Studios")
+    return bool(g) and not u.IsIconic(g)
 
 def last_spoken():
     try:
@@ -116,7 +123,7 @@ def model_needs(passes):
         urllib.request.urlopen("http://127.0.0.1:11434/api/version", timeout=6).read()
     except Exception:
         print(stamp(), "ollama is not answering -- bringing the stack back up", flush=True)
-        subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1"), capture_output=True, text=True, timeout=900,
+        subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1", NO_ADMIN_PAGE="1"), capture_output=True, text=True, timeout=900,
                        creationflags=0x08000000 if os.name == "nt" else 0)
         return
     # 2b. the model runs below normal priority: Windows shares every core, and this way the game, OBS and the voice
@@ -142,16 +149,16 @@ def model_needs(passes):
             if any(l.startswith("autopilot") and "DOWN" not in l for l in again.splitlines()):
                 break
             print(stamp(), "the player is down -- restarting it", flush=True)
-            subprocess.run([sys.executable, SERVICES, "start", "autopilot"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1"), capture_output=True, text=True, timeout=900,
+            subprocess.run([sys.executable, SERVICES, "start", "autopilot"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1", NO_ADMIN_PAGE="1"), capture_output=True, text=True, timeout=900,
                        creationflags=0x08000000 if os.name == "nt" else 0)
             break
     # 3b. the bridge guards (pop-ups, clock, heat, click queue, voice) exit when there is no game -- which is the
     # whole wait before GO. Once the bridge answers, bring back any that died; start is idempotent.
-    BRIDGE_SVCS = ("host", "popups", "clock", "heat", "cursorjobs")
+    BRIDGE_SVCS = ("host", "popups", "clock", "heat")   # cursorjobs retired: her player does those jobs through the API; the mouse burst only fought her and left the game paused
     dead = [l.split()[0] for l in out.splitlines() if l.split() and l.split()[0] in BRIDGE_SVCS and "DOWN" in l]
     if dead and _bridge_up():
         print(stamp(), "bridge is up and these died waiting for it:", ", ".join(dead), "-- bringing them back", flush=True)
-        subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1"), capture_output=True, text=True, timeout=900,
+        subprocess.run([sys.executable, SERVICES, "start"], cwd=ROOT, env=dict(os.environ, NO_ANNOUNCE="1", NO_ADMIN_PAGE="1"), capture_output=True, text=True, timeout=900,
                        creationflags=0x08000000 if os.name == "nt" else 0)
     # 4. the training set that teaches the next model, grown from what just happened
     if passes % 60 == 0 and os.path.exists(TRAIN):
@@ -168,26 +175,17 @@ def day_one(auto):
         gates_bridge_pause(True)
     except Exception as e:
         print(stamp(), "could not pause before day one:", e, flush=True)
-    outbox = os.path.join(auto, "outbox.jsonl")
-    before = os.path.getsize(outbox) if os.path.exists(outbox) else 0
-    with open(os.path.join(auto, "inbox.jsonl"), "a", encoding="utf-8") as f:
-        f.write(json.dumps({"cmd": "day_one"}) + "\n")
-    got = None
-    for _ in range(30):
-        time.sleep(2)
-        if os.path.exists(outbox) and os.path.getsize(outbox) > before:
-            with open(outbox, encoding="utf-8", errors="replace") as f:
-                f.seek(before); got = f.read().strip()
-            break
+    # the result is matched to this command by its id -- not to whatever line lands next in the outbox
+    got = automate.exchange([{"cmd": "day_one"}], wait_s=60)[0][1]
     print(stamp(), "day one:", (got or "no answer from the mod")[:400], flush=True)
-    if got and "-> ok" in got.replace("\\", ""):
+    if got and got.startswith("ok"):
         # owner, live: "she is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude
         # of things required beforoe the firest unpause". Day one never unpauses: the game holds until she has done
         # the whole first-unpause checklist and unpauses it herself.
         open(os.path.join(HERE, "_setup_hold.flag"), "w").write(stamp())
-        say("Crew basics are set. The clock stays stopped until I have the stockpiles, shelves, bills and beds sorted.")
+        say("fact: crew work, schedule and drug settings are done; the game stays paused until storage, shelves, beds and the stove are done")
     else:
-        say("Holding the pause until my crew is properly set up.")
+        say("fact: the game is paused until the crew is set up")
 
 def gates_bridge_pause(on):
     s, buf = gates._session()
@@ -195,8 +193,20 @@ def gates_bridge_pause(on):
 
 SERVICES_PY = os.path.join(ROOT, "stream", "services.py")
 GO = os.path.join(HERE, "_go.request")
+RESUME = os.path.join(HERE, "_resume.request")
 NOWIN = {"creationflags": 0x08000000} if os.name == "nt" else {}
+# A GO is a request for this run. One left on disk for hours (a panel press while this loop was down, a crash
+# before it was consumed) would skip asking the owner and go live on a cold start; it is dropped instead.
+# Restart helpers write GO moments before the restart, well inside this window.
+GO_MAX_AGE_S = 3 * 3600
+try:
+    if os.path.exists(GO) and time.time() - os.path.getmtime(GO) > GO_MAX_AGE_S:
+        os.remove(GO)
+        print(stamp(), "dropped a stale GO from an earlier run -- asking the owner again", flush=True)
+except OSError:
+    pass
 asked = False
+went = False      # GO handled in this run (a GO armed before start must go live too, not only one answered after asking)
 passes = 0
 while True:
     try:
@@ -204,35 +214,63 @@ while True:
         model_needs(passes)
         # Owner, 2026-10-10: "it should ask me if im ready to start the stream and game and what i want not
         # just random do everything". Ask once, out loud and on the panel, then wait for GO.
-        if not os.path.exists(GO):
+        if not went and not os.path.exists(GO) and _bridge_up():
+            went = True                            # the game is already up: this loop was restarted mid-run
+        if went:
+            pass                                   # GO handled this run; nothing to ask
+        elif not os.path.exists(GO):
             flag = os.path.join(HERE, "_asked.flag")
             if not asked and os.path.exists(flag) and time.time() - os.path.getmtime(flag) < 7200:
                 asked = True      # already asked this press; a restart of this loop must not ask twice
             if not asked:
                 asked = True
                 open(flag, "w").write(stamp())
-                say("Hey. Everything is up and I am ready. Are we starting the stream and the game? Tell me what you want tonight and hit GO.")
+                say("fact: everything is up; waiting for the owner to press GO to start the stream and the game")
                 print(stamp(), "asked the owner for GO; waiting", flush=True)
             time.sleep(10); continue
-        if asked:
+        if not went:
+            went = True
             asked = False
             try: os.remove(os.path.join(HERE, "_asked.flag"))
             except OSError: pass
             want = open(GO, encoding="utf-8").read().strip()
             print(stamp(), "GO received:", want[:120], flush=True)
+            # a GO is used once: left on disk, every restart of this loop re-ran the whole go-live (live: a false
+            # "new stream, game loading" line mid-game)
+            try: os.remove(GO)
+            except OSError: pass
             # never read the owner's directive aloud -- it is an order to her, not a line for the stream
-            say("Got it. Launching the game and going live. Give me a minute while two hundred mods wake up.")
+            say("fact: the game is loading about two hundred mods" if os.path.exists(RESUME) else "fact: a new stream is starting and the game is loading about two hundred mods")
             # a NEW stream each start (owner: "make sure it starts a new stream"): fresh title, then OBS live
             try:
+                if os.path.exists(RESUME): raise RuntimeError("resume keeps the current stream title")
                 subprocess.run([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "title",
-                                "Unity Plays RimWorld -- fresh company colony, " + time.strftime("%b %d")],
+                                "Unity Plays RimWorld -- fresh company colony, " + time.strftime("%b %d, %I:%M %p")],
                                cwd=ROOT, capture_output=True, text=True, timeout=90, **NOWIN)
             except Exception as e:
                 print(stamp(), "title not set:", e, flush=True)
             # live FIRST, so the stream carries the game's loading screens, then the game
             subprocess.run([sys.executable, SERVICES_PY, "golive"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
             subprocess.run([sys.executable, SERVICES_PY, "game"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
-            open(os.path.join(HERE, "_new_colony.request"), "w", encoding="utf-8").write("Async Industries")
+            if not os.path.exists(RESUME):          # a resume loads the saved colony instead of making a new one
+                open(os.path.join(HERE, "_new_colony.request"), "w", encoding="utf-8").write("Async Industries")
+        # owner: "brb massive update to my systems game is save so we will be right back at it" -- a restart that
+        # resumes: .local/qa/_resume.request holds the save name; once the game answers, that save is loaded
+        if os.path.exists(RESUME) and _bridge_up():
+            name = open(RESUME, encoding="utf-8").read().strip() or "Unity-autosave"
+            try:
+                s_, b_ = gates._session()
+                r_ = gates.bridge.exchange(s_, b_, "tools/call", {"name": "rimworld/load_game_ready", "arguments": {
+                    "saveName": name, "readiness": "playable", "pauseIfNeeded": True, "timeoutMs": 300000}})
+                print(stamp(), "resumed save", name, "->", str(r_)[:160], flush=True)
+                os.remove(RESUME)
+                for f_ in ("_new_colony.request", "_new_colony.request.tries"):
+                    try: os.remove(os.path.join(HERE, f_))
+                    except OSError: pass
+                say("fact: I am back after a big upgrade to my own systems; the colony is loaded right where we left it")
+            except Exception as e:
+                print(stamp(), "resume not loaded yet:", str(e)[:120], flush=True)
+            time.sleep(10); continue
         req = os.path.join(HERE, "_new_colony.request")
         # start-scenario drives RimWorld's own pages through click_ui_target, which is an API call and works
         # whether or not the window has focus -- so this waits for the BRIDGE, not for the owner's screen.
@@ -249,7 +287,7 @@ while True:
                     except OSError: pass
             scen = (open(req, encoding="utf-8").read().strip().split(chr(10))[0] or "Async Industries")
             print(stamp(), "new colony requested (%s) and the window is up -- starting it" % scen, flush=True)
-            say("Right, new colony. Company start, clean map, and this time I feed everyone before I build anything pretty.")
+            say("fact: starting a brand new colony; food comes first")
             # Owner: "wtf it didnt do the fucking map set up with faction adv settings pollution seed name none of
             # it". start-scenario only picks the scenario row; every page after it is done by the mod itself
             # (WorldSetupDriver): Cassandra / Community builder / reload anytime, seed, pollution 0, factions
@@ -259,22 +297,32 @@ while True:
             tries = int(open(req + ".tries").read()) if os.path.exists(req + ".tries") else 0
             if tries >= 2:
                 print(stamp(), "new colony failed twice -- stopping, NOT regenerating worlds; see newgame.result", flush=True)
-                say("Setup is fighting me, so I am stopping it before it eats the night. Fixing it properly.")
+                say("fact: the new game setup failed; trying it again")
                 os.remove(req); continue
             open(req + ".tries", "w").write(str(tries + 1))
             def pick(what, fallback):
                 try:
                     import urllib.request as _u
-                    body = {"model": "unity-local", "stream": False, "keep_alive": "30m",
-                            "options": {"temperature": 1.0, "num_predict": 12, "num_ctx": 8192},
+                    body = {"model": os.environ.get("UNITY_VOICE_LLM", "unity-local"), "stream": False, "think": False, "keep_alive": "30m",
+                            "options": {"temperature": 1.0, "num_predict": 12, "num_ctx": int(os.environ.get("UNITY_VOICE_NUM_CTX", "8192"))},
                             "prompt": "You are Unity, a 25 year old emo goth streamer. Give " + what +
                                       ". Reply with the name only, one to three words, letters and spaces only, clean."}
-                    out = json.loads(_u.urlopen(_u.Request("http://127.0.0.1:11435/api/generate", json.dumps(body).encode(),
+                    out = json.loads(_u.urlopen(_u.Request(os.environ.get("UNITY_VOICE_URL", "http://127.0.0.1:11435") + "/api/generate", json.dumps(body).encode(),
                                      {"Content-Type": "application/json"}), timeout=60).read())["response"]
                     out = "".join(ch for ch in out.strip().split(chr(10))[0] if ch.isalpha() or ch == " ").strip()[:24]
-                    return out if out and not _DIRTY.search(out) else fallback
+                    return out if out and not _DIRTY.search(out) and not _TOUCHY.search(out) else None
                 except Exception:
-                    return fallback
+                    return None
+            # the stream is clean: a name she reads out loud may not be a slur, atrocity or real-world violence
+            # (her model once picked the seed "terrorist")
+            _TOUCHY = _re.compile(r"terror|nazi|hitler|isis|jihad|genocid|holocaust|rape|suicid|bomb|massacre|"
+                                 r"shoot|murder|kill|slave|lynch|pedo|cartel|nigg|fag|retard", _re.I)
+            _pick = pick
+            def pick(what, fallback):
+                for _ in range(4):
+                    got = _pick(what, fallback)
+                    if got: return got
+                return fallback
             seed = pick("a one word seed for a new RimWorld planet", "nightshade").replace(" ", "").lower()
             faction = pick("a name for your colony's faction", "Pink Static")
             settlement = pick("a name for your first settlement, a mountain hideout", "Hollow Spire")
@@ -284,7 +332,7 @@ while True:
             open(os.path.join(auto, "newgame.request"), "w", encoding="utf-8").write(
                 "seed=%s\nfaction=%s\nsettlement=%s\ncompany=Async Industries\nideo=Godsmultiplayer\npreset=Preset3\ncoverage=0.3\n" % (seed, faction, settlement))
             print(stamp(), "new game request: seed=%s faction=%s settlement=%s" % (seed, faction, settlement), flush=True)
-            say("New planet seed is %s. Setting it up the way I always do, spring, three hundred square, mountains." % seed)
+            say("fact: the new world seed is %s; spring, mountains and forest" % seed)
             r = subprocess.run([sys.executable, os.path.join(HERE, "start-scenario.py"), scen, "--stop-at", "ChooseIdeoPreset|SelectStoryteller"],
                                cwd=ROOT, capture_output=True, text=True, timeout=600, **NOWIN)
             print(stamp(), "start-scenario ->", (r.stdout or r.stderr).strip().splitlines()[-2:], flush=True)
@@ -301,8 +349,17 @@ while True:
                 try: os.remove(req + ".tries")
                 except OSError: pass
                 print(stamp(), "new colony started (%d colonists) -- the request is cleared" % crew, flush=True)
+                # a fresh colony starts a fresh ladder: explored flag and her setup marks cleared
+                for f_ in (os.path.join(HERE, "_explore_done.flag"),):
+                    try: os.remove(f_)
+                    except OSError: pass
+                try:
+                    lp = os.path.join(ROOT, ".local", "autopilot", "scratch", "ladder.json")
+                    d_ = json.load(open(lp, encoding="utf-8")); d_["marks"] = {}; json.dump(d_, open(lp, "w", encoding="utf-8"), indent=1)
+                except Exception: pass
+                _explore_done = False
                 day_one(auto)
-                say("We are down. %s, spring, forest and mountains. Food first." % settlement)
+                say("fact: the crew has landed at %s; spring, forest and mountains" % settlement)
             else:
                 print(stamp(), "no colonists on a map yet -- the colony request stays armed", flush=True)
 
@@ -327,19 +384,21 @@ while True:
         firing, st = gates.decide()
         # owner: "exploring is not finished ... it never went through EVERY DOOR". Until the mod reports nothing left,
         # re-send explore every 3 minutes (each call queues every colonist through the nearest doors and fog edge)
-        global _last_explore, _explore_done
         try: _last_explore
         except NameError: _last_explore, _explore_done = 0, False
         if not _explore_done and st.get("ticks_moving") and time.time() - _last_explore > 180:
             _last_explore = time.time()
             try:
-                auto = os.path.join(os.path.expandvars(r"%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Config"), "RimroomsAutomation")
-                with open(os.path.join(auto, "inbox.jsonl"), "a", encoding="utf-8") as f:
-                    f.write(json.dumps({"cmd": "explore"}) + chr(10))
-                time.sleep(3)
-                last = open(os.path.join(auto, "outbox.jsonl"), encoding="utf-8", errors="replace").read().splitlines()[-1]
+                last = automate.exchange([{"cmd": "explore"}], wait_s=20)[0][1] or "no answer from the mod"
                 print(stamp(), "auto-explore:", last[:220], flush=True)
-                if "nothing left to explore" in last: _explore_done = True
+                # the ladder's explore rung clears only when nothing is left at all, sealed rooms included (v3 wording)
+                if "nothing left to explore" in last and "sealed" in last:
+                    _explore_done = True
+                    open(os.path.join(HERE, "_explore_done.flag"), "w").write(stamp())
+                    # owner's order: explore with time running, THEN pause and set every pawn before it runs again
+                    try: gates_bridge_pause(True)
+                    except Exception as e: print(stamp(), "could not pause after exploring:", e, flush=True)
+                    say("fact: every room and door is explored; the game is paused while I set up each pawn")
             except Exception as e:
                 print(stamp(), "auto-explore failed:", e, flush=True)
         hold = os.path.join(HERE, "_setup_hold.flag")
@@ -366,13 +425,14 @@ while True:
         # Owner, 2026-10-10: "lets get the local model starting a new coloy and everything as the company".
         # Starting a colony is pure UI -- the scenario page only answers a real window -- so the order is left
         # as a request file and fired the moment RimWorld is actually up, without waiting for anyone to notice.
-        # the jobs only a real cursor can do: run the queue once, but only while the window is actually in front
-        if top in CURSOR_GATES and game_up():
+        # the jobs only a mouse-down can do: run the queue once with Unity's own (posted) mouse -- the owner's
+        # cursor is never borrowed, so the window only has to be open, not in front
+        if top in CURSOR_GATES and game_open():
             lock = os.path.join(HERE, "_cursor_jobs.lock")
             if not os.path.exists(lock):
                 print(stamp(), "window is in front and", top, "needs the cursor -- running the click queue", flush=True)
                 subprocess.run([sys.executable, os.path.join(HERE, "cursor-jobs.py"), "--now"],
-                               cwd=ROOT, env=dict(os.environ, OWNER_LENT_MOUSE="1"),
+                               cwd=ROOT,
                                capture_output=True, text=True, timeout=600,
                                creationflags=0x08000000 if os.name == "nt" else 0)
 

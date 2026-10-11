@@ -110,14 +110,14 @@ namespace RimroomsAsyncIndustries.Scenario
             {
                 LabelKey = "RR_Setup_GateNeedsBench",
                 Detail = bench == null ? null : bench.label,
-                Present = bench == null ? 0 : CountOf(start, bench),
+                Present = CountMatching(start, AcceptedBench),
             });
 
             found.Add(new Prerequisite
             {
                 LabelKey = "RR_Setup_GateNeedsConsole",
                 Detail = null,
-                Present = CountOfNamed(start, "CommsConsole"),
+                Present = CountMatching(start, AcceptedConsole),
             });
 
             found.Add(new Prerequisite
@@ -144,6 +144,32 @@ namespace RimroomsAsyncIndustries.Scenario
         {
             if (start.buildings == null || definition == null) { return 0; }
             return start.buildings.Count(plan => plan != null && plan.thing == definition);
+        }
+
+        /// <summary>
+        /// The same membership binding uses: the gate console component on a comms console type,
+        /// so the company's own console counts as well as Core's.
+        /// </summary>
+        private static bool AcceptedConsole(ThingDef definition)
+        {
+            return definition != null && definition.thingClass != null &&
+                typeof(Building_CommsConsole).IsAssignableFrom(definition.thingClass) &&
+                definition.HasComp(typeof(Gate.CompRimroomsGateConsole));
+        }
+
+        /// <summary>Any bench the assembly recipe runs on, or the company's own bench.</summary>
+        private static bool AcceptedBench(ThingDef definition)
+        {
+            if (definition == null) { return false; }
+            if (definition.defName == Gate.RimroomsGateProviders.CompanyAssemblyBench) { return true; }
+            RecipeDef recipe = DefDatabase<RecipeDef>.GetNamedSilentFail(AssemblyRecipe);
+            return recipe != null && recipe.recipeUsers != null && recipe.recipeUsers.Contains(definition);
+        }
+
+        private static int CountMatching(RimroomsStartDef start, System.Func<ThingDef, bool> accepts)
+        {
+            if (start.buildings == null) { return 0; }
+            return start.buildings.Count(plan => plan != null && accepts(plan.thing));
         }
 
         private static int CountOfNamed(RimroomsStartDef start, string defName)

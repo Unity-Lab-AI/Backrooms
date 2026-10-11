@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using RimroomsAsyncIndustries.Company;
 using RimroomsAsyncIndustries.Expedition;
 using RimWorld;
@@ -125,14 +126,65 @@ namespace RimroomsAsyncIndustries.Gate
 
             RimroomsExpeditionComponent trips = Current.Game == null
                 ? null : Current.Game.GetComponent<RimroomsExpeditionComponent>();
-            if (trips == null) { return; }
-            CompanyActionResult result = trips.Recall();
-            if (!result.Success) { return; }
+            // Only a trip that went out through this gate is this gate's to call home. Recall acts
+            // on the branch's one open trip, so a warning on another gate must not reach it.
+            ExpeditionRecord trip = trips == null ? null : trips.Active;
+            bool recalled = false;
+            if (trip != null && trip.Gate == parent) { recalled = trips.Recall().Success; }
+            // People who walked through this gate on their own are called home through it too.
+            // A legacy trip's crew is left to the trip's own recall above.
+            if (RecallFreeTravellers(trip) > 0) { recalled = true; }
+            if (!recalled) { return; }
 
             Messages.Message("RR_Gate_StandingRecallIssued".Translate(), parent,
                 MessageTypeDefOf.ThreatSmall, false);
             Audio.RimroomsAudio.Play("RR_GateWarning", parent.Map, parent.Position, false);
             RecordGateActivity("RR_Gate_StandingRecallIssued", CurrentOpeningId);
+        }
+
+        /// <summary>
+        /// Orders every colonist standing beyond this gate's open connection, whose last kept
+        /// crossing came out through this gate, to walk back through it. Returns how many were
+        /// ordered. Members of a legacy trip are skipped; that trip recalls its own crew.
+        ///
+        /// A colonist with no kept crossing history is still on this gate's far side, so they are
+        /// called home rather than left behind because old receipts were trimmed.
+        /// </summary>
+        private int RecallFreeTravellers(ExpeditionRecord legacy)
+        {
+            if (string.IsNullOrEmpty(portalConnectionId) || Current.Game == null || parent == null) { return 0; }
+            Portals.RimroomsPortalNetwork network = Current.Game.GetComponent<Portals.RimroomsPortalNetwork>();
+            Portals.PortalConnectionRecord connection = network == null ? null : network.Find(portalConnectionId);
+            if (connection == null || connection.First == null || connection.Second == null) { return 0; }
+            Map far = connection.First.Anchor == parent ? connection.Second.Map
+                : connection.Second.Anchor == parent ? connection.First.Map : null;
+            if (far == null || far == parent.Map) { return 0; }
+            Portals.RimroomsPortalCrossingService crossings =
+                Current.Game.GetComponent<Portals.RimroomsPortalCrossingService>();
+            int ordered = 0;
+            foreach (Pawn pawn in far.mapPawns.FreeColonistsSpawned.ToList())
+            {
+                if (legacy != null && (legacy.crew.Contains(pawn) || legacy.rescueCrew.Contains(pawn) ||
+                    legacy.recoveryPassengers.Contains(pawn))) { continue; }
+                if (pawn.CurJobDef != null && pawn.CurJobDef.defName == Portals.PortalTravelService.CrossJobDefName)
+                { continue; }
+                if (!LastCrossedOutHere(crossings, pawn, far)) { continue; }
+                if (Portals.PortalTravelService.OrderCrossing(pawn, connection).Success) { ordered++; }
+            }
+            return ordered;
+        }
+
+        private bool LastCrossedOutHere(Portals.RimroomsPortalCrossingService crossings, Pawn pawn, Map far)
+        {
+            if (crossings == null) { return true; }
+            Portals.PortalCrossingReceipt last = null;
+            foreach (Portals.PortalCrossingReceipt receipt in crossings.Receipts)
+            {
+                if (receipt == null || receipt.Pawn != pawn || receipt.Phase != Portals.PortalCrossingPhase.Committed)
+                { continue; }
+                if (last == null || receipt.Sequence > last.Sequence) { last = receipt; }
+            }
+            return last == null || (last.SourceAnchor == parent && last.DestinationMap == far);
         }
 
         /// <summary>

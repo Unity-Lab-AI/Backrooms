@@ -138,7 +138,10 @@ namespace RimroomsAsyncIndustries.Economy
 
             if (!designated) { yield break; }
 
-            if (campaignForQuote == null) { yield break; }
+            // Banking and selling both post to the company account, so they are offered only where
+            // there is a working account to post to. A save with no branch would otherwise destroy
+            // the goods and refuse the credit.
+            if (campaignForQuote == null || !campaignForQuote.CanOperate) { yield break; }
 
             long available = AvailableCredits;
             var bank = new Command_Action

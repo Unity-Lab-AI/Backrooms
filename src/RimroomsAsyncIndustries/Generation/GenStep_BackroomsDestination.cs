@@ -702,6 +702,7 @@ namespace RimroomsAsyncIndustries.Generation
                 if (wiredCells.Count >= MaxNativePowerConduits) { return true; }
                 List<IntVec3> route = FindConduitRoute(map, voidFloor, wiredCells,
                     consumer.OccupiedRect());
+                int wiredBefore = wiredCells.Count;
                 bool capped = false;
                 for (int step = 0; step < route.Count; step++)
                 {
@@ -713,7 +714,9 @@ namespace RimroomsAsyncIndustries.Generation
                 // reads `power.PowerNet` out of bookkeeping Core has already told us is wrong, and
                 // every further call re-applies its half-processed queue. See RebuildPowerNets:
                 // this loop is where the owner's sixty-two warnings came from.
-                if (!RebuildPowerNets(map, coordinate)) { return false; }
+                // Nothing new went down, so the grid is exactly what the last rebuild left and a
+                // second identical rebuild would only repeat it.
+                if (wiredCells.Count != wiredBefore && !RebuildPowerNets(map, coordinate)) { return false; }
                 if (capped) { return true; }
             }
             return true;

@@ -19,6 +19,7 @@
  *
  *   Run:  node .claude/tools/persona-studio.cjs
  *   Port: PERSONA_STUDIO_PORT env var (default 4317)
+ *   Auth: every POST needs header X-Studio-Token (or ?token=) = .claude/.studio-token, new each start
  *   Key:  .claude/.env  POLLINATIONS_API_KEY  (window prompts if missing)
  *   Life: the server dies when its browser window closes — a pagehide beacon
  *         kills it instantly, and a poll-heartbeat watchdog is the backstop for
@@ -31,6 +32,7 @@ const http = require('http');
 const fs   = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
+const crypto = require('crypto');
 
 const TOOLS_DIR  = __dirname;
 const CLAUDE_DIR = path.resolve(TOOLS_DIR, '..');
@@ -41,6 +43,48 @@ const OUTBOX_PATH = path.join(CLAUDE_DIR, '.studio-outbox.jsonl');
 const OVERLAY_PATH = path.join(TOOLS_DIR, 'stream-overlay.html');
 const STREAM_LOG   = path.join(CLAUDE_DIR, '.stream-log.jsonl');
 const BASE_PORT   = parseInt(process.env.PERSONA_STUDIO_PORT, 10) || 4317;
+const TOKEN_PATH  = path.join(CLAUDE_DIR, '.studio-token');
+const ROOT_DIR    = path.resolve(CLAUDE_DIR, '..');
+
+// ── per-session token: every mutating request must carry it ────────────────
+// Written beside the inbox for the local helper scripts (header X-Studio-Token)
+// and injected into the studio page this server serves. Read-only GETs stay open.
+const TOKEN = crypto.randomBytes(24).toString('hex');
+try { fs.writeFileSync(TOKEN_PATH, TOKEN, { mode: 0o600 }); } catch (e) { console.error('persona-studio: could not write token file - ' + e.message); }
+function localHostOk(req) {
+  const port = req.socket.localPort;
+  const host = String(req.headers.host || '').toLowerCase();
+  return host === '127.0.0.1:' + port || host === 'localhost:' + port;
+}
+function originOk(req) {
+  const o = req.headers.origin;
+  if (!o) return true;   // non-browser local helpers send no Origin
+  const port = req.socket.localPort;
+  return o === 'http://127.0.0.1:' + port || o === 'http://localhost:' + port;
+}
+function tokenOk(req, query) {
+  const t = String(req.headers['x-studio-token'] || query.token || '');
+  return t.length === TOKEN.length && crypto.timingSafeEqual(Buffer.from(t), Buffer.from(TOKEN));
+}
+
+// ── names that must never reach the public stream (owner handle etc.) ──────
+function secretWords() {
+  const out = [];
+  for (const p of [path.join(ROOT_DIR, '.local', 'autopilot', 'secret-words.txt'), path.join(ROOT_DIR, '.local', 'tw', 'owner.txt')]) {
+    try {
+      for (const w of fs.readFileSync(p, 'utf8').split(/\r?\n/)) {
+        const t = w.trim();
+        if (t.length >= 3 && !t.startsWith('#')) out.push(t);
+      }
+    } catch (e) { /* file optional */ }
+  }
+  return out;
+}
+function scrub(text, words) {
+  let t = String(text || '');
+  for (const w of words) t = t.split(new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')).join('my friend');
+  return t;
+}
 
 // ── Persona roster — id → display label + accent colour ─────────────────────
 const PERSONAS = {
@@ -226,14 +270,21 @@ const server = http.createServer(async (req, res) => {
     if (qIdx !== -1) {
       for (const pair of req.url.slice(qIdx + 1).split('&')) {
         const kv = pair.split('=');
-        query[decodeURIComponent(kv[0] || '')] = decodeURIComponent(kv[1] || '');
+        try { query[decodeURIComponent(kv[0] || '')] = decodeURIComponent(kv[1] || ''); } catch (e) { /* bad escape */ }
       }
+    }
+    // Host check on everything (DNS-rebinding guard); POSTs also need same-origin + token.
+    if (!localHostOk(req)) return sendJson(res, 403, { error: 'bad host' });
+    if (req.method !== 'GET' && (!originOk(req) || !tokenOk(req, query))) {
+      return sendJson(res, 403, { error: 'forbidden: missing or wrong studio token' });
     }
 
     if (req.method === 'GET' && pathname === '/') {
       if (!fs.existsSync(HTML_PATH)) { res.writeHead(500); return res.end('persona-studio.html missing'); }
-      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-      return res.end(fs.readFileSync(HTML_PATH));
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+      const page = fs.readFileSync(HTML_PATH, 'utf8')
+        .replace('</head>', '<script>window.STUDIO_TOKEN=' + JSON.stringify(TOKEN) + ';</script></head>');
+      return res.end(page);
     }
 
     // The OBS stream overlay (full 1920x1080 canvas, transparent).
@@ -248,16 +299,21 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && pathname === '/api/chat') {
       const since = parseInt(query.since, 10) || 0;
       const inbox = readJsonl(INBOX_PATH);
+      const secrets = secretWords();
+      const secretLower = new Set(secrets.map((w) => w.toLowerCase()));
       const twitch = new Map();
       for (const m of inbox) {
         const t = /^\[twitch\]\s*([^:]{1,40}):\s*([\s\S]*)$/.exec(String(m.text || ''));
+        // The owner's own Twitch lines are private orders, not public chat: dropped here (with Unity's
+        // replies to them, below) so the handle never reaches the overlay or any public reader.
+        if (t && secretLower.has(t[1].trim().toLowerCase())) continue;
         if (t) twitch.set(m.id, { who: t[1].trim(), text: t[2].trim(), ts: m.ts });
       }
       const rows = [];
-      for (const [id, v] of twitch) rows.push({ key: 'v' + id, ts: v.ts, who: v.who, text: v.text, unity: false });
+      for (const [id, v] of twitch) rows.push({ key: 'v' + id, ts: v.ts, who: scrub(v.who, secrets), text: scrub(v.text, secrets), unity: false });
       for (const r of readJsonl(OUTBOX_PATH)) {
         if (r.replyTo != null && !twitch.has(r.replyTo)) continue;
-        rows.push({ key: 'u' + r.id, ts: r.ts, who: 'Unity', text: String(r.text || ''), unity: true,
+        rows.push({ key: 'u' + r.id, ts: r.ts, who: 'Unity', text: scrub(r.text, secrets), unity: true,
                     narration: r.replyTo == null });
       }
       rows.sort((a, b) => a.ts - b.ts);
