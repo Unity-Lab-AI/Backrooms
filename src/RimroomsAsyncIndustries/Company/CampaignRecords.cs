@@ -491,6 +491,9 @@ namespace RimroomsAsyncIndustries.Company
         internal bool distortionRecorded;
         internal bool entityRecorded;
         internal string sourceExpeditionId;
+        // The free portal crossing whose arrival created this record, or null. Ownership for a
+        // record no legacy expedition dispatched; an older save loads it as null.
+        internal string sourcePortalOperationId;
         internal Pawn analyst;
         internal int analyzedTick = -1;
         internal float analysisWork;
@@ -597,6 +600,7 @@ namespace RimroomsAsyncIndustries.Company
             Scribe_Values.Look(ref distortionRecorded, "rr_distortionRecorded");
             Scribe_Values.Look(ref entityRecorded, "rr_entityRecorded");
             Scribe_Values.Look(ref sourceExpeditionId, "rr_sourceExpeditionId");
+            Scribe_Values.Look(ref sourcePortalOperationId, "rr_sourcePortalOperationId");
             Scribe_References.Look(ref analyst, "rr_analyst");
             Scribe_Values.Look(ref analyzedTick, "rr_analyzedTick", -1);
             Scribe_Values.Look(ref analysisWork, "rr_analysisWork");

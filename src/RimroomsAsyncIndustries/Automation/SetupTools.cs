@@ -71,7 +71,7 @@ namespace RimroomsAsyncIndustries.Automation
             var targets = new List<IntVec3>();
             foreach (Building b in map.listerBuildings.allBuildingsColonist.Concat(map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial).OfType<Building>()))
             {
-                if (!(b is Building_Door)) continue;
+                if (!(b is Building_Door) && !b.def.IsDoor && b.def.defName.IndexOf("door", StringComparison.OrdinalIgnoreCase) < 0) continue;
                 if (GenAdj.CellsAdjacent8Way(b).Any(c => c.InBounds(map) && fog.IsFogged(c))) targets.Add(b.Position);
             }
             // the fog frontier: fogged, walkable cells right next to seen ground, sampled so the list stays short
@@ -83,11 +83,16 @@ namespace RimroomsAsyncIndustries.Automation
                 if (++step % 6 == 0) targets.Add(c);
             }
             targets = targets.Distinct().ToList();
-            if (targets.Count == 0) return "ok: nothing left to explore -- no fogged door or fog frontier";
+            if (targets.Count == 0)
+            {
+                // v3: rooms that are still fogged but sealed (no door, no walkable frontier): dig the shortest way in
+                string dug = DigIntoSealedRooms(map);
+                return dug ?? "ok: nothing left to explore -- no fogged door, fog frontier or sealed fogged room";
+            }
 
             var notes = new List<string>();
             var claimed = new HashSet<IntVec3>();
-            foreach (Pawn p in map.mapPawns.FreeColonistsSpawned.Where(p => !p.Downed && !p.InMentalState))
+            foreach (Pawn p in map.mapPawns.FreeColonistsSpawned.Where(Core.PawnOrderEligibility.FreeForAutonomousOrders))
             {
                 List<IntVec3> mine = targets.Where(t => !claimed.Contains(t))
                                             .OrderBy(t => t.DistanceToSquared(p.Position))
@@ -101,8 +106,77 @@ namespace RimroomsAsyncIndustries.Automation
                 notes.Add(p.LabelShort + " -> " + mine.Count + " stops from " + mine[0].x + "," + mine[0].z);
             }
             return notes.Count == 0
-                ? "refused: " + targets.Count + " places left to explore but none reachable right now"
+                ? "refused: " + targets.Count + " places left to explore but no free colonist can reach one right now (drafted, ordered, hungry or exhausted colonists are left alone)"
                 : "ok: exploring, " + targets.Count + " places left (doors + fog edge): " + string.Join("; ", notes) + " -- the game must run for them to walk";
+        }
+
+        /// <summary>
+        /// For each indoor room that is still mostly fogged and has no walkable way in, find the shortest run of
+        /// mineable cells from explored, walkable floor into it (breadth-first over at most 12 cells of rock/wall)
+        /// and designate those cells for mining. Owner: "it never went through EVERY DOOR" -- some hidden rooms have
+        /// no door at all.
+        /// </summary>
+        private static string DigIntoSealedRooms(Map map)
+        {
+            var sealedRooms = IndoorRooms(map).Where(r => FoggedShare(map, r) > 0.8f).ToList();
+            if (sealedRooms.Count == 0) return null;
+            var notes = new List<string>();
+            foreach (Room room in sealedRooms.Take(3))
+            {
+                var goal = new HashSet<IntVec3>(room.Cells);
+                var prev = new Dictionary<IntVec3, IntVec3>();
+                var depth = new Dictionary<IntVec3, int>();
+                var queue = new Queue<IntVec3>();
+                foreach (IntVec3 c in room.Cells)
+                {
+                    foreach (IntVec3 d in GenAdj.CardinalDirections)
+                    {
+                        IntVec3 n = c + d;
+                        if (!n.InBounds(map) || goal.Contains(n) || depth.ContainsKey(n)) continue;
+                        if (!IsMineable(map, n)) continue;
+                        depth[n] = 1; prev[n] = c; queue.Enqueue(n);
+                    }
+                }
+                IntVec3 found = IntVec3.Invalid;
+                while (queue.Count > 0 && !found.IsValid)
+                {
+                    IntVec3 cur = queue.Dequeue();
+                    foreach (IntVec3 d in GenAdj.CardinalDirections)
+                    {
+                        IntVec3 n = cur + d;
+                        if (!n.InBounds(map) || depth.ContainsKey(n) || goal.Contains(n)) continue;
+                        if (!map.fogGrid.IsFogged(n) && n.Standable(map)) { found = cur; break; }   // reached seen floor
+                        if (depth[cur] >= 12 || !IsMineable(map, n)) continue;
+                        depth[n] = depth[cur] + 1; prev[n] = cur; queue.Enqueue(n);
+                    }
+                }
+                if (!found.IsValid) { notes.Add("room " + room.ID + ": no dig path within 12 cells"); continue; }
+                int marked = 0;
+                for (IntVec3 c = found; !goal.Contains(c); c = prev[c])
+                {
+                    Building wall = c.GetEdifice(map);
+                    bool natural = wall != null && (wall.def.mineable || (wall.def.building != null && wall.def.building.isNaturalRock));
+                    if (natural && map.designationManager.DesignationAt(c, DesignationDefOf.Mine) == null)
+                    {
+                        map.designationManager.AddDesignation(new Designation(c, DesignationDefOf.Mine)); marked++;
+                    }
+                    else if (!natural && wall != null && map.designationManager.DesignationOn(wall, DesignationDefOf.Deconstruct) == null)
+                    {
+                        map.designationManager.AddDesignation(new Designation(wall, DesignationDefOf.Deconstruct)); marked++;
+                    }
+                    if (!prev.ContainsKey(c)) break;
+                }
+                notes.Add("room " + room.ID + ": " + marked + " cells marked to mine or deconstruct in");
+            }
+            return "ok: no doors left, digging into sealed fogged rooms -- " + string.Join("; ", notes) + " (someone needs Mining and Construction work on)";
+        }
+
+        private static bool IsMineable(Map map, IntVec3 c)
+        {
+            Building ed = c.GetEdifice(map);
+            // rock is mined; a built wall is deconstructed -- either way it opens a way in
+            return ed != null && (ed.def.mineable || (ed.def.building != null && ed.def.building.isNaturalRock) ||
+                                  (ed.Faction == Faction.OfPlayer || ed.Faction == null) && ed.def.passability == Traversability.Impassable);
         }
 
         public static string StockpileRoom(Map map, Dictionary<string, string> a)
@@ -160,13 +234,29 @@ namespace RimroomsAsyncIndustries.Automation
             if (without.Count == 0) return "ok: everyone has a bed";
             ThingDef bed = ThingDefOf.Bed;
             ThingDef stuff = GenStuff.DefaultStuffFor(bed);
+
+            // sleeping places already coming: free built colonist beds nobody owns yet, and bed blueprints or frames
+            // still waiting to be built -- so repeating this command does not plan the same beds again
+            int freeBuilt = map.listerBuildings.allBuildingsColonist.OfType<Building_Bed>()
+                .Count(b => b.ForColonists && !b.Medical && b.def.building != null && b.def.building.bed_humanlike &&
+                            b.SleepingSlotsCount > b.OwnersForReading.Count);
+            int planned = map.listerThings.AllThings.Count(t =>
+                t.Faction == Faction.OfPlayer && (t.def.IsBlueprint || t.def.IsFrame) &&
+                t.def.entityDefToBuild is ThingDef built && built.IsBed && built.building != null && built.building.bed_humanlike);
+            int needed = without.Count - freeBuilt - planned;
+            if (needed <= 0)
+            {
+                return "ok: no new beds needed -- " + freeBuilt + " free bed(s) and " + planned +
+                       " planned for " + string.Join(", ", without.Select(p => p.LabelShort));
+            }
+
             var placed = new List<string>();
             foreach (Room r in IndoorRooms(map).Where(r => r.OpenRoofCount == 0 && FoggedShare(map, r) < 0.2f)
                                                .OrderByDescending(r => r.ContainedBeds.Count()))
             {
                 foreach (IntVec3 c in r.Cells.Where(x => FreeFloor(map, x)))
                 {
-                    if (placed.Count >= without.Count) break;
+                    if (placed.Count >= needed) break;
                     Rot4 rot = Rot4.South;
                     if (GenConstruct.CanPlaceBlueprintAt(bed, c, rot, map, false, null, null, stuff).Accepted)
                     {
@@ -174,7 +264,7 @@ namespace RimroomsAsyncIndustries.Automation
                         placed.Add(c.x + "," + c.z);
                     }
                 }
-                if (placed.Count >= without.Count) break;
+                if (placed.Count >= needed) break;
             }
             return placed.Count == 0
                 ? "refused: no free roofed, explored floor fits a bed -- explore first"

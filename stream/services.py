@@ -4,10 +4,10 @@ Owner, 2026-10-10, verbatim: *"still dont have the streamer script working with 
 can stop everything and start it with one press only here in the game files"*. Double-click
 `Stream Start.cmd` or `Stream Stop.cmd` in the repo root, or run this directly:
 
-    python .local/qa/services.py start     # start every service that is not already running
-    python .local/qa/services.py stop      # stop every one of them
-    python .local/qa/services.py status    # one line each: UP with its pid, or DOWN
-    python .local/qa/services.py restart
+    python stream/services.py start     # start every service that is not already running
+    python stream/services.py stop      # stop every one of them
+    python stream/services.py status    # one line each: UP with its pid, or DOWN
+    python stream/services.py restart
 
 Each service is matched by its own command line, so a service already running by any other route is
 recognised and never started twice. Nothing here touches RimWorld itself -- the game is the owner's to launch
@@ -58,10 +58,10 @@ SERVICES = [
     ("heat",        ".local/qa/heat-guard.py",          [PYW, os.path.join(QA, "heat-guard.py")]),
     ("camdir",      ".local/qa/cam-director.py",        [PYW, os.path.join(QA if "QA" in globals() else HERE, "cam-director.py")]),
     ("followcrew",  ".local/qa/follow-crew.py",         [PYW, os.path.join(QA if "QA" in globals() else HERE, "follow-crew.py")]),
-    ("cursorjobs",  ".local/qa/cursor-jobs.py",         [PYW, os.path.join(QA, "cursor-jobs.py")]),
+    # ("cursorjobs",  ".local/qa/cursor-jobs.py",         [PYW, os.path.join(QA, "cursor-jobs.py")]),
     ("keepgoing",   ".local/qa/keep-playing.py",        [PYW, "-u", os.path.join(QA if "QA" in globals() else HERE, "keep-playing.py")]),
-    ("autopilot",   ".local/autopilot/autopilot.py",    [PYW, "-u", os.path.join(ROOT, ".local/autopilot/autopilot.py"), "--num-gpu", "0"]),
-    ("admin",       "admin.py",               [PYW, "-u", os.path.join(HERE, "admin.py")]),
+    ("autopilot",   ".local/autopilot/autopilot.py",    [PYW, "-u", os.path.join(ROOT, ".local/autopilot/autopilot.py"), "--num-gpu", os.environ.get("AUTOPILOT_NUM_GPU", "0")]),
+    ("admin",       "stream/admin.py",                  [PYW, "-u", os.path.join(HERE, "admin.py")]),
 ]
 # Runs once, pins the overlay window topmost and exits -- fired on start, never reported as a service.
 ONE_SHOTS = [[PYW, os.path.join(ROOT, ".claude/tools/unity-overlay.py")]]
@@ -110,7 +110,28 @@ OUR_BROWSER_MARK = "twitch-profile"
 
 OLLAMA = os.path.expandvars(r"%LOCALAPPDATA%/Programs/Ollama/ollama.exe")
 if not os.path.exists(OLLAMA): OLLAMA = "ollama"
-MODELS = ["dolphin3:8b", "unity-local", "qwen3.6:35b"]      # the voice and the player
+MODELS = ["dolphin3:8b", "qwen3:8b", "qwen3.6:35b"]         # pulled from the registry: the voice base and the player
+BRAIN_DIR = os.path.join(ROOT, "training", "models")
+# Unity's one brain (training/BRAIN_PLAN.md): its base is pulled only once a trained brain has been downloaded
+if os.path.exists(os.path.join(BRAIN_DIR, "unity-brain.gguf")):
+    MODELS.append("qwen3.5:9b")
+# Ollama on a 16 GB card shared with RimWorld, OBS and the Twitch window: flash attention and an 8-bit KV cache
+# roughly halve the context's VRAM with no audible change in her lines. Takes effect when Ollama next starts.
+OLLAMA_ENV = {"OLLAMA_FLASH_ATTENTION": "1", "OLLAMA_KV_CACHE_TYPE": "q8_0"}
+
+
+def brain_env():
+    """Env for every service once the brain is applied: it plays on the GPU with a 32K context (her longest turns
+    plus the tool list fit in ~24K), and -- only when its eval beat or matched today's voice (models/brain-voice.ok,
+    written by training/apply.py) -- every voice caller asks it too, so one model sits on the GPU, not two."""
+    if not os.path.exists(os.path.join(BRAIN_DIR, "unity-brain.gguf.applied")):
+        return {}
+    env = {"AUTOPILOT_MODEL": "unity-brain", "AUTOPILOT_NUM_CTX": "32768"}
+    if os.path.exists(os.path.join(BRAIN_DIR, "brain-voice.ok")):
+        env.update(OLLAMA_URL="http://127.0.0.1:11434", UNITY_VOICE_URL="http://127.0.0.1:11434", UNITY_VOICE_LLM="unity-brain",
+                   UNITY_VOICE_NUM_CTX="32768")   # same context as the player, so Ollama never reloads between them
+    return env
+CUSTOM = ["unity-local"]                                    # built on this machine (training/apply.py), never pulled
 VOICE = "unity-local"
 
 def deps():
@@ -131,7 +152,7 @@ def deps():
         api("/api/version"); print("ollama      already up")
     except Exception:
         log = open(os.path.join(QA, "_svc_ollama.log"), "ab", buffering=0)
-        subprocess.Popen([OLLAMA, "serve"], stdout=log, stderr=log,
+        subprocess.Popen([OLLAMA, "serve"], stdout=log, stderr=log, env=dict(os.environ, **OLLAMA_ENV),
                          **DETACH)
         for _ in range(40):
             time.sleep(1)
@@ -139,14 +160,29 @@ def deps():
             except Exception: pass
         print("ollama      started")
     have = subprocess.run([OLLAMA, "list"], capture_output=True, text=True).stdout
+    names = {ln.split()[0] for ln in have.splitlines()[1:] if ln.split()}
+    def present(m):
+        return m in names or (":" not in m and m + ":latest" in names)
+    for m in CUSTOM:
+        print("model       %s %s" % (m, "present" if present(m) else
+                                    "MISSING -- built locally from a Modelfile or training/apply.py, it cannot be pulled"))
+    pulls = []
     for m in MODELS:
-        if m.split(":")[0] in have:
+        if present(m):
             print("model       %s present" % m)
         else:
             log = open(os.path.join(QA, "_svc_pull_%s.log" % m.replace(":", "_")), "ab", buffering=0)
-            subprocess.Popen([OLLAMA, "pull", m], stdout=log, stderr=log,
-                             **DETACH)
-            print("model       %s pulling in the background" % m)
+            pulls.append((m, subprocess.Popen([OLLAMA, "pull", m], stdout=log, stderr=log,
+                                              **DETACH)))
+            print("model       %s pulling" % m)
+    # the shells below are built on these bases, so apply waits for every pull -- bounded, never forever
+    deadline = time.time() + int(os.environ.get("PULL_WAIT_S", "3600"))
+    for m, pr in pulls:
+        try:
+            rc = pr.wait(timeout=max(1, deadline - time.time()))
+            print("model       %s %s" % (m, "pulled" if rc == 0 else "pull FAILED (exit %d)" % rc))
+        except subprocess.TimeoutExpired:
+            print("model       %s still pulling after the wait -- apply runs without it, it retries next start" % m)
     # the voice gets its OWN Ollama on 11435 (owner, live: "she is cycling through the smae fucking responses"):
     # on the shared server every voice line queued behind the 35B player and timed out, so she fell back to a
     # small fixed pool. Two servers, two queues; the voice never waits on the player.
@@ -159,22 +195,41 @@ def deps():
         vapi("/api/version"); print("ollama-voice already up")
     except Exception:
         log = open(os.path.join(QA, "_svc_ollama_voice.log"), "ab", buffering=0)
-        subprocess.Popen([OLLAMA, "serve"], stdout=log, stderr=log, env=dict(os.environ, OLLAMA_HOST="127.0.0.1:11435"),
+        subprocess.Popen([OLLAMA, "serve"], stdout=log, stderr=log, env=dict(os.environ, OLLAMA_HOST="127.0.0.1:11435", **OLLAMA_ENV),
                          **DETACH)
         for _ in range(40):
             time.sleep(1)
             try: vapi("/api/version"); break
             except Exception: pass
         print("ollama-voice started on 11435")
+    # Unity's trained shells (training/models/*.gguf) go into Ollama before anything warms or starts; a no-op
+    # once applied (owner: "when its done it all auto applies and can run with start.bat")
     try:
-        vapi("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "keep_alive": "30m",
+        r = subprocess.run([sys.executable, os.path.join(ROOT, "training", "apply.py")], capture_output=True,
+                           text=True, timeout=3600)
+        print((r.stdout + r.stderr).strip())
+        if r.returncode != 0:
+            print("shells      NOT fully applied (exit %d) -- the previous models stay; it retries next start" % r.returncode)
+    except Exception as e:
+        print("shells      apply skipped (%s)" % str(e)[:60])
+    be = brain_env()
+    if be.get("UNITY_VOICE_LLM"):
+        try:
+            api("/api/generate", {"model": "unity-brain", "prompt": "hi", "stream": False, "think": False, "keep_alive": -1,
+                                  "options": {"num_ctx": 32768, "num_predict": 1}}, timeout=300)
+            print("model       unity-brain warm (plays and speaks; the voice server stays empty)")
+        except Exception as e:
+            print("model       unity-brain warm-up skipped (%s)" % str(e)[:40])
+        return
+    try:
+        vapi("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "think": False, "keep_alive": "30m",
                                "options": {"num_ctx": 8192, "num_predict": 1}}, timeout=180)
         print("model       %s warm on the voice server" % VOICE)
     except Exception as e:
         print("model       %s voice warm-up skipped (%s)" % (VOICE, str(e)[:40]))
     return
     try:
-        api("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "keep_alive": "30m",
+        api("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "think": False, "keep_alive": "30m",
                               "options": {"num_ctx": 8192, "num_predict": 1}}, timeout=180)
         print("model       %s warm" % VOICE)
     except Exception as e:
@@ -246,12 +301,16 @@ def announce(line):
 
 def start(only=None):
     found = running()
-    env = dict(os.environ, OWNER_LENT_MOUSE="1", PYTHONUNBUFFERED="1", STUDIO_PERSIST="1")
+    env = dict(os.environ, PYTHONUNBUFFERED="1", STUDIO_PERSIST="1")
+    be = brain_env()
+    env.update(be)
     if os.environ.get("TWITCH_CHANNEL") is None: env["TWITCH_CHANNEL"] = "unityplaysrimworld"
     for name, frag, cmd in SERVICES:
         if only and name != only: continue
         if found.get(frag):
             print("%-11s already up (%s)" % (name, found[frag][0])); continue
+        if name == "autopilot" and be:               # the brain runs on the GPU, not the CPU like the 35B did
+            cmd = cmd[:-1] + [os.environ.get("AUTOPILOT_NUM_GPU", "999")]
         log = open(os.path.join(QA, "_svc_%s.log" % name), "ab", buffering=0)
         subprocess.Popen(cmd, cwd=ROOT, stdout=log, stderr=log,
                          **DETACH, env=env)
@@ -280,7 +339,10 @@ def start(only=None):
         if not os.path.exists(cmd[0]): print("%-11s SKIPPED (not installed: %s)" % (name, cmd[0])); continue
         subprocess.Popen(cmd, cwd=cwd or ROOT, **DETACH)
         print("%-11s launched (never stopped by this switch)" % name); time.sleep(8)
-    OPEN_ADMIN = os.environ.get("NO_ADMIN_PAGE") != "1"
+    # the panel opens once, on the full start (start.bat) -- not on every single-service start or restart, which
+    # opened a new "mission control" tab each time a helper was revived (owner: "why does mission control tab keep
+    # constantly opening?")
+    OPEN_ADMIN = os.environ.get("NO_ADMIN_PAGE") != "1" and only is None
     if OPEN_ADMIN:
         url = "http://127.0.0.1:%s/" % os.environ.get("ADMIN_PORT", "4318")
         try:
@@ -316,7 +378,46 @@ def stop_one(name):
             except Exception: pass
     print("%-11s stopped (%s)" % (name, " ".join(map(str, pids))))
 
+GRACE_S = int(os.environ.get("STOP_GRACE_S", "45"))   # how long owned apps get to close before the name sweep
+
+def _alive(image):
+    if not WINDOWS:
+        return subprocess.run(["pgrep", "-f", image], capture_output=True).returncode == 0
+    return image.lower() in subprocess.run(["tasklist", "/FI", "IMAGENAME eq %s.exe" % image],
+                                           capture_output=True, text=True).stdout.lower()
+
+def graceful_close():
+    """Close what we own the polite way first: OBS ends the broadcast over its websocket and is asked to close,
+    the game is saved over the bridge and asked to close. The name sweep in stop() is only the fallback for
+    whatever is still up after GRACE_S seconds."""
+    c = obs_ws()
+    if c is not None:
+        try:
+            if c.get_stream_status().output_active:
+                c.stop_stream(); print("obs         stream stopped over the websocket")
+        except Exception as e:
+            print("obs         websocket stop failed (%s)" % str(e)[:40])
+    try:
+        r = subprocess.run([PY, os.path.join(QA, "bridge.py"), "call", "rimworld/save_game",
+                            json.dumps({"saveName": "Unity-autosave"})], cwd=ROOT, capture_output=True, text=True,
+                           timeout=120)
+        ok = r.returncode == 0 and '"success": false' not in (r.stdout or "").lower()
+        print("rimworld    %s" % ("saved as Unity-autosave" if ok else "not saved (bridge down or refused)"))
+    except Exception as e:
+        print("rimworld    save skipped (%s)" % str(e)[:40])
+    if WINDOWS:
+        subprocess.run(["powershell", "-NoProfile", "-Command",
+                        "Get-Process obs64,RimWorldWin64 -ErrorAction SilentlyContinue | ForEach-Object { "
+                        "$null = $_.CloseMainWindow() }"], capture_output=True, text=True)
+    t0 = time.time()
+    while time.time() - t0 < GRACE_S and (_alive("obs64") or _alive("RimWorldWin64")):
+        time.sleep(1)
+    left = [n for n in ("obs64", "RimWorldWin64") if _alive(n)]
+    print("closed gracefully" if not left else "still up after %ds, falling back to the name sweep: %s"
+          % (GRACE_S, " ".join(left)))
+
 def stop():
+    graceful_close()
     # the model runner first: it holds the GPU and it is nobody's child in the command-line table
     if WINDOWS:
         subprocess.run(["powershell", "-NoProfile", "-Command",
@@ -425,7 +526,34 @@ def golive():
         subprocess.Popen(cmd, cwd=cwd or ROOT, stdout=log, stderr=log, **DETACH)
         print("obs         relaunched LIVE")
 
+LOCK = os.path.join(QA, "_svc_control.lock")
+
+def control_lock(wait_s=900, stale_s=1800):
+    """One process-control action at a time: two starts racing the same scan each launch their own copy.
+    A lock older than stale_s belongs to a dead run and is taken over."""
+    t0 = time.time()
+    while True:
+        try:
+            fd = os.open(LOCK, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            os.write(fd, str(os.getpid()).encode()); os.close(fd)
+            import atexit
+            def _release():
+                try:
+                    if open(LOCK).read().strip() == str(os.getpid()): os.remove(LOCK)
+                except OSError: pass
+            atexit.register(_release)
+            return
+        except FileExistsError:
+            try:
+                if time.time() - os.path.getmtime(LOCK) > stale_s: os.remove(LOCK); continue
+            except OSError:
+                continue
+            if time.time() - t0 > wait_s:
+                print("another start/stop is still running -- gave up waiting"); raise SystemExit(1)
+            time.sleep(1)
+
 cmd = (sys.argv[1] if len(sys.argv) > 1 else "status").lower()
+if cmd != "status": control_lock()
 if cmd == "game": game(); raise SystemExit
 if cmd == "golive": golive(); raise SystemExit
 ONE = sys.argv[2].lower() if len(sys.argv) > 2 else None   # a name means THAT service only, never the rig
@@ -438,16 +566,16 @@ elif cmd == "restart" and ONE:
 elif cmd == "start":
     deps(); start(); print("---"); status()
     if os.environ.get("NO_ANNOUNCE") != "1" and os.environ.get("GO_LIVE") == "1":
-        announce("We are live, chat. Everything is up and I am back on the colony.")
+        announce("fact: the stream is live and the colony is back")
 elif cmd == "stop":
-    announce("That is me for tonight. Thanks for sitting with me."); time.sleep(3); stop()
+    announce("fact: the stream is ending for now"); time.sleep(3); stop()
 elif cmd == "restart":
     # owner: the stream must never drop for a restart -- OBS stays live on the BRB scene, the rest restarts
     c = obs_ws()
     if c is not None:
         try: c.set_current_program_scene("BRB"); print("obs         on BRB, still streaming")
         except Exception: pass
-    announce("Be right back, chat. Quick reset, the stream stays up.")
+    announce("fact: a short reset, the stream stays up")
     keep = ("obs64", "twitch-profile")
     names = [n for n in KILL_BY_NAME if n != "obs64"]
     if WINDOWS:

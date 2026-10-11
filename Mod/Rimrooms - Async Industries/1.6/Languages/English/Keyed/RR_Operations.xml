@@ -43,7 +43,7 @@
   <RR_Site_EvictedLabel>Site taken off the books</RR_Site_EvictedLabel>
   <RR_Site_EvictedText>The corporation has taken {0} off this branch's books. It has gone unpaid for {1} operating days, and the corporation does not carry a branch that will not pay for the places it runs.
 
-Nothing on that map has changed and the colony there is still yours. Clear what is owed and the place can go back on the books at no charge - there is no penalty for this beyond having lost it.</RR_Site_EvictedText>
+Nothing on that map has changed and the colony there is still yours. Clear what is owed and the place can go back on the books at no charge - there is no penalty beyond the place not counting as the branch's own until it is back on the books (connected work, gate anchors and ways out stop treating it as a branch site).</RR_Site_EvictedText>
   <RR_Event_RemoteSiteEvicted>{0} was taken off the books for non-payment.</RR_Event_RemoteSiteEvicted>
   <RR_Ledger_RemoteSites>Remote sites</RR_Ledger_RemoteSites>
   <!-- Containment gets its own ledger line for the same reason the remote sites do: a branch
@@ -68,6 +68,7 @@ Nothing on that map has changed and the colony there is still yours. Clear what 
   <RR_UI_Disposition_Destroyed>Destroyed. It no longer exists anywhere.</RR_UI_Disposition_Destroyed>
   <RR_Disposition_NotContained>That record is not in containment.</RR_Disposition_NotContained>
   <RR_Event_RecordDestroyed>A record was destroyed.</RR_Event_RecordDestroyed>
+  <RR_Event_ContainmentEnded>A contained record left the branch's custody. Its containment charge has stopped.</RR_Event_ContainmentEnded>
   <RR_UI_Disposition>Contain it and pay to keep it, put it back, or hand it to the corporation. One choice, and it stands.</RR_UI_Disposition>
   <RR_UI_Contain>Contain</RR_UI_Contain>
   <RR_UI_ContainDesc>Keep it secured and off the exchange. Containment is charged on its own line every day; the branch is paying {0} a day for what it already holds.</RR_UI_ContainDesc>

@@ -118,57 +118,49 @@ try {
     }
 
     # ─────────────────────────────────────────────────────────────────
-    # Stage personal files if target/.claude/ already exists
+    # Build the new tree beside the live one, carry personal files into it,
+    # then swap. The old tree stays as .claude.previous until the next
+    # successful install; any failure before the swap leaves .claude/ untouched.
     # ─────────────────────────────────────────────────────────────────
     $TargetClaude = Join-Path $TargetDir '.claude'
+    $NewClaude    = Join-Path $TargetDir '.claude.installing'
+    $PrevClaude   = Join-Path $TargetDir '.claude.previous'
     $HadExisting  = Test-Path -Path $TargetClaude -PathType Container
 
-    if ($HadExisting) {
-        Write-Host '[unity-install] Existing .claude/ detected — staging personal files for restore...'
-        foreach ($f in $PreserveFiles) {
-            $src = Join-Path $TargetClaude $f
-            if (Test-Path -Path $src) {
-                Copy-Item -Path $src -Destination (Join-Path $StageDir $f) -Force
-                Write-Host "[unity-install]   staged: $f"
-            }
-        }
-        foreach ($d in $PreserveDirs) {
-            $src = Join-Path $TargetClaude $d
-            if (Test-Path -Path $src -PathType Container) {
-                Copy-Item -Path $src -Destination (Join-Path $StageDir $d) -Recurse -Force
-                Write-Host "[unity-install]   staged: $d\"
-            }
-        }
-        Remove-Item -Path $TargetClaude -Recurse -Force
-    }
+    if (Test-Path -Path $NewClaude) { Remove-Item -Path $NewClaude -Recurse -Force }
+    Copy-Item -Path $RepoClaude -Destination $NewClaude -Recurse -Force -ErrorAction Stop
 
-    # ─────────────────────────────────────────────────────────────────
-    # Drop fresh .claude/ from clone
-    # ─────────────────────────────────────────────────────────────────
-    Copy-Item -Path $RepoClaude -Destination $TargetClaude -Recurse -Force
-    Write-Host "[unity-install] Installed fresh .claude/ from $Branch"
-
-    # ─────────────────────────────────────────────────────────────────
-    # Restore staged personal files (no-clobber: framework wins ties)
-    # ─────────────────────────────────────────────────────────────────
     if ($HadExisting) {
+        Write-Host '[unity-install] Existing .claude/ detected — carrying personal files over...'
         foreach ($f in $PreserveFiles) {
-            $stagedPath = Join-Path $StageDir $f
-            $destPath   = Join-Path $TargetClaude $f
-            if ((Test-Path -Path $stagedPath) -and (-not (Test-Path -Path $destPath))) {
-                Copy-Item -Path $stagedPath -Destination $destPath -Force
+            $src  = Join-Path $TargetClaude $f
+            $dest = Join-Path $NewClaude $f
+            if ((Test-Path -Path $src) -and (-not (Test-Path -Path $dest))) {
+                Copy-Item -Path $src -Destination $dest -Force -ErrorAction Stop
                 Write-Host "[unity-install]   restored: $f"
             }
         }
         foreach ($d in $PreserveDirs) {
-            $stagedPath = Join-Path $StageDir $d
-            $destPath   = Join-Path $TargetClaude $d
-            if ((Test-Path -Path $stagedPath -PathType Container) -and (-not (Test-Path -Path $destPath))) {
-                Copy-Item -Path $stagedPath -Destination $destPath -Recurse -Force
+            $src  = Join-Path $TargetClaude $d
+            $dest = Join-Path $NewClaude $d
+            if ((Test-Path -Path $src -PathType Container) -and (-not (Test-Path -Path $dest))) {
+                Copy-Item -Path $src -Destination $dest -Recurse -Force -ErrorAction Stop
                 Write-Host "[unity-install]   restored: $d\"
             }
         }
+        if (Test-Path -Path $PrevClaude) { Remove-Item -Path $PrevClaude -Recurse -Force -ErrorAction Stop }
+        Move-Item -Path $TargetClaude -Destination $PrevClaude -ErrorAction Stop
+        try {
+            Move-Item -Path $NewClaude -Destination $TargetClaude -ErrorAction Stop
+        } catch {
+            Move-Item -Path $PrevClaude -Destination $TargetClaude
+            throw
+        }
+        Write-Host "[unity-install] Previous .claude/ kept at $PrevClaude"
+    } else {
+        Move-Item -Path $NewClaude -Destination $TargetClaude -ErrorAction Stop
     }
+    Write-Host "[unity-install] Installed fresh .claude/ from $Branch"
 
     # ─────────────────────────────────────────────────────────────────
     # Layer 0 .gitignore — the ONLY project-root file we touch.

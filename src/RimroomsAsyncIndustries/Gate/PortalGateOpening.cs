@@ -30,6 +30,26 @@ namespace RimroomsAsyncIndustries.Gate
         public string PortalConnectionId { get { return portalConnectionId; } }
         public string PortalOpeningId { get { return portalOpeningId; } }
         public bool HasPortalOwnerFault { get { return portalOwnerFault; } }
+
+        /// <summary>
+        /// How many recoveries have already succeeded on the current opening. A new emergency
+        /// on the same opening is a new recovery attempt, so callers fold this into the
+        /// operation id; a retry within one attempt keeps the same id and stays idempotent.
+        /// </summary>
+        public int PortalRecoveriesThisOpening
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(portalOpeningId) || portalRecoveryReceipts == null) { return 0; }
+                int count = 0;
+                for (int index = 0; index < portalRecoveryReceipts.Count; index++)
+                {
+                    PortalOpeningRecoveryReceipt receipt = portalRecoveryReceipts[index];
+                    if (receipt != null && receipt.OpeningId == portalOpeningId) { count++; }
+                }
+                return count;
+            }
+        }
         private string CurrentOpeningId { get { return !string.IsNullOrEmpty(activeExpeditionId) ? activeExpeditionId : portalOpeningId; } }
 
         /// <summary>

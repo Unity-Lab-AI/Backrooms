@@ -91,6 +91,7 @@ __pycache__/
 .claude/.studio-images/
 .claude/.studio-inbox.jsonl
 .claude/.studio-outbox.jsonl
+.claude/.studio-token
 .claude/.stream-log.jsonl
 .claude/.stream-beat.json
 .claude/.chat-watch.json
@@ -147,3 +148,16 @@ __pycache__/
 .local/qa/backup-*/
 .local/tools/
 .local/qa/_asked.flag
+.local/autopilot/traces/
+training/models/
+training/preflight/
+training/sources/
+training/_fetch.log
+
+# live-rig control triggers and one-shot flags: machine state, never source (a blanket stage would publish a stale GO)
+.local/obs/_brb_until
+.local/qa/_*.request
+.local/qa/_*.request.*
+.local/qa/_*.flag
+.local/qa/_owner_grant_*
+.local/qa/_audit_build/

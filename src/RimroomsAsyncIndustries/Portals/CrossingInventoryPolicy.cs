@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using RimroomsAsyncIndustries.Investigation;
 using Verse;
 
 namespace RimroomsAsyncIndustries.Portals
@@ -87,7 +89,49 @@ namespace RimroomsAsyncIndustries.Portals
             if (pawn == null || pawn.inventory == null || pawn.inventory.innerContainer == null)
             { return false; }
             if (pawn.inventory.innerContainer.Count == 0) { return false; }
-            return pawn.inventory.FirstUnloadableThing.Thing != null;
+            Thing first = pawn.inventory.FirstUnloadableThing.Thing;
+            if (first == null) { return false; }
+            if (!IsFieldEquipment(first)) { return true; }
+            // Core named retained equipment first; look past it.
+            KeepFieldEquipmentLast(pawn);
+            first = pawn.inventory.FirstUnloadableThing.Thing;
+            return first != null && !IsFieldEquipment(first);
+        }
+
+        /// <summary>
+        /// Equipment the crew carries for its own work, not freight: the company record book a
+        /// survey is written into. Core's keep-list knows nothing of it, so without this a crossing
+        /// put the book down at the threshold and the survey on the far side could not start.
+        /// </summary>
+        public static bool IsFieldEquipment(Thing thing)
+        {
+            return thing != null && CompRouteEvidence.IsSupportedCarrier(thing);
+        }
+
+        /// <summary>
+        /// Moves field equipment to the back of the pack, so Core's first-unloadable answer reaches
+        /// any real freight before it. Equipment is never dropped; once Core names it, the pack
+        /// holds no freight ahead of it.
+        /// </summary>
+        private static void KeepFieldEquipmentLast(Pawn pawn)
+        {
+            ThingOwner<Thing> pack = pawn.inventory.innerContainer;
+            var equipment = new List<Thing>();
+            foreach (Thing thing in pack)
+            {
+                if (IsFieldEquipment(thing)) { equipment.Add(thing); }
+            }
+            for (int index = 0; index < equipment.Count; index++)
+            {
+                Thing thing = equipment[index];
+                if (pack.Remove(thing) && !pack.TryAdd(thing, false))
+                {
+                    // Never lose a book in a reshuffle: put it down rather than drop it out of
+                    // existence.
+                    if (pawn.Spawned && pawn.Map != null)
+                    { GenPlace.TryPlaceThing(thing, pawn.Position, pawn.Map, ThingPlaceMode.Near); }
+                }
+            }
         }
 
         /// <summary>
@@ -110,10 +154,11 @@ namespace RimroomsAsyncIndustries.Portals
             if (!HasFreight(pawn)) { return 0; }
             if (!pawn.Spawned || pawn.Map == null) { return 0; }
             int dropped = 0;
+            KeepFieldEquipmentLast(pawn);
             for (int guard = 0; guard < MaximumFreightStacks; guard++)
             {
                 ThingCount freight = pawn.inventory.FirstUnloadableThing;
-                if (freight.Thing == null) { break; }
+                if (freight.Thing == null || IsFieldEquipment(freight.Thing)) { break; }
                 Thing landed;
                 int count = freight.Count < 1 ? 1 : freight.Count;
                 if (!pawn.inventory.innerContainer.TryDrop(freight.Thing, pawn.Position, pawn.Map,

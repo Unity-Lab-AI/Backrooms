@@ -163,7 +163,7 @@ class Toolbox:
     # The tools that actually play the colony. Owner: "no she has to do it" -- so she has to be fast, and 72 tool
     # definitions (~9k tokens) were re-read on CPU every turn. Camera minutiae, UI layout, tab and save plumbing
     # stay registered (a call to them still works) but are not offered in the prompt.
-    CORE = {"new_colony", "game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "plan", "webcam", "snap",
+    CORE = {"ladder", "ladder_set", "pawn_priorities", "new_colony", "game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "plan", "webcam", "snap",
             "twitch_chat", "note", "read_doc", "run_list", "empire_pass", "play_slices",
             "game_apply_architect_designator", "game_select_architect_designator", "game_list_architect_designators",
             "game_list_architect_categories", "game_set_zone_target", "game_list_zones", "game_list_areas",
@@ -226,6 +226,24 @@ class Toolbox:
 
     def _bridge(self, name, args):
         args = guards.check_bridge(name, args)
+        if name in ("rimworld/list_letters", "rimworld/open_letter", "rimworld/dismiss_letter"):
+            self._mark_letters_seen()
+        if name == "rimworld/execute_context_menu_option":
+            # live, 10-10: she clicked option 1 of a menu that was not there, turn after turn ("quest accepted")
+            m = self.bridge.call("rimworld/get_context_menu_options", {})
+            m = m.get("result", m); m = m.get("structuredContent", m) if isinstance(m, dict) else {}
+            if m.get("success") is False or not (m.get("options") or m.get("menuOptions") or m.get("items") or m.get("success")):
+                raise GuardError("no context menu is open -- nothing was clicked. Letters are read with game_open_letter "
+                                 "(real ids from game_list_letters) and answered by their own buttons, not a menu option")
+        # owner: "why did she unpause beforee seeting all the pawn settings" -- time stays stopped until she
+        # has marked pawns_set and assign_set true on her ladder (ladder_set mark) after doing them.
+        starts_time = (name == "rimworld/pause_game" and not args.get("pause", True)) or \
+                      (name == "rimworld/set_time_speed" and str(args.get("speed", "")).lower() not in ("", "0", "paused")) or \
+                      name in ("rimworld/play_for", "rimworld/play_until_letter")
+        if starts_time:
+            why = self._time_blocked()
+            if why:
+                raise GuardError(why)
         if name == "rimworld/click_ui_target":
             tid = str(args.get("targetId") or "")
             if tid not in self.ui_targets:
@@ -311,15 +329,40 @@ class Toolbox:
             "read_doc": ("[READ-ONLY] Read a repo file for knowledge (docs/, src/, Mod/ ...). Reading only: you can "
                          "never edit, build or fix code. offset/limit are line numbers.",
                          S({"path": s, "offset": i, "limit": i}, ["path"]), self.t_read),
+            "ladder": ("Read your PLC ladder: the live rung(s) for what is measured right now, every rung that holds, the "
+                       "tag table (constants + live setpoints) and your own marks and rungs. Check it at the start of a turn.",
+                       S({}, []), self.t_ladder),
+            "ladder_set": ("Edit your ladder on the fly (open-ended, for the whole empire): op 'mark' (name, value true/false) "
+                           "marks a step done; op 'tag' (name, value) changes a setpoint; op 'add_rung' (rung: {id, priority, "
+                           "when: {measured_key: value}, then: [actions], why}) adds or replaces a rung of your own; op "
+                           "'remove_rung' (name) removes one of yours. Book rungs from the owner cannot be deleted.",
+                           S({"op": {"type": "string", "enum": ["mark", "tag", "add_rung", "remove_rung"]}, "name": s,
+                              "value": {"type": ["string", "number", "boolean"]}, "rung": {"type": "object"}}, ["op"]),
+                           self.t_ladder_set),
+            "pawn_priorities": ("[GAME ACTION, NO MOUSE] Set ONE pawn's whole work grid in one step, the owner's way: every work "
+                                "type from Firefighter through Cooking = 1, then the levels you give in 'custom' (work name -> "
+                                "1-4, 0 = off) for the rest. Names: Firefighter Patient Doctor PatientBedRest BasicWorker Warden "
+                                "Handling Cooking Hunting Construction Growing Mining PlantCutting Smithing Tailoring Art "
+                                "Crafting Hauling Cleaning Research. Do one call per pawn.",
+                                S({"pawn": s, "custom": {"type": "object", "description": "work name -> level 0-4 for types after Cooking"}},
+                                  ["pawn"]), self.t_pawn_priorities),
             "game_set": ("[GAME ACTION, NO MOUSE] Set a field directly through the mod's own automation channel -- works "
                          "with the window minimised. cmd is one of set_zone_plant (x,z,plant e.g. Plant_Rice), "
                          "set_zone_sowing (x,z,allow), set_work_priority (pawn,work,level 0-4), set_bed_owner "
-                         "(x,z,owner colonist|prisoner|slave), add_bill (x,z,recipe e.g. CookMealSimple,count), "
-                         "set_area (pawn,area label or empty). The result comes back from the game: read it.",
-                         S({"cmd": {"type": "string", "enum": ["set_zone_plant", "set_zone_sowing", "set_work_priority",
+                         "(x,z,owner colonist|prisoner|slave), add_bill (recipe e.g. CookMealSimple, count; x,z optional -- it finds the nearest built table), "
+                         "set_area (pawn,area label or empty). SETUP, one call each, no clicking: explore (every pawn "
+                         "through every door, digs into sealed rooms -- repeat until it says nothing left), rooms (lists "
+                         "explored rooms), stockpile_room (room id, mode food|nofood -- a stockpile filling that room), "
+                         "stockpile_filter (x,z,mode food|nofood|all, priority), beds, shelves, stove, crops (plant), "
+                         "hunt, day_one, assign (the Assign tab: pawn or empty for all, food Fine, medicine Best, hostility Attack). "
+                         "map (optional, e.g. Map_0) picks the map; without it the home map is used. The result comes back from the game: read it.",
+                         S({"cmd": {"type": "string", "enum": ["explore", "rooms", "stockpile_room", "stockpile_filter",
+                                                               "beds", "shelves", "stove", "crops", "hunt", "day_one", "assign",
+                                                               "set_zone_plant", "set_zone_sowing", "set_work_priority",
                                                                "set_bed_owner", "add_bill", "set_area"]},
                             "x": i, "z": i, "plant": s, "allow": b, "pawn": s, "work": s, "level": i,
-                            "owner": s, "recipe": s, "count": i, "area": s}, ["cmd"]), self.t_game_set),
+                            "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s, "food": s, "medicine": s, "hostility": s, "map": s},
+                          ["cmd"]), self.t_game_set),
             "twitch_chat": ("[STREAM] Type into the REAL Twitch chat (not just out loud). action: say | reply (needs "
                             "viewer) | title | category. Every line is filtered clean or refused.",
                             S({"action": {"type": "string", "enum": ["say", "reply", "title", "category"]},
@@ -374,11 +417,39 @@ class Toolbox:
             return "dry-run: not executed"
         return run_script("api_prio", args, timeout=120)
 
+    def _time_blocked(self):
+        """Why time may not run yet, or None. Every route that advances game time asks this one question
+        (pause_game, set_time_speed, play_for, play_until_letter and play_slices alike)."""
+        try:
+            marks = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                "scratch", "ladder.json"), encoding="utf-8")).get("marks", {})
+        except Exception:
+            marks = {}
+        # owner's order: explore every room and door FIRST with time running, THEN pause and set the pawns.
+        # So time may run while exploring; once exploring is done it stays stopped until the pawns are set.
+        explored = os.path.exists(os.path.join(ROOT, ".local", "qa", "_explore_done.flag"))
+        if explored and not (marks.get("pawns_set") and marks.get("assign_set")):
+            return ("time stays stopped until every pawn's priorities, schedule, drugs and Assign tab "
+                    "are done -- then ladder_set mark pawns_set true and assign_set true, then unpause")
+        return None
+
     def t_play(self, slices=1):
         n = max(1, min(int(slices), 6))
         if self.dry:
             log("DRY-RUN would run play.py", n)
             return "dry-run: not executed"
+        why = self._time_blocked()
+        if why:
+            return "not run: " + why
+        # live, 10-10: a "can they stay?" message box froze time and she kept calling play_slices for minutes
+        try:
+            u = self.bridge.call("rimworld/get_ui_state", {})
+            u = u.get("result", u); u = u.get("structuredContent", u) if isinstance(u, dict) else {}
+            if u.get("nonImmediateDialogWindowOpen") and u.get("windowsForcePause"):
+                return ("not run: a dialog (%s) is open and freezes time -- call game_get_ui_layout, read its buttons, "
+                        "and click one with click_ui_target first" % (u.get("topWindowType") or "message box"))
+        except Exception:
+            pass
         return run_script("play", [n], timeout=60 + 40 * n)
 
     def t_run_list(self):
@@ -433,13 +504,110 @@ class Toolbox:
                 except Exception as e: log("twitch reply failed:", str(e)[:80])
         return ("replied: " + said) if said else "BLOCKED by the stream filter; reply cleaner"
 
+    # names she reaches for that the game does not use (live: "Medicine", "Harvesting", "Medical", "Firefighting")
+    WORK_ALIASES = {"medicine": "Doctor", "medical": "Doctor", "doctoring": "Doctor", "firefighting": "Firefighter",
+                    "harvesting": "PlantCutting", "plantcut": "PlantCutting", "cutting": "PlantCutting", "farming": "Growing",
+                    "plants": "Growing", "cook": "Cooking", "handle": "Handling", "animals": "Handling",
+                    "construct": "Construction", "building": "Construction", "mine": "Mining", "haul": "Hauling",
+                    "clean": "Cleaning", "craft": "Crafting", "smith": "Smithing", "tailor": "Tailoring",
+                    "research": "Research", "rest": "PatientBedRest", "bedrest": "PatientBedRest", "basic": "BasicWorker"}
+    ORDER = ["Firefighter", "Patient", "Doctor", "PatientBedRest", "BasicWorker", "Warden", "Handling", "Cooking",
+             "Hunting", "Construction", "Growing", "Mining", "PlantCutting", "Smithing", "Tailoring", "Art", "Crafting",
+             "Hauling", "Cleaning", "Research"]
+
+    def _work_name(self, w):
+        w = str(w or "").strip()
+        exact = next((o for o in self.ORDER if o.lower() == w.lower()), None)
+        return exact or self.WORK_ALIASES.get(w.lower().replace(" ", ""), w)
+
+    def _ladder_path(self):
+        return os.path.join(os.path.dirname(os.path.abspath(__file__)), "scratch", "ladder.json")
+
+    def t_ladder(self):
+        spec = importlib.util.spec_from_file_location("gates_rt", os.path.join(os.path.dirname(os.path.abspath(__file__)), "gates.py"))
+        g = importlib.util.module_from_spec(spec); spec.loader.exec_module(g)
+        hits, st = g.decide(every=True)
+        try: mine = json.load(open(self._ladder_path(), encoding="utf-8"))
+        except Exception: mine = {}
+        live = [{"id": h["id"], "priority": h["priority"], "then": h.get("then", [])} for h in hits[:4]]
+        return json.dumps({"live_rungs": live, "tags": st.get("tags"), "my_marks": mine.get("marks", {}),
+                           "my_rungs": [r.get("id") for r in mine.get("gates", [])]}, default=str)[:5000]
+
+    def t_ladder_set(self, op, name=None, value=None, rung=None):
+        path = self._ladder_path()
+        try: d = json.load(open(path, encoding="utf-8"))
+        except Exception: d = {}
+        if op == "mark":
+            if not re.fullmatch(r"[a-z0-9_]{1,40}", str(name or "")): raise GuardError("mark name: lowercase_with_underscores")
+            d.setdefault("marks", {})[name] = bool(value) if not isinstance(value, str) else value.lower() in ("true", "1", "yes", "done")
+        elif op == "tag":
+            if not re.fullmatch(r"[A-Z0-9_]{1,40}", str(name or "")): raise GuardError("tag name: UPPER_CASE")
+            d.setdefault("tags", {})[name] = value
+        elif op == "add_rung":
+            r = rung or {}
+            if not (isinstance(r, dict) and r.get("id") and isinstance(r.get("priority"), (int, float)) and isinstance(r.get("when"), dict)):
+                raise GuardError("rung needs id, priority (number), when (object), then (list)")
+            r["id"] = "unity-" + re.sub(r"[^a-z0-9-]", "-", str(r["id"]).lower())[:40] if not str(r["id"]).startswith("unity-") else str(r["id"])[:46]
+            r["then"] = [str(x)[:300] for x in (r.get("then") or [])][:8]
+            d["gates"] = [g for g in d.get("gates", []) if g.get("id") != r["id"]] + [r]
+        elif op == "remove_rung":
+            d["gates"] = [g for g in d.get("gates", []) if g.get("id") != name]
+        else:
+            raise GuardError("op must be mark, tag, add_rung or remove_rung")
+        guards.scratch_write("ladder.json", json.dumps(d, indent=1))
+        return "ladder updated: " + op + " " + str(name or (rung or {}).get("id", ""))
+
+    def t_pawn_priorities(self, pawn, custom=None):
+        """Owner: "set up all priorities ... for every one using coopy paste to paste one to the tosthers then
+        customize keep all the 1s firsefiring through cooking" / "dint leave a bunch blankk". One step per pawn."""
+        if not re.fullmatch(r"[A-Za-z0-9_ .-]{1,40}", str(pawn or "")):
+            raise GuardError("bad pawn name")
+        grid = {}
+        for w in self.ORDER[:self.ORDER.index("Cooking") + 1]:
+            grid[w] = 1
+        for w, lvl in (custom or {}).items():
+            name = self._work_name(w)
+            try: lvl = max(0, min(4, int(lvl)))
+            except Exception: continue
+            grid[name] = lvl
+        for w in self.ORDER:                    # nothing left blank
+            grid.setdefault(w, 3)
+        if self.dry:
+            return "dry-run: " + json.dumps(grid)
+        cmds = [{"cmd": "set_work_priority", "pawn": str(pawn), "work": w, "level": str(l)} for w, l in grid.items()]
+        # one batch through the shared client: each result is matched to its own command by id
+        aspec = importlib.util.spec_from_file_location("automate_rt", os.path.join(QA, "automate.py"))
+        am = importlib.util.module_from_spec(aspec); aspec.loader.exec_module(am)
+        out = am.exchange(cmds, wait_s=30)
+        lines = cmds
+        ok = sum(1 for _c, r in out if r is not None and r.startswith("ok"))
+        bad = ["%s: %s" % (c["work"], (r or "no result")[:70]) for c, r in out if r is None or not r.startswith("ok")]
+        return "%s: %d/%d work types set (1s Firefighter..Cooking, rest as given, none blank)%s" % (
+            pawn, ok, len(lines), ("; refused: " + " | ".join(bad[:3])) if bad else "")
+
+    def _mark_letters_seen(self):
+        """She has looked at the letters: the ones on screen now are handled for the ladder (gates.py)."""
+        try:
+            r = self.bridge.call("rimworld/list_letters", {})
+            r = r.get("result", r); r = r.get("structuredContent", r) if isinstance(r, dict) else {}
+            ids = [l.get("id") for l in r.get("letters", []) if l.get("id")]
+            p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scratch", "ladder.json")
+            try:
+                d = json.load(open(p, encoding="utf-8"))
+            except Exception:
+                d = {"marks": {}}
+            d["letters_seen"] = sorted(set(d.get("letters_seen", [])) | set(ids))
+            json.dump(d, open(p, "w", encoding="utf-8"), indent=1)
+        except Exception:
+            pass
+
     def t_game_set(self, cmd, **kw):
         """Owner, 2026-10-10: "fix that so it doesnt ever need the screen and MY DAMN MOUSE" / "build it into
         the mod if you have to". The component reads a command file once a second; the result is written back."""
         payload = {"cmd": cmd}
         for k, v in kw.items():
             if v is None or v == "": continue
-            if k in ("pawn", "work", "owner", "area", "plant", "recipe") and not re.fullmatch(r"[A-Za-z0-9_ .-]{1,60}", str(v)):
+            if k in ("pawn", "work", "owner", "area", "plant", "recipe", "room", "mode", "priority", "food", "medicine", "hostility", "map") and not re.fullmatch(r"[A-Za-z0-9_ .-]{1,60}", str(v)):
                 raise GuardError("bad value for " + k)
             payload[k] = v
         if cmd == "set_work_priority" and not (0 <= int(payload.get("level", -1)) <= 4):
@@ -472,7 +640,15 @@ class Toolbox:
         proven setup (start-scenario picks the scenario row; the mod's WorldSetupDriver does every page)."""
         if self.dry:
             return "dry-run: not executed"
-        line = guards.clean_for_stream("Okay chat, fresh start. New colony, set up properly this time. " + (reason or ""), max_len=200)
+        # a new colony throws away the current one: only a grant the owner wrote (CLI or panel) allows it, and it
+        # is used up by this one request -- a model guess or a viewer's push cannot restart the run
+        grant = os.path.join(ROOT, ".local", "qa", "_owner_grant_new_colony")
+        if not os.path.exists(grant):
+            return ("refused: a new colony needs the owner's grant (.local/qa/_owner_grant_new_colony); keep playing "
+                    "this colony and tell chat you would need the owner to say so")
+        try: os.remove(grant)
+        except OSError: pass
+        line = guards.clean_for_stream("fact: starting a brand new colony. " + (reason or ""), max_len=200)
         if line:
             self.t_say(line)
         with open(os.path.join(ROOT, ".local", "qa", "_new_colony.request"), "w", encoding="utf-8") as f:
@@ -480,8 +656,8 @@ class Toolbox:
         return "new colony requested; the switch starts it within a minute -- keep talking to chat while it loads"
 
     def t_plan(self, what):
-        line = guards.clean_for_stream("Give me a second, chat, I am planning " + (what or "the next big step") +
-                                       ". Pausing while I think it through.", max_len=200)
+        line = guards.clean_for_stream("fact: pausing to plan " + (what or "the next big step") +
+                                       "", max_len=200)
         if self.dry:
             return "dry-run: not executed"
         if line:

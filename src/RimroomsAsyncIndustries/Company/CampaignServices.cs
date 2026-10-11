@@ -166,6 +166,8 @@ namespace RimroomsAsyncIndustries.Company
             staff = newStaff;
             ledger = initialLedger;
             coordinates.Add(initialCoordinate);
+            InvalidateCoordinateIndex();
+            NoteCoordinateDiscovered(initialCoordinate);
             cases.Add(initialCase);
             contracts.Add(initialContract);
             for (int index = 0; index < initialProjects.Count; index++) { projects.Add(initialProjects[index]); }
@@ -224,13 +226,17 @@ namespace RimroomsAsyncIndustries.Company
             { return CompanyActionResult.Refused("RR_Company_InvalidRequest"); }
             string stableKey = "coordinate:discovery:" + discoveryId;
             string id = branchId + ":" + stableKey;
-            CoordinateRecord existing = coordinates.FirstOrDefault(record => record.id == id);
+            CoordinateRecord existing = FindCoordinate(id);
             if (existing != null)
             {
                 coordinate = existing;
                 return CompanyActionResult.Existing();
             }
-            if (coordinates.Count >= MaximumCoordinates) { return CompanyActionResult.Refused("RR_Company_CoordinateLimit"); }
+            // Only the never-entered frontier is bounded. Every coordinate a crew has been inside
+            // is kept for good and never counts against this, so a long campaign keeps finding
+            // new places; the loaded maps are bounded separately by the open-map budget.
+            if (CountUnvisitedCoordinates() >= MaximumUnvisitedCoordinates)
+            { return CompanyActionResult.Refused("RR_Company_CoordinateLimit"); }
             var created = new CoordinateRecord
             {
                 id = id,
@@ -244,14 +250,17 @@ namespace RimroomsAsyncIndustries.Company
                 echoedRoomSizes = Generation.ConstructionEchoComponent.SampleColonyRoomSizes()
             };
             coordinates.Add(created);
+            InvalidateCoordinateIndex();
             ValidateSavedState();
             if (stateFaultKey != null)
             {
                 // Never leave the branch in a faulted state because of an added record.
                 coordinates.Remove(created);
+                InvalidateCoordinateIndex();
                 ValidateSavedState();
                 return CompanyActionResult.Refused("RR_Company_InvalidSave");
             }
+            NoteCoordinateDiscovered(created);
             coordinate = created;
             RecordEvent("RR_Event_CoordinateDiscovered", id, created.Label, discoveryId);
             return CompanyActionResult.Applied();
@@ -336,7 +345,42 @@ namespace RimroomsAsyncIndustries.Company
                 if (!result.Success) { return result; }
                 obligation.paid = true;
             }
+            CompactPaidObligations();
             return CompanyActionResult.Applied();
+        }
+
+        /// <summary>Paid obligations kept in full; older paid ones fold into the totals below.</summary>
+        internal const int RetainedPaidObligations = 512;
+
+        /// <summary>
+        /// Fold the oldest paid obligations into a running total once there are too many.
+        ///
+        /// Safe because a paid obligation is finished history: its payment is its own ledger entry,
+        /// which is never touched, and an obligation id embeds its due tick so a folded id can never
+        /// be issued again. Unpaid obligations are never folded.
+        /// </summary>
+        private void CompactPaidObligations()
+        {
+            int paidCount = 0;
+            for (int index = 0; index < obligations.Count; index++)
+            { if (obligations[index] != null && obligations[index].paid) { paidCount++; } }
+            if (paidCount <= RetainedPaidObligations + RetainedPaidObligations / 4) { return; }
+            int toFold = paidCount - RetainedPaidObligations;
+            var kept = new List<CompanyObligation>(obligations.Count - toFold);
+            for (int index = 0; index < obligations.Count; index++)
+            {
+                CompanyObligation obligation = obligations[index];
+                if (toFold > 0 && obligation != null && obligation.paid)
+                {
+                    toFold--;
+                    if (foldedObligationCount < int.MaxValue) { foldedObligationCount++; }
+                    try { foldedObligationTotalUsd = checked(foldedObligationTotalUsd + obligation.amountUsd); }
+                    catch (OverflowException) { foldedObligationTotalUsd = long.MaxValue; }
+                    continue;
+                }
+                kept.Add(obligation);
+            }
+            obligations = kept;
         }
 
         public override void GameComponentTick()
@@ -454,11 +498,8 @@ namespace RimroomsAsyncIndustries.Company
         internal string CoordinateLabelOrId(string id)
         {
             if (string.IsNullOrEmpty(id)) { return id ?? ""; }
-            foreach (CoordinateRecord coordinate in Coordinates)
-            {
-                if (coordinate != null && coordinate.Id == id) { return coordinate.Label; }
-            }
-            return id;
+            CoordinateRecord coordinate = FindCoordinate(id);
+            return coordinate != null ? coordinate.Label : id;
         }
 
         internal void RecordEvent(string messageKey, string relatedId, params string[] arguments)

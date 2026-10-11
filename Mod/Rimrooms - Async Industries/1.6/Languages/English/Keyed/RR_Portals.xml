@@ -128,7 +128,7 @@ Select who you mean first. Anyone who cannot cross is listed with the reason rat
 
   <!-- Discovered-coordinate refusals -->
   <RR_Company_InvalidRequest>That request is not valid for this branch.</RR_Company_InvalidRequest>
-  <RR_Company_CoordinateLimit>This branch is holding its maximum number of coordinate records. No visited coordinate is ever removed to make room.</RR_Company_CoordinateLimit>
+  <RR_Company_CoordinateLimit>This branch already holds its maximum number of discovered coordinates that nobody has entered yet. Enter or survey one of them first; no coordinate is ever removed to make room.</RR_Company_CoordinateLimit>
 
   <!-- Crossing service results. These are returned by the physical crossing API;
        the crossing job and its controls surface them at the point of use. -->

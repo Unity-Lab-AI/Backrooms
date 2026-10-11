@@ -94,6 +94,18 @@ namespace RimroomsAsyncIndustries.Company
             return 0;
         }
 
+        /// <summary>Whether a starting point was recorded for this route at all.</summary>
+        internal bool HasBaseline(string labelKey)
+        {
+            if (routeBaselines == null || string.IsNullOrEmpty(labelKey)) { return false; }
+            for (int index = 0; index < routeBaselines.Count; index++)
+            {
+                RouteBaseline baseline = routeBaselines[index];
+                if (baseline != null && baseline.labelKey == labelKey) { return true; }
+            }
+            return false;
+        }
+
         internal string id;
         internal string requestDefName;
         internal RequestStatus status = RequestStatus.Offered;
@@ -306,7 +318,22 @@ namespace RimroomsAsyncIndustries.Company
         private bool AddressUsed(string family, string coordinateId)
         {
             if (string.IsNullOrEmpty(family) || string.IsNullOrEmpty(coordinateId)) { return false; }
-            return usedRequestAddresses.Contains(family + "|" + coordinateId);
+            return UsedAddressSet().Contains(family + "|" + coordinateId);
+        }
+
+        // Lookup mirror of the saved list. Not saved; rebuilt whenever the list has changed size,
+        // which is the only way it changes (entries are only ever appended).
+        private HashSet<string> usedRequestAddressSet;
+        private int usedRequestAddressSetCount = -1;
+
+        private HashSet<string> UsedAddressSet()
+        {
+            if (usedRequestAddressSet == null || usedRequestAddressSetCount != usedRequestAddresses.Count)
+            {
+                usedRequestAddressSet = new HashSet<string>(usedRequestAddresses, System.StringComparer.Ordinal);
+                usedRequestAddressSetCount = usedRequestAddresses.Count;
+            }
+            return usedRequestAddressSet;
         }
 
         /// <summary>
@@ -317,9 +344,9 @@ namespace RimroomsAsyncIndustries.Company
         /// </summary>
         private void SpendRequestAddresses(RimroomsRequestDef definition)
         {
-            if (definition == null || definition.successRoutes == null) { return; }
+            if (definition == null) { return; }
             string family = definition.defName;
-            foreach (RimroomsSuccessRoute route in definition.successRoutes)
+            foreach (RimroomsSuccessRoute route in OrderedRoutes(definition))
             {
                 if (route == null) { continue; }
                 if (route.kind != SuccessRouteKind.Document && route.kind != SuccessRouteKind.Testify)
@@ -332,7 +359,11 @@ namespace RimroomsAsyncIndustries.Company
                     if (record == null || string.IsNullOrEmpty(record.coordinateId)) { continue; }
                     if (!EvidenceCarries(record, kind, route.kind)) { continue; }
                     string key = family + "|" + record.coordinateId;
-                    if (!usedRequestAddresses.Contains(key)) { usedRequestAddresses.Add(key); }
+                    if (UsedAddressSet().Add(key))
+                    {
+                        usedRequestAddresses.Add(key);
+                        usedRequestAddressSetCount = usedRequestAddresses.Count;
+                    }
                 }
             }
         }
@@ -374,6 +405,24 @@ namespace RimroomsAsyncIndustries.Company
                 if (record != null && record.requestDefName == defName) { return record; }
             }
             return null;
+        }
+
+        /// <summary>
+        /// One record by its own id, then by family name for callers that only know the family.
+        ///
+        /// **The id first, because a family can be on the books more than once.** A card acting on
+        /// an older accepted job of a repeated family must act on that job, not on the newest one
+        /// <see cref="RequestFor"/> would return.
+        /// </summary>
+        private RequestRecord RequestByIdOrFamily(string key)
+        {
+            if (string.IsNullOrEmpty(key)) { return null; }
+            for (int index = 0; index < requests.Count; index++)
+            {
+                RequestRecord record = requests[index];
+                if (record != null && record.id == key) { return record; }
+            }
+            return RequestFor(key);
         }
 
         /// <summary>
@@ -588,10 +637,10 @@ namespace RimroomsAsyncIndustries.Company
         // ------------------------------------------------------------------ the player's two verbs
 
         /// <summary>Take the job on.</summary>
-        public CompanyActionResult AcceptRequest(string defName)
+        public CompanyActionResult AcceptRequest(string requestIdOrDefName)
         {
             if (!CanOperate) { return CompanyActionResult.Refused(stateFaultKey ?? "RR_Company_Inactive"); }
-            RequestRecord record = RequestFor(defName);
+            RequestRecord record = RequestByIdOrFamily(requestIdOrDefName);
             if (record == null) { return CompanyActionResult.Refused("RR_Request_NotOffered"); }
             if (record.status == RequestStatus.Accepted) { return CompanyActionResult.Existing(); }
             if (record.status != RequestStatus.Offered)
@@ -611,10 +660,10 @@ namespace RimroomsAsyncIndustries.Company
         /// notice and no standing penalty, for the same reason a remote site has none: a cost for
         /// changing your mind is a deadline wearing a different coat.
         /// </summary>
-        public CompanyActionResult CancelRequest(string defName)
+        public CompanyActionResult CancelRequest(string requestIdOrDefName)
         {
             if (!CanOperate) { return CompanyActionResult.Refused(stateFaultKey ?? "RR_Company_Inactive"); }
-            RequestRecord record = RequestFor(defName);
+            RequestRecord record = RequestByIdOrFamily(requestIdOrDefName);
             if (record == null) { return CompanyActionResult.Refused("RR_Request_NotOffered"); }
             if (record.status == RequestStatus.Cancelled) { return CompanyActionResult.Existing(); }
             if (!record.Open) { return CompanyActionResult.Refused("RR_Request_AlreadyResolved"); }
@@ -666,6 +715,15 @@ namespace RimroomsAsyncIndustries.Company
                 for (int slot = 0; slot < ordered.Count; slot++)
                 {
                     RimroomsSuccessRoute route = ordered[slot];
+                    // A derived route can appear after the offer, when the branch earns it. A
+                    // generated request measures it from the moment it appeared rather than
+                    // absolutely, or earning the route would pay the job on the spot.
+                    if (!definition.tutorial && !string.IsNullOrEmpty(route.labelKey) &&
+                        !record.HasBaseline(route.labelKey))
+                    {
+                        record.routeBaselines.Add(new RouteBaseline
+                        { labelKey = route.labelKey, value = MeasureRoute(route, definition.defName) });
+                    }
                     if (!RouteSatisfied(route, record.BaselineFor(route.labelKey), definition.defName))
                     { continue; }
                     record.satisfiedRouteLabelKeys.Add(route.labelKey);
@@ -699,11 +757,14 @@ namespace RimroomsAsyncIndustries.Company
         /// **Ordinal, per invariant 26.** Two routes may go true on the same tick, and which one
         /// gets recorded as the one that did it must not depend on the order a def list happened
         /// to load in — which varies with the player's mod list.
+        ///
+        /// **The same set the card draws**: authored routes plus whatever this branch has earned,
+        /// from <see cref="RequestRoutes.Available"/>. A derived route the card shows has to be
+        /// one that can settle, or the card is promising a way through that does not exist.
         /// </summary>
-        private static List<RimroomsSuccessRoute> OrderedRoutes(RimroomsRequestDef definition)
+        private List<RimroomsSuccessRoute> OrderedRoutes(RimroomsRequestDef definition)
         {
-            if (definition.successRoutes == null) { return new List<RimroomsSuccessRoute>(); }
-            return definition.successRoutes
+            return RequestRoutes.Available(definition, this)
                 .Where(route => route != null)
                 .OrderBy(route => (int)route.kind)
                 .ThenBy(route => route.labelKey, System.StringComparer.Ordinal)

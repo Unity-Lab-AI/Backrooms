@@ -72,7 +72,7 @@ namespace RimroomsAsyncIndustries.Generation
             {
                 foreach (PortalConnectionRecord edge in network.Connections)
                 {
-                    if (edge == null || edge.CoordinateId != coordinate.Id) { continue; }
+                    if (!Touches(edge, coordinate, map)) { continue; }
                     if (crossings.IsConnectionInFlight(edge.Id)) { return "RR_Release_CrossingInFlight"; }
                 }
             }
@@ -118,7 +118,7 @@ namespace RimroomsAsyncIndustries.Generation
             var shelved = new List<PortalConnectionRecord>();
             foreach (PortalConnectionRecord edge in network.Connections)
             {
-                if (edge == null || edge.CoordinateId != coordinate.Id) { continue; }
+                if (!Touches(edge, coordinate, map)) { continue; }
                 shelved.Add(edge);
                 RememberOn(edge.First, coordinate, map);
                 RememberOn(edge.Second, coordinate, map);
@@ -140,6 +140,26 @@ namespace RimroomsAsyncIndustries.Generation
 
             campaign.RecordEvent("RR_Event_CoordinateReleased", coordinate.Id, coordinate.Label);
             return null;
+        }
+
+        /// <summary>
+        /// Whether this edge leads to or from the place being released. An edge is named by one
+        /// coordinate, so an edge from this place to another is identified by the other one and
+        /// has to be found by its endpoints instead.
+        /// </summary>
+        private static bool Touches(PortalConnectionRecord edge, CoordinateRecord coordinate, Map map)
+        {
+            if (edge == null) { return false; }
+            if (edge.CoordinateId == coordinate.Id) { return true; }
+            return OnMap(edge.First, map) || OnMap(edge.Second, map);
+        }
+
+        private static bool OnMap(PortalEndpointRecord endpoint, Map map)
+        {
+            if (endpoint == null || map == null) { return false; }
+            if (endpoint.Map == map) { return true; }
+            Thing anchor = endpoint.Anchor;
+            return anchor != null && anchor.Map == map;
         }
 
         /// <summary>

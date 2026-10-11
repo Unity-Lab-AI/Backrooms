@@ -1,0 +1,1218 @@
+[
+{
+"type": "function",
+"function": {
+"name": "game_apply_architect_designator",
+"description": "[GAME ACTION] Apply an Architect designator to one cell or a rectangle, with optional dry-run validation",
+"parameters": {
+"type": "object",
+"properties": {
+"designatorId": {
+"type": "string",
+"description": "Stable designator id returned by rimworld/list_architect_designators"
+},
+"x": {
+"type": "integer",
+"description": "Target cell x coordinate"
+},
+"z": {
+"type": "integer",
+"description": "Target cell z coordinate"
+},
+"width": {
+"type": "integer",
+"description": "Rectangle width in cells starting at x/z",
+"default": 1
+},
+"height": {
+"type": "integer",
+"description": "Rectangle height in cells starting at x/z",
+"default": 1
+},
+"dryRun": {
+"type": "boolean",
+"description": "Validate placement without mutating the map",
+"default": false
+},
+"keepSelected": {
+"type": "boolean",
+"description": "Keep the designator selected after the call completes",
+"default": true
+}
+},
+"additionalProperties": false,
+"required": [
+"designatorId",
+"x",
+"z"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_close_window",
+"description": "[GAME ACTION] Close an open RimWorld window by type name or, if omitted, the topmost window",
+"parameters": {
+"type": "object",
+"properties": {
+"windowType": {
+"type": "string",
+"description": "Optional short or full .NET type name of the target window"
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_dismiss_letter",
+"description": "[GAME ACTION] Dismiss a specific dismissible letter by native letter id, mirroring a normal right-click on the letter stack entry",
+"parameters": {
+"type": "object",
+"properties": {
+"letterId": {
+"type": "string",
+"description": "Letter id returned by rimworld/list_letters"
+}
+},
+"additionalProperties": false,
+"required": [
+"letterId"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_drag_cell",
+"description": "[GAME ACTION] Dispatch a literal live map mouse drag from one current-map cell to another without requiring OS focus, publishing mouse position plus held/down/up button state so vanilla and modd",
+"parameters": {
+"type": "object",
+"properties": {
+"fromX": {
+"type": "integer",
+"description": "Start cell x coordinate",
+"default": 0
+},
+"fromZ": {
+"type": "integer",
+"description": "Start cell z coordinate",
+"default": 0
+},
+"toX": {
+"type": "integer",
+"description": "End cell x coordinate",
+"default": 0
+},
+"toZ": {
+"type": "integer",
+"description": "End cell z coordinate",
+"default": 0
+},
+"button": {
+"type": "string",
+"description": "Mouse button to inject. Supported values are 'left', 'right', and 'middle'. The gesture is not translated into",
+"default": "left"
+},
+"holdDurationMs": {
+"type": "integer",
+"description": "How long to hold the drag at the end cell before releasing it. Use this for mods that distinguish tap from hol",
+"default": 0
+},
+"modifiers": {
+"type": "string",
+"description": "Optional comma-, space-, or plus-separated event modifiers such as 'shift', 'ctrl', 'alt', or 'command'."
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_execute_context_menu_option",
+"description": "[GAME ACTION] Execute a context menu option by index or label",
+"parameters": {
+"type": "object",
+"properties": {
+"optionIndex": {
+"type": "integer",
+"description": "1-based option index. Use -1 to resolve by label instead.",
+"default": -1
+},
+"label": {
+"type": "string",
+"description": "Exact or partial menu label to execute when optionIndex is -1"
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_execute_gizmo",
+"description": "[GAME ACTION] Execute one grouped gizmo for the current selection by gizmo id returned from rimworld/list_selected_gizmos",
+"parameters": {
+"type": "object",
+"properties": {
+"gizmoId": {
+"type": "string",
+"description": "Selection-scoped gizmo id returned by rimworld/list_selected_gizmos"
+}
+},
+"additionalProperties": false,
+"required": [
+"gizmoId"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_get_cell_info",
+"description": "[READ-ONLY] Inspect one map cell, including things, blueprints, frames, designations, zones, and areas",
+"parameters": {
+"type": "object",
+"properties": {
+"x": {
+"type": "integer",
+"description": "Target cell x coordinate"
+},
+"z": {
+"type": "integer",
+"description": "Target cell z coordinate"
+}
+},
+"additionalProperties": false,
+"required": [
+"x",
+"z"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_get_cells_info",
+"description": "[READ-ONLY] Inspect every map cell in a rectangle up to 1024 cells, including things, blueprints, frames, designations, zones, and areas",
+"parameters": {
+"type": "object",
+"properties": {
+"x": {
+"type": "integer",
+"description": "Top-left cell x coordinate"
+},
+"z": {
+"type": "integer",
+"description": "Top-left cell z coordinate"
+},
+"width": {
+"type": "integer",
+"description": "Rectangle width in cells; width * height must not exceed 1024",
+"default": 1
+},
+"height": {
+"type": "integer",
+"description": "Rectangle height in cells; width * height must not exceed 1024",
+"default": 1
+}
+},
+"additionalProperties": false,
+"required": [
+"x",
+"z"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_get_context_menu_options",
+"description": "[GAME ACTION] Get the currently opened debug context menu options",
+"parameters": {
+"type": "object",
+"properties": {},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_jump_camera_to_cell",
+"description": "[GAME ACTION] Jump the camera to a map cell",
+"parameters": {
+"type": "object",
+"properties": {
+"x": {
+"type": "integer",
+"description": "Cell x coordinate"
+},
+"z": {
+"type": "integer",
+"description": "Cell z coordinate"
+}
+},
+"additionalProperties": false,
+"required": [
+"x",
+"z"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_list_alerts",
+"description": "[READ-ONLY] List active RimWorld alerts with structured culprit targets and alert-snapshot-scoped alert ids",
+"parameters": {
+"type": "object",
+"properties": {
+"limit": {
+"type": "integer",
+"description": "Maximum number of active alerts to return",
+"default": 40
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_list_architect_categories",
+"description": "[READ-ONLY] List RimWorld Architect categories using stable category ids",
+"parameters": {
+"type": "object",
+"properties": {
+"includeHidden": {
+"type": "boolean",
+"description": "Include categories that are currently hidden",
+"default": false
+},
+"includeEmpty": {
+"type": "boolean",
+"description": "Include categories even if they currently expose no designators",
+"default": false
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_list_architect_designators",
+"description": "[READ-ONLY] List Architect designators for one category, flattening dropdown widgets into actionable child designators",
+"parameters": {
+"type": "object",
+"properties": {
+"categoryId": {
+"type": "string",
+"description": "Stable category id from rimworld/list_architect_categories or the raw category defName"
+},
+"includeHidden": {
+"type": "boolean",
+"description": "Include designators that are currently hidden",
+"default": false
+}
+},
+"additionalProperties": false,
+"required": [
+"categoryId"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_list_areas",
+"description": "[READ-ONLY] List current-map areas such as home, roof, snow-clear, and allowed areas",
+"parameters": {
+"type": "object",
+"properties": {
+"includeEmpty": {
+"type": "boolean",
+"description": "Include areas with zero cells",
+"default": false
+},
+"includeAssignableOnly": {
+"type": "boolean",
+"description": "Include only areas that can be assigned as allowed areas",
+"default": false
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_list_colonists",
+"description": "[READ-ONLY] List player-controlled colonists available for selection and drafting, including stable pawn ids",
+"parameters": {
+"type": "object",
+"properties": {
+"currentMapOnly": {
+"type": "boolean",
+"description": "True to only include the current map",
+"default": false
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_list_letters",
+"description": "[READ-ONLY] List current letter-stack entries with native letter ids, semantic letter content, and structured look-target metadata",
+"parameters": {
+"type": "object",
+"properties": {
+"limit": {
+"type": "integer",
+"description": "Maximum number of letters to return",
+"default": 40
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_list_selected_gizmos",
+"description": "[GAME ACTION] List the current selection's actionable grouped gizmos using deterministic selection-scoped gizmo ids",
+"parameters": {
+"type": "object",
+"properties": {},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_list_zones",
+"description": "[READ-ONLY] List current-map zones such as stockpiles and growing zones",
+"parameters": {
+"type": "object",
+"properties": {
+"includeHidden": {
+"type": "boolean",
+"description": "Include hidden zones",
+"default": false
+},
+"includeEmpty": {
+"type": "boolean",
+"description": "Include zones with zero cells",
+"default": false
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_open_letter",
+"description": "[GAME ACTION] Open a specific letter by native letter id, mirroring a normal left-click on the letter stack entry",
+"parameters": {
+"type": "object",
+"properties": {
+"letterId": {
+"type": "string",
+"description": "Letter id returned by rimworld/list_letters"
+}
+},
+"additionalProperties": false,
+"required": [
+"letterId"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_pause_game",
+"description": "[GAME ACTION] Pause or unpause the game",
+"parameters": {
+"type": "object",
+"properties": {
+"pause": {
+"type": "boolean",
+"description": "True to pause, false to unpause",
+"default": true
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_press_accept",
+"description": "[GAME ACTION] Send semantic accept input to the active RimWorld window stack without requiring OS focus",
+"parameters": {
+"type": "object",
+"properties": {},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_right_click_cell",
+"description": "[GAME ACTION] Dispatch a live map click interaction for the current pawn selection so vanilla and modded handlers see the same input path as a real click",
+"parameters": {
+"type": "object",
+"properties": {
+"targetPawnName": {
+"type": "string",
+"description": "Optional target pawn name on the current map."
+},
+"targetPawnId": {
+"type": "string",
+"description": "Optional stable target pawn id from rimworld/list_colonists."
+},
+"x": {
+"type": "integer",
+"description": "Target cell x coordinate when no pawn name or id is given",
+"default": 0
+},
+"z": {
+"type": "integer",
+"description": "Target cell z coordinate when no pawn name or id is given",
+"default": 0
+},
+"button": {
+"type": "string",
+"description": "Mouse button to inject. Supported values are 'left', 'right', and 'middle'.",
+"default": "right"
+},
+"holdDurationMs": {
+"type": "integer",
+"description": "How long to hold the mouse button down before releasing it. Use this for mods that distinguish tap from hold o",
+"default": 0
+},
+"modifiers": {
+"type": "string",
+"description": "Optional comma-, space-, or plus-separated event modifiers such as 'shift', 'ctrl', 'alt', or 'command'."
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_select_architect_designator",
+"description": "[GAME ACTION] Select an Architect designator by stable id without relying on foreground UI interaction",
+"parameters": {
+"type": "object",
+"properties": {
+"designatorId": {
+"type": "string",
+"description": "Stable designator id returned by rimworld/list_architect_designators"
+}
+},
+"additionalProperties": false,
+"required": [
+"designatorId"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_select_pawn",
+"description": "[GAME ACTION] Select a single colonist by name or stable pawn id",
+"parameters": {
+"type": "object",
+"properties": {
+"pawnName": {
+"type": "string",
+"description": "Optional colonist name, short name, or full name"
+},
+"pawnId": {
+"type": "string",
+"description": "Optional stable colonist pawn id from rimworld/list_colonists"
+},
+"append": {
+"type": "boolean",
+"description": "True to append to the current selection instead of replacing it",
+"default": false
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_set_draft",
+"description": "[GAME ACTION] Draft or undraft a colonist by name or stable pawn id",
+"parameters": {
+"type": "object",
+"properties": {
+"pawnName": {
+"type": "string",
+"description": "Optional colonist name"
+},
+"pawnId": {
+"type": "string",
+"description": "Optional stable colonist pawn id from rimworld/list_colonists"
+},
+"drafted": {
+"type": "boolean",
+"description": "True to draft, false to undraft",
+"default": true
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_set_time_speed",
+"description": "[GAME ACTION] Set RimWorld's current time speed directly; RimBridgeServer enables the boost for speed 4 (Ultrafast) at startup, and this tool can change that state",
+"parameters": {
+"type": "object",
+"properties": {
+"speed": {
+"type": "string",
+"description": "Desired time speed: Paused, Normal, Fast, Superfast, or Ultrafast",
+"default": "Normal"
+},
+"ultraSpeedBoost": {
+"type": "boolean",
+"description": "When set, change RimWorld's private TickManager.UltraSpeedBoost flag. RimBridgeServer enables it at startup; l"
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_set_zone_target",
+"description": "[GAME ACTION] Set or clear the explicit existing-zone target on a zone-add designator",
+"parameters": {
+"type": "object",
+"properties": {
+"designatorId": {
+"type": "string",
+"description": "Stable zone-add designator id returned by rimworld/list_architect_designators"
+},
+"zoneId": {
+"type": "string",
+"description": "Zone id from rimworld/list_zones, or omit to clear the explicit zone target"
+}
+},
+"additionalProperties": false,
+"required": [
+"designatorId"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_take_screenshot",
+"description": "[GAME ACTION] Take an in-game screenshot and optionally crop it to a screen target, UI surface, UI element, or scroll-view region",
+"parameters": {
+"type": "object",
+"properties": {
+"fileName": {
+"type": "string",
+"description": "Optional screenshot file name without extension"
+},
+"includeTargets": {
+"type": "boolean",
+"description": "Include current screen target metadata such as windows and context menus",
+"default": true
+},
+"suppressMessage": {
+"type": "boolean",
+"description": "Suppress RimWorld's screenshot-taken message during this automated capture",
+"default": true
+},
+"clipTargetId": {
+"type": "string",
+"description": "Optional target id from rimworld/get_screen_targets or rimworld/get_ui_layout to crop around, including window"
+},
+"clipPadding": {
+"type": "integer",
+"description": "Logical screen-pixel padding to include around the clip target",
+"default": 8
+}
+},
+"additionalProperties": false
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "look",
+"description": "[READ-ONLY] Take a screenshot of the game exactly as the stream sees it and SEE it (vision).",
+"parameters": {
+"type": "object",
+"properties": {},
+"required": []
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_state",
+"description": "[READ-ONLY] One-shot brief: colonists (map, position, job, drafted/downed/mental state), letters, alerts, recent messages, UI window stack.",
+"parameters": {
+"type": "object",
+"properties": {},
+"required": []
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "pawn_check",
+"description": "[READ-ONLY-ish: selects the pawn] Select a colonist, open its Needs or Health tab and SEE it so you can find the worst need/injury.",
+"parameters": {
+"type": "object",
+"properties": {
+"pawn": {
+"type": "string"
+},
+"tab": {
+"type": "string",
+"enum": [
+"Needs",
+"Health",
+"Gear",
+"Character"
+]
+}
+},
+"required": [
+"pawn"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "order_pawn",
+"description": "[GAME ACTION] Right-click order for one pawn at a cell through the in-game menu (.local/qa/api-prio.py). Omit option to list the menu; option is a label prefix like 'Haul' or 'Prioritize'. queue=true adds after current orders.",
+"parameters": {
+"type": "object",
+"properties": {
+"pawn_id": {
+"type": "string"
+},
+"x": {
+"type": "integer"
+},
+"z": {
+"type": "integer"
+},
+"option": {
+"type": "string"
+},
+"queue": {
+"type": "boolean"
+}
+},
+"required": [
+"pawn_id",
+"x",
+"z"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "play_slices",
+"description": "[GAME ACTION] Let the game run N x 10 s at Superfast (1-6) via play.py; it stops on any letter or dialog that needs a decision and prints it.",
+"parameters": {
+"type": "object",
+"properties": {
+"slices": {
+"type": "integer"
+}
+},
+"required": [
+"slices"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "run_list",
+"description": "[MAINTENANCE] Run the maintenance list (.local/qa/run-list.py). Prints OK/FIX lines; the first FIX is your current goal. Note: it changes the selected pawn.",
+"parameters": {
+"type": "object",
+"properties": {},
+"required": []
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "empire_pass",
+"description": "[MAINTENANCE] One empire.py pass (stock orders, arms, self-tend, hunt, power and food checks). report_only=true only reports.",
+"parameters": {
+"type": "object",
+"properties": {
+"report_only": {
+"type": "boolean"
+}
+},
+"required": []
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "say",
+"description": "[STREAM] Say a line out loud on stream in Unity's voice (TTS + overlay chat + an auto picture). Clean only: no swearing, no degrading, no emoji, one to three short sentences.",
+"parameters": {
+"type": "object",
+"properties": {
+"text": {
+"type": "string"
+}
+},
+"required": [
+"text"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "reply_chat",
+"description": "[STREAM] Answer a Twitch viewer by name, out loud and in the overlay chat. chat_id is the number given with their message.",
+"parameters": {
+"type": "object",
+"properties": {
+"chat_id": {
+"type": "integer"
+},
+"viewer": {
+"type": "string"
+},
+"text": {
+"type": "string"
+}
+},
+"required": [
+"chat_id",
+"viewer",
+"text"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "new_colony",
+"description": "Start a brand-new colony on the company scenario, set up the owner's way (world 30%, 300x300, Spring, pollution 0, factions, mountainous forest tile, the Godsmultiplayer ideoligion, the Preset3 crew, day one). ONLY when the owner orders it. It abandons the current colony.",
+"parameters": {
+"type": "object",
+"properties": {
+"reason": {
+"type": "string"
+}
+},
+"required": [
+"reason"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "plan",
+"description": "Big planning only (a new base layout, a raid plan, the mountain move, the gate, the space push). Owner: \"thinking only for massive plaanning needs and she voice it first and pouses\". Say on stream what you are planning, the game is paused, and your NEXT turn thinks deeply. Never for ordinary moves.",
+"parameters": {
+"type": "object",
+"properties": {
+"what": {
+"type": "string"
+}
+},
+"required": [
+"what"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "webcam",
+"description": "[STREAM] Re-render Unity's webcam with a mood and a short clean caption (raids, deaths, wins, chat moments).",
+"parameters": {
+"type": "object",
+"properties": {
+"mood": {
+"type": "string",
+"enum": [
+"chill",
+"hype",
+"angry",
+"focus",
+"laugh",
+"smug",
+"scared",
+"sad"
+]
+},
+"caption": {
+"type": "string"
+}
+},
+"required": [
+"mood",
+"caption"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "snap",
+"description": "[STREAM] Post an annotated screenshot of a map rect to the webcam panel with up to 3 circled marks. Moves the camera to the rect.",
+"parameters": {
+"type": "object",
+"properties": {
+"x": {
+"type": "integer"
+},
+"z": {
+"type": "integer"
+},
+"w": {
+"type": "integer"
+},
+"h": {
+"type": "integer"
+},
+"caption": {
+"type": "string"
+},
+"marks": {
+"type": "array",
+"items": {
+"type": "object",
+"properties": {
+"x": {
+"type": "integer"
+},
+"z": {
+"type": "integer"
+},
+"note": {
+"type": "string"
+}
+}
+}
+}
+},
+"required": [
+"x",
+"z",
+"w",
+"h",
+"caption"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "read_doc",
+"description": "[READ-ONLY] Read a repo file for knowledge (docs/, src/, Mod/ ...). Reading only: you can never edit, build or fix code. offset/limit are line numbers.",
+"parameters": {
+"type": "object",
+"properties": {
+"path": {
+"type": "string"
+},
+"offset": {
+"type": "integer"
+},
+"limit": {
+"type": "integer"
+}
+},
+"required": [
+"path"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "ladder",
+"description": "Read your PLC ladder: the live rung(s) for what is measured right now, every rung that holds, the tag table (constants + live setpoints) and your own marks and rungs. Check it at the start of a turn.",
+"parameters": {
+"type": "object",
+"properties": {},
+"required": []
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "ladder_set",
+"description": "Edit your ladder on the fly (open-ended, for the whole empire): op 'mark' (name, value true/false) marks a step done; op 'tag' (name, value) changes a setpoint; op 'add_rung' (rung: {id, priority, when: {measured_key: value}, then: [actions], why}) adds or replaces a rung of your own; op 'remove_rung' (name) removes one of yours. Book rungs from the owner cannot be deleted.",
+"parameters": {
+"type": "object",
+"properties": {
+"op": {
+"type": "string",
+"enum": [
+"mark",
+"tag",
+"add_rung",
+"remove_rung"
+]
+},
+"name": {
+"type": "string"
+},
+"value": {
+"type": [
+"string",
+"number",
+"boolean"
+]
+},
+"rung": {
+"type": "object"
+}
+},
+"required": [
+"op"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "pawn_priorities",
+"description": "[GAME ACTION, NO MOUSE] Set ONE pawn's whole work grid in one step, the owner's way: every work type from Firefighter through Cooking = 1, then the levels you give in 'custom' (work name -> 1-4, 0 = off) for the rest. Names: Firefighter Patient Doctor PatientBedRest BasicWorker Warden Handling Cooking Hunting Construction Growing Mining PlantCutting Smithing Tailoring Art Crafting Hauling Cleaning Research. Do one call per pawn.",
+"parameters": {
+"type": "object",
+"properties": {
+"pawn": {
+"type": "string"
+},
+"custom": {
+"type": "object",
+"description": "work name -> level 0-4 for types after Cooking"
+}
+},
+"required": [
+"pawn"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "game_set",
+"description": "[GAME ACTION, NO MOUSE] Set a field directly through the mod's own automation channel -- works with the window minimised. cmd is one of set_zone_plant (x,z,plant e.g. Plant_Rice), set_zone_sowing (x,z,allow), set_work_priority (pawn,work,level 0-4), set_bed_owner (x,z,owner colonist|prisoner|slave), add_bill (recipe e.g. CookMealSimple, count; x,z optional -- it finds the nearest built table), set_area (pawn,area label or empty). SETUP, one call each, no clicking: explore (every pawn through every door, digs into sealed rooms -- repeat until it says nothing left), rooms (lists explored rooms), stockpile_room (room id, mode food|nofood -- a stockpile filling that room), stockpile_filter (x,z,mode food|nofood|all, priority), beds, shelves, stove, crops (plant), hunt, day_one, assign (the Assign tab: pawn or empty for all, food Fine, medicine Best, hostility Attack). map (optional, e.g. Map_0) picks the map; without it the home map is used. The result comes back from the game: read it.",
+"parameters": {
+"type": "object",
+"properties": {
+"cmd": {
+"type": "string",
+"enum": [
+"explore",
+"rooms",
+"stockpile_room",
+"stockpile_filter",
+"beds",
+"shelves",
+"stove",
+"crops",
+"hunt",
+"day_one",
+"assign",
+"set_zone_plant",
+"set_zone_sowing",
+"set_work_priority",
+"set_bed_owner",
+"add_bill",
+"set_area"
+]
+},
+"x": {
+"type": "integer"
+},
+"z": {
+"type": "integer"
+},
+"plant": {
+"type": "string"
+},
+"allow": {
+"type": "boolean"
+},
+"pawn": {
+"type": "string"
+},
+"work": {
+"type": "string"
+},
+"level": {
+"type": "integer"
+},
+"owner": {
+"type": "string"
+},
+"recipe": {
+"type": "string"
+},
+"count": {
+"type": "integer"
+},
+"area": {
+"type": "string"
+},
+"room": {
+"type": "string"
+},
+"mode": {
+"type": "string"
+},
+"priority": {
+"type": "string"
+},
+"food": {
+"type": "string"
+},
+"medicine": {
+"type": "string"
+},
+"hostility": {
+"type": "string"
+},
+"map": {
+"type": "string"
+}
+},
+"required": [
+"cmd"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "twitch_chat",
+"description": "[STREAM] Type into the REAL Twitch chat (not just out loud). action: say | reply (needs viewer) | title | category. Every line is filtered clean or refused.",
+"parameters": {
+"type": "object",
+"properties": {
+"action": {
+"type": "string",
+"enum": [
+"say",
+"reply",
+"title",
+"category"
+]
+},
+"text": {
+"type": "string"
+},
+"viewer": {
+"type": "string"
+}
+},
+"required": [
+"action",
+"text"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
+"name": "note",
+"description": "[SCRATCH] Write or append a note in your own scratch folder (the ONLY place you can write).",
+"parameters": {
+"type": "object",
+"properties": {
+"name": {
+"type": "string"
+},
+"text": {
+"type": "string"
+},
+"append": {
+"type": "boolean"
+}
+},
+"required": [
+"name",
+"text"
+]
+}
+}
+}
+]

@@ -107,14 +107,14 @@ namespace RimroomsAsyncIndustries.Procurement
                 if (!campaign.SupplyTierAffordable(tier))
                 {
                     options.Add(new FloatMenuOption("RR_Supply_TierCost".Translate(
-                        tier.LabelCap, tier.unlockCostCredits.ToString("N0")), null));
+                        tier.LabelCap, RimroomsCampaignComponent.SupplyFeeFor(tier).ToString("N0")), null));
                     continue;
                 }
 
                 RimroomsSupplyTierDef captured = tier;
                 options.Add(new FloatMenuOption(
                     "RR_Supply_TierUnlock".Translate(tier.LabelCap,
-                        tier.unlockCostCredits.ToString("N0")),
+                        RimroomsCampaignComponent.SupplyFeeFor(tier).ToString("N0")),
                     delegate
                     {
                         CompanyActionResult result = campaign.UnlockSupplyTier(captured);

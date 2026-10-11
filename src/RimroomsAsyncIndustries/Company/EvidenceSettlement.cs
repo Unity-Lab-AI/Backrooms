@@ -74,9 +74,21 @@ namespace RimroomsAsyncIndustries.Company
                 if (source == null)
                 {
                     source = record.item == null ? null : trips.Records.FirstOrDefault(r => r.CoordinateId == record.coordinateId && r.Cargo.Any(c => c.Item == record.item));
-                    if (source == null) { continue; }
-                    record.sourceExpeditionId = source.ExpeditionId;
-                    if (record.analyzedTick < 0) { record.status = EvidenceStatus.Recovered; }
+                    if (source != null)
+                    {
+                        record.sourceExpeditionId = source.ExpeditionId;
+                        if (record.analyzedTick < 0) { record.status = EvidenceStatus.Recovered; }
+                    }
+                    // **No dispatch is not the same as no evidence.** A book carried home through
+                    // an ordinary portal visit has no expedition behind it, and skipping it here
+                    // meant it could never be secured -- so it could never be analysed either. The
+                    // custody test below asks only where the book is, which is the whole rule. Only
+                    // the crew-return bonus needs an expedition, and it is skipped without one.
+                    // A record a portal visit owns counts as returned once it reaches headquarters.
+                    if (source == null && !string.IsNullOrEmpty(record.sourcePortalOperationId) &&
+                        record.analyzedTick < 0 && record.status == EvidenceStatus.Located &&
+                        record.item != null && !record.item.Destroyed && record.item.MapHeld == headquarters)
+                    { record.status = EvidenceStatus.Recovered; }
                 }
                 if (record.analyzedTick < 0 && record.item != null && !record.item.Destroyed && record.item.MapHeld == headquarters &&
                     HasArchivedCustody(record))
@@ -125,7 +137,7 @@ namespace RimroomsAsyncIndustries.Company
                     // Found while removing `MaxCrew` on the owner's "pawns can cross gate as they
                     // plkease so no max number", which is exactly the kind of fault a cap conceals: with
                     // the cap in place no player could easily send four and discover it.
-                    bool allReturned = source.InitialCrew.Count > 0
+                    bool allReturned = source != null && source.InitialCrew.Count > 0
                         && source.InitialCrew.All(p => p != null && source.ReturnedCrew.Contains(p));
                     if (record.entityRecorded && allReturned && contract.bonusUsd > 0)
                     {

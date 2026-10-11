@@ -2,8 +2,8 @@
 Rule (owner, PLAYBOOK): Firefight..Cook = 1 for everyone; each colonist's specialty = 2; all else 3;
 nothing blank unless the pawn is incapable."""
 import os as _os, sys as _sys
-if _os.environ.get("OWNER_LENT_MOUSE") != "1":   # owner, 2026-10-09: "DONT FIGHT ME" -- real input locked
-    _sys.exit("REFUSED: real input is locked; ask the owner to lend the mouse first")
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+import own_mouse as om   # Unity's own mouse: posted to the game window, never the owner's cursor
 
 import subprocess, sys, time, glob, os, importlib.util
 spec = importlib.util.spec_from_file_location("wr", ".local/qa/work-read.py"); wr = importlib.util.module_from_spec(spec); spec.loader.exec_module(wr)
@@ -17,7 +17,9 @@ def click(x, y):
     r = subprocess.run([sys.executable, ".local/qa/game-click.py", str(x), str(y)], capture_output=True, text=True).stdout
     if not r.startswith("ok"): sys.exit("STOP " + r)
 def park():
-    import ctypes; u = ctypes.windll.user32; ctypes.windll.shcore.SetProcessDpiAwareness(2); u.SetCursorPos(2600, 600)
+    # move Unity's own pointer off the grid so no hover tooltip covers the read; the owner's cursor stays put
+    try: om.hover(*om.from_screen(2600, 600))
+    except Exception: pass
 park(); grid = shot(); changed = 0; incap = 0
 ONLY = os.environ.get("WORK_ONLY")
 for ri, name in enumerate(NAMES):

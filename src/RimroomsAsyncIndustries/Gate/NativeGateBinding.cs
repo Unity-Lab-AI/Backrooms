@@ -598,8 +598,10 @@ namespace RimroomsAsyncIndustries.Gate
             if (NativeCampaign == null || nativeBranchId != NativeCampaign.BranchId ||
                 !SameNativeHeadquartersThing(nativeConsole) || !SameNativeHeadquartersThing(nativeBattery) ||
                 !SameNativeHeadquartersThing(nativeAssemblyBench)) { return "RR_NativeGate_LinkMissing"; }
-            if (!ExactProvider(nativeConsole, "CommsConsole") || !ExactProvider(nativeBattery, "Battery") ||
-                !ExactProvider(nativeAssemblyBench, "TableMachining") || NativeBatteryComp == null ||
+            // The same role tests binding uses, so a company console or bench that binds is not
+            // then reported as a missing link.
+            if (!RimroomsGateProviders.IsConsole(nativeConsole) || !RimroomsGateProviders.IsBattery(nativeBattery) ||
+                !RimroomsGateProviders.IsAssemblyBench(nativeAssemblyBench) || NativeBatteryComp == null ||
                 nativeConsole.TryGetComp<CompRimroomsGateConsole>()?.LinkedGate != parent ||
                 nativeAssemblyBench.TryGetComp<CompRimroomsGateConsole>()?.LinkedGate != parent)
             { return "RR_NativeGate_LinkMissing"; }
@@ -730,7 +732,7 @@ namespace RimroomsAsyncIndustries.Gate
         private bool NativeEmergencyCircuitAvailable()
         {
             return NativeDoorProvider() && IsDesignated && NativeCampaign != null && nativeBranchId == NativeCampaign.BranchId &&
-                SameNativeHeadquartersThing(nativeBattery) && ExactProvider(nativeBattery, "Battery") &&
+                SameNativeHeadquartersThing(nativeBattery) && RimroomsGateProviders.IsBattery(nativeBattery) &&
                 NativeEntryCell.IsValid && NativeEntryCell.InBounds(parent.Map) && NativeEntryCell.Standable(parent.Map) &&
                 NativeThresholdConnected() && NativeElectricalAvailable();
         }
@@ -763,7 +765,10 @@ namespace RimroomsAsyncIndustries.Gate
             float taken = 0f;
             try { taken = DrawFromNativeCircuit(remaining); }
             catch (Exception exception) { interrupted = exception; }
-            float observed = FiniteNonnegative(taken) ? taken : before - NativeStoredEnergy;
+            // An interrupted draw may already have moved charge; measure what actually left the
+            // circuit rather than trusting the unset return value, so a retry pays only the rest.
+            float observed = interrupted == null && FiniteNonnegative(taken) ? taken : before - NativeStoredEnergy;
+            if (interrupted != null && FiniteNonnegative(observed) && observed > remaining) { observed = remaining; }
             bool finiteObserved = FiniteNonnegative(observed);
             if (finiteObserved) { nativeEnergyDrawnWattDays += observed; }
             if (interrupted != null || !finiteObserved || Math.Abs(observed - remaining) > NativeDebitTolerance(before))

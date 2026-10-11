@@ -19,12 +19,17 @@ function env() {
 const channel = (process.argv[2] || env().TWITCH_CHANNEL || '').replace(/^#/, '').toLowerCase();
 if (!channel) { console.error('usage: node twitch-bridge.cjs <channel>  (or TWITCH_CHANNEL in .claude/.env)'); process.exit(1); }
 const STUDIO = process.env.STUDIO_URL || 'http://127.0.0.1:4317';
+// Per-session token the studio writes beside its inbox; every POST to it must carry it.
+function studioToken() {
+  try { return require('fs').readFileSync(require('path').join(__dirname, '..', '.studio-token'), 'utf8').trim(); }
+  catch (e) { return ''; }
+}
 
 function say(text) {
   const data = JSON.stringify({ text: text, persona: 'unity' });
   const u = new URL(STUDIO + '/api/say');
   const r = http.request({ hostname: u.hostname, port: u.port, path: u.pathname, method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) } });
+    headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data), 'X-Studio-Token': studioToken() } });
   r.on('error', (e) => console.error('studio:', e.message));
   r.end(data);
 }

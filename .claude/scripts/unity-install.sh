@@ -96,8 +96,11 @@ fi
 # Temp dirs + cleanup trap
 # ─────────────────────────────────────────────────────────────────────
 CLONE_DIR=$(mktemp -d -t unity-install-clone-XXXXXXXX)
-STAGE_DIR=$(mktemp -d -t unity-install-stage-XXXXXXXX)
-trap 'rm -rf "$CLONE_DIR" "$STAGE_DIR"' EXIT
+trap 'rm -rf "$CLONE_DIR"' EXIT
+# The new tree is built beside the live one and swapped in only when complete;
+# the old tree is kept as .claude.previous until the next successful install.
+NEW_DIR="$TARGET_DIR/.claude.installing"
+PREV_DIR="$TARGET_DIR/.claude.previous"
 
 # ─────────────────────────────────────────────────────────────────────
 # Clone (shallow, requested branch)
@@ -120,50 +123,44 @@ fi
 # Stage personal files if target/.claude/ already exists
 # ─────────────────────────────────────────────────────────────────────
 HAD_EXISTING=0
-if [ -d "$TARGET_DIR/.claude" ]; then
-  HAD_EXISTING=1
-  echo "[unity-install] Existing .claude/ detected — staging personal files for restore..."
-  for f in $PRESERVE_FILES; do
-    if [ -e "$TARGET_DIR/.claude/$f" ]; then
-      cp -p "$TARGET_DIR/.claude/$f" "$STAGE_DIR/$f"
-      echo "[unity-install]   staged: $f"
-    fi
-  done
-  for d in $PRESERVE_DIRS; do
-    if [ -d "$TARGET_DIR/.claude/$d" ]; then
-      cp -rp "$TARGET_DIR/.claude/$d" "$STAGE_DIR/$d"
-      echo "[unity-install]   staged: $d/"
-    fi
-  done
-
-  # Replace target/.claude/ entirely
-  rm -rf "$TARGET_DIR/.claude"
+[ -d "$TARGET_DIR/.claude" ] && HAD_EXISTING=1
+rm -rf "$NEW_DIR"
+mkdir -p "$NEW_DIR"
+if ! cp -r "$REPO_CLAUDE/." "$NEW_DIR/"; then
+  echo "[unity-install] ERROR: copy into staging failed; existing .claude/ untouched" >&2
+  rm -rf "$NEW_DIR"; exit 1
 fi
 
 # ─────────────────────────────────────────────────────────────────────
-# Drop fresh .claude/ from clone
-# ─────────────────────────────────────────────────────────────────────
-mkdir -p "$TARGET_DIR/.claude"
-cp -r "$REPO_CLAUDE/." "$TARGET_DIR/.claude/"
-echo "[unity-install] Installed fresh .claude/ from $BRANCH"
-
-# ─────────────────────────────────────────────────────────────────────
-# Restore staged personal files (no-clobber: framework wins ties)
+# Restore personal files into the staged tree (no-clobber: framework wins ties)
 # ─────────────────────────────────────────────────────────────────────
 if [ "$HAD_EXISTING" = "1" ]; then
+  echo "[unity-install] Existing .claude/ detected — carrying personal files over..."
   for f in $PRESERVE_FILES; do
-    if [ -e "$STAGE_DIR/$f" ] && [ ! -e "$TARGET_DIR/.claude/$f" ]; then
-      cp -p "$STAGE_DIR/$f" "$TARGET_DIR/.claude/$f"
+    if [ -e "$TARGET_DIR/.claude/$f" ] && [ ! -e "$NEW_DIR/$f" ]; then
+      cp -p "$TARGET_DIR/.claude/$f" "$NEW_DIR/$f" || { echo "[unity-install] ERROR: could not carry $f; existing .claude/ untouched" >&2; rm -rf "$NEW_DIR"; exit 1; }
       echo "[unity-install]   restored: $f"
     fi
   done
   for d in $PRESERVE_DIRS; do
-    if [ -d "$STAGE_DIR/$d" ] && [ ! -e "$TARGET_DIR/.claude/$d" ]; then
-      cp -rp "$STAGE_DIR/$d" "$TARGET_DIR/.claude/$d"
+    if [ -d "$TARGET_DIR/.claude/$d" ] && [ ! -e "$NEW_DIR/$d" ]; then
+      cp -rp "$TARGET_DIR/.claude/$d" "$NEW_DIR/$d" || { echo "[unity-install] ERROR: could not carry $d/; existing .claude/ untouched" >&2; rm -rf "$NEW_DIR"; exit 1; }
       echo "[unity-install]   restored: $d/"
     fi
   done
+  # Swap: the old tree becomes .claude.previous (full backup), the staged tree goes live.
+  rm -rf "$PREV_DIR"
+  mv "$TARGET_DIR/.claude" "$PREV_DIR" || { echo "[unity-install] ERROR: could not move old .claude/ aside; nothing changed" >&2; rm -rf "$NEW_DIR"; exit 1; }
+  if ! mv "$NEW_DIR" "$TARGET_DIR/.claude"; then
+    mv "$PREV_DIR" "$TARGET_DIR/.claude"
+    echo "[unity-install] ERROR: swap failed; old .claude/ put back" >&2
+    exit 1
+  fi
+  echo "[unity-install] Previous .claude/ kept at $PREV_DIR"
+else
+  mv "$NEW_DIR" "$TARGET_DIR/.claude" || { echo "[unity-install] ERROR: could not place .claude/" >&2; exit 1; }
 fi
+echo "[unity-install] Installed fresh .claude/ from $BRANCH"
 
 # ─────────────────────────────────────────────────────────────────────
 # Re-apply executable bits on scripts/hooks/launchers/binaries

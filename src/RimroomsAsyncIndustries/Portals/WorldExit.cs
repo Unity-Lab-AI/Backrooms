@@ -344,7 +344,9 @@ namespace RimroomsAsyncIndustries.Company
             List<Pawn> leaving = TravellersAt(door);
             if (leaving.Count == 0) { return CompanyActionResult.Refused("RR_WorldExit_NobodyHere"); }
 
-            CompanyActionResult result = CanClaimAnotherMap
+            // A tile an earlier attempt already claimed is finished rather than abandoned for a
+            // caravan, even though that claim now counts toward the map cap.
+            CompanyActionResult result = CanClaimAnotherMap || EarlierClaim(record.Tile) != null
                 ? ClaimTileAndWalkOut(record, leaving, door)
                 : FormCaravanAndWalkOut(record, from, leaving);
             if (!result.Success) { return result; }
@@ -374,7 +376,9 @@ namespace RimroomsAsyncIndustries.Company
             Map claimed;
             try
             {
-                settlement = SettleUtility.AddNewHome(tile, Faction.OfPlayer);
+                // A retry after a failed first exit reuses the settlement it already claimed
+                // instead of founding a second one on the same tile.
+                settlement = EarlierClaim(tile) ?? SettleUtility.AddNewHome(tile, Faction.OfPlayer);
                 if (settlement == null) { return CompanyActionResult.Refused("RR_WorldExit_CouldNotClaim"); }
                 claimed = GetOrGenerateMapUtility.GetOrGenerateMap(tile, null);
             }
@@ -410,25 +414,27 @@ namespace RimroomsAsyncIndustries.Company
             {
                 Pawn pawn = leaving[index];
                 if (pawn == null || !pawn.Spawned) { continue; }
-                Map origin = pawn.Map;
-                IntVec3 was = pawn.Position;
                 IntVec3 cell = CellFinder.RandomClosewalkCellNear(arrival, claimed, 6);
                 if (!cell.IsValid || !cell.InBounds(claimed)) { cell = arrival; }
-                pawn.DeSpawn();
-                if (GenSpawn.Spawn(pawn, cell, claimed) == null)
-                {
-                    // Put them back rather than leaving anybody unspawned. The same rule the
-                    // solo/group opening follows: a step that loses a person is worse than a step
-                    // that does not happen.
-                    GenSpawn.Spawn(pawn, was, origin);
-                    continue;
-                }
+                // A failed or throwing spawn puts them back where they stood rather than leaving
+                // anybody unspawned: a step that loses a person is worse than a step that does
+                // not happen.
+                if (!Core.HeldCustody.Relocate(pawn, claimed, cell, false)) { continue; }
                 moved++;
             }
             if (moved == 0) { return CompanyActionResult.Refused("RR_WorldExit_NobodyMoved"); }
 
             RecordEvent("RR_Event_WorldExitClaimed", record.id, settlement.Label);
             return CompanyActionResult.Applied();
+        }
+
+        /// <summary>The player's own settlement already on this tile, from an earlier attempt, or null.</summary>
+        private static Settlement EarlierClaim(PlanetTile tile)
+        {
+            if (!tile.Valid || Find.WorldObjects == null) { return null; }
+            Settlement existing = Find.WorldObjects.SettlementAt(tile);
+            return existing != null && !existing.Destroyed && existing.Faction == Faction.OfPlayer
+                ? existing : null;
         }
 
         /// <summary>
@@ -505,6 +511,15 @@ namespace RimroomsAsyncIndustries.Company
 
             CompanyActionResult site = RegisterRemoteSite(claimed);
             if (!site.Success) { return site; }
+
+            // An earlier attempt may already have built and registered the way back in; reuse it
+            // rather than building a second door that the network would then refuse.
+            RimroomsPortalNetwork existingNetwork = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsPortalNetwork>();
+            PortalConnectionRecord built = existingNetwork == null ? null : existingNetwork.Find(record.id + ":return");
+            if (built != null && built.First != null && built.First.Anchor != null &&
+                !built.First.Anchor.Destroyed && built.First.Anchor.Map == claimed)
+            { return CompanyActionResult.Existing(); }
 
             ThingDef doorDef = DefDatabase<ThingDef>.GetNamedSilentFail("Door");
             if (doorDef == null) { return CompanyActionResult.Refused("RR_WorldReturn_NoDoorDef"); }

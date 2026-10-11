@@ -242,6 +242,10 @@ namespace RimroomsAsyncIndustries.Company
 
             CompanySupplyDrop.Fill(payload, ReliefSupplyScale);
 
+            // Landed before anything is counted or charged: a drop that throws bills nothing,
+            // records nothing, and the next tick tries again.
+            if (!DeliverCompanyPayload(centre, map, payload, arrived.Count)) { return; }
+
             clearSquadCount++;
             lastClearSquadTick = now;
 
@@ -249,9 +253,6 @@ namespace RimroomsAsyncIndustries.Company
             // arrival is certain, with an operation id carrying the clearance number, so a reload
             // cannot bill the same clearance twice and a second clearance is not mistaken for it.
             long charged = ChargeRestocking();
-
-            DropPodUtility.DropThingsNear(centre, map, payload, 110, false, false, true,
-                forbid: false);
 
             for (int index = 0; index < arrived.Count; index++)
             {

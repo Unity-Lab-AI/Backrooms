@@ -3,7 +3,18 @@
 mood picks the expression; the base look is always the same girl at the same desk.
 Renders through the local Stable Diffusion via the studio's /api/cam. Runs in the background.
 """
-import json, subprocess, sys, urllib.request
+import json, os, subprocess, sys, urllib.request
+
+
+def studio_token():
+    """Per-session token the studio server writes for its local helpers (needed for every POST)."""
+    try:
+        with open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".studio-token"),
+                  encoding="utf-8") as f:
+            return f.read().strip()
+    except OSError:
+        return ""
+
 
 BASE = ("photo of a 25 year old woman, girl next door, natural goth emo style, dark brown hair with subtle pink streaks, "
         "black band t-shirt, at a home gaming desk, warm desk lamp light, bedroom, candid webcam photo, realistic, ")
@@ -30,7 +41,7 @@ def main():
     prompt = BASE + MOODS.get(mood, mood) + ", photo, detailed face"
     req = urllib.request.Request("http://127.0.0.1:4317/api/cam",
                                  data=json.dumps({"prompt": prompt, "caption": caption, "face": True}).encode(),
-                                 headers={"Content-Type": "application/json"})
+                                 headers={"Content-Type": "application/json", "X-Studio-Token": studio_token()})
     urllib.request.urlopen(req, timeout=300).read()
 
 

@@ -261,7 +261,15 @@ namespace RimroomsAsyncIndustries.Company
             for (int index = 0; index < all.Count; index++)
             {
                 Thing thing = all[index];
-                if (thing == null || thing.Destroyed || thing is Pawn) { continue; }
+                if (thing == null || thing.Destroyed || thing is Pawn || !thing.Spawned) { continue; }
+                // Delivered goods only: loose items, or furniture uninstalled into its crate. An
+                // installed stove or bench of the right kind is the branch's working equipment,
+                // and an order for "uninstalled stoves" must never take one off the floor.
+                if (thing.def == null || thing.def.category != ThingCategory.Item) { continue; }
+                // Something a colonist has claimed for a job is not on the table either; taking
+                // it out from under the job is how the job faults.
+                if (thing.Map != null && thing.Map.reservationManager != null &&
+                    thing.Map.reservationManager.IsReservedByAnyoneOf(thing, Faction.OfPlayer)) { continue; }
                 Thing subject = thing is MinifiedThing ? ((MinifiedThing)thing).InnerThing : thing;
                 if (subject == null || subject.def == null) { continue; }
                 if (!string.Equals(subject.def.defName, defName, StringComparison.Ordinal)) { continue; }

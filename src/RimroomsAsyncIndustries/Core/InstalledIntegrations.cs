@@ -13,6 +13,13 @@ namespace RimroomsAsyncIndustries.Core
         /// <summary>The Workshop package id, read from the register and never guessed.</summary>
         public string PackageId;
 
+        /// <summary>
+        /// The mod's own package identity as `About.xml` declares it. This is what
+        /// `ModsConfig.IsActive` matches; the Workshop number above is the register's source id
+        /// and never matches a loaded mod.
+        /// </summary>
+        public string ModPackageId;
+
         /// <summary>Key for the mod's name as the register records it.</summary>
         public string NameKey;
 
@@ -60,9 +67,12 @@ namespace RimroomsAsyncIndustries.Core
     /// against the register's own CSV.
     ///
     /// **Nothing here changes behaviour.** No route, gate, expedition, generation pass or work
-    /// giver reads this class — asserted by proof, because a detection layer that starts
-    /// deciding things is how *"do not add vehicles solely because the framework is installed"*
-    /// gets broken by accident.
+    /// giver reads this class, because a detection layer that starts deciding things is how
+    /// *"do not add vehicles solely because the framework is installed"* gets broken by
+    /// accident. The only readers are the player-pressed adapters —
+    /// <see cref="Company.CompanyVehicles"/> and the dossier exchange's provider refusal — and
+    /// they read it only to choose which refusal to show or whether to open a provider's own
+    /// screen.
     ///
     /// ## The third state row 784 asks for
     ///
@@ -95,6 +105,7 @@ namespace RimroomsAsyncIndustries.Core
             {
                 RegisterRow = 11,
                 PackageId = "3014915404",
+                ModPackageId = "SmashPhil.VehicleFramework",
                 NameKey = "RR_Integration_VehicleFrameworkName",
                 PositionKey = "RR_Integration_VehicleFrameworkPosition",
             },
@@ -102,6 +113,7 @@ namespace RimroomsAsyncIndustries.Core
             {
                 RegisterRow = 196,
                 PackageId = "3005289691",
+                ModPackageId = "nova.rimworldtogether",
                 NameKey = "RR_Integration_RimWorldTogetherName",
                 PositionKey = "RR_Integration_RimWorldTogetherPosition",
             },
@@ -109,6 +121,7 @@ namespace RimroomsAsyncIndustries.Core
             {
                 RegisterRow = 247,
                 PackageId = "3609835606",
+                ModPackageId = "vanillaexpanded.gravship",
                 NameKey = "RR_Integration_GravshipOneName",
                 PositionKey = "RR_Integration_GravshipOnePosition",
             },
@@ -116,6 +129,7 @@ namespace RimroomsAsyncIndustries.Core
             {
                 RegisterRow = 249,
                 PackageId = "3014906877",
+                ModPackageId = "OskarPotocki.VanillaVehiclesExpanded",
                 NameKey = "RR_Integration_VehiclesExpandedName",
                 PositionKey = "RR_Integration_VehiclesExpandedPosition",
             },
@@ -123,6 +137,7 @@ namespace RimroomsAsyncIndustries.Core
             {
                 RegisterRow = 281,
                 PackageId = "3799737423",
+                ModPackageId = "vanillaexpanded.gravship2",
                 NameKey = "RR_Integration_GravshipTwoName",
                 PositionKey = "RR_Integration_GravshipTwoPosition",
             },
@@ -148,8 +163,8 @@ namespace RimroomsAsyncIndustries.Core
                 for (int index = 0; index < Tracked.Length; index++)
                 {
                     IntegrationState state = Tracked[index];
-                    state.Active = !string.IsNullOrEmpty(state.PackageId) &&
-                        ModsConfig.IsActive(state.PackageId);
+                    state.Active = !string.IsNullOrEmpty(state.ModPackageId) &&
+                        ModsConfig.IsActive(state.ModPackageId);
                 }
             }
             return Tracked;

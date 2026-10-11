@@ -111,6 +111,20 @@ namespace RimroomsAsyncIndustries.Economy
         }
 
         /// <summary>
+        /// Stamps a thing as ordinary for good, looking through a minified wrapper.
+        ///
+        /// For goods the company itself supplies. Their origin is a fact about the supplier, not
+        /// about wherever they first land, so they are stamped before they ever spawn: a purchase
+        /// delivered to a headquarters that happens to stand inside a coordinate stays ordinary.
+        /// </summary>
+        public static void StampOutside(Thing thing)
+        {
+            Thing subject = Resolve(thing);
+            CompRimroomsOddOrigin marker = subject == null ? null : subject.TryGetComp<CompRimroomsOddOrigin>();
+            if (marker != null) { marker.StampOrigin(ThingOrigin.Outside); }
+        }
+
+        /// <summary>
         /// The recorded origin of a thing, looking through a minified wrapper. Distinguishes
         /// "proven to have come from outside" from "never stamped", which the boolean
         /// <see cref="IsOdd"/> cannot: shelter scoring needs the former and must not count the
@@ -136,6 +150,17 @@ namespace RimroomsAsyncIndustries.Economy
             if (map == null) { return false; }
             var site = map.Parent as Generation.RimroomsDestinationMapParent;
             return site != null && site.LayoutReady;
+        }
+
+        /// <summary>
+        /// Whether this map is a Backrooms coordinate whose generation has not finished yet.
+        /// Things born there are left unstamped until the generation pass marks them.
+        /// </summary>
+        public static bool IsGeneratingBackroomsMap(Map map)
+        {
+            if (map == null) { return false; }
+            var site = map.Parent as Generation.RimroomsDestinationMapParent;
+            return site != null && !site.LayoutReady;
         }
 
         private static Thing Resolve(Thing thing)

@@ -29,7 +29,7 @@ them as Unity, write the replies back so the window can show them.
      `{"id":<max outbox id + 1>,"replyTo":<inbox id>,"ts":<epoch ms>,"persona":"<persona>","text":"<the reply>"}`
      — `text` must be valid JSON-escaped (escape quotes, backslashes, newlines).
    - If the reply calls for an image, also push it to the window:
-     `curl -s -X POST http://127.0.0.1:4317/api/show -H "Content-Type: application/json" -d '{"prompt":"...","persona":"..."}'`
+     `curl -s -X POST http://127.0.0.1:4317/api/show -H "Content-Type: application/json" -H "X-Studio-Token: $(cat .claude/.studio-token)" -d '{"prompt":"...","persona":"..."}'`
 5. If there are no unanswered messages, say so briefly and stop.
 
 ## KEEPING IT LIVE — the watcher (near-real-time, not a timer)

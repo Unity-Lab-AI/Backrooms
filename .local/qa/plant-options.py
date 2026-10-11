@@ -37,7 +37,7 @@ def targets():
 
 def click(px, py):
     subprocess.run([sys.executable, os.path.join(HERE, "real-click.py"), str(int(px)), str(int(py))],
-                   capture_output=True, text=True, env=dict(os.environ, OWNER_LENT_MOUSE="1"),
+                   capture_output=True, text=True,
                    creationflags=0x08000000 if os.name == "nt" else 0)
     time.sleep(0.4)
 

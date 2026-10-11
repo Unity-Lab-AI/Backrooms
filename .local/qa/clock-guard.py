@@ -60,15 +60,20 @@ while True:
             dialog = bool(ui.get("nonImmediateDialogWindowOpen") or ui.get("NonImmediateDialogWindowOpen"))
             letters = [l.get("label") or "" for l in call("rimworld/list_letters").get("letters", [])]
             raid = any("raid" in l.lower() for l in letters)
-            if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "_setup_hold.flag")):
+            _ap = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_svc_autopilot.log")
+            _active = os.path.exists(_ap) and time.time() - os.path.getmtime(_ap) < 180
+            if _active:
+                pass   # she is working and may have paused on purpose (live: it unpaused her setup pause)
+            elif os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "_setup_hold.flag")):
                 pass   # the first-unpause checklist is not done: the owner's rule is that time waits for it
             elif dialog:
                 print(stamp(), "frozen at", t1, "-- a dialog is open, leaving it alone", flush=True)
             elif raid:
                 print(stamp(), "frozen at", t1, "-- a raid letter is live, leaving it to the owner", flush=True)
             else:
-                ok = call("rimworld/set_time_speed", {"speed": "Fast"}).get("success")
-                print(stamp(), "frozen at", t1, "with nothing to answer -- running time again:", ok, flush=True)
+                # owner, for the fifth time: "why did she unpause beforee seeting all the pawn settings". This guard no
+                # longer unpauses anything: the pause belongs to her (and the owner). It only reports a long freeze.
+                print(stamp(), "frozen at", t1, "-- left paused (only Unity or the owner unpauses)", flush=True)
     except Exception as e:
         print(stamp(), "bridge hiccup:", str(e)[:80], flush=True)
         try: s, buf = session()

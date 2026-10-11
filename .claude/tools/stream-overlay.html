@@ -151,6 +151,9 @@ async function chat() {
       chatSince = Math.max(chatSince, r.ts);
       if (seen.has(r.key)) continue;
       seen.add(r.key);
+      // the server is the privacy filter: it drops the owner's lines and scrubs private names before sending.
+      // Anything it marks private, or a row without plain text fields, is never drawn here.
+      if (r.private || typeof r.who !== "string" || typeof r.text !== "string") continue;
       const d = document.createElement("div");
       d.className = "row" + (r.unity ? " unity" : "") + (r.narration ? " narr" : "");
       const w = document.createElement("span"); w.className = "who"; w.textContent = r.who;

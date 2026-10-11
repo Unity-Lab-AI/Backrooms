@@ -1,0 +1,50 @@
+{
+ "digest": "8232aef9f60afa032e9f791891c3c40b0db149965f412bf00b508c08fa4b9896",
+ "files": {
+  "baseline_voice.json": "4cf61a3880beed2296e0a5c61b052470a46b3309c540d52dc95f200bba87346c",
+  "eval_tools.jsonl": "7ff6b4209dcc7b67aa7b787bc23a3cc2147a1ccf9aeb8521844273bc35333c70",
+  "eval_voice.jsonl": "8325f5fbd451b283393251f9143954ebfa1008bb64bd5621202ca16bcd246125",
+  "screens/00000.png": "c841a6c595a7d3800438311cfb630fd3b55c4e92f7544a7d8ea779122e94ced8",
+  "screens/00001.png": "0ad7510c51555416e844834bd879887c88dbefb825c694efdb7bd185b0115ed8",
+  "screens/00002.png": "e145ca710dda6d06597666b485b2f0ff2a9f4d45e1180eb1ea6ed20c8e3a124c",
+  "screens/00003.png": "8cf055645859da740949ef8478549ffd5978fed709e15614ae4d396b600d756b",
+  "screens/00004.png": "a0bb2aa4eb8bf703b03842de6b3e8665fa0ad4a94a0a422ddfa738842a575fb3",
+  "screens/00005.png": "ca106761b554a6ae875a48fd4f8f4c21e716059121ed05339822bd439f40fb73",
+  "screens/00006.png": "ad5d5869cb641f80869c58cc629a4258f389ed75228f63f717705e80c341fb4b",
+  "screens/00007.png": "c022bdb286280187f33db06c73effd6273e1aeb7e0c2718e610c3035f9d7caa5",
+  "screens/00008.png": "eed0129fe02dc21d46ec20492eeedf8143a8a12d6b2e13eb76963caaaf991de2",
+  "screens/00009.png": "e6dee227f0edf96ca92214bcf1aabafa6b37039d9f791367d6f5d636b9ae16ed",
+  "screens/00010.png": "2ffd9bbd49942ac40fc36f1940e8313c309e7dbb6c76f3c967cf1bbefa0063eb",
+  "screens/00011.png": "707f770b0ab34e93508f0d646185fc4a4922d90b168bd96f42305946d9a4cf2f",
+  "screens/00012.png": "0433cc5bedb52dbc177b6518d9bab590844d41f6358084429278a444623b098e",
+  "screens/00013.png": "f9506610da82f3f12328123809d7ce5bd1b779cb8e362ee787e67335cd263bce",
+  "screens/00014.png": "c05fb825a874277ea11dd2b8b7857c0f3e10cb86ea707f7882c8ad35310f5d5d",
+  "screens/00015.png": "235c21c1b96238d83c1a0fe5e06d69778916dce8cb77e3408c0ab8c3325ed675",
+  "screens/00016.png": "a97d4b60983d33858c9c86a9464bddb840cd3411903d4777e22a2a818c5182db",
+  "screens/00017.png": "8a8460af54f70a21ae81fa116da4fc6802fe164b7201404ee0325afd6fe70daa",
+  "screens/00018.png": "f175259368dbac4f36047848d7438e5072107d33a261f65a593edada2320aa65",
+  "screens/00019.png": "cdbdd13bd41bb038e973587d8acb81bd9dff4871134c7f580880096c6c9b6eae",
+  "tools.json": "d59eea4738f42eceac1b16da68e27de509718947bfa5aabcd11c2904b85a06da",
+  "train.jsonl": "0ec9598b40c928fbb3caa127d8739890f92c6aaddca308caf6c6061bd9ccb7cf"
+ },
+ "train_counts": {
+  "image": 220,
+  "play": 706,
+  "knowledge": 2125,
+  "chat": 484,
+  "voice": 638,
+  "screen": 100,
+  "writeup": 150,
+  "highlight": 45
+ },
+ "eval_voice": 63,
+ "eval_tools": 21,
+ "play_dropped": 12,
+ "play_removed": {
+  "truncated at a recital": 40,
+  "greeting": 7,
+  "closing recital": 12
+ },
+ "image_tool": false,
+ "tools": 48
+}

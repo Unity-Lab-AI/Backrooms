@@ -77,7 +77,7 @@ namespace RimroomsAsyncIndustries.Threats
             if (Find.TickManager == null || Find.TickManager.TicksGame % CheckInterval != 0) { return; }
             if (gate.IncursionSpentThisOpening) { return; }
             if (string.IsNullOrEmpty(gate.PortalConnectionId) || string.IsNullOrEmpty(gate.PortalOpeningId)) { return; }
-            if (gate.IsEmergency) { return; }
+            if (gate.IsEmergency || gate.KillSwitchThrown) { return; }
 
             RimroomsPortalNetwork network = Current.Game == null
                 ? null : Current.Game.GetComponent<RimroomsPortalNetwork>();

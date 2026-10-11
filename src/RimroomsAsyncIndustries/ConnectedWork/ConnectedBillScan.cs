@@ -111,8 +111,13 @@ namespace RimroomsAsyncIndustries.ConnectedWork
         /// plasteel would report a shortage and send somebody across a gate for nothing —
         /// repeatedly, because the situation is stable.
         ///
-        /// The required count comes from `IngredientCount.CountRequiredOfFor`, so a
-        /// small-volume ingredient and a bill-specific count are both Core's numbers.
+        /// **Counted in the recipe's own ingredient units, then expressed in the basis def.**
+        /// The defs an ingredient allows can be worth different amounts each -- a meal recipe
+        /// counts nutrition, so ten berries are not ten meat -- so raw stack counts summed across
+        /// defs would report a bill supplied when it is not, or short when it is not. Each stack
+        /// contributes `ValuePerUnitOf(def)` per item, the same getter Core's
+        /// `CountRequiredOfFor` divides by, and the remaining shortage is converted back into
+        /// units of <paramref name="basis"/> for the caller.
         /// </summary>
         internal static int Shortfall(Bill bill, Thing giver, IngredientCount ingredient, ThingDef basis)
         {
@@ -121,15 +126,22 @@ namespace RimroomsAsyncIndustries.ConnectedWork
             if (required < 1) { return 0; }
             Map map = giver.Map;
             if (map == null) { return 0; }
+            IngredientValueGetter values = bill.recipe.IngredientValueGetter;
+            float basisValue = values == null ? 1f : values.ValuePerUnitOf(basis);
+            if (basisValue <= 0f) { basisValue = 1f; }
+            // the requirement in recipe units, as Core's count is derived from it
+            float requiredValue = required * basisValue;
+            float presentValue = 0f;
             float radius = bill.ingredientSearchRadius;
             float radiusSquared = radius * radius;
-            int present = 0;
             int seen = 0;
             foreach (ThingDef def in ingredient.filter.AllowedThingDefs)
             {
                 if (seen >= MaximumIngredientDefs) { break; }
                 seen++;
                 if (def == null || !bill.IsFixedOrAllowedIngredient(def)) { continue; }
+                float unitValue = values == null ? 1f : values.ValuePerUnitOf(def);
+                if (unitValue <= 0f) { continue; }
                 List<Thing> stacks = map.listerThings.ThingsOfDef(def);
                 int checkedStacks = 0;
                 for (int index = 0; index < stacks.Count; index++)
@@ -144,11 +156,12 @@ namespace RimroomsAsyncIndustries.ConnectedWork
                     if ((stack.Position - giver.Position).LengthHorizontalSquared > radiusSquared)
                     { continue; }
                     if (stack.IsForbidden(Faction.OfPlayer) || stack.Position.Fogged(map)) { continue; }
-                    present += stack.stackCount;
-                    if (present >= required) { return 0; }
+                    presentValue += stack.stackCount * unitValue;
+                    if (presentValue >= requiredValue - 0.0001f) { return 0; }
                 }
             }
-            return required - present;
+            int missing = UnityEngine.Mathf.CeilToInt((requiredValue - presentValue) / basisValue - 0.0001f);
+            return missing < 1 ? 0 : (missing > required ? required : missing);
         }
 
         /// <summary>

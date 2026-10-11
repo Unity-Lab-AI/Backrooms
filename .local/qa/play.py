@@ -111,8 +111,8 @@ def main():
         if frame:
             call("rimworld/frame_cell_rect", frame)
         else:
-            call("rimworld/set_camera_zoom", {"zoomRange": "Close"})
-            call("rimworld/jump_camera_to_pawn", {"pawnName": follow or busiest()})
+            # the camera is follow-crew.py's job; jump_camera_to_pawn opened the Character Editor mod and stopped time
+            pass
         call("rimworld/play_for", {"durationMs": 10000, "speed": "Superfast"})
         # every slice of game time is a stream beat: a spoken line + a fresh game shot (and webcam
         # pictures on events) -- the stream is never quiet while the game moves (owner, 2026-10-09)
@@ -150,12 +150,12 @@ def main():
         for l in chat: print(l)
         if chat: print("STOP chat"); call("rimworld/set_time_speed", {"speed": "Normal"}); return
         if halt:
-            print("STOP letter"); return
+            print("STOP letter"); call("rimworld/set_time_speed", {"speed": "Normal"}); return
         if cell:
             info = json.dumps(call("rimworld/get_cell_info", {"x": cell[0], "z": cell[1]}))
             labels = re.findall(r'"label": "([^"]*)"', info)
             if any(cell[2].search(x) for x in labels):
-                print("STOP cell:", [x for x in labels if cell[2].search(x)]); return
+                print("STOP cell:", [x for x in labels if cell[2].search(x)]); call("rimworld/set_time_speed", {"speed": "Normal"}); return
     g = call("rimworld/get_game_info")
     print("done", slices, "slices, tick", g.get("ticksGame"))
     # never leave the stream on a paused game between runs (owner, 2026-10-09: "dont leave them in a paused game")

@@ -18,6 +18,50 @@ namespace RimroomsAsyncIndustries.Company
     public sealed partial class RimroomsCampaignComponent
     {
         /// <summary>
+        /// Why the account could not take a credit of this size under this id, or null if it can.
+        ///
+        /// **Asked before any paper or goods are destroyed.** Every credit path here destroys first
+        /// and posts second, so a refusal discovered by the post arrives after the things are gone
+        /// and the player has lost them for nothing. The post can still refuse after this says yes
+        /// only if the world changed in between, and on one main thread it cannot.
+        /// </summary>
+        private string CreditRefusal(string operationId, long amountUsd)
+        {
+            if (!CanOperate) { return stateFaultKey ?? "RR_Company_Inactive"; }
+            if (amountUsd <= 0L) { return "RR_Company_InvalidAmount"; }
+            // A receipt under this id already exists, so the post would answer Existing and pay
+            // nothing for the batch about to be destroyed.
+            if (!string.IsNullOrWhiteSpace(operationId) && ledgerIndex.ContainsKey(operationId))
+            { return "RR_Company_ReceiptMismatch"; }
+            try { long unused = checked(balanceUsd + amountUsd); }
+            catch (OverflowException) { return "RR_Company_InvalidAmount"; }
+            return null;
+        }
+
+        /// <summary>
+        /// An operation id no ledger entry carries yet, built from a base.
+        ///
+        /// **The base alone is not unique enough.** It names the map, the cell and the tick, and a
+        /// player repeating the same order while the game is paused produces the same base twice.
+        /// The post would then answer Existing for the second order, and the second order would
+        /// still print or destroy paper on the strength of the first one's receipt. A suffix makes
+        /// every order its own transaction; the first keeps the plain base, so ids already in a
+        /// save read exactly as they did.
+        /// </summary>
+        private string FreshOperationId(string baseId)
+        {
+            if (!ledgerIndex.ContainsKey(baseId) && !ledgerIndex.ContainsKey(baseId + ".unplaced"))
+            { return baseId; }
+            for (int attempt = 2; attempt < 100000; attempt++)
+            {
+                string candidate = baseId + "#" + attempt;
+                if (!ledgerIndex.ContainsKey(candidate) && !ledgerIndex.ContainsKey(candidate + ".unplaced"))
+                { return candidate; }
+            }
+            return baseId + "#" + Guid.NewGuid().ToString("N");
+        }
+
+        /// <summary>
         /// Takes the face value of a bond out of the account so one can be printed.
         /// Fails — and prints nothing — if the balance will not cover it.
         /// </summary>
@@ -56,8 +100,10 @@ namespace RimroomsAsyncIndustries.Company
             if (bonds.Count == 0 || available <= 0L)
             { return CompanyActionResult.Refused("RR_Bond_NoneInRange"); }
 
-            string operationId = "rr.bond.redeem." + map.uniqueID + "." + centre.x + "." + centre.z +
-                "." + (Find.TickManager == null ? 0 : Find.TickManager.TicksGame);
+            string operationId = FreshOperationId("rr.bond.redeem." + map.uniqueID + "." + centre.x + "." +
+                centre.z + "." + (Find.TickManager == null ? 0 : Find.TickManager.TicksGame));
+            string refusal = CreditRefusal(operationId, available);
+            if (refusal != null) { return CompanyActionResult.Refused(refusal); }
 
             long destroyed = BondService.ConsumeBonds(bonds);
             if (destroyed <= 0L) { return CompanyActionResult.Refused("RR_Bond_NoneInRange"); }
@@ -92,6 +138,8 @@ namespace RimroomsAsyncIndustries.Company
             { return CompanyActionResult.Refused("RR_Bond_NoneInRange"); }
             if (string.IsNullOrWhiteSpace(operationId))
             { return CompanyActionResult.Refused("RR_Bond_InvalidAmount"); }
+            string refusal = CreditRefusal(operationId, expected);
+            if (refusal != null) { return CompanyActionResult.Refused(refusal); }
 
             long destroyed = BondService.ConsumeBonds(paper);
             if (destroyed <= 0L) { return CompanyActionResult.Refused("RR_Bond_NoneInRange"); }
@@ -129,6 +177,8 @@ namespace RimroomsAsyncIndustries.Company
             { return CompanyActionResult.Refused("RR_Bond_NoneInRange"); }
             if (string.IsNullOrWhiteSpace(operationId))
             { return CompanyActionResult.Refused("RR_Bond_InvalidAmount"); }
+            string refusal = CreditRefusal(operationId + ".in", expected);
+            if (refusal != null) { return CompanyActionResult.Refused(refusal); }
 
             long destroyed = BondService.ConsumeBonds(paper);
             if (destroyed <= 0L) { return CompanyActionResult.Refused("RR_Bond_NoneInRange"); }
@@ -188,11 +238,14 @@ namespace RimroomsAsyncIndustries.Company
             keptInAccount = remainder;
             if (payable <= 0L) { return CompanyActionResult.Refused("RR_Bond_BelowSmallest"); }
 
-            string operationId = "rr.bond.issue." + map.uniqueID + "." + cell.x + "." + cell.z +
-                "." + (Find.TickManager == null ? 0 : Find.TickManager.TicksGame);
+            string operationId = FreshOperationId("rr.bond.issue." + map.uniqueID + "." + cell.x + "." +
+                cell.z + "." + (Find.TickManager == null ? 0 : Find.TickManager.TicksGame));
             CompanyActionResult paid = PostTransaction(operationId, -payable,
                 "RR_Ledger_BondIssued", operationId);
             if (!paid.Success) { return paid; }
+            // A receipt that already existed paid for paper already printed. Printing again on it
+            // would be a second batch for one debit.
+            if (paid.AlreadyApplied) { return CompanyActionResult.Refused("RR_Company_ReceiptMismatch"); }
 
             long unplaced;
             issued = BondService.IssueTo(map, cell, payable, out unplaced);

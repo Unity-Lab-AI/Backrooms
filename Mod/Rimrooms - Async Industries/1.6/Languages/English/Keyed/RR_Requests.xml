@@ -15,7 +15,7 @@
   <RR_Route_AssembleOnSiteLabel>Assemble it here</RR_Route_AssembleOnSiteLabel>
   <RR_Route_AssembleOnSiteDesc>Run the assembly bill on the branch's own machining table and calibrate the result. Slower, and it leaves somebody on the branch who understands how the gate is put together.</RR_Route_AssembleOnSiteDesc>
   <RR_Route_RequisitionAssemblyLabel>Requisition a finished assembly</RR_Route_RequisitionAssemblyLabel>
-  <RR_Route_RequisitionAssemblyDesc>Order the parts through the corporate catalogue and skip the fabrication. Faster and more expensive, and nobody on the branch learns anything from it.</RR_Route_RequisitionAssemblyDesc>
+  <RR_Route_RequisitionAssemblyDesc>Order the parts through the corporate catalogue and skip the fabrication. Faster and more expensive, and nobody on the branch learns anything from it. It is measured by the stock the branch holds at the places it runs, however it got there; nothing is collected or used up.</RR_Route_RequisitionAssemblyDesc>
 
   <!-- 3 - bring back one record -->
   <RR_Route_SurveyAndAnalyseLabel>Survey a coordinate and analyse the book</RR_Route_SurveyAndAnalyseLabel>
@@ -39,7 +39,7 @@
   <RR_Route_CompleteFieldStabilityLabel>Complete Field Stability</RR_Route_CompleteFieldStabilityLabel>
   <RR_Route_CompleteFieldStabilityDesc>Finish the second rung of the ladder. The window gets longer because the branch understands why it was short, which is the outcome the company actually wants.</RR_Route_CompleteFieldStabilityDesc>
   <RR_Route_BuyTheWindowLabel>Buy the hardware instead</RR_Route_BuyTheWindowLabel>
-  <RR_Route_BuyTheWindowDesc>Order enough components through the catalogue to over-build the reserve and hold the window open by brute force. It works, it is expensive, and it teaches the branch nothing.</RR_Route_BuyTheWindowDesc>
+  <RR_Route_BuyTheWindowDesc>Order enough components through the catalogue to over-build the reserve and hold the window open by brute force. It works, it is expensive, and it teaches the branch nothing. It is measured by the stock the branch holds at the places it runs, however it got there; nothing is collected or used up.</RR_Route_BuyTheWindowDesc>
 
   <!-- 7 - the hinge -->
   <RR_Route_DeclareADirectionLabel>Tell them where this is going</RR_Route_DeclareADirectionLabel>
@@ -191,9 +191,9 @@ There is no date on this and there will not be one. Open the Operations tab, loo
   <RR_Route_ClientSurveySpeakDesc>An employee who walked it and is still on the books can simply tell them. Cheaper than analysis and worth nothing the day that person leaves.</RR_Route_ClientSurveySpeakDesc>
 
   <RR_Route_ClientSamplesRecoverLabel>Bring it out yourself</RR_Route_ClientSamplesRecoverLabel>
-  <RR_Route_ClientSamplesRecoverDesc>Haul the metal home and let it sit where the company can see it. The slow way, and the one that leaves the branch knowing a route it did not know before.</RR_Route_ClientSamplesRecoverDesc>
+  <RR_Route_ClientSamplesRecoverDesc>Haul the metal home and let it sit where the company can see it. The slow way, and the one that leaves the branch knowing a route it did not know before. It is measured by the stock the branch holds at the places it runs, however it got there; nothing is collected or used up.</RR_Route_ClientSamplesRecoverDesc>
   <RR_Route_ClientSamplesBuyLabel>Order it and say nothing</RR_Route_ClientSamplesBuyLabel>
-  <RR_Route_ClientSamplesBuyDesc>The catalogue sells metal. The buyer is not going to test it, the company has already worked that out, and neither of them will mention it again.</RR_Route_ClientSamplesBuyDesc>
+  <RR_Route_ClientSamplesBuyDesc>The catalogue sells metal. The buyer is not going to test it, the company has already worked that out, and neither of them will mention it again. It is measured by the stock the branch holds at the places it runs, however it got there; nothing is collected or used up.</RR_Route_ClientSamplesBuyDesc>
 
   <RR_Route_ClientInstrumentsPlaceLabel>Set markers down and leave them</RR_Route_ClientInstrumentsPlaceLabel>
   <RR_Route_ClientInstrumentsPlaceDesc>Glow pods where the readings are wanted, and the company counts them as instruments. Nobody has to stay with them, which is the entire appeal.</RR_Route_ClientInstrumentsPlaceDesc>
@@ -208,7 +208,7 @@ There is no date on this and there will not be one. Open the Operations tab, loo
   <RR_Route_ClientAccessStandingLabel>Make the connection hold</RR_Route_ClientAccessStandingLabel>
   <RR_Route_ClientAccessStandingDesc>Finish the standing-connection work. The client gets a door that behaves like a door, and the branch gets to stop treating every opening as an event.</RR_Route_ClientAccessStandingDesc>
   <RR_Route_ClientAccessPartsLabel>Hand over the parts and let them try</RR_Route_ClientAccessPartsLabel>
-  <RR_Route_ClientAccessPartsDesc>Order the components and pass the problem along. Faster, and it teaches the branch nothing it will not have to learn later anyway.</RR_Route_ClientAccessPartsDesc>
+  <RR_Route_ClientAccessPartsDesc>Order the components and pass the problem along. Faster, and it teaches the branch nothing it will not have to learn later anyway. It is measured by the stock the branch holds at the places it runs, however it got there; nothing is collected or used up.</RR_Route_ClientAccessPartsDesc>
 
   <!-- Arcs 5 to 8 generated families. Route label: a thing the player picks, no full stop.
        Route description: prose, ends a sentence. -->
@@ -216,15 +216,15 @@ There is no date on this and there will not be one. Open the Operations tab, loo
   <RR_Route_RelayWorkLabel>Do the relay work</RR_Route_RelayWorkLabel>
   <RR_Route_RelayWorkDesc>Finish the relay project and the branch owns the capability rather than renting it. Slower, and the company stops asking about signals.</RR_Route_RelayWorkDesc>
   <RR_Route_RelayPartsLabel>Hand over the hardware</RR_Route_RelayPartsLabel>
-  <RR_Route_RelayPartsDesc>Deliver the components and let the relay be somebody else's build. Faster, and the branch learns nothing it will not need later.</RR_Route_RelayPartsDesc>
+  <RR_Route_RelayPartsDesc>Deliver the components and let the relay be somebody else's build. Faster, and the branch learns nothing it will not need later. It is measured by the stock the branch holds at the places it runs, however it got there; nothing is collected or used up.</RR_Route_RelayPartsDesc>
   <RR_Route_CacheRationsLabel>Stock it with rations</RR_Route_CacheRationsLabel>
-  <RR_Route_CacheRationsDesc>Survival packs, out where the next crew will reach them before they need them. The cheap answer and the one that actually gets used.</RR_Route_CacheRationsDesc>
+  <RR_Route_CacheRationsDesc>Survival packs, out where the next crew will reach them before they need them. The cheap answer and the one that actually gets used. It is measured by the stock the branch holds at the places it runs, however it got there; nothing is collected or used up.</RR_Route_CacheRationsDesc>
   <RR_Route_CacheMedicineLabel>Stock it with medicine</RR_Route_CacheMedicineLabel>
-  <RR_Route_CacheMedicineDesc>Order industrial medicine and put it in the cache. More expensive, and it covers the situation rations do not.</RR_Route_CacheMedicineDesc>
+  <RR_Route_CacheMedicineDesc>Order industrial medicine and put it in the cache. More expensive, and it covers the situation rations do not. It is measured by the stock the branch holds at the places it runs, however it got there; nothing is collected or used up.</RR_Route_CacheMedicineDesc>
   <RR_Route_ShelterTimberLabel>Build it out of timber</RR_Route_ShelterTimberLabel>
-  <RR_Route_ShelterTimberDesc>Haul wood to the place it is wanted. Cheap, quick and exactly as durable as wood is.</RR_Route_ShelterTimberDesc>
+  <RR_Route_ShelterTimberDesc>Haul wood to the place it is wanted. Cheap, quick and exactly as durable as wood is. It is measured by the stock the branch holds at the places it runs, however it got there; nothing is collected or used up.</RR_Route_ShelterTimberDesc>
   <RR_Route_ShelterSteelLabel>Buy steel and do it properly</RR_Route_ShelterSteelLabel>
-  <RR_Route_ShelterSteelDesc>Order the metal and build something that will still be standing next season. The company notices the difference and does not pay extra for it.</RR_Route_ShelterSteelDesc>
+  <RR_Route_ShelterSteelDesc>Order the metal and build something that will still be standing next season. The company notices the difference and does not pay extra for it. It is measured by the stock the branch holds at the places it runs, however it got there; nothing is collected or used up.</RR_Route_ShelterSteelDesc>
   <RR_Route_LeaseWorkLabel>Do the leasing work</RR_Route_LeaseWorkLabel>
   <RR_Route_LeaseWorkDesc>Complete the leases project and the branch can hold ground on paper. The company treats this as the real answer.</RR_Route_LeaseWorkDesc>
   <RR_Route_LeaseTermsLabel>Start negotiating instead</RR_Route_LeaseTermsLabel>
@@ -232,7 +232,7 @@ There is no date on this and there will not be one. Open the Operations tab, loo
   <RR_Route_ResupplyStandingLabel>Put standing orders in place</RR_Route_ResupplyStandingLabel>
   <RR_Route_ResupplyStandingDesc>Finish the standing-orders work and the shipment stops being a decision anybody has to make. What the company actually wanted.</RR_Route_ResupplyStandingDesc>
   <RR_Route_ResupplyBulkLabel>Just buy a great deal of food</RR_Route_ResupplyBulkLabel>
-  <RR_Route_ResupplyBulkDesc>Order rations in quantity and the question goes away for a while. It comes back.</RR_Route_ResupplyBulkDesc>
+  <RR_Route_ResupplyBulkDesc>Order rations in quantity and the question goes away for a while. It comes back. It is measured by the stock the branch holds at the places it runs, however it got there; nothing is collected or used up.</RR_Route_ResupplyBulkDesc>
   <RR_Route_EvacuationDrillLabel>Drill the return</RR_Route_EvacuationDrillLabel>
   <RR_Route_EvacuationDrillDesc>Complete the return-drill work so a crew can leave together and on purpose. The company files this under things it hopes never to need.</RR_Route_EvacuationDrillDesc>
   <RR_Route_EvacuationGuideLabel>Put your guide in front of them</RR_Route_EvacuationGuideLabel>
@@ -248,15 +248,15 @@ There is no date on this and there will not be one. Open the Operations tab, loo
   <RR_Route_DangerContainmentLabel>Do the containment work</RR_Route_DangerContainmentLabel>
   <RR_Route_DangerContainmentDesc>Complete the containment protocol. Expensive, and the only route that leaves the branch able to do this again.</RR_Route_DangerContainmentDesc>
   <RR_Route_DangerHardwareLabel>Deliver the hardware and step back</RR_Route_DangerHardwareLabel>
-  <RR_Route_DangerHardwareDesc>Components on the ground, and the problem formally handed on. Nobody involved believes this is a solution.</RR_Route_DangerHardwareDesc>
+  <RR_Route_DangerHardwareDesc>Components on the ground, and the problem formally handed on. Nobody involved believes this is a solution. It is measured by the stock the branch holds at the places it runs, however it got there; nothing is collected or used up.</RR_Route_DangerHardwareDesc>
   <RR_Route_CargoDispatchLabel>Do the forward dispatch work</RR_Route_CargoDispatchLabel>
   <RR_Route_CargoDispatchDesc>Finish forward dispatch and the branch can move weight across distance. The company has already sold this.</RR_Route_CargoDispatchDesc>
   <RR_Route_CargoBulkLabel>Buy the tonnage outright</RR_Route_CargoBulkLabel>
-  <RR_Route_CargoBulkDesc>Order enough metal that the shortfall stops being visible on anybody's paperwork. Ruinously expensive and completely effective.</RR_Route_CargoBulkDesc>
+  <RR_Route_CargoBulkDesc>Order enough metal that the shortfall stops being visible on anybody's paperwork. Ruinously expensive and completely effective. It is measured by the stock the branch holds at the places it runs, however it got there; nothing is collected or used up.</RR_Route_CargoBulkDesc>
   <RR_Route_StaffRecruitLabel>Recruit specialists properly</RR_Route_StaffRecruitLabel>
   <RR_Route_StaffRecruitDesc>Complete the recruitment work and the branch stops running on whoever was nearest.</RR_Route_StaffRecruitDesc>
   <RR_Route_StaffBuyInLabel>Pay somebody else's specialist</RR_Route_StaffBuyInLabel>
-  <RR_Route_StaffBuyInDesc>Enough silver moves the problem to a competitor's hiring department. The company respects this more than it admits.</RR_Route_StaffBuyInDesc>
+  <RR_Route_StaffBuyInDesc>Enough silver moves the problem to a competitor's hiring department. The company respects this more than it admits. It is measured by the stock the branch holds at the places it runs, however it got there; nothing is collected or used up.</RR_Route_StaffBuyInDesc>
   <RR_Route_CombinedRecordLabel>File the disagreement</RR_Route_CombinedRecordLabel>
   <RR_Route_CombinedRecordDesc>An analysed distortion record of a place that stopped belonging to one family. The paperwork the company can put in front of a client.</RR_Route_CombinedRecordDesc>
   <RR_Route_CombinedAtlasLabel>Do the atlas work</RR_Route_CombinedAtlasLabel>

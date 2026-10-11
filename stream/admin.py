@@ -4,7 +4,7 @@ Owner, 2026-10-10, verbatim: *"we arent do tests we are saving the colony from c
 everything abouteverything to work locally so yeah all those scrpt shells and shit i need my own precoss
 organizer and adnmmin chat locally to talk to the local model you are handing the whole show over to"*.
 
-    python .local/qa/admin.py            # http://127.0.0.1:4318/
+    python stream/admin.py               # http://127.0.0.1:4318/
 
 What the page gives:
   * every service, live: UP with its pid or DOWN, with start / stop / restart per service and for all of them
@@ -17,7 +17,7 @@ What the page gives:
 Nothing here reaches the internet. It binds to 127.0.0.1 only, it never touches RimWorld itself, and the
 orders file is the only thing it writes.
 """
-import http.server, importlib.util, json, os, re, socket, subprocess, sys, threading, urllib.request, uuid
+import http.server, importlib.util, json, os, re, secrets, socket, subprocess, sys, threading, urllib.request, uuid
 
 # Owner, 2026-10-10: "im getting alot of system cmd openings while im doing stuff". Every helper this script
 # spawns -- powershell for the process table, python for a spoken line -- was flashing its own console over
@@ -44,11 +44,17 @@ QA = os.path.join(ROOT, ".local", "qa")
 ORDERS = os.path.join(ROOT, ".local", "autopilot", "owner-orders.txt")
 SERVICES = os.path.join(HERE, "services.py")
 PORT = int(os.environ.get("ADMIN_PORT", "4318"))
-MODEL = os.environ.get("ADMIN_MODEL", "unity-local")
+MODEL = os.environ.get("ADMIN_MODEL", os.environ.get("UNITY_VOICE_LLM", "unity-local"))
 
 bspec = importlib.util.spec_from_file_location("b", os.path.join(QA, "bridge.py"))
 bridge = importlib.util.module_from_spec(bspec); bspec.loader.exec_module(bridge)
+cspec = importlib.util.spec_from_file_location("camp", os.path.join(QA, "camp.py"))
+camp = importlib.util.module_from_spec(cspec); cspec.loader.exec_module(camp)
 _lock = threading.Lock()
+# Every change (GO, colony, services, orders, chat) needs this run's token; it lives only in the page this server
+# hands out, so another local program or a web page in a browser cannot fire them. Reads stay open.
+TOKEN = secrets.token_urlsafe(24)
+HOSTS = {"127.0.0.1:%d" % PORT, "localhost:%d" % PORT}
 
 def svc(action, name=None):
     cmd = [sys.executable, SERVICES, action] + ([name] if name else [])
@@ -64,22 +70,40 @@ def colony():
         def call(n, a=None):
             r = bridge.exchange(s, buf, "tools/call", {"name": n, "arguments": a or {}}); r = r.get("result", r)
             return r.get("structuredContent", r) if isinstance(r, dict) else r
+        players = [c for c in call("rimworld/list_colonists").get("colonists", []) if c.get("factionIsPlayer")]
         crew = [(c["name"], c["position"]["x"], c["position"]["z"], c.get("job"), bool(c.get("drafted")))
-                for c in call("rimworld/list_colonists").get("colonists", []) if c.get("factionIsPlayer")]
+                for c in players]
         # days of food, measured -- the famine that nearly went unnoticed on 2026-10-09 was invisible on
         # this page while the alert list said nothing. Meals are 0.9 nutrition, raw is 0.05, 1.6 per pawn/day.
-        nut = 0.0
-        if crew:
-            call("rimworld/select_pawn", {"pawnName": crew[0][0]})
-            for x in range(126, 182, 22):
-                for z in range(118, 164, 22):
-                    for c in call("rimworld/get_cells_info", {"x": x, "z": z, "width": 22, "height": 22}).get("cells", []):
+        # read by cell, never by selecting a pawn: polling this page must not steal the player's selection
+        # the sweep reads the map on screen, so it only counts when that is the home map; otherwise unknown
+        nut = None
+        home = camp.home_map(players)
+        try:
+            on_home = any(c.get("mapId") == home for c in
+                          call("rimworld/list_colonists", {"currentMapOnly": True}).get("colonists", []))
+        except Exception:
+            on_home = False
+        if crew and on_home:
+          nut = 0.0
+          minx, minz, maxx, maxz = camp.camp_rect(players, home)
+          try:
+            for x in range(minx, maxx + 1, 22):
+                for z in range(minz, maxz + 1, 22):
+                    try:
+                        cells = call("rimworld/get_cells_info", {"x": x, "z": z, "width": 22, "height": 22}).get("cells", [])
+                    except (Exception, SystemExit):
+                        cells = []               # a block past the map edge reads as empty
+                    for c in cells:
                         for th in c.get("things", []):
                             d = th.get("defName") or ""
                             if d.startswith("Meal"): nut += th.get("stackCount", 1) * 0.9
                             elif d.startswith(("Raw", "Meat", "Pemmican", "Kibble")): nut += th.get("stackCount", 1) * 0.05
+          except Exception:
+            nut = None
         return {"crew": crew,
-                "days_of_food": round(nut / (1.6 * max(1, len(crew))), 2),
+                "days_of_food": (round(nut / (1.6 * max(1, len(crew))), 2) if nut is not None
+                                 else "unknown (home map not on screen)"),
                 "letters": [l.get("label") for l in call("rimworld/list_letters").get("letters", [])],
                 "alerts": [a.get("label") for a in call("rimworld/list_alerts").get("alerts", [])][:8],
                 "ticks": call("rimworld/get_game_info").get("ticksGame")}
@@ -112,9 +136,9 @@ def ask(text):
                                         "always", "never", "more", "less", "send", "post", "use ")):
         with open(ORDERS, "a", encoding="utf-8") as f:
             f.write("\n- OWNER, typed in the panel chat (binding next turn): " + text.strip()[:400] + "\n")
-    body = {"model": MODEL, "system": system, "prompt": text, "stream": False, "keep_alive": "30m",
-            "options": {"num_ctx": 8192, "num_predict": 220, "temperature": 0.7}}
-    req = urllib.request.Request("http://127.0.0.1:11435/api/generate", data=json.dumps(body).encode(),
+    body = {"model": MODEL, "system": system, "prompt": text, "stream": False, "think": False, "keep_alive": "30m",
+            "options": {"num_ctx": int(os.environ.get("UNITY_VOICE_NUM_CTX", "8192")), "num_predict": 220, "temperature": 0.7}}
+    req = urllib.request.Request(os.environ.get("UNITY_VOICE_URL", "http://127.0.0.1:11435") + "/api/generate", data=json.dumps(body).encode(),
                                  headers={"Content-Type": "application/json"})
     return json.loads(urllib.request.urlopen(req, timeout=180).read()).get("response", "").strip()
 
@@ -175,7 +199,8 @@ PAGE = """<!doctype html><meta charset=utf-8><title>Unity mission control</title
  </div>
 </div>
 <script>
-async function j(u,b){const r=await fetch(u,b?{method:'POST',body:JSON.stringify(b)}:{});return r.json()}
+const TOKEN='__ADMIN_TOKEN__';
+async function j(u,b){const r=await fetch(u,b?{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Token':TOKEN},body:JSON.stringify(b)}:{});return r.json()}
 async function refresh(){
  const d=await j('/api/status');let h='<table>';
  for(const s of d.services){h+=`<tr><td>${s.name}</td><td class=${s.up?'up':'down'}>${s.up?'UP '+s.pids.join(' '):'DOWN'}</td>`
@@ -212,6 +237,14 @@ refresh();queue();popup();setInterval(refresh,6000);setInterval(queue,15000);set
 </script>
 """
 
+def _go_note():
+    """GO is only acted on by the keep-going loop; say so plainly when that loop is not running."""
+    try:
+        up = any(l.split()[:2] == ["keepgoing", "UP"] for l in svc("status").splitlines())
+    except Exception:
+        up = False
+    return "" if up else " -- but keepgoing is DOWN, so nothing happens until it starts (start keepgoing above)"
+
 class H(http.server.BaseHTTPRequestHandler):
     def _send(self, code, body, ctype="application/json"):
         data = body if isinstance(body, bytes) else json.dumps(body).encode()
@@ -220,9 +253,21 @@ class H(http.server.BaseHTTPRequestHandler):
 
     def log_message(self, *a): pass
 
+    def _host_ok(self):
+        # a page on another site that rebinds its name to 127.0.0.1 still sends its own Host
+        return (self.headers.get("Host") or "") in HOSTS
+
+    def _allowed(self):
+        if not self._host_ok(): return False
+        origin = self.headers.get("Origin")
+        if origin and origin.split("://", 1)[-1] not in HOSTS: return False
+        return secrets.compare_digest(self.headers.get("X-Admin-Token") or "", TOKEN)
+
     def do_GET(self):
+        if not self._host_ok():
+            return self._send(403, {"error": "wrong host"})
         if self.path in ("/", "/index.html"):
-            return self._send(200, PAGE.encode("utf-8"), "text/html; charset=utf-8")
+            return self._send(200, PAGE.replace("__ADMIN_TOKEN__", TOKEN).encode("utf-8"), "text/html; charset=utf-8")
         if self.path == "/api/popup":
             # Owner, 2026-10-10: "and i got a p t u didnt mention it so i denyed" -- a pop-up the guard cannot
             # decide was only written to a flag file and spoken on stream, so the owner had to answer it blind.
@@ -255,7 +300,10 @@ class H(http.server.BaseHTTPRequestHandler):
         return self._send(404, {"error": "no"})
 
     def do_POST(self):
-        n = int(self.headers.get("Content-Length") or 0)
+        if not self._allowed():
+            return self._send(403, {"out": "refused: reload the panel page (it was opened before this panel restarted)",
+                                    "error": "refused"})
+        n = min(int(self.headers.get("Content-Length") or 0), 65536)
         try: body = json.loads(self.rfile.read(n) or b"{}")
         except Exception: body = {}
         if self.path == "/api/go":
@@ -266,7 +314,7 @@ class H(http.server.BaseHTTPRequestHandler):
             if want:
                 with open(ORDERS, "a", encoding="utf-8") as f:
                     f.write(chr(10) + "- TONIGHT, from the owner at GO: " + want + chr(10))
-            return self._send(200, {"out": "GO received" + (" -- tonight: " + want if want else "")})
+            return self._send(200, {"out": "GO received" + (" -- tonight: " + want if want else "") + _go_note()})
         if self.path == "/api/newcolony":
             # owner: "i dont know how to call it u have to do it and tell me how for next time" -- one button
             with open(os.path.join(QA, "_new_colony.request"), "w", encoding="utf-8") as f:
@@ -277,7 +325,7 @@ class H(http.server.BaseHTTPRequestHandler):
                 # the owner's "start all" means GO: game, stream, colony -- not just "services already up"
                 if not os.path.exists(os.path.join(QA, "_go.request")):
                     with open(os.path.join(QA, "_go.request"), "w", encoding="utf-8") as f: f.write("go")
-                    return self._send(200, {"out": "GO received -- launching the stream, then the game, then the colony"})
+                    return self._send(200, {"out": "GO received -- launching the stream, then the game, then the colony" + _go_note()})
             with _lock:
                 return self._send(200, {"out": svc(body.get("action", "status"), body.get("name"))})
         if self.path == "/api/order":

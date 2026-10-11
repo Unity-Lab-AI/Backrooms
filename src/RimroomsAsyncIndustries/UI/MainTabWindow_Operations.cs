@@ -172,6 +172,7 @@ namespace RimroomsAsyncIndustries.UI
             DrawHeading(listing, heading: "RR_Company_Balance".Translate(Money(campaign.BalanceUsd)),
                 detail: "RR_Company_CashExplanation".Translate());
             listing.GapLine();
+            DrawOpeningRetry(listing, campaign);
             switch (selectedPane)
             {
                 case 7: DrawMachine(listing, campaign); break;
@@ -349,6 +350,23 @@ namespace RimroomsAsyncIndustries.UI
                     else { listing.Label("RR_Company_MapUnavailable".Translate()); }
                     break;
             }
+        }
+
+        /// <summary>
+        /// The branch is registered but the inside start never reached its opening, so the crew
+        /// is still where it began. Offered on every pane until the opening completes.
+        /// </summary>
+        private static void DrawOpeningRetry(Listing_Standard listing, RimroomsCampaignComponent campaign)
+        {
+            ScenPart_RimroomsStart start = ScenPart_RimroomsStart.Current;
+            Map map = campaign.Headquarters ?? Find.CurrentMap;
+            HeadquartersSetupComponent receipt = map == null ? null : map.GetComponent<HeadquartersSetupComponent>();
+            if (start == null || receipt == null || !receipt.branchInitialized || receipt.openingComplete) { return; }
+            DrawHeading(listing, heading: "RR_UI_OpeningIncomplete".Translate(),
+                detail: string.IsNullOrEmpty(receipt.failure) ? TaggedString.Empty : receipt.failure.Translate());
+            if (listing.ButtonText("RR_UI_RetryOpening".Translate()))
+            { ShowResult(start.TryInitializeExistingHeadquarters(map)); }
+            listing.GapLine();
         }
 
         private static string Money(long amount) { return amount.ToString("N0", CultureInfo.CurrentCulture); }

@@ -56,7 +56,9 @@ namespace RimroomsAsyncIndustries.Threats
             List<RimroomsInhabitantDef> legal = Legal(coordinate.Depth, band, false);
             if (legal.Count == 0) { return; }
 
-            int hostilesPlaced = 0;
+            // The cap is on things acting at once, so whatever is still standing from an earlier
+            // arrival is counted against it before anything new is placed.
+            int hostilesPlaced = SurvivingHostiles(map);
             for (int index = 0; index < legal.Count; index++)
             {
                 RimroomsInhabitantDef family = legal[index];
@@ -75,6 +77,21 @@ namespace RimroomsAsyncIndustries.Threats
                     if (family.hostile) { hostilesPlaced++; }
                 }
             }
+        }
+
+        /// <summary>Living, standing pawns on this map that are hostile to the player.</summary>
+        private static int SurvivingHostiles(Map map)
+        {
+            if (map.mapPawns == null || Faction.OfPlayer == null) { return 0; }
+            int count = 0;
+            IReadOnlyList<Pawn> present = map.mapPawns.AllPawnsSpawned;
+            for (int index = 0; index < present.Count; index++)
+            {
+                Pawn pawn = present[index];
+                if (pawn == null || pawn.Dead || pawn.Downed) { continue; }
+                if (pawn.HostileTo(Faction.OfPlayer)) { count++; }
+            }
+            return count;
         }
 
         /// <summary>

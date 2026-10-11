@@ -134,14 +134,53 @@ namespace RimroomsAsyncIndustries.Gate
     /// <summary>A real, reserving console job. The gate reads this current job to determine operator readiness.</summary>
     public sealed class JobDriver_RROperateGate : JobDriver
     {
+        /// <summary>Not saved: re-resolved from the station after a load.</summary>
+        private CompRimroomsGate resolvedGate;
+
+        /// <summary>
+        /// The gate this station holds a window for: its own console or one of its relief links,
+        /// resolved through `BoundConsoles` exactly as the staffing work giver offers it.
+        /// </summary>
         private CompRimroomsGate Gate
         {
             get
             {
-                CompRimroomsGateConsole console = TargetThingA == null ? null : TargetThingA.TryGetComp<CompRimroomsGateConsole>();
-                CompRimroomsGate gate = console == null ? null : console.Gate;
-                return gate != null && gate.Console == TargetThingA ? gate : null;
+                Thing station = TargetThingA;
+                if (station == null) { return null; }
+                if (resolvedGate != null && Holds(resolvedGate, station)) { return resolvedGate; }
+                resolvedGate = null;
+                CompRimroomsGateConsole console = station.TryGetComp<CompRimroomsGateConsole>();
+                CompRimroomsGate direct = console == null ? null : console.Gate;
+                if (direct != null && Holds(direct, station)) { resolvedGate = direct; return direct; }
+                if (station.Map == null) { return null; }
+                foreach (Building building in station.Map.listerBuildings.allBuildingsColonist)
+                {
+                    CompRimroomsGate gate = building.TryGetComp<CompRimroomsGate>();
+                    if (gate != null && Holds(gate, station)) { resolvedGate = gate; return gate; }
+                }
+                return null;
             }
+        }
+
+        private static bool Holds(CompRimroomsGate gate, Thing station)
+        {
+            foreach (Thing candidate in gate.BoundConsoles)
+            {
+                if (candidate == station) { return true; }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// The assigned operator may always take the post. Any other qualified staff member may
+        /// take it only while a connection is being held, which is relief; startup stays with the
+        /// assigned operator.
+        /// </summary>
+        private bool MayHold(CompRimroomsGate gate)
+        {
+            if (gate == null || !gate.Calibrated || pawn.Downed || pawn.InMentalState) { return false; }
+            if (gate.AssignedOperator == pawn) { return true; }
+            return gate.IsOpening && gate.QualifiedToStaff(pawn);
         }
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
@@ -153,7 +192,7 @@ namespace RimroomsAsyncIndustries.Gate
         protected override IEnumerable<Toil> MakeNewToils()
         {
             this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
-            this.FailOn(() => Gate == null || !Gate.Calibrated || Gate.AssignedOperator != pawn || pawn.Downed || pawn.InMentalState);
+            this.FailOn(() => !MayHold(Gate));
             // **THE NEED CHECK THAT WAS NOT HERE, AND ITS ABSENCE KILLED A COLONIST.**
             //
             // Owner report, 2026-10-06: *"current a pawn dies at the comms console... and we cant
@@ -176,7 +215,7 @@ namespace RimroomsAsyncIndustries.Gate
             station.tickIntervalAction = delegate(int delta)
             {
                 CompRimroomsGate gate = Gate;
-                if (gate == null || gate.AssignedOperator != pawn || pawn.Downed || pawn.InMentalState)
+                if (!MayHold(gate))
                 { EndJobWith(JobCondition.Incompletable); }
                 // Asked every tick as well as in the FailOn, because a FailOn is evaluated by the
                 // driver's own cadence and a pawn crossing into starvation between evaluations is

@@ -14,16 +14,18 @@ Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived t
 
 ### Current status
 
+*Recounted 2026-10-10 from the files themselves. Counts are measurements, not closures: a feature closes on its own evidence, never because a number moved. Superseded figures are kept struck through beside the current ones.*
+
 | Metric | Value |
 |--------|-------|
 | **Development version** | 0.13.0-dev (`About.xml`, csproj), branch `feature/bug-testing` |
 | **Gate 0 (docs/source preparation)** | PASSED 2026-09-28 (`research/GATE_0_COMPLETION_AUDIT.md`) |
-| **Gate 2 (first loop in play)** | OPEN — no Rimrooms build has ever been launched |
-| **Master TODO** | 190 items checked, 66 open (mirrored in `TODO.md`; deferments tracked in `DEFERRED.md`). **Read this number with the caveat below** |
-| **Source** | 254 C# files, 20 namespaces, no Harmony |
-| **Package** | 134 allowlisted files, 48 Def XMLs, 5 patches, 42 language files, 31 PNGs (12 menu slides, 18 gameplay textures, 1 preview) and 4 WAVs |
+| **Gate 2 (first loop in play)** | OPEN — the game **has** been launched and played (owner launches from 2026-09-30; live play sessions from 2026-10-06), but no first-loop acceptance is recorded. ~~no Rimrooms build has ever been launched~~ |
+| **Master TODO** | 190 items checked, 66 open (recounted 2026-10-10; `DEFERRED.md` is closed). **Read this number with the caveat below** |
+| **Source** | 264 C# files under `src/` (measured 2026-10-10), no Harmony. ~~254 C# files, 20 namespaces~~ |
+| **Package** | 200 files in `Mod/Rimrooms - Async Industries/` (83 PNGs, 17 audio files), measured 2026-10-10; the allowlist `tools/package-files.json` is the authority. ~~134 allowlisted files, 48 Def XMLs, 5 patches, 42 language files, 31 PNGs (12 menu slides, 18 gameplay textures, 1 preview) and 4 WAVs~~ |
 | **Active major** | M1 connected colony portals — addresses, crossing, controls, natural-gate discovery and nineteen cross-map work families reachable in source (storage hauling, casualties and remains, construction supply, construction finishing, bill ingredients, research, tending, medicine supply, food supply, patient feeding, rescue in place, cleaning, repair, firefighting, mining, hunting, plant cutting, growing zones, fuel with rearm), eleven of them travel-to-work deployments rather than carries; twenty-eight deferments closed; **thirty-one cross-map work families, twenty-three of them deployments**, covering or explicitly deciding against every work type in Core and all five expansions; Backrooms containment enforced; the continuous topology is half closed (nesting and new-seed links already worked, ordinary-map discovery now added, emerging out in the world still open); prisoner/guest care, wardening, childcare and animals all built; no work-type gaps remain |
-| **Next unblocked minor** | **None. `TODO.md` is empty** - zero open, zero partial. The 53 rows that cannot close without a launch moved to `TEST.md` on 2026-10-06 |
+| **Next unblocked minor** | `TODO.md` is **not** empty: 26 open and 14 in-progress top-level rows on 2026-10-10. `TEST.md` holds 59 `[T]` rows. ~~None. `TODO.md` is empty - zero open, zero partial. The 53 rows that cannot close without a launch moved to `TEST.md` on 2026-10-06~~ (true on 2026-10-06, superseded by later rows) |
 | **Owner questions open** | 0. Two things wait on the owner rather than on an answer: 12 rotation drawings, and the Quiet Pursuer's race definition |
 
 **Read the master TODO count with this caveat — it undercounts, badly.** The master backlog is granular for research and coarse for code: Phase 0 spends **81 rows** on preparation, while everything built from 0.5.0 through 0.7.1 — the whole cross-map work engine, 31 work families, 23 deployments, Backrooms containment, emergence, the kill switch and gate servicing — sits under **one** unchecked row, *"Implement and integrate native work/needs adapters, physical ingredient logistics and per-provider coverage without separate mandatory labor/material pools."* Twenty-seven shipped versions behind a single checkbox. A raw count of that file therefore reads ~12% on code while the source tree has gone from 78 files to 120. Reconciling those checkpoints back into the master backlog is itself an open item; until it is done, use the per-major estimates rather than the row count.
@@ -55,7 +57,7 @@ Status markers: `[ ]` pending · `[~]` in progress · `[x]` complete (archived t
   **Done so far:** evidence book (Core `TextBook`), laboratory (designated Core research bench), four audio cues (Core sounds), gate/console/battery/bench designation on Core `Door`/`Autodoor`/`CommsConsole`/`Battery`/`TableMachining`, native room lighting/heater/generator/floors.
   **Retired 0.9.0-dev:** the four legacy gate objects, the field analysis bench, the site lamp and climate unit, and the institutional carpet — eight defs and seven textures, archived under `implementation/historical-content/0.2.0/`. **Retired 0.9.9-dev:** the return beacon and its recipe, whose job the gate's own address book had already taken over.
 
-  **Nothing is still custom that invariant 10 forbids, as of 0.12.24-dev.** Every replacement named here was decided, then built: the survey tag became a Core `GlowPod` (0.10.7-dev), custody completes at a designated Core `Shelf` (0.10.9-dev), the recorder merged into the record book (0.12.24-dev), and `RR_QuietPursuer` presents as Core `Things/Mote/Black` (0.12.22-dev). **Zero gameplay art or audio ships.** What remains authored is what the invariant permits: mechanics defs, a generator-placed marker, `FactionDef`s, and the `RR_FieldRecorder` def itself — **kept loadable on purpose** so saves containing one still open, and never granted or sold again.
+  **Nothing is still custom that invariant 10 forbids, as of 0.12.24-dev.** Every replacement named here was decided, then built: the survey tag became a Core `GlowPod` (0.10.7-dev), custody completes at a designated Core `Shelf` (0.10.9-dev), the recorder merged into the record book (0.12.24-dev), and `RR_QuietPursuer` presents as Core `Things/Mote/Black` (0.12.22-dev). **Zero gameplay art or audio ships** *(superseded on 2026-10-06 by the original-content reversal: 0.13.0-dev ships original art and audio again)*. What remains authored is what the invariant permits: mechanics defs, a generator-placed marker, `FactionDef`s, and the `RR_FieldRecorder` def itself — **kept loadable on purpose** so saves containing one still open, and never granted or sold again.
   **Exit condition:** package allowlist contains no superseded gameplay Def or gameplay PNG; historical masters retained under `implementation/historical-content/`; migration route or dev-save break documented; runtime acceptance row recorded after owner launch. Maps to Stage 1–2.
 
 - [ ] **M3 — Phase 3 interconnected company simulation** (RR-SCEN, RR-FAC, RR-STA, RR-GATE, RR-EXP, RR-SPACE, RR-EVD, RR-THREAT, RR-MSN, RR-ECO, RR-OUT).
@@ -261,7 +263,7 @@ Every `[T]` row across all majors converges on one event: the **post-completion 
 | Procurement component grows past readable size | Regressions in the largest owner | Medium | Split into partials before the next procurement feature |
 | Performance budgets fail on large room bands | Late redesign of generation/streaming | Unknown | Bands 8–16 and up gated on measured 6–8 results; `RimroomsDiagnostics` counters ready |
 | Three owner questions remain unanswered | Lone Survivor and opening-duration work built on assumptions | Medium | Assumptions recorded as provisional; no saved scenario ID renamed; ask once, grouped, when the work is reached |
-| Branch-name mismatch (`Prep`/`Develop`/`Main` vs config `main`/`develop`) | A future session pushes to the wrong branch or creates lowercase twins | Low now | `PUBLISHING.md` names the real branches; config left as-is on purpose |
+| Branch-name mismatch (`Prep`/`Develop`/`Main` vs config `main`/`develop`) — *resolved 2026-10-10: lowercase `main`/`develop` are the standard and the capitalised branches are archived as `archive/*-do-not-use`* | A future session pushes to the wrong branch or recreates a capitalised twin | Low now | `PUBLISHING.md` carries the 2026-10-10 supersession note |
 
 ### Progress timeline
 

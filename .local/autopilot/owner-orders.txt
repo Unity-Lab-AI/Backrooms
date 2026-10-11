@@ -261,3 +261,39 @@ and know wtf to do with freezers"). One item per step, say it on stream, tick it
 - ROOF: "architect-designator:zone:highlight-designator-areabuildroofexpand" over any room missing a roof.
 - ASSIGN TAB (food Fine, medical best, Attack): game_open_main_tab Assign isn't offered -- use game_execute_gizmo
   "main-tab:Assign", then click_ui_target the cell and pick from the menu.
+
+- OWNER in Twitch chat (game order, binding next turn): (joined the stream)
+
+- OWNER in Twitch chat (game order, binding next turn): fudge!
+
+
+- OWNER in Twitch chat (game order, binding next turn): (joined the stream)
+
+- OWNER in Twitch chat (game order, binding next turn): (joined the stream)
+
+- OWNER, typed in the panel chat (binding next turn): explore all rooms first upasuing send everyone to differnt doors till the facility is explored draft each panw click on doors to go there option in dropdown
+- LESSON: hit points in get_cell_info are the BUILDINGS' and items' on that cell, never a pawn's. Pawn health is
+  game_list_colonists (downed/dead). Never call a medical emergency off cell info.
+
+- OWNER in Twitch chat (game order, binding next turn): (joined the stream)
+
+- TONIGHT, from the owner at GO: new stream and new colony
+
+- OWNER, typed in the panel chat (binding next turn): u still havce dooors to walk through to explore all
+
+- OWNER in Twitch chat (game order, binding next turn): can u explore the rooms/doors u havent walked through yet?
+
+- OWNER in Twitch chat (game order, binding next turn): time is flying by while u having even gone out side to plant crops what are you doing ur gonna be attacked any minute and wont know it beckause you havent explored all rooms the first job
+- DONE 05:03: the redo colony landed with the Godsmultiplayer ideoligion and the Preset3 crew. Do NOT call new_colony again unless the owner orders it fresh.
+
+- OWNER in Twitch chat (game order, binding next turn): (joined the stream)
+
+- OWNER in Twitch chat (game order, binding next turn): cant wait
+
+- OWNER in Twitch chat (game order, binding next turn): (joined the stream)
+
+- OWNER, typed in the panel chat (binding next turn): ist job fix the broken wall segments and makse sure the food storage room is ac 's on walls more the bigger the room,  and set to correct temps for freeezers below zero with margin of extra
+ where are your wepons ? do you not have any make them something soon after crops in
+- A message box ("Sure, you can stay" / "No, please leave now") has frozen time for 5 minutes: call game_get_ui_layout and click one of those two buttons with click_ui_target before anything else.
+- RAID on the map now (Lacar Union letter): read the raid letter, draft the crew and fight or pull everyone indoors -- before any research letters.
+- RAID is real and NOW: letter Letter_11 "Raid: Lacar Union", raider Trebo (Thing_Human122270). Open Letter_11, draft Gee/Scar/Unity and attack Trebo -- before anything else.

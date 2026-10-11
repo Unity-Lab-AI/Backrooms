@@ -51,6 +51,7 @@ window with a single Bash call:
 ```
 curl -s -X POST http://127.0.0.1:4317/api/show \
   -H "Content-Type: application/json" \
+  -H "X-Studio-Token: $(cat .claude/.studio-token)" \
   -d '{"prompt":"<detailed visual prompt>","persona":"<active persona id>"}'
 ```
 

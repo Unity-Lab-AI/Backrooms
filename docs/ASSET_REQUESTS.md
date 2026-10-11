@@ -157,7 +157,7 @@ over:
 
 Add a third shared sequence: **`RR_GateOpen_01.png` … `RR_GateOpen_08.png`**, eight 256 x 256 RGBA frames. This is the calmer, repeating energy visible while a **company machine portal is live**, after the activation burst. Match the existing blue-white filament style while using a steadier, quieter presence; keep the aperture and native doors/pawns visible. No solid portal fill, frame, hardware or aura disk. One set stretches across all supported footprints and facings; do not multiply assets by size/direction. Natural portals retain ordinary native door graphics.
 
-The [TODO note to Claude](TODO.md#active-portal-artwork-and-code-handoff-2026-10-06) owns display/state integration, stopping and reload/reduced-motion behavior. [The delivery record](implementation/GATE_CYCLE_ASSET_DELIVERY.md#active-portal-extension) records authoring progress and final paths. Artwork alone does not implement an active connection effect.
+The [TODO note to Claude](FINALIZED.md#active-portal-artwork-and-code-handoff-2026-10-06) owns display/state integration, stopping and reload/reduced-motion behavior. [The delivery record](implementation/GATE_CYCLE_ASSET_DELIVERY.md#active-portal-extension) records authoring progress and final paths. Artwork alone does not implement an active connection effect.
 
 ---
 

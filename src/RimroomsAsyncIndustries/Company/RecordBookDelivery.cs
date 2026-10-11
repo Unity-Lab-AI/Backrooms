@@ -52,6 +52,12 @@ namespace RimroomsAsyncIndustries.Company
         /// </summary>
         private const int RecordBookDeliveryCount = 2;
 
+        /// <summary>
+        /// How long a sent delivery counts as still arriving. Comfortably longer than a drop pod
+        /// takes to land, and short enough that a lost book is replaced the same hour.
+        /// </summary>
+        private const int RecordBookPendingTicks = 1250;
+
         /// <summary>How many books the corporation has sent. A record, never a limit.</summary>
         private int recordBookDeliveries;
 
@@ -108,25 +114,19 @@ namespace RimroomsAsyncIndustries.Company
             if (book == null) { return true; }
             List<Map> maps = Find.Maps;
             if (maps == null) { return false; }
+            // **Every book the map holds, not only the ones lying on it.** Spawned things alone
+            // miss a book in a pawn's hands or still inside the drop pod bringing it down, and the
+            // check runs every second while a pod takes longer than that to land -- so each tick
+            // sent another delivery. Core's recursive search reaches inventories, carried things
+            // and skyfaller contents, the same reach `BookFor` uses for a quest's book.
+            var found = new List<Thing>();
             for (int index = 0; index < maps.Count; index++)
             {
                 Map map = maps[index];
                 if (map == null || !OwnsMap(map)) { continue; }
-                if (map.listerThings != null
-                    && map.listerThings.ThingsOfDef(book).Count > 0)
-                { return true; }
-                // A book in a pack is a book the branch has. `AllPawnsSpawned` covers the crew
-                // standing on either side of an open connection, because both maps are owned.
-                if (map.mapPawns == null) { continue; }
-                IReadOnlyList<Pawn> pawns = map.mapPawns.AllPawnsSpawned;
-                for (int item = 0; item < pawns.Count; item++)
-                {
-                    Pawn pawn = pawns[item];
-                    if (pawn == null || pawn.inventory == null
-                        || pawn.inventory.innerContainer == null)
-                    { continue; }
-                    if (pawn.inventory.innerContainer.Contains(book)) { return true; }
-                }
+                found.Clear();
+                ThingOwnerUtility.GetAllThingsRecursively(map, ThingRequest.ForDef(book), found, true, null, true);
+                if (found.Count > 0) { return true; }
             }
             return false;
         }
@@ -146,6 +146,11 @@ namespace RimroomsAsyncIndustries.Company
             // that is not there.
             if (book == null) { return; }
             if (!HasFinishedGate()) { return; }
+            // A delivery that has only just been sent is still on its way. The search above finds
+            // a pod once it is on the map, and this covers the moment before anything is.
+            if (lastRecordBookDeliveryTick >= 0 &&
+                Find.TickManager.TicksGame - lastRecordBookDeliveryTick < RecordBookPendingTicks)
+            { return; }
             if (AnyRecordBookHeld(book)) { return; }
             try { DeliverRecordBooks(map, book); }
             catch (Exception error)

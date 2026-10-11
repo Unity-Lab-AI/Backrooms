@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# One press. Brings up the whole rig: Ollama + both models (voice pre-warmed), OBS, the Twitch window, the
-# studio, the webcam, chat, the host voice, the guards, the click queue, Unity the player, and the admin
-# panel. Then she ASKS: "Are we starting the stream and the game? Tell me what you want tonight and hit GO."
-# Nothing goes live and no game launches until you press GO in the panel.
-cd "$(dirname "$0")/.." || exit 1
-exec python3 stream/services.py start
+# The stream rig is Windows-only: it drives RimWorldWin64.exe, OBS-Portable, the Windows audio stack and
+# Win32 input. This wrapper says so plainly instead of failing somewhere deep inside the scripts.
+# On Windows use the matching windows/*.bat launcher.
+echo "linux/start.sh: the Unity stream rig runs on Windows only (RimWorldWin64, OBS-Portable, Win32 input/audio)." >&2
+echo "Run windows/start.bat on the Windows machine instead." >&2
+exit 2
