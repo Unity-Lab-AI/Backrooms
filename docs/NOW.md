@@ -17,7 +17,7 @@ Owner go: *"Go fastest, voice cap $70"*, then *"well we are gonna have to double
 
 | Pod | Id | Shape | $/h | Cap | State at 15:07 |
 |---|---|---|---|---|---|
-| Voice (records, then trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | 7.98 | $140 | `VOICE_ROLE=both`: recording 5,000 clips, 24 shards (~207 lines each, Cosy first then Qwen), shard 0 at line 30. Recording ends ~16:20, then screen, then training ~7-8 h. Source `af945fae` (digest `e6ae75fb`) |
+| Voice (records, then trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | 7.98 | $140 | All 5,000 clips recorded 16:23. Merge REFUSED 16:25: the network volume answers RENAME_NOREPLACE with EINVAL. Fixed in `e89843fc` (`pod/atomic_publish.py` falls back to a checked plain rename; not in the render recipe, so no clip re-renders); manifest `362b49da`, owner receipt re-bound; pod updated + restarted 16:26, renders skipped, merge running 16:27; then screen -> train ~7-8 h |
 | Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | 3.99 | $50 | 16:16 OOM-killed at step 8 AGAIN (same step as the first kill): the 100 4K screenshot rows were held as Python pixel lists (~1.5 GB each). Fixed in `e9f0fc8c` (paths kept, pixels made per batch); pod updated to that commit + `BRAIN_BS=8` and restarted 16:18; container reinstall ~20 min (llama.cpp build on the volume is kept), then ~17-20 s/step x 1,062 = ~5-6 h |
 
 **How to check** (no SSH key is set on these pods):
