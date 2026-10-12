@@ -5,7 +5,7 @@ for t in qwen cosy; do
   python -m venv /tmp/venv-$t
   /tmp/venv-$t/bin/pip install -q --upgrade pip
   /tmp/venv-$t/bin/pip install -q "torch==2.7.1+cu118" "torchaudio==2.7.1+cu118" --index-url https://download.pytorch.org/whl/cu118
-  if [ $t = cosy ]; then /tmp/venv-$t/bin/pip install -q "setuptools<70" wheel; /tmp/venv-$t/bin/pip install -q --no-build-isolation openai-whisper==20231117; fi
+  if [ $t = cosy ]; then /tmp/venv-$t/bin/pip install -q "setuptools<70" wheel; /tmp/venv-$t/bin/pip install -q --no-deps --no-build-isolation openai-whisper==20231117; fi
   /tmp/venv-$t/bin/pip install -q -r /voice/pod/requirements-teacher-$t.txt -c /voice/pod/constraints-teacher.txt --extra-index-url https://download.pytorch.org/whl/cu118 && echo "INSTALL OK $t" || echo "INSTALL FAILED $t"
   /tmp/venv-$t/bin/python -c "import torch, torchaudio; print(\"VERSIONS $t\", torch.__version__, torchaudio.__version__)"
 done
