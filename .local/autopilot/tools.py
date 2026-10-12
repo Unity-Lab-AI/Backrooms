@@ -314,6 +314,9 @@ class Toolbox:
             "reply_chat": ("[STREAM] Answer a Twitch viewer by name, out loud and in the overlay chat. chat_id is the "
                            "number given with their message.", S({"chat_id": i, "viewer": s, "text": s, "emotion": EMO, "act": ACT},
                                                                   ["chat_id", "viewer", "text"]), self.t_reply),
+            "reply_owner": ("[PRIVATE] Answer the OWNER in the private admin channel (Persona Studio window / admin "
+                            "panel). Never spoken, never on stream. msg_id is the number given with their message.",
+                            S({"msg_id": i, "text": s}, ["msg_id", "text"]), self.t_reply_owner),
             "new_colony": ("Start a brand-new colony on the company scenario, set up the owner's way (world 30%, 300x300, "
                            "Spring, pollution 0, factions, mountainous forest tile, the Godsmultiplayer ideoligion, the "
                            "Preset3 crew, day one). ONLY when the owner orders it. It abandons the current colony.",
@@ -511,6 +514,17 @@ class Toolbox:
         self.last_spoken_seconds = round(self.last_speech - started, 1)
         log("SAID:", clean)
         return clean
+
+    def t_reply_owner(self, msg_id, text):
+        line = re.sub(r"\s*\[(laughter|breath|sigh)\]\s*", " ", str(text)).strip()
+        if not line:
+            return "nothing to send"
+        if self.dry:
+            log("DRY-RUN would REPLY TO OWNER:", line)
+        else:
+            _outbox(line, int(msg_id))          # replyTo = the owner's message: the stream feed never shows it
+        log("TO OWNER:", line[:200])
+        return "sent privately to the owner"
 
     def t_say(self, text, emotion=None, act=None):
         said = self._speak(text)
@@ -746,6 +760,26 @@ def _outbox(text, reply_to):
     with open(OUTBOX, "a", encoding="utf-8") as f:
         f.write(json.dumps({"id": last + 1, "replyTo": reply_to, "ts": int(time.time() * 1000),
                             "persona": "unity", "text": text}) + "\n")
+
+
+def read_owner(after_id=0):
+    """The owner's private messages: studio-inbox rows WITHOUT the "[twitch]" prefix, typed in the Persona Studio
+    window (owner: "train in twitch versus admin conversions fromn the admin panel and admin hud thing"). Never shown
+    on stream; answered with reply_owner, whose outbox row points at the message so the stream feed skips it."""
+    inbox = os.path.join(ROOT, ".claude", ".studio-inbox.jsonl")
+    out = []
+    try:
+        for line in open(inbox, encoding="utf-8"):
+            try:
+                r = json.loads(line)
+            except ValueError:
+                continue
+            text = str(r.get("text") or "")
+            if int(r.get("id", 0)) > after_id and text and not text.startswith("[twitch]"):
+                out.append({"msg_id": int(r["id"]), "text": text[:600]})
+    except OSError:
+        pass
+    return out
 
 
 def read_chat():
