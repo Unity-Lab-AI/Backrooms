@@ -31,7 +31,7 @@ if ! have venv-qwen; then
   python3 -m venv "$G/venv-qwen"
   "$G/venv-qwen/bin/pip" install -q --upgrade pip
   "$G/venv-qwen/bin/pip" install -q "torch==2.7.1+cu118" "torchaudio==2.7.1+cu118" --index-url "$CU118"
-  "$G/venv-qwen/bin/pip" install -q -r "$V/pod/requirements-teacher-qwen.txt"
+  "$G/venv-qwen/bin/pip" install -q -r "$V/pod/requirements-teacher-qwen.txt" -c "$V/pod/constraints-teacher.txt" --extra-index-url "$CU118"
   done_ venv-qwen
 fi
 if ! have cosy-code; then
@@ -44,7 +44,11 @@ if ! have venv-cosy; then
   python3 -m venv "$G/venv-cosy"
   "$G/venv-cosy/bin/pip" install -q --upgrade pip
   "$G/venv-cosy/bin/pip" install -q "torch==2.7.1+cu118" "torchaudio==2.7.1+cu118" --index-url "$CU118"
-  "$G/venv-cosy/bin/pip" install -q -r "$V/pod/requirements-teacher-cosy.txt"
+  # openai-whisper 20231117 (a Cosy pin) only ships as an old sdist whose setup.py imports pkg_resources, which
+  # current setuptools removed: build it first against setuptools<70 without build isolation.
+  "$G/venv-cosy/bin/pip" install -q "setuptools<70" wheel
+  "$G/venv-cosy/bin/pip" install -q --no-build-isolation openai-whisper==20231117
+  "$G/venv-cosy/bin/pip" install -q -r "$V/pod/requirements-teacher-cosy.txt" -c "$V/pod/constraints-teacher.txt" --extra-index-url "$CU118"
   done_ venv-cosy
 fi
 
