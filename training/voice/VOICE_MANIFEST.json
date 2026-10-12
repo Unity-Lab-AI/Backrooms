@@ -42,7 +42,7 @@
   "training/voice/pod/ENVIRONMENT_SPEC.json": "5286383bad67149119141ebb9f808c6560b34d49f2d9924aedd8a3963cf8d746",
   "training/voice/pod/LAUNCH_CONFIG.template.json": "4d03ef478bf36bfe7ea1ebdcfce101650855445971f6cf9f3a59b4c4f65b564d",
   "training/voice/pod/accept_delivery.py": "7e9f2c480cbb34322409f7fdcba5194d432111616454e9300900738833519ed1",
-  "training/voice/pod/atomic_publish.py": "6c213aace59779684755726debb1da768cf5b73e5edcd68d23c8b04cfa0a45d1",
+  "training/voice/pod/atomic_publish.py": "bb9c3ee2026f8c63dbc42beea366c5c55b0c53d16d8e05141e69141a68f26ad9",
   "training/voice/pod/auto_screen.py": "2529ad80e0c3b3f24acdf87440998dcb20da1546f7035de616bd05f4c6098115",
   "training/voice/pod/bootstrap_voice.sh": "f303703e2d678b9804cfa100dc456a007de20f717ab6fb011bf94e6b15a0c6e8",
   "training/voice/pod/constraints-teacher.txt": "75565852cd2d42237d4efca28db4f01a7db2475dccf53ed76075583f0eae5f80",
@@ -119,5 +119,5 @@
   "training/voice/variations.py": "b0dc9ac0a42f39d8e26ce5fc055d25a286edc4a6de0608048212c457e2fbaa8d",
   "training/voice/vocoder.py": "f6e8543d98c8a0e25a88fd903827c276225aa8713b7c06fe11c6d94ff34822d8"
  },
- "digest": "e6ae75fbbd57b51cf636fe4c4987fb039736f1314e79eff7c3f5b827cf271ad3"
+ "digest": "362b49da77b2813d0cd42da27fce954f056f12110cf6bab850aa0bcbfca703a0"
 }

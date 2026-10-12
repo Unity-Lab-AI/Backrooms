@@ -54,7 +54,7 @@
   "owner_training_authorization": {
    "accepted": true,
    "receipt": "training/voice/receipts/owner-training-authorization-2026-10-12.json",
-   "receipt_sha256": "d9063f1eeca78b022b1f320faba047c398337f24adebf10826efe6f0f65e6a2c",
+   "receipt_sha256": "4a4f51558e59a009a65e669548f3cd48424cf6c55a131a920a3d72e27878a57b",
    "reason": "Owner go 2026-10-12: 'Go fastest, voice cap $70'"
   },
   "trained_voice_acceptance": {
