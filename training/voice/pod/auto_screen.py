@@ -94,13 +94,25 @@ def main():
     if tmp.exists():
         shutil.rmtree(tmp)
     (tmp / "wavs").mkdir(parents=True)
+    # Uniform edges. The local proof run (owner: "most we cut off starts ... speed up sounding") showed teacher clips
+    # starting with 0.03-1.0 s of silence at random, which the student smeared into its first sound. Every kept clip
+    # is trimmed to the same PAD seconds of quiet before the first and after the last sound, its hash re-recorded.
+    import numpy as np, soundfile as sf, hashlib
+    PAD = 0.15
+    trimmed = []
     for row in kept:
         src, dst = merged / row["audio"], tmp / row["audio"]
         dst.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            os.link(src, dst)
-        except OSError:
-            shutil.copy2(src, dst)
+        wav, sr = sf.read(str(src), dtype="float32")
+        level = np.abs(wav)
+        loud = np.flatnonzero(level > max(1e-4, 0.03 * float(level.max())))
+        if len(loud):
+            pad = int(PAD * sr)
+            wav = wav[max(0, loud[0] - pad): min(len(wav), loud[-1] + 1 + pad)]
+        sf.write(str(dst), wav, sr, subtype="PCM_16")
+        row = dict(row, sha256=hashlib.sha256(dst.read_bytes()).hexdigest())
+        trimmed.append(row)
+    kept = trimmed
     with open(tmp / "metadata.jsonl", "w", encoding="utf-8", newline="\n") as f:
         for row in kept:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
@@ -113,7 +125,8 @@ def main():
               "rescued_after_normalising": rescued,
               "laughter_heard": sum(1 for r in kept if "[laughter]" in r["text"]
                                     and laugh_heard(screened.get(r["id"], {}).get("recognized_text"))),
-              "rule": "keep only rows screened with no flags and a matching WAV hash; a words-only mismatch is kept if it matches within 10% after normalising numbers, contractions and heard laughter"}
+              "rule": "keep only rows screened with no flags and a matching WAV hash; a words-only mismatch is kept if it matches within 10% after normalising numbers, contractions and heard laughter",
+              "edges": "every kept clip trimmed to 0.15 s of quiet before the first and after the last sound"}
     (tmp / "screen-report.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
     tmp.rename(out)
     print(json.dumps({k: report[k] for k in ("kept_clips", "total_clips", "dropped_by_reason", "kept_laughter", "laughter_heard")} | {"rescued": len(rescued)}))
