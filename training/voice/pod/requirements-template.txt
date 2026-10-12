@@ -1,0 +1,16 @@
+# Unity voice student: the packages the RunPod-template path installs into /workspace/venv.
+# Same versions as the locked local image (ENVIRONMENT_SPEC.json "packages"), so the template path runs the
+# student on the library stack it was checked against. torch/torchaudio come from the PyTorch cu126 index
+# (start_template.sh passes --extra-index-url); cu126 builds include sm_90 for H100/H200.
+torch==2.7.1+cu126
+torchaudio==2.7.1+cu126
+numpy==2.2.6
+numba==0.68.0
+llvmlite==0.50.0
+soundfile==0.13.1
+pyworld==0.3.5
+misaki==0.9.4
+espeakng-loader==0.2.4
+phonemizer-fork==3.3.2
+spacy==3.8.7
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl

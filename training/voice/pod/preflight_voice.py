@@ -101,16 +101,48 @@ def environment_identity():
             "runpodctl_sha256": spec["runpodctl"]["binary_sha256"]}
 
 
+def template_identity():
+    """RunPod-template path: Linux x86_64, every pin in requirements-template.txt installed at exactly that
+    version (distribution metadata only, nothing imported), runpodctl present. Records what it found."""
+    if platform.system() != "Linux" or platform.machine().lower() not in ("x86_64", "amd64"):
+        raise ValueError("Template worker requires Linux x86_64")
+    if sys.version_info < (3, 10):
+        raise ValueError("Template worker requires Python 3.10+")
+    req = Path(__file__).with_name("requirements-template.txt")
+    pins = {}
+    for line in req.read_text(encoding="utf-8").splitlines():
+        line = line.split("#", 1)[0].strip()
+        if "==" in line:
+            name, version = line.split("==", 1)
+            pins[name.strip()] = version.strip()
+        elif " @ " in line:
+            pins[line.split(" @ ", 1)[0].strip()] = None          # URL pin: presence is checked
+    found = {}
+    for name, version in pins.items():
+        try:
+            got = importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:
+            got = importlib.metadata.version(name.replace("-", "_"))     # wheel names use underscores
+        if version is not None and got != version:
+            raise ValueError("Installed %s %s differs from pinned %s" % (name, got, version))
+        found[name] = got
+    if shutil.which("runpodctl") is None:
+        raise ValueError("runpodctl missing; the pod could not stop itself")
+    return {"mode": "template", "python": platform.python_version(), "packages": found,
+            "requirements_sha256": file_hash(req)}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--offline", action="store_true")
     parser.add_argument("--environment", action="store_true")
+    parser.add_argument("--template", action="store_true", help="RunPod-template venv instead of the prepared image")
     parser.add_argument("--dataset", type=Path)
     parser.add_argument("--dataset-id")
     parser.add_argument("--source-digest")
     args = parser.parse_args()
-    if not args.offline and not args.environment:
-        parser.error("Choose --offline or --environment; no start option exists")
+    if not (args.offline or args.environment or args.template):
+        parser.error("Choose --offline, --environment or --template; no start option exists")
     report = {"schema": "unity-voice-readonly-preflight-v1", "training_authorized": False,
               "provider_observed": False, "source_digest": source_identity(args.source_digest)}
     if args.dataset:
@@ -122,6 +154,8 @@ def main():
         raise ValueError("--dataset-id requires --dataset")
     if args.environment:
         report["environment"] = environment_identity()
+    if args.template:
+        report["environment"] = template_identity()
     print(json.dumps(report, indent=2))
 
 

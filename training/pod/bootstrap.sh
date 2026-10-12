@@ -26,6 +26,13 @@ stop_pod() {
   exit 0
 }
 
+# RunPod's pod id and API key live in the container's main process; read them back if this shell lost them, so the
+# stop request can authenticate (the same fix as the voice pods).
+if [ -z "${RUNPOD_POD_ID:-}" ] || [ -z "${RUNPOD_API_KEY:-}" ]; then
+  while IFS= read -r -d '' kv; do
+    case "$kv" in RUNPOD_POD_ID=*|RUNPOD_API_KEY=*) name="${kv%%=*}"; [ -n "${!name:-}" ] || export "$kv" ;; esac
+  done < /proc/1/environ 2>/dev/null || true
+fi
 # a pod that cannot stop itself must not start paid work
 if ! command -v runpodctl >/dev/null 2>&1 || [ -z "${RUNPOD_POD_ID:-}" ]; then
   status "FAILED: runpodctl or RUNPOD_POD_ID missing -- this pod could not stop itself, so nothing was trained. Stop it from the RunPod console."
@@ -54,10 +61,19 @@ fail() { status "FAILED: $*"; tail -c 20000 $W/run.log > $W/gguf/run.log.txt 2>/
 
 status "cloning"
 rm -rf "$W/repo"          # a restart pulls the newest scripts and data, never a stale copy
-git clone -q --depth 1 --filter=blob:none --sparse -b "$BRANCH" "$REPO" $W/repo && \
-  (cd $W/repo && git sparse-checkout set --no-cone /training/pod/ /training/data/brain/ /training/data/tools.json \
-     /training/check_player.py /training/check_voice.py /.local/autopilot/guards.py /.claude/tools/unity-voice.py) \
-  || fail "clone of $BRANCH"
+# BRAIN_SOURCE_COMMIT pins the exact approved source (a moving branch is never trained); without it the old
+# branch behaviour is kept for compatibility.
+if [ -n "${BRAIN_SOURCE_COMMIT:-}" ]; then
+  git clone -q --filter=blob:none --sparse "$REPO" $W/repo && \
+    (cd $W/repo && git sparse-checkout set --no-cone /training/pod/ /training/data/brain/ /training/data/tools.json \
+       /training/check_player.py /training/check_voice.py /.local/autopilot/guards.py /.claude/tools/unity-voice.py \
+     && git checkout -q "$BRAIN_SOURCE_COMMIT") || fail "clone of commit $BRAIN_SOURCE_COMMIT"
+else
+  git clone -q --depth 1 --filter=blob:none --sparse -b "$BRANCH" "$REPO" $W/repo && \
+    (cd $W/repo && git sparse-checkout set --no-cone /training/pod/ /training/data/brain/ /training/data/tools.json \
+       /training/check_player.py /training/check_voice.py /.local/autopilot/guards.py /.claude/tools/unity-voice.py) \
+    || fail "clone of $BRANCH"
+fi
 (cd $W/repo && git rev-parse HEAD) > $W/gguf/source-commit.txt
 # hash-bound: the data must be byte for byte what was checked locally and approved at launch
 GOT=$(cd $W/repo/training/data/brain && python3 - <<'EOF'

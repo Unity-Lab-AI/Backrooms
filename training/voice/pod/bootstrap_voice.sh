@@ -13,6 +13,16 @@
 # work defaults in run_voice.sh remain candidates until the priced owner decision.
 # Source is delivered as a hash-bound packet, never fetched from a moving branch.
 set -euo pipefail
+# RunPod puts RUNPOD_POD_ID / RUNPOD_API_KEY in the container's main-process environment. A shell that lost them
+# (SSH session, custom entrypoint) reads them back from PID 1, so the stop request can authenticate.
+if [ -z "${RUNPOD_POD_ID:-}" ] || [ -z "${RUNPOD_API_KEY:-}" ]; then
+  while IFS= read -r -d '' kv; do
+    case "$kv" in RUNPOD_POD_ID=*|RUNPOD_API_KEY=*) name="${kv%%=*}"; [ -n "${!name:-}" ] || export "$kv" ;; esac
+  done < /proc/1/environ 2>/dev/null || true
+fi
+VOICE_ENV_MODE="${VOICE_ENV_MODE:-image}"
+case "$VOICE_ENV_MODE" in image|template) ;; *) echo "REFUSED: VOICE_ENV_MODE must be image or template" >&2; exit 2 ;; esac
+export VOICE_ENV_MODE
 VOICE_SCRIPT=$(readlink -f "${BASH_SOURCE[0]}")
 VOICE_SOURCE=$(cd "$(dirname "$VOICE_SCRIPT")/.." && pwd)
 python3 "$VOICE_SOURCE/quality_gate.py" --stage train
@@ -34,9 +44,11 @@ done
 : "${VOICE_VOLUME_ID:?verified provider volume ID required}"
 : "${VOICE_VOLUME_RECEIPT:?saved engineering volume/mount verification required}"
 : "${VOICE_VOLUME_RECEIPT_SHA256:?exact verified volume receipt hash required}"
-: "${VOICE_IMAGE_DIGEST:?prepared immutable image reference required}"
-: "${VOICE_ENVIRONMENT_RECEIPT:?prepared environment verification receipt required}"
-: "${VOICE_ENVIRONMENT_RECEIPT_SHA256:?exact prepared environment receipt hash required}"
+if [ "$VOICE_ENV_MODE" = image ]; then
+  : "${VOICE_IMAGE_DIGEST:?prepared immutable image reference required}"
+  : "${VOICE_ENVIRONMENT_RECEIPT:?prepared environment verification receipt required}"
+  : "${VOICE_ENVIRONMENT_RECEIPT_SHA256:?exact prepared environment receipt hash required}"
+fi
 : "${BUDGET_USD:?actual approved budget required}"
 : "${KEEP_HOURS:?actual approved retention required}"
 : "${VOICE_BILLING_STARTED_EPOCH:?actual provider launch timestamp required; not training-start time}"
@@ -55,7 +67,11 @@ if (receipt.get('schema') != 'unity-voice-volume-receipt-v1' or receipt.get('dec
     raise ValueError('Volume receipt needs a named engineering verifier, matching ID/mount and recorded observations')
 # This validates the recorded attestation, not a provider API or the actual mounted device.
 PY
-python3 "$VOICE_SOURCE/pod/preflight_voice.py" --environment --source-digest "$VOICE_DIGEST"
+if [ "$VOICE_ENV_MODE" = image ]; then
+  python3 "$VOICE_SOURCE/pod/preflight_voice.py" --environment --source-digest "$VOICE_DIGEST"
+else
+  python3 "$VOICE_SOURCE/pod/preflight_voice.py" --template --source-digest "$VOICE_DIGEST"
+fi
 export BUDGET_USD KEEP_HOURS VOICE_BILLING_STARTED_EPOCH
 W=/workspace
 SERVE="$W/out"
@@ -112,7 +128,7 @@ if [ "${VOICE_BUDGET_SUPERVISED:-}" != "1" ]; then
   trap supervisor_exit EXIT
   trap 'exit 143' TERM
   trap 'exit 130' INT
-  trap 'exit 129' HUP
+  trap '' HUP          # a dropped terminal never ends a paid run
   CLOCK=$(python3 - "$W/state/voice-budget-v2.json" <<'PY'
 import json, math, os, time
 from pathlib import Path
@@ -134,8 +150,13 @@ record = {'schema': 'unity-voice-budget-v2', 'price_per_hour': price, 'budget_us
           'billing_started_epoch': billing_start}
 if path.exists():
     previous = json.loads(path.read_text(encoding='utf-8'))
-    if any(previous.get(key) != value for key, value in record.items()):
-        raise ValueError('Saved budget/rate differs; explicit accounting review required, never reset on resume')
+    terms = ('schema', 'price_per_hour', 'budget_usd', 'volume_id')
+    if any(previous.get(key) != record[key] for key in terms):
+        raise ValueError('Saved budget/rate/volume differs; explicit accounting review required, never reset on resume')
+    # A resume on a NEW pod (same volume) has a later billing start. The deadline stays the one computed from
+    # the FIRST start, so a restart can only shorten the remaining budget, never extend it.
+    record['billing_started_epoch'] = previous['billing_started_epoch']
+    record['volume_receipt_sha256'] = previous['volume_receipt_sha256']
     started = previous['started_at']
 else:
     started = billing_start
@@ -210,7 +231,7 @@ work_exit() {
 trap work_exit EXIT
 trap 'exit 143' TERM
 trap 'exit 130' INT
-trap 'exit 129' HUP
+trap '' HUP
 state_snapshot() {
   ls "$W/state" 2>/dev/null || true
   for file in "$W"/voice-runs/*/state/*; do

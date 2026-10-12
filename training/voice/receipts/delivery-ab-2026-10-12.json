@@ -1,0 +1,79 @@
+{
+ "schema_version": 1,
+ "check_id": "delivery_ab_selection",
+ "decision": "accepted",
+ "accepted_by": "owner",
+ "recorded_at": "2026-10-12",
+ "voice_id": "unity-a2-low-warm-alto-v1",
+ "owner_quotes": [
+  "okay whe sounds just a little too happy like marian from gilliagan isl",
+  "i think all the 3 beeps were best but it would be nivce if u found a mid between the 1's and 3's",
+  "1"
+ ],
+ "context": "Round 1: Cosy A current / B dry / C dry with '!' as '.', Qwen original / soft / everyday A2 takes; owner picked the third of each. Round 2: midpoints (Cosy middle instruction with and without '!', Qwen original+everyday reference) played against those picks; owner answered '1', keeping Cosy C and Qwen everyday.",
+ "cosy_instruction": "You are a helpful assistant. 请用自然、偏低沉、略带慵懒的语气说话，语气平稳克制，带一点冷幽默和轻微的讽刺，内心是温暖的；不要甜美，不要过分开心，不要夸张，不要尖叫。<|endofprompt|>",
+ "text_rule": "every '!' in a rendered line is written as '.' (Cosy C)",
+ "qwen_profile_for_neutral_and_warm": "everyday",
+ "evidence": [
+  {
+   "path": "training/voice/reference/ab-2026-10-12/cosy-C-dry-no-exclaim-1.wav",
+   "sha256": "1c53f77023d8836ee7ca3195ad5dedd2d0a49264a245dd9ae1152d4cb85dc655",
+   "teacher": "cosy",
+   "text": "Everybody survived."
+  },
+  {
+   "path": "training/voice/reference/ab-2026-10-12/cosy-C-dry-no-exclaim-2.wav",
+   "sha256": "03a38cb1dbecb368759e69dbd737f59f5e745f6d508ade8264c479aed4712966",
+   "teacher": "cosy",
+   "text": "Did that vending machine just talk to Mara?"
+  },
+  {
+   "path": "training/voice/reference/ab-2026-10-12/cosy-C-dry-no-exclaim-3.wav",
+   "sha256": "5a4a61269021e9ad71e2744ca64fb314ac6e1f23bae1f5f6083d81eadbfb0e2d",
+   "teacher": "cosy",
+   "text": "Nobody had a breakdown today, which might be a colony record."
+  },
+  {
+   "path": "training/voice/reference/ab-2026-10-12/cosy-C-dry-no-exclaim-4.wav",
+   "sha256": "6dc812b381c32898e77a73187ae53619f743ae30c37a3d06fd509a9676182f80",
+   "teacher": "cosy",
+   "text": "[laughter] Bram has just declared war on a turkey."
+  },
+  {
+   "path": "training/voice/reference/ab-2026-10-12/cosy-C-dry-no-exclaim-5.wav",
+   "sha256": "de9a4f1c7d219f15f374e9335244c30fabca1b485e32d67d3b270838587714fb",
+   "teacher": "cosy",
+   "text": "Hollis wrote a poem for the event letter. It rhymes and everything, I'm so proud."
+  },
+  {
+   "path": "training/voice/reference/ab-2026-10-12/cosy-C-dry-no-exclaim-6.wav",
+   "sha256": "a519f3785a26aa3d22fd5d459c888fa583a98c7e12d31de3389a00d90f3424db",
+   "teacher": "cosy",
+   "text": "I zoned the trash pile as a recreation area, and everyone's thrilled about it. [laughter]"
+  },
+  {
+   "path": "training/voice/reference/ab-2026-10-12/qwen-everyday-1.wav",
+   "sha256": "3798aec69bb5a36cf72b99a46b48f32b2e4c552f3aa21bfefc7cfc0cef42bbb2",
+   "teacher": "qwen",
+   "text": "Is it weird that I'm getting attached to a hallway?"
+  },
+  {
+   "path": "training/voice/reference/ab-2026-10-12/qwen-everyday-2.wav",
+   "sha256": "6fc8622899695b1330c830e1b2a59d4d7c962df9c87d377b6950073d05b1ede3",
+   "teacher": "qwen",
+   "text": "It's okay, Pip."
+  },
+  {
+   "path": "training/voice/reference/ab-2026-10-12/qwen-everyday-3.wav",
+   "sha256": "0b22143440678576d57ec79a5397e89f1db9e1ce13a18bf3a03fec91d211f538",
+   "teacher": "qwen",
+   "text": "Is anybody else having a slow, sleepy kind of evening?"
+  },
+  {
+   "path": "training/voice/reference/ab-2026-10-12/qwen-everyday-4.wav",
+   "sha256": "3737959f7042b6782c4007e7808424a1737d642b97c6b6c833195f2a738052a7",
+   "teacher": "qwen",
+   "text": "Our food stores are getting low and winter's coming. We need a plan, chat."
+  }
+ ]
+}

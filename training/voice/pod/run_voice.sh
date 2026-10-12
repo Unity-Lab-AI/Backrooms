@@ -81,7 +81,7 @@ runner_exit() {
 trap runner_exit EXIT
 trap 'exit 143' TERM
 trap 'exit 130' INT
-trap 'exit 129' HUP
+trap '' HUP          # a dropped terminal never ends a paid run
 remaining_seconds() {
   python3 - <<'PY'
 import os, time
@@ -152,16 +152,26 @@ PY
 
 # Require an already prepared, hash-bound image. No apt/pip/download mutation is
 # performed on rented time. The receipt is separate engineering evidence.
-bounded_run python3 "$V/pod/preflight_voice.py" --environment --source-digest "$VOICE_DIGEST"
+if [ "${VOICE_ENV_MODE:-image}" = template ]; then
+  bounded_run python3 "$V/pod/preflight_voice.py" --template --source-digest "$VOICE_DIGEST"
+else
+  bounded_run python3 "$V/pod/preflight_voice.py" --environment --source-digest "$VOICE_DIGEST"
+fi
 bounded_run python3 - "$V/pod/ENVIRONMENT_SPEC.json" <<'PY'
-import json, sys
+import json, os, sys
 import torch
 spec = json.load(open(sys.argv[1], encoding='utf-8'))
-if (not torch.cuda.is_available() or torch.cuda.device_count() != 1
-        or torch.version.cuda != spec['torch_cuda']
-        or spec['gpu_name_contains'] not in torch.cuda.get_device_name(0)):
-    raise ValueError('Expected one H100 with the prepared CUDA runtime; no training started')
-print('Prepared CUDA device:', torch.cuda.get_device_name(0))
+name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else ''
+# One Hopper-class GPU (H100 any form factor, or H200). The image path also pins the exact CUDA runtime;
+# the template path pins torch 2.7.1+cu126 through requirements-template.txt and preflight --template.
+ok = (torch.cuda.is_available() and torch.cuda.device_count() == 1
+      and torch.cuda.get_device_capability(0) >= (9, 0)
+      and any(tag in name for tag in ('H100', 'H200')))
+if os.environ.get('VOICE_ENV_MODE', 'image') == 'image':
+    ok = ok and torch.version.cuda == spec['torch_cuda']
+if not ok:
+    raise ValueError('Expected one H100/H200 (sm_90) with the pinned CUDA runtime; no training started')
+print('CUDA device:', name, 'torch', torch.__version__, 'cuda', torch.version.cuda)
 PY
 RUN_CONFIG=$(python3 - "$V" <<'PY'
 import json, os, sys

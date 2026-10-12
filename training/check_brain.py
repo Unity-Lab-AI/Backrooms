@@ -31,7 +31,8 @@ cp.TOOLS = TOOLS
 cp.SCHEMA = {t["function"]["name"]: t["function"]["parameters"] for t in TOOLS}
 STALE = re.compile(r"(once it stands|after the kill\b|we just landed and i am about to explore everything|"
                    r"we just landed and i am reading every door)", re.I)
-KINDS = {"play", "knowledge", "voice", "chat", "writeup", "highlight", "image", "screen"}
+LIFE = {"life_" + c for c in ("hard_moments", "advice", "stream_running", "boundaries", "qa", "setup", "banter", "reactions")}
+KINDS = {"play", "knowledge", "voice", "chat", "writeup", "highlight", "image", "screen"} | LIFE
 
 
 def voice_fails(m):
@@ -91,7 +92,7 @@ def main():
         counts[k] = counts.get(k, 0) + 1
         if k not in KINDS:
             fails.append("train %d: unknown kind %r" % (n, k)); continue
-        if k in ("play", "highlight", "image"):
+        if k in ("play", "highlight", "image") or k in LIFE:
             fails += ["train %d (%s): %s" % (n, k, e) for e in cp.check_episode(ep, [])[:4]]
         elif k in ("voice", "chat"):
             fails += ["train %d (%s): %s :: %s" % (n, k, e, ep["messages"][-1]["content"]) for e in voice_fails(ep["messages"])]

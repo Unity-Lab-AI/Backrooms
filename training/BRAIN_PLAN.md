@@ -137,3 +137,14 @@ The older memory note says "~$1/hr". The owner's later choice was "Up to ~$25 (R
   - env: `BRAIN_DIGEST=<digest>`, `PRICE_PER_HOUR=<price shown>`, `BUDGET_USD=25`, `KEEP_HOURS=1`
   - no other keys on the pod
 - [ ] After DONE: download `unity-brain.gguf`, `unity-brain.gguf.sha256`, `brain-eval.json` and `quant.txt` from `https://<pod-id>-8000.proxy.runpod.net/` into `training/models/`. Delete the pod and its volume. The next `Stream Start` applies the model.
+
+
+## 7. Retrain on the "life" set: its own pod (2026-10-12)
+
+Owner, verbatim: *"the brain retrain will be on the pod"*, *"no not both on the same pod thats stupid"*, *"no voice need two pod s remembre one is feeding into the other so 1>1=vocvie model, 1=lora shell"*.
+
+- **Data.** `training/data/brain/train.jsonl` has 6,462 rows: the original 4,468 plus 1,994 "life" rows from `training/brain-life/`. Every `say`/`reply_chat` call carries `emotion` + `act`, and `tools.json` advertises them. `check_brain.py` passes. Data digest at this writing: `52fe2c95118cada11be95a32dc0066282154b019a81b5e2eeff4a7d0b4051198`.
+- **Pod.** The brain pod is separate from both voice pods, with its own budget and a **network volume** at `/workspace`. The first run lost its work when RunPod deleted pods that had no volume. One H100. Start command `training/pod/bootstrap.sh`, plus `BRAIN_SOURCE_COMMIT=<40-hex>` so the pod trains the pinned commit and never a moving branch. Env: `BRAIN_DIGEST=52fe2c95118cada11be95a32dc0066282154b019a81b5e2eeff4a7d0b4051198`, `PRICE_PER_HOUR`, `BUDGET_USD`, `KEEP_HOURS`.
+- **Self-stop.** `bootstrap.sh` reads `RUNPOD_POD_ID`/`RUNPOD_API_KEY` back from `/proc/1/environ` if its shell lost them.
+- **Home.** `powershell -File training/pod/pull_brain_s3.ps1 -VolumeId <id> -DataCenter <dc> -RunName brain-<date>` copies `gguf/`, `out/`, `state/` and `run.log` to `D:oice-lab\pod-results\<run>\` and verifies them. Delete the volume only after VERIFIED. Then copy the gguf files into `training/models/` and run `training/apply.py`.
+- **Time.** About 45% more rows than the first run, so training should take roughly 2-2.5 h of the ~3.3-4.2 h total. The price is read live at launch.
