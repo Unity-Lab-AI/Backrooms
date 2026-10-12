@@ -105,6 +105,8 @@ def bind_generated_corpus(receipt):
             if line.strip():
                 row = json.loads(line)
                 script[row["id"]] = row["text"]
+    if not os.environ.get("VOICE_DATASET_DIR"):
+        raise ValueError("no VOICE_DATASET_DIR: the generated corpus is checked on the pod, after generation")
     root = Path(os.environ["VOICE_DATASET_DIR"])
     report = json.loads((root / "screen-report.json").read_text(encoding="utf-8"))
     if report.get("rule") != receipt["screen_rule"]:
