@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "voice_id": "unity-a2-low-warm-alto-v1",
+  "speaker_reference": {
+    "audio": "training/voice/reference/A2-reference-raw.wav",
+    "sha256": "df05af0bd6c0922a9946cab5e92bf692e079454f9a4de2d570e79f2c962267c8",
+    "text": "Hey, come hang out. I'm just fixing this gate before we jump back in. Did you change that setting? Yeah, that's the one. Give me a second... okay. There we go."
+  },
+  "qwen_source": {
+    "repo": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+    "revision": "fd4b254389122332181a7c3db7f27e918eec64e3"
+  },
+  "cosy_source": {
+    "repo": "FunAudioLLM/Fun-CosyVoice3-0.5B-2512",
+    "revision": "29e01c4e8d000f4bcd70751be16fa94bf3d85a18",
+    "code_commit": "074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc"
+  },
+  "cosy_instructions": {
+    "natural_happy": "You are a helpful assistant. 请用自然、真诚、轻松开心的语气说话，不要夸张，不要尖叫，也不要讽刺。<|endofprompt|>",
+    "relaxed_smile": "You are a helpful assistant. 请用自然、轻松、带着微笑的语气说话。<|endofprompt|>"
+  },
+  "approved_examples": [
+    {
+      "id": "2-natural-happy",
+      "text": "I'm in a good mood now.",
+      "instruction": "You are a helpful assistant. 请用自然、真诚、轻松开心的语气说话，不要夸张，不要尖叫，也不要讽刺。<|endofprompt|>",
+      "audio": "training/voice/reference/A2-natural-happy-raw.wav",
+      "sha256": "dbc936f8936e794933aea667654d497b0729db550468438c50d892389c6eeaa6",
+      "listening_audio": "training/voice/reference/A2-natural-happy-listen.wav",
+      "listening_sha256": "0eb3ccf65363ce94ab787920cd73f674163374f2953f1b58b529681e57be0c43"
+    },
+    {
+      "id": "4-little-chuckle",
+      "text": "I had a plan. [laughter] Okay, that was not the plan.",
+      "instruction": "You are a helpful assistant. 请用自然、轻松、带着微笑的语气说话。<|endofprompt|>",
+      "audio": "training/voice/reference/A2-chuckle-raw.wav",
+      "sha256": "6babcc7b1f47ad6d8d2448bbcd0be2b2d762b91c2cabce687df176a23455fa27",
+      "listening_audio": "training/voice/reference/A2-chuckle-listen.wav",
+      "listening_sha256": "c3f124ec5056ed559a9de955336865f843af95ce5b7f5e2693a0bddb068a4c18"
+    }
+  ],
+  "emotion_routes": {
+    "neutral": {
+      "teacher": "qwen",
+      "profile": "original"
+    },
+    "warm": {
+      "teacher": "qwen",
+      "profile": "original"
+    },
+    "happy": {
+      "teacher": "cosy",
+      "instruction": "natural_happy"
+    },
+    "amused": {
+      "teacher": "cosy",
+      "instruction": "relaxed_smile"
+    },
+    "excited": {
+      "teacher": "cosy",
+      "instruction": "natural_happy"
+    },
+    "sad": {
+      "teacher": "qwen",
+      "profile": "soft"
+    },
+    "concerned": {
+      "teacher": "qwen",
+      "profile": "soft"
+    },
+    "frustrated": {
+      "teacher": "qwen",
+      "profile": "soft"
+    },
+    "surprised": {
+      "teacher": "cosy",
+      "instruction": "natural_happy"
+    }
+  },
+  "event_route": {
+    "teacher": "cosy",
+    "instruction": "relaxed_smile"
+  },
+  "forbidden_examples": [
+    "cosy:1-neutral",
+    "qwen:B2-happy-context",
+    "qwen:D1-smiling-happy",
+    "draft:a2-8d5497ec15ce065cb3934581"
+  ],
+  "limits": [
+    "Every route uses the original A2 identity. Cosy neutral generation is prohibited.",
+    "Routes guide intended performance; full corpus labels still need audible review.",
+    "Only the heard happy/chuckle examples are accepted; no calibrated widerintensity or giggle subtype promise.",
+    "Qwen Base has no instruction control. Sad/concerned/frustrated references may require refinement after listening.",
+    "No pitch shift,time stretch or synthetic emotion effects;source tools are not deployed."
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "schema": "unity-local-image-archive-v1",
+  "path": "C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\pod-build-artifacts-2026-10-11-v2\\unity-a2-environment.docker.tar",
+  "bytes": 3429147136,
+  "sha256": "bb7630a5dfdcd9b7354921161baf32d22de66a3ca47a871412410f41c47f7faa",
+  "registry_published": false,
+  "container_started": false,
+  "student_training_started": false,
+  "pod_rented": false
+}

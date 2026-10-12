@@ -1,0 +1,44 @@
+{
+  "buildx.build.provenance": {
+    "buildType": "https://mobyproject.org/buildkit@v1",
+    "materials": [
+      {
+        "uri": "pkg:docker/python?digest=sha256:b4d66d07136c546f1765eae2bfcce9a64fa95f37c717c02bedd06d0476d1dbbd\u0026platform=linux%2Famd64",
+        "digest": {
+          "sha256": "b4d66d07136c546f1765eae2bfcce9a64fa95f37c717c02bedd06d0476d1dbbd"
+        }
+      },
+      {
+        "uri": "https://github.com/runpod/runpodctl/releases/download/v2.15.0/runpodctl-linux-amd64",
+        "digest": {
+          "sha256": "51c6f5a7e6f6c7cd4a52373f2262b9aeb0f16084e39595d25f71bc0cf5bc826b"
+        }
+      }
+    ],
+    "invocation": {
+      "configSource": {},
+      "parameters": {
+        "frontend": "dockerfile.v0",
+        "locals": [
+          {
+            "name": "context"
+          },
+          {
+            "name": "dockerfile"
+          }
+        ]
+      },
+      "environment": {
+        "platform": "linux/amd64"
+      }
+    }
+  },
+  "buildx.build.ref": "desktop-linux/desktop-linux/pe01djipfiziq17aki9q8m575",
+  "containerimage.descriptor": {
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "digest": "sha256:3786ba627ace02b521b97f5aa9ef0f647fcad2133e73b1d69c7d0ced0e9ffd3f",
+    "size": 856
+  },
+  "containerimage.digest": "sha256:3786ba627ace02b521b97f5aa9ef0f647fcad2133e73b1d69c7d0ced0e9ffd3f",
+  "image.name": "docker.io/library/unity-a2-prep:20261011-v2"
+}

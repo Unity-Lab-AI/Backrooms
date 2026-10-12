@@ -1,0 +1,63 @@
+{
+  "schema": "unity-voice-environment-spec-v1",
+  "status": "local-build-inventory-verified-no-registry-or-launch-approval",
+  "platform": "linux-x86_64",
+  "python": "3.10.18",
+  "torch_cuda": "12.6",
+  "gpu_name_contains": "H100",
+  "minimum_driver_major": 525,
+  "image_digest": null,
+  "local_image_observation": "training/voice/receipts/local-environment-build.json",
+  "observed_local_build": {
+    "tag": "unity-a2-prep:20261011-v2",
+    "image_id": "sha256:3786ba627ace02b521b97f5aa9ef0f647fcad2133e73b1d69c7d0ced0e9ffd3f",
+    "oci_index_digest": "sha256:3786ba627ace02b521b97f5aa9ef0f647fcad2133e73b1d69c7d0ced0e9ffd3f",
+    "platform": "linux/amd64",
+    "size_bytes": 3429124586,
+    "build_exit_code": 0,
+    "installed_distributions": 103,
+    "runtime_assets": 887,
+    "os_packages": 188,
+    "package_lock_sha256": "bdf2d5bb1ac1e09f0b3a69668e7bb54f343313ca1613890c617fad848fa6f3e4",
+    "runtime_assets_sha256": "c25d8adfd29d25e1501c41f8bbfd04861bde01ebedf739d92bdfe0d3397db9d3",
+    "os_packages_sha256": "6a0ca30410bb5f2a1aedbf62626477855cb24e45e8677a748d3340617021c852",
+    "artifact_lock_sha256": "5081be03f5025ce38e4c2f0162f5337c9f85162101335741f74d140702478f9d",
+    "evidence_directory": ".local/voice-lab/pod-build-artifacts-2026-10-11-v2",
+    "scope": "actual local image build and exported inventory; no student, H100, provider or publication acceptance"
+  },
+  "published_artifact_lock": "training/voice/pod/environment.lock.json",
+  "packages": {
+    "torch": "2.7.1+cu126",
+    "torchaudio": "2.7.1+cu126",
+    "misaki": "0.9.4",
+    "espeakng-loader": "0.2.4",
+    "phonemizer-fork": "3.3.2",
+    "pyworld": "0.3.5",
+    "soundfile": "0.13.1",
+    "numpy": "2.2.6",
+    "numba": "0.68.0",
+    "llvmlite": "0.50.0",
+    "spacy": "3.8.7",
+    "en-core-web-sm": "3.8.0"
+  },
+  "runpodctl": {
+    "version": "2.15.0",
+    "platform": "linux-amd64",
+    "binary_sha256": "51c6f5a7e6f6c7cd4a52373f2262b9aeb0f16084e39595d25f71bc0cf5bc826b",
+    "stop_arguments": ["pod", "stop"],
+    "source": "https://github.com/runpod/runpodctl/releases/tag/v2.15.0"
+  },
+  "remaining": [
+    "Linux V2 build/pip dependency check and 103-package/887-asset/188-OS-package inventories verified; phoneme/ABI/GPU/model execution remains unverified.",
+    "Root records the actual local build receipt and completed local archive identity; neither is a published registry image.",
+    "Publish only with separate owner authorization, then record actual pullable registry digest and bind its engineering receipt before launch.",
+    "Verify actual H100/driver/CUDA compatibility and stop credentials only during the separately authorized launch preflight.",
+    "Frontend identity differs from the Windows cu118 preparation environment; prepare new pod features."
+  ],
+  "sources": [
+    "https://pytorch.org/get-started/previous-versions/",
+    "https://docs.pytorch.org/audio/main/installation.html",
+    "https://docs.nvidia.com/deploy/cuda-compatibility/minor-version-compatibility.html",
+    "https://docs.runpod.io/runpodctl/reference/runpodctl-pod"
+  ]
+}

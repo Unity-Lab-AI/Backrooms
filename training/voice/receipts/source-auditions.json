@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "check_id": "source_auditions",
+  "decision": "accepted",
+  "accepted_by": "owner",
+  "recorded_at": "2026-10-11",
+  "scope": "training-preflight",
+  "voice_id": "unity-a2-low-warm-alto-v1",
+  "owner_quote": "okay those all of A2 sound great lets build it our we are usering ur and all we need for human Unity",
+  "evidence": [
+    {
+      "path": "training/voice/reference/A2-reference-raw.wav",
+      "sha256": "df05af0bd6c0922a9946cab5e92bf692e079454f9a4de2d570e79f2c962267c8"
+    },
+    {
+      "path": "training/voice/reference/A2-original-listen.wav",
+      "sha256": "200b25d09866e3edb1916e2493c5e1a5021db36180a7c9ab8b707838fe219dfb"
+    },
+    {
+      "path": ".local/voice-lab/auditions/2026-10-11-A2-variations/1-everyday.wav",
+      "sha256": "623ea16b6e9e1e44e8a8e75fffc1a69ab5de799c38b12b49f43433071daa233b",
+      "intent": "Everyday A2, same words"
+    },
+    {
+      "path": ".local/voice-lab/auditions/2026-10-11-A2-variations/2-playful.wav",
+      "sha256": "4d54e3322462867984e3c5576afed3a5c80f73d9677eb6541e1a1bbaf7708b25",
+      "intent": "Playful surprise and restrained excitement"
+    },
+    {
+      "path": ".local/voice-lab/auditions/2026-10-11-A2-variations/3-soft.wav",
+      "sha256": "ece3c12b9422029682ce5a4592dd10e028218be895e0805aa9bed94836df87ba",
+      "intent": "Quieter disappointment and reassurance"
+    },
+    {
+      "path": ".local/voice-lab/auditions/2026-10-11-A2-variations/4-questions.wav",
+      "sha256": "9efc56390ba8486506269327627bdd94366305a408fa0ee5a9e5a281055d96a0",
+      "intent": "Questions, clarification and emphasis"
+    },
+    {
+      "path": "training/voice/reference/A2-everyday-raw.wav",
+      "sha256": "340af5d3775d4439e5482bc55baa251c206afeb345d2453c0d4a0dde6a679867",
+      "intent": "Everyday A2, same words",
+      "note": "Exact preserved source bytes for the owner-accepted listening performance; raw differs by broad gain only."
+    },
+    {
+      "path": "training/voice/reference/A2-everyday-listen.wav",
+      "sha256": "623ea16b6e9e1e44e8a8e75fffc1a69ab5de799c38b12b49f43433071daa233b",
+      "intent": "Everyday A2, same words",
+      "note": "Exact preserved source bytes for the owner-accepted listening performance; raw differs by broad gain only."
+    },
+    {
+      "path": "training/voice/reference/A2-playful-raw.wav",
+      "sha256": "a6a820eaaf0a8658e3f3f65cdae5dde2846b2a354e97503336183230ad4c356a",
+      "intent": "Playful surprise and restrained excitement",
+      "note": "Exact preserved source bytes for the owner-accepted listening performance; raw differs by broad gain only."
+    },
+    {
+      "path": "training/voice/reference/A2-playful-listen.wav",
+      "sha256": "4d54e3322462867984e3c5576afed3a5c80f73d9677eb6541e1a1bbaf7708b25",
+      "intent": "Playful surprise and restrained excitement",
+      "note": "Exact preserved source bytes for the owner-accepted listening performance; raw differs by broad gain only."
+    },
+    {
+      "path": "training/voice/reference/A2-soft-raw.wav",
+      "sha256": "54ef40f0015afc2aa7239e2356972a6c88c3da5bcbff3a321c8b0de68c866fd7",
+      "intent": "Quieter disappointment and reassurance",
+      "note": "Exact preserved source bytes for the owner-accepted listening performance; raw differs by broad gain only."
+    },
+    {
+      "path": "training/voice/reference/A2-soft-listen.wav",
+      "sha256": "ece3c12b9422029682ce5a4592dd10e028218be895e0805aa9bed94836df87ba",
+      "intent": "Quieter disappointment and reassurance",
+      "note": "Exact preserved source bytes for the owner-accepted listening performance; raw differs by broad gain only."
+    },
+    {
+      "path": "training/voice/reference/A2-questions-raw.wav",
+      "sha256": "d82fb371293583f879bb76046f7db61e94cf9b0c05d1ff1cf73e16eefd540a9b",
+      "intent": "Questions, clarification and emphasis",
+      "note": "Exact preserved source bytes for the owner-accepted listening performance; raw differs by broad gain only."
+    },
+    {
+      "path": "training/voice/reference/A2-questions-listen.wav",
+      "sha256": "9efc56390ba8486506269327627bdd94366305a408fa0ee5a9e5a281055d96a0",
+      "intent": "Questions, clarification and emphasis",
+      "note": "Exact preserved source bytes for the owner-accepted listening performance; raw differs by broad gain only."
+    },
+    {
+      "path": "training/voice/reference/A2-natural-happy-raw.wav",
+      "sha256": "dbc936f8936e794933aea667654d497b0729db550468438c50d892389c6eeaa6",
+      "intent": "2-natural-happy"
+    },
+    {
+      "path": "training/voice/reference/A2-natural-happy-listen.wav",
+      "sha256": "0eb3ccf65363ce94ab787920cd73f674163374f2953f1b58b529681e57be0c43",
+      "intent": "2-natural-happy"
+    },
+    {
+      "path": "training/voice/reference/A2-chuckle-raw.wav",
+      "sha256": "6babcc7b1f47ad6d8d2448bbcd0be2b2d762b91c2cabce687df176a23455fa27",
+      "intent": "4-little-chuckle"
+    },
+    {
+      "path": "training/voice/reference/A2-chuckle-listen.wav",
+      "sha256": "c3f124ec5056ed559a9de955336865f843af95ce5b7f5e2693a0bddb068a4c18",
+      "intent": "4-little-chuckle"
+    }
+  ],
+  "limits": [
+    "Acceptance covers the heard A2 source clips, not every future rendered corpus row or the untrained student.",
+    "Paid training and deployment remain unapproved."
+  ],
+  "later_acting_acceptance": {
+    "date": "2026-10-11",
+    "owner_quote": "sounds great but dont use nutral one nutral one it terrible",
+    "accepted_clips": [
+      "2-natural-happy",
+      "4-little-chuckle"
+    ],
+    "rejected_clips": [
+      "1-neutral"
+    ],
+    "scope": "heard original-A2-reference happy and chuckle performances only; no full corpus/student/training approval"
+  }
+}

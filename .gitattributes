@@ -13,3 +13,6 @@
 *.png binary
 *.xlsx binary
 training/data/brain/** -text
+
+# Frozen voice receipt hashed byte-for-byte with CRLF by the voice manifest; stored as-is so a clone hashes the same.
+training/voice/receipts/local-environment-build.json -text

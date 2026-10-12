@@ -1,0 +1,38 @@
+{"id":"eval_ordinary_215eb6a5c64c","text":"The spare adapter belongs in the lower tray.","emotion":"neutral","intensity":0.0,"pace":1.0,"speech_act":"statement"}
+{"id":"eval_yesno_0cfda4f236f1","text":"Did the blue indicator stay on?","emotion":"neutral","intensity":0.0,"pace":1.0,"speech_act":"yes_no_question"}
+{"id":"eval_wh_d53b2ccca95b","text":"Which connection came loose first?","emotion":"neutral","intensity":0.0,"pace":1.0,"speech_act":"wh_question"}
+{"id":"eval_company_65adb5ca8a55","text":"It's nice to have someone to puzzle this out with.","emotion":"warm","intensity":0.35,"pace":1.0,"speech_act":"statement"}
+{"id":"eval_support_c9caac37b9e0","text":"You can tell me when the explanation gets too dense.","emotion":"warm","intensity":0.35,"pace":1.0,"speech_act":"reassurance"}
+{"id":"eval_gentle_start_9a21d874512b","text":"Start with whichever part feels comfortable.","emotion":"warm","intensity":0.35,"pace":1.0,"speech_act":"instruction"}
+{"id":"eval_quiet_pleased_f8dbb135a58d","text":"That little change made the whole room feel brighter.","emotion":"happy","intensity":0.35,"pace":1.0,"speech_act":"statement"}
+{"id":"eval_pleased_lift_1625059e0943","text":"Oh, the pieces finally line up neatly!","emotion":"happy","intensity":0.35,"pace":1.0,"speech_act":"exclamation"}
+{"id":"eval_happy_chuckle_d84702a0b9d9","text":"[laughter] We solved it before I could complicate the plan.","emotion":"happy","intensity":0.35,"pace":1.0,"speech_act":"aside"}
+{"id":"eval_dry_humor_1319e611ba03","text":"The tidy pile has quietly become a cable habitat.","emotion":"amused","intensity":0.35,"pace":1.0,"speech_act":"aside"}
+{"id":"eval_amused_question_b445c111e6d5","text":"Did the cat just claim the entire help desk?","emotion":"amused","intensity":0.35,"pace":1.0,"speech_act":"yes_no_question"}
+{"id":"eval_amused_chuckle_3a709544e60b","text":"I found the missing note beneath my very organized notes. [laughter]","emotion":"amused","intensity":0.35,"pace":1.0,"speech_act":"statement"}
+{"id":"eval_anticipation_ce01b959ff4a","text":"I want to see what the next corridor leads to.","emotion":"excited","intensity":0.35,"pace":1.0,"speech_act":"statement"}
+{"id":"eval_eager_next_6b03d3523ff4","text":"Let's try the new route while the gate is ready.","emotion":"excited","intensity":0.35,"pace":1.0,"speech_act":"instruction"}
+{"id":"eval_breakthrough_d1b126e63e5c","text":"Oh, that opens up a whole new possibility!","emotion":"excited","intensity":0.35,"pace":1.0,"speech_act":"exclamation"}
+{"id":"eval_disappointed_e1fcca027c69","text":"I thought we'd have a little more time there.","emotion":"sad","intensity":0.35,"pace":1.0,"speech_act":"statement"}
+{"id":"eval_gentle_loss_question_1c814d2c5c56","text":"What do you wish we could have kept?","emotion":"sad","intensity":0.35,"pace":1.0,"speech_act":"wh_question"}
+{"id":"eval_quiet_reassurance_4145a12eb736","text":"You don't need to make this feel better right away.","emotion":"sad","intensity":0.35,"pace":1.0,"speech_act":"reassurance"}
+{"id":"eval_caution_fddd2a2bb83f","text":"The return marker is harder to see from this angle.","emotion":"concerned","intensity":0.35,"pace":1.0,"speech_act":"statement"}
+{"id":"eval_safety_question_c09da98cd6ab","text":"Is there enough room for everyone to get back?","emotion":"concerned","intensity":0.35,"pace":1.0,"speech_act":"yes_no_question"}
+{"id":"eval_cautious_instruction_c972f6dd2752","text":"Check the loose panel before we lean anything against it.","emotion":"concerned","intensity":0.35,"pace":1.0,"speech_act":"instruction"}
+{"id":"eval_mild_irritation_28d3e4d15399","text":"That same tiny problem has interrupted us three times.","emotion":"frustrated","intensity":0.35,"pace":1.0,"speech_act":"statement"}
+{"id":"eval_frustrated_question_0a6d4afc7a6a","text":"Why did the menu forget the choice we just made?","emotion":"frustrated","intensity":0.35,"pace":1.0,"speech_act":"wh_question"}
+{"id":"eval_not_blame_4e7b64893894","text":"I'm frustrated with the delay; you haven't done anything wrong.","emotion":"frustrated","intensity":0.35,"pace":1.0,"speech_act":"reassurance"}
+{"id":"eval_unexpected_082d84372fb6","text":"I thought that space ended at the far wall.","emotion":"surprised","intensity":0.35,"pace":1.0,"speech_act":"statement"}
+{"id":"eval_surprised_question_65e0d0da5499","text":"Was that drawer always built into the side?","emotion":"surprised","intensity":0.35,"pace":1.0,"speech_act":"yes_no_question"}
+{"id":"eval_unexpected_space_3bbd8fe6c394","text":"Oh, there's an entire shelf behind that panel!","emotion":"surprised","intensity":0.35,"pace":1.0,"speech_act":"exclamation"}
+{"id":"eval_bridge_statement_2937cdfb801d","text":"You're taking the narrow bridge.","emotion":"neutral","intensity":0.0,"pace":1.0,"speech_act":"statement"}
+{"id":"eval_bridge_question_a2a34d0a6087","text":"You're taking the narrow bridge?","emotion":"neutral","intensity":0.0,"pace":1.0,"speech_act":"yes_no_question"}
+{"id":"eval_latch_statement_9e2f48910af5","text":"That latch is working.","emotion":"neutral","intensity":0.0,"pace":1.0,"speech_act":"statement"}
+{"id":"eval_latch_question_c00d8c22df66","text":"That latch is working?","emotion":"neutral","intensity":0.0,"pace":1.0,"speech_act":"yes_no_question"}
+{"id":"eval_brief_neutral_16f71faec20a","text":"Sounds sensible.","emotion":"neutral","intensity":0.0,"pace":1.0,"speech_act":"statement"}
+{"id":"eval_brief_warm_d8676d513285","text":"Lovely, thanks.","emotion":"warm","intensity":0.35,"pace":1.0,"speech_act":"statement"}
+{"id":"eval_names_bays_1ec86195f282","text":"Mira marked bay 12, and Tobin checked bay 20.","emotion":"neutral","intensity":0.0,"pace":1.0,"speech_act":"statement"}
+{"id":"eval_fifteen_fifty_96708f687463","text":"Bring 15 boards, not 50.","emotion":"neutral","intensity":0.0,"pace":1.0,"speech_act":"instruction"}
+{"id":"eval_time_date_6e3a385df8d5","text":"Is the meeting at 8:30 on October 12?","emotion":"neutral","intensity":0.0,"pace":1.0,"speech_act":"yes_no_question"}
+{"id":"eval_coder_names_54d835d13755","text":"Did Kade use Python or C sharp for the Rimrooms tool?","emotion":"neutral","intensity":0.0,"pace":1.0,"speech_act":"yes_no_question"}
+{"id":"eval_chunk_long_8ed990a08ad6","text":"Here's where the little project stands this afternoon. We have a working first version, a short list of changes, and enough notes to explain why we chose the simpler route. The button now uses the same label in both menus, and the drawer opens without catching on the cable. I kept the older copy because comparing the two makes the improvement easier to understand. There is still one awkward corner near the window, but it can wait until we have finished the parts people use every day. The next pass will focus on clear names, useful messages, and an easy way to undo a mistaken choice. Nobody needs to remember the whole arrangement at once. A good starting point is enough, and the rest can become familiar through use. I would rather take a little extra time now than leave someone guessing later. When we stop for the evening, the notes will say what works, what needs another look, and where to begin tomorrow. That should make coming back feel comfortable instead of confusing.","emotion":"neutral","intensity":0.0,"pace":1.0,"speech_act":"statement"}
