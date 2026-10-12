@@ -7,7 +7,7 @@
  "scope": "training-preflight",
  "mode": "generated-on-pod",
  "owner_quote": "Go fastest, voice cap $70 (owner, 2026-10-12, after \"okay do whats best\" and \"option 3 final checks and caps a 50$ per pod running 3 pods in tandum together\") | cap raised: \"well we are gonna have to double that cap\" (owner, 2026-10-12, after the setup restarts)",
- "approved_source_digest": "f7ac6a9ee913efe50ed65acaa9664684d428910f9ce69dee9461273876bef3ec",
+ "approved_source_digest": "b6f9b614fb46acc7b7d877723e214c69fa8d9613cbe116552ba362abe1bed402",
  "approved_dataset_id": "generated-on-pod",
  "approved_hourly_price": 7.98,
  "approved_budget_usd": 140,
@@ -33,6 +33,7 @@
   "relaunch: Cosy probe accepts the onnxruntime-gpu distribution",
   "relaunch: Cosy runtime cache folder created with its parents",
   "voice training cap $70 -> $140, clip pod cap $50 -> $100 (owner: double the cap)",
-  "Cosy renders before Qwen (owner: keep the qwen ones if an issue)"
+  "Cosy renders before Qwen (owner: keep the qwen ones if an issue)",
+  "generate_on_pod.sh: empty shard folders left by an S3 clear start fresh"
  ]
 }

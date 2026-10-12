@@ -110,6 +110,8 @@ fi
 pids=()
 for k in $(seq 0 $((SHARDS - 1))); do
   have "render-$k" && continue
+  # a shard folder with no files left in it (cleared over S3, which leaves empty folders behind) starts fresh
+  [ -d "$G/render/shard-$k" ] && [ -z "$(find "$G/render/shard-$k" -type f -print -quit)" ] && rm -rf "$G/render/shard-$k"
   ( cd "$SRC" && CUDA_VISIBLE_DEVICES=$((k % GPUS)) "$G/venv-qwen/bin/python" -B -u training/voice/make_dataset.py "$G/render/shard-$k" --all \
         --corpus "$G/shards/corpus-$k.jsonl" --event-corpus "$G/shards/events-$k.jsonl" \
         --model-dir "$M/qwen3-tts-base" --qwen-python "$G/venv-qwen/bin/python" \
