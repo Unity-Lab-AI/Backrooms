@@ -354,8 +354,9 @@ def main():
     def clean_of_secret(rows):
         return [r for r in rows if not any(w in json.dumps(r, ensure_ascii=False).lower() for w in secret)]
     life = jl(os.path.join(ROOT, "training", "brain-life", "life.jsonl"))
+    fort = jl(os.path.join(ROOT, "training", "fortress", "fortress.jsonl"))   # the owner's Oct 10 fortress build, distilled
     filled = add_delivery(plays + hl + wu + im + sc + held_tools)
-    train = clean_of_secret(plays + know + voice + hl + wu + im + sc + life)
+    train = clean_of_secret(plays + know + voice + hl + wu + im + sc + life + fort)
     held_voice, held_tools = clean_of_secret(held_voice), clean_of_secret(held_tools)
     rnd.shuffle(train)
     def dump(name, rows):
