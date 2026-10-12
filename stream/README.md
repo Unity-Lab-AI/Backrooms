@@ -24,7 +24,7 @@ NOT applied, and the previous models stay. A GO left on disk for more than three
 
 **Start** brings up Ollama and both models (the voice pre-warmed), OBS, the Twitch window, the studio, the
 webcam, chat, the host voice, the guards, the click queue, Unity the player, and the admin panel at
-`http://127.0.0.1:4318/`. Then she **asks** -- out loud and in the panel's Ready? card -- what you want
+`http://127.0.0.1:4318/` (its chat is the private owner channel: the playing brain answers it with `reply_owner`, never on stream; the local model answers directly only when the autopilot is not running). Then she **asks** -- out loud and in the panel's Ready? card -- what you want
 tonight. **GO** in the panel makes that binding, launches RimWorld, takes OBS live, and arms the company
 colony. Nothing goes live before GO.
 

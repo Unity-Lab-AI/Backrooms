@@ -1087,7 +1087,7 @@
 "type": "function",
 "function": {
 "name": "ladder_set",
-"description": "Edit your ladder on the fly (open-ended, for the whole empire): op 'mark' (name, value true/false) marks a step done; op 'tag' (name, value) changes a setpoint; op 'add_rung' (rung: {id, priority, when: {measured_key: value}, then: [actions], why}) adds or replaces a rung of your own; op 'remove_rung' (name) removes one of yours. Book rungs from the owner cannot be deleted.",
+"description": "Edit your ladder on the fly (open-ended, for the whole empire): op 'mark' (name, value true/false or a number, e.g. title_rank 4) records what the game cannot measure; op 'tag' (name, value) moves a variable setpoint within its bounds (constants are owner-only); op 'add_rung' (rung: {id, priority, when: {measured_key: value or '<X' '>X' '<=X' '>=X' '!=X'}, then: [actions], why, latch}) adds or replaces a rung of your own; op 'remove_rung' (name) removes one of yours. Book rungs from the owner cannot be deleted.",
 "parameters": {
 "type": "object",
 "properties": {

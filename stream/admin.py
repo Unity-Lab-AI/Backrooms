@@ -11,11 +11,12 @@ What the page gives:
   * the colony in one line, straight off the bridge: time speed, the three colonists, letters, alerts
   * ORDERS -- what you type is appended to .local/autopilot/owner-orders.txt, which the autopilot reads at the
     top of every turn as binding orders. That is the handover channel: you type, it obeys, it keeps playing.
-  * CHAT -- talks to the local model directly (Ollama on 127.0.0.1:11434), so you can ask the thing that is
-    running the show what it thinks without going through anybody else.
+  * CHAT -- goes into the private owner channel (the same one as the Persona Studio window), so the brain that
+    is playing reads it as an OWNER block and answers with reply_owner, never on stream. If no brain answers within
+    ADMIN_BRAIN_WAIT seconds (autopilot not running) the local model answers directly instead, and says so.
 
 Nothing here reaches the internet. It binds to 127.0.0.1 only, it never touches RimWorld itself, and the
-orders file is the only thing it writes.
+orders file and the private owner inbox are the only things it writes.
 """
 import http.server, importlib.util, json, os, re, secrets, socket, subprocess, sys, threading, urllib.request, uuid
 
@@ -110,7 +111,58 @@ def colony():
     except Exception as e:
         return {"error": str(e)[:120]}
 
+INBOX = os.path.join(ROOT, ".claude", ".studio-inbox.jsonl")
+OUTBOX = os.path.join(ROOT, ".claude", ".studio-outbox.jsonl")
+
+
+def _last_id(path):
+    last = 0
+    try:
+        for line in open(path, encoding="utf-8"):
+            try:
+                last = max(last, int(json.loads(line).get("id", 0)))
+            except (ValueError, AttributeError):
+                pass
+    except OSError:
+        pass
+    return last
+
+
+def ask_brain(text, wait=float(os.environ.get("ADMIN_BRAIN_WAIT", "90"))):
+    """Owner, 2026-10-12: "train in twitch versus admin conversions fromn the admin panel". The panel chat goes into
+    the same private owner channel as the Persona Studio window: a row without the "[twitch]" prefix, which the
+    playing brain reads as an OWNER block and answers with reply_owner (never on stream). Returns her reply, or
+    None when no brain answered in time (autopilot not running), so the caller can fall back."""
+    import time
+    with _lock:
+        msg_id = _last_id(INBOX) + 1
+        with open(INBOX, "a", encoding="utf-8") as f:
+            f.write(json.dumps({"id": msg_id, "ts": int(time.time() * 1000), "persona": "unity",
+                                "text": text.strip()[:600]}) + "\n")
+    end = time.time() + wait
+    while time.time() < end:
+        try:
+            for line in open(OUTBOX, encoding="utf-8"):
+                try:
+                    r = json.loads(line)
+                except ValueError:
+                    continue
+                if r.get("replyTo") == msg_id and r.get("text"):
+                    return r["text"]
+        except OSError:
+            pass
+        time.sleep(1.5)
+    return None
+
+
 def ask(text):
+    reply = ask_brain(text)
+    if reply is not None:
+        return reply
+    return "(the playing brain did not answer -- autopilot not running; the local model answered instead)\n" + ask_direct(text)
+
+
+def ask_direct(text):
     """The panel chat IS Unity talking to the owner -- not a bare model. Owner, 2026-10-10, after it answered
     'update your representation images more often' with invented translation and recipe jobs: "this dont seem
     right". So: her persona, the live colony, and the tail of her orders go in as the system prompt; anything

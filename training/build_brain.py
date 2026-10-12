@@ -355,6 +355,8 @@ def main():
         return [r for r in rows if not any(w in json.dumps(r, ensure_ascii=False).lower() for w in secret)]
     life = jl(os.path.join(ROOT, "training", "brain-life", "life.jsonl"))
     fort = jl(os.path.join(ROOT, "training", "fortress", "fortress.jsonl"))   # the owner's Oct 10 fortress build, distilled
+    fort += jl(os.path.join(ROOT, "training", "plc", "plc.jsonl"))            # using the RimPLC ladder: read, act, latch, edit
+    fort += jl(os.path.join(ROOT, "training", "tools-coverage", "tools.jsonl"))  # every tool she has, used in real play
     filled = add_delivery(plays + hl + wu + im + sc + held_tools)
     train = clean_of_secret(plays + know + voice + hl + wu + im + sc + life + fort)
     held_voice, held_tools = clean_of_secret(held_voice), clean_of_secret(held_tools)
