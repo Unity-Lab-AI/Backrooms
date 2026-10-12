@@ -11,14 +11,14 @@
 
 ---
 
-## LIVE NOW (2026-10-12, updated 15:07 UTC): two pods running -- read this first after a compaction
+## LIVE NOW (2026-10-12, updated 17:15 UTC): two pods running -- read this first after a compaction
 
 Owner go: *"Go fastest, voice cap $70"*, then *"well we are gonna have to double that cap"*.
 
 | Pod | Id | Shape | $/h | Cap | State at 15:07 |
 |---|---|---|---|---|---|
-| Voice (records, then trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | 7.98 | $140 | 5,000 recorded; merge fixed (`e89843fc`); screened 16:42: **4,845 kept** (121 transcript mismatch, 22 long quiet, 12 rushed; 400 laughter kept). Training refused 16:44: template venv lacked `num2words` (misaki English). Fixed in `82ec54ee`; then spaCy needed `click` (typer 0.27 dropped it): pinned click 8.5.0 + typer 0.16.0 in `a00bb610` (manifest `d2a726d7`, import chain checked in a clean venv); pod restarted ~16:58, reinstalling the venv, then trains ~7-8 h |
-| Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | 3.99 | $50 | Two OOM kills at step 8 (4K screenshot pixels held as Python lists) fixed in `e9f0fc8c`; that exposed that runs 1-2 never passed the screenshots at all (Dataset.from_list dropped the column) and Qwen3.5 needs `mm_token_type_ids` with images: fixed in `4932071` (`BRAIN_BS=8`); restarted 16:43, reinstalling, then ~17-20 s/step x 1,062 = ~5-6 h |
+| Voice (records, then trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | 7.98 | $140 | **TRAINING since 17:14** on 4,845 kept clips (of 5,000; source `a00bb610`, manifest `d2a726d7`): acoustic on GPU 0, vocoder on GPU 1. Fixes on the way: merge rename on the volume (`e89843fc`), `num2words` (`82ec54ee`), click/typer pins (`a00bb610`). Progress samples every 30 min; ~7-8 h |
+| Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | 3.99 | $50 | **TRAINING since 17:09** on `4932071` (`BRAIN_BS=8`, screenshots now really in the batches): past step 8 (both old OOM kills), ~19 s/step, 1,062 steps -> done ~22:45, then GGUF + per-skill eval |
 
 **How to check** (no SSH key is set on these pods):
 - Brain: `https://rm6sdrmiv4dgtp-8000.proxy.runpod.net/` -> `status.txt`, `run.log.txt` (step line: grep `/1062`), `gpu-util.csv` (fields: time, gpu, util %, MiB used, MiB total). 19 GB used + 0 % = setup, not training.
