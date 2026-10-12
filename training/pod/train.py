@@ -72,9 +72,10 @@ for line in open(os.path.join(D, "train.jsonl"), encoding="utf-8"):
         skipped += 1
         continue
     row = {"input_ids": list(enc["input_ids"]), "attention_mask": list(enc["attention_mask"]), "labels": labels}
-    if images:
-        row["pixel_values"] = enc["pixel_values"].tolist()
-        row["image_grid_thw"] = enc["image_grid_thw"].tolist()
+    # only the paths are kept; the pixels are made again per batch in collate(). Holding every 4K screenshot's
+    # pixel_values as Python lists took ~1.5 GB each and the pod was OOM-killed at step 8 (2026-10-12). Every row
+    # carries the key (empty for text rows) because Dataset.from_list takes its columns from the first row.
+    row["image_paths"] = list(images)
     rows.append(row)
 print("examples", len(rows), "skipped", skipped, "cut to seq", cut, "longest tokens",
       max(len(r["input_ids"]) for r in rows), flush=True)
@@ -87,16 +88,19 @@ def collate(batch):
     out = {"input_ids": torch.tensor([b["input_ids"] + [pad] * (n - len(b["input_ids"])) for b in batch]),
            "attention_mask": torch.tensor([b["attention_mask"] + [0] * (n - len(b["attention_mask"])) for b in batch]),
            "labels": torch.tensor([b["labels"] + [-100] * (n - len(b["labels"])) for b in batch])}
-    pv = [b for b in batch if b.get("pixel_values")]
-    if pv:
-        out["pixel_values"] = torch.cat([torch.tensor(b["pixel_values"]) for b in pv]).to(torch.bfloat16)
-        out["image_grid_thw"] = torch.cat([torch.tensor(b["image_grid_thw"]) for b in pv])
+    paths = [p for b in batch for p in (b.get("image_paths") or [])]
+    if paths:
+        from PIL import Image
+        pics = [Image.open(os.path.join(D, p)).convert("RGB") for p in paths]
+        img = proc.image_processor(images=pics, return_tensors="pt")   # same processor and settings as tokenizing
+        out["pixel_values"] = img["pixel_values"].to(torch.bfloat16)
+        out["image_grid_thw"] = img["image_grid_thw"]
     return out
 
 
 if PREFLIGHT:                                               # the longest rows, plus any image row, 2 steps
     rows.sort(key=lambda r: -len(r["input_ids"]))
-    rows = rows[:CFG["bs"] * CFG["ga"] * 2] + [r for r in rows if r.get("pixel_values")][:2]
+    rows = rows[:CFG["bs"] * CFG["ga"] * 2] + [r for r in rows if r.get("image_paths")][:2]
 ds = Dataset.from_list(rows).shuffle(seed=7)
 
 
