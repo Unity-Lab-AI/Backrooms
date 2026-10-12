@@ -65,7 +65,7 @@
   "training/voice/pod/upload_dataset.ps1": "0324ebe21dc322052ae66ac08a56c5e9652f9850f013ee0ddcfd28fd967ebb57",
   "training/voice/pod/upload_volume_s3.ps1": "2ee1dacbd8ab0f0a2fe7f5fb49ddfd410eb731c7fbb0dde6c4109b2f71e0f82a",
   "training/voice/prep.py": "bc845dc41bc9111bd296f9405f68f25c97f5fa5f178f288284074feaa5cab3bb",
-  "training/voice/quality_gate.py": "3ad0c20cc3d682785779aa1fb9c6067677b8459c64eb4e1f09c11d2a7f63921c",
+  "training/voice/quality_gate.py": "673cd9b1f04badc1665e997ca83b9dbe98165c8351d76315fa855868a6b48856",
   "training/voice/receipts/budget-stop-integrity-2026-10-12.json": "33864503c06ecc41a45b8f0211eb4cfb6d9b652e00590ca53292991eec3e9b99",
   "training/voice/receipts/corpus-acceptance-stream-script.json": "de9585cb4462394539926894215a8201b6824b274f3780bf3ed1a5e8d03f80c8",
   "training/voice/receipts/delivery-ab-2026-10-12.json": "7a07ae10ee228a4092170cf569fd3d6879431f9469c79514987b3485ef096754",
@@ -119,5 +119,5 @@
   "training/voice/variations.py": "b0dc9ac0a42f39d8e26ce5fc055d25a286edc4a6de0608048212c457e2fbaa8d",
   "training/voice/vocoder.py": "f6e8543d98c8a0e25a88fd903827c276225aa8713b7c06fe11c6d94ff34822d8"
  },
- "digest": "81fda2b3621f2e871dcfc7bd75799ec71b1bddb1d14c1e08ede0aa5d59b69578"
+ "digest": "a37b91996864b3f3fe8fdcc7aab3c3abdec4663eacfe69f29c19bcdde98f57a6"
 }
