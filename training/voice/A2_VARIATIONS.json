@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "source_repo": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+  "source_revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+  "reference_folder": ".local/voice-lab/auditions/2026-10-11-qwen-r2-low",
+  "reference_candidate": "A",
+  "reference_sha256": "df05af0bd6c0922a9946cab5e92bf692e079454f9a4de2d570e79f2c962267c8",
+  "seed": 11033,
+  "profiles": [
+    {
+      "id": "1-everyday",
+      "label": "Everyday A2, same words",
+      "text": "Hey, come hang out. I'm just fixing this gate before we jump back in. Did you change that setting? Yeah, that's the one. Give me a second... okay. There we go."
+    },
+    {
+      "id": "2-playful",
+      "label": "Playful surprise and restrained excitement",
+      "text": "Hey, come hang out. Wait... did you fix it? Oh, it worked! That was actually awesome. Okay, I'm impressed. You nailed it. There we go."
+    },
+    {
+      "id": "3-soft",
+      "label": "Quieter disappointment and reassurance",
+      "text": "Hey. That was rough. I really thought we'd get them home. Give me a second... okay. We'll figure it out together. I'm still here."
+    },
+    {
+      "id": "4-questions",
+      "label": "Questions, clarification and emphasis",
+      "text": "Did you change that setting? What did you change? The blue one? Oh, the green one. Yeah, that's the one I meant. Are we ready now?"
+    }
+  ],
+  "notes": [
+    "The reference is the owner-selected synthetic A2 recording, not a real person's voice.",
+    "The Base API reuses the reference identity. It does not expose VoiceDesign's instruction control; labels describe intended performances, which must be judged by listening.",
+    "These are source auditions, not a trained or approved deployment voice. No pitch shifting, slowing or emotional waveform effects are applied.",
+    "The unchanged original A2 listening file is copied into the output set for direct comparison."
+  ]
+}

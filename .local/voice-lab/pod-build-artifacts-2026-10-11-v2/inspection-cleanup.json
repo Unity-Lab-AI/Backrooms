@@ -1,0 +1,9 @@
+{
+  "schema": "unity-owned-inspection-cleanup-v1",
+  "container_id": "515db7347e8b27fe80e8ca4b6a79ce242d0b0ceac466245a704c883f8dc5dd3f",
+  "previous_state": "created",
+  "container_started": false,
+  "removed_owned_stopped_container": true,
+  "image_removed": false,
+  "volume_removed": false
+}

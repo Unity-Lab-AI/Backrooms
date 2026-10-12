@@ -1,0 +1,25 @@
+{
+  "schema": "unity-voice-debian-snapshot-v1",
+  "status": "release-metadata-observed-no-install",
+  "snapshot": "20261010T000000Z",
+  "indexes": [
+    {
+      "url": "https://snapshot.debian.org/archive/debian/20261010T000000Z/dists/bookworm/Release",
+      "resolved_url": "https://snapshot.debian.org/file/15f2be9ee108a3156330423d8bead85eac3698ff/Release",
+      "sha256": "abcf5882746e0f68171f41adbb4ac01b74b49d62d203379befb9265804311a4f",
+      "bytes": 149266,
+      "date": "Sat, 11 Jul 2026 10:16:37 UTC"
+    },
+    {
+      "url": "https://snapshot.debian.org/archive/debian-security/20261010T000000Z/dists/bookworm-security/Release",
+      "resolved_url": "https://snapshot.debian.org/file/9a038b0417062fd4a9d8ed7f1b5f652e2d116198/Release",
+      "sha256": "83ad927bc43156e2f950e8bd4eef7fd134309ff0538c89ec55d000547a1bc78c",
+      "bytes": 33120,
+      "date": "Fri, 09 Oct 2026 13:52:25 UTC"
+    }
+  ],
+  "limitations": [
+    "APT signatures, exact package indexes and package checksums still apply at build.",
+    "No OS package installation or custom image construction occurred."
+  ]
+}

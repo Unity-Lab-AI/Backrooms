@@ -1,0 +1,40 @@
+{
+  "recorded_at": "2026-10-12T06:14:19.9933399+00:00",
+  "processes": [
+    {
+      "ProcessId": 31052,
+      "ParentProcessId": 25148,
+      "Name": "python.exe",
+      "CommandLine": "\"C:\\Program Files\\Python310\\python.exe\" -B -u training/voice/make_dataset.py .local/voice-lab/dataset/A2-full-1378-draft-v3 --model-dir .local/voice-lab/models/qwen3-tts-base --qwen-python .local/voice-lab/.venv-qwen/Scripts/python.exe --cosy-python .local/voice-lab/.venv-cosy/Scripts/python.exe --cosy-code-dir .local/voice-lab/models/cosyvoice-code --cosy-model-dir .local/voice-lab/models/cosyvoice3 --all"
+    },
+    {
+      "ProcessId": 3800,
+      "ParentProcessId": 20304,
+      "Name": "python.exe",
+      "CommandLine": "\"C:\\Program Files\\Python310\\python.exe\" -B -u training/voice/inspect_source_audio.py .local/voice-lab/dataset/A2-full-1378-draft-v3 .local/voice-lab/dataset/A2-full-1378-screen-v2 --model-dir C:/Users/gfour/.cache/huggingface/hub/models--Systran--faster-whisper-base/snapshots/ebe41f70d5b6dfa9166e2c581c45c9c0cfc57b66 --threads 4 --watch --max-seconds 28800"
+    },
+    {
+      "ProcessId": 12020,
+      "ParentProcessId": 35192,
+      "Name": "python.exe",
+      "CommandLine": "\"C:\\Program Files\\Python310\\python.exe\" \"-B\" \"-u\" \"C:\\Users\\gfour\\Desktop\\Backrooms\\training\\voice\\run_expanded_preparation.py\" \"--seed\" \"C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\dataset\\A2-full-1378-draft-v3\" \"--seed-screen\" \"C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\dataset\\A2-full-1378-screen-v2\" \"--output\" \"C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\background\\A2-expanded-2026-10-12-v2\\pipeline\" \"--qwen-model\" \"C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\models\\qwen3-tts-base\" \"--qwen-python\" \"C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\.venv-qwen\\Scripts\\python.exe\" \"--cosy-python\" \"C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\.venv-cosy\\Scripts\\python.exe\" \"--cosy-code\" \"C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\models\\cosyvoice-code\" \"--cosy-model\" \"C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\models\\cosyvoice3\" \"--asr-model\" \"C:\\Users\\gfour\\.cache\\huggingface\\hub\\models--Systran--faster-whisper-base\\snapshots\\ebe41f70d5b6dfa9166e2c581c45c9c0cfc57b66\" \"--source-digest\" \"7138ec0643a19b3db60ffa1dc5bd4d2739b93e5ca25a439b7f3490f4dedf7e00\" \"--max-seconds\" \"172800\""
+    }
+  ],
+  "status": {
+    "schema": "unity-expanded-source-job-v1",
+    "recorded_at": "2026-10-12T00:13:54.035199-06:00",
+    "pid": 12020,
+    "stage": "waiting_existing_seed_and_screen",
+    "source_digest": "7138ec0643a19b3db60ffa1dc5bd4d2739b93e5ca25a439b7f3490f4dedf7e00",
+    "deadline_seconds": 172800,
+    "elapsed_seconds": 481.8,
+    "owned_children": {},
+    "training_started": false,
+    "pod_rented": false,
+    "uploaded": false,
+    "corpus_acceptance": "not_granted",
+    "seed_dataset": "C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\dataset\\A2-full-1378-draft-v3",
+    "seed_screen": "C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\dataset\\A2-full-1378-screen-v2"
+  },
+  "stderr_bytes": 0
+}

@@ -1,0 +1,9 @@
+{
+  "schema": "unity-background-launch-observation-v1",
+  "recorded_at": "2026-10-12T06:05:45.9840874+00:00",
+  "reported_pid": 34580,
+  "host_pid_observed": false,
+  "status_file_observed": false,
+  "stderr_bytes": 0,
+  "conclusion": "First sandbox launch did not persist; no source stage began. Preserve receipt, use host-authorized v2 launch."
+}

@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "training_allowed": false,
+  "deployment_allowed": false,
+  "checks": {
+    "source_auditions": {
+      "accepted": true,
+      "receipt": "training/voice/receipts/source-auditions.json",
+      "receipt_sha256": "506537a791bc87c722bef6a6571c4e55a90af81e290581cca84ce741c3ca43cc",
+      "reason": "Original A2 plus initial variations and later original-reference natural happy/chuckle performances accepted. Cosy neutral, sarcasticB2, cartoonD1 and flat happy corpus performance are rejected. Full corpus/student not accepted."
+    },
+    "corpus_acceptance": {
+      "accepted": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "reason": "All32 delivered pilot recordings accepted and curated exactly. Owner now requires at least5000 varied recordings and several hours before considering a pod; existing1378 is a seed batch, expansion adds3622. Final merged corpus/QA/listening decision remains separate; pilot approval cannot approve another dataset."
+    },
+    "emotion_conditioning": {
+      "accepted": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "reason": "V2 learned delivery and separate voicing channels are implemented in source. Actual model/training/inference execution and performed emotional supervision remain unaccepted."
+    },
+    "leakage_free_evaluation": {
+      "accepted": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "reason": "Normalized lexical variants now share a split and train-only statistics are implemented. The pilot has both partitions; full dataset and independently authored unseen listening acceptance remain open."
+    },
+    "free_running_evaluation": {
+      "accepted": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "reason": "A held-out free-running speech/prosody evaluation plan and bounded local preflight are required; teacher-forced mel losses and one repeated sample line are insufficient. A completed final trained model is not required at this stage."
+    },
+    "resume_integrity": {
+      "accepted": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "reason": "V2 dataset/features/checkpoints/exports and pod run namespaces are identity-bound. Interrupted writes and RNG-exact worker/resume behavior still need acceptance."
+    },
+    "budget_stop_integrity": {
+      "accepted": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "reason": "Source rails now use fixed deadlines, owned worker process groups, sibling cleanup and bounded stop retries/acknowledgment logs. Actual stop authentication/provider state, failure/interruption behavior, billing and durable-volume observations remain unaccepted."
+    },
+    "immutable_run_inputs": {
+      "accepted": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "reason": "First-party source, references, receipts and corpus inputs are hashed. Actual local Linux image/install inventory is observed and saved (103pins); registry publication, actual H100/provider/durable-volume verification and approved priced work configuration remain unresolved."
+    },
+    "owner_training_authorization": {
+      "accepted": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "reason": "Latest owner instruction explicitly prohibits starting training or renting a pod. Preparation only; no priced run authorization exists."
+    },
+    "trained_voice_acceptance": {
+      "accepted": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "reason": "Deployment only: the final acoustic/vocoder/frontend pair needs an identity-bound owner listening acceptance. No trained final voice is currently approved."
+    },
+    "local_playback_acceptance": {
+      "accepted": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "reason": "Deployment only: verify bounded inference and owner/OBS playback consistency beside the brain, game and other GPU users on the 16 GB rig."
+    }
+  }
+}

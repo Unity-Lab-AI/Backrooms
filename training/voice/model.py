@@ -1,4 +1,4 @@
-"""Unity's acoustic model, trained from random weights: phonemes -> log-mel, with explicit knobs.
+"""Unity's v2 acoustic student, trained from random weights on labeled performances.
 
 FastSpeech2-style. A transformer encoder reads the phonemes, three small predictors give every phoneme a
 duration, a pitch and an energy, a length regulator stretches the phonemes to frames and a transformer
@@ -6,19 +6,21 @@ decoder writes the mel. Durations are learned without any outside aligner: a sma
 scores every (frame, phoneme) pair, trained by a forward-sum (CTC) loss, and monotonic alignment search
 turns that into hard durations (Badlani et al., "One TTS Alignment To Rule Them All").
 
-The knobs are the emotion: at inference the predicted pitch can be shifted, its range widened, given a
-contour, and energy and pace scaled per phoneme -- see infer.py PRESETS.
+Emotion, speech act, intensity and pace condition the encoder and its predictors. They are learned
+only from suitable recorded performances. Event tokens need performed examples and TRAIN support;
+there is no invented emotional contour or learned word-focus control.
 """
-import hashlib
 import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from dataset_contract import EMOTIONS, SPEECH_ACTS, MAX_PHONEMES, MAX_FRAMES, MAX_PHONE_FRAMES
 
 
-def is_heldout(name):
-    """2% of clips, by name hash, never trained on by either model: the honest check."""
-    return int(hashlib.sha1(name.encode()).hexdigest()[:8], 16) % 50 == 0
+def is_heldout(text):
+    """Legacy caller helper, now grouped by normalized transcript rather than speed-specific clip id."""
+    from dataset_contract import split_for
+    return split_for(text) == "heldout"
 
 
 def mask_from_lens(lens, n=None):
@@ -36,6 +38,8 @@ class PosEnc(nn.Module):
         self.register_buffer("pe", pe)
 
     def forward(self, x):                      # x [B, T, d]
+        if x.size(1) > self.pe.size(0):
+            raise ValueError("Utterance exceeds positional encoding; split it at a sentence boundary")
         return x + self.pe[: x.size(1)][None]
 
 
@@ -77,8 +81,8 @@ class Predictor(nn.Module):
         self.drop, self.out = nn.Dropout(drop), nn.Linear(d, 1)
 
     def forward(self, x, real):
-        x = self.drop(self.n1(F.relu(self.c1(x.transpose(1, 2))).transpose(1, 2)))
-        x = self.drop(self.n2(F.relu(self.c2(x.transpose(1, 2))).transpose(1, 2)))
+        x = self.drop(self.n1(F.relu(self.c1(x.transpose(1, 2))).transpose(1, 2))) * real[..., None]
+        x = self.drop(self.n2(F.relu(self.c2(x.transpose(1, 2))).transpose(1, 2))) * real[..., None]
         return self.out(x).squeeze(-1) * real
 
 
@@ -94,7 +98,9 @@ class Aligner(nn.Module):
 
     def forward(self, emb, mel, text_real):    # emb [B,N,d], mel [B,80,T]
         k, q = self.k(emb.transpose(1, 2)), self.q(mel)                     # [B,c,N], [B,c,T]
-        dist = (q[:, :, :, None] - k[:, :, None, :]).pow(2).sum(1)          # [B,T,N]
+        # Same squared distance without a B*c*T*N broadcast allocation and its gradients.
+        dist = (q.square().sum(1)[:, :, None] + k.square().sum(1)[:, None, :]
+                - 2 * torch.bmm(q.transpose(1, 2), k)).clamp(min=0)        # [B,T,N]
         logp = -self.temp * dist
         logp = logp.masked_fill(~text_real[:, None, :], -1e4)
         return logp                                                          # unnormalized
@@ -107,7 +113,7 @@ def forward_sum_loss(logp, text_lens, mel_lens, blank=-1.0):
     lp = F.log_softmax(logp, dim=-1).transpose(0, 1)                         # [T,B,N+1]
     n = logp.size(2) - 1
     target = torch.arange(1, n + 1, device=logp.device)[None].expand(logp.size(0), n)
-    return F.ctc_loss(lp, target, mel_lens, text_lens, zero_infinity=True)
+    return F.ctc_loss(lp, target, mel_lens, text_lens, zero_infinity=False)
 
 
 try:
@@ -187,16 +193,17 @@ def token_index(dur, n_frames):
     return idx.clamp(max=dur.size(1) - 1), real
 
 
-def phoneme_average(frame_values, dur, voiced_only=False):
+def phoneme_average(frame_values, dur, voiced_mask=None):
     """Mean of a frame curve inside each phoneme's frames. frame_values [B,T], dur [B,N] -> [B,N]."""
     ends = dur.cumsum(1)
     starts = ends - dur
-    csum = F.pad(frame_values.float().cumsum(1), (1, 0))
-    if voiced_only:
-        ccount = F.pad((frame_values != 0).float().cumsum(1), (1, 0))
+    values = frame_values.float() if voiced_mask is None else frame_values.float() * voiced_mask.float()
+    csum = F.pad(values.cumsum(1), (1, 0))
+    if voiced_mask is not None:
+        ccount = F.pad(voiced_mask.float().cumsum(1), (1, 0))
     ends_c, starts_c = ends.clamp(max=csum.size(1) - 1), starts.clamp(max=csum.size(1) - 1)
     total = csum.gather(1, ends_c) - csum.gather(1, starts_c)
-    count = (ccount.gather(1, ends_c) - ccount.gather(1, starts_c)) if voiced_only else dur.float()
+    count = (ccount.gather(1, ends_c) - ccount.gather(1, starts_c)) if voiced_mask is not None else dur.float()
     return torch.where(count > 0, total / count.clamp(min=1), torch.zeros_like(total))
 
 
@@ -210,46 +217,70 @@ def regulate(x, dur, n_frames=None):
 
 
 class UnityVoice(nn.Module):
-    def __init__(self, n_symbols, n_mels=80, d=256, enc=4, dec=4):
+    def __init__(self, n_symbols, n_mels=80, d=256, enc=4, dec=4, conditioning="emotion-act-intensity-pace-v2", voicing=True):
         super().__init__()
+        if conditioning != "emotion-act-intensity-pace-v2" or not voicing:
+            raise ValueError("Unsupported acoustic v2 configuration")
         self.emb = nn.Embedding(n_symbols, d, padding_idx=0)
+        self.emotion_emb = nn.Embedding(len(EMOTIONS), d)
+        self.act_emb = nn.Embedding(len(SPEECH_ACTS), d)
+        self.delivery_emb = nn.Sequential(nn.Linear(2, d), nn.SiLU(), nn.Linear(d, d))
         self.encoder, self.decoder = Stack(d, enc), Stack(d, dec)
-        self.dur, self.pitch, self.energy = Predictor(d), Predictor(d), Predictor(d)
+        self.dur, self.pitch, self.energy, self.voicing = Predictor(d), Predictor(d), Predictor(d), Predictor(d)
         self.pitch_emb = nn.Conv1d(1, d, 3, padding=1)
         self.energy_emb = nn.Conv1d(1, d, 3, padding=1)
+        self.voicing_emb = nn.Conv1d(1, d, 3, padding=1)
         self.aligner = Aligner(d, n_mels)
         self.out = nn.Linear(d, n_mels)
 
-    def forward(self, phon, text_lens, mel, mel_lens, f0n, en):
-        """Training pass. f0n / en are frame curves already normalized (0 = unvoiced for f0n)."""
-        text_real = mask_from_lens(text_lens, phon.size(1))
+    def encode(self, phon, real, condition):
+        numeric = torch.stack((condition["intensity"], (condition["pace"] - 1.0) / 0.35), dim=-1)
+        style = self.emotion_emb(condition["emotion"]) + self.act_emb(condition["speech_act"]) + self.delivery_emb(numeric)
         emb = self.emb(phon)
-        h = self.encoder(emb, text_real)
+        return emb, self.encoder((emb + style[:, None]) * real[..., None], real)
+
+    def forward(self, phon, text_lens, mel, mel_lens, f0n, en, voiced, condition):
+        """Oracle reconstruction; never label its mel loss as text-only synthesis quality."""
+        text_real = mask_from_lens(text_lens, phon.size(1))
+        emb, h = self.encode(phon, text_real, condition)
         with torch.autocast("cuda", enabled=False):                        # distances need fp32
             logp = self.aligner(emb.float(), mel.float(), text_real)
         dur = hard_durations(logp, text_lens, mel_lens)
-        p_tgt = phoneme_average(f0n, dur, voiced_only=True)
+        p_tgt = phoneme_average(f0n, dur, voiced_mask=voiced)
         e_tgt = phoneme_average(en, dur)
+        v_tgt = phoneme_average(voiced, dur)
         p_hat, e_hat, d_hat = self.pitch(h, text_real), self.energy(h, text_real), self.dur(h, text_real)
-        h = h + self.pitch_emb(p_tgt[:, None]).transpose(1, 2) + self.energy_emb(e_tgt[:, None]).transpose(1, 2)
+        v_hat = self.voicing(h, text_real)
+        h = h + self.pitch_emb((p_tgt * v_tgt)[:, None]).transpose(1, 2) + self.energy_emb(e_tgt[:, None]).transpose(1, 2)
+        h = h + self.voicing_emb(v_tgt[:, None]).transpose(1, 2)
         frames, lens = regulate(h, dur)
         mel_hat = self.out(self.decoder(frames, mask_from_lens(lens, frames.size(1)))).transpose(1, 2)
         return dict(mel_hat=mel_hat, logp=logp, dur=dur, p_tgt=p_tgt, e_tgt=e_tgt, p_hat=p_hat, e_hat=e_hat,
-                    d_hat=d_hat, text_real=text_real)
+                    d_hat=d_hat, v_hat=v_hat, v_tgt=v_tgt, text_real=text_real)
 
     @torch.no_grad()
-    def infer(self, phon, pitch_fn=None, energy_fn=None, pace_fn=None):
-        """phon [1,N]. Each *_fn(values [N], position 0..1 [N]) -> adjusted values: the emotion knobs."""
+    def infer(self, phon, condition):
+        """Text-only synthesis with recorded-delivery conditioning; no arbitrary sine-wave emotion."""
+        if (phon.ndim != 2 or phon.size(0) != 1 or phon.dtype != torch.long or not 0 < phon.size(1) <= MAX_PHONEMES
+                or (phon <= 0).any().item() or (phon >= self.emb.num_embeddings).any().item()):
+            raise ValueError("Expected one nonempty bounded phoneme utterance")
         real = torch.ones_like(phon, dtype=torch.bool)
-        h = self.encoder(self.emb(phon), real)
+        _, h = self.encode(phon, real, condition)
         p, e = self.pitch(h, real)[0], self.energy(h, real)[0]
+        voiced = torch.sigmoid(self.voicing(h, real)[0])
         logd = self.dur(h, real)[0]
-        pos = torch.linspace(0, 1, phon.size(1), device=phon.device)
-        if pitch_fn: p = pitch_fn(p, pos)
-        if energy_fn: e = energy_fn(e, pos)
+        if not all(torch.isfinite(value).all().item() for value in (p, e, voiced, logd)):
+            raise ValueError("Model predicts nonfinite prosody; refuse audio")
+        if (logd > math.log(MAX_PHONE_FRAMES + 1)).any().item():
+            raise ValueError("Model predicts an excessive phoneme duration; checkpoint needs review")
         d = torch.exp(logd) - 1
-        if pace_fn: d = pace_fn(d, pos)
-        dur = torch.clamp(torch.round(d), min=1).long()[None]
-        h = h + self.pitch_emb(p[None, None]).transpose(1, 2) + self.energy_emb(e[None, None]).transpose(1, 2)
+        dur = torch.clamp(torch.round(d), min=1, max=MAX_PHONE_FRAMES).long()[None]
+        if dur.sum().item() > MAX_FRAMES:
+            raise ValueError("Predicted utterance is too long; split at a sentence boundary")
+        h = h + self.pitch_emb((p * voiced)[None, None]).transpose(1, 2) + self.energy_emb(e[None, None]).transpose(1, 2)
+        h = h + self.voicing_emb(voiced[None, None]).transpose(1, 2)
         frames, lens = regulate(h, dur)
-        return self.out(self.decoder(frames, mask_from_lens(lens))).transpose(1, 2)
+        mel = self.out(self.decoder(frames, mask_from_lens(lens))).transpose(1, 2)
+        if not torch.isfinite(mel).all().item():
+            raise ValueError("Model predicts nonfinite mel; refuse audio")
+        return mel

@@ -1,0 +1,16 @@
+{
+  "schema": "unity-expanded-source-job-v1",
+  "recorded_at": "2026-10-12T06:26:26.898203+00:00",
+  "pid": 12020,
+  "stage": "waiting_existing_seed_and_screen",
+  "source_digest": "7138ec0643a19b3db60ffa1dc5bd4d2739b93e5ca25a439b7f3490f4dedf7e00",
+  "deadline_seconds": 172800,
+  "elapsed_seconds": 1234.7,
+  "owned_children": {},
+  "training_started": false,
+  "pod_rented": false,
+  "uploaded": false,
+  "corpus_acceptance": "not_granted",
+  "seed_dataset": "C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\dataset\\A2-full-1378-draft-v3",
+  "seed_screen": "C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\dataset\\A2-full-1378-screen-v2"
+}

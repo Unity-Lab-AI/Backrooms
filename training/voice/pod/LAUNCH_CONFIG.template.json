@@ -1,0 +1,34 @@
+{
+  "schema": "unity-voice-launch-config-v1",
+  "status": "locked-no-rental-no-training",
+  "VOICE_DIGEST": null,
+  "VOICE_DATASET_ID": null,
+  "VOICE_DATASET_DIR": null,
+  "VOICE_IMAGE_DIGEST": null,
+  "VOICE_ENVIRONMENT_RECEIPT": null,
+  "VOICE_ENVIRONMENT_RECEIPT_SHA256": null,
+  "VOICE_VOLUME_ID": null,
+  "VOICE_VOLUME_RECEIPT": null,
+  "VOICE_VOLUME_RECEIPT_SHA256": null,
+  "RUNPOD_POD_ID": null,
+  "VOICE_BILLING_STARTED_EPOCH": null,
+  "AUTHORIZED_PUBLIC_KEY": null,
+  "PRICE_PER_HOUR": null,
+  "BUDGET_USD": null,
+  "KEEP_HOURS": null,
+  "candidate_work": {
+    "ACOUSTIC_STEPS": 20000,
+    "ACOUSTIC_FRAMES": 96000,
+    "VOCODER_STEPS": 120000,
+    "VOCODER_BATCH": 32,
+    "GTA_STEPS": 20000,
+    "VOICE_SEED": 17
+  },
+  "notes": [
+    "This template cannot authorize, rent, start, stop or delete anything.",
+    "Choose the final accepted dataset, immutable source digest, image, actual displayed total hourly rate, budget and retention before the priced owner decision.",
+    "Engineering observations are not fabricated from flags or mount-path names.",
+    "Do not set a training command as the pod startup command; initial entry must be a no-training sleep/SSH environment.",
+    "Billing-start epoch must come from the actual launch record, never the time training happens to start."
+  ]
+}

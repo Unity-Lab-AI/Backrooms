@@ -1,0 +1,9 @@
+*
+!Dockerfile
+!DEBIAN_SNAPSHOT.json
+!export_environment.py
+!start_no_training.sh
+!environment.lock.json
+!ENVIRONMENT_SPEC.json
+!requirements-build.lock.txt
+!requirements-runtime.lock.txt

@@ -1,0 +1,65 @@
+{
+  "schema": "unity-voice-local-environment-build-v1",
+  "status": "built-and-inventoried-local-only",
+  "recorded_at": "2026-10-12T05:11:00.822617+00:00",
+  "verified_by": "Codex engineering preparation",
+  "owner_authorization_quote": "Yes \u2014 local Docker build only",
+  "build_exit_code": 0,
+  "installation_check": "No broken requirements found.",
+  "local_image_tag": "unity-a2-prep:20261011-v2",
+  "local_image_id": "sha256:3786ba627ace02b521b97f5aa9ef0f647fcad2133e73b1d69c7d0ced0e9ffd3f",
+  "local_oci_index_digest": "sha256:3786ba627ace02b521b97f5aa9ef0f647fcad2133e73b1d69c7d0ced0e9ffd3f",
+  "local_image_bytes": 3429124586,
+  "platform": "linux/amd64",
+  "python": "3.10.18",
+  "context_files_sha256": {
+    ".dockerignore": "1f5133b57c837b497532c71d62e6ea9cd05ea0ab52f70d0a920d4b79ae4e0304",
+    "DEBIAN_SNAPSHOT.json": "eed8d6781c2ed6f7e5cf61c0c4b90cdaeb7b461e68374e041535a3783281ff67",
+    "Dockerfile": "bcb6d4ff107bf2e62d9fd6452ceda115624ee45bed29e0f9d59e07611f40790c",
+    "environment.lock.json": "5081be03f5025ce38e4c2f0162f5337c9f85162101335741f74d140702478f9d",
+    "ENVIRONMENT_SPEC.json": "63ef24a99153b101285c3969faa24233060b85acceac24b334ce4f68a38180f0",
+    "export_environment.py": "bf774ca277f511504f238588618a9128a57f12f82afaf30aba82ceafa55bf6be",
+    "requirements-build.lock.txt": "932f3d806b26d4b14483c841c4afa9ee18bf389038653441dd69daa3e2d2265e",
+    "requirements-runtime.lock.txt": "aefa5274733095174019040e461cb8fc7d02f06c1175262967455a8f4cf17809",
+    "start_no_training.sh": "ff8556f9ca436a5eabada79e53c7f8b02b25c419ce9cb6a1d7397fbadff8f0da"
+  },
+  "build_artifacts_directory": "C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\pod-build-artifacts-2026-10-11-v2",
+  "build_metadata_sha256": "267325856566a2682b5d1178e47cf0711294ffefd4a0f908abec05de45fb433e",
+  "image_inspect_sha256": "b2a88ec312e62ed3439974992fb508b134d6f90195fed05f6e22b314d9ae6e47",
+  "image_archive": {
+    "schema": "unity-local-image-archive-v1",
+    "path": "C:\\Users\\gfour\\Desktop\\Backrooms\\.local\\voice-lab\\pod-build-artifacts-2026-10-11-v2\\unity-a2-environment.docker.tar",
+    "bytes": 3429147136,
+    "sha256": "bb7630a5dfdcd9b7354921161baf32d22de66a3ca47a871412410f41c47f7faa",
+    "registry_published": false,
+    "container_started": false,
+    "student_training_started": false,
+    "pod_rented": false
+  },
+  "observed_distributions": 103,
+  "artifact_lock_sha256": "5081be03f5025ce38e4c2f0162f5337c9f85162101335741f74d140702478f9d",
+  "observed_runtime_asset_files": 887,
+  "runtime_role_counts": {
+    "english_model": 28,
+    "espeak_library": 369,
+    "espeak_data": 489,
+    "libsndfile": 1
+  },
+  "saved_inventories_sha256": {
+    "training/voice/receipts/environment-2026-10-11-v2/observation.json": "9cb732d393dff3c5d85742fe6520cfbcf3a55c61f217e55c52c858eeb6125412",
+    "training/voice/receipts/environment-2026-10-11-v2/os-packages.tsv": "6a0ca30410bb5f2a1aedbf62626477855cb24e45e8677a748d3340617021c852",
+    "training/voice/receipts/environment-2026-10-11-v2/package-lock.json": "bdf2d5bb1ac1e09f0b3a69668e7bb54f343313ca1613890c617fad848fa6f3e4",
+    "training/voice/receipts/environment-2026-10-11-v2/runtime-assets.json": "c25d8adfd29d25e1501c41f8bbfd04861bde01ebedf739d92bdfe0d3397db9d3"
+  },
+  "inspection_container_state": "created-never-started",
+  "registry_image_digest": null,
+  "student_training_started": false,
+  "pod_rented": false,
+  "live_voice_changed": false,
+  "functional_model_tests_run": false,
+  "limitations": [
+    "Actual local install/inventory is observed; no H100, model imports, training, inference, recovery, provider stop, billing or durability acceptance.",
+    "A local image ID/index/archive is not a published registry reference.",
+    "Future publication and exact launch parameters require separate authorization; price/provider/volume fields remain unset."
+  ]
+}

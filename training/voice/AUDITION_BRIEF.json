@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "purpose": "Original English voice identity and delivery auditions; no training or runtime replacement",
+  "source_route": "Owner chose expressive pretrained tools locally as potential training source on 2026-10-11",
+  "source_repo": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+  "source_revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+  "seed": 11031,
+  "text": "Hey, you made it. Grab a seat; I'm fixing this gate. Did you change that setting? Wait... it worked! Okay, that was actually awesome. Oh. We lost the crew. Give me a second. We'll figure it out together.",
+  "delivery": "One original adult woman throughout, speaking English with a General American accent. Speak naturally to a familiar friend, not to a crowd. Start relaxed and warmly welcoming. Ask 'Did you change that setting?' as a genuine curious question. Give 'Wait... it worked!' a spontaneous surprised lift, then restrained happy excitement. Let 'Oh. We lost the crew. Give me a second.' become quietly disappointed, with a small meaningful pause rather than exaggerated sobbing. Finish 'We'll figure it out together' with gentle reassurance. Keep clear diction, normal contractions, context-appropriate stress and varied phrase timing. Maintain one speaker identity through the emotional changes. Avoid a forced announcer cadence, constant upspeak, shrillness, nasal caricature, breathy whispering or theatrical shouting.",
+  "candidates": [
+    {
+      "id": "A",
+      "label": "Warm and lightly husky",
+      "identity": "A woman in her mid-twenties with a warm lower-mid feminine register and a subtle naturally husky texture. Smooth rounded vowels, grounded friendly presence, relaxed confident gamer and coder delivery, and understated playful amusement. Her warmth remains audible beneath excitement and disappointment."
+    },
+    {
+      "id": "B",
+      "label": "Clear and lively",
+      "identity": "A woman in her mid-twenties with a clear mid-register feminine voice, smooth bright resonance and a small friendly smile in the tone. Lively and quick-witted but comfortable to hear for a long conversation. Lightly playful peer-to-peer gamer and coder delivery, with controlled energy and no squeaky high pitch."
+    },
+    {
+      "id": "C",
+      "label": "Mellow and dryly playful",
+      "identity": "A woman in her mid-twenties with a mellow lower-mid feminine voice, soft rounded resonance and a little natural grain. Calm, close conversational delivery, dry humor and confident thoughtful coder energy. More understated than bubbly, but emotionally responsive and clearly articulated rather than sleepy or whispered."
+    }
+  ],
+  "owner_approved_candidate": null,
+  "notes": [
+    "Descriptions are targets, not claims that generated audio successfully meets them.",
+    "VoiceDesign auditions are not a stable trained voice; the chosen identity still needs a reference and cross-line consistency proof.",
+    "The original Kokoro number5 vector and rejected dataset remain preserved.",
+    "A final model must learn delivery from suitable labeled performances. These auditions do not prove that the existing student architecture can reproduce them."
+  ]
+}

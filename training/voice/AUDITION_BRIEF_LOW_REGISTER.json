@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "purpose": "Second audition after the owner rejected all three first-round voices as too high and childlike",
+  "source_route": "Expressive pretrained tools locally as possible source only; no training",
+  "source_repo": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+  "source_revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+  "seed": 11032,
+  "text": "Hey, come hang out. I'm just fixing this gate before we jump back in. Did you change that setting? Yeah, that's the one. Give me a second... okay. There we go.",
+  "delivery": "Speak English with a General American accent as one fully grown adult woman in her twenties. Keep the actual acoustic speaking register LOW, with full chest resonance, comfortable breath support and clear normal speech. Talk casually to a familiar friend while working at a computer. Maintain the same mature low-register identity through the genuine question and small relieved smile at the end. Use natural connected speech and understated variation, never an announcer cadence. Her ordinary pitch remains low; emotional inflections are modest. No squeaky, girlish, thin, nasal or breathy whisper delivery. This is natural adult conversation, not theatrical character acting.",
+  "candidates": [
+    {
+      "id": "A",
+      "label": "Low warm alto",
+      "identity": "A young adult woman with a distinctly LOW alto speaking voice, rich rounded chest resonance and warm, smooth lower notes. The comfortable speaking pitch is roughly 155 to 175 hertz. Slight natural huskiness, grounded confidence and a friendly easygoing gamer-coder manner. Keep full vocal body even on light syllables."
+    },
+    {
+      "id": "B",
+      "label": "Deep smoky contralto",
+      "identity": "A young adult woman with a DEEP contralto speaking register, genuinely low pitch roughly 140 to 165 hertz, and textured smoky resonance. Her tone is naturally husky but healthy and intelligible, not croaky or whispered. Relaxed intimate conversational warmth and dry understated humor, with a grown adult presence."
+    },
+    {
+      "id": "C",
+      "label": "Grounded clear alto",
+      "identity": "A young adult woman with a LOW, full-bodied alto speaking register around 160 to 180 hertz. Clear forward diction over rich chest resonance, with a little natural grain. Confident, mellow, conversational and lightly teasing. Adult and grounded even when she sounds pleased; never light and high or cartoonishly girlish."
+    }
+  ],
+  "owner_approved_candidate": null,
+  "prior_round_rejection": "none of those they all sound like highpitch children not correcyl a 20 yr old",
+  "notes": [
+    "Pitch descriptions are generation requests, not measured guarantees or a definition of age.",
+    "No waveform pitch shifting or slowing is used to fake a deeper voice.",
+    "First establish acceptable identity on relaxed speech; then verify emotional states without losing that identity.",
+    "Original voice candidates only; no real-person reference recordings are used."
+  ]
+}

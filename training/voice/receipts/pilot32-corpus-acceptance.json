@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "check_id": "corpus_acceptance",
+  "decision": "accepted",
+  "accepted_by": "owner",
+  "recorded_at": "2026-10-11T21:59:52-06:00",
+  "scope": "training-preflight",
+  "owner_quote": "they are all good just go ahead and finish up soi you in reguards of being ready for the pod run but no start yet and no pod rental yet",
+  "approved_dataset_id": "06e9c2b2043e523b684eb7ce32a171dff91ce64af180f2f4a20faeefc710f9e7",
+  "voice_id": "unity-a2-low-warm-alto-v1",
+  "review_scope": "all32 heard clips only; preparatory curated pilot is not the full training corpus",
+  "evidence": [
+    {
+      "path": "training/voice/receipts/pilot32-owner-listening.json",
+      "sha256": "76315cb661ed5bf9fda7fc2b8fd52c04c35b365c53e020d937d442eddecc4e94"
+    },
+    {
+      "path": ".local/voice-lab/dataset/A2-reviewed-32-v3/metadata.jsonl",
+      "sha256": "1ddaee52b38307d113c67a5dd8d5be6e4f4a6bcfe263ef30eafd777ee7951861"
+    },
+    {
+      "path": ".local/voice-lab/dataset/A2-reviewed-32-v3/curation-receipt.json",
+      "sha256": "fe6c3ace7c61aaea7b25b279567b837b2b8c9b99682dc60dcbf407ddd05adc9a"
+    },
+    {
+      "path": ".local/voice-lab/dataset/A2-reviewed-32-v3/curation-result.json",
+      "sha256": "f5d5091de589934b085f1f75a92bf9877f29549ee133520ad9c86483aac25d10"
+    }
+  ],
+  "future_unheard_corpus_approved": false,
+  "training_authorized": false,
+  "pod_rental_authorized": false,
+  "deployment_authorized": false
+}
