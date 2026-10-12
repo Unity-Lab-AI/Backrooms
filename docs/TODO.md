@@ -25,13 +25,6 @@ LAW #0 reminder: every task description preserves the user's verbatim words.
 ---
 ## Pending
 
-### RimWorld 1.7 — Rimrooms, RimPLC and their documentation (2026-10-12)
-
-Owner, verbatim: *"the preview image for the mod i need to read this and set the mod version to 1.7 for our mod and remake the mod preview image exactly as it is just change the 1.6 to a 1.6 and then fix the mod to use 1.7 as per: https://store.steampowered.com/news/app/294100/view/672882362547178633"*; preview clarification: *"Yes — change it to 1.7"*; *"need all docs and wiki updated too"*; *"rimroom rimPLC and all support documents and may need to add a github rim PLC and add it to it and here is the git to use for Rim PLC: https://git.unityailab.com/GFourteen/RimPLC"*.
-
-- [~] Complete both packages' 1.7 declaration/shared-content loading, preserve their existing own release numbers and save contracts, update the preview and all current support/wiki targets, rebuild the local baseline and generated distribution documents. [Migration record](implementation/RIMWORLD_1_7_MIGRATION.md). Actual 1.7 runtime remains a separate unverified acceptance item; the local install is still 1.6.
-- [~] Prepare the standalone RimPLC project export for the supplied Forgejo repository and requested GitHub mirror. Automatic approval review refused new public GitHub creation because the conditional request did not specify public creation; obtain explicit authorization after the prepared export is reviewable. Keep voice/brain jobs, private workflow, credentials and provider/game assemblies out of the export.
-
 ### ⛔ CONFIRMED DEFECT — A CONSIGNMENT MISSION DISABLES THE WHOLE COMPANY IN ANY SAVE (2026-10-06) ⛔
 
 > **STATUS NOTE 2026-10-10 (HEYUNITY.md audit, D03): ALREADY REPAIRED IN SOURCE. This section is now the historical diagnosis and fix record; do not repair it again.** `RimroomsCampaignComponent.ValidateRecordRelationships` (`src/RimroomsAsyncIndustries/Company/RimroomsCampaignComponent.cs`, the per-contract loop at about lines 433-457) now tests `IsOddConsignment` **first** and requires its named coordinate to exist, then a plain `IsOddSupply` must carry no coordinate, then every other contract must name an existing coordinate. The fix row is archived in `FINALIZED.md` (*"Fix the condition so a consignment mission is allowed its coordinate"*). **Outstanding: save acceptance only.** Load a save holding an `rr.mission.oddconsignment.v1` contract with its coordinate on a current build and confirm there is no `Campaign integrity failed` line and company actions stay enabled. The one-line validator quoted below is the pre-fix code, kept verbatim as the record.
@@ -310,3 +303,5 @@ un2-slowed-3.3wps) The phase-vocoder time-stretch smeared every clip. Fixed: aud
 - [ ] Owner on the first pod voice progress samples (2026-10-12 17:43 UTC set, D:oice-lab\pod-results\progress-2026-10-12|3): *"it sound great just went through the samples minor speed on like one no issues and a little minute robots worbble at end and i think one at begining we suppose to be a laugh"* -- recheck speed, end wobble and the laugh on the later 30-min sets and the final voice.
 
 - [ ] Voice training: keep the acoustic checkpoint with the best held-out score, not only the last (2026-10-12 pod: train mel ~0.28 vs held-out ~0.51, held-out flattening 0.530 -> 0.515 over steps 10k-16k; owner asked "that low soaounds like it might be memorizing... no?").
+
+- [ ] Voice pod shape: on 2x H100 the acoustic model finishes in ~80 min (20k steps) and GPU 0 then idles while the vocoder runs ~5 h more on GPU 1 (owner 2026-10-12: *"only one of the voice train gpus is training? one shows 0% util"*). Next run: one H100 for training (both stages share it) or split the vocoder across both GPUs; about $4/h of the 2x pod is idle after the acoustic stage.
