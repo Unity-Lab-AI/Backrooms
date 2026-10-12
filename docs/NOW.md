@@ -18,7 +18,7 @@ Owner go: *"Go fastest, voice cap $70"*, then *"well we are gonna have to double
 | Pod | Id | Shape | $/h | Cap | State at 15:07 |
 |---|---|---|---|---|---|
 | Voice (records, then trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | 7.98 | $140 | `VOICE_ROLE=both`: recording 5,000 clips, 24 shards (~207 lines each, Cosy first then Qwen), shard 0 at line 30. Recording ends ~16:20, then screen, then training ~7-8 h. Source `af945fae` (digest `e6ae75fb`) |
-| Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | 3.99 | $50 | Restarted 14:58 after an OOM kill; reinstalling (pip, CUDA 13 build tools, causal-conv1d, llama.cpp). Training expected ~15:25, 1,062 steps, ~3-5 h. Source `81516a80` (data `7d2cac95`) |
+| Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | 3.99 | $50 | 16:16 OOM-killed at step 8 AGAIN (same step as the first kill): the 100 4K screenshot rows were held as Python pixel lists (~1.5 GB each). Fixed in `e9f0fc8c` (paths kept, pixels made per batch); pod updated to that commit + `BRAIN_BS=8` and restarted 16:18; container reinstall ~20 min (llama.cpp build on the volume is kept), then ~17-20 s/step x 1,062 = ~5-6 h |
 
 **How to check** (no SSH key is set on these pods):
 - Brain: `https://rm6sdrmiv4dgtp-8000.proxy.runpod.net/` -> `status.txt`, `run.log.txt` (step line: grep `/1062`), `gpu-util.csv` (fields: time, gpu, util %, MiB used, MiB total). 19 GB used + 0 % = setup, not training.
