@@ -22,7 +22,8 @@ if [ "$(cat $W/state/inputs 2>/dev/null)" != "$INPUTS" ]; then
 fi
 cp $W/state/inputs $W/gguf/inputs.sha256
 
-if ! have setup; then
+# The marker lives on the volume but packages live on the container disk, which a restart wipes: check both.
+if ! have setup || ! python -c "import unsloth, causal_conv1d" 2>/dev/null; then
   pip install -q --upgrade pip
   pip install -q "unsloth" "unsloth_zoo" datasets hf_transfer pillow
   pip install -q "transformers>=5"
@@ -30,6 +31,18 @@ if ! have setup; then
   pip uninstall -y -q torchaudio || true
   # fast kernels for the linear-attention layers; without them every step falls back to slow PyTorch
   pip install -q flash-linear-attention ninja || true
+  # causal-conv1d is compiled against torch's CUDA. The image's nvcc is 12.4 while unsloth brings torch built for 13.x
+  # (first launch 2026-10-12: "detected CUDA version 12.4 mismatches ... 13.0", 70 s/step on the slow fallback), so
+  # install the matching CUDA toolkit pieces from NVIDIA's apt repo and build with them.
+  TCU=$(python -c "import torch; print(torch.version.cuda or '')")
+  if [ -n "$TCU" ] && ! nvcc --version 2>/dev/null | grep -q "release $TCU"; then
+    V=${TCU/./-}
+    if ! apt-cache policy 2>/dev/null | grep -q developer.download.nvidia.com; then
+      U=$(. /etc/os-release; echo "ubuntu${VERSION_ID/./}")
+      wget -q "https://developer.download.nvidia.com/compute/cuda/repos/$U/x86_64/cuda-keyring_1.1-1_all.deb" -O /tmp/ck.deb         && dpkg -i /tmp/ck.deb >/dev/null || echo "could not add the NVIDIA CUDA apt repo"
+    fi
+    (apt-get update -qq && apt-get install -y -qq cuda-nvcc-$V cuda-cudart-dev-$V cuda-cccl-$V cuda-libraries-dev-$V >/dev/null)       && export CUDA_HOME=/usr/local/cuda-$TCU PATH=/usr/local/cuda-$TCU/bin:$PATH || echo "could not install CUDA $TCU build tools"
+  fi
   MAX_JOBS=16 pip install -q causal-conv1d --no-build-isolation || true
   python -c "import fla, causal_conv1d; print('fast kernels ok')" || echo "fast kernels missing (slower, still correct)"
   rm -rf $W/llama.cpp
