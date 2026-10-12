@@ -208,11 +208,9 @@ stored = json.load(open(sys.argv[1], encoding='utf-8')); record = json.loads(os.
 strip = lambda r: {k: v for k, v in r.items() if k not in ('source_digest', 'run_id')}
 if strip(stored) != strip(record):
     raise SystemExit('VOICE_RESUME_RUN_ID refused: the run differs in more than the source digest')
-with open(sys.argv[1].replace('run-config.json', 'resumes.jsonl'), 'a', encoding='utf-8', newline='
-') as f:
+with open(sys.argv[1].replace('run-config.json', 'resumes.jsonl'), 'a', encoding='utf-8', newline=chr(10)) as f:
     f.write(json.dumps({'utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()), 'resumed_with_source_digest':
-                        record['source_digest'], 'would_have_been_run_id': record['run_id']}) + '
-')
+                        record['source_digest'], 'would_have_been_run_id': record['run_id']}) + chr(10))
 print('resuming namespace', stored['run_id'], 'with source digest', record['source_digest'])
 PY
   RUN_ID=$VOICE_RESUME_RUN_ID
