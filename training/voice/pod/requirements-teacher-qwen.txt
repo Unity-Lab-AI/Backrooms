@@ -1,0 +1,15 @@
+# Qwen teacher environment on the pod (torch 2.7.1+cu118 is installed first from the PyTorch cu118 index).
+# Pins match the local .venv-qwen that rendered the approved A2 seed; source_workers.py refuses other
+# qwen-tts / transformers versions. faster-whisper is the ASR screener (same version as the local screening).
+qwen-tts==0.1.1
+transformers==4.57.3
+accelerate==1.12.0
+soundfile==0.13.1
+librosa==0.11.0
+einops
+sox
+onnxruntime
+huggingface_hub==0.36.2
+faster-whisper==1.2.1
+ctranslate2==4.8.1
+numpy

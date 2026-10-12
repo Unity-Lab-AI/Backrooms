@@ -49,6 +49,18 @@ gate = json.load(open(os.path.join(HERE, "VOICE_QUALITY_GATE.json"), encoding="u
 for check_id, check in gate["checks"].items():
     if check_id not in MUTABLE_RECEIPT_CHECKS and check.get("receipt"):
         FILES.append(os.path.relpath(receipt_path(check["receipt"]), ROOT).replace(os.sep, "/"))
+# RunPod-template launch path and on-pod generation (2026-10-12).
+FILES.extend("training/voice/pod/" + f for f in ("start_template.sh", "generate_on_pod.sh", "auto_screen.py",
+             "requirements-template.txt", "requirements-teacher-qwen.txt", "requirements-teacher-cosy.txt",
+             "constraints-teacher.txt", "upload_volume_s3.ps1", "pull_results_s3.ps1"))
+# Unity's stream-voice script (5,000 lines, 2026-10-12), recorded on the pod by generate_on_pod.sh.
+FILES.extend(("training/voice/STREAM_CORPUS.jsonl", "training/voice/STREAM_EVENT_CORPUS.jsonl"))
+# The owner's later delivery choice (A/B, 2026-10-12) and every clip it was heard on.
+policy = json.load(open(os.path.join(HERE, "SOURCE_DELIVERY_POLICY.json"), encoding="utf-8"))
+if policy.get("owner_delivery_selection"):
+    FILES.append(policy["owner_delivery_selection"]["receipt"])
+    selection = json.load(open(os.path.join(ROOT, policy["owner_delivery_selection"]["receipt"]), encoding="utf-8"))
+    FILES.extend(entry["path"] for entry in selection["evidence"])
 FILES = sorted(set(FILES))
 
 

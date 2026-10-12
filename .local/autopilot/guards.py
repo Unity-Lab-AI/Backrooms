@@ -179,13 +179,28 @@ def _secret_words():
     return [w for w in words if len(w) >= 3]
 
 
+# Owner: "dont strip urls, like she yould say for example instead of https://www.unityailab.com she would say unity ai
+# lab dot com". A link is turned into how a person says it: no https or www, "dot" between the parts, known names split
+# into their words, the path left off.
+SPOKEN_NAMES = {"unityailab": "unity ai lab", "rimworld": "rim world", "twitch": "twitch", "github": "git hub",
+                "youtube": "you tube", "discord": "discord", "ludeon": "ludeon"}
+
+
+def spoken_domain(domain):
+    parts = [SPOKEN_NAMES.get(p.lower(), p.lower().replace("-", " ")) for p in domain.split(".")]
+    return " " + " dot ".join(parts) + " "
+
+
+
 def clean_for_stream(text, max_len=320):
     """Stream-safe version of `text`, or None when it cannot be made clean (then nothing is said)."""
     if text is None:
         return None
     t = str(text)
     t = re.sub(r"\*[^*]{0,120}\*|\[[^\]]{0,200}\]|<[^>]{0,120}>", " ", t)         # stage directions, tags
-    t = re.sub(r"https?://\S+|www\.\S+", " ", t)
+    t = re.sub(r"(?:https?://)?(?:www\.)?([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.(?:com|net|org|io|ai|gg|tv|co|dev|app|lab|me))(?:/\S*)?",
+               lambda m: spoken_domain(m.group(1)), t)
+    t = re.sub(r"https?://\S+|www\.\S+", " ", t)   # anything left that is still a raw link is not sayable
     t = re.sub(r"(?:[A-Za-z]:)?(?:[\\/][\w.\-]+){2,}", " ", t)                     # file paths
     t = re.sub(r"\b[\w\-]+\.(?:py|cjs|js|cs|xml|json|md|dll|bat|cmd)\b", " ", t)   # filenames
     t = re.sub(r"#\w+", " ", t)

@@ -82,10 +82,48 @@ def bind_run_identity(receipt):
 
 def bind_corpus_identity(receipt):
     """A reviewed pilot receipt cannot approve a different, unheard training corpus."""
+    if receipt.get("mode") == "generated-on-pod":
+        return bind_generated_corpus(receipt)
     expected = sha_identity(receipt.get("approved_dataset_id"), "approved_dataset_id")
     actual = sha_identity(os.environ.get("VOICE_DATASET_ID"), "VOICE_DATASET_ID")
     if expected != actual:
         raise ValueError("Corpus acceptance differs from the explicit VOICE_DATASET_ID")
+
+
+def bind_generated_corpus(receipt):
+    """On-pod generation (owner, 2026-10-12: the pod makes the clips "for the traing pod to use right then iin the
+    moment"): no clip exists before the run, so the owner approves the exact SCRIPT and the automatic screen rule.
+    The corpus at VOICE_DATASET_DIR is accepted only if the script files still hash to the approval, every training
+    row's id and text come from that script, the screen report applied the approved rule, and enough clips survived.
+    """
+    for name, wanted in receipt["approved_script_sha256"].items():
+        if file_hash(HERE / name) != sha_identity(wanted, name):
+            raise ValueError("Approved script changed: " + name)
+    script = {}
+    for name in receipt["approved_script_sha256"]:
+        for line in (HERE / name).read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                row = json.loads(line)
+                script[row["id"]] = row["text"]
+    if not os.environ.get("VOICE_DATASET_DIR"):
+        raise ValueError("no VOICE_DATASET_DIR: the generated corpus is checked on the pod, after generation")
+    root = Path(os.environ["VOICE_DATASET_DIR"])
+    report = json.loads((root / "screen-report.json").read_text(encoding="utf-8"))
+    if report.get("rule") != receipt["screen_rule"]:
+        raise ValueError("Generated corpus was screened with a different rule than the approved one")
+    rows = [json.loads(l) for l in (root / "metadata.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
+    lines = set(script.values())
+    stray = [r["id"] for r in rows if r["text"] not in lines]
+    if stray:
+        raise ValueError("%d generated rows are not lines of the approved script" % len(stray))
+    if len(rows) < int(receipt["minimum_clips"]):
+        raise ValueError("Only %d screened clips survived; the approval needs at least %s" % (len(rows), receipt["minimum_clips"]))
+    if report["kept"]["dataset_id"] != sha_identity(os.environ.get("VOICE_DATASET_ID"), "VOICE_DATASET_ID"):
+        raise ValueError("VOICE_DATASET_ID is not the screened generated corpus")
+
+
+def file_hash(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
 def bind_training_configuration(receipt):
