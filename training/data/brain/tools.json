@@ -820,6 +820,32 @@
 "properties": {
 "text": {
 "type": "string"
+},
+"emotion": {
+"type": "string",
+"enum": [
+"neutral",
+"warm",
+"happy",
+"amused",
+"excited",
+"sad",
+"concerned",
+"frustrated",
+"surprised"
+]
+},
+"act": {
+"type": "string",
+"enum": [
+"statement",
+"yes_no_question",
+"wh_question",
+"exclamation",
+"instruction",
+"reassurance",
+"aside"
+]
 }
 },
 "required": [
@@ -844,6 +870,32 @@
 },
 "text": {
 "type": "string"
+},
+"emotion": {
+"type": "string",
+"enum": [
+"neutral",
+"warm",
+"happy",
+"amused",
+"excited",
+"sad",
+"concerned",
+"frustrated",
+"surprised"
+]
+},
+"act": {
+"type": "string",
+"enum": [
+"statement",
+"yes_no_question",
+"wh_question",
+"exclamation",
+"instruction",
+"reassurance",
+"aside"
+]
 }
 },
 "required": [

@@ -1,6 +1,6 @@
 """Turn brain-life episodes (part-*.jsonl, see SPEC.md) into training rows in the brain's own format.
 
-    python training/brain-life/assemble.py [out.jsonl]      (default training/data/brain/life.jsonl)
+    python training/brain-life/assemble.py [out.jsonl]      (default training/brain-life/life.jsonl; build_brain.py mixes it into train.jsonl)
 
 Each row matches the existing "image"/"chat" rows of training/data/brain/train.jsonl exactly:
   system   Unity's live stream prompt, copied from an existing tool row (so both sets share one system prompt)
@@ -33,7 +33,7 @@ def shown(text):
 
 
 def main():
-    out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "training/data/brain/life.jsonl")
+    out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "life.jsonl")
     system = system_prompt()
     rows, ep_count = [], 0
     for path in sorted(glob.glob(os.path.join(HERE, "part-*.jsonl"))):

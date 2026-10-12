@@ -174,7 +174,7 @@ def writeup_rows(plays, rnd, cap=150):
             for t in spoken + ([m.get("content") or ""] if m["role"] == "assistant" else []):
                 t = t.strip()
                 if (len(t.split()) >= 5 and t not in said and not dirty(t) and t[-1:] in ".!?"
-                        and "_" not in t and not re.match(r"(Greeting|Saying hi|Back to|Next|Checking|Setting|Work grid)", t)):
+                        and "_" not in t and not re.match(r"(Greeting|Saying hi|Back to|Next|Checking|Setting|Work grid)\b", t)):
                     said.append(t)
         if len(said) < 4:
             continue
@@ -271,6 +271,49 @@ def screen_rows(system):
     return rows
 
 
+# Voice delivery for every spoken tool call (owner: train on "EVERYTHING it will be doing"; her own voice performs
+# emotion + act). The brain-life rows carry hand-chosen delivery; older rows get it inferred from the line itself.
+# Only fills what is missing, never overwrites.
+DELIVERY_RULES = [
+    ("sad", r"\b(died|dead|death|passed away|rip|funeral|grave|buried|miss (him|her|them)|lost (him|her))\b"),
+    ("concerned", r"\b(raid|raiders|fire|burning|careful|danger|injur|bleed|sick|plague|infection|starv|low on|toxic|manhunter|mental break|downed)\b"),
+    ("frustrated", r"\b(again|ugh|why would|seriously|every time|keeps? (doing|breaking|failing))\b"),
+    ("surprised", r"\b(wait|what\?|whoa|no way|huh)\b"),
+    ("warm", r"\b(welcome|thank|thanks|glad you|love (you|this)|appreciate|hi |hey )"),
+    ("amused", r"\[laughter\]|\b(funny|lol|hilarious|ridiculous)\b"),
+    ("happy", r"\b(finally|done|we did it|yes|nice|perfect|great|awesome)\b"),
+]
+
+
+def infer_delivery(text):
+    low = text.lower()
+    emotion = next((e for e, pat in DELIVERY_RULES if re.search(pat, low)), "neutral")
+    if "[laughter]" in low and emotion in ("neutral", "sad", "concerned"):
+        emotion = "amused"
+    body = re.sub(r"\s*\[(laughter|breath|sigh)\]\s*", " ", text).strip()
+    if body.endswith("?"):
+        act = "wh_question" if re.match(r"(?i)(what|where|why|how|who|which|when)\b", body) else "yes_no_question"
+    elif body.endswith("!"):
+        act = "exclamation"
+        emotion = "excited" if emotion == "neutral" else emotion
+    else:
+        act = "statement"
+    return emotion, act
+
+
+def add_delivery(rows):
+    filled = 0
+    for r in rows:
+        for m in r.get("messages", []):
+            for c in m.get("tool_calls") or []:
+                f = c.get("function", {})
+                a = f.get("arguments")
+                if f.get("name") in ("say", "reply_chat") and isinstance(a, dict) and "emotion" not in a and a.get("text"):
+                    a["emotion"], a["act"] = infer_delivery(a["text"])
+                    filled += 1
+    return filled
+
+
 def main():
     rnd = random.Random(1031)
     os.makedirs(OUT, exist_ok=True)
@@ -310,7 +353,9 @@ def main():
               if os.path.exists(p) for w in open(p, encoding="utf-8") if len(w.strip()) >= 3 and not w.startswith("#")]
     def clean_of_secret(rows):
         return [r for r in rows if not any(w in json.dumps(r, ensure_ascii=False).lower() for w in secret)]
-    train = clean_of_secret(plays + know + voice + hl + wu + im + sc)
+    life = jl(os.path.join(ROOT, "training", "brain-life", "life.jsonl"))
+    filled = add_delivery(plays + hl + wu + im + sc + held_tools)
+    train = clean_of_secret(plays + know + voice + hl + wu + im + sc + life)
     held_voice, held_tools = clean_of_secret(held_voice), clean_of_secret(held_tools)
     rnd.shuffle(train)
     def dump(name, rows):
@@ -330,7 +375,7 @@ def main():
     digest = hashlib.sha256("".join("%s  %s\n" % (sums[k], k) for k in sorted(sums)).encode()).hexdigest()
     man = {"digest": digest, "files": sums, "train_counts": counts, "eval_voice": len(held_voice),
            "eval_tools": len(held_tools), "play_dropped": dropped, "play_removed": removed,
-           "image_tool": "image" in names, "tools": len(specs)}
+           "image_tool": "image" in names, "tools": len(specs), "delivery_inferred_calls": filled}
     json.dump(man, open(os.path.join(OUT, "MANIFEST.json"), "w", encoding="utf-8"), indent=1)
     print(json.dumps({k: v for k, v in man.items() if k != "files"}, indent=1))
 
