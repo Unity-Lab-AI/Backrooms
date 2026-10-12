@@ -305,3 +305,5 @@ un2-slowed-3.3wps) The phase-vocoder time-stretch smeared every clip. Fixed: aud
 - [ ] Voice training: keep the acoustic checkpoint with the best held-out score, not only the last (2026-10-12 pod: train mel ~0.28 vs held-out ~0.51, held-out flattening 0.530 -> 0.515 over steps 10k-16k; owner asked "that low soaounds like it might be memorizing... no?").
 
 - [ ] Voice pod shape: on 2x H100 the acoustic model finishes in ~80 min (20k steps) and GPU 0 then idles while the vocoder runs ~5 h more on GPU 1 (owner 2026-10-12: *"only one of the voice train gpus is training? one shows 0% util"*). Next run: one H100 for training (both stages share it) or split the vocoder across both GPUs; about $4/h of the 2x pod is idle after the acoustic stage.
+
+- [ ] Owner on the FINAL trained voice samples (2026-10-12 23:02 UTC render, D:oice-lab\pod-resultsoice-2026-10-12inal-samples): *"smaples are perfect"* -- record as the trained_voice_acceptance receipt (bound to the published model hash) once the pull reports VERIFIED, then swap her live voice to the own model.
