@@ -51,6 +51,12 @@ stop_self() {
 }
 
 GEN="${VOICE_GENERATE_ON_POD:-0}"
+# Owner: "voice need two pod s remembre one is feeding into the other". With on-pod generation the voice is split over
+# two pods sharing one network volume: VOICE_ROLE=generate makes and screens the clips, writes gen/READY and stops
+# itself; VOICE_ROLE=train waits for gen/READY on the same volume and trains on those clips. VOICE_ROLE=both keeps
+# generation and training in one pod.
+ROLE="${VOICE_ROLE:-both}"
+case "$ROLE" in generate|train|both) ;; *) echo "VOICE_ROLE must be generate, train or both" >&2; exit 2 ;; esac
 if [ "$GEN" = "1" ]; then
   REQUIRED="VOICE_SOURCE_COMMIT VOICE_DIGEST VOICE_VOLUME_ID PRICE_PER_HOUR BUDGET_USD KEEP_HOURS RUNPOD_POD_ID"
 else
@@ -101,6 +107,7 @@ PY
   say "delivery accepted at $D"
 fi
 
+if [ "$ROLE" != "generate" ]; then
 # 3. Pinned environment in a venv on the volume (kept across pods; reinstalled only if the pin list changes).
 REQ="$SRC/pod/requirements-template.txt"
 REQ_SHA=$(sha256sum "$REQ" | cut -d' ' -f1)
@@ -138,6 +145,8 @@ fi
 export VOICE_VOLUME_RECEIPT="$RECEIPT"
 export VOICE_VOLUME_RECEIPT_SHA256=$(sha256sum "$RECEIPT" | cut -d' ' -f1)
 export VOICE_BILLING_STARTED_EPOCH=$(stat -c %Y /proc/1)
+fi
+
 # 5. Read-only progress view (GET/HEAD only; nothing here can start, extend or spend). Up before generation so
 #    the owner can watch the clips being made, not only the training.
 if [ "${VOICE_PROGRESS_HTTP:-0}" = "1" ]; then
@@ -145,7 +154,19 @@ if [ "${VOICE_PROGRESS_HTTP:-0}" = "1" ]; then
   say "progress served read-only on port 8000"
 fi
 
-if [ "$GEN" = "1" ]; then
+if [ "$GEN" = "1" ] && [ "$ROLE" = "train" ]; then
+  # 5a. Training pod: the clips come from the clip pod through the shared volume.
+  WAIT=$(python3 -c "import os; print(int(float(os.environ.get('VOICE_WAIT_HOURS', '1')) * 3600))")
+  say "waiting for the clip pod (gen/READY, up to ${WAIT}s)"
+  until [ -f "$W/gen/READY" ]; do
+    [ "$SECONDS" -lt "$WAIT" ] || stop_self "no gen/READY from the clip pod within ${WAIT}s"
+    sleep 60
+  done
+  DSDIR="$W/gen/dataset"
+  VOICE_DATASET_ID=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['kept']['dataset_id'])" "$DSDIR/screen-report.json")
+  cp "$DSDIR/screen-report.json" "$W/out/screen-report.json"
+  say "clips from the clip pod: $(cat "$W/gen/READY")"
+elif [ "$GEN" = "1" ]; then
   # 5b. Record the script on this pod, screen it, keep what passed. Generation runs BEFORE the budget supervisor,
   #     so it gets its own hard limit: the budget left since the pod started (92% rule), and never more than
   #     VOICE_GEN_MAX_HOURS (default 4). Running out stops the pod; finished shards stay on the volume.
@@ -164,6 +185,14 @@ if [ "$GEN" = "1" ]; then
   DSDIR="$W/gen/dataset"
   VOICE_DATASET_ID=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['kept']['dataset_id'])" "$DSDIR/screen-report.json")
   say "generated corpus ready: $(python3 -c "import json,sys; r=json.load(open(sys.argv[1])); print(r['kept_clips'], 'of', r['total_clips'], 'clips kept')" "$DSDIR/screen-report.json")"
+  python3 -c "import json,sys; r=json.load(open(sys.argv[1])); print(r['kept']['dataset_id'], r['kept_clips'], 'of', r['total_clips'])" "$DSDIR/screen-report.json" > "$W/gen/READY"
+  if [ "$ROLE" = "generate" ]; then
+    say "clip pod finished; clips are on the volume for the training pod (gen/READY); stopping this pod"
+    for attempt in 1 2 3 4 5; do
+      timeout 20s runpodctl pod stop "$RUNPOD_POD_ID" >> "$LOG" 2>&1 && break; sleep 5
+    done
+    sleep infinity
+  fi
 else
   DSDIR="$D/dataset"
 fi

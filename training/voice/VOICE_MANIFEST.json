@@ -61,7 +61,7 @@
   "training/voice/pod/resolve_environment.py": "aa608701ee81ab8bd3b0a4b753f8fa7851c29b27ca2a7eacb0a373392a4e3ada",
   "training/voice/pod/run_voice.sh": "0e05c0067e165568c908063fe1cf6958e7c55db68762446bcf03feda72e3b5a6",
   "training/voice/pod/start_no_training.sh": "ff8556f9ca436a5eabada79e53c7f8b02b25c419ce9cb6a1d7397fbadff8f0da",
-  "training/voice/pod/start_template.sh": "2b6aeb2809e7d944099399fac551d4c12beb352da426a4a36e3da293b6bd3b70",
+  "training/voice/pod/start_template.sh": "0fee745c006a19b8af8007810e5783ad242465b1ce6adfbe0e0819eb415663f7",
   "training/voice/pod/upload_dataset.ps1": "0324ebe21dc322052ae66ac08a56c5e9652f9850f013ee0ddcfd28fd967ebb57",
   "training/voice/pod/upload_volume_s3.ps1": "2ee1dacbd8ab0f0a2fe7f5fb49ddfd410eb731c7fbb0dde6c4109b2f71e0f82a",
   "training/voice/prep.py": "bc845dc41bc9111bd296f9405f68f25c97f5fa5f178f288284074feaa5cab3bb",
@@ -113,5 +113,5 @@
   "training/voice/variations.py": "b0dc9ac0a42f39d8e26ce5fc055d25a286edc4a6de0608048212c457e2fbaa8d",
   "training/voice/vocoder.py": "f6e8543d98c8a0e25a88fd903827c276225aa8713b7c06fe11c6d94ff34822d8"
  },
- "digest": "2f76c72f6031bbb75b8368b22c5af2b84ef8b725f20b173e87f42ee0cd1c3c76"
+ "digest": "e5b802ade7b21ce8c5ed9ef32f03c3a4edefa05cdea72831e473604d36910630"
 }
