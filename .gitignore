@@ -172,3 +172,12 @@ training/_fetch.log
 !.local/voice-lab/round1/*.pt
 !.local/voice-lab/round2/*.pt
 .local/voice-lab/**/*.npy
+# Local audition tools and downloaded teacher weights are not shipped.
+.local/voice-lab/.venv-*/
+.local/voice-lab/models/
+.local/voice-lab/auditions/
+# Docker image archives are rebuilt from the pinned context; the inspection receipts beside them are kept.
+.local/voice-lab/pod-build-artifacts-*/*.tar
+# Background preparation outputs (recordings, features, delivery) stay local; receipts and status are kept.
+.local/voice-lab/background/**/*.wav
+.local/voice-lab/background/**/*.tar

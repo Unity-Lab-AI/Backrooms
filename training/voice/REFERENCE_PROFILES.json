@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "voice_id": "unity-a2-low-warm-alto-v1",
+  "profiles": {
+    "original": {
+      "text": "Hey, come hang out. I'm just fixing this gate before we jump back in. Did you change that setting? Yeah, that's the one. Give me a second... okay. There we go.",
+      "audio": "training/voice/reference/A2-reference-raw.wav",
+      "sha256": "df05af0bd6c0922a9946cab5e92bf692e079454f9a4de2d570e79f2c962267c8",
+      "listening_audio": "training/voice/reference/A2-original-listen.wav",
+      "listening_sha256": "200b25d09866e3edb1916e2493c5e1a5021db36180a7c9ab8b707838fe219dfb"
+    },
+    "everyday": {
+      "text": "Hey, come hang out. I'm just fixing this gate before we jump back in. Did you change that setting? Yeah, that's the one. Give me a second... okay. There we go.",
+      "audio": "training/voice/reference/A2-everyday-raw.wav",
+      "sha256": "340af5d3775d4439e5482bc55baa251c206afeb345d2453c0d4a0dde6a679867",
+      "listening_audio": "training/voice/reference/A2-everyday-listen.wav",
+      "listening_sha256": "623ea16b6e9e1e44e8a8e75fffc1a69ab5de799c38b12b49f43433071daa233b"
+    },
+    "playful": {
+      "text": "Hey, come hang out. Wait... did you fix it? Oh, it worked! That was actually awesome. Okay, I'm impressed. You nailed it. There we go.",
+      "audio": "training/voice/reference/A2-playful-raw.wav",
+      "sha256": "a6a820eaaf0a8658e3f3f65cdae5dde2846b2a354e97503336183230ad4c356a",
+      "listening_audio": "training/voice/reference/A2-playful-listen.wav",
+      "listening_sha256": "4d54e3322462867984e3c5576afed3a5c80f73d9677eb6541e1a1bbaf7708b25"
+    },
+    "soft": {
+      "text": "Hey. That was rough. I really thought we'd get them home. Give me a second... okay. We'll figure it out together. I'm still here.",
+      "audio": "training/voice/reference/A2-soft-raw.wav",
+      "sha256": "54ef40f0015afc2aa7239e2356972a6c88c3da5bcbff3a321c8b0de68c866fd7",
+      "listening_audio": "training/voice/reference/A2-soft-listen.wav",
+      "listening_sha256": "ece3c12b9422029682ce5a4592dd10e028218be895e0805aa9bed94836df87ba"
+    },
+    "questions": {
+      "text": "Did you change that setting? What did you change? The blue one? Oh, the green one. Yeah, that's the one I meant. Are we ready now?",
+      "audio": "training/voice/reference/A2-questions-raw.wav",
+      "sha256": "d82fb371293583f879bb76046f7db61e94cf9b0c05d1ff1cf73e16eefd540a9b",
+      "listening_audio": "training/voice/reference/A2-questions-listen.wav",
+      "listening_sha256": "9efc56390ba8486506269327627bdd94366305a408fa0ee5a9e5a281055d96a0"
+    }
+  },
+  "emotion_references": {
+    "neutral": "everyday",
+    "warm": "everyday",
+    "happy": "playful",
+    "amused": "playful",
+    "excited": "playful",
+    "sad": "soft",
+    "concerned": "soft",
+    "frustrated": "soft",
+    "surprised": "playful"
+  },
+  "question_reference": "questions",
+  "question_override_emotions": [
+    "neutral",
+    "warm"
+  ],
+  "limits": [
+    "Approved recordings provide source reference performances, not a guaranteed emotional-control API.",
+    "Frustrated/concerned/surprised and every newly rendered row remain intended until listening QA.",
+    "No pitch shifting, time stretching or synthetic emotion effects.",
+    "Reference identity remains the original A2; all variants were synthesized from it and accepted by the owner."
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "schema": "unity-a2-preparation-checkpoint-v1",
+  "recorded_at": "2026-10-11",
+  "scope": "local source rendering and waveform-to-feature preparation; no student training",
+  "voice_id": "unity-a2-low-warm-alto-v1",
+  "owner_latest_quote": "sounds great but dont use nutral one nutral one it terrible",
+  "accepted_source_examples": [
+    "original A2",
+    "initial A2 reference variations",
+    "cosy:2-natural-happy",
+    "cosy:4-little-chuckle"
+  ],
+  "rejected_source_examples": [
+    "cosy:1-neutral",
+    "qwen:B2-happy-context",
+    "qwen:D1-smiling-happy",
+    "draft:a2-8d5497ec15ce065cb3934581"
+  ],
+  "original_reference_preserved": true,
+  "reference_and_policy_sha256": {
+    "training/voice/SELECTED_VOICE.json": "085fffb9194d1a50ed7def08862a216c575dd640f2a4e7b69c1835d19c629efd",
+    "training/voice/REFERENCE_PROFILES.json": "f614a847ff4b5a4c4c14e774546179e5112c44753dceb7c40d09df8d6b4ab153",
+    "training/voice/SOURCE_DELIVERY_POLICY.json": "3301123c5866ec38b88e39aaf44cf3bd5a4a437eebd55fdb48efcdd7c83b6bc0",
+    "training/voice/reference/A2-natural-happy-raw.wav": "dbc936f8936e794933aea667654d497b0729db550468438c50d892389c6eeaa6",
+    "training/voice/reference/A2-natural-happy-listen.wav": "0eb3ccf65363ce94ab787920cd73f674163374f2953f1b58b529681e57be0c43",
+    "training/voice/reference/A2-chuckle-raw.wav": "6babcc7b1f47ad6d8d2448bbcd0be2b2d762b91c2cabce687df176a23455fa27",
+    "training/voice/reference/A2-chuckle-listen.wav": "c3f124ec5056ed559a9de955336865f843af95ce5b7f5e2693a0bddb068a4c18",
+    "training/voice/reference/A2-reference-raw.wav": "df05af0bd6c0922a9946cab5e92bf692e079454f9a4de2d570e79f2c962267c8"
+  },
+  "mixed_pilot": {
+    "path": ".local/voice-lab/auditions/2026-10-11-A2-mixed-32-v3",
+    "dataset": {
+      "schema": "unity-voice-dataset-v2",
+      "dataset_id": "b780c669e80c6b6986f80063e601715106f297cbd1769209d653e079a4fbd3bd",
+      "metadata_sha256": "3e3aad8896c01fe5130a6a75dff2878d3d3b8d41185e121f192f5bbdece198af",
+      "voice_id": "unity-a2-low-warm-alto-v1",
+      "source_ids": [
+        "8abb75d3e26e8036311731861e5333f1cdaf0fe5f4044385716e4cfe56473798"
+      ],
+      "clips": 32
+    },
+    "recipe_id": "17b5bc8c20cc797d4cdff9f131bf118ae8adcd1df65f4f6ae4ff19fa997308a7",
+    "source_id": "8abb75d3e26e8036311731861e5333f1cdaf0fe5f4044385716e4cfe56473798",
+    "clips": 32,
+    "duration_seconds": 84.160042,
+    "wav_formats": [
+      [
+        1,
+        24000,
+        2
+      ]
+    ],
+    "teacher_jobs": {
+      "cosy": 15,
+      "qwen": 17
+    },
+    "intended_emotions": {
+      "neutral": 4,
+      "warm": 4,
+      "sad": 3,
+      "concerned": 3,
+      "frustrated": 3,
+      "amused": 4,
+      "happy": 4,
+      "excited": 4,
+      "surprised": 3
+    },
+    "speech_acts": {
+      "statement": 15,
+      "exclamation": 2,
+      "instruction": 2,
+      "yes_no_question": 4,
+      "wh_question": 5,
+      "aside": 2,
+      "reassurance": 2
+    },
+    "render_seconds": 274.9689999999973,
+    "performance_review": "all new recordings pending listening; intended labels are not certified performance",
+    "runtime_receipts": {
+      "qwen": {
+        "schema_version": 1,
+        "recipe_id": "17b5bc8c20cc797d4cdff9f131bf118ae8adcd1df65f4f6ae4ff19fa997308a7",
+        "teacher": "qwen",
+        "descriptor_id": "c93f823584bcaaa97f77dd12a6b0be2a1caf232bca2edf1e1f07a15bcbc81ff7",
+        "model_class": "Qwen3TTSModel",
+        "torch_device": "cuda:0",
+        "onnx_providers": null,
+        "audio_acceptance": "pending",
+        "student_training_started": false
+      },
+      "cosy": {
+        "schema_version": 1,
+        "recipe_id": "17b5bc8c20cc797d4cdff9f131bf118ae8adcd1df65f4f6ae4ff19fa997308a7",
+        "teacher": "cosy",
+        "descriptor_id": "0c2b8c60705d66dc99455fa4a33677883b922d8d4eab72a7bcb6768414ec1fc1",
+        "model_class": "CosyVoice3",
+        "torch_device": "cuda:0",
+        "onnx_providers": {
+          "tokenizer": [
+            "CPUExecutionProvider"
+          ],
+          "speaker": [
+            "CPUExecutionProvider"
+          ]
+        },
+        "audio_acceptance": "pending",
+        "student_training_started": false
+      }
+    }
+  },
+  "prepared_features": {
+    "path": ".local/voice-lab/auditions/2026-10-11-A2-mixed-32-v3-features",
+    "feature_id": "82395b5965bc3d0c7efb1ad4e49eb9443efbe8cafe31a51631cbd3680da98360",
+    "frontend_id": "e03d4d04d1b3c9d3163f9be6e4831ec7178c29129e9e3430673e9b8a2cca6ba8",
+    "vocabulary_symbols": 49,
+    "splits": {
+      "train": 31,
+      "heldout": 1
+    },
+    "event_support_from_draft_labels": {
+      "laughter": {
+        "train_clips": 2,
+        "train_occurrences": 2,
+        "delivery_support": [
+          {
+            "emotion": "amused",
+            "speech_act": "aside",
+            "clips": 1,
+            "transcripts": 1,
+            "intensity_min": 0.35,
+            "intensity_max": 0.35,
+            "pace_min": 1.0,
+            "pace_max": 1.0
+          },
+          {
+            "emotion": "amused",
+            "speech_act": "statement",
+            "clips": 1,
+            "transcripts": 1,
+            "intensity_min": 0.35,
+            "intensity_max": 0.35,
+            "pace_min": 1.0,
+            "pace_max": 1.0
+          }
+        ]
+      },
+      "breath": {
+        "train_clips": 0,
+        "train_occurrences": 0,
+        "delivery_support": []
+      }
+    },
+    "laughter_token_present": true,
+    "event_audibility_review": "pending",
+    "own_model_learning": "untrained"
+  },
+  "artifact_sha256": {
+    ".local/voice-lab/auditions/2026-10-11-A2-mixed-32-v3/metadata.jsonl": "3e3aad8896c01fe5130a6a75dff2878d3d3b8d41185e121f192f5bbdece198af",
+    ".local/voice-lab/auditions/2026-10-11-A2-mixed-32-v3/render-recipe.json": "5447776787d38814253b6d0e61e7b41e6d27df3f95e873800cd2f0aa27b66e30",
+    ".local/voice-lab/auditions/2026-10-11-A2-mixed-32-v3/source-build.json": "5b5525b7d8da443ef7c8eff49bd27f98af5efd5e80d6845c00e06a210e976e1d",
+    ".local/voice-lab/auditions/2026-10-11-A2-mixed-32-v3/source-qwen-runtime.json": "011349180028d7e5119082c5eed21529ec1e3a08940da99a7e3c629b197c3f37",
+    ".local/voice-lab/auditions/2026-10-11-A2-mixed-32-v3/source-cosy-runtime.json": "1f5d9c327c1d974bafab9fe98b40f89e49434acbad11e63b6f114c619d04d43d",
+    ".local/voice-lab/auditions/2026-10-11-A2-mixed-32-v3-features/features-manifest.json": "e7f278dbc0540cd6c522340b7c7f9467c7bf6f41e9ddf91231360948230a58e3",
+    ".local/voice-lab/auditions/2026-10-11-A2-mixed-32-v3-review.json": "fa667563e207c988d9c5952f04797fd76802613ac22247cc63c43f471e7792fe"
+  },
+  "source_environment_fix": {
+    "cause": "Forced PYTHONNOUSERSITE hid deliberately inherited user-site Torch during subprocess describe",
+    "resolution": "Preserve reviewed system/user-site visibility; force UTF8; resolve package inventory with active sys.path precedence; bounded stderr diagnostics",
+    "initial_failed_attempt": "before recipe/audio output",
+    "worker_probes": "both actual metadata probes exited0 before rendering; no model imported by describe"
+  },
+  "immutable_source_manifest": {
+    "path": "training/voice/VOICE_MANIFEST.json",
+    "digest": "7abfe3cddaaaecd3106248a661bc57b2d2dd50162c69f5acf5ee292d73a4a224",
+    "inputs": 43,
+    "scope": "current preparation code/references, not an approved paid-run recipe"
+  },
+  "static_checks": {
+    "python_sources_ast": 19,
+    "manifest_regeneration_and_readback": "same digest; exit0",
+    "scoped_git_diff_check": "exit0 before this evidence write",
+    "scope": "syntax/hash checks only; no student functional tests"
+  },
+  "permissions": {
+    "training_allowed": false,
+    "deployment_allowed": false,
+    "student_training_started": false,
+    "runpod_created": false,
+    "live_voice_changed": false,
+    "game_folder_changed": false,
+    "published": false
+  },
+  "remaining": [
+    "Review newly recorded pilot text, identity, emotional acting and actual laughter before full generation/adoption",
+    "Render and review full conversational/event corpus into a new immutable accepted dataset",
+    "Verify new own-model training/free synthesis and failure/resume only after explicit training authorization",
+    "Finish required focus/pause/long-turn chunking and supported nonverbal/range coverage",
+    "Pin actual paid recipe/dependencies, durability, stop/billing behavior and measured cost",
+    "Obtain concrete run/digest/dataset/price/budget/work/volume approval before training",
+    "Train/listen/accept the own-weight acoustic/vocoder pair and local coexistence before deployment"
+  ]
+}

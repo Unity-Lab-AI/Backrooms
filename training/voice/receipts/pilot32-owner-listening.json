@@ -1,0 +1,379 @@
+{
+  "schema": "unity-a2-pilot-owner-acceptance-v1",
+  "recorded_at": "2026-10-11T21:59:52-06:00",
+  "accepted_by": "owner",
+  "decision": "accepted",
+  "owner_quote": "they are all good just go ahead and finish up soi you in reguards of being ready for the pod run but no start yet and no pod rental yet",
+  "scope": "all32 source recordings in delivered A/B/C packets; no future unheard corpus approval",
+  "draft_dataset": {
+    "schema": "unity-voice-dataset-v2",
+    "dataset_id": "b780c669e80c6b6986f80063e601715106f297cbd1769209d653e079a4fbd3bd",
+    "metadata_sha256": "3e3aad8896c01fe5130a6a75dff2878d3d3b8d41185e121f192f5bbdece198af",
+    "voice_id": "unity-a2-low-warm-alto-v1",
+    "source_ids": [
+      "8abb75d3e26e8036311731861e5333f1cdaf0fe5f4044385716e4cfe56473798"
+    ],
+    "clips": 32
+  },
+  "review": ".local/voice-lab/auditions/2026-10-11-A2-mixed-32-v3-review-accepted.json",
+  "review_sha256": "dcdf39e7d76b45fd7300e0b8a366e09a36d3e3f2d2ec1dffe87f2a4815812783",
+  "listening_packet": ".local/voice-lab/auditions/2026-10-11-A2-mixed-32-listening-v1/listening-packet.json",
+  "listening_packet_sha256": "892ddb9e4890468346a7a87ef5d38e8b05ecdbab2f7621581ee85c56b9e54d77",
+  "clips": [
+    {
+      "id": "a2-c8e3084192f26b47119529dc",
+      "text": "The window is a little stiff.",
+      "wav_sha256": "1a0f6fd31d07d4f801801b26ba436efb5685cf00d18f374cebae646c8250662a",
+      "actual_delivery": {
+        "emotion": "neutral",
+        "intensity": 0.0,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    },
+    {
+      "id": "a2-35003cd7f194b72bdb970cb1",
+      "text": "Oh, you remembered my favorite tea!",
+      "wav_sha256": "905fdb37f4392ce8c4a270dc39963593adad4f4359cd815f6c3917a42b40a142",
+      "actual_delivery": {
+        "emotion": "warm",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "exclamation"
+      }
+    },
+    {
+      "id": "a2-0c6de52abc80f942cfa8bcee",
+      "text": "I was hoping for a different ending.",
+      "wav_sha256": "65b3a82538f103ac2a6da7dcc738fc437e8830f7fc75e6490d53e613d23be10d",
+      "actual_delivery": {
+        "emotion": "sad",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    },
+    {
+      "id": "a2-bbb413eca9bb96703a107bf4",
+      "text": "Careful, the chair is catching the cable!",
+      "wav_sha256": "f44e59fb38d1d411e28d67b334dfa798858f739b03abaee448e14c390cd36b56",
+      "actual_delivery": {
+        "emotion": "concerned",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "exclamation"
+      }
+    },
+    {
+      "id": "a2-fc1b53a81ad53492f576ab6b",
+      "text": "Leave it alone for a minute.",
+      "wav_sha256": "0a750631735e35f7c26450b65ed3b68efb9f1fc782885a91928e703051f86559",
+      "actual_delivery": {
+        "emotion": "frustrated",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "instruction"
+      }
+    },
+    {
+      "id": "a2-6a0a87164fc4aed57b71135f",
+      "text": "Did you mean the other one?",
+      "wav_sha256": "165c895eeb7858a6fb089fd37d2d72faa3114cc1179b35e279926865439b006d",
+      "actual_delivery": {
+        "emotion": "neutral",
+        "intensity": 0.0,
+        "pace": 1.0,
+        "speech_act": "yes_no_question"
+      }
+    },
+    {
+      "id": "a2-9a75cf5c4b518148acd3bdc7",
+      "text": "What have you been playing lately?",
+      "wav_sha256": "f6c10d2ea18b43ac1b586cb1ab287c4bad1f3480a16aa58dcfda4ed3fc29185e",
+      "actual_delivery": {
+        "emotion": "warm",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "wh_question"
+      }
+    },
+    {
+      "id": "a2-6a89eeb1574093711b62598f",
+      "text": "What do you miss most about it?",
+      "wav_sha256": "2a01bc3ec721cc375313f2db408b5e775afc27746892402526bbcdac2468114a",
+      "actual_delivery": {
+        "emotion": "sad",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "wh_question"
+      }
+    },
+    {
+      "id": "a2-35b9019cd3bafdb66a52406e",
+      "text": "Did anyone check the other room?",
+      "wav_sha256": "aae0ed42c716f5787170823ba391920aee8ce2b06481524ef5911d623f463c97",
+      "actual_delivery": {
+        "emotion": "concerned",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "yes_no_question"
+      }
+    },
+    {
+      "id": "a2-b3f2209e0123453fdab8dc49",
+      "text": "Why does that button keep moving?",
+      "wav_sha256": "5997f4f4077d5c0c4fb97ad1e0ed206d1619fa502b85dde4a812d312f8409a6e",
+      "actual_delivery": {
+        "emotion": "frustrated",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "wh_question"
+      }
+    },
+    {
+      "id": "a2-623094ab33dc7039e68262f8",
+      "text": "Yeah.",
+      "wav_sha256": "ceab4fd1b810b25e2347761cfcb76c735aa6868319fd5a65c7b0a30eace75c45",
+      "actual_delivery": {
+        "emotion": "neutral",
+        "intensity": 0.0,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    },
+    {
+      "id": "a2-569b52415f7a16f3bf1d2bda",
+      "text": "Yep.",
+      "wav_sha256": "72d9ce1c1457a69bf110b1b1c6704617e4141b540b3d29288f76778247988005",
+      "actual_delivery": {
+        "emotion": "neutral",
+        "intensity": 0.0,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    },
+    {
+      "id": "a2-ffc5de1a57499729fd54e5e2",
+      "text": "I kept a seat for you.",
+      "wav_sha256": "a46bf1afccfc4eb49479acfd7b1ca2ae4ab01471004283b8a74ee327f5c63b28",
+      "actual_delivery": {
+        "emotion": "warm",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    },
+    {
+      "id": "a2-0d3ca4cbaf4c8094b7f31a52",
+      "text": "I'm going to miss that little place.",
+      "wav_sha256": "5040caacdc0fd03158fbc906f53c11186036d955e64565acb984e0bc1055be2f",
+      "actual_delivery": {
+        "emotion": "sad",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    },
+    {
+      "id": "a2-7906986b1ffab0a01dc00a6f",
+      "text": "I want to check before we keep going.",
+      "wav_sha256": "20e4d54c1acf965b578147c36e51ac0a3f6f66a6e7eaffdae72be301ef8bd46a",
+      "actual_delivery": {
+        "emotion": "concerned",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    },
+    {
+      "id": "a2-ad3b7b7337e9db95f2589f25",
+      "text": "I thought we'd already fixed this.",
+      "wav_sha256": "ddb674bc5c5f4b248f731e9aed7c1baef2515d413b4cfc3f62e148b5c6777dc6",
+      "actual_delivery": {
+        "emotion": "frustrated",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    },
+    {
+      "id": "a2-97efb292ecc19ba99356b879",
+      "text": "We make a pretty good team.",
+      "wav_sha256": "7a8fe0f4934b4c5e67ff0497a3cfc40ef720566426a918f9851517929fa696e7",
+      "actual_delivery": {
+        "emotion": "warm",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    },
+    {
+      "id": "a2-283344a5df769afce3fc368a",
+      "text": "The keyboard didn't move. I just looked everywhere except in front of me. [laughter]",
+      "wav_sha256": "68bf69a0a1f1bae8a82fcbb3044ee8c2226758540a46ee06f3bde80efc20ba86",
+      "actual_delivery": {
+        "emotion": "amused",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "aside"
+      }
+    },
+    {
+      "id": "a2-da493abd2c69df44a2de1a90",
+      "text": "I organized the cables. They have immediately formed a committee. [laughter]",
+      "wav_sha256": "2e6a29652ef074466f2802d3716c4ac8c7f006109694d347f29c1ec638bd3827",
+      "actual_delivery": {
+        "emotion": "amused",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    },
+    {
+      "id": "a2-0717fa31878a27efb41d1030",
+      "text": "[laughter] What made our little project so nice?",
+      "wav_sha256": "f6b54a8d5983475d07143928edc651098dd8ef58ce3105754dc797d9264ac406",
+      "actual_delivery": {
+        "emotion": "happy",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "wh_question"
+      }
+    },
+    {
+      "id": "a2-44a8fa21f878c83d0e19f0ae",
+      "text": "Tell your friend the good news.",
+      "wav_sha256": "f542189c6d24776eb2f4f49065431a589bcc8c7617e8f21292025953ecebd33a",
+      "actual_delivery": {
+        "emotion": "happy",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "instruction"
+      }
+    },
+    {
+      "id": "a2-7bde7ce6a10f728703eef594",
+      "text": "At least we can laugh about it.",
+      "wav_sha256": "22f73618b6c15da7372d7a60731861734dd92d107ba1b7002ad46caafa9345aa",
+      "actual_delivery": {
+        "emotion": "amused",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "reassurance"
+      }
+    },
+    {
+      "id": "a2-14613bf4301fd5fb95aeb696",
+      "text": "I may already have three ideas.",
+      "wav_sha256": "2f7dd11bb93e576b1fbb396c8a44d23ce7473252183e3203952203d40794e554",
+      "actual_delivery": {
+        "emotion": "excited",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "aside"
+      }
+    },
+    {
+      "id": "a2-535fa7cf55283f53f990b50b",
+      "text": "A different result isn't automatically a bad one.",
+      "wav_sha256": "78837d52584a0b629761f096e98dade63dbb824156bce5205f8294b81e368387",
+      "actual_delivery": {
+        "emotion": "surprised",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "reassurance"
+      }
+    },
+    {
+      "id": "a2-da52990c802db43ad8918910",
+      "text": "How did the cable get that tangled?",
+      "wav_sha256": "ac9bdb9636df1b693b294d87c6ca48c58c9bf8c57880a4c999ba617fd43f0e8e",
+      "actual_delivery": {
+        "emotion": "amused",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "wh_question"
+      }
+    },
+    {
+      "id": "a2-17ac6978274aa53ed0f82fac",
+      "text": "Are you ready to give it a go?",
+      "wav_sha256": "a10f7c48240ec0b7a3895ca927748d0691b41503121acb9e027b870e04312cf2",
+      "actual_delivery": {
+        "emotion": "excited",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "yes_no_question"
+      }
+    },
+    {
+      "id": "a2-516560aa1792242fe4bfe3e9",
+      "text": "Did that just open by itself?",
+      "wav_sha256": "02c5d60c8717a5b9dc5bfc953c4a162577ef471dffbbcbe27e9e7dbcf92c49ac",
+      "actual_delivery": {
+        "emotion": "surprised",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "yes_no_question"
+      }
+    },
+    {
+      "id": "a2-c8d139eefbc0ee50a6210103",
+      "text": "I'm in a good mood now.",
+      "wav_sha256": "1c3c56e3d7df732c83f58927ddcef8c539d34c2246bc3f72d39e2293b6e7fb7e",
+      "actual_delivery": {
+        "emotion": "happy",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    },
+    {
+      "id": "a2-b737315508cae70bbee18563",
+      "text": "I really want to try this now.",
+      "wav_sha256": "4f61a6a74dbd28cb1c8024d5bce1073b024ff51ba4675f6cac660fab30dfd1c9",
+      "actual_delivery": {
+        "emotion": "excited",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    },
+    {
+      "id": "a2-e7dfb291dc4fe9b539a97d22",
+      "text": "I didn't expect that to work.",
+      "wav_sha256": "021f013abc45f0fd9f83cdb2495bf31fc91f5bcebd86c5c610e5710bd97cd0ed",
+      "actual_delivery": {
+        "emotion": "surprised",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    },
+    {
+      "id": "a2-42d5ab5a27936bc3a43222a1",
+      "text": "I'm glad we gave it a try.",
+      "wav_sha256": "6647ec7dc3881a44f85f8d269e4d760f0f9c92c2f92fa1c7bf444e6606e36627",
+      "actual_delivery": {
+        "emotion": "happy",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    },
+    {
+      "id": "a2-edd78ea5cf26fd21e3b3cbd3",
+      "text": "This could be a fun little project.",
+      "wav_sha256": "fd3025f595b2c61a63d9a7296b5c3afb5297573dee3c139842450c8e3431fed1",
+      "actual_delivery": {
+        "emotion": "excited",
+        "intensity": 0.35,
+        "pace": 1.0,
+        "speech_act": "statement"
+      }
+    }
+  ],
+  "training_authorized": false,
+  "pod_rental_authorized": false,
+  "deployment_authorized": false
+}

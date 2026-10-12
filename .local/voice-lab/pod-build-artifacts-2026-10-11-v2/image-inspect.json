@@ -1,0 +1,66 @@
+[
+    {
+        "Id": "sha256:3786ba627ace02b521b97f5aa9ef0f647fcad2133e73b1d69c7d0ced0e9ffd3f",
+        "RepoTags": [
+            "unity-a2-prep:20261011-v2"
+        ],
+        "RepoDigests": [
+            "unity-a2-prep@sha256:3786ba627ace02b521b97f5aa9ef0f647fcad2133e73b1d69c7d0ced0e9ffd3f"
+        ],
+        "Parent": "",
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-12T05:02:32.598841469Z",
+        "DockerVersion": "",
+        "Author": "",
+        "Config": {
+            "ExposedPorts": {
+                "22/tcp": {}
+            },
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "LANG=C.UTF-8",
+                "GPG_KEY=A035C8C19219BA821ECEA86B64E628F8D684696D",
+                "PYTHON_VERSION=3.10.18",
+                "PYTHON_SHA256=ae665bc678abd9ab6a6e1573d2481625a53719bc517e9a634ed2b9fefae3817f",
+                "PIP_DISABLE_PIP_VERSION_CHECK=1",
+                "PIP_NO_CACHE_DIR=1",
+                "PYTHONUNBUFFERED=1"
+            ],
+            "Entrypoint": [
+                "/opt/unity-build/start_no_training.sh"
+            ]
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 3429124586,
+        "GraphDriver": {
+            "Data": null,
+            "Name": "overlayfs"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:aca83606673032726b42f8e1396ceb979c32bfb26b602732baf699053e46b33e",
+                "sha256:e8834fdcdc4c002fc84d04ec4762155ff13df81076241d285f46b93e37459d0a",
+                "sha256:7b950d9886f73cb75fd0d650915d4824983cc8bc55f268deb477684dbdf93f29",
+                "sha256:3097971fafed60cf481efda1edf61c5fc913003f5da35578b5a61c04c207691a",
+                "sha256:a3b37c6f66d9bc17e28c9544f5f9ecc9972808d140e3f8f97b2ed2184e7a7113",
+                "sha256:f958bdd691d368fdfbda1d5fcfaa7f1a536f84de50f30e4ad3cc2ee7c49317d1",
+                "sha256:5b5e1982c01da4da329fea86d0d8cdad0ddabad76d6961c05846d5ca094f979f",
+                "sha256:5789df3ffcf74837ad6979e408e008fffcd0edc292856752cdc10081f16021d6",
+                "sha256:0d203849327ef0857269e5879072beeddd7718d8d8fbb5bc581ff5c16b11e030",
+                "sha256:2895dd2aaed037401c7b11d84731dc99d47c66c0158147b8770057d170c0c4fa",
+                "sha256:490c46fef81fce0d12443033f191fdbc15b4b9e6a40640ee37c21c8134a58861",
+                "sha256:629fb34ae5ddb9fcd835461911a33f3a28c441701e7e6af919faea731cd57772"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-12T05:05:58.822172326Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:3786ba627ace02b521b97f5aa9ef0f647fcad2133e73b1d69c7d0ced0e9ffd3f",
+            "size": 856
+        }
+    }
+]

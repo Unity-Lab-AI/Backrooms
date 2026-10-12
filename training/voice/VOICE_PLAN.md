@@ -2,7 +2,51 @@
 
 Every line Unity speaks today is read by stock Piper `en_US-hfc_female-medium`, whichever model writes the words. This replaces it with a voice that is ours: designed by the owner, trained from random weights, with emotion built into the model.
 
-**Status: ready, not launched.** The owner's order: *"option 3 but we arent dsoing it yet, just get everything ready and documented"*. Nothing on RunPod has been created for this.
+**Status: A2 SOURCE ACCEPTED; BACKGROUND PREPARATION ACTIVE; OWN STUDENT UNTRAINED — 2026-10-12.** The owner selected **A2 low warm alto**, then approved all four A2 variations and the later 32 delivered source clips. Exact recordings and decisions are preserved in `SELECTED_VOICE.json`, `REFERENCE_PROFILES.json`, `reference/` and the listening receipts. Read [NOW.md](../../docs/NOW.md) for the full lead-agent handoff and [the preparation review](../../docs/implementation/VOICE_PRESPEND_REVIEW_2026-10-11.md). Training, rental, upload and deployment remain prohibited.
+
+## Current expansion and continuation
+
+The owner now requires **at least 5,000 varied recordings and several actual speech hours**, with longest trained replies of **3–5 medium sentences**. The separate expanded JSONL files contain exactly 5,000 text jobs: all 1,378 original jobs unchanged plus 3,622 additions; 560 paragraphs currently use 3–4 sentences. [EXPANDED_CORPUS_PLAN.md](EXPANDED_CORPUS_PLAN.md) records coverage and hashes. Text word-rate estimates are not measured audio duration or accepted performances.
+
+The owner requested immediate handoff without waiting for the audio. The hidden local supervisor is running at `.local/voice-lab/background/A2-expanded-2026-10-12-v2/`, PID 12020 at launch. It waits for existing seed recording/screening, then renders additions, screens/rechecks, merges unchanged parent WAVs/provenance, creates pending listening and prepares candidate features/local delivery. Read live `pipeline/status.json`, stage logs and eventual `result.json`/`failure.json`. No automatic corpus approval or training occurs. Do not duplicate the job or edit frozen inputs/environments during it.
+
+The checked source manifest has **89 inputs**, digest `7138ec0643a19b3db60ffa1dc5bd4d2739b93e5ca25a439b7f3490f4dedf7e00`. Actual plan-only inventory confirmed 3,622 additions/1,378 skipped without loading a model. Batch 2 is not benchmarked. The 48-hour local supervisor bound is not an ETA. The lead continues this running job; setup handoff is complete while full recording/acceptance remains pending.
+
+The local Linux environment **actually built successfully** and is inventoried/archived; `receipts/local-environment-build.json` records the result. Registry publication, H100/provider/storage/stop/billing acceptance and priced configuration remain open. No student execution or paid start occurred.
+
+Longer live messages remain allowed through consecutive bounded paragraph subturns, with ordered playback, backpressure and cancellation. This future broker must not impose the current low-level 120-second `Voice.say` bound on the entire logical message. [RUNTIME_INTEGRATION_PLAN.md](RUNTIME_INTEGRATION_PLAN.md) documents that design and existing callers; live implementation is still open.
+
+## Active A2 v2 preparation
+
+The latest owner instruction is *"they are all good just go ahead and finish up soi you in reguards of being ready for the pod run but no start yet and no pod rental yet"*. All 32 actually delivered A/B/C recordings are accepted; finish preparation, without training or renting. The separately authorized Docker step is *"Yes — local Docker build only"*. The eventual acoustic model and vocoder will start from random weights. Qwen and Cosy are source-generation tools; they do not enter the finished speaking path. No real person's recording or celebrity imitation is used.
+
+**Acting refinement:** the owner rejected the later monotone happy line, sarcastic B2 retry and anime-like D1 retry. The target is the **original A2**, with an authentic familiar girl-next-door vibe, natural emotional range and genuine giggles/laughter. Original-reference CosyVoice3 `2-natural-happy` and `4-little-chuckle` were accepted; its `1-neutral` is explicitly rejected and must never replace A2's ordinary voice. `SOURCE_DELIVERY_POLICY.json` records this split. Cosy is another build-time source tool, not an extra live voice system. Acceptance covers these heard examples, not all future corpus rows.
+
+| Current file | Actual purpose |
+| --- | --- |
+| `SELECTED_VOICE.json`, `REFERENCE_PROFILES.json`, `SOURCE_DELIVERY_POLICY.json`, `reference/` | Exact original A2 identity, accepted reference performances and happy/chuckle routing, transcripts and hashes; rejected Cosy neutral excluded |
+| `build_corpus.py`, `SPEECH_CORPUS.jsonl`, `CORPUS_PLAN.md` | 1,341 distinct conversational drafts; 65% neutral/warm, 378 genuine questions, 43 brief turns; all labels still require recorded-performance review |
+| `build_event_corpus.py`, `SPEECH_EVENT_CORPUS.jsonl`, `EVENT_CORPUS_PLAN.md` | 37 planned natural chuckle turns; no accepted breath examples |
+| `make_dataset.py`, `source_workers.py` | Separate sequential local Qwen/Cosy generators render pending-review WAVs and exact metadata; original A2 for everyday speech, approved happy/chuckle instruction routes for those deliveries; no paid-pod source generation |
+| `dataset_contract.py`, `prep.py` | Immutable labeled datasets/features, grouped transcript split, training-only normalization, phonemes, matched mel frames and separate voicing |
+| `speech_text.py` | Dedicated laughter/breath tokens and event-free lexical grouping; actual TRAIN event support is required before inference |
+| `model.py`, `train_acoustic.py`, `train_vocoder.py`, `infer.py` | Learned emotion/speech-act/intensity/pace inputs and compatible acoustic/vocoder identities; no mathematical emotion presets |
+| `quality_gate.py`, `VOICE_QUALITY_GATE.json`, `manifest.py` | Identity-bound preparation/owner receipts and input digests; closed until actual requirements pass |
+| `pod/bootstrap_voice.sh`, `pod/run_voice.sh` | Explicit supplied dataset and separate worker namespace; no legacy source generation or smoke-checkpoint reuse |
+
+The first local pilot produced and prepared 24 clips. This demonstrates the actual labeled WAV-to-feature path, not student learning or naturalness. Its short/front-loaded coverage needs the later balanced pilot. See the dated preparation evidence for exact IDs and current status.
+
+The mixed pilot completed **32 recordings / 84.16 seconds**, 17 Qwen then 15 Cosy jobs. After failed Markdown playback delivery, native audio delivery succeeded and the owner accepted all 32. Their actual SHA-bound approval is in `receipts/pilot32-owner-listening.json`; the immutable curated dataset is `.local/voice-lab/dataset/A2-reviewed-32-v3/`. Current features are `A2-reviewed-32-v4-ready/`: 49 symbols and a dedicated laughter token, 31 train / 1 heldout. Cosy neutral was excluded. [The earlier checkpoint](../../docs/implementation/evidence/voice-prespend-2026-10-11/preparation-evidence.json) preserves the original draft/pending status and historical features; it is superseded by the actual later listening receipt. Full 1,378-row source rendering and CPU transcript screening are now in progress. No student learning or full-corpus approval is claimed.
+
+The Base teacher receives an approved audio/text reference, not a general emotion-instruction API. It failed the required happy contrast. The accepted Cosy source uses a real instruction-plus-original-reference path for happy/chuckle performances. Labeling a flat recording "sad" would still be wrong. Laughter token plumbing is implemented; actual learned laughter remains untrained. Literal phrase pauses and bounded long-turn chunking are implemented in `speech_turns.py`; explicit word focus is refused because performed word-level supervision is absent. Wider pace/intensity controls, sobbing and giggle subtypes are unsupported. Current draft pace is 1.0; intensity is 0.0 for neutral and 0.35 otherwise. Inference admits only actual TRAIN combinations/ranges. Old feature caches intentionally refuse reuse after prep/frontend changes; preserve their WAVs and prepare fresh feature directories.
+
+Read `SOURCE_QA_POLICY.md` and `pod/ENVIRONMENT_PLAN.md` for targeted source review and the no-start delivery/build procedure. Actual bounded student-source work is recorded in [architecture-readiness.md](../../docs/implementation/evidence/voice-prespend-2026-10-11/architecture-readiness.md). Docker recovery and the preserved first build failure are in [docker-local-preparation.md](../../docs/implementation/evidence/voice-prespend-2026-10-11/docker-local-preparation.md). Do not use the old 43-input digest while new preparation helpers are being integrated.
+
+Before any student training: review newly rendered performances/transcripts, finish the full accepted dataset, verify the v2 feature/model/checkpoint/free-synthesis path and failure/resume behavior, pin the actual run environment/work configuration, verify durable storage and stop behavior, then present the concrete run and price to the owner. The standing order *"let me know before u start a training"* still applies. The old cost estimates below do not price this changed recipe.
+
+## Historical proposal — superseded, do not launch
+
+Everything below is the earlier Kokoro/student proposal and historical engineering observations. File descriptions, checked launch boxes, artifact names, performance figures and resume claims in these historical sections do not describe the active v2 implementation. Emotion presets were not learned emotion; the old heldout split leaked transcript variants; the legacy dataset is rejected. Do not launch from the old checklist or cost estimates.
 
 ## 1. What the owner asked for
 
@@ -101,7 +145,9 @@ Measured on the 4070:
 
 The cap defaults to `BUDGET_USD=50` (stop at 92%). Every rate here was measured on the 4070 and scaled; `gpu.txt` and the steps/s in `acoustic.log.txt` / `vocoder.log.txt` confirm it within the first hour. The step counts, batch sizes and GTA length can be overridden by env (`ACOUSTIC_STEPS`, `ACOUSTIC_FRAMES`, `VOCODER_STEPS`, `VOCODER_BATCH`, `GTA_STEPS`).
 
-## 6. Launch checklist (all ticked before the owner approves the launch)
+## 6. Historical launch checklist — invalidated by the source-quality rejection
+
+The earlier checked boxes are history, not current approval. The current closed gate and preparation review supersede this checklist. No trained final voice or accepted expressive corpus is currently established.
 
 - [x] Voice designed and locked (`unity-voice.pt`, owner's #5)
 - [x] Model, vocoder, trainers and inference written; smoke and learning checks passed locally

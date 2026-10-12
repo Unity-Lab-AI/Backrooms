@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "voice_id": "unity-a2-low-warm-alto-v1",
+  "display_name": "A2 low warm alto",
+  "status": "Original A2 identity accepted; natural happy and chuckle sources accepted; Cosy neutral rejected; own student untrained",
+  "source": {
+    "repo": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+    "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+    "role": "local original-voice audition source only",
+    "training_started": false
+  },
+  "reference_text": "Hey, come hang out. I'm just fixing this gate before we jump back in. Did you change that setting? Yeah, that's the one. Give me a second... okay. There we go.",
+  "reference_audio": "training/voice/reference/A2-reference-raw.wav",
+  "reference_sha256": "df05af0bd6c0922a9946cab5e92bf692e079454f9a4de2d570e79f2c962267c8",
+  "original_listening_audio": "training/voice/reference/A2-original-listen.wav",
+  "original_listening_sha256": "200b25d09866e3edb1916e2493c5e1a5021db36180a7c9ab8b707838fe219dfb",
+  "generation_seed": 11032,
+  "generation_instruction": "A young adult woman with a distinctly LOW alto speaking voice, rich rounded chest resonance and warm, smooth lower notes. The comfortable speaking pitch is roughly 155 to 175 hertz. Slight natural huskiness, grounded confidence and a friendly easygoing gamer-coder manner. Keep full vocal body even on light syllables. Speak English with a General American accent as one fully grown adult woman in her twenties. Keep the actual acoustic speaking register LOW, with full chest resonance, comfortable breath support and clear normal speech. Talk casually to a familiar friend while working at a computer. Maintain the same mature low-register identity through the genuine question and small relieved smile at the end. Use natural connected speech and understated variation, never an announcer cadence. Her ordinary pitch remains low; emotional inflections are modest. No squeaky, girlish, thin, nasal or breathy whisper delivery. This is natural adult conversation, not theatrical character acting.",
+  "owner_selection": {
+    "candidate": "A",
+    "display_id": "A2",
+    "scope": "identity selected for further variation auditions only",
+    "date": "2026-10-11",
+    "quote": "1, A2 low warm alto is it!! lets do variation smaples of it, versious original A2",
+    "raw_sha256": "df05af0bd6c0922a9946cab5e92bf692e079454f9a4de2d570e79f2c962267c8",
+    "listening_sha256": "200b25d09866e3edb1916e2493c5e1a5021db36180a7c9ab8b707838fe219dfb",
+    "paid_training_authorized": false,
+    "deployment_authorized": false
+  },
+  "paid_training_authorized": false,
+  "deployment_authorized": false,
+  "variation_acceptance": {
+    "date": "2026-10-11",
+    "quote": "okay those all of A2 sound great lets build it our we are usering ur and all we need for human Unity",
+    "accepted_profiles": [
+      "1-everyday",
+      "2-playful",
+      "3-soft",
+      "4-questions"
+    ],
+    "scope": "A2 source identity and these four source performances",
+    "paid_training_authorized": false,
+    "deployment_authorized": false
+  },
+  "delivery_profiles": "training/voice/REFERENCE_PROFILES.json",
+  "delivery_profiles_sha256": "f614a847ff4b5a4c4c14e774546179e5112c44753dceb7c40d09df8d6b4ab153",
+  "corpus_preview_feedback": {
+    "date": "2026-10-11",
+    "question": "Do these new corpus previews keep the adult A2 voice and natural delivery you approved? This feedback is for the recordings; it does not approve paid training.",
+    "direction_reply": "Keep this direction",
+    "specific_correction": "her \" im in a good mood now\" sound mono tone... it like she never gets exicted or happy",
+    "scope": "Keep A2 identity/direction; happy/excited acting is not accepted. No full corpus/training approval.",
+    "rejected_performance": {
+      "clip_id": "a2-8d5497ec15ce065cb3934581",
+      "text": "I'm in a good mood now.",
+      "wav_sha256": "91c13dd041dd7dfbcce02750054f320a04362ab4a13405651687101a9df01421"
+    },
+    "previews": [
+      {
+        "path": ".local/voice-lab/auditions/2026-10-11-A2-corpus-listening/1-everyday-and-questions.wav",
+        "sha256": "d609bd700aff228d2f1c8477074dc0e48a0343e8427e431405ab45385417290f"
+      },
+      {
+        "path": ".local/voice-lab/auditions/2026-10-11-A2-corpus-listening/2-playful-and-excited.wav",
+        "sha256": "a2d41197e523443ff192d38548e3e57bf36b3125e3b3d83d55d4abc219748fc7"
+      },
+      {
+        "path": ".local/voice-lab/auditions/2026-10-11-A2-corpus-listening/3-quiet-and-concerned.wav",
+        "sha256": "d2c099742de5cb3c86e6eefd0d111197359d976cbffbfc82b93937fd6a935173"
+      }
+    ]
+  },
+  "happy_retry_feedback": {
+    "date": "2026-10-11",
+    "quote": "B2 sounded sarcastic D1 sounded like a anime cartoon character",
+    "rejected": [
+      "B2-happy-context",
+      "D1-smiling-happy"
+    ],
+    "effect": "Do not use either as emotional supervision or change the original A2 identity."
+  },
+  "current_delivery_direction": {
+    "date": "2026-10-11",
+    "quotes": [
+      "come on we want a giorlfriend next door vibe that gigles and laughs and can joke and it sounds authentic",
+      "the original A2 but some type of emotional range  thats not forced and not just high pitch maxing"
+    ],
+    "scope": "Original A2 identity; warm familiar adult delivery; authentic restrained emotional range and actual giggles/laughter. No paid training approval."
+  },
+  "emotional_source_acceptance": {
+    "date": "2026-10-11",
+    "quote": "sounds great but dont use nutral one nutral one it terrible",
+    "accepted_clips": [
+      "2-natural-happy",
+      "4-little-chuckle"
+    ],
+    "rejected_clips": [
+      "1-neutral"
+    ],
+    "unreviewed_clips": [
+      "3-warm-pleased"
+    ],
+    "scope": "heard original-A2-reference happy and chuckle performances only; no full corpus/student/training approval",
+    "evidence": [
+      {
+        "id": "2-natural-happy",
+        "text": "I'm in a good mood now.",
+        "instruction": "You are a helpful assistant. 请用自然、真诚、轻松开心的语气说话，不要夸张，不要尖叫，也不要讽刺。<|endofprompt|>",
+        "audio": "training/voice/reference/A2-natural-happy-raw.wav",
+        "sha256": "dbc936f8936e794933aea667654d497b0729db550468438c50d892389c6eeaa6",
+        "listening_audio": "training/voice/reference/A2-natural-happy-listen.wav",
+        "listening_sha256": "0eb3ccf65363ce94ab787920cd73f674163374f2953f1b58b529681e57be0c43"
+      },
+      {
+        "id": "4-little-chuckle",
+        "text": "I had a plan. [laughter] Okay, that was not the plan.",
+        "instruction": "You are a helpful assistant. 请用自然、轻松、带着微笑的语气说话。<|endofprompt|>",
+        "audio": "training/voice/reference/A2-chuckle-raw.wav",
+        "sha256": "6babcc7b1f47ad6d8d2448bbcd0be2b2d762b91c2cabce687df176a23455fa27",
+        "listening_audio": "training/voice/reference/A2-chuckle-listen.wav",
+        "listening_sha256": "c3f124ec5056ed559a9de955336865f843af95ce5b7f5e2693a0bddb068a4c18"
+      }
+    ]
+  }
+}

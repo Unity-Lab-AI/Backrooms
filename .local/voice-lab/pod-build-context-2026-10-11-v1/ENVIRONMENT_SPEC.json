@@ -1,0 +1,46 @@
+{
+  "schema": "unity-voice-environment-spec-v1",
+  "status": "candidate-not-built-or-approved",
+  "platform": "linux-x86_64",
+  "python": "3.10.18",
+  "torch_cuda": "12.6",
+  "gpu_name_contains": "H100",
+  "minimum_driver_major": 525,
+  "image_digest": null,
+  "local_image_observation": null,
+  "published_artifact_lock": "training/voice/pod/environment.lock.json",
+  "packages": {
+    "torch": "2.7.1+cu126",
+    "torchaudio": "2.7.1+cu126",
+    "misaki": "0.9.4",
+    "espeakng-loader": "0.2.4",
+    "phonemizer-fork": "3.3.2",
+    "pyworld": "0.3.5",
+    "soundfile": "0.13.1",
+    "numpy": "2.2.6",
+    "numba": "0.68.0",
+    "llvmlite": "0.50.0",
+    "spacy": "3.8.7",
+    "en-core-web-sm": "3.8.0"
+  },
+  "runpodctl": {
+    "version": "2.15.0",
+    "platform": "linux-amd64",
+    "binary_sha256": "51c6f5a7e6f6c7cd4a52373f2262b9aeb0f16084e39595d25f71bc0cf5bc826b",
+    "stop_arguments": ["pod", "stop"],
+    "source": "https://github.com/runpod/runpodctl/releases/tag/v2.15.0"
+  },
+  "remaining": [
+    "102 published Python artifacts are metadata-resolved with URLs/hashes; build and audit them in Linux without renting a pod.",
+    "Bake the English language model, espeak library/data and libsndfile into the image; no runtime downloads.",
+    "Record registry image digest and complete package-lock.json plus runtime-assets.json hashes in a named engineering receipt.",
+    "Verify actual H100/driver/CUDA compatibility and stop credentials only during the separately authorized launch preflight.",
+    "Frontend identity differs from the Windows cu118 preparation environment; prepare new pod features."
+  ],
+  "sources": [
+    "https://pytorch.org/get-started/previous-versions/",
+    "https://docs.pytorch.org/audio/main/installation.html",
+    "https://docs.nvidia.com/deploy/cuda-compatibility/minor-version-compatibility.html",
+    "https://docs.runpod.io/runpodctl/reference/runpodctl-pod"
+  ]
+}
