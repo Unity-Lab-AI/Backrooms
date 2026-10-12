@@ -11,18 +11,32 @@
 
 ---
 
-## LIVE NOW (2026-10-12, updated 15:03 UTC): two pods running
+## LIVE NOW (2026-10-12, updated 15:07 UTC): two pods running -- read this first after a compaction
 
 Owner go: *"Go fastest, voice cap $70"*, then *"well we are gonna have to double that cap"*.
 
-| Pod | Id | Shape | $/h | Cap | State |
+| Pod | Id | Shape | $/h | Cap | State at 15:07 |
 |---|---|---|---|---|---|
-| Voice (records + trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | 7.98 | $140 | `VOICE_ROLE=both`: recording 5,000 clips (Cosy first, 24 shards, ~80-90 min), then trains (~7-8 h). Source `af945fae` |
-| Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | 3.99 | $50 | Restarted 14:58 (OOM fix), reinstalling; training ~15:25, ~3-5 h. Source `81516a80` |
+| Voice (records, then trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | 7.98 | $140 | `VOICE_ROLE=both`: recording 5,000 clips, 24 shards (~207 lines each, Cosy first then Qwen), shard 0 at line 30. Recording ends ~16:20, then screen, then training ~7-8 h. Source `af945fae` (digest `e6ae75fb`) |
+| Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | 3.99 | $50 | Restarted 14:58 after an OOM kill; reinstalling (pip, CUDA 13 build tools, causal-conv1d, llama.cpp). Training expected ~15:25, 1,062 steps, ~3-5 h. Source `81516a80` (data `7d2cac95`) |
 
-Gone: the 4x H200 clip pod (its GPUs were taken while it was stopped; terminated) and the debug pod `1kpwfq367r9aov` (found the Cosy bugs; terminated). Volumes: voice `nk8oyfxwc7` (US-CA-2), brain `3sjem6lb5j` (US-MO-1).
+**How to check** (no SSH key is set on these pods):
+- Brain: `https://rm6sdrmiv4dgtp-8000.proxy.runpod.net/` -> `status.txt`, `run.log.txt` (step line: grep `/1062`), `gpu-util.csv` (fields: time, gpu, util %, MiB used, MiB total). 19 GB used + 0 % = setup, not training.
+- Voice: `https://ksw41pgbted5ro-8000.proxy.runpod.net/` -> `status.txt`, `gen.log`, `gpu-util.csv`; render progress is NOT on that page -- read it over S3: `"C:/Program Files/Amazon/AWSCLIV2/aws.exe" s3 cp s3://nk8oyfxwc7/gen/logs/render-0.log - --region us-ca-2 --endpoint-url https://s3api-us-ca-2.runpod.io` and grep `^SOURCE` (line N/207). The ONNX "TryGetProviderInfo_CUDA" error and the SoX warning in those logs are expected.
+- Pods: RunPod MCP `list-pods` / `get-pod`. The runtime CPU/GPU numbers it returns are often 0 and not reliable; trust the pods' own gpu-util.csv.
+- Every code change to `training/voice/` changes the voice digest: regenerate `training/voice/VOICE_MANIFEST.json` (`python training/voice/manifest.py`), re-bind `training/voice/receipts/owner-training-authorization-2026-10-12.json` (`approved_source_digest`, then the receipt hash in `VOICE_QUALITY_GATE.json`), commit, push, `update-pod` with the new commit + digest, restart. A code change also re-keys every recorded clip (the render recipe is code-bound).
 
-Launch-day fixes (each Linux-only, each committed): shared-volume clone collision; teacher envs on the volume; venv symlink resolved to system python; models on the wiped container disk; onnxruntime-gpu name; Cosy cache parents; Cosy env missing gdown/wget; wetext downloading from modelscope.cn (403 -> hang) removed to match the approved no-front-end recipe; empty shard folders; stale shard plan; brain cmake; brain CUDA 12.4 vs torch cu13 kernel build; brain OOM from 4 forked loader workers. Rule logged: dry-run on one cheap pod before renting a fleet.
+**Next, in order:**
+1. Voice: recording finishes -> screen -> `gen/READY` -> training on both H100s (acoustic on GPU 0, vocoder on GPU 1). Progress samples every 30 min under `progress/` on its page -- play them to the owner.
+2. Brain: confirm the first real steps and the s/step on the fast kernels; then it exports the GGUF and scores the 249 held-out episodes per skill (`gguf/brain-eval.json`).
+3. Each pod stops itself at the end. Then bring everything home: `powershell -File training/voice/pod/pull_results_s3.ps1 -VolumeId nk8oyfxwc7 -DataCenter US-CA-2 -RunName voice-2026-10-12` and `powershell -File training/pod/pull_brain_s3.ps1 -VolumeId 3sjem6lb5j -DataCenter US-MO-1 -RunName brain-2026-10-12` to `D:oice-lab\pod-results\`. Delete pods, then volumes, only after each pull reports VERIFIED.
+4. Owner listens to the final voice (deploy gate `trained_voice_acceptance`); brain goes live via `training/apply.py` after its eval.
+
+Gone: the 4x H200 clip pod `u2k5pdlocndtnd` (its GPUs were taken while stopped; terminated) and debug pod `1kpwfq367r9aov` (found the Cosy bugs; terminated). Volumes: voice `nk8oyfxwc7` (US-CA-2, 150 GB), brain `3sjem6lb5j` (US-MO-1, 120 GB). Rough spend by 15:07: ~$75-85 (most of it launch-day setup).
+
+Launch-day fixes (each Linux-only, each committed): shared-volume clone collision; teacher envs on the volume; venv symlink resolved to system python; models on the wiped container disk; onnxruntime-gpu name; Cosy cache parents; Cosy env missing gdown/wget; wetext downloading from modelscope.cn (403 -> hang) removed to match the approved no-front-end recipe; empty shard folders; stale shard plan after the GPU count changed; brain cmake; brain CUDA 12.4 vs torch cu13 kernel build; brain OOM from 4 forked loader workers. Rule logged (memory): dry-run on one cheap pod before renting a fleet.
+
+**Still open outside the pods:** RimPLC rung-editor window check on screen (game minimised when tried); teacher venvs on local disk for the next pod run (TODO); the RimPLC P3/P4 phases; the Ladder v2 live-name checks marked UNVERIFIED.
 
 ## The record, 2026-10-12: Unity's own voice + her brain, three pods, waiting on the local voice test
 
