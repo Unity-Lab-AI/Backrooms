@@ -18,7 +18,7 @@
   "training/voice/SPEECH_EVENT_CORPUS.jsonl": "c4f55f7d5592e183a2b240bc36f78f56464303cf4146325dedd331c2b3399beb",
   "training/voice/SPEECH_EVENT_CORPUS_EXPANDED.jsonl": "6b263d8e6226285950e71ea4844e80a5d47859f805d2075bbcde8495824b874d",
   "training/voice/STREAM_CORPUS.jsonl": "e925d5dad1dc1da189fb508839df10ac95d0c37f5adf9cde3b983273b5037ac2",
-  "training/voice/STREAM_EVENT_CORPUS.jsonl": "4bd31d9791b3e1fa53f177d0e994c78b641c36def1fe08a3368dc9c7b4a4a09f",
+  "training/voice/STREAM_EVENT_CORPUS.jsonl": "68043906d2afd29431f1ced5658b0714972206de30a4b1626ca1cec14a294fdf",
   "training/voice/audition.py": "e77b937c1f5fb3466a7c602ed3959bd130d4eb89ff8b9464bb4a9dd1462b820b",
   "training/voice/build_corpus.py": "c90af47235076f4d285167908c8326cc1d5c7b7a8b8e9595b5132133e9e6db7a",
   "training/voice/build_event_corpus.py": "ea5cefc8996d58ecc8b778264110e223bf623f953b34db0654fadd8964725796",
@@ -66,7 +66,7 @@
   "training/voice/pod/upload_volume_s3.ps1": "2ee1dacbd8ab0f0a2fe7f5fb49ddfd410eb731c7fbb0dde6c4109b2f71e0f82a",
   "training/voice/prep.py": "bc845dc41bc9111bd296f9405f68f25c97f5fa5f178f288284074feaa5cab3bb",
   "training/voice/quality_gate.py": "3ad0c20cc3d682785779aa1fb9c6067677b8459c64eb4e1f09c11d2a7f63921c",
-  "training/voice/receipts/corpus-acceptance-stream-script.json": "0ab6a36a7be57d17134d5323f87880d8349466cc6aadda15a575dfe1d4f2e13a",
+  "training/voice/receipts/corpus-acceptance-stream-script.json": "de9585cb4462394539926894215a8201b6824b274f3780bf3ed1a5e8d03f80c8",
   "training/voice/receipts/delivery-ab-2026-10-12.json": "7a07ae10ee228a4092170cf569fd3d6879431f9469c79514987b3485ef096754",
   "training/voice/receipts/environment-2026-10-11-v2/observation.json": "9cb732d393dff3c5d85742fe6520cfbcf3a55c61f217e55c52c858eeb6125412",
   "training/voice/receipts/environment-2026-10-11-v2/os-packages.tsv": "6a0ca30410bb5f2a1aedbf62626477855cb24e45e8677a748d3340617021c852",
@@ -113,5 +113,5 @@
   "training/voice/variations.py": "b0dc9ac0a42f39d8e26ce5fc055d25a286edc4a6de0608048212c457e2fbaa8d",
   "training/voice/vocoder.py": "f6e8543d98c8a0e25a88fd903827c276225aa8713b7c06fe11c6d94ff34822d8"
  },
- "digest": "2be9bce46d5e69f540f29f85e3d27f8b13f4f4aed05d6aac3b99a876ac8382f7"
+ "digest": "2f76c72f6031bbb75b8368b22c5af2b84ef8b725f20b173e87f42ee0cd1c3c76"
 }

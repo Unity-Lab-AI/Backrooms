@@ -9,7 +9,7 @@
  "mode": "generated-on-pod",
  "approved_script_sha256": {
   "STREAM_CORPUS.jsonl": "e925d5dad1dc1da189fb508839df10ac95d0c37f5adf9cde3b983273b5037ac2",
-  "STREAM_EVENT_CORPUS.jsonl": "4bd31d9791b3e1fa53f177d0e994c78b641c36def1fe08a3368dc9c7b4a4a09f"
+  "STREAM_EVENT_CORPUS.jsonl": "68043906d2afd29431f1ced5658b0714972206de30a4b1626ca1cec14a294fdf"
  },
  "screen_rule": "keep only rows screened with no flags and a matching WAV hash; a words-only mismatch is kept if it matches within 10% after normalising numbers, contractions and heard laughter",
  "minimum_clips": 4500,
@@ -21,11 +21,19 @@
   },
   {
    "path": "training/voice/STREAM_EVENT_CORPUS.jsonl",
-   "sha256": "4bd31d9791b3e1fa53f177d0e994c78b641c36def1fe08a3368dc9c7b4a4a09f"
+   "sha256": "68043906d2afd29431f1ced5658b0714972206de30a4b1626ca1cec14a294fdf"
   },
   {
    "path": "training/voice/receipts/delivery-ab-2026-10-12.json",
    "sha256": "7a07ae10ee228a4092170cf569fd3d6879431f9469c79514987b3485ef096754"
+  }
+ ],
+ "label_fixes": [
+  {
+   "text_unchanged": true,
+   "from": "neutral",
+   "to": "amused",
+   "why": "the local proof run found the renderer refuses a laughter line labelled neutral (laughter always routes to Cosy, and Cosy may not render neutral); the one such line, the Bram-and-the-calf story, is a laughing line anyway"
   }
  ]
 }

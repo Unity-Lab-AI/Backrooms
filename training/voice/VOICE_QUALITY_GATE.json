@@ -12,7 +12,7 @@
   "corpus_acceptance": {
    "accepted": true,
    "receipt": "training/voice/receipts/corpus-acceptance-stream-script.json",
-   "receipt_sha256": "0ab6a36a7be57d17134d5323f87880d8349466cc6aadda15a575dfe1d4f2e13a",
+   "receipt_sha256": "de9585cb4462394539926894215a8201b6824b274f3780bf3ed1a5e8d03f80c8",
    "reason": "Owner approved the 5,000-line stream script 2026-10-12 ('script approved, next is a go'); generated-on-pod corpus bound to the script hashes, the screen rule and >= 4,500 clips."
   },
   "emotion_conditioning": {
