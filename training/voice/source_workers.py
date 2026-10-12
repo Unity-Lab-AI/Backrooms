@@ -125,7 +125,7 @@ def render(teacher, recipe, model_dir, code_dir):
             raise ValueError("Cosy worker requires its pinned local code directory")
         sys.path[:0] = [str(code_dir.resolve()), str(code_dir.resolve() / "third_party/Matcha-TTS")]
         cache = ROOT / ".local/voice-lab/models/cosy-runtime-cache"
-        cache.mkdir(exist_ok=True)
+        cache.mkdir(parents=True, exist_ok=True)
         os.environ["HF_HOME"] = str(cache / "huggingface")
         os.environ["MODELSCOPE_CACHE"] = str(cache / "modelscope")
         os.environ["MPLCONFIGDIR"] = str(cache / "matplotlib")

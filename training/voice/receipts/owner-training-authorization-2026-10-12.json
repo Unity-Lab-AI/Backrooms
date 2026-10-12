@@ -7,7 +7,7 @@
  "scope": "training-preflight",
  "mode": "generated-on-pod",
  "owner_quote": "Go fastest, voice cap $70 (owner, 2026-10-12, after \"okay do whats best\" and \"option 3 final checks and caps a 50$ per pod running 3 pods in tandum together\")",
- "approved_source_digest": "5a12b56c0555e1a832b5a1b4a820f85bca5cc227ff137712b93354790b7e23c2",
+ "approved_source_digest": "084fe0e22d0ca280fbbce777415ea7cf73dca7218ef733b04327cb0cf438223a",
  "approved_dataset_id": "generated-on-pod",
  "approved_hourly_price": 7.98,
  "approved_budget_usd": 70,
@@ -30,6 +30,7 @@
   "relaunch after both voice pods refused on a shared-volume clone collision (fixed: per-pod local clone)",
   "relaunch: teacher workers ran the system python because the venv symlink was resolved (fixed: venv path kept)",
   "relaunch: teacher models moved onto the volume (container-disk copies were wiped by the restart)",
-  "relaunch: Cosy probe accepts the onnxruntime-gpu distribution"
+  "relaunch: Cosy probe accepts the onnxruntime-gpu distribution",
+  "relaunch: Cosy runtime cache folder created with its parents"
  ]
 }
