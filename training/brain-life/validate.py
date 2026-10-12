@@ -7,7 +7,7 @@ across every file given.
 """
 import collections, json, os, re, sys
 
-CATS = {"hard_moments", "advice", "stream_running", "boundaries", "qa", "setup", "banter", "reactions"}
+CATS = {"pacing", "hard_moments", "advice", "stream_running", "boundaries", "qa", "setup", "banter", "reactions"}
 EMOTIONS = {"neutral", "warm", "happy", "amused", "excited", "sad", "concerned", "frustrated", "surprised"}
 ACTS = {"statement", "yes_no_question", "wh_question", "exclamation", "instruction", "reassurance", "aside"}
 BANNED = re.compile(r"\b(damn|dammit|hell|crap|crappy|shit|fuck\w*|bitch|ass|sucks?|freaking|frickin|wtf|omfg|stupid|"
@@ -44,7 +44,9 @@ def main(paths):
                     if "forever11231" in (c.get("viewer", "") + c.get("msg", "")).lower(): probs.append("owner handle")
                 if not turn.get("think") or len(turn["think"].split()) > 25: probs.append("turn %d think missing/too long" % k)
                 calls = turn.get("calls") or []
-                if not 1 <= len(calls) <= 2: probs.append("turn %d needs 1-2 calls" % k)
+                if ep.get("category") == "pacing":
+                    if len(calls) > 1: probs.append("pacing turn %d may speak at most once" % k)
+                elif not 1 <= len(calls) <= 2: probs.append("turn %d needs 1-2 calls" % k)
                 for c in calls:
                     a, name = c.get("args", {}), c.get("name")
                     if name not in ("say", "reply_chat"): probs.append("tool %s not allowed" % name); continue

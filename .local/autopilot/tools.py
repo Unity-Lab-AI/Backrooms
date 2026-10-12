@@ -497,8 +497,18 @@ class Toolbox:
         # gets the tagged line (same words, already passed the stream filter) once her own voice is live
         # (UNITY_OWN_VOICE=1), so the laugh is heard, never read. Today's Piper cannot laugh, so it gets the clean line.
         voice_line = self.voice_text if os.environ.get("UNITY_OWN_VOICE") == "1" else clean
-        subprocess.Popen([PY, SCRIPTS["speak"], "--bg", voice_line], cwd=ROOT, stdout=subprocess.DEVNULL,
-                         stderr=subprocess.DEVNULL, shell=False)
+        # Owner: "she need training on how not to over respond. waiting for vocie to play out becasue the last
+        # stream at time see was speaking over herself sending messages before the last finished". Speaking BLOCKS:
+        # the tool returns only after the line has finished playing (unity-speak holds its turn for the whole
+        # line), so her next line can never start or show in chat before this one is done.
+        started = time.time()
+        try:
+            subprocess.run([PY, SCRIPTS["speak"], voice_line], cwd=ROOT, stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL, shell=False, timeout=120)
+        except subprocess.TimeoutExpired:
+            log("SPEAK timed out after 120 s:", clean[:80])
+        self.last_speech = time.time()
+        self.last_spoken_seconds = round(self.last_speech - started, 1)
         log("SAID:", clean)
         return clean
 

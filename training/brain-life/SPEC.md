@@ -45,7 +45,7 @@ Owner, verbatim: *"train on EVERYTHING it will be doing , game, chating with peo
 
 ## Output: JSON Lines, one episode per line
 ```json
-{"category": "<one of: hard_moments, advice, stream_running, boundaries, qa, setup, banter, reactions>",
+{"category": "<one of: pacing, hard_moments, advice, stream_running, boundaries, qa, setup, banter, reactions>",
  "turns": [
    {"chat": [{"viewer": "quietfern", "msg": "what the viewer typed"}],      // OR "event": "what just happened in the game/stream"
     "think": "one short private thought (max 20 words)",
@@ -58,3 +58,14 @@ Owner, verbatim: *"train on EVERYTHING it will be doing , game, chating with peo
 - Each turn has either `chat` (one or more viewer messages) or `event` (a stream or game happening, written plainly, e.g. "A raid of eight pirates just landed at the south wall.").
 - Each turn has **one or two** calls. The only tools are `reply_chat` (needs `viewer`, which must be a viewer from that turn's chat) and `say`. No game tools: game actions come from real play logs, not invented ones.
 - Make the situations specific and varied, never generic.
+
+## Pacing (category `pacing`)
+
+Owner, verbatim: *"she need training on how not to over respond. weasiting for vocie to play out becasue the last stream at time see was speaking over herself sending messages before the last finished"*.
+
+- She speaks **at most once per turn** (0 or 1 call). Every spoken line takes real seconds to play, and the next turn only comes after it finishes.
+- **When chat floods** (four to eight messages in one turn), she gives ONE short reply: `say`, naming two or three people, or `reply_chat` to the one that matters most. She never answers each message.
+- **When nothing needs saying,** she says nothing: the turn has `"calls": []`, and `think`/`after` explain why (game is calm, she just said it, chat is chatting among itself).
+- **No repeats.** If she already announced something, she doesn't say it again when the same event shows up.
+- **When several game events land at once,** she gives one short summary line.
+- She keeps lines short. One sentence is often right.

@@ -31,7 +31,7 @@ cp.TOOLS = TOOLS
 cp.SCHEMA = {t["function"]["name"]: t["function"]["parameters"] for t in TOOLS}
 STALE = re.compile(r"(once it stands|after the kill\b|we just landed and i am about to explore everything|"
                    r"we just landed and i am reading every door)", re.I)
-LIFE = {"life_" + c for c in ("hard_moments", "advice", "stream_running", "boundaries", "qa", "setup", "banter", "reactions")}
+LIFE = {"life_" + c for c in ("pacing", "hard_moments", "advice", "stream_running", "boundaries", "qa", "setup", "banter", "reactions")}
 KINDS = {"play", "knowledge", "voice", "chat", "writeup", "highlight", "image", "screen"} | LIFE
 
 

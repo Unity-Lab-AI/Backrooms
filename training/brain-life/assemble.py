@@ -70,9 +70,12 @@ def main():
                         args = {"text": a["text"], "emotion": a["emotion"], "act": a["act"]}
                         results.append({"role": "tool", "tool_name": "say", "content": "said: " + shown(a["text"])})
                     calls.append({"function": {"name": c["name"], "arguments": args}})
-                msgs.append({"role": "assistant", "content": t["think"], "tool_calls": calls})
-                msgs.extend(results)
-                msgs.append({"role": "assistant", "content": t.get("after") or "Back to the colony."})
+                if calls:
+                    msgs.append({"role": "assistant", "content": t["think"], "tool_calls": calls})
+                    msgs.extend(results)
+                    msgs.append({"role": "assistant", "content": t.get("after") or "Back to the colony."})
+                else:                                   # choosing NOT to speak is a real turn too (pacing)
+                    msgs.append({"role": "assistant", "content": (t["think"] + " " + (t.get("after") or "")).strip()})
             rows.append({"kind": "life_" + ep["category"], "tools": "TOOLS", "messages": msgs})
     with open(out, "w", encoding="utf-8", newline="\n") as f:
         for row in rows:
