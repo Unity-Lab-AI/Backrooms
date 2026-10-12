@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "training_allowed": false,
+ "training_allowed": true,
  "deployment_allowed": false,
  "checks": {
   "source_auditions": {
@@ -52,10 +52,10 @@
    "reason": "Accepted at the final pre-launch check 2026-10-12; residual risk recorded in the receipt."
   },
   "owner_training_authorization": {
-   "accepted": false,
-   "receipt": null,
-   "receipt_sha256": null,
-   "reason": "Latest owner instruction explicitly prohibits starting training or renting a pod. Preparation only; no priced run authorization exists."
+   "accepted": true,
+   "receipt": "training/voice/receipts/owner-training-authorization-2026-10-12.json",
+   "receipt_sha256": "50ae1a1e1530c4a7700381f035c9e5bb241c8b04d9451e0f4b60215ed1b96022",
+   "reason": "Owner go 2026-10-12: 'Go fastest, voice cap $70'"
   },
   "trained_voice_acceptance": {
    "accepted": false,
