@@ -17,6 +17,8 @@
   "training/voice/SPEECH_CORPUS_EXPANDED.jsonl": "3e268623e8a6a555207c5ac91f5db9646d59909ca50a4838720cc66acb806498",
   "training/voice/SPEECH_EVENT_CORPUS.jsonl": "c4f55f7d5592e183a2b240bc36f78f56464303cf4146325dedd331c2b3399beb",
   "training/voice/SPEECH_EVENT_CORPUS_EXPANDED.jsonl": "6b263d8e6226285950e71ea4844e80a5d47859f805d2075bbcde8495824b874d",
+  "training/voice/STREAM_CORPUS.jsonl": "e925d5dad1dc1da189fb508839df10ac95d0c37f5adf9cde3b983273b5037ac2",
+  "training/voice/STREAM_EVENT_CORPUS.jsonl": "4bd31d9791b3e1fa53f177d0e994c78b641c36def1fe08a3368dc9c7b4a4a09f",
   "training/voice/audition.py": "e77b937c1f5fb3466a7c602ed3959bd130d4eb89ff8b9464bb4a9dd1462b820b",
   "training/voice/build_corpus.py": "c90af47235076f4d285167908c8326cc1d5c7b7a8b8e9595b5132133e9e6db7a",
   "training/voice/build_event_corpus.py": "ea5cefc8996d58ecc8b778264110e223bf623f953b34db0654fadd8964725796",
@@ -31,7 +33,7 @@
   "training/voice/inspect_source_audio.py": "d794354ae506518ca4fedaa38cfc2c543a4bf38171b85938e5108e4c6c91ed34",
   "training/voice/make_dataset.py": "68ed288b7e4cbaf82a52aeb26bdf401cfbe4bca497b94d6f9f7c780b360d6d61",
   "training/voice/make_dataset_optimized.py": "b95b8814c59f74cf36a78837f7cdd4c9359db5c2737de304a0fb00bdea36dd10",
-  "training/voice/manifest.py": "bcb4aa82d481f81adc63d48ba1079a3b4b32bb71bb2db2a79ba015c7810c6f2c",
+  "training/voice/manifest.py": "75058be99bac6354b13d97044160ca8206f6b8d62f509fb7fa5786605e385575",
   "training/voice/merge_source_datasets.py": "001fb13271b1abcdff168f5f4c912452cf073f52a79888a89eb10bb589d94d44",
   "training/voice/merge_source_qa.py": "654ec270e961b7feca12714508d995279c6ce38842dbbf41335b9fbfaa882a48",
   "training/voice/model.py": "47153b71266fed30c0633a3f55281b97dbeb0bff32b62b47d274052f810eb447",
@@ -54,7 +56,7 @@
   "training/voice/pod/start_no_training.sh": "ff8556f9ca436a5eabada79e53c7f8b02b25c419ce9cb6a1d7397fbadff8f0da",
   "training/voice/pod/upload_dataset.ps1": "0324ebe21dc322052ae66ac08a56c5e9652f9850f013ee0ddcfd28fd967ebb57",
   "training/voice/prep.py": "bc845dc41bc9111bd296f9405f68f25c97f5fa5f178f288284074feaa5cab3bb",
-  "training/voice/quality_gate.py": "baa13508a295366a9f740090ef88e2752298dc799ea0cf9a7451454dbe06adc4",
+  "training/voice/quality_gate.py": "6448830d0fc275b612632e806f0577bb6aafdeb222bb56088e4ff7dcc52a5e33",
   "training/voice/receipts/delivery-ab-2026-10-12.json": "7a07ae10ee228a4092170cf569fd3d6879431f9469c79514987b3485ef096754",
   "training/voice/receipts/environment-2026-10-11-v2/observation.json": "9cb732d393dff3c5d85742fe6520cfbcf3a55c61f217e55c52c858eeb6125412",
   "training/voice/receipts/environment-2026-10-11-v2/os-packages.tsv": "6a0ca30410bb5f2a1aedbf62626477855cb24e45e8677a748d3340617021c852",
@@ -101,5 +103,5 @@
   "training/voice/variations.py": "b0dc9ac0a42f39d8e26ce5fc055d25a286edc4a6de0608048212c457e2fbaa8d",
   "training/voice/vocoder.py": "f6e8543d98c8a0e25a88fd903827c276225aa8713b7c06fe11c6d94ff34822d8"
  },
- "digest": "5bcfa48afe5d28626f481405dc6fe18052c54852ceb5956dfb21d1b93b59ea0d"
+ "digest": "0a531dfebac7f10786438833095163dbc9bfe41bac90c373c17bb1070ba3c799"
 }

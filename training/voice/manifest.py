@@ -49,6 +49,8 @@ gate = json.load(open(os.path.join(HERE, "VOICE_QUALITY_GATE.json"), encoding="u
 for check_id, check in gate["checks"].items():
     if check_id not in MUTABLE_RECEIPT_CHECKS and check.get("receipt"):
         FILES.append(os.path.relpath(receipt_path(check["receipt"]), ROOT).replace(os.sep, "/"))
+# Unity's stream-voice script (5,000 lines, 2026-10-12), recorded on the pod by generate_on_pod.sh.
+FILES.extend(("training/voice/STREAM_CORPUS.jsonl", "training/voice/STREAM_EVENT_CORPUS.jsonl"))
 # The owner's later delivery choice (A/B, 2026-10-12) and every clip it was heard on.
 policy = json.load(open(os.path.join(HERE, "SOURCE_DELIVERY_POLICY.json"), encoding="utf-8"))
 if policy.get("owner_delivery_selection"):
