@@ -28,5 +28,6 @@ if "--check" in sys.argv:
     print(digest(m["files"]))
 else:
     files = {rel: sha(rel) for rel in FILES}
-    json.dump({"files": files, "digest": digest(files)}, open(PATH, "w"), indent=1)
+    with open(PATH, "w", newline="\n") as f:                                # LF, as git stores it
+        json.dump({"files": files, "digest": digest(files)}, f, indent=1)
     print(digest(files))
