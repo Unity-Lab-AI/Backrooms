@@ -124,7 +124,7 @@ trainer = Trainer(
                num_train_epochs=CFG["epochs"], max_steps=2 if PREFLIGHT else -1, learning_rate=CFG["lr"],
                lr_scheduler_type="cosine", warmup_steps=15, logging_steps=5, save_strategy="steps", save_steps=40,
                save_total_limit=2, bf16=True, optim="adamw_8bit", weight_decay=0.0, seed=7, output_dir=ckdir,
-               report_to="none", group_by_length=not PREFLIGHT, remove_unused_columns=False, dataloader_num_workers=4))
+               report_to="none", group_by_length=not PREFLIGHT, remove_unused_columns=False, dataloader_num_workers=0))
 # an interrupted run resumes from its newest checkpoint (run.sh clears them whenever the inputs change)
 resume = not PREFLIGHT and os.path.isdir(ckdir) and any(d.startswith("checkpoint-") for d in os.listdir(ckdir))
 if resume:
