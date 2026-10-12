@@ -87,10 +87,10 @@ REMOTES = [
 #
 # So the remote stays in the list, it is skipped by name, and every run prints that it is held and
 # why. **Restored by the owner saying the host is back**, never by time passing.
-HELD_REMOTES = {
-    "forgejo": "the owner reported git.unityailab.com going down on 2026-10-06, "
-               "\"stop pushes to it until further notice\"",
-}
+#
+# Lifted 2026-10-12 by the owner: *"go ahead and push to forgelo i think its back up"*. The host came back
+# rebuilt with new SSH host keys, which the owner chose to trust (*"Trust it, server was rebuilt"*).
+HELD_REMOTES = {}
 
 
 def active_remotes():
