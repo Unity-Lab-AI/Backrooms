@@ -510,8 +510,10 @@ def main():
         if path.exists() or path.with_name(key + ".writing.wav").exists():
             raise ValueError("Orphan/interrupted WAV exists; preserve it for explicit recovery review")
     started = time.monotonic()
-    # A process exits and releases all GPU state before the next teacher is loaded.
-    for teacher in ("qwen", "cosy"):
+    # A process exits and releases all GPU state before the next teacher is loaded. Cosy goes first (owner, 2026-10-12:
+    # "this time keep the qwen ones if an issue so we only have to do cozy"): a Cosy problem shows in minutes, before the
+    # larger Qwen batch is spent, because a code fix re-keys every clip already recorded.
+    for teacher in ("cosy", "qwen"):
         if teacher not in used:
             continue
         remaining = [job for job in jobs if routes[job["id"]]["teacher"] == teacher
