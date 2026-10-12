@@ -31,7 +31,7 @@ cp.TOOLS = TOOLS
 cp.SCHEMA = {t["function"]["name"]: t["function"]["parameters"] for t in TOOLS}
 STALE = re.compile(r"(once it stands|after the kill\b|we just landed and i am about to explore everything|"
                    r"we just landed and i am reading every door)", re.I)
-LIFE = {"life_" + c for c in ("pacing", "hard_moments", "advice", "stream_running", "boundaries", "qa", "setup", "banter", "reactions")}
+LIFE = {"life_" + c for c in ("pacing", "hard_moments", "advice", "stream_running", "boundaries", "qa", "setup", "banter", "reactions", "admin")}
 KINDS = {"play", "knowledge", "voice", "chat", "writeup", "highlight", "image", "screen"} | LIFE
 
 
@@ -92,7 +92,9 @@ def main():
         counts[k] = counts.get(k, 0) + 1
         if k not in KINDS:
             fails.append("train %d: unknown kind %r" % (n, k)); continue
-        if k in ("play", "highlight", "image") or k in LIFE:
+        if k == "life_pacing" and len(ep["messages"]) == 3:     # a deliberately silent turn: no call to check
+            if cp.dirty(ep["messages"][2]["content"]): fails.append("train %d (%s): silent turn fails the stream filter" % (n, k))
+        elif k in ("play", "highlight", "image") or k in LIFE:
             fails += ["train %d (%s): %s" % (n, k, e) for e in cp.check_episode(ep, [])[:4]]
         elif k in ("voice", "chat"):
             fails += ["train %d (%s): %s :: %s" % (n, k, e, ep["messages"][-1]["content"]) for e in voice_fails(ep["messages"])]

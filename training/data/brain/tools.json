@@ -909,6 +909,28 @@
 {
 "type": "function",
 "function": {
+"name": "reply_owner",
+"description": "[PRIVATE] Answer the OWNER in the private admin channel (Persona Studio window / admin panel). Never spoken, never on stream. msg_id is the number given with their message.",
+"parameters": {
+"type": "object",
+"properties": {
+"msg_id": {
+"type": "integer"
+},
+"text": {
+"type": "string"
+}
+},
+"required": [
+"msg_id",
+"text"
+]
+}
+}
+},
+{
+"type": "function",
+"function": {
 "name": "new_colony",
 "description": "Start a brand-new colony on the company scenario, set up the owner's way (world 30%, 300x300, Spring, pollution 0, factions, mountainous forest tile, the Godsmultiplayer ideoligion, the Preset3 crew, day one). ONLY when the owner orders it. It abandons the current colony.",
 "parameters": {

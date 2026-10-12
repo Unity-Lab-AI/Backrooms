@@ -1,5 +1,5 @@
 {
- "digest": "52fe2c95118cada11be95a32dc0066282154b019a81b5e2eeff4a7d0b4051198",
+ "digest": "b9b32bd4f9dd3bf60b159d3878790e217ea51fecd40648fb4f576e0905cfa212",
  "files": {
   "baseline_voice.json": "4cf61a3880beed2296e0a5c61b052470a46b3309c540d52dc95f200bba87346c",
   "eval_tools.jsonl": "d25a3c3eafd85ae36de7f9e3aa4e23cc7178303664867cb9fb787792a15cf51b",
@@ -24,26 +24,28 @@
   "screens/00017.png": "8a8460af54f70a21ae81fa116da4fc6802fe164b7201404ee0325afd6fe70daa",
   "screens/00018.png": "f175259368dbac4f36047848d7438e5072107d33a261f65a593edada2320aa65",
   "screens/00019.png": "cdbdd13bd41bb038e973587d8acb81bd9dff4871134c7f580880096c6c9b6eae",
-  "tools.json": "435caacb4e95676d3a050637b0ba15e17acaaa0b5ef7fce18646a99afcc24a4d",
-  "train.jsonl": "a465d351a647804a7ae1c7e2dd5722807c98c629aaa63e3fb45e882a71ebf68f"
+  "tools.json": "426be23f550e59af1ff74bfd0e8aec50dbbe35b4d9ccc8fe9ced805b850b833b",
+  "train.jsonl": "fcdefee1bb8936015364f455a4161e0a6e8c11172023268b641f85ef3304e21f"
  },
  "train_counts": {
-  "knowledge": 2125,
   "voice": 638,
+  "life_reactions": 285,
+  "knowledge": 2125,
   "play": 706,
   "life_hard_moments": 246,
+  "life_pacing": 247,
   "life_qa": 272,
+  "writeup": 150,
+  "life_banter": 242,
+  "life_advice": 273,
+  "image": 220,
+  "highlight": 45,
   "chat": 484,
+  "life_admin": 299,
   "life_boundaries": 195,
   "life_setup": 188,
-  "writeup": 150,
-  "life_advice": 273,
   "life_stream_running": 293,
-  "highlight": 45,
-  "screen": 100,
-  "life_banter": 242,
-  "image": 220,
-  "life_reactions": 285
+  "screen": 100
  },
  "eval_voice": 63,
  "eval_tools": 21,
@@ -54,6 +56,6 @@
   "closing recital": 12
  },
  "image_tool": false,
- "tools": 48,
+ "tools": 49,
  "delivery_inferred_calls": 1053
 }

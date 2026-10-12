@@ -163,7 +163,7 @@ class Toolbox:
     # The tools that actually play the colony. Owner: "no she has to do it" -- so she has to be fast, and 72 tool
     # definitions (~9k tokens) were re-read on CPU every turn. Camera minutiae, UI layout, tab and save plumbing
     # stay registered (a call to them still works) but are not offered in the prompt.
-    CORE = {"ladder", "ladder_set", "pawn_priorities", "new_colony", "game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "plan", "webcam", "snap",
+    CORE = {"ladder", "ladder_set", "pawn_priorities", "new_colony", "game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "reply_owner", "plan", "webcam", "snap",
             "twitch_chat", "note", "read_doc", "run_list", "empire_pass", "play_slices",
             "game_apply_architect_designator", "game_select_architect_designator", "game_list_architect_designators",
             "game_list_architect_categories", "game_set_zone_target", "game_list_zones", "game_list_areas",
