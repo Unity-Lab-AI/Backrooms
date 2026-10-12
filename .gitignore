@@ -161,3 +161,14 @@ training/_fetch.log
 .local/qa/_*.flag
 .local/qa/_owner_grant_*
 .local/qa/_audit_build/
+
+# voice dataset: generated audio, rebuilt by .local/voice-lab/make_dataset.py
+.local/voice-lab/dataset/
+.local/voice-lab/**/*.wav
+.local/voice-lab/feats/
+.local/voice-lab/smoke/
+.local/voice-lab/ckpt/
+.local/voice-lab/**/*.pt
+!.local/voice-lab/round1/*.pt
+!.local/voice-lab/round2/*.pt
+.local/voice-lab/**/*.npy
