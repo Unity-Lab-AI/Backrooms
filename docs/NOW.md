@@ -43,15 +43,17 @@ Owner: *"why would i make them if they are only therei while its rented"*, *"mak
 | Corpus approval (gate) | **Done** for the generated-on-pod corpus: script hashes + screen rule + at least 4,500 clips | `training/voice/receipts/corpus-acceptance-stream-script.json` |
 | On-pod generation + two-pod split | **Built.** Proven locally on 26 + 200 lines; both teacher environments install and import on Linux (Docker) | branch `feature/voice-pod-ready`: `pod/start_template.sh`, `generate_on_pod.sh`, `auto_screen.py`, `requirements-teacher-*.txt`, `constraints-teacher.txt`, `pull_results_s3.ps1`, `upload_volume_s3.ps1`, `LAUNCH_RUNBOOK.md` |
 | Pod safety rails | **Built.** Self-stop with credentials read back from PID 1; SSH-proof; refusal stops the pod; budget-bounded generation; resume keeps the first deadline; read-only progress on :8000 | same branch |
-| **Local mini voice test** | **RUNNING** (owner's go). 200 lines recorded, 198 kept. Acoustic model trained (12 steps/s, ~119k frames/s). Vocoder, GTA, then samples of held-out lines | `D:\voice-lab\poc\` (`run.log`, `logs/`, `samples/`) |
+| **Local mini voice test** | **RUNNING** (owner's go). 200 lines recorded, 198 kept. Acoustic model trained (12 steps/s, ~119k frames/s). Vocoder at 5.2 steps/s, ~225 W, mel 0.41 -> 0.32 by step 4,800 of 12,000. Then the GTA pass and samples of held-out lines | `D:\voice-lab\poc\` (`run.log`, `logs/`, `samples/`) |
 | Brain training data | **Done, `check_brain.py` PASS.** 6,462 rows: the original 4,468 + 1,994 "life" rows (hard moments incl. 26 crisis episodes with 988, advice, stream running, boundaries, Q&A, setup, banter, reactions). Every say/reply_chat call carries emotion + act. Fact-checked against the mod; stream-filter and secret-word clean | `training/data/brain/`, sources `training/brain-life/` |
 | Live speech | **Done.** `say`/`reply_chat` take emotion + act. `[laughter]` never shown in chat but kept for the own voice (`UNITY_OWN_VOICE=1`). Links spoken *"unity ai lab dot com"* | `.local/autopilot/tools.py`, `guards.py` |
+| Brain pod pipeline | **Built** (2026-10-12): pinned `BRAIN_SOURCE_COMMIT`, self-stop credentials from PID 1, own network volume, `training/pod/pull_brain_s3.ps1` brings the run home to D: (verified). Data digest `52fe2c95…`; launch steps in `training/BRAIN_PLAN.md` §7 | `training/pod/` |
+| Branches | **Merged and cascaded** (2026-10-12): `feature/voice-pod-ready` merged into `feature/bug-testing`; PRs #33/#34; GitHub and Forgejo (`Main`/`Develop`) match locally at `8f2748bd` / `6b6dafe4` / `7672b94a`. Voice manifest `2afe1740…` | |
 | Big local data | Moved to the USB drive with junctions at the old paths; retired seed clips deleted | `D:\voice-lab\` |
 
 ### Still open before the three pods (in order)
 1. **Mini voice test finishes; the owner listens** to held-out samples. Check laughter audibility: ASR heard a laugh on only 2 of 20 laughter lines, so the dry instruction may flatten laughs.
-2. **Brain pod pipeline: not built.** `training/pod/` is the old brain pipeline (no network volume, which is why RunPod's pod deletion lost its work). It needs to move to the template + volume + results-to-D: path, train on the new `train.jsonl`, and eval delivery as well as tools and voice.
-3. **Merge `feature/voice-pod-ready` into `feature/bug-testing`**, regenerate the manifest, verify a fresh clone, cascade GitHub + Forgejo (`Main`/`Develop` capitalised there).
+2. ~~Brain pod pipeline~~: done (see table). Still optional: a delivery check in the brain eval (`training/pod/eval.py` scores tools and voice, not the emotion/act choice).
+3. ~~Merge and cascade~~: done. Re-cascade after any further change.
 4. **Gate:**
    - owner priced training authorization (`owner_training_authorization` + `training_allowed`)
    - engineering receipts for resume, budget/stop and free-running evaluation, using the mini test as evidence
