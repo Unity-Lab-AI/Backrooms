@@ -106,7 +106,7 @@ The cap defaults to `BUDGET_USD=50` (stop at 92%). Every rate here was measured 
 - [x] Voice designed and locked (`unity-voice.pt`, owner's #5)
 - [x] Model, vocoder, trainers and inference written; smoke and learning checks passed locally
 - [x] Pod scripts: hash-bound, cost-capped, stop themselves, GET-only server, network volume, resumable
-- [x] `VOICE_MANIFEST.json` written. Digest at this writing: `be8c7793adc7030d7ac7e96c34b2f665d18cf97fb7422a277f7ea8862abc2aec`
+- [x] `VOICE_MANIFEST.json` written. Digest at this writing: `582b1815a20f1aedd8bb788f8bd43a933432cdf61fcc38a49a63563ae2aedd7c`
 - [ ] Commit and push `training/voice/` to the branch the pod clones (`feature/bug-testing`), then confirm `python training/voice/manifest.py --check` still prints the approved digest
 - [ ] Owner approves the price shown at create time
 - [ ] RunPod settings:

@@ -2,7 +2,7 @@
  "files": {
   "training/voice/make_dataset.py": "2a1ea9af11f497cbddb27be33a3361b7e4f4ba32d47cebbcc78990c37d7512c0",
   "training/voice/prep.py": "04079ce5608e9115f300f7cb114d00a382d0139b53cefc4542fb9dd96602784d",
-  "training/voice/model.py": "953e1892784195647a83add58d2038c6c675c41898462b401e8fe5f38f2ba489",
+  "training/voice/model.py": "33c1bcf5ac35d8dc4fe8937ece94198570f638496df2ff409e5072dc1c5e9f01",
   "training/voice/train_acoustic.py": "7903edd33449f60db1abb45cb7e71dd3c8805875b1e8c6bd071306544937c273",
   "training/voice/vocoder.py": "f6e8543d98c8a0e25a88fd903827c276225aa8713b7c06fe11c6d94ff34822d8",
   "training/voice/train_vocoder.py": "6e35d58dd177ce5b2db312ae5ddd7180e081a11b2d51233fb19d133822e32726",
@@ -11,5 +11,5 @@
   "training/voice/pod/run_voice.sh": "896fcacfb7a75d8be88b0a760e6ebb9df885bcc7dc5f012fb05609d0dd2eb66e",
   "training/data/brain/train.jsonl": "0ec9598b40c928fbb3caa127d8739890f92c6aaddca308caf6c6061bd9ccb7cf"
  },
- "digest": "be8c7793adc7030d7ac7e96c34b2f665d18cf97fb7422a277f7ea8862abc2aec"
+ "digest": "582b1815a20f1aedd8bb788f8bd43a933432cdf61fcc38a49a63563ae2aedd7c"
 }
