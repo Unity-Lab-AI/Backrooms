@@ -108,7 +108,7 @@
   "training/voice/reference/ab-2026-10-12/qwen-everyday-3.wav": "0b22143440678576d57ec79a5397e89f1db9e1ce13a18bf3a03fec91d211f538",
   "training/voice/reference/ab-2026-10-12/qwen-everyday-4.wav": "3737959f7042b6782c4007e7808424a1737d642b97c6b6c833195f2a738052a7",
   "training/voice/run_expanded_preparation.py": "9a96bf279709f3f74cb8a3e9ea65729268cc04072c1564689bccdf1f707c6cf2",
-  "training/voice/source_workers.py": "973968a5de400db6e9d41e0559f4b269e84948ec01372a29d5fca15722b4d85a",
+  "training/voice/source_workers.py": "ff5740bfe3a8496325250548eb1d0397abc91159ec540f781cb637027f1844aa",
   "training/voice/source_workers_optimized.py": "b7342ed831bdbf47f903344d8a669b987512ab94cfe7d92b2b8047d6d4827e21",
   "training/voice/speech_text.py": "7f597efdde9fb31d4bc7e3073c37b5bf2a1a1c385479d1aee17aa246b12c5910",
   "training/voice/speech_turns.py": "fd5b5a56d33af5923c8190450bbed0c242331618efe6d33a4fae2eb4beb8cd4b",
@@ -119,5 +119,5 @@
   "training/voice/variations.py": "b0dc9ac0a42f39d8e26ce5fc055d25a286edc4a6de0608048212c457e2fbaa8d",
   "training/voice/vocoder.py": "f6e8543d98c8a0e25a88fd903827c276225aa8713b7c06fe11c6d94ff34822d8"
  },
- "digest": "91482dd468550545a4364aa2b47ef1db55d6399e236510f7c0ae026f617ed425"
+ "digest": "5a12b56c0555e1a832b5a1b4a820f85bca5cc227ff137712b93354790b7e23c2"
 }
