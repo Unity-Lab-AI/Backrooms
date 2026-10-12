@@ -177,7 +177,7 @@ fi
 
 if [ "$GEN" = "1" ] && [ "$ROLE" = "train" ]; then
   # 5a. Training pod: the clips come from the clip pod through the shared volume.
-  WAIT=$(python3 -c "import os; print(int(float(os.environ.get('VOICE_WAIT_HOURS', '1')) * 3600))")
+  WAIT=$(python3 -c "import os; print(int(float(os.environ.get('VOICE_WAIT_HOURS', '4.5')) * 3600))")
   say "waiting for the clip pod (gen/READY, up to ${WAIT}s)"
   until [ -f "$W/gen/READY" ]; do
     [ "$SECONDS" -lt "$WAIT" ] || stop_self "no gen/READY from the clip pod within ${WAIT}s"
