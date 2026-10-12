@@ -1,0 +1,739 @@
+{"text": "Okay, we're sending Mara and Rook through the gate after lunch.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Survey notes say the yellow hallway on the east side loops back on itself.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Did anybody else catch that the hum got louder when the gate opened?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Which corridor do you think we should map first, left or right?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Pip, grab the flashlight before you step through that door.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Note to self, label the coordinates before closing the tab.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "It's fine, the expedition team has enough food for two days.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "There it's, the gate's finally charged!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "So I'm putting the turrets right behind the sandbags this time.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "We've got a cold snap rolling in, so the heaters are going on early.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Chat, keep an eye on the top left for me while I sort this out.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Is that room supposed to have carpet on the ceiling?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Where did the second exit in that room go?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Hmm, I swear that corridor was shorter yesterday.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Don't worry, Odessa's just tired, she's not breaking.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Welcome in, Juniper, we're about to do a gate run.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Quick recap for anyone just joining, we found a gate under the old barn.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Our anomaly log is up to fourteen entries now, which feels like a lot.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Hollis, back to the kill box, you're on shooting duty tonight.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Should we risk a night expedition or wait until morning?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "What's the furthest room anybody's gotten in this mod?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Winter starts in three days, so I want the walls finished before then.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Okay, that's a problem for future me.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "We're okay, the raiders turned around at the river.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Oh, a trader caravan, perfect timing!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Bram's schedule has him sleeping right through the afternoon shift, so I'm moving that.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "I'm going to take a short break in about ten minutes.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Somebody remind me to check the freezer after this run.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Do you think the company actually reads these survey reports?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "How do you even spell that room name they gave us?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Corridor seven is the one with the flickering lights and the wet floor.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Wait, why is Ivy wandering toward the gate alone?", "emotion": "neutral", "speech_act": "aside"}
+{"text": "She's fine, she's just hauling stuff to the stockpile.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Rainy season means the crops slow down and everyone's mood dips a bit.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "We made it back with the whole team!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Rook, drop the rifle and pick up the bow, we need quiet.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Mood check, Scar is cranky because she ate without a table again.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Are we doing the coordinates thing again, chat?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Who wants to name the new room we just found?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "This mod adds a gate that leads into the Backrooms, and we explore it for the company.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Real quick, I need to fix this zone before I forget.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Nobody's in danger right now, it's just a scary noise.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Next up is the defense check, then another expedition if the weather holds.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Lantern, you asked about the mod, it's called Async Industries.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Turrets need steel, and steel is exactly what we're short on.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Can someone tell me if the gate closes on its own?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Why does every odd room smell like old carpet in the description?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "A solar flare, right as I opened the gate!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Juno's got the late shift tonight, so she's sleeping until noon.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "I keep clicking the wrong colonist, give me a second.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "It's alright, the power will come back once the flare passes.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Survey note, the room past the vending machines has no doors at all.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mara, stay inside the walls until the storm stops.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Fog rolled in, which means the turrets can't see as far.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Is anyone else getting a weird vibe from that hallway?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "What do you think the company does with all these samples?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "I'm setting the recreation hour to right after dinner.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Look at that, a brand new corridor type!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Okay, deep breath, I know what I'm doing here.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Relax, chat, the gate's locked from our side.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "The anomaly log says this one only shows up when it's raining.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Everybody back to the base, the heat wave's about to hit.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Coordinates for the last room were north forty, east twelve.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Should Pip lead the next expedition, or is that cruel?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "How long do you think we've been in this map, like forty days?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Spring is when the raids pick up, so I want the walls doubled.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Note to self, Hollis hates working in the dark.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "We've got medicine, so nobody's going to lose a leg over this.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "For new folks, I play as Unity and I'm also one of the colonists.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Socks walked right into the gate!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Somebody go get Socks before he wanders deeper.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Tamsin's mood is low because her room is too small, which is fair.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Do we want another bedroom wing before winter?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Which colonist should get the bionic arm first?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Expedition prep means food, meds, a light source, and a radio.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Hmm, that room wasn't on the map last time.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Nope, that's not a raid, that's just a trader.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Weather's clear for the next two days, so it's a good window.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Chat, vote in the poll for the next room to survey.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "I set the sandbags in a little zigzag so they have to slow down.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Has anybody seen the paperwork room before?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Where do I put the second turret so it covers the gate?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "We hit a new depth record!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "I said that like I planned it, which I didn't.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Breathe, it's just a mood penalty, it'll wear off by tomorrow.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Rook loves night shifts, he gets a bonus for working in the dark.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Odessa, take a nap, you've been awake for way too long.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Thanks for the follow, Wren, you showed up right before the good part.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Is it weird that I'm getting attached to a hallway?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "What's the plan if the gate opens during a raid?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Survey team found a room with forty identical chairs facing a wall.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Okay, I'm logging that one before I lose it.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Don't panic, we can always pull the team out early.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "First snow of the year!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Autumn harvest is mostly in, so I'm freeing up hands for the gate.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Bram, go stand by the door and wait for the others.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Did the company just send us another form?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Who left the gate controls on overnight?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Mood wise, everybody's doing okay except Ivy, who wants a better bed.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Wait, I already built that wall, didn't I?", "emotion": "neutral", "speech_act": "aside"}
+{"text": "We're running a two person team today because the others are hauling.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "That corridor goes on for about sixty tiles before it bends.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "My plan is turrets on the north side and a trap lane on the south.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Hey Cobalt, good to see you again.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Little update on the anomaly log, entry fifteen is a door that hums.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Honestly the summer heat is worse than the raids on this map.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Pip's on cooking duty until the new stove is done.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "So the gate needs power for a full day before it opens.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Expedition two came back with three samples and a weird lamp.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "I'm pretty sure that room repeats every fourth hallway.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Yeah, I'm moving the sleep block earlier so they wake up at dawn.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mara gets twitchy when she skips her joy time.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Our defenses right now are four turrets, two mortars, and a lot of hope.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Thanks for the sub, Biscuit, that's really kind of you.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "You know what, I'm going to put a door at the end of the kill box.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Snow's piling up, so the paths are getting slow.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "After this we're doing a quick recap and then a gate run.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Rook keeps volunteering for expeditions, he's a little too brave.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Nova asked if the mod works with other mods, and mostly yes.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Coordinates are basically how the company tracks where we've been.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Heads up, there's a toxic fallout warning on the forecast.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "I mean, the room is empty, but it feels occupied somehow.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Ivy's schedule has her on research all morning and art in the evening.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Wind turbines are out today, which is mildly annoying.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "That survey note just says the walls were warm, nothing else.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Static Fern, welcome, you picked a calm moment to show up.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mortars only work if somebody's actually loading them.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "We lost the power grid to the flare, but only for a few hours.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Odessa's got the best shooting skill, so she's on the north wall.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Gate status, charged, stable, and making that buzzing sound again.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Hollis asked for a day off, and honestly he earned it.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Okay so the yellow room was on coordinates south eight, west three.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "We're doing break time at the top of the hour.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Juno is happiest when she's outside, even in the rain.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "I'm reading the company memo now, and it's mostly forms.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Embrasures are going in so our shooters have cover.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "That's the third room with a payphone in it today.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Tamsin finished the survey sketch, and it's actually pretty good.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Spring thaw means the river opens back up for traders.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "My favorite part of this mod is just mapping weird hallways.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Bram's mood went up after we gave him a proper bedroom.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Turret placement is mostly about covering the corners.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Now we wait for the gate to cool down before the next trip.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Pixel asked what the anomaly log is, it's our list of strange stuff we've seen.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Night falls in about an hour game time.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Scar is on guard duty, and she takes it very seriously.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "This corridor is all fluorescent lights and humming vents.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Today's goal is three surveys and no deaths, simple as that.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Heat wave means everybody drinks more and works slower.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Expedition three is a solo run, just Rook and his lantern.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Okay, the raid's here, everybody to positions!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "We found the exit room!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "There goes the solar flare again!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Gate's open, let's go!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Mara just found a hidden door!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Turrets are online, finally!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "That's a perfect survey run!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Pip, close the blast door behind you.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Scar, cover the left side while Rook reloads.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Chat, tell me if you see anything move in that hallway.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Ivy, drop the research and help carry the wounded.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Everyone eat before the expedition, no exceptions.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Tamsin, write down those coordinates exactly.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Juno, go to bed, it's way past your shift.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Hollis, put the mortar shells in the shed, not the kitchen.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Should I put a second gate guard on nights?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Are the heaters still running in the barracks?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Does the company give bonuses for deeper rooms?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Was that a door opening or just the wind?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Is Bram still mad about the cold dinner?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "How many turrets do you think is too many?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Which season do you like best for gate runs?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "What happened to the lamp we brought back?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Huh, I never noticed that vent before.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Okay, don't click that, don't click that.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Small mental note, the left corridor is cursed.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Pretty sure I just paused it twice.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Remind me later to rename that room.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Hmm, that number doesn't look right.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Oh, that's why the turrets weren't firing.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "We're good, the walls held up fine.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Everyone's back home, safe and warm.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "It's just a storm, the roof will hold.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "No need to worry, Hollis is patched up and resting.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "That noise is normal for the gate, I promise.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "It's okay, we've spare components in storage.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Easy, chat, the raiders are way outnumbered.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Lanterns are the most useful thing we can carry through the gate.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Every corridor we survey gets a little number in the log.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Rain makes the sandbags pretty much the only dry spot on the map.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "We're getting close to the end of summer already.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Pip has a phobia of the dark, so he never goes in first.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Long story short, the company wants more samples by next season.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Two raids this week, both from the east, so that's where the walls go.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "I like to keep one colonist home whenever the team goes through.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Moss, to answer your question, the gate is a building you power up.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Right now the colony has six people, one cat, and a very old muffalo.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Odd room number nine had a swimming pool with no water in it.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Our gate sits in the middle of the old barn, surrounded by sandbags.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Next season the forecast says drought, so I'm planting less.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Kill box is basically a long hallway with turrets at the end.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Lantern asked how long the stream is, probably three more hours.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Sleep schedule for the crew is ten at night until six in the morning.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mara's been on three expeditions in a row now.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Every survey note gets a date, a team list, and a room name.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Cold snap ended last night, so the plants should recover.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Rook gets a mood boost every time he finds something shiny.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Basically the mod turns RimWorld into a weird office job.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Corridors past the second gate are darker and much longer.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "One more lap through the base and then we head in.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "There's a raid timer in my head and it says soon.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Juno likes to sit by the river during her free time.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Paperwork from the company arrived, and it wants a full inventory.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Our best turret spot is the hill overlooking the south road.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Bram is cleaning again, which means he's stressed.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Fifteen minutes until break, then we're doing the deep run.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Most odd rooms are harmless, but a few are definitely not.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Tamsin keeps a tiny journal in the game, which I love.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Thunderstorms can start fires, so I'm keeping the firefoam ready.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Nova, the gate doesn't spawn raids, at least not that I've seen.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Last expedition mapped twelve rooms in a single trip.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Ivy wants a garden, so that's going on the list.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Winter wear goes on everybody before the next gate run.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Our walls are granite on the outside and wood on the inside.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "We named the corridor with the endless stairs the staircase of regret.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Hollis gets sad when he eats raw food, so he's on cooking duty.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "That room smells like wet paper according to the log.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Recap, we survey rooms, write notes, and send them to the company.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Chat's been really good at spotting stuff I miss.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Defense first, exploration second, that's the rule today.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Socks has decided the gate room is his new nap spot.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Here's the thing, the gate only works during daylight hours.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mortar range covers most of the eastern field now.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Pip had a mental break last week, so I'm watching his mood closely.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Coordinates help us find our way back if something shifts.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Fall is pretty, but it means winter's right behind it.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Our recreation room has chess, a television, and one sad armchair.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Okay, survey log entry twenty, room with a ringing phone.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Odessa doesn't like expeditions, so she stays home on watch.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Raids are usually tribals around here, not mechs, thankfully.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "The weather's been calm for once.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "I'm swapping Juno's work block so she gets more rest.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Every time the gate opens, the lights in the base flicker.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Wren asked about the contracts, they're jobs the company posts for us.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Raid incoming from the north, positions!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "We just mapped room fifty!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Oh, the snow finally melted!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Rook found the coordinates for the deep room!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Thank you for the raid, Moss, welcome everybody!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Gate's stable, go go go!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Mara, take point, you've got the best eyes.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Bram, light the torches in the hallway.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Pip, drink something, you're overheating.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Chat, type a room name and I'll pick my favorite.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Rook, hold the door until everyone's through.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Odessa, swap to the sniper rifle for this one.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Ivy, finish that wall before the storm hits.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Hollis, stop eating the survival meals, those are for the trip.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Can we afford another turret right now?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Should Tamsin go in with a full pack?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Is it too early in the season for a deep run?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Did that hallway just change shape?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Does anybody want a recap of the last run?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Are the trap lanes still armed?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "What would you name a room full of empty fridges?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Where should the hospital beds go?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Why does Scar always wake up grumpy?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "How deep do you think the gate actually goes?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Which turret is jamming the most?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Okay, I'm overthinking this wall again.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Hold on, where did I put the spare lantern?", "emotion": "neutral", "speech_act": "aside"}
+{"text": "That's going straight in the anomaly log.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "I knew I should've built that roof first.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Note to self, Rook can't cook.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Hmm, two doors, same room, interesting.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Yeah, that was a misclick.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Everyone's mood is stable, nothing to worry about.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "We'll be fine, the turrets have plenty of ammo.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Don't stress, we can rebuild that wall tomorrow.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Mara's okay, she just needs a bed and some time.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "It's just thunder, nothing's on fire.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "The gate's closed, nothing can follow them out.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "We're stocked for winter, I double checked.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "I tend to do a defense pass every new season.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Survey runs are slow, but they pay the best.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Raid warnings always come right as I sit down to eat.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Biscuit, the anomaly log is in the bottom right, I'll show you.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Snow makes everyone walk slower, including the raiders.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Bram's good with animals, so he handles Socks and the muffalo.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Room twenty three was just a lobby with a broken clock.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Every new colonist gets a schedule before they get a job.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "That's our day so far, quick and quiet.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Big plan for tonight is the deep corridor.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Three more one liners for the log.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Gate charge is sitting at about half.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Wow, that wall is crooked.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Alright, the team's geared up. We're heading through the gate in a minute.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "So this room has no lights at all. Rook's lantern is doing all the work.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Hi Juniper, welcome back. We're just about to survey a new wing.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Winter hit early this year. I'm glad we stocked up on wood last month.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mara's mood is sitting right in the middle. Not great, not bad, just tired.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "I moved the turrets closer to the gate. That way anything that wanders out gets handled fast.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Survey note for the log, carpet is damp and the walls are yellow. Classic first level stuff.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Okay, recap for the new folks. We run a colony that explores a strange office maze through a gate.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Pip's been sleeping in the hallway again. I really need to finish his bedroom.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "That hallway keeps going. I've counted forty doors and none of them open.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "We're taking a break after this expedition. Grab some water, stretch, all that.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Rain's been going for three days straight. The fields are basically ponds now.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Our east wall has two layers now. Raiders love that side for some reason.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Coordinates came back as north twenty, west nine. That's further than we've ever gone.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Bram wants more free time. I get it, he's been working nonstop.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Static Fern asked if the rooms are random. Mostly yes, but some show up on a schedule.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Ivy's on night shift this week. She actually likes the quiet.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "First thing tomorrow is a defense check. Second thing is breakfast, obviously.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "That anomaly showed up again in the kitchen. Same flicker, same time, same humming.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Scar is on the mortar this raid. She's the only one who can actually aim it.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Fog is rolling in over the river. Visibility is going to be terrible for a while.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Tamsin finished the expedition report. I'm sending it to the company now.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Hollis got a new rifle from the trader. He's been showing it off all day.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "So here's what's next. We finish the freezer, then we do another gate run.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Juno came back from the gate with a weird key. Nobody knows what it opens yet.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "We've been streaming for about two hours now. Thanks for hanging out with me.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Odessa asked to swap shifts with Pip. I'm saying yes because they both need it.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Turrets are cheap, but they blow up when they break. So I keep them away from the walls.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "This room has a vending machine that only sells water. Weirdly helpful, honestly.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Autumn's almost over. Time to bring the animals inside.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Nova, the mod is called Async Industries. It adds the gate, the rooms, and the company stuff.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Rook is way too comfortable in the dark corridors. I'm starting to think he likes them.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "My defense setup is really simple. Walls, turrets, and a long path for raiders to walk.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "The company sent a performance review. Apparently we need more samples.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Every expedition has a time limit. If we stay too long, the hallways start shifting.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Pixel wants to know who my favorite colonist is. That's like picking a favorite snack.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Heat stroke is a real risk this week. Everyone's working in the shade where possible.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Socks keeps following everyone to the gate. Should we bring him on the next run?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "This is the longest corridor we've found. Are you all ready for it?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "I really doubt the company knows what's down there. Do you think they do?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "I definitely didn't build that. Is that a second gate on the map?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Can I get a vote in chat real quick? Turrets or more walls first?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "I think we left half the pool room blank. Did we ever finish mapping it?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Ivy's been on two runs already. Should she stay home this time?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "I'm curious how this plays alongside other big mods. Has anyone tried it with the vanilla expanded stuff?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Steel is really tight right now. Do I build the mortar now or wait for spring?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "A blizzard changes everything about tonight's plan. Is the forecast still saying blizzard?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Rook wrote those numbers down pretty fast. Are the coordinates on the survey sheet right?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "I'm open to ideas here, chat. What's the best way to defend a gate?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "My guess is another lobby. Where do you think this corridor ends?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "I'm thinking more games in the rec room. How else do we keep morale up through winter?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "I'm leaning toward Mara for this one. Which colonist would you send into the dark room?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Why are there so many chairs in this level? Who's sitting in them?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Okay chat, everybody pick a corridor. Left, middle, or right in the poll.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Pip, go eat something. Your mood is getting low.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Mara, mark that door on the map. We're coming back for it.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Scar, get on the turret controls. The raid is two minutes out.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Bram, swap the heaters for coolers. Summer showed up overnight.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Hollis, stay near the medical beds tonight. We might need you.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Rook, write down the room number before we leave. The log needs it.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Wait, did I lock the gate? Okay, yes, I did.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Huh, that room looks familiar. Pretty sure we've been here.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Okay, focus up. Turrets first, then everything else.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "It's fine, the turret just needs repairs. Bram's already on it.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Nobody's lost, they're just in a long corridor. They'll pop out soon.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Don't worry about the cold. Everyone's got parkas now.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "We still have plenty of food. The freezer's full.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "That's a clean defense. Raid's over and nobody got hurt!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "I've never seen stairs in the gate before. We found a staircase!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "And she brought snacks back with her. Mara's home from the gate!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "I'm moving the rec hour to the afternoon. Mornings are for work.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Next expedition is a three person team. Rook, Mara, and Tamsin.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Corridor nine was empty except for a single office chair. It was facing us.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Spring rain is good for the crops. Bad for the turrets, though.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Juno's mood dropped because of the ugly floors. I'll put down some carpet.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "We're keeping a backup team at home. Just in case something goes wrong in there.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Gate maintenance takes about half a day. Bram usually handles it after breakfast.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Expedition log, day thirty one. Team entered at noon and came back before dark.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Snowfall is heavy tonight. Turrets don't care, but the colonists definitely do.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mood report time. Juno is content, Pip is anxious, and Scar is just Scar.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Corridor eleven has these really low ceilings. Everyone walks through it hunched over.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Break is coming up after this raid. Stick around, the deep run is next.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Lantern, you missed nothing big. We just reorganized the stockpile and fixed a door.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Sandbags are going down in rows of three. It slows raiders right in front of the turrets.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Coordinate notes are taped to the gate in the game. Well, not really, but I like to imagine it.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Summer means longer days. Longer days mean longer expeditions.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Tamsin hates the night shift. She's back on days starting tomorrow.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Anomaly entry twenty two is a clock that runs backwards. It only does it when nobody's looking.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mortar crews need two people to be useful. Odessa and Hollis are the team.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Cobalt asked about the company headquarters. It's a map you can visit with really strange offices.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Weather today is overcast with light wind. Perfect for a quiet survey.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Ivy got inspired after the last run. She's carving a sculpture of the yellow hallway.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "That corridor had a door labeled exit. It didn't lead to an exit.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Raids scale with how rich the colony is. So every new turret kind of invites a bigger raid.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "New schedule is live. Work in the morning, gate in the afternoon, sleep at ten.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Rain makes the gate area slippery, at least in my head. Everyone moves a little slower anyway.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Scar asked to lead the next run. She's earned it after holding the wall last night.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Survey teams carry chalk now. It helps us mark which doors we've tried.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Heads up, a raid usually follows a trader for some reason. Not always, but often enough.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Socks is asleep on the turret again. Somebody built that turret too warm.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Recap for latecomers, we survived a cold snap and found two new rooms. Pretty good afternoon.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mara's on medical duty while the team is inside. Just in case anyone comes back hurt.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Room thirty has nothing but filing cabinets. Every drawer is empty, every single one.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Defense plan for winter is mostly firewood and patience. Raids slow down when it's cold.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Wren asked if Unity can die in the game. Yes, I'm a colonist, so please be nice to me.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Pip refuses to go near room twelve. Honestly, I don't blame him.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Season change is in two days. I'm switching crops to something hardier.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mortar shells live in a shed far from the house. Learned that lesson the loud way.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Gate run timer starts now. We've got about six hours before things shift.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Hollis is happiest when he's fixing things. So he gets all the repair jobs.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "It happened right when the gate pulsed. Did everybody see that light flicker?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "It's about a room full of ceiling fans. Want to hear the weirdest survey note so far?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Whoever has the best suggestion wins. Should I name this corridor after a chatter?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "The yellow carpet is kind of cozy to me. Anyone else think so?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "I'm genuinely not sure. Can turrets even shoot through the gate?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Both feel bad. Would you rather explore at night or in a storm?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "I'm keeping an eye on it. Will the cold snap hit before the team gets back?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "We're the only ones on this map, though. Could that noise be another expedition team?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "I'm feeling lucky. Shall we do one more room before break?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "That would explain a lot. Do the coordinates reset when the gate closes?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "It just keeps going. Have you ever seen a hallway this long in the mod?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "The old one is basically rubble. Might be time for a new kill box, right?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "She's been asking for weeks. Think Juno's ready for her first expedition?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Give me your votes. Should the next defense upgrade be walls or traps?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "I'm getting serious deja vu right now. Doesn't that room look exactly like the last one?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "I'm guessing twenty. How many rooms do you think we can survey before winter?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "There are some good ones. Which chat suggestion should we try first?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Somebody tell me it's not Rook. Who's on cooking duty while the team is away?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "I lost the memo again. When does the company want the next report?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Please don't actually answer this one. Why is the anomaly log getting longer every day?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Throw ideas at me. What's a good name for a room that hums?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "They keep finding gaps. How do I stop raiders from sneaking around the side?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "He keeps trying to go in. Where should Socks sleep while the gate is open?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "I vote for that first winter. Which season has been the worst so far?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Mara, hold position at the corridor bend. Wait for the others to catch up.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Chat, if you just joined, say hi. I'll catch you up after this raid.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Bram, top off the fuel in the generators. We need full power for the gate.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Tamsin, take the survey camera. Get a picture of that doorway.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Odessa, move to the second sandbag line. The first one's getting flanked.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Juno, collect the samples and head back. We've got what we came for.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Pip, close the curtains in the barracks. The heat wave is brutal today.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Scar, keep the gate guarded while we're in there. Nobody goes in or out without you.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Ivy, grab the medicine kit from storage. Bring two, just in case.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Rook, turn the lantern down a little. We don't know what's attracted to light.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Hollis, start the repairs on the north turret. It took a beating.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Everyone get inside before nightfall. The forecast just changed.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Biscuit, check the pinned message for the mod name. It's got the full list too.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Somebody unpause the game for me. Kidding, I can do it.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Hmm, that's not how I remember the map. Did the walls move?", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Okay, I definitely just walked them into a dead end. Classic me.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Wait, that's the freezer door. I wanted the barracks.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Note to self, never send Pip alone. Never again.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Huh, the log says we've been here before. I have no memory of this.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Let me just double check the power grid. Yep, still flickering.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Oops, wrong stockpile there. Moving all that back.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "It's okay, Mara knows the way out. She's done this hallway five times.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Don't worry about the turret exploding. It was the old one anyway.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "We're good on medicine for now. Plenty for the whole winter.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Pip's going to be okay. He just needs a quiet night.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "That scream was just the wind in the vents. Promise.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Relax, nobody's going in until the gate stabilizes. We wait for the green light.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "It's only a small raid. Four tribals against six turrets.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "No rush on the survey. We can take it slow and do it right.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "It just goes on forever. Look at that view down the corridor!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Wait, that room has windows! There's no outside, so what are they looking at!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Barely got a scratch on them. Turrets just shredded that wave!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Hey, welcome Moss! Good to see you in here!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Three surveys done before lunch! New personal best!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Snow's finally stopping! Time to send the team out!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Coordinates confirmed! We know exactly where the deep room is now!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Plan for the next hour is pretty chill. Survey two rooms, then check the walls.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Coming back from break now. Hope you all grabbed a snack.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Expedition four is gearing up in the barn. Packs are full and lanterns are lit.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Raiders hit the south gate yesterday. So today, the south gate gets three more turrets.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Morning fog is thick out there. Can barely see the river from the base.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mara's recreation need is almost empty. Sending her to play horseshoes for a bit.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Level two of the gate is all pipes and steam. Hot, loud, and very confusing.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Survey note, room forty one has a working elevator. It only goes down.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Juno is officially an expedition member now. She's very proud of herself.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Weekend plan is mostly more gate runs. Maybe a base tour if chat wants one.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Kestrel just followed, thank you. Welcome to the weird office maze.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Thunder rolled through and spooked the muffalo. He's hiding behind the kitchen now.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Turret ammo isn't a thing in vanilla, so they just need repairs. Steel and components, that's it.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Bram's schedule is mostly hauling. He doesn't seem to mind it at all.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Every expedition gets a short name. This one's called the long walk.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Scar woke up on the wrong side of the bed again. Mood penalty, slept on the floor.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Late summer means harvest is close. Everyone's on fields after the run.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Tamsin counted the ceiling tiles in room nine. There are exactly four hundred.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Right now we're in the quiet part of the year. Few raids, decent weather, lots of exploring.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Corridor fourteen splits into five paths. We picked the middle one, obviously.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Pip asked for a pet of his own. Socks isn't interested in sharing.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Quick answer for Pixel, yes, there's a mod settings page. You can tune the gate events there.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Freezing rain is the worst weather in this game. Everything just slows to a crawl.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Defense update, the trap lane is finished. Thirty traps along the east path.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Our gate guard switches every four hours. Nobody stands there alone overnight.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Odessa was the first to see the glowing door. She wrote it down before anyone else.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Expedition rewards came in from the company. Mostly silver and a strange medal.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Ivy's art is getting better each week. The latest sculpture is a hallway with no end.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Raid frequency drops in deep winter. That's my window for long gate runs.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Five more minutes and then break time. Then we're tackling the flooded room.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Tamsin has a cough, though. Is that a real sickness or just flavor?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Turrets are lined up and ready. Does that look like enough coverage to you?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Rook is taking point again. Is that too much for one guy?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Here's a fun thought. Would you live in the yellow hallway for a million silver?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Odessa's mood is great today. Should she take the deep run?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Heat wave hits tomorrow. Do we push the expedition or wait it out?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Bram found a coin in the corridor. Should we log that as an anomaly?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Chat, real question here. Can you hear the gate hum through my mic?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Juno wants to bring a guitar. Is that allowed on an expedition?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Snow's coming down sideways now. Is that a blizzard or just wind?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Mara found a map in room eight. Could it be a map of the gate itself?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Seasons in this biome are pretty extreme. Has anyone played this mod in the desert?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "New raid warning just popped up. Are we ready for this one?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Pip's asking to stay home tonight. Can we let him rest?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Scar painted the gate room dark green. Does that count as decorating?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Rook came back without his lantern. Where did it go?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Two corridors and one team. Which way do we go?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Company memo says we missed a deadline. When did they even set one?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Mara's been staring at the wall for an hour. What is she thinking about?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Another chat question came in. How do you get the gate in the first place?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Spring storms are rough this year. How many fires is that now?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Turrets keep targeting the wrong spot. Why do they always aim at the trees?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Survey sheet is almost full. Who wants to name the last room on it?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Night shift needs one more person tonight. Who's volunteering?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Hey Bram, go get some sleep. You've been up for a full day.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Everyone, stay on the carpet in this room. The tiles look wrong.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Tamsin, put the anomaly log in the safe. That thing is precious.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Juno, turn back at the third door. That's as far as we go today.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Mara, shoot from behind the sandbags. Don't step out.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Odessa, call it in if you see movement. We'll come running.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Folks just tuning in, the recap is coming right up. Stick with me.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Pip, bring the extra parka for Rook. He forgot his again.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Scar, let the turrets take the first shots. Then you clean up.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Ivy, don't touch the glowing door. Seriously, leave it alone.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Chat, keep your guesses coming for the room name. I'm writing them down.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Rook, hang a light at every corner. We need a trail back.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Hmm, the coordinates don't match the sketch. One of these is wrong.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Right, so that was a terrible idea. Moving on.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Huh, the gate's quieter than usual. Not sure I like that.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Note to self, build the hospital closer to the gate. Running is slow.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Hang on, Socks is in the corridor again. How does he keep doing that?", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Okay, so I misread the forecast. Snow, not rain.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Rook's got this, he knows the hallways. He'll be back in an hour.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Our walls are thick and the turrets are fresh. Nothing's getting through tonight.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Ivy is just napping, not knocked out. She's totally fine.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Missed the last run? That's okay, I'll recap it for you.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Food stores look fine for the season. Nobody's going hungry.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Welcome in, Static Fern! You came at the perfect time!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Gate's humming and the team is ready! Let's go explore!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Look, a room with a sunset painted on the wall! That's actually beautiful!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Raid defeated and the coffee's still warm! Great work, crew!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Alright, back to the map. Where we left off, the team was at the second junction.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Honestly the gate looks better at night. All that blue light against the snow.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Expedition team is resting at the base camp inside. They'll move again at dawn.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Wind is picking up from the west. Turbines are finally pulling their weight.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Tamsin likes to sketch every room we enter. Her notebook is the real anomaly log.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mood dip across the whole crew today. Too much rain and not enough sun.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Coordinates for room fifty are east thirty, south four. Writing that down twice.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "New follower, Ember, thank you so much. You're just in time for the gate.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Kill box rebuild is about halfway. Walls first, then the turret nests.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Defensive towers at each corner of the base. That's the long term goal.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Pip's afraid of thunder, so he's indoors today. Library duty, nice and quiet.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Corridor six is basically a giant parking garage. Empty, echoey, and cold.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "So yeah, that's the gate in a nutshell. Power it up, walk in, come back with stories.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Shift changes happen at six and six. Morning crew, evening crew, done.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Bram has been on cleanup for a week. Tomorrow he gets a real day off.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Breaks are every ninety minutes on this stream. That's the rule I made for myself.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Juniper wants to know about contracts. They're like quests, but with company paperwork.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Odd room note, there's a mirror that shows an empty room. No reflection of us at all.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Spring arrived overnight. The snow is just gone.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Ivy's working the research bench all day. She's close to unlocking better turrets.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Today's anomaly is a door that knocks back. Nobody's opening that one.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Hollis built a little bench by the gate. It's his favorite spot to watch the light.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mortar practice is on the schedule this week. Scar insisted.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Weather's set to clear until tomorrow night. Two good days for surveying.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mara writes the expedition summary every evening. It's short, but always useful.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Coming up after this, a full tour of the gate room. Then we answer chat questions.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Juno's schedule has a nap at noon. She's more useful after it, trust me.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Raiders brought a siege mortar this time. That changes the plan a bit.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Socks found a sunny spot by the window. He's not moving for anyone.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Survey team made it to the flooded hallway. Water's ankle deep and very cold.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Rook wants to sleep in the gate room. Is that allowed?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Odessa just leveled up her shooting. Should she take the tower spot now?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Company wants a sample from every room. Do they understand how many rooms there are?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Weather says dry thunderstorm. Should I worry about the fields?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Bram keeps humming the gate noise. Is that a good sign or a bad sign?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Chat suggested a room called the beige forever. Can we use that one?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Juno is limping a little after the run. Did she get hit in there?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Hollis keeps dodging his night shifts. Has anyone else noticed that?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "There's a light at the end of corridor nine. Do we go toward it?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Ivy wants to paint the gate frame. Would that bother the company?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Snow's melting fast now. Can the team go in tomorrow?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Thirty silver from the trader for one lamp. Is that a good price?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Pip's drawing his own map now. Should we compare it with Tamsin's?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Two raids in one day is a lot. What did we do to deserve this?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "There's a gap in the north wall. How long has that been there?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Expedition is back early. Why did they turn around?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "We finally have spare steel. Where should the next turret go?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Chat's split on the vote. How do we break a tie?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Lights are out in corridor three. Who turned them off?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Room fifty two has a ringing alarm. What does it want from us?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Okay crew, everybody line up at the gate. Headcount before we go.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Mara, write today's date in the log. And the weather too.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Bram, shut the generator off for a bit. We need to save fuel.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Chat, give me a number from one to ten. That's how many rooms we try for.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Juno, wake Pip up gently. He's on the next shift.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Tamsin, grab the rope from the storeroom. That drop looks steep.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Rook, go check on Socks. He's been quiet way too long.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Hollis, keep the fire going in the barracks. It's going to be a cold one.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Scar, aim for the ones with the torches first. They're the real threat.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Odessa, wait for my call before opening the door. Just in case.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Folks, if you're new here, check out the anomaly log panel. It's on the right side.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Everybody, hold up at the junction. Let's make a plan first.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Hmm, a fourth exit in a three door room. Math is broken in here.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Wow, I just built a wall inside a wall. Very efficient of me.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Wait, Rook's still in the kitchen. Who's leading the run then?", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Ah, I forgot to restock the medicine shelf. Doing it now.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Note to self, Juno snores really loud. Separate bedrooms for everyone.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Oh right, the trader leaves at dusk. Better hurry.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Let me just zoom out a bit. Yeah, that's much worse than I thought.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Your colonist pick is safe, chat. Nobody's dying on my watch today.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Odessa just needs a meal and some sleep. She'll bounce back.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Storm or not, the roof is solid. We built it right.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Raiders broke one sandbag. Everything else is totally fine.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Tamsin made it back with all her notes. Nothing lost.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Lights are flickering, but that's just the gate. Normal stuff.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Mood's low, but it's temporary. Good food will fix it.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "New corridor unlocked! Let's see where it leads!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Welcome back, Cobalt! We missed you last stream!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Rook found the generator room! Free power for the gate!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Survey number sixty is officially complete! That's a huge milestone!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Mara just caught that thief at the gate! Nice reflexes!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "For everyone who just showed up, here's the short version of today. We fixed the turrets this morning and sent a team through the gate after lunch. Then we logged two new rooms before the weather turned on us.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Corridor twelve is one of my favorites, honestly. It's long and narrow with these soft orange lights. And every so often you hear a vent kick on somewhere far away that you can never actually find.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Expedition planning is mostly about food and light. If the team runs out of either one in there, the trip gets really stressful. So I always pack an extra day of meals and two spare lanterns.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "So the defense layout works like a funnel, basically. Raiders come in from the road and hit the sandbags first. Then they get pushed into one long lane where four turrets and Scar are waiting for them.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Winter on this map lasts about fifteen days. That's a long time to keep everybody fed and happy. So the rec room gets new games and the kitchen makes fancy meals twice a week.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mara's schedule is a little unusual right now. She works the fields in the morning and does gate duty in the afternoon. After that she has a long block of free time before bed so she doesn't burn out.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Chat asked earlier how the anomaly log works, so let me explain. Every time something strange happens near the gate or inside it, the game writes an entry. It saves the date, the place, and what we saw.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Coordinates in the gate don't really follow normal rules. You can walk north for twenty tiles and somehow end up south of where you started. Which is why Tamsin writes everything down so carefully.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Break time is coming up in about five minutes. When we get back, the plan is to finish the north wall and check everyone's mood. After that, Rook and Juno go on a short scouting trip.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Today's weather is a mix of everything, apparently. Sunny this morning, foggy at noon. And now there's a thunderstorm rolling in from the hills that's going to make the evening run pretty interesting.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Pip has been doing a lot better lately, mood wise. He's got his own room now with a nice bed. There's even a little shelf where he keeps the odd stuff the team brings back from the gate.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Room thirty seven was genuinely one of the strangest ones yet. It was a full office floor with desks and computers, all switched on. But every screen just showed the same picture of a hallway.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Raids have been coming every five days or so. I've started timing the expeditions around them. So the team is always home and rested when the next group of raiders shows up at the gate.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Okay, here's what I need from everyone on the team. Pack your bags, check your lanterns. And meet me at the gate in ten minutes, because the window closes before nightfall and nobody wants to be stuck in there.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Chat, I could use your help with something real quick. Watch the minimap in the corner while I manage the team. And if any red dots show up near the base, just shout it out for me.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Scar and Odessa, take the two towers on the east side. Rook, stay at the gate with the shotgun. And everyone else, get indoors and stay there until I say the raid is over.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Tamsin, I need the full survey sheet before dinner tonight. Write down every room, every door, and anything weird you noticed, even if it seems small. The company always asks about the small stuff.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Bram, please go check the heaters in every room before the cold snap hits. Some of them were acting up yesterday. And I really don't want anybody waking up with frostbite in the morning.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "We've done eight surveys this week, which is a lot. The company keeps asking for more, and the crew is starting to look tired. Should we take a couple of days off from the gate?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "There's a door at the end of corridor twenty that we've never opened. Rook keeps walking past it and staring at it, and I keep telling him no. Do you think we should finally try it?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Weather says a heat wave is coming for the next four days. That's usually a bad time for raids, but it's also a bad time for long walks through hot hallways. Is it worth the risk?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Juno has been on every single expedition this season. She says she loves it, and her mood is fine, but I still worry about her a little. Should I give her a break anyway?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Mara and Rook both want to lead the deep run tomorrow. They're equally good at it, honestly, and they both have strong arguments for why it should be them. Which one would you pick?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "There are three ways to get past the flooded room, and none of them look great. We can swim, we can climb over the shelves, or we can turn back. What would you do?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Raiders have been hitting the west side a lot more lately. I have enough steel for one more turret or a whole new wall section, but not both. Where would you spend it?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Hmm, that's not right at all. The coordinates say we should be in the lobby. But this is clearly the pool room, and I'm pretty sure the pool room is supposed to be on the other side.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Okay, I need to stop and think for a second. If the gate closes at sunset and it's already afternoon, the team has maybe two hours left. So we turn around soon.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Wait, why is the turret pointed at the barn? I definitely set it to face the road. So either someone moved it or I clicked something I shouldn't have earlier this morning.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Hey, nobody needs to panic about the raid. We've got walls, turrets, medicine, and six colonists who know exactly what to do. So this is going to be a quick one and then we go back to exploring.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Pip's going to be just fine, chat. He had a rough night after the expedition. But he's eating again, he slept well, and his mood is already climbing back up to where it should be.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Don't worry if you missed the earlier part of the stream. The highlights are simple, we found a new room and the team made it back safe. On top of that, the cold snap is finally over.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "We actually did it, the whole team made it to the deep corridor and back! Nobody got hurt, and we found three new rooms. Tamsin even filled an entire notebook with notes!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Look at this, the turrets held the whole wave without a single breach! All that work on the walls this week totally paid off. And the crew didn't even need to leave their posts!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Scar's been our main shooter since day one, honestly, and nobody else even comes close. She's calm under pressure and never panics. Even when the big raid came last winter, she just kept firing from the tower. I really trust her up there.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Seasons work a little differently on this map. Spring is short, summer is long and hot, and fall barely lasts a week. Then winter comes in hard and stays for what feels like forever.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Our anomaly log has more than seventy entries now, and it keeps growing. Some of them are small, like a flickering light. Others are bigger, like a door that wasn't there yesterday. I go through them after every run.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Expedition five was the longest one so far, by a lot. The team spent almost a full day inside the gate. They mapped eighteen rooms and found a hallway with real windows. Nobody knows what those windows look out on.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Here's the plan for the rest of the stream. First, we patch up the walls from the last raid. Then we do a short gate run with Mara and Pip. After that, we wind down and do some chat questions.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Rook has a pretty strict routine these days. He wakes up early, eats breakfast alone, and then walks a lap around the base. After that he's ready for whatever job I give him.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "For anyone curious, the mod is called Async Industries. It adds the gate, the Backrooms rooms, contracts, and a weird company headquarters. It plays nicely with most of the other mods I'm running too.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "So the kill box has three layers now, after this week's rebuild. The outer layer is sandbags and traps. The middle layer is the turret line. The inner layer is just Scar with a sniper rifle, which is somehow the scariest part.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Odessa's mood has been really steady lately, which is really nice to see. She has a nice room, good food, and plenty of free time. She also likes guarding the gate, which surprised me. Some people just enjoy quiet jobs.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Room twenty eight is what we call the waiting room, for obvious reasons. It's full of chairs and magazines from nowhere. There's a little bell on the desk, but nobody ever answers it. We ring it every time we pass.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Chat asked me what happens if a colonist gets lost in the gate. Usually they wander until they find an exit. Sometimes they come out somewhere strange on the map. It's never happened to us yet, thankfully, and I'd like to keep it that way.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Defense work today was mostly small stuff. We fixed two broken turrets, moved some sandbags, and added a door to the kill box. Nothing exciting, but it all matters when the next raid arrives.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Juno is the newest member of the crew, and she's fitting in really well. She joined about twenty days ago after a refugee quest. She's quiet, but she's great with a bow. She's also really good at reading the survey maps.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "So the company sends a letter every season, right on schedule. Usually it's a list of things they want from the gate. Sometimes it's a bonus, and sometimes it's a warning. This season's letter was mostly a warning about late reports.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Rain has been falling for most of the week now, without a single break. The fields are soaked and everyone's a little gloomy. Hopefully it clears up before the next expedition. Walking through wet carpet for hours is no fun.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Ivy's been running research every morning, right after breakfast with the crew. Right now she's working on better turrets. After that, she wants to study the samples from the gate. I think she secretly wants to be the company scientist.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Corridor fifteen loops back on itself three times before it lets you out. We only figured that out because Tamsin left chalk marks. The third time we saw the same mark, we turned around. Honestly, chalk saves lives in there.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Break's over, and I'm back at the desk with a fresh glass of water. While I was away, the colony kept running on its own. Mara cooked dinner, Bram cleaned the barracks, and nobody touched the gate. Honestly, that's a really good crew.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Hollis is the person who keeps everything running around here. He fixes the turrets, patches the walls, and repairs the generators. He never complains about it either, not even once. I should really give him a better bedroom soon.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Biscuit asked how often the gate opens, which is a great question. It depends on how much power we give it. With our current setup, it charges once every two days. I'm hoping to speed that up with a second generator.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Raid recap for anyone who missed it. About eight tribals came in from the north road, right around sunset. The turrets took out most of them, and Scar finished the rest. Pip got a small cut, but he's already patched up.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Night shift on this colony is pretty quiet, most of the time anyway. Rook and Ivy usually take it together. They walk the walls, check the gate, and sometimes play chess in the rec room. Honestly, I'm a little jealous of them.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Tamsin's survey notes are really detailed. She writes down the color of the walls, the sound of the lights, and how the air feels. It sounds silly, but those notes helped us find our way back twice already.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Wren just asked if the rooms ever repeat, and the answer is kind of weird. They do, but not exactly. Each copy is a little different, like the chairs moved or a light is off. Tamsin calls them echo rooms, which I think fits.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "The muffalo is our oldest colonist, technically, and also the slowest. He's been here since day one. He doesn't do much except eat and wander, but everyone loves him. Pip even built him a little shelter by the river.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Room fifty one is where we found the radio. It was playing a song nobody recognized. We brought the radio back, but it stopped working at the gate. Now it just sits in the rec room, silent, like it's waiting for something.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mara's been training Juno on expedition stuff for about a week now. They practice reading maps and marking doors. Juno's getting really good at it. I think she'll be ready to lead a run by the end of the season.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Lantern's question was about difficulty settings. I'm playing on a pretty normal setting today, so raids are tough but fair and the gate events aren't too punishing. It's a nice balance for streaming, honestly.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Pip and Juno are good friends now, which happened kind of by accident. They eat together, work the fields together, and even share a bench in the rec room. It's honestly really sweet to watch. Friendships give everyone a little mood boost too.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Our weapons locker is pretty basic right now, and that's something I want to fix. Mostly bows, a few rifles, and one shotgun. Rook carries the shotgun into the gate. Everyone else keeps their bow in case something weird shows up.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Corridor three has a strange smell, according to the log, and everyone describes it differently. Mara called it old coffee and dust. Pip said it smelled like a library. Tamsin just wrote down unknown, which is probably the smartest answer.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Alright crew, listen up for a second, this part is important. Mara and Rook are going in first. Tamsin follows with the survey gear, and Juno stays at the entrance with the radio. Nobody goes past the second junction without checking in.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Chat, if you have questions about the mod, now is a great time. I'm going to be waiting for the gate to charge for a few minutes anyway. Drop them in and I'll read them out. I promise I'll answer every one I can.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Scar, get up in the north tower right now, the raiders are almost at the wall. Odessa, take the south one. Hollis, stand by with the medical kit near the kitchen. Everyone else, inside and away from the windows until the raid is over.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Bram, I need you on the gate controls today, since you know it best. Watch the charge meter and tell me if it drops. If anything weird happens, shut it down right away. Better to lose a day than lose a colonist.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Juno, take the long route back through corridor six, the one with the orange lights. The short route is flooded right now. Keep the lantern up and follow the chalk marks. You'll be home before it gets dark, I promise.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Everyone, please take a meal break before the run, and I really mean everyone. You've all been working since sunrise. Sit at a table, eat something warm, and rest for an hour. We'll head out once the sun is a little lower.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Tamsin, please copy the survey sheet before we send it to the company. They lost the last one somehow, and they never told us why. I want our own record of every room. That map took us two whole weeks to make.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Rook, slow down in this next hallway. The floor tiles look different here, kind of shiny and too clean. Step only on the carpet and keep your hand on the wall. If anything shifts, just stop and call out to the others.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Ivy, before you start research today, check on the samples in the freezer. One of them was glowing last night. If it's still glowing, move it to the shed by itself. Then write it up in the anomaly log.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "New folks, here's how you can help the colony, even from the chat. Watch for raid warnings in the top corner. Suggest names for every new room we find. And if you see something weird, tell me, because I miss a lot.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "Pip, go sit with Odessa for a while, just keep her company. She had a long shift at the gate and her mood is dipping. Bring her a warm meal and maybe a book. Company helps more than you'd think.", "emotion": "neutral", "speech_act": "instruction"}
+{"text": "So the company offered a new contract today, and it's a big one. It pays really well, but it means a three day expedition. That's longer than we've ever stayed inside the gate. Do you think the crew is ready for that?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Juno found a second key inside room forty, tucked under a desk. It's the same shape as the first one, just a different color. Tamsin thinks they open the locked door in corridor twenty. Should we try them both tonight?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "There's a big raid warning for next week, and it looks like a big one. I could spend the time building more defenses. Or I could send one more expedition before it hits. Is it smart to risk the team right before a raid?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Odessa wants to move into the room by the gate, of all places. She says the hum helps her sleep. It's a little strange, but her mood has been great lately, so maybe she's onto something. Should I just let her do it?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Chat voted for the green door last time we had a choice like this. It led to a room full of plants, which was lovely. Now there's a blue door and a red door ahead of us. Do we let chat pick again?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "The forecast says the cold snap ends tomorrow, finally. That would give us a nice window for a long survey. But the forecast was wrong last week too, by almost two whole days. Can we really trust it this time?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Mara's been talking about building a small camp inside the gate. A place to rest halfway through long runs, with beds and a stove. It would take a lot of materials and time. Is that worth doing this season?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Bram got into a fight with Hollis this morning, right in the middle of breakfast. It was small, just about who gets the warm bed. They're both fine now. Should I build a second warm room so it doesn't happen again?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "We've got enough silver for one big purchase, and only one. We could buy a new turret, a set of armor, or a bionic arm for Hollis. Each one would really help in its own way. Which one would you pick?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "The company sent a memo that just says report to headquarters. No details, no reason, no deadline, and I've read it five times now. What do you think they actually want from us?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Every time we go deeper into the gate, the rooms get stranger. The last one had grass growing out of the carpet. The one before that had a ceiling made of clouds. What do you think is at the very bottom?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Chat has been asking about my defense layout all stream, which I love. Some of you want more turrets, some want more walls. A few of you want a moat, which is honestly tempting. How would you design it?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Juno and Pip are both asking for the same job this season, and I can't split it. They both want to be the expedition cook. Juno's a better cook, but Pip loves it more. Who should get the job?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "There's a strange hum coming from under the kitchen. It started after the last gate run, and nobody else has heard it except Mara. Where do you think it's coming from?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Let me just check the numbers again, because I don't trust myself right now. Six colonists, four turrets, two towers, and one cat. That should be enough for a small raid. Unless they bring the big guys, which they always do.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Hmm, wait a second here. That door wasn't on the survey map yesterday, and Tamsin's notes are always right, so the door must be new. That's either really cool or really bad.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Note to self, never schedule an expedition during a heat wave again. The team came back exhausted and cranky, Pip got heatstroke, and Rook drank all the water. Lesson learned, the slow way.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Yeah, so I kind of messed that up, and I'm not even surprised. I put the turret on the wrong side of the wall. Now it can only shoot at our own garden. I'll move it once this raid is over.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Let me think about this for a second, out loud so chat can follow. If the team leaves at noon and the gate closes at dusk, that gives them six hours. That's enough for maybe five rooms. Maybe four if Rook gets distracted again.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Huh, the anomaly log just added an entry by itself. I didn't see anything happen, and it just says something moved near the barn. Great, that's not creepy at all.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Take a breath with me, everyone, because this looks worse than it's. Hollis is hurt, but he's in a medical bed already. Ivy's treating him with good medicine. He's going to be up and walking again in a couple of days.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Chat, it's really okay that we lost the expedition samples. They were nice to have, but the crew is safe. That's what actually matters to me, every time, like a ritual. We'll get more samples on the next run anyway, I'm sure of it.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Don't worry about the power going out like that, chat. The generators just need fuel, and Bram is already hauling wood. The gate will keep its charge for a while. We have plenty of time to get it back up.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Hey, the raid looks scary on the map, but we've got this. The turrets are fully repaired, and Scar is in the tower. Everyone else is inside where it's safe. This will be over in a minute, I promise.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Rook's mood is low right now, but it's not a big deal. He just missed a meal and slept on the floor. A hot dinner and a real bed will fix it. He'll be back to normal by morning.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "If you're worried about Juno, she's totally fine. She came back from the gate a little shaky, but she's resting now. Mara's sitting with her in the rec room. Give her a night, and she'll be ready to go again.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Look, the blizzard sounds bad, but we planned for it. There's food in the freezer, wood in the stockpile, and heaters in every room. Everyone's inside and warm, even Socks. We just wait it out together, nice and cozy.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "This is a huge moment for the whole colony! The research just finished after three long days, and we finally unlocked the upgraded turrets! They shoot faster and they don't explode when they break! Our defenses just got so much better overnight!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Welcome to all the new folks coming in from the raid! There's a lot happening right now, so let me catch you up quick. We're about to send the whole crew through the gate together. You picked the perfect time to show up!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Wait, look at the anomaly log right now! It just added three brand new entries at once, all in a row. Every single one of them is from the same room. That room is officially the weirdest place we've ever found!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "The crew is finally home after the long expedition! Three whole days in the gate and every single person made it back. Tamsin's notes are amazing, and Rook found a working radio in a closet. This is the best run we've ever had!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Spring is here and the snow is finally gone! The fields are ready, the river is flowing again, and the traders are already coming back. Everyone's mood just jumped up across the whole base. This is going to be a great season!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "The company actually liked our survey report! They sent a bonus, a brand new contract, and a little medal just for Tamsin. She's going to be impossible to live with now, and I don't even care. I'm so proud of this crew!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Look at that, room seventy is a full library! Shelves going up forever, books everywhere, and soft little lamps on every single table. Ivy is going to lose her mind when she sees this place. I honestly want to live here!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Raid defeated without a single injury anywhere on our side! Every turret held, every wall stood, and nobody even needed a bandage afterward. All that boring defense work this week was totally worth it. Great job, everyone, I mean it, seriously!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "The vote's in, and chat picked the red door! I honestly thought the blue one was going to win by a mile. Alright team, gear up, we're going through the red door right now. Let's see what's waiting on the other side!", "emotion": "neutral", "speech_act": "exclamation"}

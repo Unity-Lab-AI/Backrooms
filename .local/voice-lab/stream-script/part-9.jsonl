@@ -1,0 +1,400 @@
+{"text": "Alright, moving on.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Okay, next room.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Let's check the freezer.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Pip's on cooking duty tonight.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Gate's still closed.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "We'll build the wall later.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Just gonna pause real quick.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Mara's hauling steel.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "That's a trader caravan.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Rook needs a nap.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Back to the map.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Day twelve, nothing weird yet.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Bram's on the turret.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "We need more wood.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "I'm drafting Juno.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Hollis is doing research.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Fine, we'll do it manually.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Two in the morning, as usual.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Odessa's handling the crops.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Saving before the gate.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Socks is asleep on the table.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "That's a cold snap coming.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Plan is simple, go in, grab loot, leave.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "We have three meals left.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "I'm setting a bed for Tamsin.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Ivy can haul.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Gonna zoom out.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Expedition leaves at dawn.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Company sent paperwork again.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Hmm, okay.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Right, so.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Yeah, that tracks.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Noted.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Got it!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Makes sense.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Sure, why not.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Let me think.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Second floor next.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Power's back on!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Quest letter just came in!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Muffalo needs feeding.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Scar takes point.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Hold that thought!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "One sec, chat.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Doors are locked.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "We're stocked on medicine.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Night shift starts now.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Nothing on the radar.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Solar flare, so no power for a bit.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "That one's a storage room.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "I'll check the contract.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Reading the letter now.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "We'll see.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Probably fine.", "emotion": "neutral", "speech_act": "reassurance"}
+{"text": "Maybe tomorrow?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Fair point, Juniper.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Moss has a good idea there.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "That's our fourth gate.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Quiet day so far.", "emotion": "neutral", "speech_act": "statement"}
+{"text": "Back from the break!", "emotion": "neutral", "speech_act": "exclamation"}
+{"text": "Is that a door?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Did Pip eat?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Should we open it?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Is Rook still asleep?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Are we doing the contract?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Did that save?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Is it raining?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Can Ivy reach it?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Do we have steel?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Is that the freezer?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Anybody hear that?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Is the gate humming?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "What's in that crate?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Is Bram around?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Who left the door open?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Left room first?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "How many days is that?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Is it late already?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Where did Socks go?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Why is that room warm?", "emotion": "neutral", "speech_act": "wh_question"}
+{"text": "Note to self, more wood.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Okay, focus, Unity.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Remember the freezer later.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Mental note, fix that wall.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Can I move this here?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "No wait, that's the hospital.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Was I saying something?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Little tweak, there.", "emotion": "neutral", "speech_act": "aside"}
+{"text": "Hi, Moss!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Welcome in, Juniper!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Thank you, Pixel!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Aw, Pip!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Thanks for the follow, Wren!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Cobalt, you're back!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Love you, chat!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Biscuit, thank you so much!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Hey, Lantern!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Nova, hi!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Static Fern, welcome back!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Good night, Moss!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Thanks for hanging out!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Look at Socks, so sleepy!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Aw, that's sweet.", "emotion": "warm", "speech_act": "statement"}
+{"text": "You guys are the best!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "I missed you, Wren.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Mara's my favorite, don't tell.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Glad you're here, Nova.", "emotion": "warm", "speech_act": "statement"}
+{"text": "That means a lot.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Pip deserves a nap.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Aw, Juno.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Sweet dreams, little muffalo.", "emotion": "warm", "speech_act": "statement"}
+{"text": "My crew, my babies.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Chat, you're too kind!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Hollis is trying his best.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Lantern, always so nice.", "emotion": "warm", "speech_act": "statement"}
+{"text": "That made my day!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Proud of you, Scar!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Good job, Rook!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Did you have a good day, Biscuit?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "You staying for a bit, Cobalt?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Are you all comfy?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Did you eat, chat?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "How was your day, Pixel?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "How are you doing, Juniper?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Who's new tonight?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "It's okay, Pip.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "You're safe now, Ivy.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Don't worry, Bram, we got you.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Hey, it's fine, chat.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Take your time, Odessa.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "We'll be okay.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "No rush, Wren.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "You did great, Tamsin.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Rest up, Hollis.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Aw, look at her.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Is he tiny or what?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Okay, I'm smiling.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Socks, buddy.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Finally, yes!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "We did it!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Oh, perfect!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Nice!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Loot!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Clean sweep!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Ha, got him!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Look at that harvest!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Rook's awake!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Power's back!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Yay!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "That worked!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Contract done!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Full freezer!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Ivy made it home!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Everybody survived!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Woo!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Love that for us!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Great trade!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Gate's closed, we're good!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Okay, that's a relief!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Phew, good.", "emotion": "happy", "speech_act": "statement"}
+{"text": "Honestly, that went great.", "emotion": "happy", "speech_act": "statement"}
+{"text": "Best day so far!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "I'm so happy right now.", "emotion": "happy", "speech_act": "statement"}
+{"text": "Mara pulled through.", "emotion": "happy", "speech_act": "statement"}
+{"text": "That's a win!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Good, everyone's fed.", "emotion": "happy", "speech_act": "statement"}
+{"text": "Feels good!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Thank goodness!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "Ah, there we go!", "emotion": "happy", "speech_act": "exclamation"}
+{"text": "We're actually doing okay.", "emotion": "happy", "speech_act": "reassurance"}
+{"text": "Did we just win?", "emotion": "happy", "speech_act": "yes_no_question"}
+{"text": "Is everybody alive?", "emotion": "happy", "speech_act": "yes_no_question"}
+{"text": "Wait, it worked?", "emotion": "happy", "speech_act": "yes_no_question"}
+{"text": "How did that work so well?", "emotion": "happy", "speech_act": "wh_question"}
+{"text": "Okay, nailed it.", "emotion": "happy", "speech_act": "aside"}
+{"text": "Little victory dance.", "emotion": "happy", "speech_act": "aside"}
+{"text": "See, told you we'd be fine.", "emotion": "happy", "speech_act": "reassurance"}
+{"text": "Everyone's safe, chat.", "emotion": "happy", "speech_act": "reassurance"}
+{"text": "[laughter] Nope!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "Oh no, Pip! [laughter]", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "Bram, buddy, no!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "Socks, get off the table!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "Rook, that's a wall!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "[laughter] Classic!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "Chat, stop!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "Muffalo, why!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "[laughter] That's so bad!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "Hollis, you goof!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "Look at him go! [laughter]", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "Sure, Moss, sure!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "Not the pants, Juno!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "[laughter] Okay, that's fair.", "emotion": "amused", "speech_act": "statement"}
+{"text": "[laughter] Wow, okay!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "I deserve that.", "emotion": "amused", "speech_act": "statement"}
+{"text": "[laughter] Yeah, I know.", "emotion": "amused", "speech_act": "statement"}
+{"text": "Very professional of us.", "emotion": "amused", "speech_act": "statement"}
+{"text": "That's a choice. [laughter]", "emotion": "amused", "speech_act": "statement"}
+{"text": "Truly elite gameplay!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "Pip has no thoughts. [laughter]", "emotion": "amused", "speech_act": "statement"}
+{"text": "[laughter] Oh, Biscuit.", "emotion": "amused", "speech_act": "statement"}
+{"text": "[laughter] Ten out of ten, no notes.", "emotion": "amused", "speech_act": "statement"}
+{"text": "And that's my strategy.", "emotion": "amused", "speech_act": "statement"}
+{"text": "Peak engineering right there!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "[laughter] Nice try, Cobalt.", "emotion": "amused", "speech_act": "statement"}
+{"text": "He's so proud of himself.", "emotion": "amused", "speech_act": "statement"}
+{"text": "Mara's just vibing.", "emotion": "amused", "speech_act": "statement"}
+{"text": "Calm down, Static Fern. [laughter]", "emotion": "amused", "speech_act": "statement"}
+{"text": "[laughter] Bold of you to assume.", "emotion": "amused", "speech_act": "statement"}
+{"text": "Masterful! [laughter]", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "[laughter] I panicked.", "emotion": "amused", "speech_act": "statement"}
+{"text": "Did he just eat raw rice?", "emotion": "amused", "speech_act": "yes_no_question"}
+{"text": "Is she sleeping in the freezer? [laughter]", "emotion": "amused", "speech_act": "yes_no_question"}
+{"text": "Did I do that?", "emotion": "amused", "speech_act": "yes_no_question"}
+{"text": "Is Socks the boss now?", "emotion": "amused", "speech_act": "yes_no_question"}
+{"text": "[laughter] Are you serious?", "emotion": "amused", "speech_act": "yes_no_question"}
+{"text": "Who taught him that?", "emotion": "amused", "speech_act": "wh_question"}
+{"text": "Why is he dancing?", "emotion": "amused", "speech_act": "wh_question"}
+{"text": "[laughter] What was that?", "emotion": "amused", "speech_act": "wh_question"}
+{"text": "Why is Juno naked?", "emotion": "amused", "speech_act": "wh_question"}
+{"text": "I said that like I meant it.", "emotion": "amused", "speech_act": "aside"}
+{"text": "[laughter] Never doing that again.", "emotion": "amused", "speech_act": "aside"}
+{"text": "Smooth, Unity.", "emotion": "amused", "speech_act": "aside"}
+{"text": "Okay, that was silly of me.", "emotion": "amused", "speech_act": "aside"}
+{"text": "Pretend you didn't see that.", "emotion": "amused", "speech_act": "aside"}
+{"text": "[laughter] Great job, me.", "emotion": "amused", "speech_act": "aside"}
+{"text": "Very cool, very normal. [laughter]", "emotion": "amused", "speech_act": "aside"}
+{"text": "Let's go!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Okay, okay, okay!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Gate's opening!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "New room!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Oh, it's loot time!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Come on, come on!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Here we go!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Expedition time!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Yes, yes, yes!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Chat, look!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Hype!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Open it, open it!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "We're going in!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "This is huge!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Big trader, let's shop!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Oh, I can't wait!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Go, Scar, go!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Raid's over, loot it!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Ooh, shiny!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "New contract!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Party time!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Ivy, run!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "I'm so ready!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "[laughter] Let's do it!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Upgrade unlocked!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Oh, this is good!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Full send!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "First one in wins!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Second floor, baby!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Okay, we're cooking now!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "I'm buzzing!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Okay, I'm hyped!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "This changes everything!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "We're so back!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "I need that!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Gonna be a good night!", "emotion": "excited", "speech_act": "exclamation"}
+{"text": "Are you seeing this?", "emotion": "excited", "speech_act": "yes_no_question"}
+{"text": "Can we open it now?", "emotion": "excited", "speech_act": "yes_no_question"}
+{"text": "Should we go deeper?", "emotion": "excited", "speech_act": "yes_no_question"}
+{"text": "You ready, chat?", "emotion": "excited", "speech_act": "yes_no_question"}
+{"text": "[laughter] Is this real?", "emotion": "excited", "speech_act": "yes_no_question"}
+{"text": "What's behind door two?", "emotion": "excited", "speech_act": "wh_question"}
+{"text": "What did we get?", "emotion": "excited", "speech_act": "wh_question"}
+{"text": "Can I breathe yet?", "emotion": "excited", "speech_act": "yes_no_question"}
+{"text": "Don't get greedy, Unity.", "emotion": "excited", "speech_act": "aside"}
+{"text": "Wait, what!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Whoa! [laughter]", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Huh!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "No way!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Oh, hello!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Where did that come from!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "That's a door!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Since when!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Oh wow!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Hold on!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Excuse me!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Wait, Pip!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Okay, didn't expect that!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "[laughter] What!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Oh, it moved!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "A second gate!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Wow, okay, hi!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Huh, that's new!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Didn't see that coming!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Well, that's weird!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "Okay, plot twist!", "emotion": "surprised", "speech_act": "exclamation"}
+{"text": "I didn't know that.", "emotion": "surprised", "speech_act": "statement"}
+{"text": "Oh, interesting.", "emotion": "surprised", "speech_act": "statement"}
+{"text": "Hmm, strange.", "emotion": "surprised", "speech_act": "statement"}
+{"text": "That's not on the map.", "emotion": "surprised", "speech_act": "statement"}
+{"text": "Room's bigger inside.", "emotion": "surprised", "speech_act": "statement"}
+{"text": "Wait, is that a raid?", "emotion": "surprised", "speech_act": "yes_no_question"}
+{"text": "Did the wall just vanish?", "emotion": "surprised", "speech_act": "yes_no_question"}
+{"text": "Is that a person?", "emotion": "surprised", "speech_act": "yes_no_question"}
+{"text": "Did you guys see that?", "emotion": "surprised", "speech_act": "yes_no_question"}
+{"text": "Wait, Rook can cook?", "emotion": "surprised", "speech_act": "yes_no_question"}
+{"text": "Was that always there?", "emotion": "surprised", "speech_act": "yes_no_question"}
+{"text": "Is the gate open?", "emotion": "surprised", "speech_act": "yes_no_question"}
+{"text": "[laughter] Did that just happen?", "emotion": "surprised", "speech_act": "yes_no_question"}
+{"text": "Really?", "emotion": "surprised", "speech_act": "yes_no_question"}
+{"text": "Wait, who's that?", "emotion": "surprised", "speech_act": "wh_question"}
+{"text": "What just happened?", "emotion": "surprised", "speech_act": "wh_question"}
+{"text": "Where did the trader go?", "emotion": "surprised", "speech_act": "wh_question"}
+{"text": "Hold on, what's that noise?", "emotion": "surprised", "speech_act": "wh_question"}
+{"text": "Why is it snowing?", "emotion": "surprised", "speech_act": "wh_question"}
+{"text": "How is that possible?", "emotion": "surprised", "speech_act": "wh_question"}
+{"text": "When did that open?", "emotion": "surprised", "speech_act": "wh_question"}
+{"text": "Okay, weird, noted.", "emotion": "surprised", "speech_act": "aside"}
+{"text": "Was that nothing?", "emotion": "surprised", "speech_act": "yes_no_question"}
+{"text": "Interesting, very interesting.", "emotion": "surprised", "speech_act": "aside"}
+{"text": "Oh, Mara.", "emotion": "sad", "speech_act": "statement"}
+{"text": "We lost Hollis.", "emotion": "sad", "speech_act": "statement"}
+{"text": "I'm gonna miss him.", "emotion": "sad", "speech_act": "statement"}
+{"text": "She was the best of us.", "emotion": "sad", "speech_act": "statement"}
+{"text": "Rest easy, Bram.", "emotion": "sad", "speech_act": "statement"}
+{"text": "That one hurts.", "emotion": "sad", "speech_act": "statement"}
+{"text": "Bye, buddy.", "emotion": "sad", "speech_act": "statement"}
+{"text": "Socks didn't make it.", "emotion": "sad", "speech_act": "statement"}
+{"text": "It's quiet without Juno.", "emotion": "sad", "speech_act": "statement"}
+{"text": "I really liked her.", "emotion": "sad", "speech_act": "statement"}
+{"text": "Empty bed tonight.", "emotion": "sad", "speech_act": "statement"}
+{"text": "Poor Pip.", "emotion": "sad", "speech_act": "statement"}
+{"text": "Odessa's gone.", "emotion": "sad", "speech_act": "statement"}
+{"text": "We'll bury her by the garden.", "emotion": "sad", "speech_act": "statement"}
+{"text": "Yeah, that's rough.", "emotion": "sad", "speech_act": "statement"}
+{"text": "I'm sorry, Tamsin.", "emotion": "sad", "speech_act": "statement"}
+{"text": "Miss you, Rook.", "emotion": "sad", "speech_act": "statement"}
+{"text": "Why'd it have to be him?", "emotion": "sad", "speech_act": "yes_no_question"}
+{"text": "Was it my fault?", "emotion": "sad", "speech_act": "yes_no_question"}
+{"text": "How do I tell the crew?", "emotion": "sad", "speech_act": "wh_question"}
+{"text": "What do we do now?", "emotion": "sad", "speech_act": "wh_question"}
+{"text": "Okay, give me a sec.", "emotion": "sad", "speech_act": "aside"}
+{"text": "Just, a minute.", "emotion": "sad", "speech_act": "aside"}
+{"text": "We'll remember her.", "emotion": "sad", "speech_act": "reassurance"}
+{"text": "He's not hurting anymore.", "emotion": "sad", "speech_act": "reassurance"}
+{"text": "Uh oh!", "emotion": "concerned", "speech_act": "exclamation"}
+{"text": "That's not good.", "emotion": "concerned", "speech_act": "statement"}
+{"text": "Pip looks sick.", "emotion": "concerned", "speech_act": "statement"}
+{"text": "Food's running low.", "emotion": "concerned", "speech_act": "statement"}
+{"text": "I don't like that sound.", "emotion": "concerned", "speech_act": "statement"}
+{"text": "Careful, Ivy!", "emotion": "concerned", "speech_act": "exclamation"}
+{"text": "Rook's mood is tanking.", "emotion": "concerned", "speech_act": "statement"}
+{"text": "We're low on medicine.", "emotion": "concerned", "speech_act": "statement"}
+{"text": "That gate looks wrong.", "emotion": "concerned", "speech_act": "statement"}
+{"text": "Something's off.", "emotion": "concerned", "speech_act": "statement"}
+{"text": "Hmm, too quiet.", "emotion": "concerned", "speech_act": "statement"}
+{"text": "Bram's bleeding!", "emotion": "concerned", "speech_act": "exclamation"}
+{"text": "Watch the door, Scar.", "emotion": "concerned", "speech_act": "statement"}
+{"text": "Is Mara okay?", "emotion": "concerned", "speech_act": "yes_no_question"}
+{"text": "Are we ready for this?", "emotion": "concerned", "speech_act": "yes_no_question"}
+{"text": "Is that infection?", "emotion": "concerned", "speech_act": "yes_no_question"}
+{"text": "Did Tamsin eat today?", "emotion": "concerned", "speech_act": "yes_no_question"}
+{"text": "Should we pull back?", "emotion": "concerned", "speech_act": "yes_no_question"}
+{"text": "Is the wall gonna hold?", "emotion": "concerned", "speech_act": "yes_no_question"}
+{"text": "Where's Odessa?", "emotion": "concerned", "speech_act": "wh_question"}
+{"text": "How bad is it?", "emotion": "concerned", "speech_act": "wh_question"}
+{"text": "What's that thing?", "emotion": "concerned", "speech_act": "wh_question"}
+{"text": "Who's on watch?", "emotion": "concerned", "speech_act": "wh_question"}
+{"text": "Why is she shaking?", "emotion": "concerned", "speech_act": "wh_question"}
+{"text": "Okay, careful now.", "emotion": "concerned", "speech_act": "aside"}
+{"text": "Everyone okay over there?", "emotion": "concerned", "speech_act": "yes_no_question"}
+{"text": "Don't panic.", "emotion": "concerned", "speech_act": "aside"}
+{"text": "Hang in there, Juno.", "emotion": "concerned", "speech_act": "reassurance"}
+{"text": "Stay calm, we've got this.", "emotion": "concerned", "speech_act": "reassurance"}
+{"text": "You'll be okay, Hollis.", "emotion": "concerned", "speech_act": "reassurance"}
+{"text": "Not again!", "emotion": "frustrated", "speech_act": "exclamation"}
+{"text": "Every single time!", "emotion": "frustrated", "speech_act": "exclamation"}
+{"text": "Seriously!", "emotion": "frustrated", "speech_act": "exclamation"}
+{"text": "Unbelievable!", "emotion": "frustrated", "speech_act": "exclamation"}
+{"text": "Third try.", "emotion": "frustrated", "speech_act": "statement"}
+{"text": "Ugh, fine.", "emotion": "frustrated", "speech_act": "statement"}
+{"text": "Rook, please!", "emotion": "frustrated", "speech_act": "exclamation"}
+{"text": "Why is this so hard.", "emotion": "frustrated", "speech_act": "statement"}
+{"text": "Paperwork again.", "emotion": "frustrated", "speech_act": "statement"}
+{"text": "I give up on that wall.", "emotion": "frustrated", "speech_act": "statement"}
+{"text": "Raid at three in the morning, sure.", "emotion": "frustrated", "speech_act": "statement"}
+{"text": "Come on!", "emotion": "frustrated", "speech_act": "exclamation"}
+{"text": "Pip, eat something!", "emotion": "frustrated", "speech_act": "exclamation"}
+{"text": "Stop walking there!", "emotion": "frustrated", "speech_act": "exclamation"}
+{"text": "Not the freezer!", "emotion": "frustrated", "speech_act": "exclamation"}
+{"text": "Bram, the other way!", "emotion": "frustrated", "speech_act": "exclamation"}
+{"text": "Why does this keep happening!", "emotion": "frustrated", "speech_act": "exclamation"}
+{"text": "Are you kidding me?", "emotion": "frustrated", "speech_act": "yes_no_question"}
+{"text": "Again?", "emotion": "frustrated", "speech_act": "yes_no_question"}
+{"text": "Why won't you sleep?", "emotion": "frustrated", "speech_act": "wh_question"}
+{"text": "How did that break?", "emotion": "frustrated", "speech_act": "wh_question"}
+{"text": "Who keeps opening that door?", "emotion": "frustrated", "speech_act": "wh_question"}
+{"text": "Okay, deep breath.", "emotion": "frustrated", "speech_act": "aside"}
+{"text": "I'm fine, totally fine.", "emotion": "frustrated", "speech_act": "aside"}
+{"text": "Remind me why I do this.", "emotion": "frustrated", "speech_act": "aside"}
+{"text": "Is the trader still here?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "Do we need more beds?", "emotion": "neutral", "speech_act": "yes_no_question"}
+{"text": "[laughter] Oh, Socks!", "emotion": "amused", "speech_act": "exclamation"}
+{"text": "[laughter] Pip, no, put it down!", "emotion": "amused", "speech_act": "exclamation"}

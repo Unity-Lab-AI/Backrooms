@@ -181,3 +181,12 @@ training/_fetch.log
 # Background preparation outputs (recordings, features, delivery) stay local; receipts and status are kept.
 .local/voice-lab/background/**/*.wav
 .local/voice-lab/background/**/*.tar
+# Live outputs of the running background voice job (status refreshed every 30 s, logs, renders); receipts beside them stay tracked.
+.local/voice-lab/background/*/pipeline/
+# Throwaway voice test renders (A/B outputs, benchmarks, small pipeline tests); the picked A/B clips live in training/voice/reference/.
+.local/voice-lab/ab-dry/out/
+.local/voice-lab/bench-*/
+.local/voice-lab/five/
+.local/voice-lab/gen-test*/
+.local/voice-lab/linux-check/*.log
+.local/voice-lab/move-to-d.log
