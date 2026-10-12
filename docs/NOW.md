@@ -11,6 +11,18 @@
 
 ---
 
+## LIVE NOW (2026-10-12, from 12:47 UTC): the three pods are running
+
+Owner go: *"Go fastest, voice cap $70"*. Source commits: voice `29ef0ade` (digest `8058d414`), brain `d65d71f2` (data `7d2cac95`).
+
+| Pod | Id | Shape | $/h | Cap | Volume |
+|---|---|---|---|---|---|
+| Voice clips | `u2k5pdlocndtnd` | 4x H200, US-CA-2 | 21.16 | $50 | `nk8oyfxwc7` (US-CA-2, shared) |
+| Voice training | `ksw41pgbted5ro` | 2x H100, US-CA-2 | 7.98 | $70 | `nk8oyfxwc7` |
+| Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | 3.99 | $50 | `3sjem6lb5j` (US-MO-1) |
+
+Progress: `https://<pod-id>-8000.proxy.runpod.net/`. Launch fixes on the day: both voice pods first collided cloning into one folder on the shared volume (now each clones to its own disk); the brain image had no cmake (now pip-installed). Results come home with `pull_results_s3.ps1` / `pull_brain_s3.ps1` to `D:oice-lab\pod-results\`; delete the pods and volumes only after VERIFIED.
+
 ## The record, 2026-10-12: Unity's own voice + her brain, three pods, waiting on the local voice test
 
 Owner, verbatim: *"update the now.md and what else in the voice work of the todo iss still open work is it all basicly done but waiting on the mini model vocie test before we run all 3 pods together to all accuretly build the shell and voice model to work together"*
