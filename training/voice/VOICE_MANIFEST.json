@@ -31,7 +31,7 @@
   "training/voice/happy_audition.py": "cc0be0457359bbfdf5a826546df122da259e878284a900fd4327694ab040350e",
   "training/voice/infer.py": "e87a900901df02cc04d00da3c2d1080b4ce4b245883d2c528275b7b718d81f10",
   "training/voice/inspect_source_audio.py": "d794354ae506518ca4fedaa38cfc2c543a4bf38171b85938e5108e4c6c91ed34",
-  "training/voice/make_dataset.py": "68ed288b7e4cbaf82a52aeb26bdf401cfbe4bca497b94d6f9f7c780b360d6d61",
+  "training/voice/make_dataset.py": "2bd53685ea26300971ddf25c0287fe75a57e23189a16c5c7c21e45e0d35ad034",
   "training/voice/make_dataset_optimized.py": "b95b8814c59f74cf36a78837f7cdd4c9359db5c2737de304a0fb00bdea36dd10",
   "training/voice/manifest.py": "35564abdfb624d7280210e6af04662b05296725c991fd2220a5cb2188426c49c",
   "training/voice/merge_source_datasets.py": "001fb13271b1abcdff168f5f4c912452cf073f52a79888a89eb10bb589d94d44",
@@ -119,5 +119,5 @@
   "training/voice/variations.py": "b0dc9ac0a42f39d8e26ce5fc055d25a286edc4a6de0608048212c457e2fbaa8d",
   "training/voice/vocoder.py": "f6e8543d98c8a0e25a88fd903827c276225aa8713b7c06fe11c6d94ff34822d8"
  },
- "digest": "8058d4143cc446c6f1d49c2370120089b468f9f1b66568f6110734b94c63470f"
+ "digest": "2e403ee74257546401d813bd8b91aa48d2c8a305a2e05a8d69cb22a4fbc1085f"
 }

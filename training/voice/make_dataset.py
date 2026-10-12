@@ -334,7 +334,7 @@ def worker_environment(python, teacher):
     if python is None or not python.is_file():
         raise ValueError("Supply an existing isolated --%s-python executable" % teacher)
     try:
-        stdout = owned_process([str(python.resolve()), str(WORKER), "--describe", teacher],
+        stdout = owned_process([str(python.absolute()), str(WORKER), "--describe", teacher],
                                bounded_seconds("VOICE_SOURCE_PROBE_SECONDS", 180, 600), capture=True)
     except subprocess.CalledProcessError as error:
         detail = (error.stderr or error.output or "No captured diagnostic").strip()
@@ -518,7 +518,7 @@ def main():
                      and ("a2-" + canonical_hash({"source": plan["source_id"], "job": job, "route": routes[job["id"]]})[:24]) not in done]
         if not remaining:
             continue
-        command = [str(interpreters[teacher].resolve()), str(WORKER), "--teacher", teacher,
+        command = [str(interpreters[teacher].absolute()), str(WORKER), "--teacher", teacher,
                    "--recipe", str(recipe_file.resolve()), "--model-dir", str(directories[teacher].resolve())]
         if teacher == "cosy":
             command += ["--code-dir", str(args.cosy_code_dir.resolve())]
