@@ -1,5 +1,11 @@
 # Voice pod launch runbook (RunPod-template path)
 
+> **On-pod generation mode (the owner's chosen design, 2026-10-12).** The pod records the 5,000-line script itself, screens every clip, trains on what passed, and everything comes home to `D:` afterwards. In this mode there is **no delivery.tar and no upload**: the pod clones the source at a pinned commit and checks it against the approved digest. Set `VOICE_GENERATE_ON_POD=1`, `VOICE_SOURCE_COMMIT=<40-hex commit>`, `VOICE_DIGEST=<VOICE_MANIFEST digest at that commit>`, `VOICE_VOLUME_ID`, `PRICE_PER_HOUR`, `BUDGET_USD`, `KEEP_HOURS`, `VOICE_PROGRESS_HTTP=1`, and optionally `GEN_SHARDS` (default 6) and `VOICE_GEN_MAX_HOURS` (default 4). Start command: `bash -c "git clone -q https://github.com/Unity-Lab-AI/Backrooms.git /tmp/b && cd /tmp/b && git checkout -q $VOICE_SOURCE_COMMIT && bash training/voice/pod/start_template.sh"`.
+> - **Generation has its own hard time limit**, taken from the budget left since the pod started. Progress is in `out/gen-progress.txt` and `out/gen.log`, and the screen result is in `out/screen-report.json`.
+> - **Corpus approval in this mode** is the owner approving the exact script files (`STREAM_CORPUS.jsonl`, `STREAM_EVENT_CORPUS.jsonl`, by hash) plus the screen rule (`keep only rows screened with no flags and a matching WAV hash`) and a minimum clip count. `quality_gate.py` then checks that every generated row came from that script. Steps A.1 (wait for the local job) and A.8 (upload) below do not apply in this mode.
+> - **Proven so far:** the full generation chain ran locally on 26 lines (2 shards in parallel, merge, per-shard ASR screen, filter: 24 kept). Both teacher environments install and import on Linux (Docker, `python:3.10-slim`, torch 2.7.1+cu118), after three fixes: openai-whisper built against setuptools<70 without deps (its triton<3 pin dragged torch to 2.3.1), and torch pinned by `constraints-teacher.txt`.
+
+
 **No pod is rented until the owner says so.** Owner, 2026-10-12: *"NO POD RENT UNTIL I SAY!"*, and the standing order *"let me know before u start a training"*. This runbook gets everything ready so that the go is one approved step.
 
 ## Why this path, not the custom image

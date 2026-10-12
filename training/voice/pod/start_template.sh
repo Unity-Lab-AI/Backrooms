@@ -50,36 +50,56 @@ stop_self() {
   sleep infinity                                       # if the stop failed, stay up so SSH still works
 }
 
-for v in VOICE_DELIVERY_SHA256 VOICE_DIGEST VOICE_DATASET_ID VOICE_VOLUME_ID PRICE_PER_HOUR BUDGET_USD KEEP_HOURS RUNPOD_POD_ID; do
+GEN="${VOICE_GENERATE_ON_POD:-0}"
+if [ "$GEN" = "1" ]; then
+  REQUIRED="VOICE_SOURCE_COMMIT VOICE_DIGEST VOICE_VOLUME_ID PRICE_PER_HOUR BUDGET_USD KEEP_HOURS RUNPOD_POD_ID"
+else
+  REQUIRED="VOICE_DELIVERY_SHA256 VOICE_DIGEST VOICE_DATASET_ID VOICE_VOLUME_ID PRICE_PER_HOUR BUDGET_USD KEEP_HOURS RUNPOD_POD_ID"
+fi
+for v in $REQUIRED; do
   [ -n "${!v:-}" ] || stop_self "missing $v"
 done
 command -v runpodctl >/dev/null 2>&1 || stop_self "runpodctl missing from this image (use the official RunPod PyTorch template)"
 mountpoint -q "$W" || stop_self "$W is not a mount; attach the network volume $VOICE_VOLUME_ID"
 
-# 1. The packet must be byte-exact before anything inside it is trusted.
-[ -f "$IN/delivery.tar" ] || stop_self "no $IN/delivery.tar on the volume (upload it with upload_volume_s3.ps1 first)"
-GOT=$(sha256sum "$IN/delivery.tar" | cut -d' ' -f1)
-[ "$GOT" = "$VOICE_DELIVERY_SHA256" ] || stop_self "delivery.tar sha256 $GOT is not the approved $VOICE_DELIVERY_SHA256"
-say "delivery.tar verified ($GOT)"
+if [ "$GEN" = "1" ]; then
+  # On-pod generation: the source is a pinned commit (never a moving branch), checked against the approved digest.
+  [[ "$VOICE_SOURCE_COMMIT" =~ ^[0-9a-f]{40}$ ]] || stop_self "VOICE_SOURCE_COMMIT must be a full 40-hex commit"
+  ROOTSRC="$W/src-$VOICE_SOURCE_COMMIT"
+  if [ ! -d "$ROOTSRC/.git" ]; then
+    rm -rf "$ROOTSRC.tmp"
+    git clone -q "${VOICE_SOURCE_REPO:-https://github.com/Unity-Lab-AI/Backrooms.git}" "$ROOTSRC.tmp"       && (cd "$ROOTSRC.tmp" && git checkout -q "$VOICE_SOURCE_COMMIT") && mv "$ROOTSRC.tmp" "$ROOTSRC"       || stop_self "could not clone commit $VOICE_SOURCE_COMMIT"
+  fi
+  GOT=$(cd "$ROOTSRC" && python3 training/voice/manifest.py --check) || stop_self "manifest check failed in the cloned source"
+  [ "$GOT" = "$VOICE_DIGEST" ] || stop_self "cloned source digest $GOT is not the approved $VOICE_DIGEST"
+  SRC="$ROOTSRC/training/voice"
+  say "source $VOICE_SOURCE_COMMIT verified ($GOT)"
+else
+  # 1. The packet must be byte-exact before anything inside it is trusted.
+  [ -f "$IN/delivery.tar" ] || stop_self "no $IN/delivery.tar on the volume (upload it with upload_volume_s3.ps1 first)"
+  GOT=$(sha256sum "$IN/delivery.tar" | cut -d' ' -f1)
+  [ "$GOT" = "$VOICE_DELIVERY_SHA256" ] || stop_self "delivery.tar sha256 $GOT is not the approved $VOICE_DELIVERY_SHA256"
+  say "delivery.tar verified ($GOT)"
 
-# 2. Unpack once with the packet's own verifier (taken out of the verified tar), never re-unpacked on resume.
-D="$W/delivery/$VOICE_DATASET_ID"
-if [ ! -d "$D" ]; then
-  T=$(mktemp -d)
-  python3 - "$IN/delivery.tar" "$T" <<'PY' || stop_self "could not read the verifier out of delivery.tar"
+  # 2. Unpack once with the packet's own verifier (taken out of the verified tar), never re-unpacked on resume.
+  D="$W/delivery/$VOICE_DATASET_ID"
+  if [ ! -d "$D" ]; then
+    T=$(mktemp -d)
+    python3 - "$IN/delivery.tar" "$T" <<'PY' || stop_self "could not read the verifier out of delivery.tar"
 import sys, tarfile
 with tarfile.open(sys.argv[1], "r:") as tar:
     for name in ("source/training/voice/pod/accept_delivery.py", "source/training/voice/pod/atomic_publish.py"):
         data = tar.extractfile(name).read()
         open(sys.argv[2] + "/" + name.rsplit("/", 1)[1], "wb").write(data)
 PY
-  (cd "$T" && python3 accept_delivery.py "$IN/delivery.tar" "$D" --archive-sha256 "$VOICE_DELIVERY_SHA256" \
-      --source-digest "$VOICE_DIGEST" --dataset-id "$VOICE_DATASET_ID") || stop_self "accept_delivery refused the packet"
-  rm -rf "$T"
+    (cd "$T" && python3 accept_delivery.py "$IN/delivery.tar" "$D" --archive-sha256 "$VOICE_DELIVERY_SHA256" \
+        --source-digest "$VOICE_DIGEST" --dataset-id "$VOICE_DATASET_ID") || stop_self "accept_delivery refused the packet"
+    rm -rf "$T"
+  fi
+  SRC="$D/source/training/voice"
+  [ -f "$SRC/pod/bootstrap_voice.sh" ] || stop_self "delivered source has no pod/bootstrap_voice.sh"
+  say "delivery accepted at $D"
 fi
-SRC="$D/source/training/voice"
-[ -f "$SRC/pod/bootstrap_voice.sh" ] || stop_self "delivered source has no pod/bootstrap_voice.sh"
-say "delivery accepted at $D"
 
 # 3. Pinned environment in a venv on the volume (kept across pods; reinstalled only if the pin list changes).
 REQ="$SRC/pod/requirements-template.txt"
@@ -118,16 +138,39 @@ fi
 export VOICE_VOLUME_RECEIPT="$RECEIPT"
 export VOICE_VOLUME_RECEIPT_SHA256=$(sha256sum "$RECEIPT" | cut -d' ' -f1)
 export VOICE_BILLING_STARTED_EPOCH=$(stat -c %Y /proc/1)
-export VOICE_ENV_MODE=template VOICE_DATASET_DIR="$D/dataset"
-export VOICE_DIGEST VOICE_DATASET_ID VOICE_VOLUME_ID PRICE_PER_HOUR BUDGET_USD KEEP_HOURS RUNPOD_POD_ID
-
-# 5. Read-only progress view (GET/HEAD only; nothing here can start, extend or spend).
+# 5. Read-only progress view (GET/HEAD only; nothing here can start, extend or spend). Up before generation so
+#    the owner can watch the clips being made, not only the training.
 if [ "${VOICE_PROGRESS_HTTP:-0}" = "1" ]; then
   python3 -m http.server 8000 --bind 0.0.0.0 --directory "$W/out" > /dev/null 2>&1 &
   say "progress served read-only on port 8000"
 fi
 
-# 6. The budget supervisor, detached from any terminal. It stops the pod itself when work and retention end.
+if [ "$GEN" = "1" ]; then
+  # 5b. Record the script on this pod, screen it, keep what passed. Generation runs BEFORE the budget supervisor,
+  #     so it gets its own hard limit: the budget left since the pod started (92% rule), and never more than
+  #     VOICE_GEN_MAX_HOURS (default 4). Running out stops the pod; finished shards stay on the volume.
+  LIMIT=$(python3 -c "import os,time,sys; s=int(sys.argv[1]); cap=float(os.environ['BUDGET_USD'])/float(os.environ['PRICE_PER_HOUR'])*3600*0.92; used=time.time()-s; print(int(max(0, min(cap-used-1800, float(os.environ.get('VOICE_GEN_MAX_HOURS','4'))*3600))))" "$(stat -c %Y /proc/1)")
+  [ "$LIMIT" -gt 600 ] || stop_self "not enough budget left to generate clips ($LIMIT s)"
+  say "generating clips on this pod (limit ${LIMIT}s); progress in out/gen-progress.txt"
+  ( while true; do
+      { date -u +%FT%TZ; for d in "$W"/gen/render/shard-*; do [ -d "$d/wavs" ] && echo "$(basename "$d") $(ls "$d/wavs" | wc -l) clips"; done
+        ls "$W/gen/state" 2>/dev/null | tr '
+' ' '; echo; } > "$W/out/gen-progress.txt" 2>/dev/null; sleep 30; done ) &
+  WATCH=$!
+  timeout --signal=TERM --kill-after=60s "${LIMIT}s" bash "$SRC/pod/generate_on_pod.sh" "$ROOTSRC" "$W/gen" >> "$W/out/gen.log" 2>&1
+  CODE=$?; kill "$WATCH" 2>/dev/null
+  [ "$CODE" -eq 0 ] || stop_self "on-pod generation failed or ran out of time (exit $CODE; see out/gen.log)"
+  cp "$W/gen/dataset/screen-report.json" "$W/out/screen-report.json"
+  DSDIR="$W/gen/dataset"
+  VOICE_DATASET_ID=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['kept']['dataset_id'])" "$DSDIR/screen-report.json")
+  say "generated corpus ready: $(python3 -c "import json,sys; r=json.load(open(sys.argv[1])); print(r['kept_clips'], 'of', r['total_clips'], 'clips kept')" "$DSDIR/screen-report.json")"
+else
+  DSDIR="$D/dataset"
+fi
+export VOICE_ENV_MODE=template VOICE_DATASET_DIR="$DSDIR"
+export VOICE_DIGEST VOICE_DATASET_ID VOICE_VOLUME_ID PRICE_PER_HOUR BUDGET_USD KEEP_HOURS RUNPOD_POD_ID
+
+# 6. The budget supervisor (it trains on VOICE_DATASET_DIR), detached from any terminal. It stops the pod itself when work and retention end.
 say "starting bootstrap_voice.sh (template mode)"
 setsid nohup bash "$SRC/pod/bootstrap_voice.sh" >> "$W/bootstrap.log" 2>&1 < /dev/null &
 BOOT=$!
