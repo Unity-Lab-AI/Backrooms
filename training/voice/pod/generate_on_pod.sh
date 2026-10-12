@@ -20,7 +20,10 @@
 # In:  $1 = delivered source root (…/source), $2 = work root on the volume.  Out: $2/dataset (screened, ready).
 set -euo pipefail
 SRC="$1"; G="$2"; V="$SRC/training/voice"
-SHARDS="${GEN_SHARDS:-6}"
+# Owner: "we dont want one lagging the other and we dont want it taking forever". Every GPU on the clip pod is used:
+# GEN_SHARDS defaults to 3 workers per GPU (each A2 teacher worker needs ~5-6 GB), and shard k runs on GPU k % gpus.
+GPUS=$(nvidia-smi --query-gpu=index --format=csv,noheader 2>/dev/null | wc -l); [ "$GPUS" -ge 1 ] || GPUS=1
+SHARDS="${GEN_SHARDS:-$((GPUS * 3))}"
 mkdir -p "$G/state" "$G/logs"
 have() { [ -f "$G/state/$1" ]; }
 done_() { touch "$G/state/$1"; echo "$(date -u +%FT%TZ) gen: $1 done"; }
@@ -93,7 +96,7 @@ fi
 pids=()
 for k in $(seq 0 $((SHARDS - 1))); do
   have "render-$k" && continue
-  ( cd "$SRC" && "$G/venv-qwen/bin/python" -B -u training/voice/make_dataset.py "$G/render/shard-$k" --all \
+  ( cd "$SRC" && CUDA_VISIBLE_DEVICES=$((k % GPUS)) "$G/venv-qwen/bin/python" -B -u training/voice/make_dataset.py "$G/render/shard-$k" --all \
         --corpus "$G/shards/corpus-$k.jsonl" --event-corpus "$G/shards/events-$k.jsonl" \
         --model-dir "$M/qwen3-tts-base" --qwen-python "$G/venv-qwen/bin/python" \
         --cosy-python "$G/venv-cosy/bin/python" --cosy-code-dir "$G/cosyvoice-code" --cosy-model-dir "$M/cosyvoice3" \
