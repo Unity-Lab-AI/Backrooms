@@ -36,7 +36,7 @@ Gone: the 4x H200 clip pod `u2k5pdlocndtnd` (its GPUs were taken while stopped; 
 
 Launch-day fixes (each Linux-only, each committed): shared-volume clone collision; teacher envs on the volume; venv symlink resolved to system python; models on the wiped container disk; onnxruntime-gpu name; Cosy cache parents; Cosy env missing gdown/wget; wetext downloading from modelscope.cn (403 -> hang) removed to match the approved no-front-end recipe; empty shard folders; stale shard plan after the GPU count changed; brain cmake; brain CUDA 12.4 vs torch cu13 kernel build; brain OOM from 4 forked loader workers. Rule logged (memory): dry-run on one cheap pod before renting a fleet.
 
-**Still open outside the pods:** RimPLC rung-editor window check on screen (game minimised when tried); teacher venvs on local disk for the next pod run (TODO); the RimPLC P3/P4 phases; the Ladder v2 live-name checks marked UNVERIFIED.
+**Still open outside the pods:** after the brain lands, confirm the live runtime loads the stock Qwen3.5-9B vision projector (mmproj) next to the GGUF so she can read screenshots (vision tower untrained, so the stock one fits); RimPLC rung-editor window check on screen (game minimised when tried); teacher venvs on local disk for the next pod run (TODO); the RimPLC P3/P4 phases; the Ladder v2 live-name checks marked UNVERIFIED.
 
 ## The record, 2026-10-12: Unity's own voice + her brain, three pods, waiting on the local voice test
 
