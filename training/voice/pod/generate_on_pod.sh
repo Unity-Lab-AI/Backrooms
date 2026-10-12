@@ -47,7 +47,8 @@ if ! have venv-cosy; then
   # openai-whisper 20231117 (a Cosy pin) only ships as an old sdist whose setup.py imports pkg_resources, which
   # current setuptools removed: build it first against setuptools<70 without build isolation.
   "$G/venv-cosy/bin/pip" install -q "setuptools<70" wheel
-  "$G/venv-cosy/bin/pip" install -q --no-build-isolation openai-whisper==20231117
+  # --no-deps: whisper's Linux pin triton<3 would pull torch 2.3.1 over the required 2.7.1+cu118
+  "$G/venv-cosy/bin/pip" install -q --no-deps --no-build-isolation openai-whisper==20231117
   "$G/venv-cosy/bin/pip" install -q -r "$V/pod/requirements-teacher-cosy.txt" -c "$V/pod/constraints-teacher.txt" --extra-index-url "$CU118"
   done_ venv-cosy
 fi

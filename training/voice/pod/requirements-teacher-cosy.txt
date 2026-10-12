@@ -15,7 +15,6 @@ numpy==1.26.4
 omegaconf==2.3.0
 onnx==1.16.0
 onnxruntime-gpu==1.18.0; sys_platform == 'linux'
-openai-whisper==20231117
 protobuf==4.25
 pyarrow==18.1.0
 pydantic==2.7.0
@@ -25,3 +24,9 @@ soundfile==0.12.1
 transformers==4.51.3
 x-transformers==2.11.24
 wetext==0.0.4
+# openai-whisper 20231117 is installed separately by generate_on_pod.sh with --no-deps: its Linux pin triton<3
+# would drag torch back to 2.3.1. Cosy uses only its audio front end; these are the deps it needs at runtime.
+tiktoken
+more-itertools
+tqdm
+numba

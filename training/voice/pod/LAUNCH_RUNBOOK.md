@@ -47,7 +47,7 @@ The **template** path (`VOICE_ENV_MODE=template`) keeps ChatGPT's safety pieces 
 
 ### C. After
 
-11. Download `out/models/<run-id>/` and the samples, check the hashes, and listen with the owner.
+11. Download `out/models/<run-id>/` and the samples to the owner's USB drive **`D:oice-lab\pod-results\<run-id>\`**, never to C: (owner, 2026-10-12: *"sends it to be saved on my  usb drive as we cant save 5000 clips onmy c:/ drive"*). Use the S3 API, so no pod has to stay up for it. The 5,000 generated clips stay on the network volume and come home to D: only if the owner asks. Check the hashes and listen with the owner.
 12. **Delete the pod and the volume** (the volume bills until deleted). Copy anything wanted out over S3 first.
 
 ## What is still unproven (said plainly)
