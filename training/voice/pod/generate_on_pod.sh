@@ -78,9 +78,10 @@ snapshot_download(repo_id=repo, revision=rev, local_dir=out)
 json.dump({"repo": repo, "revision": rev}, open(out + "/audition-source.json", "w"))
 PY
 }
-M="$SRC/.local/voice-lab/models"; mkdir -p "$M"
-have model-qwen || { fetch Qwen/Qwen3-TTS-12Hz-1.7B-Base fd4b254389122332181a7c3db7f27e918eec64e3 "$M/qwen3-tts-base"; done_ model-qwen; }
-have model-cosy || { fetch FunAudioLLM/Fun-CosyVoice3-0.5B-2512 29e01c4e8d000f4bcd70751be16fa94bf3d85a18 "$M/cosyvoice3"; done_ model-cosy; }
+# Teacher models live on the shared volume (the code checkout is on the container disk, which a restart wipes).
+M="$G/models"; mkdir -p "$M"
+have model-qwen-vol || { fetch Qwen/Qwen3-TTS-12Hz-1.7B-Base fd4b254389122332181a7c3db7f27e918eec64e3 "$M/qwen3-tts-base"; done_ model-qwen-vol; }
+have model-cosy-vol || { fetch FunAudioLLM/Fun-CosyVoice3-0.5B-2512 29e01c4e8d000f4bcd70751be16fa94bf3d85a18 "$M/cosyvoice3"; done_ model-cosy-vol; }
 # The ASR screener, same snapshot the local screening used.
 have model-asr || { fetch Systran/faster-whisper-base ebe41f70d5b6dfa9166e2c581c45c9c0cfc57b66 "$G/asr-model"; done_ model-asr; }
 

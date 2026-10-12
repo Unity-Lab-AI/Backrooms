@@ -7,7 +7,7 @@
  "scope": "training-preflight",
  "mode": "generated-on-pod",
  "owner_quote": "Go fastest, voice cap $70 (owner, 2026-10-12, after \"okay do whats best\" and \"option 3 final checks and caps a 50$ per pod running 3 pods in tandum together\")",
- "approved_source_digest": "2e403ee74257546401d813bd8b91aa48d2c8a305a2e05a8d69cb22a4fbc1085f",
+ "approved_source_digest": "91482dd468550545a4364aa2b47ef1db55d6399e236510f7c0ae026f617ed425",
  "approved_dataset_id": "generated-on-pod",
  "approved_hourly_price": 7.98,
  "approved_budget_usd": 70,
@@ -28,6 +28,7 @@
   "clip pod 4x H200 $21.16/h cap $50 and brain pod 1x H100 $3.99/h cap $50 launched alongside",
   "owner listening approvals: pace-1.2 'ismaples sound good', laughter 'those are good'",
   "relaunch after both voice pods refused on a shared-volume clone collision (fixed: per-pod local clone)",
-  "relaunch: teacher workers ran the system python because the venv symlink was resolved (fixed: venv path kept)"
+  "relaunch: teacher workers ran the system python because the venv symlink was resolved (fixed: venv path kept)",
+  "relaunch: teacher models moved onto the volume (container-disk copies were wiped by the restart)"
  ]
 }
