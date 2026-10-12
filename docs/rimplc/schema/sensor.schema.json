@@ -18,7 +18,8 @@
         "cadence": {"enum": ["fast", "normal", "slow"], "description": "RimPLC refresh class: every scan, every 4th, every 16th."},
         "api": {"type": "string", "description": "The game member RimPLC reads."},
         "status": {"enum": ["verified", "UNVERIFIED", "not-measured"]},
-        "requires": {"type": "array", "items": {"type": "string"}}
+        "requires": {"type": "array", "items": {"type": "string"}},
+        "fallback": {"type": "string", "pattern": "^mark_[a-z0-9_]{1,40}$", "description": "The mark this sensor replaced. While the sensor is unmeasured (gates.py has no bridge read for it, or the def is not loaded) the key reads that mark, or false when it is unset."}
       }
     }
   }

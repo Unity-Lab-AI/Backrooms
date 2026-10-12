@@ -373,6 +373,44 @@
    "source": "sweep (get_cells_info over the camp rect, home on screen only): building cells below the best hitPoints of the same def+stuff (groups of 3+ cells)",
    "type": "int",
    "note": "UNVERIFIED heuristic: the reply has no maxHitPoints and no captured sweep shows damage; an evenly damaged group reads healthy"
+  },
+  "caravan_out": {
+   "source": "RimPLC: Find.WorldObjects.Caravans, any IsPlayerControlled",
+   "type": "bool",
+   "cadence": "slow",
+   "api": "WorldObjectsHolder.Caravans",
+   "status": "verified",
+   "fallback": "mark_caravan_out"
+  },
+  "research_microelectronicsbasics": {
+   "source": "RimPLC: ResearchProjectDef MicroelectronicsBasics .IsFinished",
+   "type": "bool",
+   "cadence": "slow",
+   "api": "ResearchProjectDef.IsFinished",
+   "status": "verified",
+   "note": "defName verified (decomp, ResearchProjectDefOf.MicroelectronicsBasics)",
+   "fallback": "mark_research_microelectronics"
+  },
+  "research_transportpod": {
+   "source": "RimPLC: ResearchProjectDef TransportPod .IsFinished",
+   "type": "bool",
+   "cadence": "slow",
+   "api": "ResearchProjectDef.IsFinished",
+   "status": "UNVERIFIED",
+   "note": "defName TransportPod UNVERIFIED (no ResearchProjectDefOf entry); if it is wrong the key stays unmeasured and the fallback mark is read",
+   "fallback": "mark_research_transport_pod"
+  },
+  "research_xenogenetics": {
+   "source": "RimPLC: ResearchProjectDef Xenogenetics .IsFinished",
+   "type": "bool",
+   "cadence": "slow",
+   "api": "ResearchProjectDef.IsFinished",
+   "status": "UNVERIFIED",
+   "requires": [
+    "Biotech"
+   ],
+   "note": "defName Xenogenetics UNVERIFIED (Biotech); if it is wrong the key stays unmeasured and the fallback mark is read",
+   "fallback": "mark_research_xenogenetics"
   }
  },
  "gates": [
@@ -1380,7 +1418,7 @@
    "when": {
     "has_power": true,
     "comms_console": false,
-    "mark_research_microelectronics": true
+    "research_microelectronicsbasics": true
    },
    "then": [
     "build a comms console; calling a trader costs goodwill",
@@ -1463,7 +1501,7 @@
    "priority": 30.5,
    "family": "research",
    "when": {
-    "mark_research_microelectronics": true,
+    "research_microelectronicsbasics": true,
     "has_power": true
    },
    "then": [
@@ -1732,8 +1770,8 @@
    "family": "war",
    "when": {
     "mark_war_target_set": true,
-    "mark_caravan_out": false,
-    "mark_research_transport_pod": false
+    "caravan_out": false,
+    "research_transportpod": false
    },
    "then": [
     "form a caravan: fighters, mounts if CAVALRY_ENABLED, food for the round trip plus 3 days",
@@ -1749,7 +1787,7 @@
    "priority": 56.5,
    "family": "war",
    "when": {
-    "mark_research_transport_pod": true,
+    "research_transportpod": true,
     "pod_launchers": ">{POD_SQUAD}",
     "chemfuel": ">{POD_FUEL}"
    },
@@ -1788,7 +1826,7 @@
    "when": {
     "away_maps": ">0",
     "hostiles_on_map": 0,
-    "mark_caravan_out": true
+    "caravan_out": true
    },
    "then": [
     "loot silver, components and prisoners",
@@ -1966,7 +2004,7 @@
    "priority": 73,
    "family": "ideology-biotech-anomaly",
    "when": {
-    "mark_research_xenogenetics": true
+    "research_xenogenetics": true
    },
    "then": [
     "gene extractor and assembler",

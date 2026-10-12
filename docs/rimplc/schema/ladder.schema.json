@@ -18,6 +18,17 @@
     "sensors": {"$ref": "sensor.schema.json"},
     "gates": {"type": "array", "items": {"$ref": "rung.schema.json"}},
     "tags": {"$ref": "tag.schema.json"},
-    "marks": {"$ref": "mark.schema.json"}
+    "marks": {"$ref": "mark.schema.json"},
+    "rimplc_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Export files only (P2): the player's and Unity's layer state next to their rungs in gates.",
+      "properties": {
+        "marks": {"type": "object", "additionalProperties": {"type": ["boolean", "number"]}},
+        "tag_overrides": {"type": "object", "additionalProperties": {"type": "number"}},
+        "switched_off": {"type": "array", "items": {"type": "string"}},
+        "modes": {"type": "object", "additionalProperties": {"enum": ["advise", "auto", "off"]}}
+      }
+    }
   }
 }

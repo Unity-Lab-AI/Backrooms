@@ -482,3 +482,105 @@ Expected parity differences against `gates.py` (for the §9 step 4 read): stores
 UNVERIFIED in the code (marked in comments): `UnityEngine.Application.isFocused` for `game_foreground` (Unity, not in the Assembly-CSharp decomp); `alert_food_rot` (label substring, no Core class found); reading `AlertsReadout.activeAlerts` by reflection (field verified, timing not); the building def-name heuristics carried over from `gates.py` (`Embrasure`, `Grav`, `Throne`, `Ship_`); whether removing RimPLC from a save is clean (§11.5); the 1 ms budget at 300 rungs. Nothing has run in game yet.
 
 **Not in P1, left for P2 and later:** the `gates.py` thin-client switch and `tools.py` mapping of `ladder`/`ladder_set` onto `rimplc/*`; the parity read on a live save (owner's step); the rung editor form with def pickers; `any`/`not`/`ton`/`tof`/`ctu`/`ons`; export/import with diff; the clean-word filter for Unity rungs' notices (until then they are not shown); converting the measured `mark_research_*` / `outdoor_*` / `caravan_out` conditions to sensor conditions in the preset; P3 game actions, arbitration and the outputs-armed switch; P4 Rimrooms link and DLC sensors.
+
+## Built status (2026-10-12): P2, everything that needs no live game
+
+Owner, verbatim: *"get to that PLC work to finish it"*. As with P1, this was built in the repo only. Nothing was copied into a `Mods` folder, the game install or a save, nothing was staged, and the running game was not touched. Both projects compile with `dotnet build -c Release`: 0 warnings and 0 errors, warnings are errors, and the output goes to `RimPLC/1.6/Assemblies/` and `RimPLC/BridgeTools/` only.
+
+**1. Thin client: `gates.py` / `tools.py`.** The brain keeps `ladder` / `ladder_set` (owner decision 2). Their names, arguments and result text are unchanged. Underneath:
+
+| Brain tool | RimPLC (bridge `rimplc/<cmd>`, else `<config>/RimPLC/inbox.jsonl` `cmd`) | When RimPLC does not answer |
+|---|---|---|
+| `ladder` | `read_ladder {top: 4}`. `gates.format_rimplc_ladder` keeps exactly `live_rungs[{id, priority, matched, then}]`, `tags`, `my_marks`, `my_rungs`, `unknown_keys`, cut at 5000 characters | `gates.decide(every=True)` + `format_ladder` (the old `t_ladder` text) |
+| `ladder_set mark` | `set_mark {name, value}` | `scratch/ladder.json` |
+| `ladder_set tag` | `set_tag {name, value}` (never the owner flag) | same |
+| `ladder_set add_rung` | `upsert_rung {rung}` | same |
+| `ladder_set remove_rung` | `remove_rung {id}` | same |
+| (letters looked at) | `letters_seen {}` | `letters_seen` in `scratch/ladder.json` |
+
+- **Number forms.** RimPLC's numbers are doubles. They are given back their Python form, so the text matches. A count of 4 comes back as `4`. The float keys (`day`, `days_of_food`, `fight_ratio`, ...) stay floats, including a `0` from the command file. Tags take the type `gates.tags()` gives. A book rung's priority takes its book value.
+- **Mirroring.** An edit RimPLC accepts is also written to `scratch/ladder.json`, so the Python fallback keeps her marks and rungs. A refusal is raised as `REFUSED BY GUARD: <reason>`.
+- **Retry.** After a miss, RimPLC is not asked again for 60 s (`RIMPLC_RETRY_S`). The command file is only used when `<config>/RimPLC/` exists (`RIMPLC_DIR` overrides the path).
+- **Known text differences when RimPLC answers.**
+  - `remove_rung` of an id she has no rung for is refused (`no rung <id>`), where the local file silently succeeds.
+  - RimPLC also refuses an `add_rung` that breaks a checker rule the local file never checked: a `{TAG}` that does not exist, a malformed instruction, or a notice that is not clean.
+
+**2. Engine operators** in `Engine.cs`, `gates.py`, `rung.schema.json` (`$defs.instruction`) and `rimplc-check.py`. A `when` value that is an object is an instruction, and its key is its label and the name of its memory:
+
+- `any` (OR of AND-branches) and `not`. An unmeasured input stays unmeasured, so a missing key never fires.
+- `ton` / `tof` with `ticks` or `hours` (2500 ticks per hour).
+- `ctu` with `preset` and an optional `reset`.
+- `ons`.
+
+How they run:
+
+- An instruction pass runs before the rungs are tested, so every timer sees its input every scan, even when an earlier condition already failed.
+- Memory moves only on a committed scan: a tick scan in game, or `decide(write=True)`. A paused scan or an API read only looks.
+- `matched` for an instruction shows the measured values of the conditions inside it.
+- The in-game timers count `TicksGame`. `gates.py` counts `day * 60000` because the bridge state has no tick key, a difference of under 600 ticks.
+- Memory is saved with the game (`instructionMemory`) and in `scratch/plc_memory.json`.
+
+**3. Rung editor** (`Dialogs.cs`, Ladder tab: New rung / Edit / Remove or Revert):
+
+- **Fields.** id, priority and requires. Conditions are key + operator + value, with a `{TAG}` picker and a compare-with-key picker. Nested instructions are edited as JSON, with templates for all six. Then lines, notice and why.
+- **Key pickers** (a searchable list):
+  - sensors: the catalogue and what is measured now
+  - marks
+  - tags
+  - things: items in store, `count_<def>`
+  - buildings: buildable, `count_<def>`
+  - research: `research_<def>`
+  - alerts: every `Alert` subclass, `alert_<class>`
+- **Pickers use runtime defs.** Anything in `DefDatabase`, so every loaded mod and DLC shows up. Picking a DLC def adds its DLC to `requires`, and another mod's def adds `mod:<packageId>`.
+- **On-demand sensors.** `count_<def>` and `alert_<class>` keys are measured only when a rung names them (`Sensors.ReadDemand`). A def that is not loaded stays unmeasured.
+- **Checks.** Check / Save run `Validate.cs`, the same rules as `rimplc-check.py`. Unknown keys are errors in the editor. Through the AI API they stay a note, as `ladder_set` always said.
+- **Book rungs.** "Edit" on a book rung saves a player copy under the book id. "Revert" removes it.
+
+**4. Export / import with a diff** (`Transfer.cs`):
+
+- **Export** writes `<config>/RimPLC/exports/ladder-<tick>.json` in the ladder shape. `gates` holds the player's and Unity's rungs. The new optional `rimplc_state` holds marks, tag overrides, switched-off ids and modes.
+- **Import** is a merge, never a wipe. Every rung goes through the same upsert path and checks. The diff shows `+` new, `~` changed (with the fields), `=` unchanged (or same as the book) and `!` refused. Nothing applies until Apply.
+- **API.** `rimplc/export` and `rimplc/import` (`dry_run` defaults to true) on the bridge, and `export` / `import` in the command file. Through the API, rungs become `unity-` rungs in advise mode. Switching off a book rung, turning a rung to `auto` and changing a constant need the owner flag.
+
+**5. Clean-word filter** (`CleanText.cs`). This is a port of `guards.clean_for_stream`: the SOFTEN and CLEAN_BLOCK rules from `unity-voice.py`, plus EXTRA_BLOCK and TECH_BLOCK.
+
+- **Shown.** Unity rungs' notices and their `message` coils are shown through it. A line it rejects is not shown, and the Log tab says so.
+- **Refused.** `upsert_rung`, the checker and the local `ladder_set add_rung` refuse a unity notice the filter rejects.
+- **Not ported.** The owner-only secret words list stays out of the mod.
+- **Differences from Python.** Links are dropped, not spoken.
+
+**6. Measured sensors replace marks** in the preset. `rimplc-check.py --emit` rewrites 7 conditions in 6 rungs:
+
+| Old mark | Sensor | Rungs |
+|---|---|---|
+| `mark_research_microelectronics` | `research_microelectronicsbasics` (defName verified) | comms, hitech-bench |
+| `mark_research_transport_pod` | `research_transportpod` (defName UNVERIFIED) | caravan-raid, pod-assault |
+| `mark_research_xenogenetics` | `research_xenogenetics` (defName UNVERIFIED) | genes |
+| `mark_caravan_out` | `caravan_out` | caravan-raid, settlement-down |
+
+- **Fallback.** Each new sensor entry names the old mark as `fallback` (`sensor.schema.json`). `gates.py` cannot measure these keys, so it reads the mark, or false when the mark is unset. RimPLC does the same while a def is not loaded. A wrong defName therefore falls back to the old behaviour instead of breaking.
+- **Not converted.** `mark_title_rank` (`title_seniority` is raw seniority, not the 0-7 rank) and `mark_empire_hostile` (not measured yet).
+- **The playbook** `docs/playbook.gates.json` is unchanged.
+
+**Verification** (a throwaway script and a C# harness in `%TEMP%`, no game, no bridge; the harness runs `Engine.Scan` from the built `RimPLC.dll`). All passed:
+
+| Check | What it compared |
+|---|---|
+| `ladder` text unchanged | Old `gates.py` (HEAD) vs the new fallback path, on 400 states derived from the captured `.local/qa` replies x 3 ladders (1,200 cases), byte for byte |
+| Preset vs playbook | The same live rungs in `gates.py`, with the research/caravan marks set and unset |
+| C# vs Python | The same hits, `unresolved_conditions` and `unknown_keys` on 750 cases, for both the playbook and the converted preset. The thin client's text from the C# result equals the Python text |
+| The six instructions | A hand-worked 12-scan sequence, including a non-committing scan, in both engines. `not` of an unmeasured key never fired |
+| Thin client | Miss, then fallback, then the retry timer; a bridge reply as JSON text; a command-file round trip; `ladder_set` mapping, text and refusals; mirroring; the local fallback text |
+| Clean filter | The C# port equals `clean_for_stream` on 12 lines |
+| Validator | `Validate.cs` accepts and refuses the same 10 rungs as `rimplc-check.py` |
+
+**Still needs a live game** (the owner's steps; none was done):
+
+- **Staging and parity.** Staging, and the §9 step 4 parity read on one save.
+- **Bridge result shape.** Whether the bridge returns a tool's `Dictionary` result as `structuredContent` or as text. The client handles both, but this is UNVERIFIED live.
+- **The window.** How the editor, picker and diff windows look and feel. Whether `AllSubclassesNonAbstract` over `Alert` lists cleanly with 294 mods.
+- **Timers and counters.** Whether they behave the same across a save and load.
+- **Unverified defNames.** `TransportPod` and `Xenogenetics` (otherwise the mark fallback answers).
+- **Export / import.** That it round-trips on a real colony.
+- **Performance.** The cost of `count_<def>` sensors at scale (the 1 ms budget).
+- **Already pending from P1.** P3 game actions and P4 links.

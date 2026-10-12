@@ -42,6 +42,7 @@ namespace RimPLC
         private List<string> switchedOffSaved = new List<string>();
         private List<string> edgesSaved = new List<string>();
         private List<int> lettersSeenSaved = new List<int>();
+        private Dictionary<string, string> memorySaved = new Dictionary<string, string>();
 
         // ------------------------------------------------------------------ runtime
         public readonly JsonObject Marks = new JsonObject();
@@ -52,11 +53,13 @@ namespace RimPLC
         private HashSet<string> edges = new HashSet<string>();
         public readonly HashSet<int> LettersSeen = new HashSet<int>();
         public readonly List<string> Journal = new List<string>();
+        /// <summary>Timer / counter / one-shot memory (moves only on tick scans, saved with the game).</summary>
+        public Dictionary<string, Instr> Memory = new Dictionary<string, Instr>();
 
         public ScanResult Last;
         public bool OverBudget;
         private int scanCount;
-        private Dictionary<string, object> fast, normal, slow;
+        private Dictionary<string, object> fast, normal, slow, demand;
         private bool skipSlowOnce;
         private float lastRealtimeScan = -10f;
         private float lastRealtimeInbox = -10f;
@@ -129,7 +132,12 @@ namespace RimPLC
                 skipSlowOnce = false;
                 scanCount++;
 
-                ScanResult r = Engine.Scan(book, MyRungs, Merge(), Marks, TagOverrides, EffectiveOff(), RimPLCMod.Applicable);
+                // def-named keys the rungs ask for (count_<def>, alert_<class>), read every scan
+                var dm = new Dictionary<string, object>();
+                Sensors.ReadDemand(dm, home, DemandedKeys(), normal);
+                demand = dm;
+
+                ScanResult r = Engine.Scan(book, MyRungs, Merge(), Marks, TagOverrides, EffectiveOff(), RimPLCMod.Applicable, Memory);
                 sw.Stop();
                 r.Tick = Find.TickManager.TicksGame;
                 r.Ms = sw.Elapsed.TotalMilliseconds;
@@ -137,7 +145,13 @@ namespace RimPLC
                 // over budget: the logic finished; the slow sensors are skipped on the next due scan
                 OverBudget = r.Ms > BudgetMs;
                 if (OverBudget) skipSlowOnce = true;
-                if (output) Outputs(r);
+                if (output)
+                {
+                    // timers, counters and one-shots move on tick scans only; a paused or on-demand scan only looks
+                    Memory = r.Memory;
+                    Outputs(r);
+                }
+
                 Last = r;
                 lastError = null;
                 return r;
@@ -155,7 +169,7 @@ namespace RimPLC
         private Dictionary<string, object> Merge()
         {
             var st = new Dictionary<string, object>();
-            foreach (var src in new[] { slow, normal, fast })
+            foreach (var src in new[] { slow, normal, fast, demand })
             {
                 if (src == null) continue;
                 foreach (var kv in src)
@@ -171,6 +185,20 @@ namespace RimPLC
             }
 
             return st;
+        }
+
+        private HashSet<string> DemandedKeys()
+        {
+            var keys = new HashSet<string>();
+            foreach (Rung r in Engine.Merge(Book, MyRungs))
+            {
+                foreach (var kv in Engine.Leaves(r.When))
+                {
+                    if (kv.Key.StartsWith("count_", StringComparison.Ordinal) || kv.Key.StartsWith("alert_", StringComparison.Ordinal)) keys.Add(kv.Key);
+                }
+            }
+
+            return keys;
         }
 
         public string ModeOf(Rung r)
@@ -197,10 +225,15 @@ namespace RimPLC
             {
                 if (edges.Contains(h.Rung.Id)) continue;
                 Rung rung = h.Rung;
-                // the stream is clean: notices from Unity's own rungs are not shown until the clean-word filter is wired (P3)
-                if (Notify && rung.Source != "unity" && !string.IsNullOrEmpty(rung.Notice))
+                // the stream is clean: a notice from Unity's own rungs is shown only through the clean-word filter
+                string notice = rung.Source == "unity" ? CleanText.Clean(rung.Notice) : rung.Notice;
+                if (Notify && !string.IsNullOrEmpty(notice))
                 {
-                    Messages.Message("RimPLC: " + rung.Notice, MessageTypeDefOf.NeutralEvent, false);
+                    Messages.Message("RimPLC: " + notice, MessageTypeDefOf.NeutralEvent, false);
+                }
+                else if (Notify && rung.Source == "unity" && !string.IsNullOrEmpty(rung.Notice))
+                {
+                    AddLog(r.Tick, rung.Id, "notice not shown: not clean for the stream", "scan");
                 }
 
                 AddLog(r.Tick, rung.Id, "rising edge" + (rung.Notice != null ? ": " + rung.Notice : string.Empty), "scan");
@@ -223,7 +256,8 @@ namespace RimPLC
                 case "message":
                     string text = coil.GetString("text");
                     if (string.IsNullOrEmpty(text)) return "refused: message has no text";
-                    if (rung.Source == "unity") return "refused: messages from unity rungs wait for the clean-word filter";
+                    if (rung.Source == "unity") text = CleanText.Clean(text);
+                    if (text == null) return "refused: message is not clean for the stream";
                     Messages.Message("RimPLC: " + text, MessageTypeDefOf.NeutralEvent, false);
                     return "ok: message";
                 case "set_mark":
@@ -296,9 +330,12 @@ namespace RimPLC
 
         /// <summary>
         /// t_ladder_set add_rung rules: id forced to the unity- prefix (player- for the editor), then capped at 8 lines of
-        /// 300 characters, latch kept, mode forced to advise for unity rungs. A rung with a book rung's id replaces it.
+        /// 300 characters, latch kept, mode forced to advise for unity rungs. A rung with a book rung's id replaces it:
+        /// the editor keeps a book id for a player copy ("Edit" on a book rung); the AI API always prefixes. Then the
+        /// rimplc-check rules (Validate.Rung). For the AI API a key with no sensor is a note, not a refusal, exactly
+        /// as ladder_set says it; the editor (unknownIsError) refuses it, as the checker does.
         /// </summary>
-        public bool UpsertRung(JsonObject o, string source, out string note)
+        public bool UpsertRung(JsonObject o, string source, out string note, bool unknownIsError = false)
         {
             note = string.Empty;
             if (o == null || !(o.Get("id") is string rawId) || rawId.Length == 0 || !(o.Get("priority") is double) || !(o.Get("when") is JsonObject))
@@ -308,9 +345,11 @@ namespace RimPLC
             }
 
             string prefix = source + "-";
-            string id = rawId.StartsWith(prefix, StringComparison.Ordinal)
-                ? (rawId.Length > 46 ? rawId.Substring(0, 46) : rawId)
-                : prefix + Clip(Regex.Replace(rawId.ToLowerInvariant(), "[^a-z0-9-]", "-"), 40);
+            bool keepBookId = source == "player" && Book.Rungs.Any(b => b.Id == rawId);
+            string id = keepBookId ? rawId
+                : rawId.StartsWith(prefix, StringComparison.Ordinal)
+                    ? (rawId.Length > 46 ? rawId.Substring(0, 46) : rawId)
+                    : prefix + Clip(Regex.Replace(rawId.ToLowerInvariant(), "[^a-z0-9-]", "-"), 40);
             id = Regex.Replace(id, "[^a-z0-9-]", "-");
             var copy = o.Copy();
             copy.Set("id", id);
@@ -320,15 +359,24 @@ namespace RimPLC
             copy.Set("source", source);
             if (source == "unity") copy.Set("mode", "advise");
             copy.RemoveKey("disabled");
+
+            var live = Last == null ? null : new HashSet<string>(Last.State.Keys);
+            List<string> errors = Validate.Rung(copy, Book, live, out List<string> _);
+            const string noSensor = " has no sensor, tag or mark";
+            if (!unknownIsError) errors.RemoveAll(e => e.EndsWith(noSensor, StringComparison.Ordinal));
+            if (errors.Count > 0)
+            {
+                note = string.Join("; ", errors.Take(3).ToArray());
+                return false;
+            }
+
             Rung r;
             try { r = Rung.From(copy, source); }
             catch (FormatException e) { note = e.Message; return false; }
 
-            var known = new HashSet<string>(Book.Sensors.Select(kv => kv.Key));
-            var unknown = r.When.Select(kv => kv.Key).Where(k => k != "letter_matches" && !k.StartsWith("mark_", StringComparison.Ordinal) &&
-                                                                 !k.StartsWith("alert_", StringComparison.Ordinal) && !known.Contains(k) &&
-                                                                 !Book.Constants.Has(k) && !Book.Variables.Has(k) &&
-                                                                 (Last == null || !Last.State.ContainsKey(k))).ToList();
+            var unknown = Engine.Leaves(r.When).Select(kv => kv.Key).Where(k => !Validate.KnownKey(k, Book, live) ||
+                                                                               (k.StartsWith("count_", StringComparison.Ordinal) && (live == null || !live.Contains(k))))
+                .Where(k => !k.StartsWith("mark_", StringComparison.Ordinal) && !k.StartsWith("alert_", StringComparison.Ordinal)).Distinct().ToList();
             if (unknown.Count > 0) note = " (keys with no sensor, the rung stays quiet until measured: " + string.Join(", ", unknown) + ")";
             MyRungs.RemoveAll(x => x.Id == r.Id);
             MyRungs.Add(r);
@@ -336,10 +384,12 @@ namespace RimPLC
             return true;
         }
 
-        public bool RemoveRung(string id, out string note)
+        /// <summary>Remove a unity- or player- rung (the AI API), or any rung of the player's layer, including a player copy of a book rung (the window's Revert).</summary>
+        public bool RemoveRung(string id, out string note, bool byPlayer = false)
         {
             note = id;
-            if (id == null || !(id.StartsWith("unity-", StringComparison.Ordinal) || id.StartsWith("player-", StringComparison.Ordinal)))
+            bool layered = id != null && MyRungs.Any(x => x.Id == id);
+            if (id == null || !(id.StartsWith("unity-", StringComparison.Ordinal) || id.StartsWith("player-", StringComparison.Ordinal) || (byPlayer && layered)))
             {
                 note = "only unity- and player- rungs can be removed; book rungs can only be switched off";
                 return false;
@@ -360,6 +410,44 @@ namespace RimPLC
             if (enabled) SwitchedOff.Remove(id);
             else SwitchedOff.Add(id);
             return true;
+        }
+
+        /// <summary>A dry run of an edit on this component: the edit is made, read back and undone (import planning).</summary>
+        public sealed class Probe
+        {
+            private readonly RimPLCGameComponent plc;
+            public Rung Result;
+
+            public Probe(RimPLCGameComponent plc)
+            {
+                this.plc = plc;
+            }
+
+            public bool Upsert(JsonObject o, string source, out string id, out string note)
+            {
+                var saved = plc.MyRungs.ToList();
+                bool ok = plc.UpsertRung(o, source, out note);
+                id = null;
+                if (ok)
+                {
+                    id = note.Split(' ')[0];
+                    string found = id;
+                    Result = plc.MyRungs.FirstOrDefault(r => r.Id == found);
+                }
+
+                plc.MyRungs.Clear();
+                plc.MyRungs.AddRange(saved);
+                return ok && Result != null;
+            }
+
+            public bool Mark(string name, object value, out string error)
+            {
+                JsonObject had = plc.Marks.Copy();
+                bool ok = plc.SetMark(name, value, out error);
+                plc.Marks.Clear();
+                plc.Marks.AddRange(had);
+                return ok;
+            }
         }
 
         public void SetMode(string id, string mode)
@@ -394,6 +482,7 @@ namespace RimPLC
             Scribe_Collections.Look(ref switchedOffSaved, "switchedOff", LookMode.Value);
             Scribe_Collections.Look(ref edgesSaved, "edges", LookMode.Value);
             Scribe_Collections.Look(ref lettersSeenSaved, "lettersSeen", LookMode.Value);
+            Scribe_Collections.Look(ref memorySaved, "instructionMemory", LookMode.Value, LookMode.Value);
             if (Scribe.mode == LoadSaveMode.PostLoadInit) Unpack();
         }
 
@@ -411,6 +500,7 @@ namespace RimPLC
             switchedOffSaved = SwitchedOff.ToList();
             edgesSaved = edges.ToList();
             lettersSeenSaved = LettersSeen.ToList();
+            memorySaved = Memory.ToDictionary(kv => kv.Key, kv => kv.Value.Pack());
         }
 
         private void Unpack()
@@ -451,6 +541,12 @@ namespace RimPLC
             edges = new HashSet<string>(edgesSaved ?? new List<string>());
             LettersSeen.Clear();
             foreach (int i in lettersSeenSaved ?? new List<int>()) LettersSeen.Add(i);
+            Memory = new Dictionary<string, Instr>();
+            foreach (var kv in memorySaved ?? new Dictionary<string, string>())
+            {
+                Instr m = Instr.Unpack(kv.Value);
+                if (m != null) Memory[kv.Key] = m;
+            }
         }
     }
 }

@@ -183,6 +183,47 @@ namespace RimPLC
             return Ok("letters marked seen: " + c.LettersSeen.Count);
         }
 
+        /// <summary>rimplc/export: the player's and Unity's layer as a ladder file (Transfer.ExportDoc), written to the exports folder.</summary>
+        public static Dictionary<string, object> Export(string name = null)
+        {
+            RimPLCGameComponent c = Plc(out var refusal);
+            if (c == null) return refusal;
+            string path = Transfer.ExportFile(c, name);
+            return new Dictionary<string, object> { { "ok", true }, { "result", "exported " + c.MyRungs.Count + " rungs" }, { "path", path }, { "ladder", Transfer.ExportDoc(c) } };
+        }
+
+        /// <summary>
+        /// rimplc/import: a ladder (object or JSON text). dry_run (the default) returns the diff only; dry_run false applies
+        /// it. Rungs become unity- rungs in advise mode; switches, auto modes and constants need the owner flag.
+        /// </summary>
+        public static Dictionary<string, object> Import(object ladder, bool dryRun = true, bool owner = false)
+        {
+            RimPLCGameComponent c = Plc(out var refusal);
+            if (c == null) return refusal;
+            JsonObject doc = ladder as JsonObject;
+            if (doc == null)
+            {
+                try { doc = Json.ParseObject(ladder as string ?? Convert.ToString(ladder, CultureInfo.InvariantCulture)); }
+                catch (FormatException e) { return Refused("ladder is not a JSON object: " + e.Message); }
+            }
+
+            ImportPlan plan = Transfer.Plan(c, doc, "unity", owner);
+            if (plan.Error != null) return Refused(plan.Error);
+            if (!dryRun)
+            {
+                foreach (Action act in plan.Actions) act();
+                c.AddLog(Tick(), "-", "import: " + plan.Changes + " changes", "api");
+            }
+
+            return new Dictionary<string, object>
+            {
+                { "ok", true },
+                { "result", (dryRun ? "import would make " : "imported: ") + plan.Changes + " changes" },
+                { "diff", plan.ToResult() },
+                { "applied", !dryRun },
+            };
+        }
+
         private static int Tick()
         {
             return Verse.Find.TickManager?.TicksGame ?? 0;

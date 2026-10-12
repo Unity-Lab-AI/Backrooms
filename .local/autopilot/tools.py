@@ -563,18 +563,23 @@ class Toolbox:
     def _ladder_path(self):
         return os.path.join(os.path.dirname(os.path.abspath(__file__)), "scratch", "ladder.json")
 
+    def _gates(self):
+        """gates.py, loaded once: the Python ladder engine and the RimPLC thin client (one RimPLC retry timer)."""
+        if getattr(self, "_gates_mod", None) is None:
+            spec = importlib.util.spec_from_file_location("gates_rt", os.path.join(os.path.dirname(os.path.abspath(__file__)), "gates.py"))
+            g = importlib.util.module_from_spec(spec); spec.loader.exec_module(g)
+            self._gates_mod = g
+        return self._gates_mod
+
+    def _rimplc_call(self):
+        return None if self.bridge.offline else self.bridge.call
+
     def t_ladder(self):
-        spec = importlib.util.spec_from_file_location("gates_rt", os.path.join(os.path.dirname(os.path.abspath(__file__)), "gates.py"))
-        g = importlib.util.module_from_spec(spec); spec.loader.exec_module(g)
-        hits, st = g.decide(every=True)
-        try: mine = json.load(open(self._ladder_path(), encoding="utf-8"))
-        except Exception: mine = {}
-        # the top live rungs with the measured values that made them fire, so she can say WHY
-        live = [{"id": h["id"], "priority": h["priority"], "matched": h.get("matched", {}), "then": h.get("then", [])}
-                for h in hits[:4]]
-        return json.dumps({"live_rungs": live, "tags": st.get("tags"), "my_marks": mine.get("marks", {}),
-                           "my_rungs": [r.get("id") for r in mine.get("gates", [])],
-                           "unknown_keys": st.get("unknown_keys", [])}, default=str)[:5000]
+        # RimPLC in the game when it is loaded (rimplc/read_ladder, or its command file), else the Python engine.
+        # Either way the top live rungs with the measured values that made them fire, so she can say WHY, in the
+        # same fields as always (gates.ladder_result / format_ladder).
+        text, _src = self._gates().ladder_result(call=self._rimplc_call())
+        return text
 
     def _book(self):
         try:
@@ -582,7 +587,29 @@ class Toolbox:
         except Exception:
             return {}
 
+    RIMPLC_OPS = {"mark": "set_mark", "tag": "set_tag", "add_rung": "upsert_rung", "remove_rung": "remove_rung"}
+
     def t_ladder_set(self, op, name=None, value=None, rung=None):
+        """ladder_set: through RimPLC when it is loaded (mark -> set_mark, tag -> set_tag, add_rung -> upsert_rung,
+        remove_rung -> remove_rung), mirrored into scratch/ladder.json so the Python fallback keeps her edits; else
+        straight into scratch/ladder.json. Same result text and refusals either way."""
+        cmd = self.RIMPLC_OPS.get(op)
+        if cmd and not self.dry:
+            args = {"set_mark": {"name": name, "value": value}, "set_tag": {"name": name, "value": value},
+                    "upsert_rung": {"rung": rung}, "remove_rung": {"id": name}}[cmd]
+            r = self._gates().rimplc(cmd, args, call=self._rimplc_call())
+            if r is not None:
+                if not r.get("ok"):
+                    raise GuardError(r.get("refused") or "refused by RimPLC")
+                try:
+                    self._ladder_set_local(op, name, value, json.loads(json.dumps(rung)) if rung is not None else None)
+                except GuardError:
+                    pass
+                note = r.get("note")
+                return str(r.get("result", "ladder updated: " + op)) + ((" " + note) if note else "")
+        return self._ladder_set_local(op, name, value, rung)
+
+    def _ladder_set_local(self, op, name=None, value=None, rung=None):
         path = self._ladder_path()
         try: d = json.load(open(path, encoding="utf-8"))
         except Exception: d = {}
@@ -619,10 +646,13 @@ class Toolbox:
             r["id"] = "unity-" + re.sub(r"[^a-z0-9-]", "-", str(r["id"]).lower())[:40] if not str(r["id"]).startswith("unity-") else str(r["id"])[:46]
             r["then"] = [str(x)[:300] for x in (r.get("then") or [])][:8]
             if "latch" in r: r["latch"] = bool(r["latch"])
+            # THE STREAM IS CLEAN: a notice is shown in the game (RimPLC does the same check with its port of the filter)
+            if r.get("notice") is not None and guards.clean_for_stream(str(r["notice"])) is None:
+                raise GuardError("notice is not clean for the stream: reword it")
             bk = self._book()
             known = set((bk.get("sensors") or {}).keys()) | set(((bk.get("tags") or {}).get("variables") or {}).keys()) \
                 | set(((bk.get("tags") or {}).get("constants") or {}).keys()) | {"letter_matches"}
-            unknown = [k for k in r["when"] if not k.startswith(("mark_", "alert_")) and k not in known]
+            unknown = [k for k, _w in self._gates().leaves(r["when"]) if not k.startswith(("mark_", "alert_")) and k not in known]
             if unknown: note = " (keys with no sensor, the rung stays quiet until measured: %s)" % ", ".join(unknown)
             d["gates"] = [g for g in d.get("gates", []) if g.get("id") != r["id"]] + [r]
         elif op == "remove_rung":
@@ -673,6 +703,11 @@ class Toolbox:
                 d = {"marks": {}}
             d["letters_seen"] = sorted(set(d.get("letters_seen", [])) | set(ids))
             json.dump(d, open(p, "w", encoding="utf-8"), indent=1)
+        except Exception:
+            pass
+        try:
+            # RimPLC keeps its own seen-letter set (the `letters` count): tell it too when it is loaded
+            self._gates().rimplc("letters_seen", {}, call=self._rimplc_call(), wait_s=1.0)
         except Exception:
             pass
 

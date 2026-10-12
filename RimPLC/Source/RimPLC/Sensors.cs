@@ -84,6 +84,8 @@ namespace RimPLC
             // gates.py measured ticks moving by reading twice; here the cause is read directly
             st["ticks_moving"] = !tm.Paused;
             st["day"] = Math.Round(ticks / (double)TicksPerDay, 2);
+            // the clock the ton / tof timers count in (gates.py has no tick read and uses day * 60000)
+            st["ticks"] = (double)ticks;
             st["quadrum_index"] = (double)(ticks / TicksPerQuadrum % 4);
             st["map_count"] = (double)Find.Maps.Count;
             WindowStack ws = Find.WindowStack;
@@ -455,6 +457,72 @@ namespace RimPLC
 
             // per building (the bridge sweep could only compare cells of the same def)
             st["buildings_damaged"] = (double)damaged;
+        }
+
+        // ------------------------------------------------------------------------------------------------ on demand
+
+        private static Dictionary<string, ThingDef> thingsByKey;
+
+        /// <summary>The key a thing def is counted under: count_ + its defName in lower case (null when the name does not fit a key).</summary>
+        public static string CountKey(ThingDef d)
+        {
+            string k = "count_" + d.defName.ToLowerInvariant();
+            return Validate.KeyRule.IsMatch(k) ? k : null;
+        }
+
+        /// <summary>The key an alert class raises: alert_ + its class name in lower case without the Alert_ prefix.</summary>
+        public static string AlertKey(string className)
+        {
+            string n = (className ?? string.Empty).ToLowerInvariant();
+            return "alert_" + (n.StartsWith("alert_", StringComparison.Ordinal) ? n.Substring(6) : n);
+        }
+
+        public static ThingDef ThingByKey(string key)
+        {
+            if (thingsByKey == null)
+            {
+                var d = new Dictionary<string, ThingDef>();
+                foreach (ThingDef t in DefDatabase<ThingDef>.AllDefsListForReading)
+                {
+                    string k = CountKey(t);
+                    if (k != null && !d.ContainsKey(k)) d[k] = t;
+                }
+
+                thingsByKey = d;
+            }
+
+            return thingsByKey.TryGetValue(key, out ThingDef def) ? def : null;
+        }
+
+        /// <summary>
+        /// Keys the rungs name by def (the editor's def pickers), read every scan for the keys asked for only:
+        ///   count_&lt;thingdef&gt;  items on the home map: the stack total; buildings, plants and pawns: how many
+        ///   alert_&lt;class&gt;     true while an alert of that class is active (alerts read on the normal cadence)
+        /// A def that is not loaded (another mod, an inactive DLC) leaves its key unmeasured, never 0.
+        /// </summary>
+        public static void ReadDemand(Dictionary<string, object> st, Map home, ICollection<string> keys, Dictionary<string, object> normal)
+        {
+            if (keys == null || keys.Count == 0) return;
+            HashSet<string> active = null;
+            if (normal != null && normal.TryGetValue("alert_classes", out object ac) && ac is List<object> classes)
+            {
+                active = new HashSet<string>(classes.Select(c => AlertKey(c as string)));
+            }
+
+            foreach (string k in keys)
+            {
+                if (k.StartsWith("count_", StringComparison.Ordinal))
+                {
+                    ThingDef def = home == null ? null : ThingByKey(k);
+                    if (def == null) continue;
+                    List<Thing> things = home.listerThings.ThingsOfDef(def);
+                    st[k] = def.category == ThingCategory.Item ? (double)things.Sum(t => t.stackCount) : (double)things.Count;
+                }
+                else if (k.StartsWith("alert_", StringComparison.Ordinal) && active != null && !normal.ContainsKey(k))
+                {
+                    st[k] = active.Contains(k);
+                }
+            }
         }
 
         // ------------------------------------------------------------------------------------------------ chain inputs

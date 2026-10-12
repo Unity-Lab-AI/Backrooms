@@ -14,7 +14,7 @@ namespace RimPLC
     ///   results   &lt;RimWorld config folder&gt;/RimPLC/outbox.jsonl   {"id":..,"cmd":..,"result":{..}} per line
     ///
     /// cmd is a tool name without the rimplc/ prefix (read_ladder, read_state, set_tag, set_mark, upsert_rung,
-    /// remove_rung, enable_rung, letters_seen) and the other fields are that tool's args (tools.schema.json). The
+    /// remove_rung, enable_rung, letters_seen, export, import) and the other fields are that tool's args (tools.schema.json). The
     /// inbox is claimed by an atomic rename, at most MAX_COMMANDS_PER_PASS lines run per pass and the rest stay
     /// queued. Runs once a real second from GameComponentUpdate, so it works while the game is paused.
     /// </summary>
@@ -110,6 +110,10 @@ namespace RimPLC
                     return Api.EnableRung(a.GetString("id"), !(a.Get("enabled") is bool e) || e, owner);
                 case "letters_seen":
                     return Api.LettersSeen();
+                case "export":
+                    return Api.Export(a.GetString("name"));
+                case "import":
+                    return Api.Import(a.Get("json") ?? a.Get("ladder"), !(a.Get("dry_run") is bool d0) || d0, owner);
                 default:
                     return Api.Refused("unknown cmd " + (cmd ?? "(none)"));
             }

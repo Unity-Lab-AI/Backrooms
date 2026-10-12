@@ -487,49 +487,197 @@ def _bound(expr, st, tagvals):
 
 OPS = (">=", "<=", "!=", ">", "<")
 
+# ---------------------------------------------------------------------------------------------------------------
+# Nested instructions (RimPLC P2, the same rules as RimPLC/Source/RimPLC/Engine.cs). A `when` entry whose value is an
+# object is an instruction; its key is only a label (it names the instruction, and its timer/counter memory):
+#   {"any": [when, when, ...]}             OR of AND-branches
+#   {"not": when}                          NOT (an unmeasured input stays unmeasured: a missing key never fires)
+#   {"ton": when, "ticks": N | "hours": H} on-delay: true once `when` has held N game ticks
+#   {"tof": when, "ticks": N | "hours": H} off-delay: stays true N ticks after `when` stops holding
+#   {"ctu": when, "preset": N, "reset": when}  counts rising edges of `when`; true at N or more; `reset` zeroes it
+#   {"ons": when}                          one-shot: true on the one scan `when` turns true
+# Timers count game ticks (the `ticks` key when present, else day * 60000; a game hour is 2500 ticks). Timer and
+# counter memory moves forward once per committed scan (decide(write=True) here, a tick scan in game); a read-only
+# scan sees what the next scan would see without moving it.
+# ---------------------------------------------------------------------------------------------------------------
+TICKS_PER_HOUR = 2500
+STATEFUL = ("ton", "tof", "ctu", "ons")
+NESTED = ("any", "not") + STATEFUL
+MEMORY = os.path.join(HERE, "scratch", "plc_memory.json")   # timer / counter memory between decide() calls
 
-def _holds(cond, st, tagvals=None):
-    tagvals = tagvals or {}
-    for key, want in cond.items():
-        if key == "letter_matches":
-            if not any(str(want).lower() in (l or "").lower() for l in st.get("letter_labels", [])): return False
-            continue
-        if key in st:
-            got = st.get(key)
-        elif key in tagvals:           # a tag can gate a rung directly (e.g. CAVALRY_ENABLED: ">0")
-            got = tagvals[key]
+
+def expr_op(e):
+    """The instruction an object condition holds, or None when it is not exactly one known instruction."""
+    ops = [k for k in NESTED if isinstance(e, dict) and k in e]
+    return ops[0] if len(ops) == 1 else None
+
+
+def leaves(when):
+    """Every plain (key, want) condition inside a when, nested instructions opened up, in order."""
+    for k, w in (when or {}).items():
+        if isinstance(w, dict):
+            op = expr_op(w)
+            subs = (w.get("any") or []) if op == "any" else [w.get(op)] if op else []
+            if op == "ctu" and isinstance(w.get("reset"), dict): subs = subs + [w["reset"]]
+            for s in subs:
+                if isinstance(s, dict):
+                    yield from leaves(s)
         else:
-            return False          # unmeasured is not the same as false: a rung cannot fire on a missing key
-        if isinstance(want, bool):
-            if bool(got) != want: return False
-        elif isinstance(want, (int, float)):
-            if got is None or isinstance(got, bool) or got != want: return False
-        elif isinstance(want, str) and want[:1] in "<>!":
-            op = next(o for o in OPS if want.startswith(o)) if any(want.startswith(o) for o in OPS) else None
-            if op is None:
-                st.setdefault("unresolved_conditions", []).append("%s %s" % (key, want)); return False
-            ref = _bound(want[len(op):], st, tagvals)
-            if ref is None:
-                # an unresolved bound never passes silently: the rung does not fire and the reason is recorded
-                st.setdefault("unresolved_conditions", []).append("%s %s" % (key, want))
-                return False
-            if got is None or isinstance(got, bool) or not isinstance(got, (int, float)): return False
-            g = float(got)
-            if not {">": g > ref, "<": g < ref, ">=": g >= ref, "<=": g <= ref, "!=": g != ref}[op]: return False
-        elif isinstance(want, str):
-            if str(got) != want: return False
+            yield k, w
+
+
+def _now(st):
+    t = st.get("ticks")
+    if isinstance(t, (int, float)) and not isinstance(t, bool): return int(t)
+    d = st.get("day")
+    if isinstance(d, (int, float)) and not isinstance(d, bool): return int(round(d * 60000))
+    return None
+
+
+def _duration(e):
+    if isinstance(e.get("ticks"), (int, float)) and not isinstance(e.get("ticks"), bool): return int(e["ticks"])
+    if isinstance(e.get("hours"), (int, float)) and not isinstance(e.get("hours"), bool): return int(round(e["hours"] * TICKS_PER_HOUR))
+    return None
+
+
+def _leaf(key, want, st, tagvals, rec=None, ctx=None, path=""):
+    """One condition -> "T" true, "F" false, "U" unmeasured, "R" unresolved (rec(text) collects unresolved bounds)."""
+    if key == "letter_matches":
+        return "T" if any(str(want).lower() in (l or "").lower() for l in st.get("letter_labels", [])) else "F"
+    if isinstance(want, dict):
+        return _expr(key, want, st, tagvals, rec, ctx, path)
+    if key in st:
+        got = st.get(key)
+    elif key in tagvals:           # a tag can gate a rung directly (e.g. CAVALRY_ENABLED: ">0")
+        got = tagvals[key]
+    else:
+        return "U"          # unmeasured is not the same as false: a rung cannot fire on a missing key
+    if isinstance(want, bool):
+        return "T" if bool(got) == want else "F"
+    if isinstance(want, (int, float)):
+        return "F" if got is None or isinstance(got, bool) or got != want else "T"
+    if isinstance(want, str) and want[:1] in "<>!":
+        op = next(o for o in OPS if want.startswith(o)) if any(want.startswith(o) for o in OPS) else None
+        ref = _bound(want[len(op):], st, tagvals) if op else None
+        if ref is None:
+            # an unresolved bound never passes silently: the rung does not fire and the reason is recorded
+            if rec: rec("%s %s" % (key, want))
+            return "R"
+        if got is None or isinstance(got, bool) or not isinstance(got, (int, float)): return "F"
+        g = float(got)
+        return "T" if {">": g > ref, "<": g < ref, ">=": g >= ref, "<=": g <= ref, "!=": g != ref}[op] else "F"
+    if isinstance(want, str):
+        return "T" if str(got) == want else "F"
+    return "F"
+
+
+def _branch(cond, st, tagvals, rec=None, ctx=None, path=""):
+    """An AND of conditions, tested in order, stopping at the first that does not hold (its state is the result)."""
+    if not isinstance(cond, dict):
+        return "R"
+    for k, w in cond.items():
+        c = _leaf(k, w, st, tagvals, rec, ctx, path + "/" + k)
+        if c != "T": return c
+    return "T"
+
+
+def _expr(key, e, st, tagvals, rec=None, ctx=None, path=""):
+    op = expr_op(e)
+    if op is None:
+        if rec: rec("%s %s" % (key, "not one instruction of " + "/".join(NESTED)))
+        return "R"
+    if op == "any":
+        got = [_branch(b, st, tagvals, rec, ctx, "%s.%d" % (path, i)) for i, b in enumerate(e.get("any") or [])]
+        for c in ("T", "R", "U"):
+            if c in got: return c
+        return "F"
+    if op == "not":
+        c = _branch(e.get("not"), st, tagvals, rec, ctx, path + ".0")
+        return {"T": "F", "F": "T"}.get(c, c)
+    # timers, counter, one-shot: the output the instruction pass computed for this scan
+    return ((ctx or {}).get("out") or {}).get(path, "U")
+
+
+def _instructions(when, st, tagvals, ctx, path):
+    """The instruction pass: every timer / counter / one-shot in a rung moves once per scan, children first, whether
+    or not an earlier condition of the rung already failed (a timer must see its input every scan)."""
+    for k, w in (when or {}).items():
+        if not isinstance(w, dict): continue
+        p = path + "/" + k
+        op = expr_op(w)
+        if op is None: continue
+        subs = list(enumerate(w.get("any") or [])) if op == "any" else [(0, w.get(op))]
+        for i, s in subs:
+            if isinstance(s, dict): _instructions(s, st, tagvals, ctx, "%s.%d" % (p, i))
+        if op == "ctu" and isinstance(w.get("reset"), dict):
+            _instructions(w["reset"], st, tagvals, ctx, p + ".r")
+        if op not in STATEFUL: continue
+        c = _branch(w.get(op), st, tagvals, None, ctx, p + ".0")
+        m = dict(ctx["mem"].get(p) or {})
+        m.setdefault("prev", False); m.setdefault("start", None); m.setdefault("last", None); m.setdefault("count", 0)
+        now, dur, inp = ctx["now"], _duration(w), c == "T"
+        if op == "ons":
+            out = ("T" if inp and not m["prev"] else "F") if c in ("T", "F") else c
+        elif op == "ton":
+            if not inp: m["start"] = None
+            elif m["start"] is None: m["start"] = now
+            out = "U" if now is None or dur is None else \
+                ("T" if inp and now - m["start"] >= dur else "F" if c in ("T", "F") else c)
+        elif op == "tof":
+            if inp: m["last"] = now
+            held = m["last"] is not None and now is not None and dur is not None and now - m["last"] < dur
+            out = "U" if now is None or dur is None else ("T" if inp or held else "F" if c in ("T", "F") else c)
+        else:   # ctu
+            r = _branch(w.get("reset"), st, tagvals, None, ctx, p + ".r") if isinstance(w.get("reset"), dict) else "F"
+            if r == "T": m["count"] = 0
+            elif inp and not m["prev"]: m["count"] += 1
+            pre = w.get("preset")
+            out = "R" if not isinstance(pre, (int, float)) or isinstance(pre, bool) else ("T" if m["count"] >= pre else "F")
+        m["prev"] = inp
+        ctx["mem"][p] = m
+        ctx["out"][p] = out
+
+
+def _holds(cond, st, tagvals=None, ctx=None, path=""):
+    tagvals = tagvals or {}
+    rec = lambda s: st.setdefault("unresolved_conditions", []).append(s)
+    for key, want in cond.items():
+        if _leaf(key, want, st, tagvals, rec, ctx, path + "/" + key) != "T": return False
     return True
 
 
+def _value_of(k, w, st, tagvals):
+    return w if k == "letter_matches" else st.get(k, tagvals.get(k, "unmeasured"))
+
+
 def explain(g, st, tagvals):
-    """The measured values behind a rung's conditions, so she can say WHY it fired."""
+    """The measured values behind a rung's conditions, so she can say WHY it fired. A nested instruction shows the
+    measured values of the plain conditions inside it."""
     out = {}
-    for k in (g.get("when") or {}):
-        if k == "letter_matches":
-            out[k] = g["when"][k]
+    for k, w in (g.get("when") or {}).items():
+        if isinstance(w, dict):
+            out[k] = {lk: _value_of(lk, lw, st, tagvals) for lk, lw in leaves({k: w})}
         else:
-            out[k] = st.get(k, tagvals.get(k, "unmeasured"))
+            out[k] = _value_of(k, w, st, tagvals)
     return out
+
+
+def _load_memory():
+    try:
+        m = json.load(open(MEMORY, encoding="utf-8"))
+        return m if isinstance(m, dict) else {}
+    except Exception:
+        return {}
+
+
+def apply_fallbacks(book, st):
+    """A sensor RimPLC measures but the bridge cannot (research_<def>, caravan_out) names the mark it replaced in the
+    preset's sensor table (`fallback`). Unmeasured here, it reads that mark: the mark's value, or false when unset,
+    which is what the old mark condition read."""
+    for k, spec in ((book.get("sensors") or {}).items()):
+        fb = spec.get("fallback") if isinstance(spec, dict) else None
+        if fb and k not in st:
+            st[k] = st.get(fb, False)
 
 
 def rungs(book, lf):
@@ -539,7 +687,9 @@ def rungs(book, lf):
     return [_latched(g) for g in allg]
 
 
-def decide(st=None, every=False, book=None, lf=None, write=True):
+def decide(st=None, every=False, book=None, lf=None, write=True, memory=None):
+    """The Python engine (the fallback when RimPLC is not loaded). memory: timer/counter memory to scan against (a
+    dict, updated in place on write); None = the scratch copy, saved when write is true."""
     lf = _ladder_file() if lf is None else lf
     st = st if st is not None else state()
     book = book or json.load(open(PLAYBOOK, encoding="utf-8"))
@@ -560,8 +710,9 @@ def decide(st=None, every=False, book=None, lf=None, write=True):
     for k, v in ((book.get("marks") or {}).get("defaults") or {}).items():
         st.setdefault("mark_" + k, v)
     for g in allg:
-        for k, w in (g.get("when") or {}).items():
+        for k, w in leaves(g.get("when")):
             if k.startswith("mark_") and isinstance(w, bool): st.setdefault(k, False)
+    apply_fallbacks(book, st)
     # grace: the empire rungs wait until the opening has had START_GRACE_DAYS (the `always` rung never waits)
     gfrom = tagvals.get("GRACE_FROM_PRIORITY")
     grace = tagvals.get("START_GRACE_DAYS")
@@ -569,19 +720,188 @@ def decide(st=None, every=False, book=None, lf=None, write=True):
     st["disabled_rungs"] = {g["id"]: g["disabled"] for g in allg if g.get("disabled")}
     allg = [g for g in allg if not g.get("disabled")]
     known = set((book.get("sensors") or {}).keys())
-    st["unknown_keys"] = sorted({k for g in allg for k in (g.get("when") or {})
+    st["unknown_keys"] = sorted({k for g in allg for k, _w in leaves(g.get("when"))
                                  if k != "letter_matches" and not k.startswith(("mark_", "alert_")) and k not in known
                                  and k not in tagvals and k not in st})
+    # the instruction pass: timers, counters and one-shots move once, before any rung is tested
+    mem = _load_memory() if memory is None else memory
+    ctx = {"mem": {k: dict(v) for k, v in mem.items() if isinstance(v, dict)}, "out": {}, "now": _now(st)}
+    for g in allg:
+        _instructions(g.get("when"), st, tagvals, ctx, g["id"])
+    if write:
+        mem.clear(); mem.update({k: v for k, v in ctx["mem"].items() if k in ctx["out"]})
+        if memory is None and (mem or os.path.exists(MEMORY)):
+            try:
+                os.makedirs(os.path.dirname(MEMORY), exist_ok=True)
+                json.dump(mem, open(MEMORY, "w", encoding="utf-8"), indent=1)
+            except Exception:
+                pass
     def ok(g):
         w = g.get("when", {})
         if (isinstance(gfrom, (int, float)) and isinstance(grace, (int, float)) and g["id"] != "always"
                 and gfrom <= g["priority"] < 99):
             w = dict(w); w.setdefault("day", ">%s" % grace)
-        return _holds(w, st, tagvals)
+        return _holds(w, st, tagvals, ctx, g["id"])
     hits = [g for g in sorted(allg, key=lambda g: g["priority"]) if ok(g)]
     for g in hits:
         g["matched"] = explain(g, st, tagvals)
     return (hits if every else hits[:1] + [g for g in hits if g["id"] == "always"][:1]), st
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# Thin client: when the RimPLC mod is loaded, the ladder lives in the game and this file only asks it.
+#
+#   brain tool (unchanged)        RimPLC (rimplc/<cmd> on the bridge, or cmd in <config>/RimPLC/inbox.jsonl)
+#   ladder                     -> read_ladder {top: 4}
+#   ladder_set mark name value -> set_mark {name, value}
+#   ladder_set tag name value  -> set_tag {name, value}             (never the owner flag: chat never reaches it)
+#   ladder_set add_rung rung   -> upsert_rung {rung}
+#   ladder_set remove_rung name-> remove_rung {id: name}
+#   (letters looked at)        -> letters_seen {}
+#
+# The result text the brain sees is the same: ladder_result() returns exactly t_ladder's JSON (live_rungs with id,
+# priority, matched, then; tags; my_marks; my_rungs; unknown_keys; cut at 5000 characters), and ladder_set returns
+# "ladder updated: <op> <name><note>" or raises the refusal. RimPLC's numbers arrive as doubles; they are given back
+# their Python form (an integral count is an int, a float key stays a float, tags take the type gates.tags() gives,
+# a book rung's priority its book value). When RimPLC does not answer, everything falls back to the Python engine
+# above, and after a miss RimPLC is not asked again for RIMPLC_RETRY_S seconds.
+# ---------------------------------------------------------------------------------------------------------------
+RIMPLC_DIR = os.environ.get("RIMPLC_DIR") or os.path.expandvars(
+    r"%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Config/RimPLC")
+RIMPLC_RETRY_S = 60
+_rimplc_quiet_until = [0.0]
+FLOAT_KEYS = {"day", "days_of_food", "fight_ratio", "store_roofed_fraction", "lowest_health_pct", "lowest_mood",
+              "outdoor_temp"}
+
+
+def _unwrap(r):
+    """A bridge reply -> RimPLC's result dict (structuredContent, or a JSON text content block), else None."""
+    if not isinstance(r, dict):
+        return None
+    if isinstance(r.get("ok"), bool):
+        return r
+    for blk in r.get("content") or []:
+        try:
+            d = json.loads(blk.get("text", ""))
+            if isinstance(d, dict) and isinstance(d.get("ok"), bool):
+                return d
+        except Exception:
+            pass
+    return None
+
+
+def _bridge_args(cmd, a):
+    """The bridge companion takes strings where the command file takes JSON values (RimPLC.BridgeTools)."""
+    a = dict(a)
+    if cmd in ("set_mark", "set_tag") and "value" in a:
+        v = a["value"]
+        a["value"] = "" if v is None else ("true" if v is True else "false" if v is False else str(v))
+    if cmd in ("upsert_rung",) and not isinstance(a.get("rung"), str):
+        a["rung"] = json.dumps(a.get("rung"))
+    if cmd == "import" and not isinstance(a.get("json"), str):
+        a["json"] = json.dumps(a.get("json"))
+    if cmd == "read_state" and isinstance(a.get("keys"), list):
+        a["keys"] = ",".join(a["keys"])
+    return a
+
+
+def _rimplc_file(cmd, args, wait_s):
+    """The command-file fallback. Only used when RimPLC has made its folder (it is loaded, or was)."""
+    if not os.path.isdir(RIMPLC_DIR):
+        return None
+    inbox, outbox = os.path.join(RIMPLC_DIR, "inbox.jsonl"), os.path.join(RIMPLC_DIR, "outbox.jsonl")
+    rid = "gates-" + uuid.uuid4().hex[:10]
+    before = os.path.getsize(outbox) if os.path.exists(outbox) else 0
+    try:
+        with open(inbox, "a", encoding="utf-8") as f:
+            f.write(json.dumps(dict({"id": rid, "cmd": cmd}, **args)) + "\n")
+    except OSError:
+        return None
+    t0 = time.time()
+    while time.time() - t0 < wait_s:
+        time.sleep(0.25)
+        if not os.path.exists(outbox): continue
+        if os.path.getsize(outbox) < before: before = 0
+        with open(outbox, encoding="utf-8", errors="replace") as f:
+            f.seek(before); rows = f.read().splitlines()
+        for row in rows:
+            try: d = json.loads(row)
+            except Exception: continue
+            if d.get("id") == rid and isinstance(d.get("result"), dict):
+                return d["result"]
+    return None
+
+
+def rimplc(cmd, args=None, call=None, wait_s=4.0):
+    """Ask RimPLC. call = a bridge tools/call function (name, args) -> reply; tried first as rimplc/<cmd>, then the
+    command file. Returns RimPLC's result dict (ok true, or ok false with refused), or None when RimPLC does not
+    answer -- the caller then uses the Python engine."""
+    if time.time() < _rimplc_quiet_until[0]:
+        return None
+    args = dict(args or {})
+    if call is not None:
+        try:
+            r = _unwrap(call("rimplc/" + cmd, _bridge_args(cmd, args)))
+        except (Exception, SystemExit):
+            r = None
+        if r is not None:
+            return r
+    r = _rimplc_file(cmd, args, wait_s)
+    if r is None:
+        _rimplc_quiet_until[0] = time.time() + RIMPLC_RETRY_S
+    return r
+
+
+def _py_num(v, like=None):
+    """A number from RimPLC in its Python form: like a float -> float (the command file writes 0 for 0.0), else an
+    integral float -> int (the bridge writes 4.0 for a count of 4)."""
+    if isinstance(v, bool) or not isinstance(v, (int, float)):
+        return v
+    if isinstance(like, float):
+        return float(v)
+    if isinstance(v, float) and v.is_integer():
+        return int(v)
+    return v
+
+
+def format_ladder(hits, st, mine):
+    """t_ladder's result text from a Python-engine scan (unchanged from tools.py)."""
+    live = [{"id": h["id"], "priority": h["priority"], "matched": h.get("matched", {}), "then": h.get("then", [])}
+            for h in hits[:4]]
+    return json.dumps({"live_rungs": live, "tags": st.get("tags"), "my_marks": mine.get("marks", {}),
+                       "my_rungs": [r.get("id") for r in mine.get("gates", [])],
+                       "unknown_keys": st.get("unknown_keys", [])}, default=str)[:5000]
+
+
+def format_rimplc_ladder(r, book=None):
+    """t_ladder's result text from a RimPLC read_ladder result: the same fields, order and number forms."""
+    book = book or json.load(open(PLAYBOOK, encoding="utf-8"))
+    pri = {g["id"]: g["priority"] for g in book.get("gates", [])}
+    like = tags(book, {"crew": [None] * 3, "home_cells": 400}, {})
+    def val(k, v):
+        if isinstance(v, dict): return {a: val(a, b) for a, b in v.items()}
+        return _py_num(v, 0.0 if k in FLOAT_KEYS else None)
+    live = []
+    for h in (r.get("live_rungs") or [])[:4]:
+        p = h.get("priority")
+        p = pri[h.get("id")] if h.get("id") in pri and isinstance(p, (int, float)) and p == pri[h.get("id")] else _py_num(p)
+        live.append({"id": h.get("id"), "priority": p,
+                     "matched": {k: val(k, v) for k, v in (h.get("matched") or {}).items()},
+                     "then": h.get("then", [])})
+    tg = {k: _py_num(v, like.get(k)) for k, v in (r.get("tags") or {}).items()}
+    marks = {k: _py_num(v) for k, v in (r.get("my_marks") or {}).items()}
+    return json.dumps({"live_rungs": live, "tags": tg, "my_marks": marks, "my_rungs": list(r.get("my_rungs") or []),
+                       "unknown_keys": list(r.get("unknown_keys") or [])}, default=str)[:5000]
+
+
+def ladder_result(call=None, lf=None, top=4):
+    """The `ladder` tool's text: RimPLC's ladder when it answers, else the Python engine. -> (text, "rimplc"|"python")"""
+    r = rimplc("read_ladder", {"top": top}, call=call)
+    if r is not None and r.get("ok") and isinstance(r.get("live_rungs"), list):
+        return format_rimplc_ladder(r), "rimplc"
+    hits, st = decide(every=True, lf=lf)
+    mine = _ladder_file() if lf is None else lf
+    return format_ladder(hits, st, mine), "python"
 
 
 if __name__ == "__main__":

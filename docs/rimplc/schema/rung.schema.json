@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://rimplc.local/schema/rung.schema.json",
-  "title": "RimPLC rung (frozen v1)",
+  "title": "RimPLC rung (frozen v1, P2 additions: nested instructions)",
   "description": "One rung of the ladder: when (an AND of conditions) -> then (ordered advice steps). Same meaning as a gate in docs/playbook.gates.json read by .local/autopilot/gates.py. Lower priority is scanned first. A missing key fails its condition (unmeasured is not false). An unresolved bound fails and is reported in unresolved_conditions.",
   "type": "object",
   "required": ["id", "priority", "when", "then"],
@@ -28,7 +28,7 @@
   "$defs": {
     "when": {
       "type": "object",
-      "description": "AND of conditions. Key = a sensor, mark_<name>, alert_<x>, a tag name, or letter_matches.",
+      "description": "AND of conditions. Key = a sensor, mark_<name>, alert_<x>, count_<thingdef> (RimPLC, on demand), research_<def>, a tag name, letter_matches, or the label of a nested instruction.",
       "propertyNames": {"pattern": "^([a-z][a-z0-9_]*|[A-Z][A-Z0-9_]*)$"},
       "properties": {
         "letter_matches": {"type": "string", "description": "Case-insensitive substring of any letter label in the stack."}
@@ -36,8 +36,19 @@
       "additionalProperties": {"$ref": "#/$defs/condition"}
     },
     "condition": {
-      "description": "bool: truthiness equals. number: numeric equality (a bool value never equals a number). A string starting with < > != <= >=: comparison against a number, a {TAG}, or another measured key or tag name. Any other string: exact text equality.",
-      "type": ["boolean", "number", "string"]
+      "description": "bool: truthiness equals. number: numeric equality (a bool value never equals a number). A string starting with < > != <= >=: comparison against a number, a {TAG}, or another measured key or tag name. Any other string: exact text equality. An object: a nested instruction (the key is then only its label and the name of its memory).",
+      "anyOf": [{"type": ["boolean", "number", "string"]}, {"$ref": "#/$defs/instruction"}]
+    },
+    "instruction": {
+      "description": "Exactly one of any / not / ton / tof / ctu / ons (P2; same rules in RimPLC Engine.cs and gates.py). Timers count game ticks (a game hour is 2500). Timer/counter memory moves once per committed scan. An unmeasured input stays unmeasured through not, so a missing key never fires.",
+      "oneOf": [
+        {"type": "object", "required": ["any"], "additionalProperties": false, "properties": {"any": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/when"}, "description": "OR of AND-branches."}}},
+        {"type": "object", "required": ["not"], "additionalProperties": false, "properties": {"not": {"$ref": "#/$defs/when"}}},
+        {"type": "object", "required": ["ton"], "additionalProperties": false, "properties": {"ton": {"$ref": "#/$defs/when"}, "ticks": {"type": "integer", "minimum": 1}, "hours": {"type": "number", "exclusiveMinimum": 0}}, "description": "On-delay: true once the input has held this long. Give ticks or hours.", "oneOf": [{"required": ["ticks"]}, {"required": ["hours"]}]},
+        {"type": "object", "required": ["tof"], "additionalProperties": false, "properties": {"tof": {"$ref": "#/$defs/when"}, "ticks": {"type": "integer", "minimum": 1}, "hours": {"type": "number", "exclusiveMinimum": 0}}, "description": "Off-delay: stays true this long after the input stops holding. Give ticks or hours.", "oneOf": [{"required": ["ticks"]}, {"required": ["hours"]}]},
+        {"type": "object", "required": ["ctu", "preset"], "additionalProperties": false, "properties": {"ctu": {"$ref": "#/$defs/when"}, "preset": {"type": "integer", "minimum": 1}, "reset": {"$ref": "#/$defs/when"}}, "description": "Up-counter: counts rising edges of the input; true at preset or more; reset (true) zeroes it."},
+        {"type": "object", "required": ["ons"], "additionalProperties": false, "properties": {"ons": {"$ref": "#/$defs/when"}}, "description": "One-shot: true on the one scan the input turns true."}
+      ]
     },
     "coil": {
       "type": "object",

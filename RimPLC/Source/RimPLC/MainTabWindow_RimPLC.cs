@@ -120,11 +120,37 @@ namespace RimPLC
 
         private void DrawLadder(Rect rect, RimPLCGameComponent plc, ScanResult r)
         {
-            Widgets.CheckboxLabeled(new Rect(rect.x, rect.y, 160f, 24f), "Live rungs only", ref liveOnly);
-            if (Widgets.ButtonText(new Rect(rect.x + 180f, rect.y, 150f, 24f), "Letters seen")) plc.MarkLettersSeen();
+            Widgets.CheckboxLabeled(new Rect(rect.x, rect.y, 140f, 24f), "Live rungs only", ref liveOnly);
+            float bx = rect.x + 150f;
+            if (Widgets.ButtonText(new Rect(bx, rect.y, 100f, 24f), "Letters seen")) plc.MarkLettersSeen();
+            bx += 104f;
+            if (Widgets.ButtonText(new Rect(bx, rect.y, 90f, 24f), "New rung")) Find.WindowStack.Add(new Dialog_RungEditor(plc, null));
+            bx += 94f;
+            Rung sel = selected == null ? null : plc.MyRungs.FirstOrDefault(x => x.Id == selected) ?? RimPLCMod.Book.Rungs.FirstOrDefault(x => x.Id == selected);
+            if (sel != null && Widgets.ButtonText(new Rect(bx, rect.y, 60f, 24f), "Edit")) Find.WindowStack.Add(new Dialog_RungEditor(plc, sel));
+            bx += 64f;
+            bool layered = sel != null && plc.MyRungs.Any(x => x.Id == sel.Id);
+            bool overridesBook = layered && RimPLCMod.Book.Rungs.Any(x => x.Id == sel.Id);
+            if (layered && Widgets.ButtonText(new Rect(bx, rect.y, 70f, 24f), overridesBook ? "Revert" : "Remove"))
+            {
+                string rid = sel.Id;
+                if (plc.RemoveRung(rid, out string note, true)) plc.AddLog(Find.TickManager.TicksGame, rid, overridesBook ? "reverted to the book" : "removed", "player");
+                else Messages.Message("RimPLC: " + note, MessageTypeDefOf.RejectInput, false);
+            }
+
+            bx += 74f;
+            if (Widgets.ButtonText(new Rect(bx, rect.y, 70f, 24f), "Export"))
+            {
+                string path = Transfer.ExportFile(plc);
+                plc.AddLog(Find.TickManager.TicksGame, "-", "exported to " + path, "player");
+                Messages.Message("RimPLC: exported to " + path, MessageTypeDefOf.NeutralEvent, false);
+            }
+
+            bx += 74f;
+            if (Widgets.ButtonText(new Rect(bx, rect.y, 70f, 24f), "Import")) ImportMenu(plc);
+            bx += 78f;
             Text.Font = GameFont.Tiny;
-            Widgets.Label(new Rect(rect.x + 350f, rect.y + 4f, 700f, 22f),
-                "pri   id   contacts (green true / dark false / amber unmeasured / red unresolved)   mode   on");
+            Widgets.Label(new Rect(bx, rect.y + 4f, rect.xMax - bx, 22f), "green true / dark false / amber unmeasured / red unresolved");
             Text.Font = GameFont.Small;
 
             float detailH = selected != null ? 150f : 0f;
@@ -146,6 +172,32 @@ namespace RimPLC
                 RungEval ev = r.Rungs.FirstOrDefault(e => e.Rung.Id == selected);
                 if (ev != null) DrawDetail(new Rect(rect.x, rect.yMax - detailH + 4f, rect.width, detailH - 4f), ev);
             }
+        }
+
+        private static void ImportMenu(RimPLCGameComponent plc)
+        {
+            List<string> files = Transfer.ImportFiles();
+            if (files.Count == 0)
+            {
+                Messages.Message("RimPLC: no ladder files in " + Transfer.Folder, MessageTypeDefOf.RejectInput, false);
+                return;
+            }
+
+            var opts = files.Take(30).Select(f => new FloatMenuOption(System.IO.Path.GetFileName(f), () =>
+            {
+                JsonObject doc;
+                try { doc = Json.ParseObject(System.IO.File.ReadAllText(f)); }
+                catch (Exception e)
+                {
+                    Messages.Message("RimPLC: " + System.IO.Path.GetFileName(f) + " is not a ladder: " + e.Message, MessageTypeDefOf.RejectInput, false);
+                    return;
+                }
+
+                ImportPlan plan = Transfer.Plan(plc, doc, "player", false);
+                if (plan.Error != null) Messages.Message("RimPLC: " + plan.Error, MessageTypeDefOf.RejectInput, false);
+                else Find.WindowStack.Add(new Dialog_ImportDiff(plc, plan, System.IO.Path.GetFileName(f)));
+            })).ToList();
+            Find.WindowStack.Add(new FloatMenu(opts));
         }
 
         private void DrawRung(Rect row, RimPLCGameComponent plc, RungEval ev)

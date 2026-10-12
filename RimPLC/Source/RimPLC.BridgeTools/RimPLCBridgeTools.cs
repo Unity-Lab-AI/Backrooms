@@ -87,6 +87,32 @@ namespace RimPLC.BridgeTools
             return Main(ctx, () => Api.RemoveRung(id), ct);
         }
 
+        [Tool("rimplc/letters_seen", Description = "Mark every letter in the stack as seen (the letters count drops to 0).")]
+        public Task<Dictionary<string, object>> LettersSeen(IRimBridgeContext ctx, CancellationToken ct)
+        {
+            return Main(ctx, () => Api.LettersSeen(), ct);
+        }
+
+        [Tool("rimplc/export", Description = "Write the player's and Unity's rungs, marks, tag overrides, switches and modes as a ladder file in the RimPLC exports folder; returns the path and the ladder.")]
+        public Task<Dictionary<string, object>> Export(
+            IRimBridgeContext ctx,
+            CancellationToken ct,
+            [ToolParameter(Description = "Optional file name (letters, digits, - and _)")] string name = null)
+        {
+            return Main(ctx, () => Api.Export(name), ct);
+        }
+
+        [Tool("rimplc/import", Description = "Import a ladder (JSON text). dry_run true (default) returns the diff only. Rungs become unity- rungs in advise mode; switches, auto modes and constants need the owner flag.")]
+        public Task<Dictionary<string, object>> Import(
+            IRimBridgeContext ctx,
+            CancellationToken ct,
+            [ToolParameter(Description = "The ladder as JSON text", Required = true)] string json,
+            [ToolParameter(Description = "true = only show the diff")] bool dry_run = true,
+            [ToolParameter(Description = "Owner flag: set only by the owner's CLI side, never from chat")] bool owner = false)
+        {
+            return Main(ctx, () => Api.Import(json, dry_run, owner), ct);
+        }
+
         [Tool("rimplc/enable_rung", Description = "Switch a rung on or off. Switching a book rung off needs the owner flag.")]
         public Task<Dictionary<string, object>> EnableRung(
             IRimBridgeContext ctx,
