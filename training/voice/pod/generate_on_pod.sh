@@ -81,6 +81,9 @@ PY
 # Matcha (bundled in the Cosy code) imports gdown and wget at load; an older venv-cosy without them hung every Cosy
 # worker on the first pod launch (2026-10-12), so make sure they are there even when the venv marker is set.
 "$G/venv-cosy/bin/python" -c "import gdown, wget" 2>/dev/null || "$G/venv-cosy/bin/pip" install -q gdown==5.2.0 wget==3.2
+# The approved recipe renders Cosy with no text front-end (text_frontend False), as the local renders did. With wetext
+# installed Cosy picks it and downloads its files from modelscope.cn, which answers 403 to the pod: every worker hung.
+"$G/venv-cosy/bin/pip" uninstall -y -q wetext 2>/dev/null || true
 # Teacher models live on the shared volume (the code checkout is on the container disk, which a restart wipes).
 M="$G/models"; mkdir -p "$M"
 have model-qwen-vol || { fetch Qwen/Qwen3-TTS-12Hz-1.7B-Base fd4b254389122332181a7c3db7f27e918eec64e3 "$M/qwen3-tts-base"; done_ model-qwen-vol; }

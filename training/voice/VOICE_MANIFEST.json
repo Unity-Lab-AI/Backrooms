@@ -49,13 +49,13 @@
   "training/voice/pod/create_build_context.py": "86d95a9a6eb31fd82d1b7fd973fe6cd2a18d51ea7ff76522c9d5bd5c372a855b",
   "training/voice/pod/environment.lock.json": "5081be03f5025ce38e4c2f0162f5337c9f85162101335741f74d140702478f9d",
   "training/voice/pod/export_environment.py": "bf774ca277f511504f238588618a9128a57f12f82afaf30aba82ceafa55bf6be",
-  "training/voice/pod/generate_on_pod.sh": "de506d4e9ea1d40dfa7f26ed6c8d86a92376adff624f46c1a38471237a4a0d1b",
+  "training/voice/pod/generate_on_pod.sh": "2c0ac84a1c16f057e63833c311628b38916c09037016d3196bd8fc4286fcb6a2",
   "training/voice/pod/preflight_voice.py": "a7214d21751428b9cc1d74e270e90c904ee68c4c2f5ae2a648e70aed79bba0bb",
   "training/voice/pod/prepare_launch.py": "d38d096d2dc6893f1e9008ba07f063d53381ff567f6f5cc443bf8f29ec9818e7",
   "training/voice/pod/publish_voice.py": "018c586dbbc57a763b3f3eb7a58da4d5176bc70e0b5eb18c2b11a55cafacd9a3",
   "training/voice/pod/pull_results_s3.ps1": "4ef074994b3c2d58c1bc0734e869f232313741c13bba1cc993c2ccabfad84172",
   "training/voice/pod/render_eval.py": "f0b5cdc06319dc89cd8d1ac80e60ca69a76888d79963067f91e22cc93dd4f8e8",
-  "training/voice/pod/requirements-teacher-cosy.txt": "42aa3f3c230d0785509e32a4708f63992939d505f044b59770b0edb4d18f4310",
+  "training/voice/pod/requirements-teacher-cosy.txt": "c8e0db0d33d1a55348baf2a9dfd57e912a71eb13bd0a3485642eac960f0eb5e9",
   "training/voice/pod/requirements-teacher-qwen.txt": "0e076abfdb02e6086b2ddee325732247d7eb92cc9416ea5dd273e0810b01596b",
   "training/voice/pod/requirements-template.txt": "81ca8834802a82822cadc7438632b246b0510084b6c77723135a4762169b8e13",
   "training/voice/pod/resolve_environment.py": "aa608701ee81ab8bd3b0a4b753f8fa7851c29b27ca2a7eacb0a373392a4e3ada",
@@ -119,5 +119,5 @@
   "training/voice/variations.py": "b0dc9ac0a42f39d8e26ce5fc055d25a286edc4a6de0608048212c457e2fbaa8d",
   "training/voice/vocoder.py": "f6e8543d98c8a0e25a88fd903827c276225aa8713b7c06fe11c6d94ff34822d8"
  },
- "digest": "f6d1d3a4890c0e90c1e452a0745d19865ec7f9a2663fd5e4f978b2998fb1ff3f"
+ "digest": "e6ae75fbbd57b51cf636fe4c4987fb039736f1314e79eff7c3f5b827cf271ad3"
 }
