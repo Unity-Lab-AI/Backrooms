@@ -35,7 +35,9 @@ if ! have setup; then
   rm -rf $W/llama.cpp
   git clone -q --depth 1 ${LLAMA_CPP_REF:+-b "$LLAMA_CPP_REF"} https://github.com/ggml-org/llama.cpp $W/llama.cpp
   pip install -q -e $W/llama.cpp/gguf-py sentencepiece
-  # CUDA build: the quantizer, the imatrix and the server the eval talks to (sm_90 = H100/H200)
+  # CUDA build: the quantizer, the imatrix and the server the eval talks to (sm_90 = H100/H200). The RunPod PyTorch
+  # image ships no cmake (first launch 2026-10-12 failed here), so it comes from pip.
+  command -v cmake >/dev/null 2>&1 || pip install -q cmake
   cmake -S $W/llama.cpp -B $W/llama.cpp/build -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCH:-90}" -DLLAMA_CURL=OFF >/dev/null
   cmake --build $W/llama.cpp/build --target llama-quantize llama-imatrix llama-server -j"$(nproc)" >/dev/null
   done_ setup
