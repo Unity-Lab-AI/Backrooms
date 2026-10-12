@@ -7,6 +7,7 @@ Writes <out_dir>/STREAM_CORPUS.jsonl (lines without laughter) and <out_dir>/STRE
   id         "stream_" + first 20 hex of sha1(text): stable, unique, safe
   intensity  0.0 for neutral, 0.35 for every other emotion (the recipe's two trained levels)
   pace       1.0 (the renderer refuses any other pace)
+Every '!' is written as '.' (owner's delivery pick, receipts/delivery-ab-2026-10-12.json).
 Fails on any duplicate text or id. Run validate.py first.
 """
 import glob, hashlib, json, os, sys
@@ -25,7 +26,9 @@ def main():
             if not line.strip():
                 continue
             r = json.loads(line)
-            text = r["text"].strip()
+            # Owner's delivery pick (receipts/delivery-ab-2026-10-12.json, Cosy C): "!" is rendered as ".";
+            # the exclamation label stays, the punctuation stops pushing the voice into a peppy pitch.
+            text = r["text"].strip().replace("!", ".")
             key = " ".join(text.lower().split())
             if key in seen:
                 raise SystemExit("duplicate text: " + text)

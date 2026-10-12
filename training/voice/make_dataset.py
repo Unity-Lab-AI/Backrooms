@@ -233,10 +233,33 @@ def approved_policy(selected, acceptance):
         raise ValueError("Incomplete/unknown mixed delivery policy")
     if policy["event_route"] != {"teacher": "cosy", "instruction": "relaxed_smile"}:
         raise ValueError("Recorded events must use the accepted relaxed-smile route")
+    selection = owner_delivery_selection(policy)
     for example, instruction in (("2-natural-happy", "natural_happy"), ("4-little-chuckle", "relaxed_smile")):
-        if policy["cosy_instructions"][instruction] != selected_examples[example]["instruction"]:
-            raise ValueError("Cosy instruction differs from the owner-heard performance")
+        heard = {selected_examples[example]["instruction"]} | ({selection["cosy_instruction"]} if selection else set())
+        if policy["cosy_instructions"][instruction] not in heard:
+            raise ValueError("Cosy instruction differs from every owner-heard performance")
     return policy, path
+
+
+def owner_delivery_selection(policy):
+    """The owner's later A/B choice of delivery (receipts/delivery-ab-*.json), bound to the exact clips heard.
+
+    Owner, 2026-10-12: the first acting instructions sounded "too happy"; the owner heard dry and midpoint
+    renders and chose a dry Cosy instruction and the everyday A2 take. That choice may replace the earlier
+    instructions only when every heard clip still hashes to its receipt.
+    """
+    ref = policy.get("owner_delivery_selection")
+    if not ref:
+        return None
+    path = local_path(ROOT, ref["receipt"])
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+    if (receipt.get("decision") != "accepted" or receipt.get("accepted_by") != "owner"
+            or receipt.get("voice_id") != policy["voice_id"] or not receipt.get("owner_quotes") or not receipt.get("evidence")):
+        raise ValueError("Delivery selection receipt is not an owner acceptance for this voice")
+    for entry in receipt["evidence"]:
+        if file_hash(local_path(ROOT, entry["path"])) != entry["sha256"]:
+            raise ValueError("Owner-heard A/B clip changed: " + entry["path"])
+    return receipt
 
 
 def route_for(job, policy, profiles):
