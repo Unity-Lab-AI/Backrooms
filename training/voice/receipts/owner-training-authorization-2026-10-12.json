@@ -7,7 +7,7 @@
  "scope": "training-preflight",
  "mode": "generated-on-pod",
  "owner_quote": "Go fastest, voice cap $70 (owner, 2026-10-12, after \"okay do whats best\" and \"option 3 final checks and caps a 50$ per pod running 3 pods in tandum together\")",
- "approved_source_digest": "a37b91996864b3f3fe8fdcc7aab3c3abdec4663eacfe69f29c19bcdde98f57a6",
+ "approved_source_digest": "8058d4143cc446c6f1d49c2370120089b468f9f1b66568f6110734b94c63470f",
  "approved_dataset_id": "generated-on-pod",
  "approved_hourly_price": 7.98,
  "approved_budget_usd": 70,
@@ -26,6 +26,7 @@
   "voice training pod: 2x H100 SXM, secure, US-CA-2, $7.98/h live price 2026-10-12 (list-gpu-types count 2)",
   "network volume nk8oyfxwc7 (US-CA-2, 150 GB)",
   "clip pod 4x H200 $21.16/h cap $50 and brain pod 1x H100 $3.99/h cap $50 launched alongside",
-  "owner listening approvals: pace-1.2 'ismaples sound good', laughter 'those are good'"
+  "owner listening approvals: pace-1.2 'ismaples sound good', laughter 'those are good'",
+  "relaunch after both voice pods refused on a shared-volume clone collision (fixed: per-pod local clone)"
  ]
 }

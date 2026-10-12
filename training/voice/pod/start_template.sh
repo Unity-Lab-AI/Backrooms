@@ -92,10 +92,12 @@ mountpoint -q "$W" || stop_self "$W is not a mount; attach the network volume $V
 if [ "$GEN" = "1" ]; then
   # On-pod generation: the source is a pinned commit (never a moving branch), checked against the approved digest.
   [[ "$VOICE_SOURCE_COMMIT" =~ ^[0-9a-f]{40}$ ]] || stop_self "VOICE_SOURCE_COMMIT must be a full 40-hex commit"
-  ROOTSRC="$W/src-$VOICE_SOURCE_COMMIT"
+  # Each pod clones onto its OWN container disk: the clip and training pods start together on one shared volume,
+  # and a shared clone folder broke both clones on the first launch (2026-10-12). Only the needed blobs are fetched.
+  ROOTSRC="/root/src-$VOICE_SOURCE_COMMIT"
   if [ ! -d "$ROOTSRC/.git" ]; then
     rm -rf "$ROOTSRC.tmp"
-    git clone -q "${VOICE_SOURCE_REPO:-https://github.com/Unity-Lab-AI/Backrooms.git}" "$ROOTSRC.tmp"       && (cd "$ROOTSRC.tmp" && git checkout -q "$VOICE_SOURCE_COMMIT") && mv "$ROOTSRC.tmp" "$ROOTSRC"       || stop_self "could not clone commit $VOICE_SOURCE_COMMIT"
+    git clone -q --filter=blob:none --no-checkout "${VOICE_SOURCE_REPO:-https://github.com/Unity-Lab-AI/Backrooms.git}" "$ROOTSRC.tmp"       && (cd "$ROOTSRC.tmp" && git checkout -q "$VOICE_SOURCE_COMMIT") && mv "$ROOTSRC.tmp" "$ROOTSRC"       || stop_self "could not clone commit $VOICE_SOURCE_COMMIT"
   fi
   GOT=$(cd "$ROOTSRC" && python3 training/voice/manifest.py --check) || stop_self "manifest check failed in the cloned source"
   [ "$GOT" = "$VOICE_DIGEST" ] || stop_self "cloned source digest $GOT is not the approved $VOICE_DIGEST"
