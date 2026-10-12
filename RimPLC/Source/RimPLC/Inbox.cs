@@ -26,8 +26,17 @@ namespace RimPLC
         private static string ClaimPath => Path.Combine(Folder, "inbox.claimed.jsonl");
         private static string PendingPath => Path.Combine(Folder, "inbox.pending.jsonl");
 
+        private static bool folderMade;
+
         public static void Process(RimPLCGameComponent plc)
         {
+            // The folder is the "RimPLC is loaded" signal a command-file client waits for before writing, so the mod
+            // makes it; otherwise neither side ever starts (found on the first live run, 2026-10-12).
+            if (!folderMade)
+            {
+                try { Directory.CreateDirectory(Folder); } catch (IOException) { } catch (System.UnauthorizedAccessException) { }
+                folderMade = true;
+            }
             if (!File.Exists(InboxPath) && !File.Exists(PendingPath) && !File.Exists(ClaimPath)) return;
             int cap = RimPLCMod.Book.Constants.Get("MAX_COMMANDS_PER_PASS") is double d && d >= 1 ? (int)d : 32;
             List<string> lines;
