@@ -533,10 +533,10 @@ The PLC layout in `docs/playbook.gates.json` (version 2):
 
 | Section | What it holds |
 |---|---|
-| `sensors` | 74 measured inputs: every key `gates.derive()` can write, its bridge source, its type, and an UNVERIFIED note where the name has not been seen in a captured reply. `alert_<x>` is one family entry. `wall_gaps` is listed as NOT MEASURED. |
-| `gates` | 92 rungs (31 kept, 61 new) in 15 families, each with a `family` field. 29 carry `latch: true`. 8 stay `disabled` with the reason. |
-| `tags` | 17 constants (owner only) and 23 variables (setpoints with `rule`, `min`, `max`). |
-| `marks` | Numeric mark defaults (`start_kind`, `title_rank`, `psylink_level`, `mounts_trained`, `gate_sections_done`, `wealth_band`, `monolith_level` = 0), the meaning of each numeric mark, and the list of boolean marks. |
+| `sensors` | 81 measured inputs (74 + 7 for the control chains, §6.1): every key `gates.derive()` can write, its bridge source, its type, and an UNVERIFIED note where the name has not been seen in a captured reply. `alert_<x>` is one family entry. `wall_gaps` is listed as NOT MEASURED. |
+| `gates` | 127 rungs (31 kept, 61 new, 35 control-chain rungs from §6.1) in 15 families, each with a `family` field. 29 carry `latch: true`. 8 stay `disabled` with the reason. |
+| `tags` | 17 constants (owner only) and 27 variables (setpoints with `rule`, `min`, `max`). |
+| `marks` | Numeric mark defaults (`start_kind`, `title_rank`, `psylink_level`, `mounts_trained`, `gate_sections_done`, `wealth_band`, `monolith_level`, `combat_plan` = 0), the meaning of each numeric mark, and the list of boolean marks. |
 
 Engine (`.local/autopilot/gates.py`):
 
@@ -561,3 +561,29 @@ Differences from §2:
 - `RESEARCH_ORDER` and `MOUNT_DEFS` are list constants. Research order is changed by adding a rung (§2.5), not by `ladder_set tag`.
 
 Offline check: `derive()` on `gi`, `letters`, `cols`, `zones` and 11 cell sweeps (5,020 cells) measured 66 of the 74 sensor keys (absent there: `dialog_open`, `colony_animals`, `colony_mechs`, `hostile_pawns_listed`, `store_roofed_fraction`, `unroofed_store_cells`, `wall_gaps`, and the `alert_<x>` family, because no `list_alerts` reply has been captured). Every non-disabled rung's `when` keys resolve to a sensor, a mark, a tag or `letter_matches`.
+
+### 6.1 Control chains (owner decision 3, 2026-10-12)
+
+The owner's spec, verbatim, is in `docs/RIMPLC_DESIGN.md` ("Owner decisions", item 3): the ladder is "a auto updating checkl ist of controls and switchs and replays and contactors". The chains are built as linked rungs, PLC style. Each rung answers one question (`check`), its last steps set a mark (the coil), and that mark is the next rung's input (the contact). A reset rung drops the latch when the condition clears. Every chain rung is `mode: advise`, carries a `chain` name (`combat`, `medical`, `repairs`, `defense`, `supply`) and a one-line `notice` for a human; `matched` already gives the measured values. The first live rung wins, so a branch is chosen by priority order, not by OR.
+
+| Chain | Rungs (priority) | Path |
+|---|---|---|
+| 1. Combat | `combat-0-reset` 1.58, `combat-0-reassess-worse` 1.585, `combat-0-reassess-better` 1.586, `combat-1-damage-pause` 1.60, `combat-2-fight` 1.61, `combat-2-help-coming` 1.62, `combat-2-call-help-comms` 1.63, `combat-2-call-help-permit` 1.635, `combat-2-retreat` 1.64, `combat-2-kite` 1.65, `combat-3-hold-plan` 1.69 | colonist hurt + hostiles -> pause, mark `combat_paused` -> `fight_ratio >= FIGHT_RATIO_MIN`: fight (`combat_plan` 1) / else help coming (2) / else too many (`< CALL_HELP_RATIO`): call help by comms or permit (4), or retreat inside (5) / else kite (3) -> hold the plan. The reassess rungs are the float switch: the odds crossing `FIGHT_RATIO_MIN` either way pauses and re-plans. No hostiles: reset, undraft, run time. |
+| 2. Medical | `med-1-bleeding-under-fire` 1.68, `med-2-field-tend` 2.06, `med-3-carry-to-hospital` 2.07 | bleeding + enemy: the combat plan stands, kill the threat first, never carry under fire -> no enemy: field tend in place (`field_tended`) -> carry to a Medical bed, tend again, clear the marks. |
+| 3. Repairs | `repair-0-reset` 4.58, `repair-1-wait` 4.60, `repair-2-set` 4.61 | damaged + hostiles: wait (a notice; the combat rungs outrank it) -> safe: Home area + builders, `repairs_set` -> reset at 0 damaged. |
+| 4. Defense | `defense-0-reset-embrasures` 19.40, `defense-0-reset-turrets` 19.41, `defense-0-reset-damage` 19.42, `defense-1-secure` 19.50, `defense-2-embrasures` 19.60, `defense-3-turrets` 19.70 | secure (embrasures >= `EMBRASURE_TARGET`, turrets >= `TURRET_TARGET`, nothing damaged): `defense_secure`, continue / not secure: the build list for what is short. Below `GRACE_FROM_PRIORITY`, so it runs from day 0 once something is built. Door/gate counts are not part of the check: the sweep cannot tell perimeter doors from interior ones. |
+| 5. Supply | `supply-food-*` 22.60–22.61, `supply-steel-*` 22.62–22.64, `supply-podfuel-*` 22.65–22.66, `supply-shipfuel-*` 22.67–22.68, `supply-weapons-*` 22.69–22.71 | each level against its setpoint with a latched alarm and a reset: food under `FOOD_COMFORT_DAYS` (under `FOOD_MIN_DAYS` stays `food-low` 4.1), steel under `STEEL_RESERVE` (buy if comms + `TRADE_SILVER_MIN`, else mine), chemfuel under `POD_FUEL` with launchers, under `SHIP_FUEL_RESERVE` with a gravship, loose weapons over `WEAPON_KEEP` (sell if comms, else smelt). Held by the grace days like every rung from 20. |
+
+New sensors (`gates.py`): `able_shooters` (crew not downed, dead or in a mental state), `fight_ratio` (`able_shooters / hostiles_on_map`, only while hostiles > 0), `colonist_hurt` (downed, `alert_needs_tend`, bleeding, or mark `colonist_hurt`), `pawn_bleeding` (`alert_bleeding`, `alert_life_threat`, or mark `pawn_bleeding`), `loose_weapons` / `junk_weapons` (sweep, `Gun_*` etc. lying in cells; awful/poor quality from the label), `buildings_damaged` (sweep, building cells below the best `hitPoints` of the same def and stuff). `ALERT_MATCH` gains `needs_tend`, `life_threat`, `bleeding`.
+
+New variables: `FIGHT_RATIO_MIN` 1.0 (0.3–5), `CALL_HELP_RATIO` 0.5 (0.1–2), `WEAPON_KEEP` colonists + 2 (2–200), `SHIP_FUEL_RESERVE` 300 (50–10000). New numeric mark `combat_plan` (0 none, 1 fight, 2 hold for help, 3 kite, 4 help called, 5 retreat); new boolean marks `combat_paused`, `help_coming`, `colonist_hurt`, `pawn_bleeding`, `field_tended`, `repairs_set`, `defense_secure`, `food_short_set`, `steel_short_set`, `fuel_short_set`, `shipfuel_short_set`, `junk_weapons_set`.
+
+UNVERIFIED in the chains:
+
+- The bridge has no pawn health read: `list_colonists` has no health field and a pawn's cell `hitPoints` is -1 (captured). Hurt and bleeding come from alert labels never captured ("treatment", "life-threatening", "bleed") or from her marks after `pawn_check` Health.
+- `able_shooters` cannot see incapable-of-violence or unarmed pawns.
+- `buildings_damaged`: the cell reply has no `maxHitPoints`; no captured sweep shows a damaged building, and an evenly damaged group reads healthy.
+- Weapon prefixes `MeleeWeapon_` and `Bow_` and the quality words awful/poor (only `Gun_ChargeRifle` "normal" is captured).
+- Allied military aid through the comms console and the permit list; the gravship fuel type; the smelt-weapon recipe name.
+
+Offline check (2026-10-12, a throwaway script, faked states, the AI's `ladder_set mark` steps applied between scans): combat with good odds ran pause -> fight -> hold -> (odds fell) reassess -> kite -> hold -> reset; outmatched without help -> kite; with help -> help-coming; too many with comms -> call-help-comms; with a title -> call-help-permit; with nothing -> retreat. Medical: pause -> fight -> bleeding-under-fire -> reset -> field-tend -> carry-to-hospital. Repairs: (hostile-on-map outranks the wait notice) -> set -> reset. Defense: embrasures -> turrets -> secure -> reset when embrasures fell. Supply: food low -> reset; steel buy -> reset -> mine; pod fuel low -> reset; ship fuel low -> reset; weapons sell -> reset -> smelt. No unknown keys, no unresolved bounds. `derive()` on 2,278 captured cells and the captured colonist list still runs: `able_shooters` 4, `buildings_damaged` 0, `loose_weapons` 0.

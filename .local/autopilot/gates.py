@@ -58,7 +58,14 @@ ALERT_MATCH = {
     "low_food": "low food", "starv": "starv", "hypotherm": "hypotherm", "heatstroke": "heatstroke",
     "low_medicine": "medicine", "warm_clothes": "warm", "sickness": "sick", "need_research": "research",
     "idle": "idle", "colonist_needs_rescue": "rescue", "food_rot": "rot",
+    # the control chains' health inputs (UNVERIFIED labels, same as the rest of this table)
+    "needs_tend": "treatment", "life_threat": "life-threatening", "bleeding": "bleed",
 }
+# weapons lying loose on the map: Gun_* is captured (Gun_ChargeRifle); the other prefixes are UNVERIFIED
+WEAPON_PREFIXES = ("Gun_", "MeleeWeapon_", "Bow_")
+# quality words that make a loose weapon junk (sell or smelt); the label carries "(<color>normal</color>)" (captured),
+# the words awful / poor are UNVERIFIED in captures
+JUNK_QUALITY = ("awful", "poor")
 # defName -> resource key (sweep, summed by stackCount; stackCount is UNVERIFIED in captures, 1 per stack otherwise)
 RESOURCES = {"Steel": "steel", "ComponentIndustrial": "components", "ComponentSpacer": "adv_components",
              "Plasteel": "plasteel", "Uranium": "uranium", "Gold": "gold", "Silver": "silver",
@@ -247,13 +254,36 @@ def derive(raw, lf=None):
         st["mark_" + k] = v if isinstance(v, (int, float)) and not isinstance(v, bool) else bool(v)
     for k in ("pawns_set", "assign_set", "beds_set", "stove_set", "bill_set"):
         st.setdefault("mark_" + k, False)
+    _chain_inputs(st, crew, raw.get("colonists") is not None)
     return st
+
+
+def _chain_inputs(st, crew, crew_read):
+    """The control chains' inputs (owner decision 3 in docs/RIMPLC_DESIGN.md): who can fight, the odds, who is hurt.
+
+    The bridge has no pawn health read (list_colonists carries drafted/downed/mentalState only; a pawn's cell
+    hitPoints is -1, captured), so hurt and bleeding come from alerts (UNVERIFIED labels) or her own marks after a
+    pawn_check Health look. Nothing is written when nothing behind it was read.
+    """
+    if crew_read:
+        st["able_shooters"] = sum(1 for c in crew if not c.get("downed") and not c.get("dead") and not c.get("mentalState"))
+    h = st.get("hostiles_on_map")
+    if isinstance(h, (int, float)) and h > 0 and "able_shooters" in st:
+        st["fight_ratio"] = round(st["able_shooters"] / float(h), 2)
+    alerts_read = "alerts" in st
+    bleed_src = [st.get("alert_bleeding"), st.get("alert_life_threat"), st.get("mark_pawn_bleeding")]
+    if alerts_read or "mark_pawn_bleeding" in st:
+        st["pawn_bleeding"] = any(bool(v) for v in bleed_src)
+    if crew_read or alerts_read or "mark_colonist_hurt" in st:
+        st["colonist_hurt"] = bool(st.get("downed_count") or st.get("alert_needs_tend") or st.get("pawn_bleeding")
+                                   or st.get("mark_colonist_hurt"))
 
 
 def _sweep(st, cells, ours, crew):
     meals = raw_food = wood = med = bp = foes = roofed = total = defence = 0
     res = {k: 0 for k in set(RESOURCES.values())}
-    berry = healroot = wild = danger = mounts = fire = corpses = embr = 0; battery = False
+    berry = healroot = wild = danger = mounts = fire = corpses = embr = weapons = junk = 0; battery = False
+    bhp = {}          # (defName, stuff) -> [hitPoints per cell], for the damaged-building float switch
     desig = {k: 0 for k in DESIGNATIONS.values()}
     bcells = {k: set() for k in BUILDING_KEYS}
     mount_defs = MOUNT_DEFS_DEFAULT
@@ -286,6 +316,13 @@ def _sweep(st, cells, ours, crew):
                     if d in NEVER_HUNT_DEFS or d.startswith("Bear_"): danger += 1
                     else: wild += 1
                     if d in mount_defs: mounts += 1
+            if d.startswith(WEAPON_PREFIXES):
+                weapons += 1
+                if any(q in (t.get("label") or "").lower() for q in JUNK_QUALITY): junk += 1
+            hp = t.get("hitPoints")
+            if ("Building" in cl and isinstance(hp, (int, float)) and hp > 0
+                    and not t.get("isBlueprint") and not t.get("isFrame") and not d.startswith(("Blueprint_", "Frame_"))):
+                bhp.setdefault((d, t.get("stuffDefName")), []).append(hp)
             if d == "Battery": battery = True
             if "Embrasure" in d and not d.startswith(("Blueprint_", "Frame_")): embr += 1
             if (("Turret" in d or d in ("Sandbags", "Barricade") or "Embrasure" in d)
@@ -305,7 +342,12 @@ def _sweep(st, cells, ours, crew):
     st["has_power"] = st["power_generators"] > 0 or battery
     st.update({"berry_bushes": berry, "healroot_plants": healroot, "danger_animals_near": danger,
                "mount_candidates": mounts, "fire_cells": fire, "corpses": corpses, "embrasures": embr,
-               "wild_game": max(0, wild - st.get("colony_animals", 0))})
+               "wild_game": max(0, wild - st.get("colony_animals", 0)),
+               "loose_weapons": weapons, "junk_weapons": junk})
+    # damaged buildings: the cell reply has hitPoints but no maxHitPoints (captured), so the healthiest cell of the same
+    # def and stuff in this sweep stands in for full health. A group of fewer than 3 cells cannot tell, and a group that
+    # is damaged evenly reads as healthy (UNVERIFIED: no captured sweep shows a damaged building)
+    st["buildings_damaged"] = sum(sum(1 for h in hs if h < max(hs)) for hs in bhp.values() if len(hs) >= 3)
     if total:
         st["store_roofed_fraction"] = roofed / total
         st["unroofed_store_cells"] = total - roofed
@@ -385,6 +427,7 @@ def tags(book, st, lf=None):
         "STEEL_RESERVE": 150 * n,
         "AID_CALL_FOES": 2 * n,
         "MOUNT_TARGET": n,
+        "WEAPON_KEEP": n + 2,
     }
     if isinstance(home, (int, float)):
         computed["EMBRASURE_TARGET"] = int(4 * math.sqrt(home))
