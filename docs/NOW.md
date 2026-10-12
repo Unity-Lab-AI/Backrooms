@@ -17,7 +17,7 @@ Owner go: *"Go fastest, voice cap $70"*, then *"well we are gonna have to double
 
 | Pod | Id | Shape | $/h | Cap | State at 15:07 |
 |---|---|---|---|---|---|
-| Voice (records, then trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | 7.98 | $140 | 5,000 recorded; merge fixed (`e89843fc`); screened 16:42: **4,845 kept** (121 transcript mismatch, 22 long quiet, 12 rushed; 400 laughter kept). Training refused 16:44: template venv lacked `num2words` (misaki English). Fixed in `82ec54ee` (manifest `7eef10db`, owner receipt re-bound); pod restarted 16:45, reinstalling the venv, then trains ~7-8 h |
+| Voice (records, then trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | 7.98 | $140 | 5,000 recorded; merge fixed (`e89843fc`); screened 16:42: **4,845 kept** (121 transcript mismatch, 22 long quiet, 12 rushed; 400 laughter kept). Training refused 16:44: template venv lacked `num2words` (misaki English). Fixed in `82ec54ee`; then spaCy needed `click` (typer 0.27 dropped it): pinned click 8.5.0 + typer 0.16.0 in `a00bb610` (manifest `d2a726d7`, import chain checked in a clean venv); pod restarted ~16:58, reinstalling the venv, then trains ~7-8 h |
 | Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | 3.99 | $50 | Two OOM kills at step 8 (4K screenshot pixels held as Python lists) fixed in `e9f0fc8c`; that exposed that runs 1-2 never passed the screenshots at all (Dataset.from_list dropped the column) and Qwen3.5 needs `mm_token_type_ids` with images: fixed in `4932071` (`BRAIN_BS=8`); restarted 16:43, reinstalling, then ~17-20 s/step x 1,062 = ~5-6 h |
 
 **How to check** (no SSH key is set on these pods):
