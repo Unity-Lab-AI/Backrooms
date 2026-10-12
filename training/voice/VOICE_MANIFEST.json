@@ -29,21 +29,21 @@
   "training/voice/feature_arrays.py": "3039687c3e48af953576e5d49afec7836618a3df3a3394a28bf38d72e454850e",
   "training/voice/finish_source_preparation.py": "5ddf91f3649d549574d12fde100b025b3adf766699d568c9b972dc44738e832e",
   "training/voice/happy_audition.py": "cc0be0457359bbfdf5a826546df122da259e878284a900fd4327694ab040350e",
-  "training/voice/infer.py": "3cccad9983f92caa61ebaa69eeabdb36916fba66a185cd2dbd8ff187b8269b6b",
+  "training/voice/infer.py": "e87a900901df02cc04d00da3c2d1080b4ce4b245883d2c528275b7b718d81f10",
   "training/voice/inspect_source_audio.py": "d794354ae506518ca4fedaa38cfc2c543a4bf38171b85938e5108e4c6c91ed34",
   "training/voice/make_dataset.py": "68ed288b7e4cbaf82a52aeb26bdf401cfbe4bca497b94d6f9f7c780b360d6d61",
   "training/voice/make_dataset_optimized.py": "b95b8814c59f74cf36a78837f7cdd4c9359db5c2737de304a0fb00bdea36dd10",
   "training/voice/manifest.py": "35564abdfb624d7280210e6af04662b05296725c991fd2220a5cb2188426c49c",
   "training/voice/merge_source_datasets.py": "001fb13271b1abcdff168f5f4c912452cf073f52a79888a89eb10bb589d94d44",
   "training/voice/merge_source_qa.py": "654ec270e961b7feca12714508d995279c6ce38842dbbf41335b9fbfaa882a48",
-  "training/voice/model.py": "47153b71266fed30c0633a3f55281b97dbeb0bff32b62b47d274052f810eb447",
+  "training/voice/model.py": "f6bf62847e053f9af63d34ffe21ce11a9b079828da8760c52f458488ab9d7714",
   "training/voice/pod/DEBIAN_SNAPSHOT.json": "eed8d6781c2ed6f7e5cf61c0c4b90cdaeb7b461e68374e041535a3783281ff67",
   "training/voice/pod/Dockerfile": "bcb6d4ff107bf2e62d9fd6452ceda115624ee45bed29e0f9d59e07611f40790c",
   "training/voice/pod/ENVIRONMENT_SPEC.json": "5286383bad67149119141ebb9f808c6560b34d49f2d9924aedd8a3963cf8d746",
   "training/voice/pod/LAUNCH_CONFIG.template.json": "4d03ef478bf36bfe7ea1ebdcfce101650855445971f6cf9f3a59b4c4f65b564d",
   "training/voice/pod/accept_delivery.py": "7e9f2c480cbb34322409f7fdcba5194d432111616454e9300900738833519ed1",
   "training/voice/pod/atomic_publish.py": "6c213aace59779684755726debb1da768cf5b73e5edcd68d23c8b04cfa0a45d1",
-  "training/voice/pod/auto_screen.py": "f8021fdfbfb3ab45bdf20a6fd00db661fad5d49366cb0c35f87e772a06350135",
+  "training/voice/pod/auto_screen.py": "2529ad80e0c3b3f24acdf87440998dcb20da1546f7035de616bd05f4c6098115",
   "training/voice/pod/bootstrap_voice.sh": "f303703e2d678b9804cfa100dc456a007de20f717ab6fb011bf94e6b15a0c6e8",
   "training/voice/pod/constraints-teacher.txt": "75565852cd2d42237d4efca28db4f01a7db2475dccf53ed76075583f0eae5f80",
   "training/voice/pod/create_build_context.py": "86d95a9a6eb31fd82d1b7fd973fe6cd2a18d51ea7ff76522c9d5bd5c372a855b",
@@ -113,5 +113,5 @@
   "training/voice/variations.py": "b0dc9ac0a42f39d8e26ce5fc055d25a286edc4a6de0608048212c457e2fbaa8d",
   "training/voice/vocoder.py": "f6e8543d98c8a0e25a88fd903827c276225aa8713b7c06fe11c6d94ff34822d8"
  },
- "digest": "cfa14b196589285d10aa84960b3ef6f19cb07a9812aded19412a767eabda1d95"
+ "digest": "5b870084dd9ffa64d34af273b42a3db1e429ed17d7542802e0930f3f4d15e941"
 }

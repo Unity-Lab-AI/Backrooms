@@ -65,7 +65,10 @@ def edit_rate(expected, heard):
     return d[len(b)] / max(1, len(a))
 
 
-TARGET_WPS = float(os.environ.get("VOICE_TARGET_WPS", "3.3"))
+# OFF by default (0). Owner, 2026-10-12, on the time-stretched clips: "they all sound like two recording just offset"
+# -- the phase vocoder smears the voice. Pace is set by the student instead (infer.py LENGTH_SCALE 1.2), so the clips
+# are trained as the teacher recorded them. A value > 0 turns the old audio stretch back on.
+TARGET_WPS = float(os.environ.get("VOICE_TARGET_WPS", "0"))
 MIN_RATE = 0.80
 
 
@@ -84,7 +87,7 @@ def slow_to_target(wav, sr, text, pad_seconds=0.15, target=TARGET_WPS):
     before = len(speech) / sr
     wps = n / before if before > 0 else 0.0
     rate = 1.0
-    if n >= 2 and before >= 0.3 and wps > target:
+    if target > 0 and n >= 2 and before >= 0.3 and wps > target:
         rate = max(MIN_RATE, target / wps)
     if rate < 1.0:
         import librosa
