@@ -2,7 +2,11 @@
 
 Owner, verbatim: *"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving"*
 
-This document designs ladder v2. It is a design only. It does not change `docs/playbook.gates.json`, `gates.py` or `tools.py`. It is grounded in the following sources:
+This document designs ladder v2, now named **RimPLC**. Owner, verbatim: *"i think this is the whoole PLC like logic chain if this then this if heath level reaches then this type of thing for the whole game properly layed out into a PLC that we will call RimPLC"*.
+
+**Status (2026-10-12): built.** The engine and the rungs are in `docs/playbook.gates.json` (version 2), `.local/autopilot/gates.py` and `.local/autopilot/tools.py`. See §6 for what was built and where it differs from this design. No training episodes have been written yet (§4).
+
+It is grounded in the following sources:
 
 - `docs/playbook.gates.json`: 31 rungs and the tag table.
 - `.local/autopilot/gates.py`: `state()`, `tags()`, `_holds()` and `decide()`.
@@ -512,7 +516,7 @@ Episodes go into the existing chat-JSONL format (as in `training/brain-life/part
 
 ---
 
-## 5. Engine changes v2 needs (not made here)
+## 5. Engine changes v2 needs (all made; see §6)
 
 1. Keep numeric marks in `state()`. Today `bool(v)` collapses `title_rank 4` to `true`.
 2. Add a `"!="` operator, or a `">="` operator, to `_holds`.
@@ -520,3 +524,40 @@ Episodes go into the existing chat-JSONL format (as in `training/brain-life/part
 4. Use `letterDef` for `threat_letter` / `hostiles_on_map`.
 5. Let `ladder_set tag` accept a list for `RESEARCH_ORDER`, or keep research order as rungs (§2.5).
 6. Optionally return the top 3 live rungs with their matched keys, so families A and C can explain "why".
+
+---
+
+## 6. As built (2026-10-12)
+
+The PLC layout in `docs/playbook.gates.json` (version 2):
+
+| Section | What it holds |
+|---|---|
+| `sensors` | 74 measured inputs: every key `gates.derive()` can write, its bridge source, its type, and an UNVERIFIED note where the name has not been seen in a captured reply. `alert_<x>` is one family entry. `wall_gaps` is listed as NOT MEASURED. |
+| `gates` | 92 rungs (31 kept, 61 new) in 15 families, each with a `family` field. 29 carry `latch: true`. 8 stay `disabled` with the reason. |
+| `tags` | 17 constants (owner only) and 23 variables (setpoints with `rule`, `min`, `max`). |
+| `marks` | Numeric mark defaults (`start_kind`, `title_rank`, `psylink_level`, `mounts_trained`, `gate_sections_done`, `wealth_band`, `monolith_level` = 0), the meaning of each numeric mark, and the list of boolean marks. |
+
+Engine (`.local/autopilot/gates.py`):
+
+1. **Done-latch.** A rung with `"latch": true` gets `mark_<id>_done: false` added to its `when` and `ladder_set mark <id>_done true` appended to its `then` (`latch_name()`: lowercase, underscores, at most 40 characters). Applied to book rungs and to rungs she adds herself. `rung-2-power-and-cold`, `rung-3-defence` and `rung-4-production` are latched, which was the stall: once fed and powered they matched forever and hid every rung after them.
+2. **Numeric marks** stay numbers through `state()`. A boolean mark that was never set reads false; a numeric mark reads its book default.
+3. **Operators** `>=`, `<=` and `!=` added to `_holds`. A tag name can be a `when` key directly (`CAVALRY_ENABLED: ">0"`).
+4. **Threats by `letterDef`.** `threat_letter` is a `ThreatBig` / `ThreatSmall` letter less than 2 days old, read or not, so reading a raid letter does not make the raiders vanish. `hostiles_on_map` = the humanlike crowd while `threat_letter` holds, or `hostile_pawns_listed` (`factionHostileToPlayer` on `list_colonists`) when that list names any.
+5. **Pure `derive(raw, ladder)`** turns raw bridge replies into keys, so the ladder can be checked offline against `.local/qa/*.json` captures. `state()` only collects the replies.
+6. **Grace.** Rungs from `GRACE_FROM_PRIORITY` (20) to 98 wait until `day > START_GRACE_DAYS` (5). `always` never waits.
+7. **Why it fired.** Each hit carries `matched` (the measured value behind every condition); `ladder` shows it, plus `unknown_keys` for rung keys nothing measures.
+8. **Alert labels** seen live are logged to `scratch/alert_labels.json` so `ALERT_MATCH` can be fixed from real labels.
+9. **Building counts** merge touching same-def cells into one object, because the cell reply lists a multi-cell building on every cell and has no thing id. Two touching beds read as one.
+
+`ladder_set` (`.local/autopilot/tools.py`): marks accept numbers (`"3"` is stored as 3); `tag` refuses constants and unknown names and reports when a value will be clamped; `add_rung` keeps `latch` and reports `when` keys that have no sensor.
+
+Differences from §2:
+
+- `hostile-on-map` (2) now needs `drafted_count: 0` and drafts everyone who can shoot; the new `raid-posted` (2.30) holds the line once anyone is drafted. As designed, both had the same condition, so `raid-posted` could never fire.
+- `rung-5-the-mountain-base`, `rung-6-off-world`, `rung-5b-the-gate` and `rung-5c-the-backrooms` are enabled on marks (`production_running`, `mountain_base_done`, `gate_designated`, `gate_open`). `rung-6b-orbit-and-beyond` stays disabled; the space rungs 60–64 replace it.
+- The gate rungs follow `docs/wiki/gates.md`: any designated door, 4 sections at 25 steel + 2 components (100 + 8 in total), up to 4 linked machining tables, 4 operator stations (the gate's console plus 3 linked comms consoles), at most 3 operational gates per branch across every map, the kill switch is a wired power switch. A new mark, `gate_designated`, separates "build one" (5b) from "assemble it" (`gate-assemble`).
+- `berry_bushes` also counts `Plant_Strawberry_Wild` (captured). `healroot_plants` also counts `Plant_HealrootWild` (captured). `Plant_Berry` is still UNVERIFIED.
+- `RESEARCH_ORDER` and `MOUNT_DEFS` are list constants. Research order is changed by adding a rung (§2.5), not by `ladder_set tag`.
+
+Offline check: `derive()` on `gi`, `letters`, `cols`, `zones` and 11 cell sweeps (5,020 cells) measured 66 of the 74 sensor keys (absent there: `dialog_open`, `colony_animals`, `colony_mechs`, `hostile_pawns_listed`, `store_roofed_fraction`, `unroofed_store_cells`, `wall_gaps`, and the `alert_<x>` family, because no `list_alerts` reply has been captured). Every non-disabled rung's `when` keys resolve to a sensor, a mark, a tag or `letter_matches`.

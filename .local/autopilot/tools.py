@@ -339,10 +339,12 @@ class Toolbox:
             "ladder": ("Read your PLC ladder: the live rung(s) for what is measured right now, every rung that holds, the "
                        "tag table (constants + live setpoints) and your own marks and rungs. Check it at the start of a turn.",
                        S({}, []), self.t_ladder),
-            "ladder_set": ("Edit your ladder on the fly (open-ended, for the whole empire): op 'mark' (name, value true/false) "
-                           "marks a step done; op 'tag' (name, value) changes a setpoint; op 'add_rung' (rung: {id, priority, "
-                           "when: {measured_key: value}, then: [actions], why}) adds or replaces a rung of your own; op "
-                           "'remove_rung' (name) removes one of yours. Book rungs from the owner cannot be deleted.",
+            "ladder_set": ("Edit your ladder on the fly (open-ended, for the whole empire): op 'mark' (name, value true/false "
+                           "or a number, e.g. title_rank 4) records what the game cannot measure; op 'tag' (name, value) "
+                           "moves a variable setpoint within its bounds (constants are owner-only); op 'add_rung' (rung: "
+                           "{id, priority, when: {measured_key: value or '<X' '>X' '<=X' '>=X' '!=X'}, then: [actions], "
+                           "why, latch}) adds or replaces a rung of your own; op 'remove_rung' (name) removes one of "
+                           "yours. Book rungs from the owner cannot be deleted.",
                            S({"op": {"type": "string", "enum": ["mark", "tag", "add_rung", "remove_rung"]}, "name": s,
                               "value": {"type": ["string", "number", "boolean"]}, "rung": {"type": "object"}}, ["op"]),
                            self.t_ladder_set),
@@ -567,19 +569,48 @@ class Toolbox:
         hits, st = g.decide(every=True)
         try: mine = json.load(open(self._ladder_path(), encoding="utf-8"))
         except Exception: mine = {}
-        live = [{"id": h["id"], "priority": h["priority"], "then": h.get("then", [])} for h in hits[:4]]
+        # the top live rungs with the measured values that made them fire, so she can say WHY
+        live = [{"id": h["id"], "priority": h["priority"], "matched": h.get("matched", {}), "then": h.get("then", [])}
+                for h in hits[:4]]
         return json.dumps({"live_rungs": live, "tags": st.get("tags"), "my_marks": mine.get("marks", {}),
-                           "my_rungs": [r.get("id") for r in mine.get("gates", [])]}, default=str)[:5000]
+                           "my_rungs": [r.get("id") for r in mine.get("gates", [])],
+                           "unknown_keys": st.get("unknown_keys", [])}, default=str)[:5000]
+
+    def _book(self):
+        try:
+            return json.load(open(os.path.join(ROOT, "docs", "playbook.gates.json"), encoding="utf-8"))
+        except Exception:
+            return {}
 
     def t_ladder_set(self, op, name=None, value=None, rung=None):
         path = self._ladder_path()
         try: d = json.load(open(path, encoding="utf-8"))
         except Exception: d = {}
+        note = ""
         if op == "mark":
             if not re.fullmatch(r"[a-z0-9_]{1,40}", str(name or "")): raise GuardError("mark name: lowercase_with_underscores")
-            d.setdefault("marks", {})[name] = bool(value) if not isinstance(value, str) else value.lower() in ("true", "1", "yes", "done")
+            # numeric marks stay numbers (title_rank 4, gate_sections_done 3); everything else is true/false
+            if isinstance(value, bool): v = value
+            elif isinstance(value, (int, float)): v = value
+            else:
+                sv = str(value if value is not None else "").strip().lower()
+                if re.fullmatch(r"-?\d+", sv): v = int(sv)
+                elif re.fullmatch(r"-?\d+\.\d+", sv): v = float(sv)
+                else: v = sv in ("true", "yes", "done", "on")
+            d.setdefault("marks", {})[name] = v
         elif op == "tag":
             if not re.fullmatch(r"[A-Z0-9_]{1,40}", str(name or "")): raise GuardError("tag name: UPPER_CASE")
+            tg = self._book().get("tags") or {}
+            if name in (tg.get("constants") or {}):
+                raise GuardError("%s is a constant: a safety limit only the owner changes" % name)
+            spec = (tg.get("variables") or {}).get(name)
+            if spec is None:
+                raise GuardError("%s is not a variable on the ladder" % name)
+            try: value = float(value) if not isinstance(value, (int, float)) or isinstance(value, bool) else value
+            except (TypeError, ValueError): raise GuardError("tag value must be a number")
+            lo, hi = spec.get("min"), spec.get("max")
+            if (lo is not None and value < lo) or (hi is not None and value > hi):
+                note = " (clamped to %s..%s when read)" % (lo, hi)
             d.setdefault("tags", {})[name] = value
         elif op == "add_rung":
             r = rung or {}
@@ -587,13 +618,19 @@ class Toolbox:
                 raise GuardError("rung needs id, priority (number), when (object), then (list)")
             r["id"] = "unity-" + re.sub(r"[^a-z0-9-]", "-", str(r["id"]).lower())[:40] if not str(r["id"]).startswith("unity-") else str(r["id"])[:46]
             r["then"] = [str(x)[:300] for x in (r.get("then") or [])][:8]
+            if "latch" in r: r["latch"] = bool(r["latch"])
+            bk = self._book()
+            known = set((bk.get("sensors") or {}).keys()) | set(((bk.get("tags") or {}).get("variables") or {}).keys()) \
+                | set(((bk.get("tags") or {}).get("constants") or {}).keys()) | {"letter_matches"}
+            unknown = [k for k in r["when"] if not k.startswith(("mark_", "alert_")) and k not in known]
+            if unknown: note = " (keys with no sensor, the rung stays quiet until measured: %s)" % ", ".join(unknown)
             d["gates"] = [g for g in d.get("gates", []) if g.get("id") != r["id"]] + [r]
         elif op == "remove_rung":
             d["gates"] = [g for g in d.get("gates", []) if g.get("id") != name]
         else:
             raise GuardError("op must be mark, tag, add_rung or remove_rung")
         guards.scratch_write("ladder.json", json.dumps(d, indent=1))
-        return "ladder updated: " + op + " " + str(name or (rung or {}).get("id", ""))
+        return "ladder updated: " + op + " " + str(name or (rung or {}).get("id", "")) + note
 
     def t_pawn_priorities(self, pawn, custom=None):
         """Owner: "set up all priorities ... for every one using coopy paste to paste one to the tosthers then
