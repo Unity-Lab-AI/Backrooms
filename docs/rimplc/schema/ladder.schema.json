@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rimplc.local/schema/ladder.schema.json",
+  "title": "RimPLC ladder / preset / export (frozen v1)",
+  "description": "The shape of docs/playbook.gates.json, RimPLC/Presets/*.json and RimPLC export files. Loadable unchanged by .local/autopilot/gates.py.",
+  "type": "object",
+  "required": ["version", "gates", "tags"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {"type": "integer", "minimum": 2},
+    "note": {"type": "string"},
+    "preset": {
+      "type": "object",
+      "required": ["id"],
+      "additionalProperties": false,
+      "properties": {"id": {"type": "string"}, "source": {"type": "string"}, "schema": {"type": "string"}}
+    },
+    "sensors": {"$ref": "sensor.schema.json"},
+    "gates": {"type": "array", "items": {"$ref": "rung.schema.json"}},
+    "tags": {"$ref": "tag.schema.json"},
+    "marks": {"$ref": "mark.schema.json"}
+  }
+}

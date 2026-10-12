@@ -190,3 +190,9 @@ training/_fetch.log
 .local/voice-lab/gen-test*/
 .local/voice-lab/linux-check/*.log
 .local/voice-lab/move-to-d.log
+
+# RimPLC build output (source is tracked, binaries are not)
+RimPLC/**/*.dll
+RimPLC/**/*.pdb
+RimPLC/**/obj/
+RimPLC/**/bin/

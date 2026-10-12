@@ -453,3 +453,32 @@ These are asked, not flagged (per *ask, never flag*). The coordinator should put
    -> Advise-only by default. The ladder is an **auto-updating checklist of controls, switches, relays and contactors** the AI checks or the human is notified by, wired like an electrician would: a float switch on health bars; colonist took damage -> pause -> can she handle this fight? yes -> unpause; no -> can help get there soon? no -> keep range; too many -> get help. The same pattern covers everything: low food, low ship fuel, too many junk weapons to sell, steel / supply shortage against set levels, defenses secure? yes/no branches, buildings damaged -> set repairs if pawns safe, pawn bleeding -> enemy on map? draft all, kill the threat, field tend before carrying to hospital.
    -> Built in the ladder (2026-10-12) as five linked-rung chains (combat, medical, repairs, defense, supply), advise-only, each rung with `chain`, `check` and `notice`: see `training/ladder-v2/DESIGN.md` §6.1. RimPLC's book preset carries them across unchanged (§9 step 2).
 4. **Old Rimrooms automation inbox:** "Keep both" -> the inbox stays as a fallback when RimPLC isn't installed; both paths fire one-shot on a rung's rising edge so they never double-act.
+
+## Built status (2026-10-12): P0 and P1 built, compiled, not staged
+
+Owner, verbatim: *"get to that PLC work to finish it"*. Built in the repo only. Nothing was copied into a `Mods` folder or the game install, nothing staged, nothing deployed, the running game was not touched. **Location differs from §2.1:** the mod lives in `RimPLC/` at the repo root (source in `RimPLC/Source/`), not `src/RimPLC` + `Mod/RimPLC`, so its build output stays inside its own folder.
+
+**P0, schema freeze: done.**
+
+- `docs/rimplc/schema/`: `ladder.schema.json` (top level), `rung.schema.json`, `sensor.schema.json`, `tag.schema.json`, `mark.schema.json`, `tools.schema.json` (every `rimplc/*` tool's args and result, the inbox/outbox line).
+- `tools/rimplc-check.py`: validates a ladder against the schemas plus the §7 import rules; `--emit` writes `RimPLC/Presets/LadderV2.json` (the playbook unchanged plus `preset`, per rung `source: book`, `mode: advise`, and `requires` on 23 DLC/Backrooms rungs). `docs/playbook.gates.json` itself is unchanged and valid (127 rungs, 81 sensors, 17 constants, 27 variables); six keys used only by disabled rungs are reported as notes. `gates.py decide()` loads both the playbook and the preset and gives the same answer.
+
+**P1, the mod: done, compiles clean** (`dotnet build -c Release`, 0 warnings, 0 errors, warnings are errors) to `RimPLC/1.6/Assemblies/RimPLC.dll` and `RimPLC/BridgeTools/RimPLC.BridgeTools.dll`.
+
+| Part | File | State |
+|---|---|---|
+| About | `RimPLC/About/About.xml` | `Operator.RimPLC`, no `modDependencies`, no lab branding |
+| Engine | `Engine.cs`, `Rung.cs` | Port of `gates.py` `tags`/`_bound`/`_holds`/`explain`/`rungs`/`decide`, latch, grace, numeric marks, `>= <= !=`, POD_FUEL from POD_SQUAD, unresolved and unknown keys. Adds `requires` gating and the player's switch. |
+| Sensors | `Sensors.cs` | 79 of the 80 named book sensors plus the `alert_<x>` family, read from the game; `wall_gaps` stays not measured. New keys: `lowest_health_pct`, `bleeding_count`, `needs_tend_count`, `able_shooters_armed`, `hostile_threat`, `outdoor_temp`, `wealth`, `lowest_mood`, `research_<def>`, `research_current`, `research_queue_empty`, `title_seniority`, `caravan_out`, `alert_classes`. Health and bleeding come from the game's own `HediffSet.BleedRateTotal`, `HasTendableHediff`, `SummaryHealthPercent`, closing the gap that the bridge cannot see pawn health. |
+| Scan cycle | `RimPLCGameComponent.cs` | Every 250 ticks (60-2500 in the window); fast / normal / slow cadence; 1 ms budget with slow-skip; paused = once a real second, no output |
+| Outputs | same | Advise only: rising-edge `notice` messages (book and player rungs), coils `message` / `set_mark` / `set_tag` only on `auto` rungs, every other action refused and logged |
+| Save | same | `ExposeData`: marks, tag overrides, player/Unity rungs (as JSON), switches, modes, edge memory, seen letters, scan settings. The book is not saved. |
+| Window | `MainTabWindow_RimPLC.cs`, `1.6/Defs/MainButtonDefs/` | Ladder (live highlight per contact, on/off, advise/auto, detail panel), Tags, Marks, Sensors, Log |
+| AI API | `Api.cs`, `RimPLC.BridgeTools/` | `rimplc/read_ladder` (keeps `live_rungs`, `tags`, `my_marks`, `my_rungs`, `unknown_keys`), `read_state`, `set_tag`, `set_mark`, `upsert_rung`, `remove_rung`, `enable_rung`; main thread through the SDK's `IRimBridgeContext.MainThread.InvokeAsync` |
+| File fallback | `Inbox.cs` | `<config>/RimPLC/inbox.jsonl` -> `outbox.jsonl`, claim by rename, `MAX_COMMANDS_PER_PASS` per pass, works while paused |
+
+Expected parity differences against `gates.py` (for the §9 step 4 read): stores count storage (`ResourceCounter`) not the camp sweep; `days_of_food` uses `TotalHumanEdibleNutrition`; `hostiles_on_map` is the threat API count, not the letter-vouched crowd; buildings are counted per object, plants/animals/weapons over the whole home map; `colony_animals` / `colony_mechs` read 0 when there are none (the bridge left them absent); `ticks_moving` is `!Paused`; `explore_done` is the mark `explore_done`; `loose_weapons` counts every weapon on the ground, not only `Gun_`/`MeleeWeapon_`/`Bow_`.
+
+UNVERIFIED in the code (marked in comments): `UnityEngine.Application.isFocused` for `game_foreground` (Unity, not in the Assembly-CSharp decomp); `alert_food_rot` (label substring, no Core class found); reading `AlertsReadout.activeAlerts` by reflection (field verified, timing not); the building def-name heuristics carried over from `gates.py` (`Embrasure`, `Grav`, `Throne`, `Ship_`); whether removing RimPLC from a save is clean (§11.5); the 1 ms budget at 300 rungs. Nothing has run in game yet.
+
+**Not in P1, left for P2 and later:** the `gates.py` thin-client switch and `tools.py` mapping of `ladder`/`ladder_set` onto `rimplc/*`; the parity read on a live save (owner's step); the rung editor form with def pickers; `any`/`not`/`ton`/`tof`/`ctu`/`ons`; export/import with diff; the clean-word filter for Unity rungs' notices (until then they are not shown); converting the measured `mark_research_*` / `outdoor_*` / `caravan_out` conditions to sensor conditions in the preset; P3 game actions, arbitration and the outputs-armed switch; P4 Rimrooms link and DLC sensors.
