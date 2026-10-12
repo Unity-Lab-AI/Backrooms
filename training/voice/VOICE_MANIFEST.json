@@ -1,0 +1,15 @@
+{
+ "files": {
+  "training/voice/make_dataset.py": "2a1ea9af11f497cbddb27be33a3361b7e4f4ba32d47cebbcc78990c37d7512c0",
+  "training/voice/prep.py": "04079ce5608e9115f300f7cb114d00a382d0139b53cefc4542fb9dd96602784d",
+  "training/voice/model.py": "c253fa85c5412e88258a2c16a7fec4018977bdafa97078fd799c4f85b62cadec",
+  "training/voice/train_acoustic.py": "be88638248eebbfe103d87483694de8ceed96dda53fb477c3eb58ed4961d4d62",
+  "training/voice/vocoder.py": "f6e8543d98c8a0e25a88fd903827c276225aa8713b7c06fe11c6d94ff34822d8",
+  "training/voice/train_vocoder.py": "05354efcb3397fcf39525ab439fb0f9db987c6bc897e27903baa7c63a71a2662",
+  "training/voice/infer.py": "08fd2ee2096932902fcc9ecd5adaca36e267bad53e20c8926a12fc14ab5b51ad",
+  "training/voice/unity-voice.pt": "910a2bcfb92fc6f94c3d0c0f020455b720b2a5402f4e53240b67bf0359b82471",
+  "training/voice/pod/run_voice.sh": "3a7fdc482c8525ab26736ab67a950b1644340e884c3f852178092753a92d5e24",
+  "training/data/brain/train.jsonl": "0ec9598b40c928fbb3caa127d8739890f92c6aaddca308caf6c6061bd9ccb7cf"
+ },
+ "digest": "eee89e6a7f4158bbfe8ec0cb0105cdc65a9b0d3f4043e5c57faa94b06fe1b928"
+}
