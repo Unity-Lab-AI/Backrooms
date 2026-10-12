@@ -518,7 +518,7 @@
       },
       "then": [
         "healroot_plants > 0 on the sweep: designate them for harvest first",
-        "sweep the map for wild healroot; if none exists say so rather than hunting forever",
+        "sweep the map for wild healroot; if none exists say so rather than hunting endlessly",
         "route 1: set a field to healroot (needs the Plant: menu -- cursor)",
         "route 2: trade with any caravan on the map (cursor)",
         "route 3: Electricity -> comms console -> call a trader (research first)",
@@ -582,7 +582,7 @@
         "bill_rows": 0
       },
       "then": [
-        "Do until you have X, never Do forever, and raise X as the colony grows",
+        "Do until you have X, never Do endlessly, and raise X as the colony grows",
         "no skill restriction, so everyone trains on it",
         "count the bill rows before and after: the Add-bill menu can throw and silently add nothing"
       ],
