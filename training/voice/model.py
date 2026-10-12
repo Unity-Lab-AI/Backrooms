@@ -9,11 +9,16 @@ turns that into hard durations (Badlani et al., "One TTS Alignment To Rule Them 
 The knobs are the emotion: at inference the predicted pitch can be shifted, its range widened, given a
 contour, and energy and pace scaled per phoneme -- see infer.py PRESETS.
 """
+import hashlib
 import math
-import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
+
+def is_heldout(name):
+    """2% of clips, by name hash, never trained on by either model: the honest check."""
+    return int(hashlib.sha1(name.encode()).hexdigest()[:8], 16) % 50 == 0
 
 
 def mask_from_lens(lens, n=None):
@@ -96,60 +101,112 @@ class Aligner(nn.Module):
 
 
 def forward_sum_loss(logp, text_lens, mel_lens, blank=-1.0):
-    """CTC over the phoneme sequence: every phoneme must be visited, in order."""
-    logp = F.pad(logp, (1, 0), value=blank)                                  # blank as column 0
-    total = 0.0
-    for b in range(logp.size(0)):
-        n, t = int(text_lens[b]), int(mel_lens[b])
-        cur = F.log_softmax(logp[b, :t, : n + 1], dim=-1)[:, None, :]       # [T,1,N+1]
-        target = torch.arange(1, n + 1, device=logp.device)[None]
-        total = total + F.ctc_loss(cur, target, torch.tensor([t]), torch.tensor([n]), zero_infinity=True)
-    return total / logp.size(0)
+    """CTC over the phoneme sequence, whole batch in one call: every phoneme must be visited, in order.
+    logp [B,T,N] unnormalized with padded phonemes already at -1e4."""
+    logp = F.pad(logp.float(), (1, 0), value=blank)                         # blank as column 0
+    lp = F.log_softmax(logp, dim=-1).transpose(0, 1)                         # [T,B,N+1]
+    n = logp.size(2) - 1
+    target = torch.arange(1, n + 1, device=logp.device)[None].expand(logp.size(0), n)
+    return F.ctc_loss(lp, target, mel_lens, text_lens, zero_infinity=True)
 
 
-def mas(logp):
-    """Monotonic alignment search on one item, logp [T, N] numpy with T >= N -> durations [N]."""
-    t, n = logp.shape
-    q = np.full((t, n), -np.inf, dtype=np.float64)
-    q[0, 0] = logp[0, 0]
-    for i in range(1, t):
-        q[i, 0] = q[i - 1, 0] + logp[i, 0]
-        q[i, 1:] = np.maximum(q[i - 1, 1:], q[i - 1, :-1]) + logp[i, 1:]
-    dur, j = np.zeros(n, dtype=np.int64), n - 1
-    for i in range(t - 1, -1, -1):
-        dur[j] += 1
-        if j > 0 and (i == j or (i > 0 and q[i - 1, j - 1] > q[i - 1, j])):
-            j -= 1
+try:
+    import numba
+    import numpy as np
+
+    @numba.njit(parallel=True, cache=True)
+    def _mas_batch(lp, tl, ml, out):
+        """Monotonic alignment search, one item per thread. lp [B,T,N] log-softmaxed, out [B,N] durations."""
+        for b in numba.prange(lp.shape[0]):
+            t, n = ml[b], tl[b]
+            q = np.full((t, n), -1e30, dtype=np.float32)
+            q[0, 0] = lp[b, 0, 0]
+            for i in range(1, t):
+                q[i, 0] = q[i - 1, 0] + lp[b, i, 0]
+                for j in range(1, min(i + 1, n)):
+                    q[i, j] = max(q[i - 1, j], q[i - 1, j - 1]) + lp[b, i, j]
+            j = n - 1
+            for i in range(t - 1, -1, -1):
+                out[b, j] += 1
+                if j > 0 and (j >= i or q[i - 1, j - 1] > q[i - 1, j]):
+                    j -= 1
+except ImportError:                                                           # the GPU loop below still works
+    _mas_batch = None
+
+
+@torch.no_grad()
+def hard_durations(logp, text_lens, mel_lens):
+    """Monotonic alignment search for the whole batch -> durations [B,N] (sum = mel length).
+    Each frame belongs to exactly one phoneme, phonemes in order, every phoneme at least one frame.
+    Compiled parallel CPU search when numba is present (~1000x fewer GPU launches), else a batched GPU loop."""
+    if _mas_batch is not None:
+        lp = F.log_softmax(logp.float(), dim=-1).cpu().numpy()
+        out = np.zeros((logp.size(0), logp.size(2)), dtype=np.int64)
+        _mas_batch(lp, text_lens.cpu().numpy().astype(np.int64), mel_lens.cpu().numpy().astype(np.int64), out)
+        return torch.from_numpy(out).to(logp.device, non_blocking=True)
+    return hard_durations_gpu(logp, text_lens, mel_lens)
+
+
+@torch.no_grad()
+def hard_durations_gpu(logp, text_lens, mel_lens):
+    """Monotonic alignment search for the whole batch on the GPU -> durations [B,N] (sum = mel length).
+    Each frame belongs to exactly one phoneme, phonemes in order, every phoneme at least one frame."""
+    B, T, N = logp.shape
+    dev = logp.device
+    lp = F.log_softmax(logp.float(), dim=-1)
+    neg = torch.tensor(-1e9, device=dev)
+    tok = torch.arange(N, device=dev)[None]
+    lp = torch.where(tok[:, None, :] < text_lens[:, None, None], lp, neg)
+    q = torch.full((B, T, N), -1e9, device=dev)
+    q[:, 0, 0] = lp[:, 0, 0]
+    for i in range(1, T):
+        prev = q[:, i - 1]
+        q[:, i, 0] = prev[:, 0] + lp[:, i, 0]
+        q[:, i, 1:] = torch.maximum(prev[:, 1:], prev[:, :-1]) + lp[:, i, 1:]
+    dur = torch.zeros(B, N, dtype=torch.long, device=dev)
+    j = (text_lens - 1).clone()
+    rows = torch.arange(B, device=dev)
+    for i in range(T - 1, -1, -1):
+        active = i < mel_lens                                                # frames past an item's end do nothing
+        dur[rows, j] += active.long()
+        if i == 0:
+            break
+        # as many phonemes left as frames left (frame i is 0-based, phoneme j too): must step down every frame
+        must = j >= i
+        step = active & (j > 0) & (must | (q[rows, i - 1, (j - 1).clamp(min=0)] > q[rows, i - 1, j]))
+        j = j - step.long()
     return dur
 
 
-def hard_durations(logp, text_lens, mel_lens):
-    out = torch.zeros(logp.size(0), logp.size(2), dtype=torch.long)
-    lp = F.log_softmax(logp, dim=-1).detach().float().cpu().numpy()
-    for b in range(logp.size(0)):
-        n, t = int(text_lens[b]), int(mel_lens[b])
-        out[b, :n] = torch.from_numpy(mas(lp[b, :t, :n]))
-    return out.to(logp.device)
+def token_index(dur, n_frames):
+    """For every frame, the phoneme it belongs to. dur [B,N] -> idx [B,n_frames] (clamped), frame mask."""
+    ends = dur.cumsum(1)
+    frames = torch.arange(n_frames, device=dur.device)[None].expand(dur.size(0), -1)
+    idx = torch.searchsorted(ends, frames.contiguous(), right=True)
+    real = frames < ends[:, -1:]
+    return idx.clamp(max=dur.size(1) - 1), real
 
 
 def phoneme_average(frame_values, dur, voiced_only=False):
     """Mean of a frame curve inside each phoneme's frames. frame_values [B,T], dur [B,N] -> [B,N]."""
     ends = dur.cumsum(1)
     starts = ends - dur
-    csum = F.pad(frame_values.cumsum(1), (1, 0))
+    csum = F.pad(frame_values.float().cumsum(1), (1, 0))
     if voiced_only:
-        voiced = (frame_values != 0).float()
-        ccount = F.pad(voiced.cumsum(1), (1, 0))
-    total = csum.gather(1, ends) - csum.gather(1, starts)
-    count = (ccount.gather(1, ends) - ccount.gather(1, starts)) if voiced_only else dur.float()
+        ccount = F.pad((frame_values != 0).float().cumsum(1), (1, 0))
+    ends_c, starts_c = ends.clamp(max=csum.size(1) - 1), starts.clamp(max=csum.size(1) - 1)
+    total = csum.gather(1, ends_c) - csum.gather(1, starts_c)
+    count = (ccount.gather(1, ends_c) - ccount.gather(1, starts_c)) if voiced_only else dur.float()
     return torch.where(count > 0, total / count.clamp(min=1), torch.zeros_like(total))
 
 
-def regulate(x, dur):
-    """Repeat each phoneme vector dur times. x [B,N,d], dur [B,N] -> [B,T,d], lens [B]."""
-    reps = [torch.repeat_interleave(x[b], dur[b], dim=0) for b in range(x.size(0))]
-    lens = torch.tensor([r.size(0) for r in reps], device=x.device)
-    return nn.utils.rnn.pad_sequence(reps, batch_first=True), lens
+def regulate(x, dur, n_frames=None):
+    """Stretch phonemes to frames by gather, whole batch at once. x [B,N,d], dur [B,N] -> [B,T,d], lens [B]."""
+    lens = dur.sum(1)
+    n_frames = n_frames or int(lens.max())
+    idx, real = token_index(dur, n_frames)
+    out = x.gather(1, idx[..., None].expand(-1, -1, x.size(2))) * real[..., None]
+    return out, lens
 
 
 class UnityVoice(nn.Module):
@@ -168,7 +225,8 @@ class UnityVoice(nn.Module):
         text_real = mask_from_lens(text_lens, phon.size(1))
         emb = self.emb(phon)
         h = self.encoder(emb, text_real)
-        logp = self.aligner(emb, mel, text_real)
+        with torch.autocast("cuda", enabled=False):                        # distances need fp32
+            logp = self.aligner(emb.float(), mel.float(), text_real)
         dur = hard_durations(logp, text_lens, mel_lens)
         p_tgt = phoneme_average(f0n, dur, voiced_only=True)
         e_tgt = phoneme_average(en, dur)

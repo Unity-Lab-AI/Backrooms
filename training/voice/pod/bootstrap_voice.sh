@@ -10,7 +10,7 @@
 # Required env (set at create time, nothing is guessed):
 #   VOICE_DIGEST   the "digest" from training/voice/VOICE_MANIFEST.json (python training/voice/manifest.py --check)
 #   PRICE_PER_HOUR the pod's price in USD/h as RunPod showed it at create time
-# Optional: BUDGET_USD (default 50), ACOUSTIC_STEPS, VOCODER_STEPS, KEEP_HOURS (default 1), SHELLS_BRANCH, SHELLS_REPO
+# Optional: BUDGET_USD (default 50), ACOUSTIC_STEPS, ACOUSTIC_FRAMES, VOCODER_STEPS, VOCODER_BATCH, GTA_STEPS (see run_voice.sh), KEEP_HOURS (default 1), SHELLS_BRANCH, SHELLS_REPO
 set -u
 W=/workspace; mkdir -p $W/out $W/state; SERVE=$W/out
 BRANCH="${SHELLS_BRANCH:-feature/bug-testing}"
@@ -64,8 +64,9 @@ GOT=$(cd $W/repo && python3 training/voice/manifest.py --check)
 [ -n "${VOICE_DIGEST:-}" ] && [ "$GOT" = "$VOICE_DIGEST" ] || fail "input digest $GOT is not the approved ${VOICE_DIGEST:-<unset>}"
 status "training"
 ( while true; do tail -c 20000 $W/voice.log > $SERVE/voice.log.txt 2>/dev/null
-    for f in acoustic vocoder; do tail -n 3 $W/$f.log > $SERVE/$f.log.txt 2>/dev/null; done
+    for f in acoustic vocoder; do { tail -n 3 $W/$f.log; echo "--- held-out checks:"; grep HELDOUT $W/$f.log | tail -n 20; } > $SERVE/$f.log.txt 2>/dev/null; done
     ls $W/state > $SERVE/state.txt 2>/dev/null; sleep 30; done ) &
-if ACOUSTIC_STEPS="${ACOUSTIC_STEPS:-120000}" VOCODER_STEPS="${VOCODER_STEPS:-200000}" bash $W/repo/training/voice/pod/run_voice.sh; then status "DONE"; else fail "run_voice.sh (see voice.log.txt)"; fi
+# step counts and batch sizes default inside run_voice.sh; env overrides pass straight through
+if bash $W/repo/training/voice/pod/run_voice.sh; then status "DONE"; else fail "run_voice.sh (see voice.log.txt)"; fi
 tail -c 20000 $W/voice.log > $SERVE/voice.log.txt; ls $W/state > $SERVE/state.txt
 finish              # keep serving for the retention window, then stop

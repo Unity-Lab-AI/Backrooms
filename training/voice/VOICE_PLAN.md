@@ -61,35 +61,52 @@ The knobs are pitch shift, pitch range, a pitch contour over the line, energy sh
 
 The limit, said plainly: the dataset has no real sobbing or laughter, so v1 can only act through pitch, energy and pace. Real laugh, breath and sigh sounds need `[laugh]`/`[breath]`/`[sigh]` tokens and examples of those sounds, which is v2.
 
-## 4. Proven locally (2026-10-11, RTX 4070 Ti SUPER)
+## 4. Built so the GPU never idles, and proven locally (2026-10-11, RTX 4070 Ti SUPER)
 
-- **Dataset:** 7.63 h, 5,206 clips (1,167 own lines x 2 paces + 2,872 knowledge sentences). It stopped when the clean text ran out.
-- **Prep:** 5,206 of 5,206 clips kept, 59 symbols, median pitch 202 Hz. An earlier run without the espeak fallback dropped 40% of clips on unknown words. Fixed.
-- **Smoke run:** prep, both trainings and inference ran end to end and wrote a WAV.
-- **Acoustic, 600 steps:** alignment 24.0 → 4.2, mel 2.08 → 1.24, duration 0.44 → 0.04. The aligner learns on its own. 4.4 steps/s at batch 16.
-- **Vocoder, 200 steps:** mel 0.63. 2.7 steps/s at batch 16.
+Owner, verbatim: *"well sound like we need to build out better so the H100s dont idel whhile training we need to make sure the training shit is proper and not fucked up"*. Reading the first version back found five ways it idled the GPU and three ways it could come out bad unseen. All are fixed:
+
+| Problem in the first version | Fix |
+|---|---|
+| Alignment search ran in Python on the CPU, one clip at a time | Compiled parallel search (numba), with a batched GPU loop as fallback. **0 mismatches** against the reference in 180 random cases; 48 ms vs 516 ms for a 96-clip batch |
+| Forward-sum loss and the binarization target were built one clip at a time | One batched CTC call (equal to the per-clip loss: 11.80138 = 11.80138) and a gather on a frame-to-phoneme index |
+| Every batch read its files from disk | Everything is loaded into RAM once |
+| Batches were mostly padding | Clips sorted by length and packed up to a frame budget |
+| No fast math | Acoustic in bf16 autocast (aligner, search and losses kept in fp32); TF32 + cuDNN autotune; fused AdamW |
+| No honest check | 2% of clips held out by name hash in both trainers, with held-out loss logged (acoustic every 2k steps, vocoder every 5k) |
+| No way to hear it before the end | `progress/<emotion>.wav` rendered every 30 min from the newest checkpoints, plus `gpu.txt` utilization |
+| The vocoder only ever saw real mels | The acoustic model exports ground-truth-aligned mels (`--export-gta`) and the vocoder spends its last 20k steps on them |
+
+Measured on the 4070:
+- **Dataset:** 7.63 h, 5,206 clips. Prep kept 5,206 of 5,206 (59 symbols, median pitch 202 Hz).
+- **Acoustic:** 35k → **85k frames/s** (still rising when the run ended); GPU utilization 9-91% → 60-86% alone. At 400 steps, held-out mel 1.59 vs train 1.57 (learning, not memorizing); alignment 24 → 4.3.
+- **Vocoder:** 2.7 → **3.41 steps/s** at batch 16, **93-98% GPU utilization**. At 400 steps, held-out mel 0.58 vs train 0.53.
+- **GTA:** exported 5,206 mels at exactly each clip's length; the vocoder resumes and trains on them.
+- **Both trainers at once:** the GPU sits at **100%**. On the 16 GB card they crowd each other (15.8 GB), which an 80 GB H100 does not.
 
 ## 5. Cost and time (one H100 80 GB, both models at once)
 
 | Stage | Estimate |
 |---|---|
-| setup | 5 min |
-| dataset (renders 7.6 h of audio) | 10-15 min |
-| prep | 10-15 min |
-| acoustic, 120k steps (finishes first, alongside the vocoder) | ~3.5 h |
-| **vocoder, 200k steps (the long pole)** | **~9-10 h** |
+| setup, dataset, prep | ~30 min |
+| acoustic: 20k steps at 96k frames/batch (~750 passes over her data), then GTA export | ~2-3 h, alongside the vocoder |
+| vocoder: 100k steps on real mels + 20k on GTA mels, batch 32 | ~7-8 h (the long pole) |
 | samples | 2 min |
 | download window (`KEEP_HOURS`) | 1 h |
-| **total** | **~11-12 h** |
+| **total** | **~9-10 h** |
 
-At $3-4/h for an H100 that comes to **~$35-48**. The cap defaults to `BUDGET_USD=50` (stop at 92%). The network volume (~50 GB) bills a few cents an hour until it is deleted. Every rate here was measured on the 4070 and scaled; the real numbers come from `acoustic.log.txt` and `vocoder.log.txt` in the first hour.
+| GPU (secure, live price 2026-10-11) | Estimate |
+|---|---|
+| H100 SXM, $3.99/h | ~9-10 h ≈ **$36-40** |
+| A100 SXM, $1.79/h | ~14-15 h ≈ **$25-27** |
+
+The cap defaults to `BUDGET_USD=50` (stop at 92%). Every rate here was measured on the 4070 and scaled; `gpu.txt` and the steps/s in `acoustic.log.txt` / `vocoder.log.txt` confirm it within the first hour. The step counts, batch sizes and GTA length can be overridden by env (`ACOUSTIC_STEPS`, `ACOUSTIC_FRAMES`, `VOCODER_STEPS`, `VOCODER_BATCH`, `GTA_STEPS`).
 
 ## 6. Launch checklist (all ticked before the owner approves the launch)
 
 - [x] Voice designed and locked (`unity-voice.pt`, owner's #5)
 - [x] Model, vocoder, trainers and inference written; smoke and learning checks passed locally
 - [x] Pod scripts: hash-bound, cost-capped, stop themselves, GET-only server, network volume, resumable
-- [x] `VOICE_MANIFEST.json` written. Digest at this writing: `eee89e6a7f4158bbfe8ec0cb0105cdc65a9b0d3f4043e5c57faa94b06fe1b928`
+- [x] `VOICE_MANIFEST.json` written. Digest at this writing: `be8c7793adc7030d7ac7e96c34b2f665d18cf97fb7422a277f7ea8862abc2aec`
 - [ ] Commit and push `training/voice/` to the branch the pod clones (`feature/bug-testing`), then confirm `python training/voice/manifest.py --check` still prints the approved digest
 - [ ] Owner approves the price shown at create time
 - [ ] RunPod settings:
@@ -97,7 +114,7 @@ At $3-4/h for an H100 that comes to **~$35-48**. The cap defaults to `BUDGET_USD
   - 1x H100 80 GB, PyTorch image with CUDA ≥ 12.4
   - HTTP port 8000
   - start command: `bash -c "git clone -q --depth 1 -b feature/bug-testing https://github.com/Unity-Lab-AI/Backrooms.git /tmp/b && bash /tmp/b/training/voice/pod/bootstrap_voice.sh"`
-  - env: `VOICE_DIGEST=<digest>`, `PRICE_PER_HOUR=<price shown>`, `BUDGET_USD=50`, `KEEP_HOURS=1`
+  - env: `VOICE_DIGEST=<digest>`, `PRICE_PER_HOUR=<price shown>`, `BUDGET_USD=50`, `KEEP_HOURS=1` (step counts and batch sizes default inside run_voice.sh)
 - [ ] After DONE: download `acoustic.pt`, `vocoder.pt`, `voice-meta.json`, `SHA256SUMS` and `samples/*.wav` from `https://<pod-id>-8000.proxy.runpod.net/` into `training/models/voice/`. Check the sums, **listen to the six samples with the owner**, then delete the pod and the volume.
 - [ ] Swap into `.claude/tools/unity-speak.py` (Piper stays as the fallback) and let the brain choose an emotion per line. Separate change, after the owner hears the samples.
 
