@@ -198,6 +198,27 @@ PY
 )
 export RUN_CONFIG
 RUN_ID=$(python3 -c "import json, os; print(json.loads(os.environ['RUN_CONFIG'])['run_id'])")
+# VOICE_RESUME_RUN_ID resumes an existing namespace after an orchestration-only fix: it is accepted only when the
+# stored run config matches this one in everything except source_digest (same data, frontend, model configs and
+# work), and the resume is recorded next to it. Without it a code fix would retrain from scratch (2026-10-12).
+if [ -n "${VOICE_RESUME_RUN_ID:-}" ] && [ -f "$W/voice-runs/$VOICE_RESUME_RUN_ID/run-config.json" ]; then
+  python3 - "$W/voice-runs/$VOICE_RESUME_RUN_ID/run-config.json" <<'PY' || exit 1
+import json, os, sys, time
+stored = json.load(open(sys.argv[1], encoding='utf-8')); record = json.loads(os.environ['RUN_CONFIG'])
+strip = lambda r: {k: v for k, v in r.items() if k not in ('source_digest', 'run_id')}
+if strip(stored) != strip(record):
+    raise SystemExit('VOICE_RESUME_RUN_ID refused: the run differs in more than the source digest')
+with open(sys.argv[1].replace('run-config.json', 'resumes.jsonl'), 'a', encoding='utf-8', newline='
+') as f:
+    f.write(json.dumps({'utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()), 'resumed_with_source_digest':
+                        record['source_digest'], 'would_have_been_run_id': record['run_id']}) + '
+')
+print('resuming namespace', stored['run_id'], 'with source digest', record['source_digest'])
+PY
+  RUN_ID=$VOICE_RESUME_RUN_ID
+  RUN_CONFIG=$(cat "$W/voice-runs/$RUN_ID/run-config.json" | python3 -c "import json,sys; print(json.dumps(json.load(sys.stdin), sort_keys=True))")
+  export RUN_CONFIG
+fi
 R="$W/voice-runs/$RUN_ID"; STATE="$R/state"; CKPT="$R/ckpt"; FEATS="$R/features"
 mkdir -p "$STATE" "$CKPT"
 python3 - "$R/run-config.json" <<'PY'
@@ -301,21 +322,23 @@ wait_stages
 have acoustic && have vocoder-source || { echo "A training stage failed" >&2; exit 1; }
 # Completed exact exports are hash-checked by the trainer; interrupted temp siblings
 # remain intact. Predicted heldout mels are NEVER passed as directly aligned GAN targets.
-bounded_run python3 "$V/train_acoustic.py" "$FEATS" "$CKPT" --frames "$ACOUSTIC_FRAMES" \
+# Each checkpoint is reloaded on the one GPU it trained on: its saved random state records the device count, and
+# on 2 GPUs a reload that saw both was refused (2026-10-12, right after the 100k-step vocoder phase).
+CUDA_VISIBLE_DEVICES=$ACOUSTIC_GPU bounded_run python3 "$V/train_acoustic.py" "$FEATS" "$CKPT" --frames "$ACOUSTIC_FRAMES" \
     --seed "$VOICE_SEED" --export-gta "$R/oracle-gta"
 if ! have vocoder; then
-  launch_stage vocoder "$W/vocoder.log" python3 "$V/train_vocoder.py" \
+  CUDA_VISIBLE_DEVICES=$VOCODER_GPU launch_stage vocoder "$W/vocoder.log" python3 "$V/train_vocoder.py" \
       "$VOICE_DATASET_DIR" "$FEATS" "$CKPT" --steps "$VOCODER_STEPS" \
       --batch "$VOCODER_BATCH" --seed "$VOICE_SEED" --gta "$R/oracle-gta"
   wait_stages
 fi
-bounded_run python3 "$V/train_acoustic.py" "$FEATS" "$CKPT" --frames "$ACOUSTIC_FRAMES" \
+CUDA_VISIBLE_DEVICES=$ACOUSTIC_GPU bounded_run python3 "$V/train_acoustic.py" "$FEATS" "$CKPT" --frames "$ACOUSTIC_FRAMES" \
     --seed "$VOICE_SEED" --export-heldout-inference "$R/predicted-heldout"
 
 # A complete exact publication is reusable; partial siblings are preserved. A
 # second run namespace cannot overwrite another completed model or its receipts.
 PUBLISHED="$W/out/models/$RUN_ID"
-bounded_run python3 "$V/pod/publish_voice.py" "$FEATS" "$CKPT" "$PUBLISHED"
-bounded_run bash -c 'render_samples "$1" "$2"' _ "$PUBLISHED" "$W/out/samples/$RUN_ID/$(date -u +%Y%m%dT%H%M%SZ)-$BASHPID"
+CUDA_VISIBLE_DEVICES=$ACOUSTIC_GPU bounded_run python3 "$V/pod/publish_voice.py" "$FEATS" "$CKPT" "$PUBLISHED"
+CUDA_VISIBLE_DEVICES=$ACOUSTIC_GPU bounded_run bash -c 'render_samples "$1" "$2"' _ "$PUBLISHED" "$W/out/samples/$RUN_ID/$(date -u +%Y%m%dT%H%M%SZ)-$BASHPID"
 done_ configured-work-complete
 echo "Configured v2 work complete; final listening, billing-stop reliability and deployment remain separate."
