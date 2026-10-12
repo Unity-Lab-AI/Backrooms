@@ -134,7 +134,7 @@ The older memory note says "~$1/hr". The owner's later choice was "Up to ~$25 (R
   - 40 GB container disk, 120 GB volume at `/workspace`
   - HTTP port 8000
   - start command runs `training/pod/bootstrap.sh` from the branch
-  - env: `BRAIN_DIGEST=<digest>`, `PRICE_PER_HOUR=<price shown>`, `BUDGET_USD=25`, `KEEP_HOURS=1`
+  - env: `BRAIN_DIGEST=<digest>`, `PRICE_PER_HOUR=<price shown>`, `BUDGET_USD=50` (owner, 2026-10-12: "caps a 50$ per pod"), `KEEP_HOURS=1`
   - no other keys on the pod
 - [ ] After DONE: download `unity-brain.gguf`, `unity-brain.gguf.sha256`, `brain-eval.json` and `quant.txt` from `https://<pod-id>-8000.proxy.runpod.net/` into `training/models/`. Delete the pod and its volume. The next `Stream Start` applies the model.
 

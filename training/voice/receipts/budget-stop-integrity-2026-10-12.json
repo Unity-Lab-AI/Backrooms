@@ -1,0 +1,14 @@
+{
+ "schema_version": 1,
+ "check_id": "budget_stop_integrity",
+ "decision": "accepted",
+ "accepted_by": "engineering (Unity, final pre-launch checks requested by the owner 2026-10-12: \"option 3 final checks and caps a 50$ per pod\")",
+ "recorded_at": "2026-10-12T06:38:36-06:00",
+ "scope": "training-preflight",
+ "evidence": [
+  "start_template.sh / bootstrap_voice.sh: fixed deadline from first start, owned process groups, bounded stop retries, credentials read back from /proc/1/environ",
+  "training/pod/bootstrap.sh: watchdog stops at 92% of BUDGET_USD/PRICE_PER_HOUR, kept on the volume",
+  "owner cap: $50 per pod"
+ ],
+ "residual_risk": "Self-stop against the live RunPod API is first exercised on this launch; the operator watches the first hour and stops any pod by hand from the console if a stop fails. Worst case is bounded by the $50 cap watchdog plus manual stop."
+}

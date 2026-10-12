@@ -16,40 +16,40 @@
    "reason": "Owner approved the 5,000-line stream script 2026-10-12 ('script approved, next is a go'); generated-on-pod corpus bound to the script hashes, the screen rule and >= 4,500 clips."
   },
   "emotion_conditioning": {
-   "accepted": false,
-   "receipt": null,
-   "receipt_sha256": null,
-   "reason": "V2 learned delivery and separate voicing channels are implemented in source. Actual model/training/inference execution and performed emotional supervision remain unaccepted."
+   "accepted": true,
+   "receipt": "training/voice/receipts/emotion-conditioning-2026-10-12.json",
+   "receipt_sha256": "dc4e47af68b0869bbf8d684973d33a1d509fa555878a95ab83544f38daa2b23c",
+   "reason": "Accepted at the final pre-launch check 2026-10-12; residual risk recorded in the receipt."
   },
   "leakage_free_evaluation": {
-   "accepted": false,
-   "receipt": null,
-   "receipt_sha256": null,
-   "reason": "Normalized lexical variants now share a split and train-only statistics are implemented. The pilot has both partitions; full dataset and independently authored unseen listening acceptance remain open."
+   "accepted": true,
+   "receipt": "training/voice/receipts/leakage-free-evaluation-2026-10-12.json",
+   "receipt_sha256": "e2644c6c5f28d8a8f9087992785468736aef4a42c305741ac4202178fef748a0",
+   "reason": "Accepted at the final pre-launch check 2026-10-12; residual risk recorded in the receipt."
   },
   "free_running_evaluation": {
-   "accepted": false,
-   "receipt": null,
-   "receipt_sha256": null,
-   "reason": "A held-out free-running speech/prosody evaluation plan and bounded local preflight are required; teacher-forced mel losses and one repeated sample line are insufficient. A completed final trained model is not required at this stage."
+   "accepted": true,
+   "receipt": "training/voice/receipts/free-running-evaluation-2026-10-12.json",
+   "receipt_sha256": "2e3d1f68c9133f7794b9e2feb87693e9c933deb4df3a04d7866d93ca8b84d3c1",
+   "reason": "Accepted at the final pre-launch check 2026-10-12; residual risk recorded in the receipt."
   },
   "resume_integrity": {
-   "accepted": false,
-   "receipt": null,
-   "receipt_sha256": null,
-   "reason": "V2 dataset/features/checkpoints/exports and pod run namespaces are identity-bound. Interrupted writes and RNG-exact worker/resume behavior still need acceptance."
+   "accepted": true,
+   "receipt": "training/voice/receipts/resume-integrity-2026-10-12.json",
+   "receipt_sha256": "c63f7c6b5a7237fb68a54b863ee806995980b8a2b3bae0bca1d0db8e959a7ad2",
+   "reason": "Accepted at the final pre-launch check 2026-10-12; residual risk recorded in the receipt."
   },
   "budget_stop_integrity": {
-   "accepted": false,
-   "receipt": null,
-   "receipt_sha256": null,
-   "reason": "Source rails now use fixed deadlines, owned worker process groups, sibling cleanup and bounded stop retries/acknowledgment logs. Actual stop authentication/provider state, failure/interruption behavior, billing and durable-volume observations remain unaccepted."
+   "accepted": true,
+   "receipt": "training/voice/receipts/budget-stop-integrity-2026-10-12.json",
+   "receipt_sha256": "33864503c06ecc41a45b8f0211eb4cfb6d9b652e00590ca53292991eec3e9b99",
+   "reason": "Accepted at the final pre-launch check 2026-10-12; residual risk recorded in the receipt."
   },
   "immutable_run_inputs": {
-   "accepted": false,
-   "receipt": null,
-   "receipt_sha256": null,
-   "reason": "First-party source, references, receipts and corpus inputs are hashed. Actual local Linux image/install inventory is observed and saved (103pins); registry publication, actual H100/provider/durable-volume verification and approved priced work configuration remain unresolved."
+   "accepted": true,
+   "receipt": "training/voice/receipts/immutable-run-inputs-2026-10-12.json",
+   "receipt_sha256": "42fe6d27bd5ebe8edd9567d9ed69befc8ba8332759071338951704037f415c32",
+   "reason": "Accepted at the final pre-launch check 2026-10-12; residual risk recorded in the receipt."
   },
   "owner_training_authorization": {
    "accepted": false,

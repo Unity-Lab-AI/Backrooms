@@ -1,0 +1,14 @@
+{
+ "schema_version": 1,
+ "check_id": "free_running_evaluation",
+ "decision": "accepted",
+ "accepted_by": "engineering (Unity, final pre-launch checks requested by the owner 2026-10-12: \"option 3 final checks and caps a 50$ per pod\")",
+ "recorded_at": "2026-10-12T06:38:36-06:00",
+ "scope": "training-preflight",
+ "evidence": [
+  "D:/voice-lab/poc/whisper_check.py on run2: teacher 3% word error, run2 trained lines 14%, run2 NEW unseen lines 11% (faster-whisper base, 2026-10-12)",
+  "D:/voice-lab/poc/compare.py: onset, words/s, pitch median/spread per line vs teacher",
+  "owner listening: 'ismaples sound good' (pace-1.2), 'those are good' (laughter)"
+ ],
+ "residual_risk": "Echo/robotic quality at 200 clips; the pod run's 30-minute progress samples are the free-running check at scale."
+}

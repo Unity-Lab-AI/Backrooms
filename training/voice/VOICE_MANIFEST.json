@@ -66,15 +66,21 @@
   "training/voice/pod/upload_volume_s3.ps1": "2ee1dacbd8ab0f0a2fe7f5fb49ddfd410eb731c7fbb0dde6c4109b2f71e0f82a",
   "training/voice/prep.py": "bc845dc41bc9111bd296f9405f68f25c97f5fa5f178f288284074feaa5cab3bb",
   "training/voice/quality_gate.py": "3ad0c20cc3d682785779aa1fb9c6067677b8459c64eb4e1f09c11d2a7f63921c",
+  "training/voice/receipts/budget-stop-integrity-2026-10-12.json": "33864503c06ecc41a45b8f0211eb4cfb6d9b652e00590ca53292991eec3e9b99",
   "training/voice/receipts/corpus-acceptance-stream-script.json": "de9585cb4462394539926894215a8201b6824b274f3780bf3ed1a5e8d03f80c8",
   "training/voice/receipts/delivery-ab-2026-10-12.json": "7a07ae10ee228a4092170cf569fd3d6879431f9469c79514987b3485ef096754",
+  "training/voice/receipts/emotion-conditioning-2026-10-12.json": "dc4e47af68b0869bbf8d684973d33a1d509fa555878a95ab83544f38daa2b23c",
   "training/voice/receipts/environment-2026-10-11-v2/observation.json": "9cb732d393dff3c5d85742fe6520cfbcf3a55c61f217e55c52c858eeb6125412",
   "training/voice/receipts/environment-2026-10-11-v2/os-packages.tsv": "6a0ca30410bb5f2a1aedbf62626477855cb24e45e8677a748d3340617021c852",
   "training/voice/receipts/environment-2026-10-11-v2/package-lock.json": "bdf2d5bb1ac1e09f0b3a69668e7bb54f343313ca1613890c617fad848fa6f3e4",
   "training/voice/receipts/environment-2026-10-11-v2/runtime-assets.json": "c25d8adfd29d25e1501c41f8bbfd04861bde01ebedf739d92bdfe0d3397db9d3",
+  "training/voice/receipts/free-running-evaluation-2026-10-12.json": "2e3d1f68c9133f7794b9e2feb87693e9c933deb4df3a04d7866d93ca8b84d3c1",
+  "training/voice/receipts/immutable-run-inputs-2026-10-12.json": "42fe6d27bd5ebe8edd9567d9ed69befc8ba8332759071338951704037f415c32",
+  "training/voice/receipts/leakage-free-evaluation-2026-10-12.json": "e2644c6c5f28d8a8f9087992785468736aef4a42c305741ac4202178fef748a0",
   "training/voice/receipts/local-environment-build.json": "4d5c2f19facfffa8592dfa4d8d17178c1ce8f9bdc01fbe15eac167342f478fa1",
   "training/voice/receipts/pilot32-corpus-acceptance.json": "da13a442410ca8c9f470e85012d642af6d1a76ce15ce9eeb59ce3ae3c212f34f",
   "training/voice/receipts/pilot32-owner-listening.json": "76315cb661ed5bf9fda7fc2b8fd52c04c35b365c53e020d937d442eddecc4e94",
+  "training/voice/receipts/resume-integrity-2026-10-12.json": "c63f7c6b5a7237fb68a54b863ee806995980b8a2b3bae0bca1d0db8e959a7ad2",
   "training/voice/receipts/source-auditions.json": "506537a791bc87c722bef6a6571c4e55a90af81e290581cca84ce741c3ca43cc",
   "training/voice/recheck_source_words.py": "5b554f1c51c36a1274979bbfc47e4b9fd015c8e104eb2a3f765fdffe9b62b113",
   "training/voice/reference/A2-chuckle-listen.wav": "c3f124ec5056ed559a9de955336865f843af95ce5b7f5e2693a0bddb068a4c18",
@@ -113,5 +119,5 @@
   "training/voice/variations.py": "b0dc9ac0a42f39d8e26ce5fc055d25a286edc4a6de0608048212c457e2fbaa8d",
   "training/voice/vocoder.py": "f6e8543d98c8a0e25a88fd903827c276225aa8713b7c06fe11c6d94ff34822d8"
  },
- "digest": "5b870084dd9ffa64d34af273b42a3db1e429ed17d7542802e0930f3f4d15e941"
+ "digest": "de3ab178ce7d55f013fffca29a247478437d5f28cf1f7e0e017fc932bf80e47d"
 }

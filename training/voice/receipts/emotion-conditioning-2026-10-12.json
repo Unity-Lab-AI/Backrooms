@@ -1,0 +1,14 @@
+{
+ "schema_version": 1,
+ "check_id": "emotion_conditioning",
+ "decision": "accepted",
+ "accepted_by": "engineering (Unity, final pre-launch checks requested by the owner 2026-10-12: \"option 3 final checks and caps a 50$ per pod\")",
+ "recorded_at": "2026-10-12T06:38:36-06:00",
+ "scope": "training-preflight",
+ "evidence": [
+  "D:/voice-lab/poc run 1 and run2: v2 student trained end to end with emotion/speech_act/intensity/pace conditioning (logs/acoustic.log, run2/logs/acoustic.log)",
+  "D:/voice-lab/poc/listen/new-lines + pace-1.2: free-running inference on unseen lines rendered with the conditioning path",
+  "training/voice/receipts/delivery-ab-2026-10-12.json: delivery policy per emotion (owner-chosen)"
+ ],
+ "residual_risk": "Emotional range is only as wide as the teacher clips; judged by the owner in the 30-minute progress samples and at deploy (trained_voice_acceptance)."
+}
