@@ -45,14 +45,19 @@ if ! have setup || ! python -c "import unsloth, causal_conv1d" 2>/dev/null; then
   fi
   MAX_JOBS=16 pip install -q causal-conv1d --no-build-isolation || true
   python -c "import fla, causal_conv1d; print('fast kernels ok')" || echo "fast kernels missing (slower, still correct)"
-  rm -rf $W/llama.cpp
-  git clone -q --depth 1 ${LLAMA_CPP_REF:+-b "$LLAMA_CPP_REF"} https://github.com/ggml-org/llama.cpp $W/llama.cpp
-  pip install -q -e $W/llama.cpp/gguf-py sentencepiece
   # CUDA build: the quantizer, the imatrix and the server the eval talks to (sm_90 = H100/H200). The RunPod PyTorch
-  # image ships no cmake (first launch 2026-10-12 failed here), so it comes from pip.
-  command -v cmake >/dev/null 2>&1 || pip install -q cmake
-  cmake -S $W/llama.cpp -B $W/llama.cpp/build -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCH:-90}" -DLLAMA_CURL=OFF >/dev/null
-  cmake --build $W/llama.cpp/build --target llama-quantize llama-imatrix llama-server -j"$(nproc)" >/dev/null
+  # image ships no cmake (first launch 2026-10-12 failed here), so it comes from pip. The binaries live on the volume
+  # and survive a restart, so a finished build is kept; a rebuild compiles on the fast container disk (compiling on
+  # the network volume took 25+ min on 2026-10-12) and only the finished tree is copied to the volume.
+  if [ ! -x $W/llama.cpp/build/bin/llama-server ] || [ ! -x $W/llama.cpp/build/bin/llama-quantize ] || [ ! -x $W/llama.cpp/build/bin/llama-imatrix ]; then
+    rm -rf $W/llama.cpp /root/llama.cpp
+    git clone -q --depth 1 ${LLAMA_CPP_REF:+-b "$LLAMA_CPP_REF"} https://github.com/ggml-org/llama.cpp /root/llama.cpp
+    command -v cmake >/dev/null 2>&1 || pip install -q cmake
+    cmake -S /root/llama.cpp -B /root/llama.cpp/build -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCH:-90}" -DLLAMA_CURL=OFF -DBUILD_SHARED_LIBS=OFF >/dev/null
+    cmake --build /root/llama.cpp/build --target llama-quantize llama-imatrix llama-server -j"$(nproc)" >/dev/null
+    cp -a /root/llama.cpp $W/llama.cpp
+  fi
+  pip install -q -e $W/llama.cpp/gguf-py sentencepiece
   done_ setup
 fi
 # what this run was actually built with, next to the model, so a result can be traced and repeated
