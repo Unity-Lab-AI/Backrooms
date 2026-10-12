@@ -78,6 +78,9 @@ snapshot_download(repo_id=repo, revision=rev, local_dir=out)
 json.dump({"repo": repo, "revision": rev}, open(out + "/audition-source.json", "w"))
 PY
 }
+# Matcha (bundled in the Cosy code) imports gdown and wget at load; an older venv-cosy without them hung every Cosy
+# worker on the first pod launch (2026-10-12), so make sure they are there even when the venv marker is set.
+"$G/venv-cosy/bin/python" -c "import gdown, wget" 2>/dev/null || "$G/venv-cosy/bin/pip" install -q gdown==5.2.0 wget==3.2
 # Teacher models live on the shared volume (the code checkout is on the container disk, which a restart wipes).
 M="$G/models"; mkdir -p "$M"
 have model-qwen-vol || { fetch Qwen/Qwen3-TTS-12Hz-1.7B-Base fd4b254389122332181a7c3db7f27e918eec64e3 "$M/qwen3-tts-base"; done_ model-qwen-vol; }

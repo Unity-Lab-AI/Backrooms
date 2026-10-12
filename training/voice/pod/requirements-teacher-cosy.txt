@@ -30,3 +30,5 @@ tiktoken
 more-itertools
 tqdm
 numba
+gdown==5.2.0
+wget==3.2
