@@ -52,6 +52,27 @@ CAP_S=$(python3 -c "import sys; print(int(float(sys.argv[1]) / float(sys.argv[2]
     sleep 60
   done ) &
 
+# GPU utilisation every 30 s (owner: "make sure we are peggin these GPUS pod when we do it"): gguf/gpu-util.csv and
+# gguf/gpu-util-summary.json (mean/min util %, plus the mean over busy samples >= 5%), served and pulled home.
+( while true; do
+    nvidia-smi --query-gpu=timestamp,index,utilization.gpu,memory.used,memory.total --format=csv,noheader,nounits \
+        >> $W/gguf/gpu-util.csv 2>/dev/null
+    python3 - $W/gguf/gpu-util.csv $W/gguf/gpu-util-summary.json <<'PY' 2>/dev/null
+import json, sys
+rows = [l.split(", ") for l in open(sys.argv[1]) if l.count(",") >= 4]
+util = {}
+for r in rows:
+    try: util.setdefault(r[1].strip(), []).append(float(r[2]))
+    except ValueError: pass
+s = lambda xs: {"samples": len(xs), "mean_util_pct": round(sum(xs) / len(xs), 1), "min_util_pct": min(xs),
+                "busy_mean_util_pct": round(sum(x for x in xs if x >= 5) / max(1, sum(x >= 5 for x in xs)), 1)} if xs else {}
+every = [x for xs in util.values() for x in xs]
+json.dump({"interval_s": 30, "first": rows[0][0] if rows else None, "last": rows[-1][0] if rows else None,
+           "overall": s(every), "per_gpu": {k: s(v) for k, v in util.items()}}, open(sys.argv[2], "w"), indent=1)
+PY
+    sleep 30
+  done ) &
+
 KEEP_HOURS="${KEEP_HOURS:-1}"
 finish() {   # serve what exists for $1 hours (default KEEP_HOURS), then stop this pod; never sleeps forever
   sleep "$(python3 -c "import sys; print(int(float(sys.argv[1]) * 3600))" "${1:-$KEEP_HOURS}")"

@@ -18,6 +18,13 @@ CFG = dict(base=os.environ.get("BRAIN_BASE", "Qwen/Qwen3.5-9B"), seq=24576, r=32
            # full attention, the linear-attention (gated delta) projections and the MLP: every text layer learns
            targets=["q_proj", "k_proj", "v_proj", "o_proj", "in_proj_qkv", "in_proj_z", "out_proj",
                     "gate_proj", "up_proj", "down_proj"])
+# Owner: "make sure we are peggin these GPUS pod when we do it". The effective batch stays 16 sequences per optimizer
+# step (what is learned does not change); BRAIN_BS sets how many go through the GPU at once, and run.sh picks the
+# largest of 8/4/2 that survives the preflight on the longest rows, so the H100 is filled instead of half idle.
+CFG["bs"] = int(os.environ.get("BRAIN_BS", CFG["bs"]))
+if CFG["bs"] < 1 or 16 % CFG["bs"]:
+    raise SystemExit("BRAIN_BS must divide 16")
+CFG["ga"] = 16 // CFG["bs"]
 
 t0 = time.time()
 from unsloth import FastLanguageModel                      # noqa: E402  (unsloth must import first)

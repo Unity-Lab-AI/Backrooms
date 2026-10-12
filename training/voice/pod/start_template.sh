@@ -34,6 +34,27 @@ say "start_template: container up"
 
 # RunPod's own startup (sshd, env export) keeps working for the owner's SSH access.
 if [ -x /start.sh ]; then /start.sh > "$W/runpod-start.log" 2>&1 & fi
+# GPU utilisation for the whole pod life (owner: "make sure we are peggin these GPUS pod when we do it"): every 30 s
+# one row per GPU into out/gpu-util.csv, and out/gpu-util-summary.json (mean/min util %, per GPU and overall, plus
+# the mean over busy samples >= 5%) rewritten each time, so it is current whenever pull_results_s3.ps1 runs.
+( while true; do
+    nvidia-smi --query-gpu=timestamp,index,utilization.gpu,memory.used,memory.total --format=csv,noheader,nounits \
+        >> "$W/out/gpu-util.csv" 2>/dev/null
+    python3 - "$W/out/gpu-util.csv" "$W/out/gpu-util-summary.json" <<'PY' 2>/dev/null
+import json, sys
+rows = [l.split(", ") for l in open(sys.argv[1]) if l.count(",") >= 4]
+util = {}
+for r in rows:
+    try: util.setdefault(r[1].strip(), []).append(float(r[2]))
+    except ValueError: pass
+s = lambda xs: {"samples": len(xs), "mean_util_pct": round(sum(xs) / len(xs), 1), "min_util_pct": min(xs),
+                "busy_mean_util_pct": round(sum(x for x in xs if x >= 5) / max(1, sum(x >= 5 for x in xs)), 1)} if xs else {}
+every = [x for xs in util.values() for x in xs]
+json.dump({"interval_s": 30, "first": rows[0][0] if rows else None, "last": rows[-1][0] if rows else None,
+           "overall": s(every), "per_gpu": {k: s(v) for k, v in util.items()}}, open(sys.argv[2], "w"), indent=1)
+PY
+    sleep 30
+  done ) &
 # Make the provider identity visible to SSH sessions too (the custom-image path lost it there).
 env | grep -E '^RUNPOD_' | sed 's/^/export /' > /etc/rp_environment 2>/dev/null || true
 

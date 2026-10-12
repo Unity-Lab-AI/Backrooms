@@ -135,8 +135,17 @@ W=/workspace; mkdir -p "$W/state" "$W/out/samples" "$W/out/progress"
 exec > >(tee -a $W/voice.log) 2>&1
 # Proposed H100 work defaults, not measurements on the newly approved corpus.
 # The last GTA_STEPS use oracle aligned mels, not free-running predicted prosody.
-ACOUSTIC_STEPS="${ACOUSTIC_STEPS:-20000}"; ACOUSTIC_FRAMES="${ACOUSTIC_FRAMES:-96000}"
-VOCODER_STEPS="${VOCODER_STEPS:-120000}"; VOCODER_BATCH="${VOCODER_BATCH:-32}"; GTA_STEPS="${GTA_STEPS:-20000}"
+# Owner: "make sure we are peggin these GPUS pod when we do it". Unless set explicitly, the acoustic frame budget and
+# the vocoder batch scale with the GPU's measured VRAM: 96,000 frames and batch 32 per 80 GB (H100), never below
+# those, frames rounded to 1,000 and batch to 8. Both trainers keep all features on the GPU (no data loader) and the
+# acoustic model already trains in bf16 autocast; the model math is unchanged, only how much goes through per step.
+VRAM_MIB=$(timeout 10s nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits 2>/dev/null | head -1)
+VRAM_MIB=${VRAM_MIB:-81559}
+SCALE_FRAMES=$(( (96000 * VRAM_MIB / 81559 + 500) / 1000 * 1000 )); [ "$SCALE_FRAMES" -ge 96000 ] || SCALE_FRAMES=96000
+SCALE_BATCH=$(( (32 * VRAM_MIB / 81559) / 8 * 8 )); [ "$SCALE_BATCH" -ge 32 ] || SCALE_BATCH=32
+ACOUSTIC_STEPS="${ACOUSTIC_STEPS:-20000}"; ACOUSTIC_FRAMES="${ACOUSTIC_FRAMES:-$SCALE_FRAMES}"
+VOCODER_STEPS="${VOCODER_STEPS:-120000}"; VOCODER_BATCH="${VOCODER_BATCH:-$SCALE_BATCH}"; GTA_STEPS="${GTA_STEPS:-20000}"
+echo "GPU memory ${VRAM_MIB} MiB -> ACOUSTIC_FRAMES=$ACOUSTIC_FRAMES VOCODER_BATCH=$VOCODER_BATCH"
 VOICE_SEED="${VOICE_SEED:-17}"
 export ACOUSTIC_STEPS ACOUSTIC_FRAMES VOCODER_STEPS VOCODER_BATCH GTA_STEPS VOICE_SEED
 python3 - <<'PY'
@@ -251,7 +260,7 @@ wait_stages() {
     done
     [ "$active" -gt 0 ] || break
     now=$(date +%s)
-    if [ "$((now - last_gpu))" -ge 60 ]; then
+    if [ "$((now - last_gpu))" -ge 30 ]; then
       printf '%s run=%s ' "$(date -u +%FT%TZ)" "$RUN_ID" >> "$W/out/gpu.txt"
       bounded_run timeout --signal=TERM --kill-after=2s 5s nvidia-smi \
           --query-gpu=utilization.gpu,memory.used --format=csv,noheader >> "$W/out/gpu.txt" 2>&1 || true

@@ -15,7 +15,7 @@ have() { [ -f "$W/state/$1" ]; }
 INPUTS=$( (cd $W && find data/brain pod -type f -print0 | sort -z | xargs -0 sha256sum) | sha256sum | cut -d' ' -f1)
 if [ "$(cat $W/state/inputs 2>/dev/null)" != "$INPUTS" ]; then
   echo "=== inputs changed ($INPUTS): clearing training markers and outputs"
-  rm -f $W/state/preflight $W/state/train $W/state/gguf-* $W/state/eval $W/state/ALL
+  rm -f $W/state/preflight $W/state/brain-bs $W/state/train $W/state/gguf-* $W/state/eval $W/state/ALL
   rm -rf $W/ckpt $W/out/brain-merged $W/out/brain-lora $W/out/*.gguf
   rm -f $W/gguf/unity-*.gguf* $W/gguf/brain-eval.json $W/gguf/quant.txt
   echo "$INPUTS" > $W/state/inputs
@@ -44,7 +44,21 @@ fi
 { echo "llama.cpp $(cd $W/llama.cpp && git rev-parse HEAD)"; pip freeze 2>/dev/null; } > $W/gguf/versions.txt
 export HF_HUB_ENABLE_HF_TRANSFER=1
 
-if ! have preflight; then python $W/pod/train.py --preflight; rm -rf $W/ckpt/preflight; done_ preflight; fi
+# Fill the GPU: the largest per-step batch (8, 4, then 2; gradient accumulation makes up 16) that runs 2 steps on the
+# longest rows without running out of memory. BRAIN_BS set at pod create skips the search. The pick is kept in
+# state/brain-bs so a resumed run trains with the batch its checkpoints were made with.
+if ! have preflight; then
+  rm -f $W/state/brain-bs
+  for bs in ${BRAIN_BS:-8 4 2}; do
+    echo "=== preflight with BRAIN_BS=$bs"
+    if BRAIN_BS=$bs python $W/pod/train.py --preflight; then echo "$bs" > $W/state/brain-bs; break; fi
+    rm -rf $W/ckpt/preflight
+  done
+  [ -f $W/state/brain-bs ] || { echo "preflight failed at every batch size"; exit 1; }
+  rm -rf $W/ckpt/preflight; done_ preflight
+fi
+export BRAIN_BS=$(cat $W/state/brain-bs 2>/dev/null || echo 2)
+cp $W/state/brain-bs $W/gguf/brain-bs.txt 2>/dev/null || true
 if ! have train; then python $W/pod/train.py; done_ train; fi
 # the base download is not needed once merged
 rm -rf "${HF_HOME:-$HOME/.cache/huggingface}/hub/models--Qwen--Qwen3.5-9B"
