@@ -171,15 +171,17 @@ import json, os, sys
 import torch
 spec = json.load(open(sys.argv[1], encoding='utf-8'))
 name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else ''
-# One Hopper-class GPU (H100 any form factor, or H200). The image path also pins the exact CUDA runtime;
+# One or two Hopper-class GPUs (H100 any form factor, or H200); with two, the acoustic model and the source vocoder
+# each get one (owner: "no way to speed it up than 11 hrs?"). The image path also pins the exact CUDA runtime;
 # the template path pins torch 2.7.1+cu126 through requirements-template.txt and preflight --template.
-ok = (torch.cuda.is_available() and torch.cuda.device_count() == 1
-      and torch.cuda.get_device_capability(0) >= (9, 0)
-      and any(tag in name for tag in ('H100', 'H200')))
+n = torch.cuda.device_count() if torch.cuda.is_available() else 0
+ok = (n in (1, 2)
+      and all(torch.cuda.get_device_capability(i) >= (9, 0)
+              and any(tag in torch.cuda.get_device_name(i) for tag in ('H100', 'H200')) for i in range(n)))
 if os.environ.get('VOICE_ENV_MODE', 'image') == 'image':
     ok = ok and torch.version.cuda == spec['torch_cuda']
 if not ok:
-    raise ValueError('Expected one H100/H200 (sm_90) with the pinned CUDA runtime; no training started')
+    raise ValueError('Expected one or two H100/H200 (sm_90) with the pinned CUDA runtime; no training started')
 print('CUDA device:', name, 'torch', torch.__version__, 'cuda', torch.version.cuda)
 PY
 RUN_CONFIG=$(python3 - "$V" <<'PY'
@@ -280,12 +282,18 @@ wait_stages() {
   pids=()
   stages=()
 }
+# Owner, 2026-10-12: "no way to speed it up than 11 hrs?" / "okay do whats best". The acoustic model and the
+# source vocoder are independent and already run at the same time; with two GPUs each gets its own card instead of
+# sharing one (counted by nvidia-smi; one GPU keeps the old shared behaviour).
+VOICE_GPUS=$(nvidia-smi --query-gpu=index --format=csv,noheader 2>/dev/null | wc -l)
+if [ "${VOICE_GPUS:-1}" -ge 2 ]; then ACOUSTIC_GPU=0; VOCODER_GPU=1; else ACOUSTIC_GPU=0; VOCODER_GPU=0; fi
+echo "voice GPUs: $VOICE_GPUS (acoustic on $ACOUSTIC_GPU, vocoder on $VOCODER_GPU)"
 if ! have acoustic; then
-  launch_stage acoustic "$W/acoustic.log" python3 "$V/train_acoustic.py" "$FEATS" "$CKPT" \
+  CUDA_VISIBLE_DEVICES=$ACOUSTIC_GPU launch_stage acoustic "$W/acoustic.log" python3 "$V/train_acoustic.py" "$FEATS" "$CKPT" \
       --steps "$ACOUSTIC_STEPS" --frames "$ACOUSTIC_FRAMES" --seed "$VOICE_SEED"
 fi
 if ! have vocoder-source; then
-  launch_stage vocoder-source "$W/vocoder.log" python3 "$V/train_vocoder.py" \
+  CUDA_VISIBLE_DEVICES=$VOCODER_GPU launch_stage vocoder-source "$W/vocoder.log" python3 "$V/train_vocoder.py" \
       "$VOICE_DATASET_DIR" "$FEATS" "$CKPT" --steps "$((VOCODER_STEPS - GTA_STEPS))" \
       --batch "$VOCODER_BATCH" --seed "$VOICE_SEED"
 fi

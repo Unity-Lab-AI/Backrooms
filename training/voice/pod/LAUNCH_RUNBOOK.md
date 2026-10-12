@@ -51,7 +51,7 @@ The **template** path (`VOICE_ENV_MODE=template`) keeps ChatGPT's safety pieces 
 7. **Network volume** (billed per GB-hour until deleted; ~50 GB): create it in a data center that has **both** H100 stock **and** the S3 API. **US-MO-1** had H100 SXM ($3.99/h secure) on 2026-10-11; re-read live stock and price first.
 8. Upload: `powershell -File training/voice/pod/upload_volume_s3.ps1 -PacketDirectory <pipeline/delivery> -VolumeId <id> -DataCenter US-MO-1`. Run it with `-DryRun` first. It reads back each object's size.
 9. **Pod** (quote the hourly price to the owner first):
-   - 1x H100 SXM, **secure cloud**, same data center, network volume at `/workspace`, CUDA ≥ 12.6 (`minCudaVersion 12.6`), port 8000/http
+   - 1x or 2x H100 SXM (two: the acoustic model and the source vocoder each get a card, roughly 7-8 h instead of 9-10 h; owner: *"no way to speed it up than 11 hrs?"*), **secure cloud**, same data center, network volume at `/workspace`, CUDA ≥ 12.6 (`minCudaVersion 12.6`), port 8000/http
    - Image: the official RunPod PyTorch template (Ubuntu, Python 3.10+, runpodctl included)
    - Start command: `bash /workspace/incoming/start_template.sh`
    - Env: `VOICE_DELIVERY_SHA256`, `VOICE_DIGEST`, `VOICE_DATASET_ID`, `VOICE_VOLUME_ID` (printed by the upload), `PRICE_PER_HOUR` (as shown), `BUDGET_USD`, `KEEP_HOURS` (owner), `VOICE_PROGRESS_HTTP=1`
