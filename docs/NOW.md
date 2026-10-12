@@ -11,17 +11,18 @@
 
 ---
 
-## LIVE NOW (2026-10-12, from 12:47 UTC): the three pods are running
+## LIVE NOW (2026-10-12, updated 15:03 UTC): two pods running
 
-Owner go: *"Go fastest, voice cap $70"*. Source commits: voice `29ef0ade` (digest `8058d414`), brain `d65d71f2` (data `7d2cac95`).
+Owner go: *"Go fastest, voice cap $70"*, then *"well we are gonna have to double that cap"*.
 
-| Pod | Id | Shape | $/h | Cap | Volume |
+| Pod | Id | Shape | $/h | Cap | State |
 |---|---|---|---|---|---|
-| Voice clips | `u2k5pdlocndtnd` | 4x H200, US-CA-2 | 21.16 | $50 | `nk8oyfxwc7` (US-CA-2, shared) |
-| Voice training | `ksw41pgbted5ro` | 2x H100, US-CA-2 | 7.98 | $70 | `nk8oyfxwc7` |
-| Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | 3.99 | $50 | `3sjem6lb5j` (US-MO-1) |
+| Voice (records + trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | 7.98 | $140 | `VOICE_ROLE=both`: recording 5,000 clips (Cosy first, 24 shards, ~80-90 min), then trains (~7-8 h). Source `af945fae` |
+| Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | 3.99 | $50 | Restarted 14:58 (OOM fix), reinstalling; training ~15:25, ~3-5 h. Source `81516a80` |
 
-Progress: `https://<pod-id>-8000.proxy.runpod.net/`. Launch fixes on the day: both voice pods first collided cloning into one folder on the shared volume (now each clones to its own disk); the brain image had no cmake (now pip-installed). Results come home with `pull_results_s3.ps1` / `pull_brain_s3.ps1` to `D:oice-lab\pod-results\`; delete the pods and volumes only after VERIFIED.
+Gone: the 4x H200 clip pod (its GPUs were taken while it was stopped; terminated) and the debug pod `1kpwfq367r9aov` (found the Cosy bugs; terminated). Volumes: voice `nk8oyfxwc7` (US-CA-2), brain `3sjem6lb5j` (US-MO-1).
+
+Launch-day fixes (each Linux-only, each committed): shared-volume clone collision; teacher envs on the volume; venv symlink resolved to system python; models on the wiped container disk; onnxruntime-gpu name; Cosy cache parents; Cosy env missing gdown/wget; wetext downloading from modelscope.cn (403 -> hang) removed to match the approved no-front-end recipe; empty shard folders; stale shard plan; brain cmake; brain CUDA 12.4 vs torch cu13 kernel build; brain OOM from 4 forked loader workers. Rule logged: dry-run on one cheap pod before renting a fleet.
 
 ## The record, 2026-10-12: Unity's own voice + her brain, three pods, waiting on the local voice test
 
