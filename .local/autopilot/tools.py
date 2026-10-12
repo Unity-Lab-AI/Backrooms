@@ -283,6 +283,10 @@ class Toolbox:
     def _local_tools(self):
         S = lambda props, req=(): {"type": "object", "properties": props, "required": list(req)}
         s, i, b = {"type": "string"}, {"type": "integer"}, {"type": "boolean"}
+        # Voice delivery for say/reply_chat: the exact emotions and speech acts Unity's own voice model is trained on
+        # (training/voice/dataset_contract.py). Optional; "[laughter]" may appear in the text itself.
+        EMO = {"type": "string", "enum": ["neutral", "warm", "happy", "amused", "excited", "sad", "concerned", "frustrated", "surprised"]}
+        ACT = {"type": "string", "enum": ["statement", "yes_no_question", "wh_question", "exclamation", "instruction", "reassurance", "aside"]}
         return {
             "look": ("[READ-ONLY] Take a screenshot of the game exactly as the stream sees it and SEE it (vision).",
                      S({}), self.t_look),
@@ -306,9 +310,9 @@ class Toolbox:
                             "checks). report_only=true only reports.", S({"report_only": b}), self.t_empire),
             "say": ("[STREAM] Say a line out loud on stream in Unity's voice (TTS + overlay chat + an auto picture). "
                     "Clean only: no swearing, no degrading, no emoji, one to three short sentences.",
-                    S({"text": s}, ["text"]), self.t_say),
+                    S({"text": s, "emotion": EMO, "act": ACT}, ["text"]), self.t_say),
             "reply_chat": ("[STREAM] Answer a Twitch viewer by name, out loud and in the overlay chat. chat_id is the "
-                           "number given with their message.", S({"chat_id": i, "viewer": s, "text": s},
+                           "number given with their message.", S({"chat_id": i, "viewer": s, "text": s, "emotion": EMO, "act": ACT},
                                                                   ["chat_id", "viewer", "text"]), self.t_reply),
             "new_colony": ("Start a brand-new colony on the company scenario, set up the owner's way (world 30%, 300x300, "
                            "Spring, pollution 0, factions, mountainous forest tile, the Godsmultiplayer ideoligion, the "
@@ -466,6 +470,12 @@ class Toolbox:
 
     # -- stream output: every path goes through guards.clean_for_stream -----------------------------------------
     def _speak(self, text, reply_to=None):
+        # Voice tags ([laughter], [breath], [sigh]) are instructions for Unity's own voice model, never words for
+        # Twitch chat or the overlay. Owner: "its better not print [laughter} in the chat of twitch". They are cut
+        # from everything shown; voice_text keeps them for the new voice (today's Piper would read them out loud,
+        # so it also gets the stripped line until the own voice is live).
+        self.voice_text = text
+        text = re.sub(r"\s*\[(laughter|breath|sigh)\]\s*", " ", text, flags=re.I).strip()
         clean = guards.clean_for_stream(text)
         if not clean:
             log("STREAM FILTER blocked:", repr(text)[:200])
@@ -483,16 +493,20 @@ class Toolbox:
             # a picture with every narrated line (owner: "make some images more offten like as much as you talk")
             subprocess.Popen([PY, SCRIPTS["glance"], clean], cwd=ROOT, stdout=subprocess.DEVNULL,
                              stderr=subprocess.DEVNULL, shell=False)
-        subprocess.Popen([PY, SCRIPTS["speak"], "--bg", clean], cwd=ROOT, stdout=subprocess.DEVNULL,
+        # Owner: "but she still has to laugh when it comes through". Chat and overlay get the clean line; the voice
+        # gets the tagged line (same words, already passed the stream filter) once her own voice is live
+        # (UNITY_OWN_VOICE=1), so the laugh is heard, never read. Today's Piper cannot laugh, so it gets the clean line.
+        voice_line = self.voice_text if os.environ.get("UNITY_OWN_VOICE") == "1" else clean
+        subprocess.Popen([PY, SCRIPTS["speak"], "--bg", voice_line], cwd=ROOT, stdout=subprocess.DEVNULL,
                          stderr=subprocess.DEVNULL, shell=False)
         log("SAID:", clean)
         return clean
 
-    def t_say(self, text):
+    def t_say(self, text, emotion=None, act=None):
         said = self._speak(text)
         return ("said: " + said) if said else "BLOCKED by the stream filter (no swearing, no degrading, no emoji); say it cleaner"
 
-    def t_reply(self, chat_id, viewer, text):
+    def t_reply(self, chat_id, viewer, text, emotion=None, act=None):
         name = guards.clean_viewer_name(viewer)
         if name and name.lower().split()[0] not in text.lower():
             text = name + ", " + text

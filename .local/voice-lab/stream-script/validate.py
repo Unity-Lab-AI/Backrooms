@@ -67,6 +67,8 @@ def main(paths):
             k = len(s)
             if k not in LENGTH: problems.append("%d sentences (1-4 allowed)" % k)
             elif not LENGTH[k][0] <= words <= LENGTH[k][1]: problems.append("%d words for %d sentence(s), need %d-%d" % ((words, k) + LENGTH[k]))
+            if row.get("emotion") == "neutral" and "[laughter]" in text:
+                problems.append("a laughter line cannot be neutral (laughter renders through Cosy, which may not render neutral)")
             if row.get("speech_act") in ("yes_no_question", "wh_question") and not text.replace("[laughter]", "").strip().endswith("?"):
                 problems.append("question act must end with ?")
             if row.get("speech_act") == "exclamation" and not text.replace("[laughter]", "").strip().endswith("!"):
