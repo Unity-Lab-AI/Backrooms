@@ -168,3 +168,7 @@ training/_fetch.log
 .local/voice-lab/feats/
 .local/voice-lab/smoke/
 .local/voice-lab/ckpt/
+.local/voice-lab/**/*.pt
+!.local/voice-lab/round1/*.pt
+!.local/voice-lab/round2/*.pt
+.local/voice-lab/**/*.npy

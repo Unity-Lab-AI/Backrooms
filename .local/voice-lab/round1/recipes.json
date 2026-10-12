@@ -1,0 +1,50 @@
+{
+ "01": {
+  "mix": {
+   "af_river": 0.302,
+   "af_aoede": 0.571,
+   "af_alloy": 0.127
+  },
+  "speed": 1.09
+ },
+ "02": {
+  "mix": {
+   "af_river": 0.193,
+   "af_kore": 0.621,
+   "af_nicole": 0.186
+  },
+  "speed": 1.09
+ },
+ "03": {
+  "mix": {
+   "af_alloy": 0.432,
+   "af_heart": 0.293,
+   "af_jessica": 0.276
+  },
+  "speed": 0.98
+ },
+ "04": {
+  "mix": {
+   "af_heart": 0.121,
+   "af_aoede": 0.387,
+   "af_bella": 0.492
+  },
+  "speed": 0.96
+ },
+ "05": {
+  "mix": {
+   "af_river": 0.579,
+   "af_nova": 0.192,
+   "af_alloy": 0.229
+  },
+  "speed": 1.0
+ },
+ "06": {
+  "mix": {
+   "af_heart": 0.406,
+   "af_bella": 0.252,
+   "af_river": 0.342
+  },
+  "speed": 1.11
+ }
+}

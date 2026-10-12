@@ -1,0 +1,26 @@
+{
+ "01": {
+  "parents": "round1/04 0.50 + round1/06 0.50",
+  "exaggerate": 1.0
+ },
+ "02": {
+  "parents": "round1/04 0.50 + round1/06 0.50",
+  "exaggerate": 1.35
+ },
+ "03": {
+  "parents": "round1/04 0.65 + round1/06 0.35",
+  "exaggerate": 1.35
+ },
+ "04": {
+  "parents": "round1/04 0.35 + round1/06 0.65",
+  "exaggerate": 1.35
+ },
+ "05": {
+  "parents": "round1/04 0.50 + round1/06 0.50",
+  "exaggerate": 1.7
+ },
+ "06": {
+  "parents": "round1/04 0.60 + round1/06 0.40",
+  "exaggerate": 1.6
+ }
+}
