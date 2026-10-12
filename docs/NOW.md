@@ -7,106 +7,83 @@
 | `docs/ROADMAP.md` | MAJOR — phases and milestones |
 | `docs/TODO.md` | MINOR — buildable work only |
 | `docs/DECOMPOSED.md` | smallest execution units |
-| `docs/TEST.md` | the test phase, `[T]` rows (59 when counted 2026-10-10; recount with `grep -c '^\s*- \[T\]' docs/TEST.md`); a build closes none of them |
-| `docs/PLAYBOOK.md` | every play order the owner has given, verbatim |
-| `docs/PLAYSCRIPT.md` | the running order of a run, plus every owner order of the last two days verbatim |
-| **`docs/playbook.gates.json`** | **the PLC ladder the local model plays by — 25 gates, tag table, her words as `why`** |
-| **`docs/playbook.rules.json`** | **140 owner orders (89 + 51 audited in from PLAYBOOK/PLAYSCRIPT, 2026-10-10, owner: *"you remember everything ive ever said about all setup and play right.. make the model local know it"*), one line each with the exact quote; the brief attaches the 10 most relevant to the live rung, ranked by topic match, not file order** |
+| `docs/TEST.md` | the test phase, `[T]` rows; a build closes none of them |
+| `docs/PLAYBOOK.md` / `docs/PLAYSCRIPT.md` | every play order the owner has given, verbatim |
+| `docs/playbook.gates.json` / `docs/playbook.rules.json` | the ladder and the owner orders the local model plays by |
 | **`docs/NOW.md`** (this file) | **the handoff — one record** |
 | `docs/FINALIZED.md` | permanent archive, append-only |
 
 ---
 
-## The standing order, 2026-10-10
+## The record, 2026-10-11: Unity's own text-to-speech voice. **It does not sound human. Another AI is to review it.**
 
-**Owner, verbatim:** *"we arent do tests we are saving the colony from collap[pse and getting everything abouteverything to work locally"* / *"HANDOFF TO THE LOCAL MODEL"* / *"UNITY FUCKING RUNS EVERYTHING AS HERSELF PERFECTLY LOCAL MODEL on start.bat press and stop.bat properly kills everything"*.
+Owner, verbatim, at the end of the session: *"okay this does not sound human, im going to have another ai check it out write a now.md of the audio shit and issue u have of it not sounding human for next ai"* and *"u r done just write the now.md for the other ai to look at"*.
 
-**The local model plays. Claude fixes what it cannot, when asked.** No Claude cron, no Claude shells holding anything. The equator camp is over — it ended on an empty larder and the owner called the restart: a **new colony on the company scenario (Async Industries)**, started by the switch, played by the model.
+**Nothing has been trained and nothing is running on RunPod.** The owner's standing order: *"let me know before u start a training"*. Do not launch without it. Owner leans H100 (*"it would be better to use the H100 yeah?"*).
 
-## One press
+### What the owner wants
 
-| | |
-|---|---|
-| **Start** | `windows/start.bat` · `linux/start.sh` — **in the Backrooms root, not nested** (owner: *"dont nest the windows and linix folder deep they should be in the backrooms folder"*). Ollama + both models (voice pre-warmed), every service, the overlay, **the admin panel opens on screen** — then she asks **Ready?**; the game and the broadcast wait for **GO** |
-| **Stop** | `windows/stop.bat` · `linux/stop.sh` — kills **by name first** (`llama-server`, `ollama`, `obs64`, `RimWorldWin64`), then the sweep, then **prints the GPU** to prove the memory came back. **Never touches the owner's browsers** |
-| **Panel** | `http://127.0.0.1:4318/` (`windows/admin.bat` · `linux/admin.sh`) — services with start/stop, colony with **days of food**, a waiting pop-up, what needs the window, **ORDERS** (appended to `owner-orders.txt`, binding next turn), **CHAT** straight to the model |
-| Engine | `stream/services.py` — tracked; `.local/` is the dev surface. The old root `Stream Start.cmd` / `Stream Stop.cmd` now call the same `windows\*.bat` — one engine, no second standard |
+In their words, in order:
+- *"i thhink we need to make our own text to speech model"*
+- *"we make it from ground up with sampling and what we want"*
+- Spec: *"Soft, warm underneath"* + *"Bright and lively"*, *"American, mid-20s"*, *"GPU, expressive"*
+- *"#5 withpropr human expression for acutal getting emotional"*
+- *"we wont need kokoror right? once we have our own voice with no other peoples shit"*
+- *"no we dont need 3 things when we can do one our selves"* (Chatterbox was dropped and uninstalled)
+- Emotion source chosen: *"Build emotion into our model"*
 
-Services under the switch: `rimworld` (started, never stopped except by `stop`), `obs`, `twitchui`, `studio`, `face`, `twitch`, `host`, `popups`, `clock`, `heat`, `camdir`, `followcrew`, `cursorjobs`, `keepgoing`, `autopilot`, `admin`. All detached, all windowless.
+The goal: **one voice model that is ours**, sounds like a real young woman on stream, and can actually emote (choked up, laughing, panic, warm). It must run on the rig's 16 GB card beside RimWorld + OBS + the brain, and every spoken line obeys the clean-stream LAW.
 
-## What the model is, and has
+### What exists
 
-- **`.local/autopilot/`** is tracked now (it was gitignored — a clean checkout would have lost her mind): `prompt.md`, `guards.py`, `tools.py`, `gates.py`, `autopilot.py`, `owner-orders.txt`, `playbook.json`, `test/gate-routing.py`.
-- **`owner-orders.txt`** is binding at the top of every turn. It says: she IS Unity and owns the show; the new-colony procedure head to toe; **think, do not just execute** (`--think` is on); verify by result, never narration; never leave the game paused; clicks need the window — stop retrying; Twitch is hers to work.
-- **Tools she did not have until tonight:** `game_set` → the mod's own automation channel (`RimroomsAutomationComponent`, staged into the game's Mods folder): `set_zone_plant`, `set_zone_sowing`, `set_work_priority`, `set_bed_owner`, `add_bill`, `set_area` — **no mouse, no screen, works minimised**, result written back. `twitch_chat` → the real chat, title, category; every viewer reply lands in chat where they typed.
-- **Guards, in code:** allowlisted bridge only (no lua, debug, mods, load_game, main_menu, god_mode, spawn); clean-stream filter on every line; no shell; scratch-only writes; secrets unreadable; saves `rimbridge_save_*` only. **She cannot start a game** — `keep-playing.py` does that for her.
+| Piece | Where | State |
+|---|---|---|
+| Today's voice | `.claude/tools/unity-speak.py`: stock Piper `en_US-hfc_female-medium` reads every line | live |
+| Voice design | `.local/voice-lab/sample.py`, `breed.py`, `round1/`, `round2/`. Kokoro-82M style vectors blended and exaggerated from the mean voice | done |
+| The locked voice | `training/voice/unity-voice.pt` = round2 #5 (round1 #4 + #6 at 50/50, exaggerated 1.7x from the mean of 11 Kokoro American-female vectors) | locked by owner |
+| Dataset | `training/voice/make_dataset.py`: Kokoro renders #5 reading the text. Local copy `.local/voice-lab/dataset/` (gitignored): 7.63 h, 5,206 clips, 24 kHz | built |
+| Our model | `training/voice/`: `prep.py`, `model.py` (FastSpeech2-style, 24.8 M params, own aligner, pitch/energy/duration predictors), `vocoder.py` (HiFi-GAN V1, 13.9 M), `train_acoustic.py`, `train_vocoder.py`, `infer.py` (emotion presets) | written, smoke- and speed-tested, **never trained to completion** |
+| Pod pipeline | `training/voice/pod/bootstrap_voice.sh` + `run_voice.sh`, hash-locked by `VOICE_MANIFEST.json` (digest `582b1815a20f1aedd8bb788f8bd43a933432cdf61fcc38a49a63563ae2aedd7c`), cost cap, stops itself, network volume, resumable | ready, not launched |
+| Full plan | `training/voice/VOICE_PLAN.md` | current |
 
-## The ladder (PLC)
+### THE ISSUE: why it does not sound human
 
-`docs/playbook.gates.json` — measured inputs, rungs scanned by priority, highest live rung wins, a rung is unreachable until the ones below hold. `gates.py` measures the colony and hands the brief ONE chain plus the always-gate, framed as **priority + guardrails, not a script**.
+The owner heard 10 random clips **from the training dataset itself** and said it does not sound human. That is the important point: the dataset *is* the ceiling. A model trained on it can at best reproduce it, so training as things stand would spend ~$38 learning a voice the owner already rejected.
 
-```
- 0  new-colony            company start, food first, grid day one, crops the day they're drawn
- 1  dialog-open           read its own buttons, never pay, visitors always in
- 2  hostile-on-map        pause, draft, post behind embrasures, field-tend first
-2.5 heat-wave             crew through the gate
- 3  letter-unread         a raid letter is a warning, not a contact
- 4  pawn-starving         food; never boomalope, never big game under RIFLES_FOR_BIG_GAME
- 5  food-rotting          no roof = no room
- 6  perimeter-hole        copy the wall's own defName (Vin_Embrasure), lane kept clear
- 7  blueprints-no-mat     material on site or it is not a job
- 8  no-medicine           three routes; say so if none exist
- 9-15 work grid, fields, bills, research-by-search, game-paused, window-not-in-front
-20  rung-2 power+cold  21 rung-3 defence  22 rung-4 production  23 rung-5 mountain
-23.5 rung-5b the gate   23.7 rung-5c the backrooms   24 rung-6 off-world   24.5 rung-6b orbit
-99  always              chat #1 in the real Twitch chat, clean, 18 words, first person, verify by result
-```
+My diagnosis, most likely first:
 
-**Tag table:** constants that never move (`FOOD_PANIC_DAYS 1`, `RIFLES_FOR_BIG_GAME 3`, `LAMPS_PER_ROOM 2`, `ROCK_CELLS_AROUND_ROOMS 2`, `SPINE_WIDTH 3`, `MOUNTAIN_DOORS_IN 1`, `FIREBREAK_WIDTH 3`, `NEVER_HUNT`); variables recomputed from colony size each scan and written back (`FOOD_MIN_DAYS`, `FOOD_COMFORT_DAYS`, `MEAL_BILL_TARGET`, `WOOD_RESERVE`, `MEDICINE_RESERVE`, `BEDS_NEEDED`). Routing test **12/12**.
+1. **The source audio is Kokoro, and a blended, exaggerated Kokoro vector is further from human than any stock voice.** Kokoro is an 82M StyleTTS2-style model. Its stock voices are decent, but #5 is a 50/50 blend of two blends, then pushed 1.7x *away from the average voice*. That exaggeration was meant to kill the monotone, and it also pushes the style vector out of the region the model was trained on. Out there you get warbly vowels, odd formants and an uncanny "synthetic" timbre. Round 2 had less-exaggerated siblings: #2-#4 at 1.35x and #1 at 1.0x. **The cheapest test: render the same lines with round2 #1 (1.0x) and #2 (1.35x) and A/B them against #5.**
+2. **No human prosody anywhere in the pipeline.** Every clip is a TTS model reading text flat. There is no breath, hesitation, vocal fry, laughter, pitch drop at phrase ends, or uneven timing. The only variation I added was a global speed per clip (0.9-1.12). Kokoro cannot act, which the owner noticed in round 2.
+3. **Half the text is unspeakable.** About 45% of clips are "knowledge" sentences scraped from the brain's training data: mod-register boilerplate repeated hundreds of times (*"So I play X for what it does on its own, and I don't build the company plan around it."*), jargon (*"Provisional: optional injury-history UI; no Rimrooms dependency."*), licence text. No human says these lines, so they are read like a manual, and the model would learn manual-reading delivery.
+4. **The design itself caps quality.** Even a perfectly trained FastSpeech2 + HiFi-GAN on 7.6 h of synthetic speech sounds like a slightly worse copy of its source: the source's artefacts plus its own. The emotion presets in `infer.py` only shift pitch, energy and pace. That gives exaggerated robot, not emotion. Real emotion needs real emotional examples in the data.
+5. **Piper in the A/B was a confound.** In the sampling rounds I spoke the numbers with the old Piper voice before each candidate, so the owner compared candidates to Piper. Fine for picking, but nobody compared anything to a *human* recording.
 
-## New game, no clicks (2026-10-10)
+### What the next AI should check / decide
 
-Owner: *"wtf it didnt do the fucking map set up with faction adv settings pollution seed name none of it"*. `start-scenario.py` only picks the scenario row and stops at the storyteller; the mod's **`WorldSetupDriver`** does every page after that from `RimroomsAutomation/newgame.request`: Cassandra Classic / Community builder / reload anytime; **30% planet coverage, rainfall/temperature/population Normal**, seed (Unity's pick), **pollution 0**, factions — only the normal pirate gang, plus the cannibal tribe and the nudist tribe; **300×300, Spring**, a mountainous temperate forest tile (rainforest, then large hills, as fallbacks); the ideoligion **Godsmultiplayer** loaded the way the page's own Load button does; the crew from the **Prepare Carefully preset Preset3** (opened on the pawns page, preset loaded, started); the company page acknowledged; the faction and settlement named by Unity. Owner, verbatim: *"full restart on everythin and make sure it dies the game sett up correct it didnt set world shit right or load ideology and opreparecarefulkly presets"* / *"30% aas ive taught u with allthe other  settings also"*. Then **day one** (mod command `day_one`) runs with the game paused: priorities, schedule Anything, no-hard-drugs policy, Attack, rifles. Steps log to `newgame.result`. keep-playing retries at most twice and never loops world generation.
+- **Listen first.** `.local/voice-lab/dataset/wavs/` (any clip; `metadata.csv` has key|text|pace|seconds), `.local/voice-lab/round1/*.wav`, `round2/*.wav`, `unity-ref.wav`. Owner's picks: round1 #4 and #6, round2 #5.
+- **Is the timbre the problem or the delivery?** Render one natural line with round2 #1 / #2 / #5 and with the unblended parents (af_bella, af_heart, af_aoede, af_river at 1.0). If a plain stock vector already sounds human enough, the exaggeration broke it.
+- **The source-of-truth question is the owner's to decide** (ask with options). A from-scratch model cannot be more human than its training audio, and nothing that runs locally today produces human emotional speech. Realistic paths:
+  - (a) **A real person records a script** (1-2 h for a fine-tune, more from scratch), with consent. This is the only clean route to genuinely human and emotional, and it keeps "no other people's voices" literally true only if that person agrees to *be* Unity's voice.
+  - (b) **Make the source audio expressive first**, using a modern expressive TTS as the *data generator only*, then train ours on that. The owner rejected Chatterbox as a third thing (*"no we dont need 3 things"*), so present this honestly as a build-time tool, not a runtime piece.
+  - (c) **Skip from-scratch** and fine-tune a strong open expressive base on a small set of her lines. Best quality per dollar, but it is "other people's" weights, which the owner did not want.
+- **If training goes ahead on synthetic data anyway:** rebuild the dataset with talky lines only (drop the knowledge text), use a less-exaggerated voice, and add more pace and emphasis variety per line. The pipeline handles that without code changes: `make_dataset.py` takes the text, then re-run `manifest.py`.
 
-## Armed, fires on its own
+### Verified engineering (so the next AI does not redo it)
 
-- **`.local/qa/_new_colony.request`** = `Async Industries`. `keep-playing.py` fires `start-scenario.py "Async Industries"` the moment the bridge answers (it answers at the main menu — no window, no focus needed). Never a save, never the quick-test colony.
-- `clock-guard.py` runs time again whenever ticks freeze with no dialog open and no raid letter live.
-- `popup-guard.py` reads every dialog's own buttons: refuses demands, welcomes visitors, flags the rest to `.claude/.popup.json` **and the panel**. Never delete that flag.
-- `keep-playing.py` also keeps the model supplied: its files, its server, its process, the training set (`.local/train/harvest.py` — 381 good voice lines / 545 rejected as preference pairs, 55/62 tool traces landed, self-labelling).
+- **Alignment search:** compiled with numba and parallel across the batch; **0 mismatches** against a reference in 180 random cases; 48 ms vs 516 ms on GPU for 96 clips. Batched CTC equals the per-clip loss (11.80138 = 11.80138). Test: `.local/scratch/mas-check.py`.
+- **4070 speeds:** acoustic 85k frames/s; vocoder 3.41 steps/s at 93-98% GPU; both together 100% GPU.
+- **Held-out:** 2% by name hash. After a few hundred steps held-out tracks train, so it learns rather than memorizes; it does **not** mean it sounds good.
+- **Pod digest:** a fresh GitHub clone checks clean against `582b1815…`.
+- **Gotchas hit and fixed:**
+  - Git Bash rewrites `/paths` in sparse-checkout, so use `MSYS_NO_PATHCONV=1` locally; the Linux pod is unaffected.
+  - Python `open(..., "w")` on Windows writes CRLF and breaks the pod's hash check, so write with `newline="\n"`.
+  - `grep $'\r'` does not detect CR on this machine, so check bytes in Python.
+  - Never `git add` `.local/voice-lab` checkpoints: GitHub rejects files over 100 MB. They are gitignored now.
 
-## Stream
+### Other current state (same session, 2026-10-10/11)
 
-- OBS canvas **1920×1080**; the overlay's game panel is **1403×789 = 16:9**, the game's real 3840×2160, and the capture fills it edge to edge, no crop, no bars, nothing under the frame. `.local/obs/obs-fit-16x9.py` writes it into OBS's files and **golive runs it before every launch**; `.local/obs/obs-fit-panel.py` re-applies it live over the OBS websocket. Owner: *"make sure what ever is grabing rimworld screen displays the full thing edge to edge top to bottom"* / *"in twitch"*.
-- The Twitch window never asks for permissions (`--deny-permission-prompts`); the PiP prompt the owner denied was that window.
-- Voice: a real person — 25, emo goth, cold coffee, asides allowed, **never an invented game event**, never third person, never silent past **30 s**, talks between runs instead of dying.
-- **Likeness locked:** `.claude/likeness/unity-approved-2026-10-09.png` is the approved look; `unity-likeness-2026-10-09-locked.png` is the reference every frame is img2img'd from at seed 1031. **Do not re-render the reference; restore from the copy.**
-
-## Lessons that are now code or rules (2026-10-09/10)
-
-A room with no roof is not a room · blueprints need material on site or the pawn plays horseshoes · the perimeter is never another room's wall · copy the wall's own defName · a cell sweep cannot tell a trader from a raider — read the letters · a growing-zone cell has a plant on it: click fast to cycle to the zone, never act on a multi-select · read a toggle before clicking it · match the game's labels by substring · letters need virtual-key codes · verify by result, never narration · never delete a pop-up flag · never leave the game paused · a long foreground command kills the stream · `llama-server` is Ollama's child with its own name · do not touch the owner's browsers.
-
-## State, 2026-10-10
-
-| | |
-|---|---|
-| Colony | **none** — equator camp abandoned (0.02 days of food at the end); company colony armed |
-| Game | down (killed on the owner's order); the switch starts it |
-| Stack | down; **16/16 verified** against the files |
-| Branch | **cascaded 2026-10-10 (second pass, after the ask-first press and the root presses):** `feature/bug-testing` 97b1491 → PR #3 → `develop` ff39387 → PR #4 → `main` ab7eb26, all on `github`; zero feature commits missing from `main`. First pass earlier the same night: a13d86d → PR #1 → b932ea0 → PR #2 → 3d4e535. There is **no separate mod repo** — the mod is `Mod/Rimrooms - Async Industries` + `src/RimroomsAsyncIndustries` in this repo. **The DLL is not tracked**: `.gitignore` excludes `Mod/**/Assemblies/*.dll`, so a clean clone must build it (see the identities row below). `.local/` scripts ship (secrets, profiles, caches, binaries excluded). **ONE STANDARD, 2026-10-10:** GitHub's default branch was the stale `Main` (48a8f8b) — a case collision with `main` that broke `git fetch` on Windows and would have pointed any deploy or clone at the wrong code. Fixed: default branch set to **`main`**, `Main` deleted, its history kept as **`archive/Main-do-not-use`**; the same stale `Develop` (48a8f8b) was archived as **`archive/Develop-do-not-use`** and deleted. The remote now carries exactly `main`, `develop`, the feature branches and `archive/*` — no case variants; `git fetch` is clean. Owner: *"make it one only maybe archive the other with do not use"*. The one we use is **`main`** (3d4e535) |
-| Forgejo | still refuses on access rights; **held** by owner direction 2026-10-06 until the owner says the host is back |
-| Identities | Four separate things, never one: **source** = the working tree on the current branch (carries uncommitted changes until the next commit); **built DLL** = `Mod/Rimrooms - Async Industries/1.6/Assemblies/RimroomsAsyncIndustries.dll`, gitignored, produced locally by `tools/build.ps1` with its hashes in `artifacts/build/*.json`; **staged** = the copy in the game's Mods folder, proved equal to the build only by `python tools/check-package-integrity.py` reading PASS (the last audit found the staged bytes different from the build — not re-measured here); **exported** = no separate export repo now, and no public export has been inspected. Quote a hash only for the identity it was measured on |
-| Ledger guides | `PUBLISHING.md`, `HOWTO.md` and `AGENTS.md` still describe the old capitalised `Prep`/`Develop`/`Main` cascade and a mod-only repository; those passages are marked superseded by this row's lowercase `main` standard. Current decisions: [`DECISIONS_CURRENT.md`](DECISIONS_CURRENT.md) |
-| TEST | 62 → **59** tonight: QoL feature availability, the weird route thing, duplicate Defs on the clean 294 load. Two live-log defects in TODO: `ITab_Bills` float-menu NRE, out-of-bounds explosion spam. World-exit return gate proved; its open half (name the destination before committing) stays `[~]` |
-
-## On the press, 2026-10-10
-
-**Owner, verbatim:** *"when it starts up it should ask me if im ready to start the stream and game and what i want not just random do everything"* / *"when i press start i want you monitoring the model and what it does and fixing things on the fly restarting if need be till we get it right but let it learna bit beforee calling fails"*.
-
-So `start.bat` brings up the stack and the panel and **stops there**: no game, no broadcast, no colony. Unity asks — out loud and in the panel's **Ready?** card — *"Are we starting the stream and the game? Tell me what you want tonight and hit GO."* The owner types tonight's directive and presses **GO**: the directive is appended to `owner-orders.txt` as binding, then `keep-playing` launches the game (`services.py game`), relaunches OBS live (`services.py golive`), and arms the company colony.
-
-**A name means that service only (fixed on the first press, 2026-10-10):** `services.py start|stop|restart <name>` used to ignore the name and cycle the WHOLE rig — so restarting the voice also closed and relaunched OBS, Ollama and every service, and the panel's per-row start/stop buttons did the same. Now a name touches only that service (OBS is asked to close, never killed); no name still means the whole rig. The bridge guards (`popups`, `clock`, `heat`, `cursorjobs`, `host`) exit while there is no game — `keep-playing` brings them back once the bridge answers after GO, and asks for GO only once per press.
-
-Claude's job on the press: **watch the model, not drive it** — read `_svc_autopilot.log`, `_svc_keepgoing.log`, `_svc_host.log` and the outbox; fix a real fault on the fly; restart a service only when it is actually wedged; and **let her learn a bit before calling anything a failure** — one bad turn is not a bug, a repeated one is.
-
-**Next action is the owner's: press `windows\start.bat`, answer her, press GO.**
+- **Brain:** `unity-brain` (Qwen3.5-9B + LoRA, IQ4_XS) is applied in Ollama. It plays, chats and reads screens. **Its voice did not replace today's voice in the pod eval** (pass 0.944 vs 0.984), but a local 10-line A/B went brain 10 / old 6, so the owner may flip it (`training/models/brain-voice.ok`). The pods were deleted by RunPod; the gguf was downloaded first. Next training must use a network volume.
+- **Before streaming:** RimBridgeServer must be re-enabled in RimSort (the owner disabled it), or she cannot see or act.
+- **Mod:** the working copy is the game's `Mods/Rimrooms - Async Industries` (0.13.0-dev, works in multiplayer). It equals `Mod/` and the build manifest; the GitHub mod repo was re-exported to match (`51540ff`); the friends zip on the Desktop matches. **A game is open using the mod. Do NOT stage or change the game's Mods folder unless the owner says so.**
+- **Forgejo:** pushes are held, and its SSH host key changed. Unverified; ask Sponge before clearing it.
+- **Branches:** `feature/bug-testing`, `develop` and `main` are all pushed to `Unity-Lab-AI/Backrooms`; last cascade PRs #25/#26.
