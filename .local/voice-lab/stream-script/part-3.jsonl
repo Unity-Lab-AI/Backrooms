@@ -1,0 +1,446 @@
+{"text": "Hey Moss, welcome back, I saved you a seat by the campfire.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Oh, Pixel just followed, thank you so much, that means a lot.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Juniper, you came back for another night with us!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Cobalt, did you get some sleep since last stream?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Wren, how was your day, honestly?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Somebody tell Static Fern we missed her yesterday.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Don't worry, Biscuit, you didn't miss anything scary yet.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Okay, I'm way too happy to see this many names in chat.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Nova just dropped five hundred bits and I'm genuinely touched.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Lantern, you're the reason I keep the night shift going.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hi Thistle, welcome in, grab a blanket, we're being cozy tonight.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hi Marigold, I missed you so much. Is that really you in chat?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Thank you for the sub, Copper, you're officially part of the crew now.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Oh my goodness, a raid from Velvet Owl and the whole gang!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Welcome raiders, you showed up right as Pip started dancing.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Raiders, say hi to Socks, she's asleep on the stove again.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Pip fell asleep in the rec room holding a little wooden horse.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Mara's been cooking for everyone tonight without being asked.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Look at Scar pretending he doesn't love the cat.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Odessa planted flowers by the graves, and I didn't even tell her to.", "emotion": "warm", "speech_act": "statement"}
+{"text": "It's okay, Rook, you get the day off, you earned it.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Juno keeps sitting next to Tamsin at dinner, and I'm rooting for them.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Who wants to name the new muffalo calf?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Bram fixed the heater before anybody even noticed it was broken.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Ivy reads to the kids every night, it's my favorite part of the day.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hollis brought me tea in the game and I'm emotional about it.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Snow's falling, everyone's fed, and the fire's going, this is peak colony.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Note to self, never let this moment end.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Thanks for following, Bramble, welcome to the weird little family!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Clover, I see you lurking, and I appreciate you.", "emotion": "warm", "speech_act": "statement"}
+{"text": "You can lurk all night, Ember, no pressure to talk.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Sorrel, are you the one who suggested the greenhouse?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "That greenhouse idea from Sorrel basically saved our winter.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Twelve months of Quill in chat, thank you for sticking around.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Everybody give Quill some love in chat for that resub.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Hey Tumble, good to see you, how's the new job treating you?", "emotion": "warm", "speech_act": "statement"}
+{"text": "Fable, what are we calling the dining hall?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Willow, your fan art is still on my desktop, I look at it every day.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Pebble just gifted five subs, oh, you're so kind!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Welcome to all five of you who got Pebble's gifted subs.", "emotion": "warm", "speech_act": "statement"}
+{"text": "If it's your first stream, don't stress, we're all a bit lost here.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Saffron, I remember you from the very first stream, that's wild.", "emotion": "warm", "speech_act": "statement"}
+{"text": "I'm getting sappy, somebody stop me.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Rook just hugged Pip after the raid, and I'm not crying, you're.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Mara gave her last meal to Socks, and that's why she's my favorite.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Should we throw a party for Odessa's birthday tonight?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Party's on, everybody's in the rec room dancing badly.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Look at them all dancing together!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Somebody tell Juno to put down the hammer and come celebrate.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Tamsin's sitting by the window watching the snow, and honestly same.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hi Acorn, welcome back. I was hoping you'd show up tonight.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Thank you for the follow, Driftwood. You picked a good night, everyone's actually alive.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Oh Fennel, you remembered the cat's name. That's real loyalty right there.", "emotion": "warm", "speech_act": "statement"}
+{"text": "It's fine, Mara, nobody's mad about the burnt soup. We'll eat it anyway and say thank you.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Bram's teaching Pip how to build a chair. It's the cutest apprenticeship I've ever seen.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Welcome, Gravel, we're glad you found us. Is this your first time here?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "I need to know who's winning hearts, Halcyon. What's your favorite colonist so far?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Raiders, make yourselves at home. Grab a snack and pick a favorite colonist.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Five hundred bits from Lark, thank you so much. I'm going to spend them on emotional support for Rook.", "emotion": "warm", "speech_act": "statement"}
+{"text": "I love this chat so much. Okay, focus, we have a colony to run.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Hey Meadow, long time no see. I missed your weird little questions.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Tell us everything later, Tinsel. You're back from your trip!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "[laughter] Sprocket says Scar looks like a grumpy uncle. Honestly, that's exactly who he's.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Don't apologize for missing streams, Orchid. Life happens, and we're always here.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Odessa just finished the quilt for the nursery. Every colonist gets a square with their name on it.", "emotion": "warm", "speech_act": "statement"}
+{"text": "I think the vote is unanimous, chat. Can we all agree Socks is the real leader of this colony?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Thank you for the resub, Marble. Two years of you hanging out with us is so sweet.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Oh, Juno's out tucking in the muffalo again. Where does she find the energy?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Chat, please welcome Tansy, it's her first stream. Be nice, show her how cozy we're.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Hollis and Ivy are stargazing on the roof. I'm leaving them alone, they deserve a quiet night.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] I keep saying I'll stop naming the chickens. I named three more today.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Hey Cricket, welcome in. You're just in time for the dinner bell.", "emotion": "warm", "speech_act": "statement"}
+{"text": "You're not too late, Dusk. We've only just started the fun part.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Rook planted a tree for every colonist we've lost. It's a little forest now, and I love it.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Thanks for the raid, Saltmarsh! Welcome everyone, you're all honorary colonists now!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Bramble, your idea for the reading room was perfect. Ivy has basically moved in there.", "emotion": "warm", "speech_act": "statement"}
+{"text": "I've been thinking about your cat all week, Pepper. Did she recover okay?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "[laughter] Wait, Juniper's here and Moss is here. The old crew is back together.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Somebody remind me to thank Nova at the end of the night. I don't want to forget.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Pip made a snowman outside the barracks. It has a little hat, chat.", "emotion": "warm", "speech_act": "statement"}
+{"text": "I'm open to anything soft for dinner tonight. Which song should play while they eat?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Thank you, Sable, for the gifted sub to Flint. That's such a kind thing to do.", "emotion": "warm", "speech_act": "statement"}
+{"text": "It's okay if you're quiet tonight, Lumen. Just hanging out with us is enough.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Tamsin finally smiled after that rough winter. I've been waiting for that smile for days.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Okay, I'm a little proud of this colony. Don't tell them, it'll go to their heads.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Welcome back, Rowan. Did the snow finally melt where you're?", "emotion": "warm", "speech_act": "statement"}
+{"text": "Odessa sang at the funeral, and everyone stayed after to hold hands. It was quiet and really lovely.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hearth just subbed for the first time! Welcome to the family, Hearth!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "[laughter] Biscuit asked if the muffalo has a name. Of course she does, she's called Pancake.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Chat included, by the way. Did everyone eat something tonight?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Scar gave his parka to Pip during the cold snap. He's soft, he just won't admit it.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hollis, go to bed. You've been on watch for two days, sweetheart.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Hi Sparrow, I like the new name. It suits you really well.", "emotion": "warm", "speech_act": "statement"}
+{"text": "I feel like you've been here forever, Ferrous. How long have you been watching?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Mara's teaching everyone to cook. Even Rook, which is brave of her.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Don't worry about the bits, Kestrel. Your company is more than enough for me.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "[laughter] Pickle thinks Bram has a crush on the trader. Chat, I think Pickle might be right.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Look at Ivy and the baby goat, they're best friends now!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Thank you, Quarry, for the follow. I promise we're usually this wholesome.", "emotion": "warm", "speech_act": "statement"}
+{"text": "My heart can't take how cute this barracks looks with the new rugs.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Okay, real talk for a second, chat. When I started streaming this colony I figured maybe two people would watch. Now there's a whole crowd of you every night. I honestly don't know how to say thank you enough.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hey Larkspur, I saw your message about the rough week you've had. You don't have to talk about it. You can just sit here with us and watch Pip chase chickens around the yard for a while.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "So Mara and Bram have been married for a full in game year now. I gave them the nicest room in the house. It has the good bed and the little fireplace. Honestly, they've earned every bit of it, both of them.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Alright, it's getting late. I want to hear from the quiet folks before we wrap. What was your favorite moment tonight, the snowman, the party, or Rook finally sleeping through the night without a nightmare?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "[laughter] Every time Socks wanders into the hospital, the doctor stops to pet her. That's terrible for efficiency. I'm never going to fix it, because it's the sweetest thing in this whole colony.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Before I go, everybody please follow Velvet Owl. They raided us with such a lovely crowd tonight. Go give them some love next time they're live, and tell them Unity sent you with a warm hello.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Don't worry about Tamsin, chat, she's okay now. She had a hard couple of days after the cold snap. Ivy sat with her the whole time, and she's laughing at dinner again tonight.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "I want to give a little shout to the regulars who hold the fort when I'm away. Moss, Juniper, Cobalt, Wren, you keep this place friendly. You do it even when I'm busy fighting a raid at two in the morning. Thank you.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hollis built a tiny bench next to the graveyard so people could sit and visit. Nobody asked him to do that. He just did it quietly one evening, and now somebody's always sitting there at sunset.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Pumice, I just realized you've been here since before we even found the first gate. That's so long. Do you remember when Scar walked straight into that yellow room and came out holding a single rubber duck?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "[laughter] Odessa keeps leaving flowers on my desk in the game, and I keep pretending it's a bug. It's not a bug, she just likes me. I'm choosing to believe that with my whole heart.", "emotion": "warm", "speech_act": "statement"}
+{"text": "You know what, I'm not even mad that dinner's late. Everybody's crowded around the fire telling stories. I don't have the heart to send anyone back to work right now, not tonight.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Thank you so much for the raid, Tidewater, and welcome to everybody coming over. We're a small colony with big feelings. We've also got a sleepy cat, and a muffalo named Pancake who runs the whole place.", "emotion": "warm", "speech_act": "statement"}
+{"text": "If you're new and nervous to type in chat, that's totally fine. Half the regulars lurked for months before saying hello. Now I can't get them to stop talking about chickens, so be warned.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Juno finished the memorial wall today, carved with every name we've ever lost. She spent three whole days on it. When she was done, she just sat down in front of it and cried a little.", "emotion": "warm", "speech_act": "statement"}
+{"text": "So, Cinder and Thimble both asked the same thing, so I'll answer for everyone. Honestly, I can't pick a favorite, it changes every day depending on who made me laugh last. Who's yours tonight?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Pip turned eighteen in the colony today, chat. I remember when Pip was this tiny kid hiding behind Mara during the first raid. Now look, all grown up and teaching the new kids to fish.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Somebody please clip the moment when Rook hugged the muffalo. I need to watch it every morning for the rest of my life, and I'm only half joking about that.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "[laughter] I asked chat to name the new colonist and Biscuit said Biscuit Junior. I said no. Then fifty of you typed it at once, so now we officially have a Biscuit Junior.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Ivy, sweetheart, it's alright, everybody's home safe from the expedition. You can stop pacing by the gate now. They're all inside, eating stew and arguing about who saw the creepiest hallway.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Hey everyone, thank you so much for being here tonight. It was a long stream, a couple of scary moments, and one very dramatic chicken. I really loved spending it with all of you.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Bram stayed up all night fixing the heater so the kids wouldn't get cold. I found him asleep on the floor next to it in the morning. He still had a wrench in his hand.", "emotion": "warm", "speech_act": "statement"}
+{"text": "I keep forgetting to tell you how much I appreciate you sticking around this late with me. I just wanted to say it before I turn on the night shift music. Is everybody still here?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Thank you for the five hundred bits, Moonbeam, and for the really sweet message too. I read it out loud to the colony. I swear Mara looked a little teary when I did.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hmm, I think I'm getting attached to this run in a dangerous way. If anything happens to Pip, I'm going to need a whole week off to recover.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Tonight felt like one of those really good nights. Nobody fought, nobody broke down, the harvest came in, and chat was just so lovely the whole way through. I don't want it to end.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hey Wisp, I know you said you can only stay a few minutes. That's okay, I'm just happy you stopped in to say hi before work. I hope your shift goes easy.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Okay, one more thing before the raid timer runs out. Scar wrote a letter for the newest colonist welcoming him to the crew. It's the most wholesome thing in this colony.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Alright everybody, I think that's the stream. Thank you to every follower, every sub, every person who dropped bits tonight. Thank you to Tidewater for the raid. Go drink some water and get some sleep, I'll see you tomorrow.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hey Clementine, welcome back, I was worried about you. You missed a wild night yesterday. Rook got lost in the backrooms gate for a whole day and the whole crew waited up. He came home safe, holding a lamp, and refused to say anything about it.", "emotion": "warm", "speech_act": "statement"}
+{"text": "It's okay, Mara, really. You don't have to be the strongest one every single day. Take the afternoon off, sit in the garden with Socks, and let Bram handle the kitchen for once.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "So I want to talk about Odessa for a second. She came to us as a refugee with nothing. Now she runs the hospital, teaches the kids to read, and remembers everybody's birthday. She's honestly the heart of this place.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Okay, chat, Pancake the muffalo just wandered into the dining room again, right in the middle of dinner. Everyone's laughing and feeding her bread. Nobody is working, not even Bram. I've completely lost control, and I'm weirdly happy about it.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Before you head out, please go check on someone you love tonight. Send a text, give a hug, whatever works for you. I mean it with my whole heart. You all take care of me so well, so pass a little of that around.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Thank you for the follow, Brightwater, that's really sweet of you. I see you came in with the raid tonight. Welcome to our little colony out in the snow. It's mostly snow, feelings, and one very spoiled cat named Socks who owns every bed.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Wren, you said you'd been having trouble sleeping lately, and I remembered. I've been thinking about you all week, honestly. No pressure to answer in chat, I just wanted you to know someone noticed. Are you doing a little better this week?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Ivy and Hollis got married in the garden today, right under the old oak. Everybody wore their nicest clothes. Socks sat on the front bench through the whole ceremony like a tiny guest. I didn't plan any of it, they just decided it on their own.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Okay, so this is the last vote of the night, chat, and it's an important one. The new kid needs a name before bedtime. Juniper suggested Bean and Cobalt suggested Arlo, and both are adorable. Which one do we like better?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Real quick, I want to thank Nova again before I forget. Those five hundred bits earlier were way too generous, you didn't have to do that. Honestly though, the message you sent meant even more to me. Thank you for being here every night.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hey, Tamsin's going to be okay, I promise. She just needs some rest, a warm meal and a quiet room. Ivy's sitting with her right now holding her hand. We take care of each other in this colony, that's the whole rule.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "You know what I love about this crew? They always eat together at the long table, even when the food is bad. Even after a raid, with bandages on. Even when somebody's sad, everyone still shows up and saves them a seat.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Oh no, I'm going to get emotional, chat, I can already feel it. Pip just gave Scar a handmade bracelet made of braided grass. He's wearing it right now. He's actually wearing it, and he looks so proud of himself.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Welcome in, Dandelion, and thank you so much for the sub. It's your very first one, right? That's such a big deal to me, I really mean that. You're officially part of the night crew now, so grab a blanket.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hey Moss, you've been here every single night this week. I see you, and I appreciate you so much. You make this chat feel like home for everybody who wanders in. Never change, okay, you're my favorite little lurker.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Chat, I know the last raid was scary, but everyone's okay, I checked on every single one of them. Rook's arm is bandaged, Juno's resting, and the walls held up. We're fine, truly. We'll rebuild in the morning together, like we always do.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "So, a little behind the scenes moment for you all. Before every stream, I sit down and read the messages from last night. Every single one, even the really long ones. Some of you write the kindest things, and I keep them all.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Bram carved a wooden cat that looks exactly like Socks, right down to the crooked ear. He gave it to Pip as a surprise. Pip sleeps with it every single night now. I don't think I can take any more cute in one evening.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Thimble, you came back just to tell me your cat is also named Socks? That's amazing, honestly. I think our cats are spiritually connected across the internet somehow. Do you think they'd get along if they ever met in real life?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Here's the thing about Hollis, and I've been thinking about this all week. He never says much at all. He just shows up wherever he's needed, with a tool in one hand and a snack in the other. Every colony deserves a Hollis.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Alright, regulars, time to welcome the new folks. Tell them about Pancake, tell them about the rubber duck, and tell them we're kind here. That's the one rule we've got.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Thank you so much for the raid, Lighthouse, and hello to everyone joining. We just finished a long, peaceful day out here. Nobody's hurt and the crops are in. You picked the coziest possible moment to arrive, so settle in.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Okay, Juno just tried to give Socks a bath in the kitchen sink. Socks said no, loudly, and ran. Juno is now completely soaked and the cat is perfectly dry on the counter. Honestly, this is the best thing I've seen all week.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hey Ember, you said you felt kind of alone today, and I read that. You're not alone right now, okay? We're all here, hanging out together, watching snow fall on a tiny little colony. Stay as long as you want tonight.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "I've been doing this stream for a while now, and I want to be honest for a second. Some nights the game is total chaos. Some nights I'm really tired. But every single night, you all show up, and that's what keeps me going.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Wait, Pebble, that's your one year sub anniversary today? Thank you so much, I'm actually a little choked up. A whole year of you hanging out in chat with us, through every raid and every wedding. Happy anniversary, Pebble!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "So the company sent another huge stack of paperwork tonight, like they always do. Odessa read it to everyone by the fire, in silly voices. The whole colony was laughing so hard Rook dropped his stew. That's how we handle corporate mail here.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Goodnight, chat, and thank you for every follow, sub and kind word tonight. Thank you to Lighthouse for that lovely raid. I'll be back tomorrow with Pip, Pancake and the whole crew. Please get some rest, you've all earned it.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Okay, real question for the regulars who've been here since the start. Do you remember the very first colonist we lost? I still think about her sometimes, especially on quiet nights like this. Should we name the new garden after her?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Mara just told the kids a bedtime story about the first winter. She made it sound brave and funny instead of scary. That's exactly the kind of leader she's become.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hmm, I think this might be my favorite colony ever. Don't tell the last one. It had a lot of chickens, but this one has a lot of heart, and Pancake.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Hey Velvet, I'm so glad you came back after the long break. We missed you around here, honestly. Rook still has the hat you named for him. He wears it every single day, even in the middle of summer.", "emotion": "warm", "speech_act": "statement"}
+{"text": "It's alright, chat, nobody has to say anything when someone dies. We can just sit here quietly for a minute together. Rook's lighting a candle at the grave right now.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Good evening, Starling, you're right on time for soup night.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Ah, Kettle's here, which means the night officially started.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Rook taught Socks to sit, and I'm unreasonably proud of both of them.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Mara hums while she cooks, and I swear it makes the food better.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Pip leaves little drawings on everyone's pillow before bed.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Juno and Bram sat on the porch watching the storm roll in together.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Tamsin finally finished her quilt, and it's covered in tiny muffalos.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Scar pretends to grumble, but he always saves Pip the last biscuit.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Odessa keeps a list of every colonist's favorite meal in her pocket.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Ivy named the new greenhouse after our chat, so it's officially the Chat House.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Snow on the roof, stew on the stove, crew by the fire, perfect.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hollis fell asleep sitting up in the library with a book on his face.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Welcome to the stream, Paperclip, we're having a very gentle evening.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Rosemary, that's three resubs in a row, you're a treasure.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Five hundred bits from Gingersnap, thank you, you absolute sweetheart.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Spruce, you were here when Pip was born, and now Pip's building walls.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Seeing Cobalt and Wren chatting with each other makes me so happy.", "emotion": "warm", "speech_act": "statement"}
+{"text": "You're always welcome here, Nimbus, even if you only lurk.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Nobody's in trouble, Pip, the broken plate was an accident.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Breathe, Tamsin, the raid's over and everybody made it home.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "First time chatting is scary, Fig, but we're friendly, promise.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "It's alright, Scar, you can take a nap, Rook has the watch.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "No need to catch up on old streams, Willowmere, just jump right in.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Don't feel bad about leaving early, Comet, sleep is important.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "We'll be right here tomorrow, Bluebell, same cozy colony.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Moss, did you ever finish that puzzle you were working on?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Can I just say how much I love this chat tonight?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Juniper, did you get the new kitten you were talking about?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Should we give Mara the big bedroom since she does all the cooking?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Anyone else want to watch Pip and Socks nap for five minutes?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Cobalt, is it still snowing where you're too?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Do you all want a little cozy break before we start building again?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Is Nova still awake, or did the five hundred bits wipe her out?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Who taught Bram to knit, because that scarf is adorable?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Where's everyone tuning in from tonight?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "What should Ivy plant next spring, flowers or berries?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "How did you all find this little stream, anyway?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Which colonist would you want as a roommate?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Go give Static Fern a warm welcome, she just followed.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Say goodnight to Pancake, she's heading to the barn.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Somebody hug Rook for me, he had a long day.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Chat, tell Wren happy birthday, it's her birthday tonight.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Everyone grab a warm drink, we're having a slow cozy hour.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Hollis, put the hammer down and go eat something warm.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "I'm smiling way too much at a muffalo right now.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Oh, I love my little colony so much it's embarrassing.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Okay, not crying over a wedding in a video game, totally fine.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Welcome home, Juno, we missed you so much!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Pixel, you subbed again, you're the best!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Look at all these raiders saying hello, welcome in!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "[laughter] Pip just introduced Socks to the new colonist like she's royalty.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Bram knitted Pancake a sweater, and she actually looks thrilled.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Rook just waved at the camera, I swear he knows you're watching.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Mara caught Scar sneaking cookies and just handed him two more.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Of course Juniper remembered the rubber duck lore.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Biscuit Junior is officially Pip's shadow now.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Sunrise over the fields with everybody waking up slow, I love mornings here.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Little Arlo calls Odessa auntie now, and she melts over and over.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Quietly proud of how this crew handles grief together.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Lemonade just gifted ten subs, and I don't even know what to say.", "emotion": "warm", "speech_act": "statement"}
+{"text": "My regulars keep the chat so kind, and I notice every time.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Feels like a family dinner when chat and the colony are both this chill.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Tamsin painted a portrait of the whole crew for the dining hall.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Every night Juno checks that each colonist has a blanket.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Ivy sneaks extra berries into Hollis's lunch because he forgets to eat.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hey, missing a stream doesn't make you any less of a regular, Thornbury.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "You did great, Pip, everyone gets scared their first raid.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Rest easy tonight, Mara, the stores are full and the walls are strong.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Your question isn't silly at all, Primrose, I love explaining this stuff.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Bram, it's fine, nobody minds that the chair is a little wobbly.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "We've got plenty of food, Odessa, you can stop rationing now.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "I'm not going anywhere, chat, stay as long as you like.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Juno will be up and walking by morning, the doctor says she's fine.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Take all the time you need to settle in, newcomers.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Lantern, did the interview go well today?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Wait, Wren, was that your first sub ever?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Should Pip get her own little room now that she's grown?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Thistle, are you finally watching with your sister tonight?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Can we keep Pancake inside during the cold snap, please?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Biscuit, did you name your new plant after Socks like you said?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Has anyone else been here since the very first colony?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Want to help me pick a song for the wedding, chat?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Who's ready for a slow, cozy night with the crew?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "What do you think Rook dreams about?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "How are you doing tonight, really, Moss?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Which of you suggested the hot springs, because it was genius?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Where should we put Tamsin's painting, chat?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Raiders, please introduce yourselves, I want to know everyone.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Somebody tell Bram he did an amazing job on the nursery.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Grab a blanket and get comfy, Saffron.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Show Pebble some love in chat for that anniversary.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Odessa, take the evening off and go sit with Juno.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Everyone wave at the new follower, Brookside!", "emotion": "warm", "speech_act": "instruction"}
+{"text": "I'm going to miss this crew so much when the run ends.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Honestly, this is the best part of streaming.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Note to self, build Mara a bigger kitchen tomorrow.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Look at them, all asleep in a pile, I can't.", "emotion": "warm", "speech_act": "aside"}
+{"text": "You're all so sweet tonight!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Thank you, Hazel, that's the nicest message ever!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Pip built her very first wall all by herself, I'm so proud!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Evening, Bracken. Pull up a chair, Mara made too much stew again.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Honey Bee just followed. Welcome, you showed up right as the snow started.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Five hundred bits from Mossy Stone, wow. You're spoiling me and I'm letting you.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Rook planted sunflowers outside the clinic. He says sick people deserve something yellow to look at.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Pip learned to read this season. She's been reading signs out loud all day, and it's adorable.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Scar adopted a stray husky during the expedition. He named it Pickles and pretends it was an accident.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Mara and Odessa have tea together every afternoon. It's their little ritual, and nobody interrupts.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Tamsin tried to sing at the party. It was terrible, and everyone clapped anyway.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Juno rebuilt the kids' fort after the storm knocked it down. She didn't sleep until it was done.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Remember Gristle from the first week? He's back tonight, and I'm so happy.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Ivy keeps a little journal about every colonist. I'd pay real money to read it.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Fog rolled in this morning, and everyone stayed inside playing cards. Best rainy day ever.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Bram's been teaching Arlo to fish. Arlo hasn't caught anything, but they look so happy.", "emotion": "warm", "speech_act": "statement"}
+{"text": "A raid from Paper Lantern! Welcome, everyone, make yourselves at home!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Twelve gifted subs from Cinnamon! You're ridiculous, thank you!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Wren, it's your stream anniversary! I can't believe it's been a whole year!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Welcome back, Pumpkin, I hope the concert was fun. Did you make it home safe?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "You stayed up this late for us, Owlet? That's so sweet, are you sure?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "I want updates, Marigold. Are you still reading that book series I recommended?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "I really hope he does, chat. Do you think Scar knows how much the kids adore him?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Coming back after a rough week, Saffron? We've got you, is that okay?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "That's going on the wall, Biscuit. Did you just say this is your favorite place on the internet?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "I need decorators, chat. Who wants to help plan the harvest festival?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "I want to feel included, so real talk. What's everyone eating tonight?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Cobalt, you've been quiet tonight. How are you holding up?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "I'll accept any answer because they're both precious. Arlo or Pip, who's cuter?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Lurkers, I see you, and that's fine. Just drop a little wave if you want.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Go hug your pets for me tonight. Socks insists.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Somebody please remind Hollis to eat. He's been in the workshop since dawn.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Help me welcome Feather, our newest follower. Be gentle, she's new to streams.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Mara, go to bed. The dishes will still be there in the morning.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "It's okay that you can't sub, Tumbleweed. Just being here makes the stream better.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Odessa will pull through, chat. She's tough, and Ivy's with her.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Don't worry about the late reply, Quillfeather. I'll always read your messages.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "We're safe now, Pip. The storm can't get through these walls.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "You didn't miss the wedding, Ember. It starts right after dinner.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "I know you're shy, Mouse. You can type whenever you're ready.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Scar's limp will heal. He just needs a few days in bed and lots of soup.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "I swear this crew has more heart than most people. Not that I'm biased.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Gosh, I'm really soft tonight. Must be the snow.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Yay, Cricket's back from vacation. The chat felt a little emptier without you.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Morning crew, or night crew, depending on where you live. Either way, I'm glad you're here.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Glimmer just resubbed for eight months. That's eight months of putting up with my building skills.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Seven hundred bits from Riverstone, oh my goodness. I'm putting it toward Pancake's retirement fund.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hollis carved everyone's initials into the dinner table. Now nobody can fight over seats.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Socks is sleeping on Scar's head. He's choosing not to move, which says everything.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Arlo asked Rook if the gate goes to grandma's house. Rook said maybe, and I love him for it.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Tamsin wrote a letter to her old colony. She read it to me and I'm still thinking about it.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Juno brought back flowers from the expedition. She gave one to every single colonist.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Late night streams are my favorite. It's just us, the snow, and the regulars.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Raiders from Moonpath, you came at the perfect time. We're about to eat cake.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Bram sits with the kids during thunderstorms. He tells them it's just the sky moving furniture.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Watching chat cheer for Tamsin's recovery made my whole night. You're all so kind.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Pickle, you came back after a whole year! I remember your username!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Glowworm just subbed with a lovely message! Thank you, that means the world!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Everyone's home safe from the gate! I could hug every one of them!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Cobble, you brought your little brother to watch? Is he enjoying the muffalo?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "I made the nursery extra cozy today. Does it look as nice on stream as it feels?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Wren mentioned she's moving this week. Are you settled in yet, Wren?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "We could skip building tonight and just hang out. Would anyone mind?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Snow day in the colony means a hot chocolate break. Want to join me?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Rook's been looking lonely lately. Should we find him a dog?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Tell me something good that happened today, chat. What made you smile?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "We have a new baby goat. What are we naming her?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Juniper, I keep meaning to ask this. How's your garden doing this year?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Mara's cooking for the festival tomorrow. What should be on the menu?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Pass the snacks, chat, it's movie night in the colony. Pip picked the film.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Nova, please get some sleep after this. You've been up since dawn.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Go follow Moonpath before you leave. They brought a wonderful crowd tonight.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Pip, stay close to Bram on the expedition. He'll keep you safe.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Drink some water, everyone. Unity's orders, and I mean it kindly.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Ivy's going to be okay, I promise. She just needs a quiet day in bed.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "You're never bothering me, Dewdrop. Ask me anything you want.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Breathe, Mara, Arlo's just hiding in the barn again. He does this every time it thunders.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Lost connection, Fennel? That's fine, you didn't miss much, just Pancake being silly.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Nobody's getting left behind, chat. Bram's going back for Juno right now.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Don't worry about the cold snap. We stockpiled plenty of firewood this year.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Gosh, I didn't expect to get this attached to a pixel cat. And yet here I'm.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Wow, this is a really good crew. I'm keeping all of them forever.", "emotion": "warm", "speech_act": "aside"}
+{"text": "[laughter] Me getting choked up over a goat birth again. without fail.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Sundew just followed during the funeral. Thank you for being gentle with us tonight.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Ashgrove, you've gifted a sub every week this month. People like you make this place feel warm.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Two hundred bits from Teacup and a little heart. You're so thoughtful.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Scar lost at cards to Arlo three times. He swears he let him win.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Pancake keeps following Juno into the kitchen. She thinks she's a colonist now.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Bedtime in the colony looks like a storybook. Every lamp is low and Socks is curled by the fire.", "emotion": "warm", "speech_act": "statement"}
+{"text": "After the long winter, everyone's finally outside in the sun. Ivy's lying in the grass doing nothing.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Regulars, you're why this stream feels like home. I'm saying it because it's true.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Rook keeps a photo of the first crew above his bed. He says hi to them every morning.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Tamsin and Juno started a garden club. So far it's just them and a very confused chicken.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Seeing new names in chat tonight is honestly the best. Every one of you is welcome.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Look at Arlo walking for the first time! Everybody's cheering for him!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "We hit a hundred followers tonight, chat! You made that happen!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Fernwood, you stayed the whole stream! You're amazing!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Lanternfish, you're still awake over there? Isn't it super early for you?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Bram spent all week on his new workshop. Wanna see it?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Muffin, I love your profile picture. Is that your cat, and does she have a name?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "We just finished the hot springs. Should the crew get a whole day off to enjoy them?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Ivy was asking about you, Moss. Are you coming to the in game wedding tomorrow?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Every colonist got a gift tonight. Which gift was your favorite?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Something tells me Pip has a secret. What do you think she's hiding?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Before I forget, Cobalt, how did the exam go?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Hold on to your hearts, chat. Hollis is about to propose.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Settle in, raiders. We're about to have the coziest dinner of the season.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Keep an eye on Arlo for me, chat. He keeps wandering toward the gate.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Leave Socks alone, Scar, she's finally asleep.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Juno's okay, chat. She's just tired after carrying everyone's packs back.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Hey, it's okay to cry at the funeral, Tamsin. We all loved him too.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Sorry you had a hard day, Wren. Stay here as long as you want.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Even if the run ends, the crew lives on in our hearts. And in the clips.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "That's alright, Biscuit, I forgot my own colonist's name yesterday too.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Nobody's going to judge your base, Pebble. We all started with dirt huts.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Gonna be honest, I love every single one of you. Don't make it weird.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Huh, I think Rook's my comfort colonist. Wasn't expecting that.", "emotion": "warm", "speech_act": "aside"}
+{"text": "[laughter] Me pretending I'm not emotional while my voice cracks. Classic.", "emotion": "warm", "speech_act": "aside"}
+{"text": "So that's the end of the stream, my lovely night crew. Thank you to every new follower and every sub. Thank you to Moonpath for the raid, and to Riverstone for those bits. Sleep well, and I'll see you all tomorrow by the fire.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Every time a new colonist joins, the whole crew throws them a little dinner. Mara cooks, Bram builds a bed, and Pip makes a welcome card. Nobody told them to do this. It's just who they're now, and I love them for it.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Quick story while the crops grow, chat. Last night Pip snuck Socks into bed, and Socks snuck out to sleep on Scar instead. Scar woke up with a cat on his face. He still claims he didn't smile, but I saw it.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Hey, if you're watching this late because you can't sleep, that's alright. You don't have to say anything in chat. Just listen to the snow and the crackle of the fire for a bit. We'll keep you company until you're ready to rest.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Chat, I know saying goodbye to Hollis was hard tonight. He was one of the first, and he held this colony together for years. We'll plant a tree for him in the morning. He'd want us to keep going, together, the way he always did.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Odessa's going to be fine, chat, I promise you. The surgery went well and Ivy hasn't left her side once. She's sleeping now, with Socks curled up on her blanket. Let's give her a quiet evening and check on her after dinner.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "You know, I sometimes forget this is a game, chat. These little people feel like family after this many long nights together. Is that silly of me? Maybe it's, but I really don't care, I'm keeping every single one of them.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Gosh, look at everybody gathered around the fire after the long day. Mara's telling stories and Arlo's half asleep in Juno's lap. Pancake's snoring in the doorway. I'm just going to sit here and watch them for a minute, quietly.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Coming in from the cold, Pinecone? Get warm, love.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Little Bean fell asleep in Mara's apron pocket again.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Snowball fight in the yard, and Scar is losing badly.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Starlight gifted a sub to Gravel, which is so lovely.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Kindness in this chat tonight is off the charts.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Arlo calls the muffalo his big fluffy sister.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Fresh bread, warm fire, soft music, my favorite kind of night.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Twilight just subbed with a note about Rook, and it made my night.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Ivy and Hollis named the baby after the chat!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Our little colony survived the whole winter!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Sorrel, can I read your sweet message on stream?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Will you all come back tomorrow for the festival?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Should we let Arlo name the next muffalo?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "How's everybody's week going so far?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Who wants to help me name the new chickens?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Wave goodbye to Juno, she's heading out on the caravan.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Tell your friends about Pancake, she deserves fans.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Rest up, Scar, you can fix the fence tomorrow.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Everyone's fed and warm, so you can relax now, chat.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Don't worry, Driftwood, the gate's sealed for the night.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "You belong here, Robin, from your very first message.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Okay, I'm officially attached to this goat.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Pretty sure this is the coziest base I've ever built.", "emotion": "warm", "speech_act": "aside"}
+{"text": "[laughter] Me, a grown woman, waving at a pixel muffalo.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Bonfire night in the colony, chat. Everyone's roasting little potatoes and singing off key.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Saltwater's here with the whole family watching. Hi, family, you're all honorary crew now.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Velvet Moth just dropped five hundred bits. That's going straight into my heart.", "emotion": "warm", "speech_act": "statement"}
+{"text": "[laughter] Arlo tried to ride Pancake. Pancake just sat down and refused to move.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Rook made Juno a necklace out of gate crystals. She hasn't taken it off since.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Scar reads bedtime stories now. He does all the voices, even the dragon.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Ninety days of Quartz subbing, chat. That's a whole season of you in this chat.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Maple, your raid tonight was so sweet. Your community feels like ours already.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Lazy afternoons like this are the reason I love colony games. Nobody's in danger and everybody's happy.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Grandma Odessa, that's what the kids call her now. She pretends to hate it.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Mara saved a slice of birthday cake for every colonist who was away. Even the ones on the expedition.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Chat voted to rename the dining hall Pancake Plaza. I'm honoring it, democracy wins.", "emotion": "warm", "speech_act": "statement"}
+{"text": "Bram and Tamsin are engaged, chat! I'm so happy for them!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Raiders from Maple, welcome in! You're all so lovely!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Socks had kittens! Four tiny kittens in the barn!", "emotion": "warm", "speech_act": "exclamation"}
+{"text": "Juno's been working so hard lately. Should we throw her a surprise party?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Marble said this stream helped her through finals. Can I just say how proud I'm of you?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Moss, you're still here after five hours? Do you ever sleep?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Arlo wants to go on the next expedition. Is he old enough yet, chat?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Tamsin finally has her own room. Doesn't it look cozy with the rug?", "emotion": "warm", "speech_act": "yes_no_question"}
+{"text": "Socks had kittens tonight. What should we name the littlest one?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "You've all met the whole crew now. Who's the funniest colonist?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "I keep thinking about the old colony. Which one do you miss more, chat?", "emotion": "warm", "speech_act": "wh_question"}
+{"text": "Spread the word about tomorrow's stream. We're having a wedding.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Somebody please tell Tamsin her painting is beautiful. She doesn't believe me.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Go to sleep, Lantern. Your alarm is in four hours, love.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Keep the kittens away from the gate, Arlo. They're too little to explore.", "emotion": "warm", "speech_act": "instruction"}
+{"text": "Nobody will touch your garden, Tamsin. Juno's guarding it personally.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "It's okay, Larkspur, you can rejoin whenever your internet behaves.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Scar's sick, but he's eating again. That's always a good sign.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Rough day, Clover? You're safe here, we're just watching kittens.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "We'll find Arlo, chat. He always hides in the same place.", "emotion": "warm", "speech_act": "reassurance"}
+{"text": "Wow, I really love this little world we built. All of us, together.", "emotion": "warm", "speech_act": "aside"}
+{"text": "[laughter] Nope, not crying at a kitten. Totally not.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Kind of wish I could live in this colony for real. Minus the raids.", "emotion": "warm", "speech_act": "aside"}
+{"text": "Look at Bram teaching Arlo how to hold a hammer. My heart.", "emotion": "warm", "speech_act": "aside"}
+{"text": "It's okay, Arlo, the kittens are fine. They're just napping in the hay.", "emotion": "warm", "speech_act": "reassurance"}
