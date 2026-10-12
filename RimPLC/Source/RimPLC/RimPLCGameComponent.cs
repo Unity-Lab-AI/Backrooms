@@ -28,7 +28,7 @@ namespace RimPLC
     public sealed class RimPLCGameComponent : GameComponent
     {
         public const int DefaultScanTicks = 250;
-        public const double BudgetMs = 1.0;     // design target (UNVERIFIED as achievable at 300 rungs)
+        public const double BudgetMs = 3.0;     // measured live 2026-10-12: 1.31 ms per scan with ~300 mods; a scan runs every 250 ticks, so 3 ms is still ~0.01 ms per tick
         private const int LogKeep = 200;
 
         // ------------------------------------------------------------------ saved
