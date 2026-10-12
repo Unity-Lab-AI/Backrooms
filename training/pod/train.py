@@ -40,6 +40,7 @@ model = FastLanguageModel.get_peft_model(
 tok = getattr(proc, "tokenizer", proc)                      # the multimodal processor wraps the text tokenizer
 tools = json.load(open(os.path.join(D, "tools.json"), encoding="utf-8"))
 
+IMAGE_TOKEN = getattr(proc, "image_token_id", None) or tok.convert_tokens_to_ids("<|image_pad|>")
 SPAN = re.compile(r"<\|im_start\|>assistant\n(.*?<\|im_end\|>)", re.S)
 rows, skipped, cut = [], 0, 0
 for line in open(os.path.join(D, "train.jsonl"), encoding="utf-8"):
@@ -76,6 +77,9 @@ for line in open(os.path.join(D, "train.jsonl"), encoding="utf-8"):
     # pixel_values as Python lists took ~1.5 GB each and the pod was OOM-killed at step 8 (2026-10-12). Every row
     # carries the key (empty for text rows) because Dataset.from_list takes its columns from the first row.
     row["image_paths"] = list(images)
+    # Qwen3.5's multimodal RoPE needs to know which tokens are image tokens whenever an image is in the batch
+    # (1 = image token, 0 = text), built from the image placeholder id so it never depends on processor flags
+    row["mm_token_type_ids"] = [1 if t == IMAGE_TOKEN else 0 for t in row["input_ids"]]
     rows.append(row)
 print("examples", len(rows), "skipped", skipped, "cut to seq", cut, "longest tokens",
       max(len(r["input_ids"]) for r in rows), flush=True)
@@ -95,6 +99,8 @@ def collate(batch):
         img = proc.image_processor(images=pics, return_tensors="pt")   # same processor and settings as tokenizing
         out["pixel_values"] = img["pixel_values"].to(torch.bfloat16)
         out["image_grid_thw"] = img["image_grid_thw"]
+        out["mm_token_type_ids"] = torch.tensor([b["mm_token_type_ids"] + [0] * (n - len(b["mm_token_type_ids"]))
+                                                 for b in batch])
     return out
 
 
