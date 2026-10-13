@@ -9,6 +9,8 @@ Owner, 2026-10-13: "the prep for the vocie repase multipass run" (and: never sta
                     the only full checkpoint is step 25000), a fresh discriminator trained alone first
   pass 4  ab        the same preview lines through live (old acoustic + old vocoder) and new (new + new), F0/accent
                     metrics side by side -> <out>/ab/ + ab-report.json. Nothing goes live: the owner listens first.
+  pass 5  package   the new voice as its own model: models/unity-voice-v2/ (owner: "this vocie model will be ...-v2 and a
+                    folder in model also ...-v2"); models/unity-voice/ is never touched
 
   python local_multipass.py --check          verify every input/identity/hash/VRAM; trains nothing
   python local_multipass.py                  run passes 1-4 (each skipped when already complete)
@@ -27,7 +29,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 LIVE = HERE.parent.parent / "models" / "unity-voice"
-PASSES = ["prosody", "gta", "vocoder", "ab"]
+PASSES = ["prosody", "gta", "vocoder", "ab", "package"]
 
 
 def log(out, msg):
@@ -188,6 +190,32 @@ def pass_ab(args, out):
     log(out, "ab: " + json.dumps(report) + " -> " + str(out / "ab") + " (owner listens; nothing deployed)")
 
 
+V2 = HERE.parent.parent / "models" / "unity-voice-v2"   # owner: "this vocie model will be ...-v2 and a folder in model also ...-v2"
+
+
+def pass_package(args, out):
+    """The new voice as its own model, models/unity-voice-v2/: same runtime code as the live voice, the new acoustic
+    model, the polished vocoder stripped to deployable weights, and the new identity. models/unity-voice/ is untouched;
+    switching the stream to v2 is a separate step after the owner has listened."""
+    import torch
+    vdir = out / "vocoder"
+    V2.mkdir(parents=True, exist_ok=True)
+    for f in LIVE.iterdir():   # the runtime code (loader, server, model code), never the live weights or metadata
+        if f.is_file() and f.suffix in (".py", ".txt") and f.name != "pace.txt":
+            shutil.copy2(f, V2 / f.name)
+    shutil.copy2(out / "model" / "acoustic.pt", V2 / "acoustic.pt")
+    full = torch.load(vdir / "vocoder.pt", map_location="cpu", weights_only=True)
+    keep = ("G", "identity", "input_mode", "input_provenance", "kind", "schema", "seed", "step", "student_source", "warm_start")
+    torch.save({k: full[k] for k in keep if k in full}, V2 / "vocoder.pt")
+    shutil.copy2(vdir / "voice-meta.json", V2 / "voice-meta.json")
+    (V2 / "README.md").write_text(
+        "# unity-voice-v2\n\nUnity's speaking voice, version 2: the same A2 voice re-trained for real emotional range "
+        "(local multi-pass run, `training/voice/local_multipass.py`). Runs exactly like `models/unity-voice/` "
+        "(same loader `unity_voice.py`, same `serve.py`); only the weights and `voice-meta.json` differ.\n\n"
+        "A/B against the live voice: `%s` and `%s`.\n" % (out / "ab", out / "ab-report.json"), encoding="utf-8")
+    log(out, "package: wrote %s (live models/unity-voice untouched)" % V2)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=r"D:\voice-lab\local-retrain-2026-10-13")
@@ -210,7 +238,7 @@ def main():
     for name in PASSES[PASSES.index(args.start):]:
         log(out, "=== pass: " + name)
         globals()["pass_" + name](args, out)
-    log(out, "all passes done -- listen to %s before anything goes live" % (out / "ab"))
+    log(out, "all passes done -- listen to %s; the new voice is %s (not live)" % (out / "ab", V2))
 
 
 if __name__ == "__main__":
