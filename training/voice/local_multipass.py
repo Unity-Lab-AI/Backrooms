@@ -97,7 +97,7 @@ def check(args, out):
             problems.append("features were prepared from another dataset folder (delete %s to re-prepare)" % feats)
         if manifest["vocab"] != live_meta["vocab"]:
             problems.append("feature vocabulary differs from the live voice")
-        same = ("feature_id", "frontend_id", "dataset_id")   # the vocoder never sees text; v2 re-performs the rows
+        same = ("feature_id", "frontend_id", "dataset_id", "stats_id", "support_id")   # the vocoder never sees text or prosody stats; v2 re-performs the rows
         vi, fi = voc.get("identity") or {}, pair_identity(manifest)
         if {k: v for k, v in vi.items() if k not in same} != {k: v for k, v in fi.items() if k not in same}:
             problems.append("live vocoder belongs to another voice/audio pair")
