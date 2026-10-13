@@ -340,13 +340,22 @@ check("A POWER FAULT IS REPORTED AND NEVER FATAL",
 check("the structural validation is still fatal",
       "ValidatePlacedLayout(map, coordinate, entryCell, returnCell, officeEvidenceCell, anchor);"
       in genstep
-      and 'throw new InvalidOperationException("RR_Generation_UnreachableRoom")' in genstep,
+      # **RE-AIMED 2026-10-13.** An unreachable linked room stopped being fatal on the owner's
+      # direction (2026-10-09): it is kept as a room to dig to, like a sealed vault. What strands
+      # people is the start, the office and the way home, and those are still thrown on.
+      and 'throw new InvalidOperationException("RR_Generation_InvalidStartOrObjectiveCell")' in genstep
+      and ("if (!Reachable(map, entry, officeCell) || !Reachable(map, entry, returnCell))" + chr(10)
+           + "            {" + chr(10)
+           + '                throw new InvalidOperationException("RR_Generation_UnreachableRequiredCell");')
+      in genstep,
       "-- a coordinate you cannot walk through really is broken, and weakening that would be "
       "trading one silent failure for another")
 
 check("THE WALL LAMP IS MOUNTED ON A WALL, FACING IT",
       "FindWallAttachmentCell(" in genstep
-      and "lightDef.building.isAttachment" in genstep
+      # Re-aimed 2026-10-13: `isAttachment` is now also read by the corridor strip test, so the
+      # room light's own decision line is what is required.
+      and "bool wallMounted = lightDef.building != null && lightDef.building.isAttachment;" in genstep
       # **THROUGH THE SPAWNER.** This asserted a bare `GenSpawn.Spawn` with the found facing,
       # which is exactly what two later placers did without finding a facing at all. The claim
       # now requires the one spawner that asks Core whether the attachment holds.
@@ -368,8 +377,12 @@ check("a lamp mounts on the room's own wall, not on a door",
       "-- a door also holds up roof, and a lamp mounted on a door is mounted on nothing the "
       "moment it opens")
 
+_wall_finder = body_of(genstep, "private static IntVec3 FindWallAttachmentCell(Map map, RoomRecord room,")
 check("A ROOM WITH NOWHERE TO MOUNT FALLS BACK INSTEAD OF FAILING",
-      "return IntVec3.Invalid;" in genstep
+      # Re-aimed 2026-10-13: the strip finder also returns Invalid, so the wall finder's own
+      # body is what must end in Invalid and never throw.
+      "return IntVec3.Invalid;" in _wall_finder
+      and "throw" not in _wall_finder
       and "if (!lightCell.IsValid)" in genstep
       and "lightCell = FindClearInteriorCell(map, room," in genstep,
       "-- the threshold room holds the gate anchor, the entry cell, the return cell and the "
@@ -817,7 +830,13 @@ check("and the hallways are lit and furnished, against their walls only",
       and "if (leg.AlongX ? floor.Height < 3 : floor.Width < 3) { continue; }" in _PL
       and "if (!OnAnotherLegFloor(legs, index, low)) { yield return low; }" in _PL
       and "foreach (IntVec3 cell in RoomLayoutPlanner.CorridorSideCells(legs))" in genstep
-      and "if (lightDef != null && index % CorridorLampSpacing == 0)" in corridor_dress_body
+      # **RE-AIMED 2026-10-13.** The lighting rewrite spaces corridor light by the cell's own
+      # coordinate and has two branches -- a strip along the hall and a point lamp -- so both are
+      # required, each through the one spawner.
+      and "if (cell.x % CorridorLampSpacing == 0 && sideSet.Contains(cell + IntVec3.West)" in corridor_dress_body
+      and "Thing fitting = SpawnAttachableLight(map, lightDef, null, cell, along);" in corridor_dress_body
+      and "placedLights.Add(fitting);" in corridor_dress_body
+      and "else if (lightDef != null && (cell.x + cell.z) % CorridorLampSpacing == 0)" in corridor_dress_body
       and "if (fixtures.Count == 0 || index % CorridorFixtureSpacing != 0) { continue; }"
       in corridor_dress_body
       and "placedLights.Add(lamp);" in corridor_dress_body,
@@ -918,7 +937,8 @@ check("and an unreachable clue is REPORTED rather than fatal",
 # and the next call re-applies them. The retry made the permanent fault.
 check("A FAILED POWER REBUILD IS NOT ASKED AGAIN THIS GENERATION",
       "private static bool RebuildPowerNets(Map map, CoordinateRecord coordinate)" in genstep
-      and "if (!RebuildPowerNets(map, coordinate)) { return false; }" in genstep
+      # Re-aimed 2026-10-13: the stray sweep now rebuilds only when it actually laid conduit.
+      and "if (wiredCells.Count != wiredBefore && !RebuildPowerNets(map, coordinate)) { return false; }" in genstep
       and "if (RebuildPowerNets(map, coordinate) &&" in genstep,
       "-- the first failure was the real one and the next sixty-one were self-inflicted")
 
@@ -958,7 +978,9 @@ check("THE ATTACHMENT RULE IS ASKED OF CORE'S OWN FUNCTION",
 check("ONE SPAWNER PLACES EVERY LAMP, and it refuses an unattached one",
       "private static Thing SpawnAttachableLight(Map map, ThingDef lightDef, ThingDef floorLightDef,"
       in genstep
-      and genstep.count("SpawnAttachableLight(map,") == 3
+      # Five callers since the lighting rewrite: room lights, pillar lamps, bay strips and the
+      # two corridor branches (strip and point).
+      and genstep.count("SpawnAttachableLight(map,") == 5
       # Not one bare spawn of a light or lamp left anywhere in the generator.
       and "GenSpawn.Spawn(lamp," not in genstep
       and genstep.count("GenSpawn.Spawn(light,") == 1,
@@ -983,7 +1005,8 @@ check("and the corridor lamp no longer assumes a wall to the north",
 check("and a room with no wall to mount on gets a FLOOR lamp, not the wall fixture",
       'ThingDef floorLightDef = DefDatabase<ThingDef>.GetNamedSilentFail("StandingLamp");'
       in genstep
-      and "roomLightDef = wallMounted ? floorLightDef ?? lightDef : lightDef;" in genstep
+      # Re-aimed 2026-10-13: a strip with no floor run long enough falls back the same way.
+      and "roomLightDef = wallMounted || strip ? floorLightDef ?? lightDef : lightDef;" in genstep
       and "lightDefs.Add(roomLightDef);" in genstep
       and "lightDefs[index].size));" in genstep,
       "-- this used to fall through placing the palette's WallLamp on an open floor cell facing "

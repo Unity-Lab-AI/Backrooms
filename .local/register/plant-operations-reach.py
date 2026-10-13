@@ -123,9 +123,12 @@ PLANTS = [
      "            if (openingTicksRemaining > standingRecallTicks) { return; }",
      "            if (Find.TickManager.TicksGame % 60000 != 0) { return; }", PROOF),
 
+    # Re-aimed 2026-10-13: the recall now acts only on a trip that went out through this gate,
+    # and also calls home free travellers. The fault is planted on the same recall call.
     ("THE STANDING RECALL STARTS CLOSING THE GATE", RECALL,
-     "            CompanyActionResult result = trips.Recall();",
-     "            CompanyActionResult result = trips.Recall(); CloseOpening();", PROOF),
+     "            if (trip != null && trip.Gate == parent) { recalled = trips.Recall().Success; }",
+     "            if (trip != null && trip.Gate == parent) { recalled = trips.Recall().Success; CloseOpening(); }",
+     PROOF),
 
     ("it stops being off by default", RECALL,
      "            if (standingRecallTicks <= 0 || standingRecallIssued) { return; }",

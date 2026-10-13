@@ -221,8 +221,10 @@ check("and it waits for a gate the player actually finished",
 
 check("and it refuses while a book exists ANYWHERE the branch can reach",
       "if (AnyRecordBookHeld(book)) { return; }" in _delivery
-      and "map.listerThings.ThingsOfDef(book)" in _delivery
-      and "pawn.inventory.innerContainer.Contains(book)" in _delivery,
+      # Re-aimed 2026-10-13: one Core recursive search now covers both -- unspawned (packs, carried
+      # things, landing pods) and spawned (floors, shelves) -- on every owned map.
+      and "ThingOwnerUtility.GetAllThingsRecursively(map, ThingRequest.ForDef(book), found, true, null, true);" in _delivery
+      and "if (map == null || !OwnsMap(map)) { continue; }" in _delivery,
       "-- a floor, a shelf, or somebody's pack on either side of an open connection. **This is "
       "what stops it being a tap**: it can fire again if the book is lost, and never while one "
       "still exists")

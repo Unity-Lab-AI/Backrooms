@@ -106,9 +106,10 @@ PLANTS = [
     # comment would be discarded and the plant would test nothing; the def claim reads the XML raw,
     # so this plants an element rather than a comment to match what a real reappearance looks like.
     ("THE RETIRED INSIDE-START GENERATOR IS WIRED BACK INTO THE SOURCE", OPENING,
-     "            CoordinateRecord coordinate;",
+     # Re-aimed 2026-10-13: the declaration now initialises to null for the retry path.
+     "            CoordinateRecord coordinate = null;",
      '            string retiredGenerator = "GenStep_InsideStart";' + CHR_NL
-     + "            CoordinateRecord coordinate;", PROOF),
+     + "            CoordinateRecord coordinate = null;", PROOF),
 
     ("the package declares the retired generator again", STARTS,
      "    <insideStart>true</insideStart>",

@@ -159,9 +159,11 @@ PLANTS = [
      "                    Log.Warning(\"[Rimrooms][Generation] Coordinate \" + coordinate.Id + \": the clue \"",
      "                    throw new InvalidOperationException(\"RR_Generation_UnreachableRequiredCell\"); Log.Warning(\"[Rimrooms][Generation] Coordinate \" + coordinate.Id + \": the clue \""),
 
+    # Re-aimed 2026-10-13: the sweep now rebuilds only after laying conduit, and stops on the
+    # first refusal. The fault keeps the rebuild and throws away its answer.
     ("the stray-consumer sweep carries on after a failed rebuild", GEN,
-     "                if (!RebuildPowerNets(map, coordinate)) { return false; }",
-     "                RebuildPowerNets(map, coordinate);"),
+     "                if (wiredCells.Count != wiredBefore && !RebuildPowerNets(map, coordinate)) { return false; }",
+     "                if (wiredCells.Count != wiredBefore) { RebuildPowerNets(map, coordinate); }"),
 
     ("the rebuild is asked again after it refused", GEN,
      "                if (RebuildPowerNets(map, coordinate) &&",
@@ -188,8 +190,15 @@ PLANTS = [
      + "            if (terrain == null) { return; }" + NL
      + "            terrain = terrain;"),
 
+    # Re-aimed 2026-10-13: the same colour line now also follows a door's flanking wall in
+    # `PlaceCorridorDoor`, so the anchor carries `PlaceCorridorWall`'s own bounds-checked lookup.
     ("a corridor wall stops taking the band's colour", GEN,
-     "            { wall.TryGetComp<CompColorable>()?.SetColor(look.wallColor); }", "            { }"),
+     "            Thing wall = cell.InBounds(map) ? cell.GetEdifice(map) : null;" + NL
+     + "            if (wall != null && wall.def == wallDef)" + NL
+     + "            { wall.TryGetComp<CompColorable>()?.SetColor(look.wallColor); }",
+     "            Thing wall = cell.InBounds(map) ? cell.GetEdifice(map) : null;" + NL
+     + "            if (wall != null && wall.def == wallDef)" + NL
+     + "            { }"),
 
     ("THE CORRIDOR SIDE CELLS ARE COLLECTED AND NEVER SPENT", GEN,
      "                DressCorridors(map, coordinate, corridorSides, lightDef, floorLightDef, placedLights," + NL
@@ -247,10 +256,11 @@ PLANTS = [
      "                    RebuildPowerNets(map, coordinate);",
      "                    map.powerNetManager.UpdatePowerNetsAndConnections_First();"),
 
+    # Re-aimed 2026-10-13 with the line above: Core's bare rebuild in place of ours, which is
+    # the one that logs the coordinate it failed on.
     ("and the stray pass stops naming the coordinate it failed on", GEN,
-     "                if (!RebuildPowerNets(map, coordinate)) { return false; }",
-     "                map.powerNetManager.UpdatePowerNetsAndConnections_First();" + NL
-     + "            }" + NL + "        }"),
+     "                if (wiredCells.Count != wiredBefore && !RebuildPowerNets(map, coordinate)) { return false; }",
+     "                if (wiredCells.Count != wiredBefore) { map.powerNetManager.UpdatePowerNetsAndConnections_First(); }"),
 
     ("THE DEAD THROWING CONDUIT SPAWNER COMES BACK", GEN,
      "        private static bool AlreadyTransmits(Map map, IntVec3 cell)",
@@ -563,9 +573,13 @@ PLANTS = [
      "                    if (wall == null || wall.def != wallDef) { continue; }",
      "                    if (wall == null) { continue; }"),
 
+    # Re-aimed 2026-10-13: the strip finder `TryFindFootprintCell` also ends in a bare
+    # `return IntVec3.Invalid;`, so the anchor carries the wall finder's own last comment line.
     ("A ROOM WITH NOWHERE TO MOUNT FAILS THE COORDINATE AGAIN", GEN,
-     "            return IntVec3.Invalid;",
-     '            throw new InvalidOperationException("RR_Generation_NoSafeRoomCell");'),
+     "            // BECAUSE a light placement rule took the whole map down for thirty-nine checkpoints." + NL
+     + "            return IntVec3.Invalid;",
+     "            // BECAUSE a light placement rule took the whole map down for thirty-nine checkpoints." + NL
+     + '            throw new InvalidOperationException("RR_Generation_NoSafeRoomCell");'),
 
     ("the fallback to a floor-standing cell goes", GEN,
      "                    if (!lightCell.IsValid)", "                    if (false)"),

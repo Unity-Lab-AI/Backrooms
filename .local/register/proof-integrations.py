@@ -67,7 +67,8 @@ print("detection: by package id, and every id is the register's own")
 print("-" * 78)
 
 check("detection uses Core's own answer",
-      "ModsConfig.IsActive(state.PackageId)" in integrations,
+      # Re-aimed 2026-10-13: Core matches the About.xml package id, not the Workshop number.
+      "ModsConfig.IsActive(state.ModPackageId)" in integrations,
       "-- not a mod name, not a def lookup, not a guess")
 check("the installed list is re-read when it changes",
       "ModLister.InstalledModsListHash(true)" in integrations,

@@ -43,7 +43,8 @@ NL = chr(10)
 PLANTS = [
     # ====================================================== the way back stops being built
     ("THE WAY BACK IN IS NEVER BUILT", EXIT,
-     "            CompanyActionResult returnGate = EstablishReturnGate(record, claimed, coordinateDoor);" + NL
+     # Re-aimed 2026-10-13: the gate is now built beside the arrival cell, so the call carries it.
+     "            CompanyActionResult returnGate = EstablishReturnGate(record, claimed, coordinateDoor, arrival);" + NL
      + "            if (!returnGate.Success) { return returnGate; }" + NL,
      "", PROOF),
 
@@ -53,9 +54,11 @@ PLANTS = [
 
     # ====================================================== the ordering, which is the safety
     ("THE GATE IS BUILT AFTER THE CREW IS ALREADY DESPAWNED", EXIT,
-     "                pawn.DeSpawn();",
-     "                pawn.DeSpawn();" + NL
-     + "                EstablishReturnGate(record, claimed, coordinateDoor);", PROOF),
+     # Re-aimed 2026-10-13: the despawn happens inside `Core.HeldCustody.Relocate` now, so the
+     # late gate is planted straight after that call.
+     "                if (!Core.HeldCustody.Relocate(pawn, claimed, cell, false)) { continue; }",
+     "                if (!Core.HeldCustody.Relocate(pawn, claimed, cell, false)) { continue; }" + NL
+     + "                EstablishReturnGate(record, claimed, coordinateDoor, arrival);", PROOF),
 
     # ====================================================== the preconditions Register demands
     ("the map is never made the branch's own, so Register must refuse the endpoint", EXIT,

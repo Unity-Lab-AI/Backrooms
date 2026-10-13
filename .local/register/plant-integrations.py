@@ -81,8 +81,10 @@ PLANTS = [
     ("a package id drifts from the register", INTEG,
      'PackageId = "3609835606"', 'PackageId = "3609835607"', PROOF),
 
+    # Re-aimed 2026-10-13: detection asks Core with the mod's own About.xml package id
+    # (`ModPackageId`); the Workshop number in `PackageId` never matched a loaded mod.
     ("detection stops using Core's own answer", INTEG,
-     "ModsConfig.IsActive(state.PackageId)", "false", PROOF),
+     "ModsConfig.IsActive(state.ModPackageId)", "false", PROOF),
 
     ("the installed list is read once and goes stale", INTEG,
      "            int hash = ModLister.InstalledModsListHash(true);", "            int hash = 0;",
@@ -93,6 +95,7 @@ PLANTS = [
             {
                 RegisterRow = 281,
                 PackageId = "3799737423",
+                ModPackageId = "vanillaexpanded.gravship2",
                 NameKey = "RR_Integration_GravshipTwoName",
                 PositionKey = "RR_Integration_GravshipTwoPosition",
             },
@@ -115,8 +118,10 @@ PLANTS = [
     ("the document stops denying a shared colony", DOC,
      "There is **no shared colony**.", "Companies can share a colony.", PROOF),
 
+    # Re-aimed 2026-10-13: the page's caveat is now worded "have not been verified in play".
     ("the caveat moves out of the opening line", DOC,
-     "**Nothing on this page has been tested in play.**", "Notes on playing together.", PROOF),
+     "**The multiplayer workflows on this page have not been verified in play.**",
+     "Notes on playing together.", PROOF),
 
     ("the document starts claiming support", DOC,
      "## What you need", "## What you need\n\nRimWorld Together is supported.", PROOF),

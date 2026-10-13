@@ -84,8 +84,10 @@ PLANTS = [
      "return IsOdd == OddOriginService.IsOdd(other);",
      "return !IsOdd || OddOriginService.IsOdd(other);", 1),
 
+    # Re-aimed 2026-10-13: the split now carries whichever origin the stack has (odd or
+    # ordinary) through `StampOrigin(origin)`. The fault still drops it for the odd piece.
     ("a piece split off an odd stack is no longer odd", COMP,
-     "if (split != null) { split.MarkOdd(); }", "if (split != null) { }", 1),
+     "if (split != null) { split.StampOrigin(origin); }", "if (split != null) { }", 1),
 
     ("the field becomes public, so any file could assign it", COMP,
      "private ThingOrigin origin;", "public ThingOrigin origin;", 1),

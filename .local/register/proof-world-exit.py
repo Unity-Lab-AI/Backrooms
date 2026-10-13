@@ -186,12 +186,21 @@ check("over the cap forms a caravan, under it claims",
 claim = body_of(exit_src, "private CompanyActionResult ClaimTileAndWalkOut(")
 check("the claim routine was found", bool(claim))
 generate_at = claim.find("GetOrGenerateMapUtility.GetOrGenerateMap")
-despawn_at = claim.find("pawn.DeSpawn()")
+# Re-aimed 2026-10-13: the despawn-and-spawn moved into `Core.HeldCustody.Relocate`, the one
+# mover every custody path shares, so the despawn point in this method is that call.
+RELOCATE = "Core.HeldCustody.Relocate(pawn, claimed, cell, false)"
+custody_src = read(SRC, "Core", "HeldCustody.cs")
+relocate = body_of(custody_src, "internal static bool Relocate(")
+despawn_at = claim.find(RELOCATE)
 check("the map is generated before any pawn is despawned",
       generate_at >= 0 and despawn_at >= 0 and generate_at < despawn_at,
       "-- if generation fails after a despawn, somebody is standing nowhere. Invariant 55")
 check("a failed spawn puts the pawn back where it was",
-      "GenSpawn.Spawn(pawn, was, origin);" in claim,
+      RELOCATE in claim
+      and "thing.DeSpawn();" in relocate
+      and "else { GenSpawn.Spawn(thing, was, origin, rotation); }" in relocate
+      and relocate.index("thing.DeSpawn();")
+          < relocate.index("else { GenSpawn.Spawn(thing, was, origin, rotation); }"),
       "-- a pawn that fails to arrive must not be left unspawned")
 check("a claim that moves nobody is reported as a refusal",
       "RR_WorldExit_NobodyMoved" in claim,
@@ -257,9 +266,9 @@ check("AND IT IS BUILT BEFORE ANYBODY IS DESPAWNED, EXACTLY ONCE",
       # while doing the exact thing the claim forbids -- which is how the matching plant went
       # MISSED. "Once, before" is the property; "before" on its own is not.
       exit_src.count("EstablishReturnGate(record, claimed, coordinateDoor, arrival)") == 1
-      and "pawn.DeSpawn();" in exit_src
+      and RELOCATE in exit_src
       and exit_src.index("EstablishReturnGate(record, claimed, coordinateDoor, arrival)")
-          < exit_src.index("pawn.DeSpawn();"),
+          < exit_src.index(RELOCATE),
       "-- if the way home cannot be made, nothing has moved and the door is still there")
 
 check("and its refusal actually stops the walk-out",
