@@ -1,0 +1,1140 @@
+{
+  "schema": "unity-voice-checkpoint-v2",
+  "identity": {
+    "schema": "unity-voice-checkpoint-v2",
+    "feature_id": "5ff1fbb11f55dcac2970628853b6faf8fe60103d39094dc3fa01650be04a401f",
+    "dataset_id": "85b62deba8a2cb7b750795a051f9b1c3b4b02449564d02d75dfd62baf1d77a50",
+    "voice_id": "unity-a2-low-warm-alto-v1",
+    "frontend_id": "cd389683adf047f70032d660851a0f6f7e7b7a98b719bc2bb0d6ecaf85e29bac",
+    "vocab_id": "dd11bafb2bd051b988d8f84261acb32953d6050fcfc500281bb8851e5be0e41f",
+    "stats_id": "11c6150803fd932c1e1286d0f1e8faf876e4291cb68e87c132031a66ae1b322e",
+    "support_id": "ae48012e75e8f7c135aae5d9e83556e0ba2117e4cdb2a1dd3b7a32d14834540e",
+    "acoustic_config": {
+      "n_mels": 80,
+      "d": 256,
+      "enc": 4,
+      "dec": 4,
+      "conditioning": "emotion-act-intensity-pace-v2",
+      "voicing": true
+    },
+    "vocoder_config": {
+      "n_mels": 80,
+      "ch": 512,
+      "rates": [
+        8,
+        8,
+        2,
+        2
+      ],
+      "kernels": [
+        16,
+        16,
+        4,
+        4
+      ],
+      "rk": [
+        3,
+        7,
+        11
+      ],
+      "rd": [
+        [
+          1,
+          3,
+          5
+        ],
+        [
+          1,
+          3,
+          5
+        ],
+        [
+          1,
+          3,
+          5
+        ]
+      ]
+    },
+    "emotions": [
+      "neutral",
+      "warm",
+      "happy",
+      "amused",
+      "excited",
+      "sad",
+      "concerned",
+      "frustrated",
+      "surprised"
+    ],
+    "speech_acts": [
+      "statement",
+      "yes_no_question",
+      "wh_question",
+      "exclamation",
+      "instruction",
+      "reassurance",
+      "aside"
+    ]
+  },
+  "pair_id": "4d2ce490fb4e40ca88b83fd700c18a5f8065fc16929d46e65ec2091265baa9a0",
+  "vocab": {
+    "<pad>": 0,
+    " ": 1,
+    ",": 2,
+    ".": 3,
+    "?": 4,
+    "A": 5,
+    "I": 6,
+    "O": 7,
+    "T": 8,
+    "W": 9,
+    "Y": 10,
+    "b": 11,
+    "d": 12,
+    "f": 13,
+    "h": 14,
+    "i": 15,
+    "j": 16,
+    "k": 17,
+    "l": 18,
+    "m": 19,
+    "n": 20,
+    "p": 21,
+    "s": 22,
+    "t": 23,
+    "u": 24,
+    "v": 25,
+    "w": 26,
+    "z": 27,
+    "\u00e6": 28,
+    "\u00f0": 29,
+    "\u014b": 30,
+    "\u0250": 31,
+    "\u0251": 32,
+    "\u0254": 33,
+    "\u0259": 34,
+    "\u025b": 35,
+    "\u025c": 36,
+    "\u0261": 37,
+    "\u026a": 38,
+    "\u0279": 39,
+    "\u0283": 40,
+    "\u028a": 41,
+    "\u028c": 42,
+    "\u0292": 43,
+    "\u02a4": 44,
+    "\u02a7": 45,
+    "\u02c8": 46,
+    "\u02cc": 47,
+    "\u03b8": 48,
+    "\u1d4a": 49,
+    "\u1d7b": 50,
+    "<event:laughter>": 51
+  },
+  "stats": {
+    "lf0_mean": 5.2349162101745605,
+    "lf0_std": 0.21008558571338654,
+    "e_mean": 1.6723273992538452,
+    "e_std": 1.4337252378463745,
+    "normalization_split": "train"
+  },
+  "frontend": {
+    "config": {
+      "features": {
+        "sample_rate": 24000,
+        "n_fft": 1024,
+        "hop": 256,
+        "n_mels": 80,
+        "f_min": 0,
+        "f_max": 12000,
+        "power": 1.0,
+        "center": false,
+        "reflect_pad": 384,
+        "log_floor": 1e-05,
+        "mel_scale": "htk",
+        "mel_norm": null,
+        "g2p": "misaki.en.G2P",
+        "misaki_version": "0.9.4",
+        "british": false,
+        "trf": false,
+        "speech_frontend_version": "speech-events-v1",
+        "event_vocabulary": {
+          "[laughter]": "<event:laughter>",
+          "[breath]": "<event:breath>"
+        },
+        "tokenization": "ordinary G2P character phonemes plus single dedicated event tokens",
+        "pitch": "WORLD dio plus stonemask; nearest mel-window center; separate voiced mask",
+        "energy": "mean linear mel amplitude",
+        "min_seconds": 0.25,
+        "max_seconds": 30.0
+      },
+      "versions": {
+        "misaki": "0.9.4",
+        "torch": "2.7.1+cu126",
+        "torchaudio": "2.7.1+cu126",
+        "pyworld": "0.3.5",
+        "soundfile": "0.13.1",
+        "numpy": "2.2.6"
+      },
+      "speech_text_sha256": "7f597efdde9fb31d4bc7e3073c37b5bf2a1a1c385479d1aee17aa246b12c5910",
+      "prep_sha256": "bc845dc41bc9111bd296f9405f68f25c97f5fa5f178f288284074feaa5cab3bb",
+      "feature_arrays_sha256": "3039687c3e48af953576e5d49afec7836618a3df3a3394a28bf38d72e454850e"
+    },
+    "frontend_id": "cd389683adf047f70032d660851a0f6f7e7b7a98b719bc2bb0d6ecaf85e29bac"
+  },
+  "delivery_support": [
+    {
+      "emotion": "amused",
+      "speech_act": "aside",
+      "clips": 51,
+      "transcripts": 51,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "amused",
+      "speech_act": "exclamation",
+      "clips": 51,
+      "transcripts": 51,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "amused",
+      "speech_act": "instruction",
+      "clips": 19,
+      "transcripts": 19,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "amused",
+      "speech_act": "reassurance",
+      "clips": 17,
+      "transcripts": 17,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "amused",
+      "speech_act": "statement",
+      "clips": 158,
+      "transcripts": 158,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "amused",
+      "speech_act": "wh_question",
+      "clips": 40,
+      "transcripts": 40,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "amused",
+      "speech_act": "yes_no_question",
+      "clips": 52,
+      "transcripts": 52,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "concerned",
+      "speech_act": "aside",
+      "clips": 28,
+      "transcripts": 28,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "concerned",
+      "speech_act": "exclamation",
+      "clips": 16,
+      "transcripts": 16,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "concerned",
+      "speech_act": "instruction",
+      "clips": 28,
+      "transcripts": 28,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "concerned",
+      "speech_act": "reassurance",
+      "clips": 39,
+      "transcripts": 39,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "concerned",
+      "speech_act": "statement",
+      "clips": 108,
+      "transcripts": 108,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "concerned",
+      "speech_act": "wh_question",
+      "clips": 36,
+      "transcripts": 36,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "concerned",
+      "speech_act": "yes_no_question",
+      "clips": 53,
+      "transcripts": 53,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "excited",
+      "speech_act": "aside",
+      "clips": 19,
+      "transcripts": 19,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "excited",
+      "speech_act": "exclamation",
+      "clips": 134,
+      "transcripts": 134,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "excited",
+      "speech_act": "instruction",
+      "clips": 28,
+      "transcripts": 28,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "excited",
+      "speech_act": "reassurance",
+      "clips": 4,
+      "transcripts": 4,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "excited",
+      "speech_act": "statement",
+      "clips": 84,
+      "transcripts": 84,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "excited",
+      "speech_act": "wh_question",
+      "clips": 28,
+      "transcripts": 28,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "excited",
+      "speech_act": "yes_no_question",
+      "clips": 37,
+      "transcripts": 37,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "frustrated",
+      "speech_act": "aside",
+      "clips": 38,
+      "transcripts": 38,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "frustrated",
+      "speech_act": "exclamation",
+      "clips": 63,
+      "transcripts": 63,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "frustrated",
+      "speech_act": "instruction",
+      "clips": 23,
+      "transcripts": 23,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "frustrated",
+      "speech_act": "reassurance",
+      "clips": 4,
+      "transcripts": 4,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "frustrated",
+      "speech_act": "statement",
+      "clips": 105,
+      "transcripts": 105,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "frustrated",
+      "speech_act": "wh_question",
+      "clips": 40,
+      "transcripts": 40,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "frustrated",
+      "speech_act": "yes_no_question",
+      "clips": 33,
+      "transcripts": 33,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "happy",
+      "speech_act": "aside",
+      "clips": 11,
+      "transcripts": 11,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "happy",
+      "speech_act": "exclamation",
+      "clips": 49,
+      "transcripts": 49,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "happy",
+      "speech_act": "instruction",
+      "clips": 11,
+      "transcripts": 11,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "happy",
+      "speech_act": "reassurance",
+      "clips": 20,
+      "transcripts": 20,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "happy",
+      "speech_act": "statement",
+      "clips": 119,
+      "transcripts": 119,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "happy",
+      "speech_act": "wh_question",
+      "clips": 13,
+      "transcripts": 13,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "happy",
+      "speech_act": "yes_no_question",
+      "clips": 22,
+      "transcripts": 22,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "neutral",
+      "speech_act": "aside",
+      "clips": 135,
+      "transcripts": 135,
+      "intensity_min": 0.0,
+      "intensity_max": 0.0,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "neutral",
+      "speech_act": "exclamation",
+      "clips": 105,
+      "transcripts": 105,
+      "intensity_min": 0.0,
+      "intensity_max": 0.0,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "neutral",
+      "speech_act": "instruction",
+      "clips": 195,
+      "transcripts": 195,
+      "intensity_min": 0.0,
+      "intensity_max": 0.0,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "neutral",
+      "speech_act": "reassurance",
+      "clips": 126,
+      "transcripts": 126,
+      "intensity_min": 0.0,
+      "intensity_max": 0.0,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "neutral",
+      "speech_act": "statement",
+      "clips": 737,
+      "transcripts": 737,
+      "intensity_min": 0.0,
+      "intensity_max": 0.0,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "neutral",
+      "speech_act": "wh_question",
+      "clips": 137,
+      "transcripts": 137,
+      "intensity_min": 0.0,
+      "intensity_max": 0.0,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "neutral",
+      "speech_act": "yes_no_question",
+      "clips": 208,
+      "transcripts": 208,
+      "intensity_min": 0.0,
+      "intensity_max": 0.0,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "sad",
+      "speech_act": "aside",
+      "clips": 29,
+      "transcripts": 29,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "sad",
+      "speech_act": "exclamation",
+      "clips": 14,
+      "transcripts": 14,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "sad",
+      "speech_act": "instruction",
+      "clips": 16,
+      "transcripts": 16,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "sad",
+      "speech_act": "reassurance",
+      "clips": 27,
+      "transcripts": 27,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "sad",
+      "speech_act": "statement",
+      "clips": 159,
+      "transcripts": 159,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "sad",
+      "speech_act": "wh_question",
+      "clips": 23,
+      "transcripts": 23,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "sad",
+      "speech_act": "yes_no_question",
+      "clips": 30,
+      "transcripts": 30,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "surprised",
+      "speech_act": "aside",
+      "clips": 17,
+      "transcripts": 17,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "surprised",
+      "speech_act": "exclamation",
+      "clips": 66,
+      "transcripts": 66,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "surprised",
+      "speech_act": "instruction",
+      "clips": 11,
+      "transcripts": 11,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "surprised",
+      "speech_act": "reassurance",
+      "clips": 3,
+      "transcripts": 3,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "surprised",
+      "speech_act": "statement",
+      "clips": 60,
+      "transcripts": 60,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "surprised",
+      "speech_act": "wh_question",
+      "clips": 30,
+      "transcripts": 30,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "surprised",
+      "speech_act": "yes_no_question",
+      "clips": 44,
+      "transcripts": 44,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "warm",
+      "speech_act": "aside",
+      "clips": 73,
+      "transcripts": 73,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "warm",
+      "speech_act": "exclamation",
+      "clips": 70,
+      "transcripts": 70,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "warm",
+      "speech_act": "instruction",
+      "clips": 100,
+      "transcripts": 100,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "warm",
+      "speech_act": "reassurance",
+      "clips": 190,
+      "transcripts": 190,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "warm",
+      "speech_act": "statement",
+      "clips": 388,
+      "transcripts": 388,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "warm",
+      "speech_act": "wh_question",
+      "clips": 72,
+      "transcripts": 72,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    },
+    {
+      "emotion": "warm",
+      "speech_act": "yes_no_question",
+      "clips": 114,
+      "transcripts": 114,
+      "intensity_min": 0.35,
+      "intensity_max": 0.35,
+      "pace_min": 1.0,
+      "pace_max": 1.0
+    }
+  ],
+  "event_support": {
+    "laughter": {
+      "train_clips": 394,
+      "train_occurrences": 394,
+      "delivery_support": [
+        {
+          "emotion": "amused",
+          "speech_act": "aside",
+          "clips": 13,
+          "transcripts": 13,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "amused",
+          "speech_act": "exclamation",
+          "clips": 31,
+          "transcripts": 31,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "amused",
+          "speech_act": "instruction",
+          "clips": 7,
+          "transcripts": 7,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "amused",
+          "speech_act": "reassurance",
+          "clips": 7,
+          "transcripts": 7,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "amused",
+          "speech_act": "statement",
+          "clips": 101,
+          "transcripts": 101,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "amused",
+          "speech_act": "wh_question",
+          "clips": 20,
+          "transcripts": 20,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "amused",
+          "speech_act": "yes_no_question",
+          "clips": 27,
+          "transcripts": 27,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "excited",
+          "speech_act": "aside",
+          "clips": 3,
+          "transcripts": 3,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "excited",
+          "speech_act": "exclamation",
+          "clips": 21,
+          "transcripts": 21,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "excited",
+          "speech_act": "statement",
+          "clips": 7,
+          "transcripts": 7,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "excited",
+          "speech_act": "wh_question",
+          "clips": 1,
+          "transcripts": 1,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "excited",
+          "speech_act": "yes_no_question",
+          "clips": 4,
+          "transcripts": 4,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "frustrated",
+          "speech_act": "aside",
+          "clips": 4,
+          "transcripts": 4,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "frustrated",
+          "speech_act": "exclamation",
+          "clips": 6,
+          "transcripts": 6,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "frustrated",
+          "speech_act": "statement",
+          "clips": 11,
+          "transcripts": 11,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "frustrated",
+          "speech_act": "wh_question",
+          "clips": 2,
+          "transcripts": 2,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "frustrated",
+          "speech_act": "yes_no_question",
+          "clips": 2,
+          "transcripts": 2,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "happy",
+          "speech_act": "aside",
+          "clips": 1,
+          "transcripts": 1,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "happy",
+          "speech_act": "exclamation",
+          "clips": 7,
+          "transcripts": 7,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "happy",
+          "speech_act": "instruction",
+          "clips": 1,
+          "transcripts": 1,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "happy",
+          "speech_act": "reassurance",
+          "clips": 1,
+          "transcripts": 1,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "happy",
+          "speech_act": "statement",
+          "clips": 34,
+          "transcripts": 34,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "happy",
+          "speech_act": "wh_question",
+          "clips": 1,
+          "transcripts": 1,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "happy",
+          "speech_act": "yes_no_question",
+          "clips": 5,
+          "transcripts": 5,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "surprised",
+          "speech_act": "aside",
+          "clips": 3,
+          "transcripts": 3,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "surprised",
+          "speech_act": "exclamation",
+          "clips": 13,
+          "transcripts": 13,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "surprised",
+          "speech_act": "statement",
+          "clips": 2,
+          "transcripts": 2,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "surprised",
+          "speech_act": "yes_no_question",
+          "clips": 3,
+          "transcripts": 3,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "warm",
+          "speech_act": "aside",
+          "clips": 5,
+          "transcripts": 5,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "warm",
+          "speech_act": "statement",
+          "clips": 50,
+          "transcripts": 50,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        },
+        {
+          "emotion": "warm",
+          "speech_act": "yes_no_question",
+          "clips": 1,
+          "transcripts": 1,
+          "intensity_min": 0.35,
+          "intensity_max": 0.35,
+          "pace_min": 1.0,
+          "pace_max": 1.0
+        }
+      ]
+    },
+    "breath": {
+      "train_clips": 0,
+      "train_occurrences": 0,
+      "delivery_support": []
+    }
+  }
+}

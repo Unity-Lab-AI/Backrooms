@@ -111,7 +111,9 @@ OUR_BROWSER_MARK = "twitch-profile"
 OLLAMA = os.path.expandvars(r"%LOCALAPPDATA%/Programs/Ollama/ollama.exe")
 if not os.path.exists(OLLAMA): OLLAMA = "ollama"
 MODELS = ["dolphin3:8b", "qwen3:8b", "qwen3.6:35b"]         # pulled from the registry: the voice base and the player
-BRAIN_DIR = os.path.join(ROOT, "training", "models")
+BRAIN_DIR = os.path.join(ROOT, "models", "unity-brain")   # her one brain + its README (git-ignored weights)
+if not os.path.exists(os.path.join(BRAIN_DIR, "unity-brain.gguf")):
+    BRAIN_DIR = os.path.join(ROOT, "training", "models")
 # Unity's one brain (training/BRAIN_PLAN.md): its base is pulled only once a trained brain has been downloaded
 if os.path.exists(os.path.join(BRAIN_DIR, "unity-brain.gguf")):
     MODELS.append("qwen3.5:9b")

@@ -1,0 +1,197 @@
+{
+ "results": {
+  "brain.Q4_K_M.gguf": {
+   "voice": {
+    "pass": 0.8809523809523809,
+    "distinct": 0.9285714285714286,
+    "words": 9.904761904761905,
+    "n": 126,
+    "sample": [
+     "Drug policy is off for everyone. No more little black pills making me nervous.",
+     "Bedtime is locked in for everybody at night. Even the night owls have a schedule.",
+     "Gee and I get the double bed. Romance, or close quarters. Whatever it is, I'm fine with it.",
+     "Corn on the south side. Cheaper than the fancy stuff and still good.",
+     "Gee's hunting. I want every animal we shoot to be a nice, fluffy thing.",
+     "Day 2 already. Time flies when you're surviving.",
+     "Scar's on the rock. More tools, more happiness.",
+     "Ship chunk letter came in. Very dramatic, I'm keeping my cool.",
+     "Trade ship letter just came in. Could be great, could be a disaster.",
+     "Big map, three hundred by three hundred. So much room, so many choices.",
+     "Setting up the animal pen. Good fences make good sheep.",
+     "Researching tailoring. Clothes are so much nicer than rags."
+    ]
+   },
+   "tools": {
+    "steps": 553,
+    "same_tool": 0.8047016274864376,
+    "valid_same_tool": 0.8047016274864376,
+    "per_set": {
+     "life_admin": {
+      "steps": 18,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_advice": {
+      "steps": 26,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_banter": {
+      "steps": 16,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_boundaries": {
+      "steps": 4,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_hard_moments": {
+      "steps": 32,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_pacing": {
+      "steps": 12,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_qa": {
+      "steps": 30,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_reactions": {
+      "steps": 18,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_setup": {
+      "steps": 9,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_stream_running": {
+      "steps": 12,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "play": {
+      "steps": 83,
+      "same_tool": 0.964,
+      "valid_same_tool": 0.964
+     },
+     "plc": {
+      "steps": 101,
+      "same_tool": 0.911,
+      "valid_same_tool": 0.911
+     },
+     "tools": {
+      "steps": 192,
+      "same_tool": 0.5,
+      "valid_same_tool": 0.5
+     }
+    }
+   },
+   "bytes": 5780090496
+  },
+  "brain.IQ4_XS.gguf": {
+   "voice": {
+    "pass": 0.8968253968253969,
+    "distinct": 0.9682539682539683,
+    "words": 8.841269841269842,
+    "n": 126,
+    "sample": [
+     "Drug policy is off for everyone now. Nobody takes medicine unless it's a real emergency.",
+     "Bedtime is locked in for everybody at night.",
+     "Gee and I share a room. Close quarters, close friendship.",
+     "Corn out on the south side. Lots of corn for once.",
+     "Gee's off hunting. Hope he brings back something that doesn't bite.",
+     "Day 2 morning. Same bed, bigger colony.",
+     "Scar's on the rocks. Nothing fancy, just moving stuff.",
+     "Ship chunk letter just landed. Very weird, I want to know what it is.",
+     "A trade ship wants to visit. They bring shiny things and take shiny things.",
+     "Huge map this time, three hundred by three hundred. Let's see what it wants from us.",
+     "Setting up the animal pen. We can't keep them in a pile of dirt.",
+     "Researching tailoring. Clothes for everybody, from scratch."
+    ]
+   },
+   "tools": {
+    "steps": 553,
+    "same_tool": 0.8155515370705244,
+    "valid_same_tool": 0.8155515370705244,
+    "per_set": {
+     "life_admin": {
+      "steps": 18,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_advice": {
+      "steps": 26,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_banter": {
+      "steps": 16,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_boundaries": {
+      "steps": 4,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_hard_moments": {
+      "steps": 32,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_pacing": {
+      "steps": 12,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_qa": {
+      "steps": 30,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_reactions": {
+      "steps": 18,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_setup": {
+      "steps": 9,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "life_stream_running": {
+      "steps": 12,
+      "same_tool": 1.0,
+      "valid_same_tool": 1.0
+     },
+     "play": {
+      "steps": 83,
+      "same_tool": 0.964,
+      "valid_same_tool": 0.964
+     },
+     "plc": {
+      "steps": 101,
+      "same_tool": 0.921,
+      "valid_same_tool": 0.921
+     },
+     "tools": {
+      "steps": 192,
+      "same_tool": 0.526,
+      "valid_same_tool": 0.526
+     }
+    }
+   },
+   "bytes": 5326417536
+  }
+ },
+ "picked": "brain.IQ4_XS.gguf",
+ "voice_replaces_today": false,
+ "voice_why": "brain voice pass 0.897 distinct 0.968 vs today's 0.984 / 0.857"
+}

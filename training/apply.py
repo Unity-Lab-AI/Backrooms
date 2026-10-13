@@ -24,6 +24,15 @@ import hashlib, os, re, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MODELS = os.path.join(HERE, "models")
+# The brain lives in <repo>/models/unity-brain/ (owner 2026-10-13: a git-ignored models folder with a README per
+# model); the older player/voice shells stay in training/models/. Falls back to training/models/ when absent.
+BRAIN_MODELS = os.path.join(os.path.dirname(HERE), "models", "unity-brain")
+
+
+def home(gguf):
+    if gguf == "unity-brain.gguf" and os.path.exists(os.path.join(BRAIN_MODELS, gguf)):
+        return BRAIN_MODELS
+    return MODELS
 NOWIN = {"creationflags": 0x08000000} if os.name == "nt" else {}
 
 JOBS = [  # gguf, base it was trained from, ollama host, target name, backup of the old target
@@ -48,7 +57,8 @@ def sha(path):
 
 def expected(gguf):
     kind = gguf.split(".")[0].replace("unity-", "")   # unity-brain.gguf -> brain.sha256 or unity-brain.gguf.sha256
-    for f in (os.path.join(MODELS, kind + ".sha256"), os.path.join(MODELS, gguf + ".sha256")):
+    d = home(gguf)
+    for f in (os.path.join(d, kind + ".sha256"), os.path.join(d, gguf + ".sha256")):
         if os.path.exists(f):
             m = re.match(r"\s*([0-9a-fA-F]{64})", open(f, encoding="utf-8", errors="replace").read())
             if m:
@@ -66,7 +76,7 @@ def ready(host, name):
 
 def apply_one(gguf, base, host, name, backup):
     """(ok, message): ok is False only for a real refusal or failure, not for a shell that is not trained yet."""
-    path = os.path.join(MODELS, gguf)
+    path = os.path.join(home(gguf), gguf)
     if not os.path.exists(path):
         return True, "%s: not trained yet" % name
     stamp = path + ".applied"
@@ -87,7 +97,7 @@ def apply_one(gguf, base, host, name, backup):
         if not swapped and ln.startswith("FROM "):
             ln, swapped = "FROM " + path.replace("\\", "/"), True
         lines.append(ln)
-    mfile = os.path.join(MODELS, name + ".Modelfile")
+    mfile = os.path.join(home(gguf), name + ".Modelfile")
     open(mfile, "w", encoding="utf-8").write("\n".join(lines) + "\n")
     if backup and name in ollama(host, "list").stdout and backup not in ollama(host, "list").stdout:
         ollama(host, "cp", name, backup)
@@ -102,8 +112,9 @@ def apply_one(gguf, base, host, name, backup):
 
 def brain_voice_stamp():
     """models/brain-voice.ok exists only while the applied brain's own eval said its voice is as good or better."""
-    ok_path, ev = os.path.join(MODELS, "brain-voice.ok"), os.path.join(MODELS, "brain-eval.json")
-    stamp = os.path.join(MODELS, "unity-brain.gguf.applied")
+    d = home("unity-brain.gguf")
+    ok_path, ev = os.path.join(d, "brain-voice.ok"), os.path.join(d, "brain-eval.json")
+    stamp = os.path.join(d, "unity-brain.gguf.applied")
     try:
         import json
         good = os.path.exists(stamp) and json.load(open(ev, encoding="utf-8")).get("voice_replaces_today") is True

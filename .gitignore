@@ -218,3 +218,13 @@ outputs/**/*.zip
 # One-off local scratch and backups
 .local/voice-lab/stream-script-originals/
 .local/qa/_*.sh
+# models/: only the READMEs and small metadata are tracked; every weight file stays local (owner 2026-10-13:
+# "a git ignored folder called models ... with each model how they where built and what for and their readmees
+# just big model files git ignored").
+models/**
+!models/*/
+!models/**/README.md
+!models/**/*.json
+!models/**/*.sha256
+!models/**/SHA256SUMS
+!models/**/quant.txt
