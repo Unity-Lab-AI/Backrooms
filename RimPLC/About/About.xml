@@ -6,6 +6,7 @@
   <modVersion>0.1.0</modVersion>
   <supportedVersions>
     <li>1.6</li>
+    <li>1.7</li>
   </supportedVersions>
   <!-- No modDependencies: RimPLC references only Assembly-CSharp and three UnityEngine modules, uses no Harmony,
        and resolves every def by name at runtime, so it works with any mod list and any DLC. loadAfter is ordering
@@ -25,6 +26,8 @@ The ladder window shows every rung live, with each contact coloured: green true,
 Advise-only by default: RimPLC notifies and advises, it does not play for you. It never spawns, destroys or edits anything in this version.
 
 An optional companion for RimBridgeServer exposes the ladder to tools (rimplc/*), and a command file in the RimWorld config folder does the same without it.
+
+RimWorld 1.6 and 1.7 use the same content in this package. The 1.7 declaration is a development target; RimPLC has not yet been verified in a running 1.7 session.
 
 No dependencies. Can be added to an existing save; removing it from a save has not been checked yet.</description>
 </ModMetaData>
