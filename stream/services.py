@@ -95,6 +95,9 @@ EXTRAS = [
     ("twitchui", "twitch-profile", [os.path.expandvars(r"%LOCALAPPDATA%/ms-playwright/chromium-1223/chrome-win64/chrome.exe"),
                                     "--user-data-dir=" + os.path.join(ROOT, ".local/twitch-profile"),
                                     "--remote-debugging-port=9333", "--no-first-run",
+                                    # the stream's own Twitch page plays the broadcast back; muted so the owner hears
+                                    # her once (owner 2026-10-13: "im hearing two feeds")
+                                    "--mute-audio",
                                     # Owner, 2026-10-10: a Twitch picture-in-picture prompt interrupted them and they
                                     # denied it blind. Nothing here should ever ask the owner for a permission.
                                     "--disable-features=AutoPictureInPicture,AutoPictureInPictureVideoHeuristics",
