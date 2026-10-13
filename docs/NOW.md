@@ -11,32 +11,36 @@
 
 ---
 
-## LIVE NOW (updated 00:36 UTC 10-13): NO pods, NO volumes -- both runs done, results on D: -- read this first after a compaction
+## LIVE NOW (2026-10-13 ~01:30 UTC): full handoff -- read this first after a compaction
 
-Owner go: *"Go fastest, voice cap $70"*, then *"well we are gonna have to double that cap"*.
+**No pods, no volumes, RunPod spend $0.** Both trainings finished 2026-10-12, were pulled to the USB drive,
+verified (checksums) and deleted with the owner's go (*"last check make sure we are ready, then do it"*).
 
-| Pod | Id | Shape | $/h | Cap | State at 15:07 |
-|---|---|---|---|---|---|
-| Voice (records, then trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | stopped 23:43 | $140 | **DONE 23:02.** Trained voice (acoustic 20k + vocoder 120k) published; final samples: owner *"smaples are perfect"*. Pulled to `D:oice-lab\pod-resultsoice-2026-10-12\` (model SHA256SUMS OK; teacher models/venvs/ckpts deliberately not pulled). Pod and volume `nk8oyfxwc7` DELETED 00:35 10-13 (owner: *"last check make sure we are ready, then do it"*; final check passed) |
-| Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | stopped 23:43 | $50 | **DONE 23:27.** 1,062 steps, train loss 0.397; picked IQ4_XS `unity-brain.gguf` (sha 2fe30716..., verified on D:). Eval: life 100%, play 96%, plc 92%, rare-tools set 53%, overall tool 82%; voice-line pass 0.897 < today's 0.984 so today's line model stays. Pod and volume `3sjem6lb5j` DELETED 00:35 10-13 (same owner go) |
+### What is live on this PC now
+| Piece | Where | State |
+|---|---|---|
+| **Brain** `unity-brain` (Qwen3.5-9B + LoRA, IQ4_XS, 5.3 GB) | `models/unity-brain/` (weights git-ignored; master copy `D:\voice-lab\pod-results\brain-2026-10-12\`) | Applied to Ollama :11434 by `training/apply.py` (sha-checked, reads `models/unity-brain`). Plays the game AND writes her lines (owner chose *"Brain writes lines too"*, `models/unity-brain/brain-voice-owner.json`). Eval: life 100%, play 96%, RimPLC 92%, rare tools 53% (weak spot), overall tool 82% |
+| **Her own voice** (acoustic.pt + vocoder.pt, 165 MB) | `models/unity-voice/` (master `D:\voice-lab\pod-results\voice-2026-10-12\out\models\f8bb6cd3...`) | Accepted: owner *"smaples are perfect"* -> `training/voice/receipts/trained-voice-acceptance-2026-10-12.json` (bound to file hashes). Served by `training/voice/serve.py` :5123 = the `voice` service in `stream/services.py`; `unity-speak.py` posts every line with the brain's emotion/act. **No fallback voice** (owner: fallbacks are against the laws; Piper retired). Pace **1.0** (`UNITY_VOICE_LENGTH_SCALE`; owner: 1.2 was *"1/5th too slow"*) |
+| Line writer `unity-local`, player `unity-player`, Piper | `training/models/`, Ollama | Installed for manual rollback only, not loaded |
+| **Launchers** | `windows/start.bat`, `Stream Start.cmd`, Desktop `Unity Plays RimWorld.cmd` | All run `stream/services.py start` -> new brain + own voice (`UNITY_OWN_VOICE=1`) |
+| **16 GB budget** | `.local/qa/vram-stress.py`; results in `models/README.md` | Brain + voice + webcam peak **11.3 GB** (5.1 GB free, no game/OBS). Two LLMs peaked 15.9 GB -> rejected. Every brain call must use 32K ctx (the stream pins it) or Ollama reloads at ~14 GB |
+| **RimPLC** (new 1.7 layout, built 0 warnings, `rimplc-check` valid) | Game `Mods/RimPLC` + `BridgeTools/RimPLC` | Staged + deployed 2026-10-13 (old copy in `.local/staging-backup/`). Own repos: GitHub `G-Fourteen/RimPLC`, Forgejo `GFourteen/RimPLC`; owner: keep both copies in sync. Wiki live: `g-fourteen.github.io/Rimrooms-AsyncIndustries/rimplc.html` |
+| **Twitch** (live channel; Playwright over CDP :9333 on the stream's Twitch window, profile `.local/twitch-profile`) | `docs/TWITCH_PANELS.md`, `docs/twitch-panels/` | New bio (both mods); social link "Report a bug" -> "RimPLC mod & wiki" (owner choice, cap 5); 4 RimPLC link panels + "RimPLC: colony logic mod" panel. Verified on the public About page |
 
-**How to check** (no SSH key is set on these pods):
-- Brain: `https://rm6sdrmiv4dgtp-8000.proxy.runpod.net/` -> `status.txt`, `run.log.txt` (step line: grep `/1062`), `gpu-util.csv` (fields: time, gpu, util %, MiB used, MiB total). 19 GB used + 0 % = setup, not training.
-- Voice: `https://ksw41pgbted5ro-8000.proxy.runpod.net/` -> `status.txt`, `gen.log`, `gpu-util.csv`; render progress is NOT on that page -- read it over S3: `"C:/Program Files/Amazon/AWSCLIV2/aws.exe" s3 cp s3://nk8oyfxwc7/gen/logs/render-0.log - --region us-ca-2 --endpoint-url https://s3api-us-ca-2.runpod.io` and grep `^SOURCE` (line N/207). The ONNX "TryGetProviderInfo_CUDA" error and the SoX warning in those logs are expected.
-- Pods: RunPod MCP `list-pods` / `get-pod`. The runtime CPU/GPU numbers it returns are often 0 and not reliable; trust the pods' own gpu-util.csv.
-- Every code change to `training/voice/` changes the voice digest: regenerate `training/voice/VOICE_MANIFEST.json` (`python training/voice/manifest.py`), re-bind `training/voice/receipts/owner-training-authorization-2026-10-12.json` (`approved_source_digest`, then the receipt hash in `VOICE_QUALITY_GATE.json`), commit, push, `update-pod` with the new commit + digest, restart. A code change also re-keys every recorded clip (the render recipe is code-bound).
+Gate: `training/voice/VOICE_QUALITY_GATE.json` -- trained_voice_acceptance passes; **local_playback_acceptance** is the last
+deploy check (owner hears her through OBS during the rehearsal).
 
-**Next, in order:**
-1. Voice: recording finishes -> screen -> `gen/READY` -> training on both H100s (acoustic on GPU 0, vocoder on GPU 1). Progress samples every 30 min under `progress/` on its page -- play them to the owner.
-2. Brain: confirm the first real steps and the s/step on the fast kernels; then it exports the GGUF and scores the 249 held-out episodes per skill (`gguf/brain-eval.json`).
-3. Each pod stops itself at the end. Then bring everything home: `powershell -File training/voice/pod/pull_results_s3.ps1 -VolumeId nk8oyfxwc7 -DataCenter US-CA-2 -RunName voice-2026-10-12` and `powershell -File training/pod/pull_brain_s3.ps1 -VolumeId 3sjem6lb5j -DataCenter US-MO-1 -RunName brain-2026-10-12` to `D:oice-lab\pod-results\`. Delete pods, then volumes, only after each pull reports VERIFIED.
-4. Owner listens to the final voice (deploy gate `trained_voice_acceptance`); brain goes live via `training/apply.py` after its eval.
+### Next, in order
+1. **Cascade all repos** (owner 2026-10-13: *"and cascade all repos correctly"*): Backrooms feature/bug-testing -> develop -> main on GitHub + Forgejo, and RimPLC's own repos. Leave the other AI's uncommitted work out (540 modified `.local/qa` + `.local/register` scripts, Mod 1.7 files, RimPLC 1.7 edits, docs/wiki edits -- ChatGPT/Codex works in parallel; stage only our own files, never `git add -A`, retry on index.lock).
+2. **Rehearsal** (owner: *"use a fresh crash landed scenrio all the world sat up and forest moutain tile pic world settup 300x300 in adv settings ect ect"*): Stream Start, NOT live, fresh Crashlanded world, forest+mountain tile, 300x300 in advanced settings. Never the friends' save. Measure the real GPU with RimWorld + OBS open; owner hears her via OBS -> record local_playback_acceptance in his words.
+3. Later round: more rare-tool examples (53%), voice fixes in TODO (keep best held-out checkpoint, one GPU not two, venvs off the network volume, dry-run on one cheap pod first).
 
-Gone: the 4x H200 clip pod `u2k5pdlocndtnd` (its GPUs were taken while stopped; terminated) and debug pod `1kpwfq367r9aov` (found the Cosy bugs; terminated). Volumes: voice `nk8oyfxwc7` (US-CA-2, 150 GB), brain `3sjem6lb5j` (US-MO-1, 120 GB). Rough spend by 15:07: ~$75-85 (most of it launch-day setup).
-
-Launch-day fixes (each Linux-only, each committed): shared-volume clone collision; teacher envs on the volume; venv symlink resolved to system python; models on the wiped container disk; onnxruntime-gpu name; Cosy cache parents; Cosy env missing gdown/wget; wetext downloading from modelscope.cn (403 -> hang) removed to match the approved no-front-end recipe; empty shard folders; stale shard plan after the GPU count changed; brain cmake; brain CUDA 12.4 vs torch cu13 kernel build; brain OOM from 4 forked loader workers. Rule logged (memory): dry-run on one cheap pod before renting a fleet.
-
-**Still open outside the pods:** after the brain lands, confirm the live runtime loads the stock Qwen3.5-9B vision projector (mmproj) next to the GGUF so she can read screenshots (vision tower untrained, so the stock one fits); RimPLC rung-editor window check on screen (game minimised when tried); teacher venvs on local disk for the next pod run (TODO); the RimPLC P3/P4 phases; the Ladder v2 live-name checks marked UNVERIFIED.
+### Gotchas learned 2026-10-12/13
+- `.local/qa/` holds a file that shadows Python's `inspect`: run Playwright scripts from `%TEMP%`, not `.local/qa`.
+- Twitch panel add: `.create-panel button` -> "Add a Text or Image Panel" -> `input[type=file]` -> crop dialog **Done** -> fill title/link/alt/textarea -> Submit (greys out when saved).
+- RunPod S3 is slow and resets big downloads; sync folders by name, skip teacher models (re-downloadable).
+- A voice code change re-keys the run namespace; `VOICE_RESUME_RUN_ID` resumes a finished namespace when only the source digest differs.
+- Python heredocs with Windows paths break on `\u`; use the Write/Edit tools for text with backslashes.
 
 ## The record, 2026-10-12: Unity's own voice + her brain, three pods, waiting on the local voice test
 
