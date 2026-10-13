@@ -1,23 +1,39 @@
 # unity-brain
 
-**What for:** the single model that plays RimWorld through the RimBridge tools, runs RimPLC, answers Twitch chat,
-writes catch-ups and reads screenshots (text + image input; the vision part is Qwen3.5-9B's own, untrained).
+Unity's brain: plays RimWorld through the RimBridge tools, runs RimPLC, answers Twitch chat, writes her spoken
+lines and reads screenshots. Text and image input. Everything needed to run it is in this folder.
 
-**How it was built (2026-10-12, RunPod 1x H100, ~5.5 h):**
-- Base `Qwen/Qwen3.5-9B`, bf16 LoRA r=32 on attention, linear-attention and MLP projections (Unsloth),
-  2 epochs, lr 1e-4, effective batch 16 (8 x 2), sequence 24,576, 1,062 steps, final train loss 0.397.
-- Data: `training/data/brain/train.jsonl`, 8,481 rows, digest `7d2cac95...`: play, RimPLC usage, every tool,
-  the If-Only-I-Had-A-Brain life story (admin, advice, banter, boundaries, hard moments, pacing, Q&A, reactions,
-  setup, stream running), fortress and 100 real game screenshots with the game's own state.
-- Code: `training/pod/train.py` + `run.sh` at commit `4932071`; merged, converted to GGUF, imatrix-calibrated on
-  her own conversations, quantized to Q4_K_M and IQ4_XS; the eval picked **IQ4_XS**.
-- Files: `unity-brain.gguf` (5.3 GB, sha256 in `unity-brain.gguf.sha256`), `lora/` (the 306 MB adapter, for
-  re-merging), `brain-eval.json`, `quant.txt`.
+## What's here
 
-**Held-out eval (249 episodes never trained on):**
-right tool overall 82% -- life story 100% in all ten categories, play 96%, RimPLC 92%,
-rare-tools coverage set 53% (the known weak spot: more examples per rare tool next round).
-Spoken lines: 90% pass, 97% distinct -- below today's line model (98%), so today's model keeps writing her
-stream lines (`brain-voice.ok` is not written) and the brain does everything else.
+| File | What it is |
+|---|---|
+| `unity-brain.gguf` | The language model (Qwen3.5-9B fine-tune, IQ4_XS, 5.3 GB) |
+| `unity-brain-vision.gguf` | The image reader that lets it see screenshots (0.9 GB) |
+| `Modelfile` | Tells Ollama how to load both, with the right chat format and sampling |
 
-**To use:** `python training/apply.py` (checks the sha256, imports into Ollama on :11434 as `unity-brain`).
+## Setup
+
+Install [Ollama](https://ollama.com), then from this folder:
+
+```
+ollama create unity-brain -f Modelfile
+```
+
+## Use it
+
+```
+ollama run unity-brain "Say hi to chat."
+```
+
+From a program, Ollama's API on `http://127.0.0.1:11434`:
+
+```
+curl localhost:11434/api/chat -d "{\"model\": \"unity-brain\", \"stream\": false, \"options\": {\"num_ctx\": 32768}, \"messages\": [{\"role\": \"user\", \"content\": \"Say hi to chat.\"}]}"
+```
+
+- **Always send the same `num_ctx` (32768).** A request without it makes Ollama reload the model with a much
+  bigger default context (~14 GB of GPU memory instead of ~6 GB).
+- **GPU memory:** about 6 GB at 32K context; it fits a 16 GB card alongside a game and OBS.
+- **Images:** add `"images": ["<base64 png>"]` to a message.
+- **Tools:** pass the tool list in the request's `tools` field (Ollama's standard tool calling); it was trained
+  on the RimBridge and RimPLC tool sets.
