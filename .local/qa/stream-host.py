@@ -355,6 +355,14 @@ while True:
                     with open(os.path.join(ROOT, ".local", "autopilot", "owner-orders.txt"), "a", encoding="utf-8") as f:
                         f.write("\n- OWNER in Twitch chat (game order, binding next turn): " + text[:300] + "\n")
                 except Exception: pass
+                # owner, 2026-10-13: answer him out loud too -- never by name (the handle is secret), spoken only, since
+                # a Twitch reply would @ the handle
+                ans = None
+                for _try in range(3):
+                    ans = fresh("someone in chat said: \"%s\". Answer them briefly and honestly without using any name. "
+                                "What is true right now: %s" % (text[:160], state_facts() or "nothing new on the map this second"))
+                    if ans: break
+                if ans: speak(ans)
                 continue
             if text == "(joined the stream)":
                 if who.lower() in greeted: continue
