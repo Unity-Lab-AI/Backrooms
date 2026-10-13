@@ -2,7 +2,9 @@
 
 Owner, 2026-10-13: "the prep for the vocie repase multipass run" (and: never start training without his "start").
 
-  pass 0  feats     features of the expressive dataset (training/voice/expressive_rerender.py output), CPU, one time
+  pass -1 screen    the re-performed clips through the pod's speech-recognition screen (expressive_screen.py), CPU;
+                    a flagged clip falls back to its original recording so all 4,845 lines stay
+  pass 0  feats     features of the screened dataset, CPU, one time
   pass 1  prosody   local_prosody_retrain.py from the LIVE acoustic model to --steps on the expressive data (resumable)
   pass 2  gta       ground-truth-aligned mels from the NEW acoustic model (train_acoustic.export_mels), bound by hash
                     to a copy of that model inside the vocoder folder
@@ -30,7 +32,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 LIVE = HERE.parent.parent / "models" / "unity-voice"
-PASSES = ["feats", "prosody", "gta", "vocoder", "ab", "package"]
+PASSES = ["offgame", "screen", "feats", "prosody", "gta", "vocoder", "ab", "package"]
 
 
 def log(out, msg):
@@ -110,6 +112,26 @@ def check(args, out):
         log(out, "PROBLEM: " + p)
     log(out, "CHECK " + ("PASSED -- ready for the owner's start" if not problems else "FAILED"))
     return not problems
+
+
+COSY_PY = HERE.parent.parent / ".local" / "voice-lab" / ".venv-cosy" / "Scripts" / "python.exe"
+OFFGAME = Path(r"D:\voice-lab\dataset-v2-offgame-2026-10-13")
+
+
+def pass_offgame(args, out):
+    """The off-game lines rendered in her voice (owner: "more than just rimworld"); a render, resumable, not training."""
+    if (OFFGAME / "render-report.json").exists():
+        log(out, "offgame: rendered"); return
+    if not (HERE / "OFFGAME_CORPUS.jsonl").exists():
+        log(out, "offgame: no OFFGAME_CORPUS.jsonl -- skipped"); return
+    run(out, [COSY_PY, HERE / "offgame_render.py"])
+
+
+def pass_screen(args, out):
+    """The re-performed clips through the same speech-recognition screen the accepted clips had (CPU)."""
+    if (Path(args.dataset) / "screen-report.json").exists():
+        log(out, "screen: done"); return
+    run(out, [sys.executable, HERE / "expressive_screen.py"])
 
 
 def pass_feats(args, out):
@@ -229,13 +251,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=r"D:\voice-lab\unity-voice-v2-2026-10-13")
     ap.add_argument("--feats", default=r"D:\voice-lab\unity-voice-v2-2026-10-13\feats")
-    ap.add_argument("--dataset", default=r"D:\voice-lab\dataset-v2-expressive-2026-10-13")
+    ap.add_argument("--dataset", default=r"D:\voice-lab\dataset-v2-screened-2026-10-13")
     ap.add_argument("--steps", type=int, default=30000, help="prosody pass total steps")
     ap.add_argument("--frames", type=int, default=24000)
     ap.add_argument("--vocoder-steps", type=int, default=20000, help="joint GTA polish steps after the warm-up")
     ap.add_argument("--d-warmup", type=int, default=2000)
     ap.add_argument("--vocoder-batch", type=int, default=16)
-    ap.add_argument("--from", dest="start", choices=PASSES, default="feats")
+    ap.add_argument("--from", dest="start", choices=PASSES, default="offgame")
     ap.add_argument("--check", action="store_true", help="verify inputs only; trains nothing")
     args = ap.parse_args()
     out = Path(args.out)
