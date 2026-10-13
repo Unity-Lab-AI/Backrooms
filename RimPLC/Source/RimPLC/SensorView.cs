@@ -32,7 +32,7 @@ namespace RimPLC
         public static readonly string[] GroupOrder =
         {
             "Threats", "Health", "Crew", "Food", "Stores", "Power", "Rooms", "Defence", "Research", "Production",
-            "Colony", "World", "Stream", "Game", "Alerts", "Events", "Item counts", "Research done",
+            "Colony", "World", "Stream", "Game", "Alerts", "Events", "Item counts", "Research done", "Not measured",
         };
 
         public static List<Reading> All(Dictionary<string, object> state)

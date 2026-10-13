@@ -32,6 +32,7 @@ namespace RimPLC
         private Vector2 scroll;
         private string selected;
         private bool liveOnly;
+        private string family;
         private readonly Dictionary<string, string> buffers = new Dictionary<string, string>();
         private string newMarkName = string.Empty;
         private string newMarkValue = string.Empty;
@@ -122,6 +123,22 @@ namespace RimPLC
         {
             Widgets.CheckboxLabeled(new Rect(rect.x, rect.y, 140f, 24f), "Live rungs only", ref liveOnly);
             float bx = rect.x + 150f;
+            // 380 rungs in one list: filter by family (owner: "well organized")
+            if (Widgets.ButtonText(new Rect(bx, rect.y, 120f, 24f), family ?? "All families"))
+            {
+                var opts = new List<FloatMenuOption> { new FloatMenuOption("All families", () => { family = null; scroll = Vector2.zero; }) };
+                foreach (string f in r.Rungs.Select(e => e.Rung.Family ?? "-").Distinct().OrderBy(x => x, StringComparer.Ordinal))
+                {
+                    string fam = f;
+                    int live = r.Rungs.Count(e => (e.Rung.Family ?? "-") == fam && e.Live);
+                    opts.Add(new FloatMenuOption(fam + "  (" + r.Rungs.Count(e => (e.Rung.Family ?? "-") == fam) + (live > 0 ? ", " + live + " live" : "") + ")",
+                                                 () => { family = fam; scroll = Vector2.zero; }));
+                }
+
+                Find.WindowStack.Add(new FloatMenu(opts));
+            }
+
+            bx += 124f;
             if (Widgets.ButtonText(new Rect(bx, rect.y, 100f, 24f), "Letters seen")) plc.MarkLettersSeen();
             bx += 104f;
             if (Widgets.ButtonText(new Rect(bx, rect.y, 90f, 24f), "New rung")) Find.WindowStack.Add(new Dialog_RungEditor(plc, null));
@@ -155,7 +172,7 @@ namespace RimPLC
 
             float detailH = selected != null ? 150f : 0f;
             var outRect = new Rect(rect.x, rect.y + 28f, rect.width, rect.height - 28f - detailH);
-            List<RungEval> rows = liveOnly ? r.Rungs.Where(e => e.Live).ToList() : r.Rungs;
+            List<RungEval> rows = r.Rungs.Where(e => (!liveOnly || e.Live) && (family == null || (e.Rung.Family ?? "-") == family)).ToList();
             var view = new Rect(0f, 0f, outRect.width - 16f, rows.Count * RowH);
             Widgets.BeginScrollView(outRect, ref scroll, view);
             for (int i = 0; i < rows.Count; i++)
@@ -412,6 +429,18 @@ namespace RimPLC
         private void DrawSensors(Rect rect, ScanResult r)
         {
             List<SensorView.Reading> all = SensorView.All(r.State);
+            // inputs a rung asks for that have no reading: shown, so a quiet rung says why it is quiet
+            JsonObject cat = RimPLCMod.Book.Sensors;
+            foreach (string k in r.Rungs.SelectMany(e => e.Contacts.Where(c => c.Value == Contact.Unmeasured).Select(c => c.Key)).Distinct())
+            {
+                if (r.State.ContainsKey(k)) continue;
+                SensorView.Reading u = SensorView.Describe(k, null, cat);
+                string grp = cat.GetObject(k)?.GetString("group");
+                u.Group = "Not measured";
+                u.Tip = (grp == "Stream" ? "Host input (the stream PC sends it with set_host; absent while her player is off). " : "Asked for by a rung, no reading yet. ") + u.Tip;
+                u.Warning = false;
+                all.Add(u);
+            }
             List<SensorView.Reading> warns = all.Where(x => x.Warning && x.Severity != SensorView.Level.Info)
                                                 .OrderByDescending(x => x.Severity).ThenBy(x => x.Label, StringComparer.Ordinal).ToList();
             Widgets.CheckboxLabeled(new Rect(rect.x, rect.y, 190f, 24f), "Warnings only", ref sensorsWarningsOnly);
