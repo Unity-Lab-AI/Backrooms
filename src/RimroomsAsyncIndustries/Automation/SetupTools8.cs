@@ -14,6 +14,7 @@ namespace RimroomsAsyncIndustries.Automation
     ///                                          an armed colonist with no melee weapon carried picks one up as a sidearm;
     ///                                          if guns run out, a crafting bill for the shortfall goes on a table that can
     ///   {"cmd":"draft","pawn":"all|Gee","on":"true|false"}   draft or release a group in one call
+    ///   {"cmd":"tower","x":"..","z":"..","size":"3"}  a roofed corner tower with embrasures outward, a base door and a sally port
     ///   {"cmd":"hold"}                         draft every armed colonist and send each to its own cell behind an embrasure
     ///                                          (else sandbags / barricades), the ones nearest the threat first
     /// </summary>
@@ -122,6 +123,76 @@ namespace RimroomsAsyncIndustries.Automation
             }
             return changed.Count == 0 ? "ok: already " + (on ? "drafted" : "released")
                                       : "ok: " + (on ? "drafted " : "released ") + string.Join(", ", changed);
+        }
+
+        // ---------------------------------------------------------------- tower
+
+        /// <summary>
+        /// PLAYBOOK 9, owner verbatim: "yopu need towers on all corrner that you can shhot out from with seperate
+        /// ventalizatyion and added rooms for security stuff and embrassure sally ports". One call, one tower:
+        ///   {"cmd":"tower","x":"120","z":"136","size":"3","stuff":"BlocksGranite"}
+        /// The interior (size x size) grows from the given corner AWAY from the colony, so the tower stands proud of the
+        /// perimeter. The two outward faces get embrasures on alternate cells and one sally-port door; the inward face gets
+        /// the door back into the base; the roof is marked. Ventilation is a separate build (a cooler/vent in its own wall).
+        /// </summary>
+        public static string Tower(Map map, Dictionary<string, string> a)
+        {
+            int Int(string k, int d) => a.TryGetValue(k, out string s) && int.TryParse(s, out int v) ? v : d;
+            IntVec3 corner = new IntVec3(Int("x", -1), 0, Int("z", -1));
+            if (!corner.InBounds(map)) return "refused: x,z (the perimeter corner) outside the map";
+            int size = Math.Max(2, Math.Min(6, Int("size", 3)));
+            ThingDef embrasure = DefDatabase<ThingDef>.GetNamedSilentFail("Embrasure");
+            a.TryGetValue("stuff", out string sn);
+            ThingDef stuff = DefDatabase<ThingDef>.GetNamedSilentFail(sn ?? "") ?? ThingDefOf.WoodLog;
+
+            // The colony's centre: the Home area's mean cell, else the colonists'.
+            List<IntVec3> homeCells = map.areaManager.Home.ActiveCells.ToList();
+            IntVec3 centre = homeCells.Count > 0
+                ? new IntVec3((int)homeCells.Average(c => c.x), 0, (int)homeCells.Average(c => c.z))
+                : (map.mapPawns.FreeColonistsSpawned.FirstOrDefault()?.Position ?? map.Center);
+            int sx = corner.x >= centre.x ? 1 : -1, sz = corner.z >= centre.z ? 1 : -1;   // outward from the colony
+
+            // interior cells: from the corner, outward on both axes
+            int x0 = sx > 0 ? corner.x : corner.x - size + 1, z0 = sz > 0 ? corner.z : corner.z - size + 1;
+            int x1 = x0 + size - 1, z1 = z0 + size - 1;
+            // outward faces are the ring's x = x1+1 (sx>0) or x0-1, and z = z1+1 (sz>0) or z0-1
+            int outX = sx > 0 ? x1 + 1 : x0 - 1, outZ = sz > 0 ? z1 + 1 : z0 - 1;
+            int inX = sx > 0 ? x0 - 1 : x1 + 1, inZ = sz > 0 ? z0 - 1 : z1 + 1;
+            IntVec3 homeDoor = new IntVec3((x0 + x1) / 2, 0, inZ);                    // back into the base
+            IntVec3 sally = new IntVec3(outX, 0, (z0 + z1) / 2);                      // out through the side face
+
+            int walls = 0, ports = 0, doors = 0, kept = 0, blocked = 0;
+            for (int x = x0 - 1; x <= x1 + 1; x++)
+                for (int z = z0 - 1; z <= z1 + 1; z++)
+                {
+                    bool ring = x == x0 - 1 || x == x1 + 1 || z == z0 - 1 || z == z1 + 1;
+                    if (!ring) continue;
+                    IntVec3 c = new IntVec3(x, 0, z);
+                    if (!c.InBounds(map)) { blocked++; continue; }
+                    Building ed = c.GetEdifice(map);
+                    if (ed != null && (ed.def.passability == Traversability.Impassable || ed is Building_Door)) { kept++; continue; }
+                    bool cornerCell = (x == x0 - 1 || x == x1 + 1) && (z == z0 - 1 || z == z1 + 1);
+                    bool outward = !cornerCell && (x == outX || z == outZ);
+                    ThingDef def; ThingDef useStuff = stuff;
+                    if (c == homeDoor || c == sally) def = ThingDefOf.Door;
+                    else if (outward && embrasure != null && ((x + z) & 1) == 0)
+                    { def = embrasure; useStuff = embrasure.MadeFromStuff ? stuff : null; }
+                    else def = ThingDefOf.Wall;
+                    if (!GenConstruct.CanPlaceBlueprintAt(def, c, Rot4.North, map, false, null, null, useStuff).Accepted) { blocked++; continue; }
+                    GenConstruct.PlaceBlueprintForBuild(def, c, map, Rot4.North, Faction.OfPlayer, useStuff);
+                    if (def == ThingDefOf.Door) doors++; else if (def == embrasure) ports++; else walls++;
+                }
+            for (int x = x0; x <= x1; x++)
+                for (int z = z0; z <= z1; z++)
+                {
+                    IntVec3 c = new IntVec3(x, 0, z);
+                    if (c.InBounds(map)) map.areaManager.BuildRoof[c] = true;
+                }
+            return (walls + ports + doors == 0 && kept == 0 ? "refused: " : "ok: ") + "tower " + size + "x" + size + " at " + x0 + "," + z0 +
+                   "-" + x1 + "," + z1 + ": " + ports + " embrasures, " + walls + " walls, " + doors + " doors (base " + homeDoor.x + "," +
+                   homeDoor.z + ", sally port " + sally.x + "," + sally.z + "), " + kept + " kept, " + blocked + " blocked; roof marked" +
+                   (embrasure == null ? " -- no Embrasure def, walls only" : "") +
+                   " -- its own ventilation is a separate build: freezer-style cooler or a vent in a tower wall";
         }
 
         // ---------------------------------------------------------------- hold
