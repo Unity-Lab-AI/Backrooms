@@ -332,6 +332,7 @@ namespace RimroomsAsyncIndustries.Automation
                 case "research_next": return SetupTools10.ResearchNext();
                 case "prisoner": return SetupTools10.Prisoner(map, a);
                 case "generator": return SetupTools10.Generator(map, a);
+                case "trade": return SetupTools11.Trade(map, a);
                 case "chop": return SetupTools3.Chop(map, a);
                 case "shelter": return SetupTools3.Shelter(map, a);
                 case "stockpile_camp": return SetupTools3.StockpileCamp(map, a);
