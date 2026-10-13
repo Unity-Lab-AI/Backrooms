@@ -19306,3 +19306,7 @@ Owner: "might need to fix that all around the backrooms folder" / "i doont want 
 - [x] Refreshed both local standalone exports, 17 rendered wiki pages, readable docs and the 200-file ZIP; kept original RimPLC history and a full pre-layout export/receipt backup.
 
 Evidence: `docs/implementation/CONTENT_FOLDER_1_7_LAYOUT.md` and `evidence/content-folder-2026-10-12/`. Three successful compiles used the installed 1.6 references. Source/build/package integrity only; no gameplay acceptance, game launch/stage/profile edits, parent branch checkout/publication, model changes or pod operations. Subsequent standalone repository read-backs in tool output prove publication.
+
+## 2026-10-13 — RimBridge read-only allowlist
+
+- [x] **`rimworld/list_maps` DOES NOT EXIST ON THIS BRIDGE, and it is in the shipped client's allowlist.** `tools/qa/rimbridge_readonly.py` lists `maps` in `READ_TOOLS`; the live bridge answers *"Tool 'rimworld/list_maps' not found"*. It failed **50 times in one session**. Either the name changed or it never existed — `rimworld/list_zones`, `list_areas` and `get_game_info`'s own `mapCount` are what the live bridge offers. -- **DONE 2026-10-13 (4e19b8c5):** `tools/qa/rimbridge_readonly.py` drops `maps` and reads `zones` (`rimworld/list_zones`) and `areas` (`rimworld/list_areas`), both in the captured live `tools/list` (`.local/autopilot/bridge-tools.json`, 125 tools, no `list_maps`); map count stays on `get_game_info`'s `mapCount`; no other caller asked for `list_maps`.
