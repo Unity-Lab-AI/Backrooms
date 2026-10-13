@@ -297,3 +297,19 @@ and know wtf to do with freezers"). One item per step, say it on stream, tick it
 - A message box ("Sure, you can stay" / "No, please leave now") has frozen time for 5 minutes: call game_get_ui_layout and click one of those two buttons with click_ui_target before anything else.
 - RAID on the map now (Lacar Union letter): read the raid letter, draft the crew and fight or pull everyone indoors -- before any research letters.
 - RAID is real and NOW: letter Letter_11 "Raid: Lacar Union", raider Trebo (Thing_Human122270). Open Letter_11, draft Gee/Scar/Unity and attack Trebo -- before anything else.
+
+- TONIGHT, from the owner at GO: fresh crash landed colony, new stream
+
+- TONIGHT, from the owner at GO: crashlanded scenerio start, usual setup all around, start a new stream and fill out details well about this 1.7 rimrooms 297 mod pack and RimPLC testing on 1.7 new today
+
+- TONIGHT, from the owner at GO: start a crashlanded usual set up, and start a new stream filling out all the details for it about all the verious testing from mods 1.7 rimrooms and rimPLC
+
+- TONIGHT, from the owner at GO: crashlanded scenerio start usual setup for world and everything, start a new stream and fill in all the stream boxes not just description
+
+- OWNER in Twitch chat (game order, binding next turn): hell yeah! good to see you back at it
+
+- OWNER in Twitch chat (game order, binding next turn): (joined the stream)
+
+- OWNER ORDER NOW (do this before stores): "and she still has guns on the ground can u tell her to euaipthem as main equip and use the pain batons as side arms for everyone one for range one for melee and needs to set self tend medical and attack not flee". Every colonist: pick up a gun from the ground and equip it as the PRIMARY (ranged) weapon; carry a pain baton as the SIDEARM (melee) -- one ranged + one melee each. Turn on Self-tend for every colonist (medical). Set hostility response to Attack, never Flee.
+  HOW: call empire_pass (it equips a loose gun on every unarmed colonist with the melee as sidearm, and turns self-tend on), then check its ARMS line; hostility is game_set assign hostility Attack (never Flee).
+- OWNER, again: the weapons/self-tend/Attack order is NOT for later and does NOT wait on the ladder. An owner order overrides setup-1-explore. Call empire_pass THIS turn, before anything else, and put your weapons-out rung FIRST (priority above every setup rung).
