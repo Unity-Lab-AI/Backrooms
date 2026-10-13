@@ -43,6 +43,7 @@ namespace RimPLC
             Guard(() => Freezer(st, home));
             Guard(() => Towers(st, home));
             Guard(() => StoneBlocks(st, home));
+            Guard(() => ResearchUpgrades(st, home));
         }
 
         private static void Guard(Action a)
@@ -308,6 +309,26 @@ namespace RimPLC
             foreach (KeyValuePair<ThingDef, int> kv in home.resourceCounter.AllCountedAmounts)
                 if (kv.Key.thingCategories != null && kv.Key.thingCategories.Contains(ThingCategoryDefOf.StoneBlocks)) n += kv.Value;
             st["stone_blocks"] = (double)n;
+        }
+
+        // the Rimrooms research_next command's "build it the moment it is researched" list (SetupTools10.Upgrades)
+        private static readonly string[] Upgrades = { "HiTechResearchBench", "MultiAnalyzer", "OrbitalTradeBeacon", "CommsConsole", "DrugLab" };
+
+        /// <summary>research_upgrades_unbuilt / research_upgrades_missing: the upgrades research_next names -- researched
+        /// and neither built nor planned (blueprint or frame) on the home map, by that command's own test.</summary>
+        private static void ResearchUpgrades(Dictionary<string, object> st, Map home)
+        {
+            var missing = new List<object>();
+            foreach (string name in Upgrades)
+            {
+                ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail(name);
+                if (def == null || !def.IsResearchFinished) continue;
+                bool have = home.listerBuildings.allBuildingsColonist.Any(b => b.def == def) ||
+                            home.listerThings.AllThings.Any(t => (t.def.IsBlueprint || t.def.IsFrame) && t.def.entityDefToBuild == def);
+                if (!have) missing.Add(name);
+            }
+            st["research_upgrades_unbuilt"] = (double)missing.Count;
+            st["research_upgrades_missing"] = missing.ToList();
         }
 
         /// <summary>empire_hostile: the Empire (Royalty) is hostile to the player. FactionManager.OfEmpire (verified, decomp

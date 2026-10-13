@@ -668,7 +668,7 @@ Everything "still open after the review" above that can be settled without a liv
   - `corner_<ne|nw|se|sw>_x` / `_z`: the Home area's bounding-box corners, so corners come from the colony's own layout, never the Store's fixed coordinates.
   - `tower_<corner>`: an embrasure built, framed or planned within 8 cells of that corner.
   - `stone_blocks`.
-  - The ladder is now 400 rungs and 186 sensors (187 in the preset).
+  - The ladder was then 400 rungs and 186 sensors (187 in the preset).
 - **Kitchen and food rungs:**
   - `kitchen-bills` (4.85, new) runs `kitchen` while `kitchen_tables_no_bill > 0`.
   - `butcher-table` (5.0) now fires on a built stove, no butcher table, and meat coming in (`corpses > 0` or `designations_hunt > 0`). It runs `butcher`, then `kitchen`.
@@ -684,5 +684,10 @@ Everything "still open after the review" above that can be settled without a liv
   - `power-net-dead` runs `power` first.
 - **`hall`:** listed in both command lists. No rung asks for a hall yet.
 - **Builds:** `RimPLC.dll` 0 warnings / 0 errors. The Rimrooms project, with `terraform`, compiles 0 / 0 to a scratch folder.
+- **Research (`research_next`):**
+  - `research-pick-next` (12.9, new) runs `research_next` whenever `research_queue_empty` is true, which is both "none chosen" and "the last one finished", since `GetProject()` is empty in both cases. `research-idle` stays as the by-hand fallback.
+  - New sensors `research_upgrades_unbuilt` / `research_upgrades_missing` apply the command's own upgrade list and test: researched and neither built nor planned on the home map.
+  - `research-build-upgrades` (14.15, new) builds each name in that list (`build def <name>`, then `power`).
+  - The ladder is now 402 rungs and 188 sensors.
 
 **Still open:** none of this has run in a live game. `config-post-strictness` waits on the gate-posture sensor and command.

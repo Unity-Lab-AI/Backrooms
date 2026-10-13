@@ -319,6 +319,7 @@ namespace RimroomsAsyncIndustries.Automation
                 case "stockpile_priority": return SetupTools6.StockpilePriority(map, a);
                 case "stockpile_copy": return SetupTools6.StockpileCopy(map, a);
                 case "crew_setup": return SetupTools6.CrewSetup(map, a);
+                case "terraform": return SetupTools6.Terraform(map, a);
                 case "freezer": return SetupTools7.Freezer(map);
                 case "butcher": return SetupTools7.Butcher(map);
                 case "kitchen": return SetupTools7.Kitchen(map);

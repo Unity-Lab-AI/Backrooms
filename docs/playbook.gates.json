@@ -1895,6 +1895,29 @@
       "severity": "info",
       "tip": "Stone blocks of every kind in storage: walls, towers and floors.",
       "warn": "<50"
+    },
+    "research_upgrades_unbuilt": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "HiTechResearchBench, MultiAnalyzer, OrbitalTradeBeacon, CommsConsole, DrugLab: researched (BuildableDef.IsResearchFinished) and not built or planned on the home map (the research_next command's list)",
+      "group": "Research",
+      "label": "Upgrades not built",
+      "severity": "warning",
+      "tip": "Researched buildings (hi-tech bench, multi-analyzer, trade beacon, comms console, drug lab) not built yet. Build each the moment it is researched.",
+      "warn": ">0"
+    },
+    "research_upgrades_missing": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "labels",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "the def names behind research_upgrades_unbuilt",
+      "group": "Research",
+      "label": "Upgrades to build",
+      "severity": "info",
+      "tip": "The researched buildings not built yet, by def name."
     }
   },
   "gates": [
@@ -6615,6 +6638,22 @@
       "family": "meta"
     },
     {
+      "id": "research-pick-next",
+      "priority": 12.9,
+      "family": "research",
+      "when": {
+        "research_benches": ">0",
+        "research_queue_empty": true
+      },
+      "then": [
+        "game_set cmd research_next -- the next project in the playbook order (Electricity, Batteries, Microelectronics, Multi-analyzer, drugs, Penoxycyline, pods), else the cheapest available; read the reply",
+        "the reply names upgrades \"unlocked and not built\": research-build-upgrades builds them",
+        "refused or still research_queue_empty: research-idle opens the Research tab by hand"
+      ],
+      "latch": false,
+      "why": "owner PLAYBOOK 4b: \"you should be rushing microelectionices then the mico analysis things then the computing reasearching building them as you research them\"; fires whenever no project is selected (none chosen, or the last one finished)"
+    },
+    {
       "id": "research-idle",
       "priority": 13.0,
       "family": "research",
@@ -6876,6 +6915,23 @@
       ],
       "latch": false,
       "why": "owner: \"you also might want to research antibiotics and assign everyones drug scheldule manage to take peneacycline every 5 days once you build it at drug lab after researching antibiotics in game\""
+    },
+    {
+      "id": "research-build-upgrades",
+      "priority": 14.15,
+      "family": "research",
+      "when": {
+        "colony_exists": true,
+        "hostiles_on_map": 0,
+        "research_upgrades_unbuilt": ">0"
+      },
+      "then": [
+        "for each name in research_upgrades_missing: game_set cmd build def <name> x z next to the research benches (CommsConsole and OrbitalTradeBeacon by the main stockpile); read each reply",
+        "powered ones: game_set cmd power once they stand",
+        "refused: game_set cmd research_next again for the current list, and say on stream what could not be placed"
+      ],
+      "latch": false,
+      "why": "owner PLAYBOOK 4b: \"building them as you research them\"; research_upgrades_unbuilt measured by RimPLC with the research_next list"
     },
     {
       "id": "research-upgrade-sweep",
