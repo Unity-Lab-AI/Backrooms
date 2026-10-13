@@ -105,8 +105,40 @@ def wav_seconds(path):
         return 0.0
 
 
+class _OneVoice:
+    """One line plays at a time across EVERY speaker (her turns, the host voice, the switch). Owner, 2026-10-13: "she is
+    talking all over herself not letting the tts finish". The audio is made in parallel; playing waits its turn on a
+    lock file and holds it until the line has finished. A holder that dies releases it with its process."""
+    PATH = os.path.join(tempfile.gettempdir(), "unity-voice-playing.lock")
+
+    def __enter__(self):
+        import msvcrt
+        self.f = open(self.PATH, "a+b")
+        deadline = time.time() + 180
+        while True:
+            try:
+                self.f.seek(0); msvcrt.locking(self.f.fileno(), msvcrt.LK_NBLCK, 1); return self
+            except OSError:
+                if time.time() > deadline: return self      # never hang a speaker forever
+                time.sleep(0.2)
+
+    def __exit__(self, *a):
+        import msvcrt
+        try: self.f.seek(0); msvcrt.locking(self.f.fileno(), msvcrt.LK_UNLCK, 1)
+        except OSError: pass
+        self.f.close()
+
+
 def speak(text, out):
     synth(text, out)
+    if os.name != "nt":
+        return _play(out)
+    with _OneVoice():
+        _play(out)
+        time.sleep(0.4)          # a breath between lines
+
+
+def _play(out):
     # The stream hears the voice through OBS's "Unity voice" media source, which plays this file:
     # OBS decodes it itself (the browser-source audio route crackled to static on stream).
     try:
