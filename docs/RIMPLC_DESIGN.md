@@ -1,5 +1,7 @@
 # RimPLC: design
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
 Owner, verbatim: *"i think this is the whoole PLC like logic chain if this then this if heath level reaches then this type of thing for the whole game properly layed out into a PLC that we will call RimPLC as a seperate mod idea we will build inot the backrooms folder and rimrooms and make a stand alone version thats fully integrated with the game for use with any mod and any dlc with not depandancies"*
 
 Owner decisions, verbatim:
@@ -88,12 +90,12 @@ Retroactive note: the existing `RimroomsAutomationComponent` (`set_work_priority
 |---|---|
 | Display name | `RimPLC` |
 | packageId | `Operator.RimPLC` (proposal, matching Rimrooms' author value `Operator`) |
-| supportedVersions | `1.6` |
+| supportedVersions | `1.6` and `1.7`; both load the shared `1.7/` content folder. A declaration is not 1.7 runtime acceptance |
 | `modDependencies` | **none** |
 | `loadAfter` | `Ludeon.RimWorld` and the five DLC ids only. It is ordering, not a requirement. |
 | Assembly references | `Assembly-CSharp`, `UnityEngine.CoreModule`, `UnityEngine.IMGUIModule`, `UnityEngine.TextRenderingModule`. Same as Rimrooms, `Private=false`. |
-| Source location | `src/RimPLC/RimPLC.csproj`, a copy of the Rimrooms csproj settings (`net472`, `LangVersion 7.3`, `Deterministic`, `TreatWarningsAsErrors`, `IncludeSourceRevisionInInformationalVersion=false`, `RIMWORLD_PATH`, and the same `RequireLocalGameReferences` guard) |
-| Package location | `Mod/RimPLC/` (`About/`, `LoadFolders.xml`, `1.6/Assemblies/RimPLC.dll`, `1.6/Defs/`, `Languages/`) |
+| Source location | `RimPLC/Source/RimPLC/RimPLC.csproj`, following the Rimrooms csproj settings (`net472`, `LangVersion 7.3`, `Deterministic`, `TreatWarningsAsErrors`, `IncludeSourceRevisionInInformationalVersion=false`, `RIMWORLD_PATH`, and the same `RequireLocalGameReferences` guard) |
+| Package location | `RimPLC/` (`About/`, `LoadFolders.xml`, `1.7/Assemblies/RimPLC.dll`, `1.7/Defs/`, `Languages/`) |
 
 **Why no Harmony.** RimPLC reads state and calls player-level setters. It never needs to change Core behaviour. Every sensor and action in §4 and §5 is a public member, and Rimrooms has already shown, across seven components, that this profile can be served with public API only. The only private member RimPLC wants is the alert list (`AlertsReadout.activeAlerts` is `private`, verified (decomp)). §4.4 reads alerts without it. Harmony is not needed, so the "bundled-safe" question does not arise. If a future feature truly needs a patch, it goes into a separate optional assembly loaded through `LoadFolders.xml` `IfModActive="brrainz.harmony"` (the attribute is verified (decomp), `Verse/ModLoadFolders.cs`), so the core mod stays dependency-free.
 
@@ -110,7 +112,7 @@ Rimrooms must keep working with RimPLC absent, and RimPLC must keep working with
 
 1. **The preset ships in RimPLC, gated.** The full-run Ladder v2 preset includes the Backrooms gate family (bands 80–86) with `requires: ["mod:Rimrooms.AsyncIndustries"]`. Without Rimrooms those rungs are greyed out.
 2. **Rimrooms sensors come from a registration API in RimPLC**, called from a small extra Rimrooms assembly that only loads when RimPLC is active:
-   - `Mod/Rimrooms - Async Industries/LoadFolders.xml` gains `<li IfModActive="Operator.RimPLC">RimPLCLink</li>`. `IfModActive` is verified (decomp). The existing file only has `<li>1.6</li>`.
+   - `Mod/Rimrooms - Async Industries/LoadFolders.xml` gains `<li IfModActive="Operator.RimPLC">RimPLCLink</li>`. `IfModActive` is verified (decomp). The shared content entry is `<li>1.7</li>` for both loader versions; keep this folder name when adding an optional link.
    - `RimroomsRimPLCLink.dll` references `RimPLC.dll` (`Private=false`) and calls `RimPLC.Api.RegisterSensor("gate_online", map => ...)` and similar from a `StaticConstructorOnStartup` class (UNVERIFIED as the right hook; a `GameComponent` constructor is the proven fallback).
    - The Rimrooms core assembly does not change its references. Its "no dependency" stance (owner, 2026-10-03: *"rework mod to not need any depeancie mods"*) holds.
 3. **Rimrooms-owned sensors** turn the Ladder v2 §1.3 marks that came from the machine pane into measured keys: `gate_online`, `gate_open`, `operator_on_station`, `gate_sections_done`. They are read straight from `RimroomsCampaignComponent` / the gate comps, with the exact members picked when the link is written (UNVERIFIED until then).
@@ -228,7 +230,7 @@ These are the Ladder v2 keys, **under the same names**, so the existing training
 | Key | API | Status | Note |
 |---|---|---|---|
 | `steel`, `components`, `plasteel`, `uranium`, `gold`, `silver`, `chemfuel`, `wood`, `medicine`, `meals`, `raw_food` | `map.resourceCounter.GetCount(ThingDef)` | verified (decomp, `ResourceCounter.cs:75`) | **Semantics change:** ResourceCounter counts what is in storage, not everything inside the camp rectangle. It is closer to what the rungs mean. Flag it in the migration parity read (§9). |
-| `days_of_food` | `map.resourceCounter.TotalHumanEdibleNutrition / (colonists * 1.6)` | `TotalHumanEdibleNutrition` verified (decomp, `ResourceCounter.cs:19`); the 1.6/day constant is from `gates.py` | Core's own `Alert_LowFood` uses the same total |
+| `days_of_food` | `map.resourceCounter.TotalHumanEdibleNutrition / (colonists * 1.6)` | `TotalHumanEdibleNutrition` verified (decomp, `ResourceCounter.cs:19`); the 1.7/day constant is from `gates.py` | Core's own `Alert_LowFood` uses the same total |
 | `wealth` | `map.wealthWatcher.WealthTotal` | verified (decomp, `WealthWatcher.cs:42`) | Replaces the `wealth_band` mark |
 | `growing_cells`, `stockpile_cells`, `home_cells` | `map.zoneManager.AllZones`, `map.areaManager.Home` | verified (decomp, `ZoneManager.cs:13`, `AreaManager.cs:17`) | Cell count members UNVERIFIED |
 | `count_<defName>` (generic) | `map.listerThings.ThingsOfDef(def).Count` | verified (decomp) | Covers `stoves`, `turrets`, `beds`, `research_benches`, `comms_console`, `pod_launchers`, `ship_parts` and any **mod** building, by def name at runtime |
@@ -289,7 +291,7 @@ Not in the action set, on purpose: anything that spawns, destroys, edits defs, m
 
 ## 6. Player UI
 
-**Entry point.** A `MainButtonDef` (XML) with `MainButtonWorker_ToggleTab` (verified (decomp)) opens `MainTabWindow_RimPLC`. Also a keybinding (UNVERIFIED `KeyBindingDef` hookup). Defs are XML in `1.6/Defs/`, so nothing is patched.
+**Entry point.** A `MainButtonDef` (XML) with `MainButtonWorker_ToggleTab` (verified (decomp)) opens `MainTabWindow_RimPLC`. Also a keybinding (UNVERIFIED `KeyBindingDef` hookup). Defs are XML in `1.7/Defs/`, so nothing is patched.
 
 **Window layout:**
 
@@ -453,6 +455,8 @@ These are asked, not flagged (per *ask, never flag*). The coordinator should put
    -> Advise-only by default. The ladder is an **auto-updating checklist of controls, switches, relays and contactors** the AI checks or the human is notified by, wired like an electrician would: a float switch on health bars; colonist took damage -> pause -> can she handle this fight? yes -> unpause; no -> can help get there soon? no -> keep range; too many -> get help. The same pattern covers everything: low food, low ship fuel, too many junk weapons to sell, steel / supply shortage against set levels, defenses secure? yes/no branches, buildings damaged -> set repairs if pawns safe, pawn bleeding -> enemy on map? draft all, kill the threat, field tend before carrying to hospital.
    -> Built in the ladder (2026-10-12) as five linked-rung chains (combat, medical, repairs, defense, supply), advise-only, each rung with `chain`, `check` and `notice`: see `training/ladder-v2/DESIGN.md` §6.1. RimPLC's book preset carries them across unchanged (§9 step 2).
 4. **Old Rimrooms automation inbox:** "Keep both" -> the inbox stays as a fallback when RimPLC isn't installed; both paths fire one-shot on a rung's rising edge so they never double-act.
+
+**Package layout update — 2026-10-12:** current RimPLC content and build output now use `RimPLC/1.7/`. `LoadFolders.xml` maps both game 1.6 and 1.7 to that one folder. The dated P1/P2 receipts below preserve the original `1.6/` output paths used for those builds; they do not describe the current copyable layout.
 
 ## Built status (2026-10-12): P0 and P1 built, compiled, not staged
 

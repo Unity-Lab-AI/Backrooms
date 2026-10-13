@@ -21,8 +21,8 @@ import time
 
 INTEGRITY = "tools/check-package-integrity.py"
 PROOF = ".local/register/proof-class-resolution.py"
-PATCH = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_NativeGateProviders.xml"
-GENSTEP = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsCoordinateDefs/RR_Coordinates.xml"
+PATCH = "Mod/Rimrooms - Async Industries/1.7/Patches/RR_NativeGateProviders.xml"
+GENSTEP = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsCoordinateDefs/RR_Coordinates.xml"
 
 COLORABLE = "          <li>\n            <compClass>CompColorable</compClass>\n          </li>"
 

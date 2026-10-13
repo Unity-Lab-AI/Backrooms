@@ -32,7 +32,7 @@ edit('src/RimroomsAsyncIndustries/Company/CampaignServices.cs',
      u'            if (now % 60 == 30) { TickFacilityRelief(); }')
 
 # --------------------------------------------------------- keyed strings
-p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6', 'Languages', 'English',
+p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7', 'Languages', 'English',
                  'Keyed', 'RR_Requests.xml')
 s = io.open(p, encoding='utf-8-sig').read()
 block = u"""  <RR_Event_FacilityRelief>A corporation clean-up team cleared the site, requisitioned a replacement crew and left supplies. The branch is open again.</RR_Event_FacilityRelief>

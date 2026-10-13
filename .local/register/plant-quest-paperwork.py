@@ -20,9 +20,9 @@ GIVER = "src/RimroomsAsyncIndustries/Company/WorkGiver_WriteUp.cs"
 SETTLEMENT = "src/RimroomsAsyncIndustries/Company/EvidenceSettlement.cs"
 DEFS = "src/RimroomsAsyncIndustries/Company/WriteUpDefs.cs"
 DELIVERY = "src/RimroomsAsyncIndustries/Company/QuestBookDelivery.cs"
-KINDS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsWriteUpDefs/RR_WriteUps.xml"
-REQUESTS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsRequestDefs/RR_Requests.xml"
-DESK = "Mod/Rimrooms - Async Industries/1.6/Defs/ThingDefs_Buildings/RR_RecordsDesk.xml"
+KINDS = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsWriteUpDefs/RR_WriteUps.xml"
+REQUESTS = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsRequestDefs/RR_Requests.xml"
+DESK = "Mod/Rimrooms - Async Industries/1.7/Defs/ThingDefs_Buildings/RR_RecordsDesk.xml"
 
 CHECK = "tools/check-quest-paperwork.py"
 

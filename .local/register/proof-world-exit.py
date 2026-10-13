@@ -236,7 +236,7 @@ check("no tile found is an honest refusal rather than an invented destination",
 # the same blind spot, in the same shape, as the one that let a flat battery report an address
 # fault. `LeaveThroughWorldExit` was the only direction that existed, while `WorldExitRecord` had
 # been saving `coordinateId` and `doorLoadId` all along with nothing reading them.
-portal_keys = io.open(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6",
+portal_keys = io.open(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7",
                                    "Languages", "English", "Keyed", "RR_Portals.xml"),
                       encoding="utf-8-sig").read()
 

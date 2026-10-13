@@ -43,7 +43,7 @@ REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries")
 BRIDGE = os.path.join(SRC, "Portals", "StargateBridge.cs")
 COMP = os.path.join(SRC, "Portals", "CompRimroomsEmergence.cs")
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages", "English",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages", "English",
                      "Keyed", "RR_Portals.xml")
 
 # --------------------------------------------------------------------------- #

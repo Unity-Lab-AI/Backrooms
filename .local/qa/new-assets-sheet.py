@@ -10,7 +10,7 @@ import sys
 
 from PIL import Image, ImageDraw
 
-ROOT = "Mod/Rimrooms - Async Industries/1.6/Textures/Things"
+ROOT = "Mod/Rimrooms - Async Industries/1.7/Textures/Things"
 OUT = "artifacts/new-assets-sheet.png"
 TILE = 190
 COLS = 6

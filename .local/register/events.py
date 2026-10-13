@@ -73,6 +73,6 @@ header = """<?xml version="1.0" encoding="utf-8"?>
 
 """
 
-io.open('Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsAnomalyEventDefs/RR_AnomalyEvents.xml',
+io.open('Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsAnomalyEventDefs/RR_AnomalyEvents.xml',
         'w', encoding='utf-8', newline='').write(header + "\n\n".join(block(d) for d in E) + "\n\n</Defs>\n")
 print("events:", len(E))

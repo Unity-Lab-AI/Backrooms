@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-12",
+  "creator": "Operator",
+  "tool": "built-in image_gen",
+  "scope": "Two original RimPLC branding images. No main-menu/load-screen art, source/UI/Def edits, or copied game/provider assets.",
+  "assets": [
+    {
+      "filename": "RimPLC_Preview.png",
+      "masterPath": "assets/source/rimplc/RimPLC_Preview.png",
+      "packagePath": "RimPLC/About/Preview.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a0e322-28b4-7753-a12c-30694ea362c5\\exec-da382935-6db1-4664-889e-0337c2a927ee.png",
+      "prompt": "Create an original professional wide 16:9 illustrated mod preview image for a RimWorld colony logic advisor mod called RimPLC. This is mod-list/Workshop/readme branding, not main-menu art, not a loading screen, not a UI screenshot. Clean charcoal-black brushed panel background, cream lettering, restrained aged brass-gold and small signal-green accents. RimWorld-inspired hand-painted sci-fi industrial artwork with bold readable shapes, slightly worn practical machinery aesthetics, painterly matte shading, no photographic realism. Left half: very large exceptionally clear exact title 'RimPLC' in sturdy cream block lettering, mixed case exactly as shown. Smaller gold exact subtitle 'COLONY LOGIC & CONTROL'. Above it near top left exact small text 'RIMWORLD 1.7'. Bottom left small exact credit 'Operator'. Do not print a development build or release number. Right half: a prominent original metallic emblem: two vertical cream electrical ladder rails with two gold horizontal rungs, the upper rung has a pair of normally-open contact strokes, the lower rung has an output coil formed by two parenthesis curves; restrained green signal node connects to a short fine circuit trace. Emblem is chunky and iconic, beautifully integrated with an inset industrial panel. Beneath/behind the emblem subtle drawn traces and three small visual colony-sensor motifs (battery charge, thermometer, warning indicator), all graphic abstractions, no extra text. Emphasize colony monitoring and rule logic; no portals, no horror, no monsters, no mascot, no characters, no physical device promised to be an in-game item. Dark negative space, enough margin so all title text is fully visible in thumbnails, excellent high contrast and well balanced typography. Do not copy the official RimWorld logo. Only the four requested text strings are printed. Original polished coherent mod branding.",
+      "transparentBackground": false,
+      "references": []
+    },
+    {
+      "filename": "RimPLC_Badge.png",
+      "masterPath": "assets/source/rimplc/RimPLC_Badge.png",
+      "packagePath": "RimPLC/About/RimPLC_Badge.png",
+      "generatedSource": "C:\\Users\\gfour\\.codex\\generated_images\\01a0e322-28b4-7753-a12c-30694ea362c5\\exec-30519752-8f8d-418a-bfd7-796af85cdbad.png",
+      "prompt": "Create one original transparent-background square branding icon for the RimPLC RimWorld colony logic advisor. Asset is a circuit-and-ladder emblem, NOT menu art and NOT loading-screen art. RimWorld-inspired practical hand-painted sci-fi industrial icon with bold chunky clean contours, slightly aged cream-metal and brass-gold matte shading and a tiny restrained signal-green accent. Exact motif: two thick cream upright ladder-logic rails; two brass horizontal rungs bridging them; upper rung has two separated cream normally-open contact strokes; lower rung has a cream output coil represented by a pair of parenthesis curves; one green signal node and a short brass circuit branch outside right rail. Simple compact readable silhouette, centered with comfortable transparent margin, suitable for 64-pixel display. No lettering at all, no text, no background plaque, no gradients/glow spilling outside icon, no checkerboard painted in, no border around the canvas. This is original mod branding, not a copied official logo. Render only the emblem with a genuinely fully transparent alpha background. Avoid tiny busy filigree and photorealism.",
+      "transparentBackground": true,
+      "references": [],
+      "usage": "Reusable branding badge; there is no current in-game custom icon consumer."
+    }
+  ]
+}

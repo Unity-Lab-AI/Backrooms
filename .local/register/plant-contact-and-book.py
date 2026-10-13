@@ -19,8 +19,8 @@ import time
 DELIVERY = "src/RimroomsAsyncIndustries/Company/RecordBookDelivery.cs"
 SERVICES = "src/RimroomsAsyncIndustries/Company/CampaignServices.cs"
 LINE = "src/RimroomsAsyncIndustries/Company/RequestLine.cs"
-STARTS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsStartDefs/RR_Starts.xml"
-REQUESTS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsRequestDefs/RR_Requests.xml"
+STARTS = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsStartDefs/RR_Starts.xml"
+REQUESTS = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsRequestDefs/RR_Requests.xml"
 
 PROOF = ".local/register/proof-corporate-contact.py"
 

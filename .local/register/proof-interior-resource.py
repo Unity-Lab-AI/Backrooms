@@ -90,7 +90,7 @@ check("rock is cleared where a room is carved",
 # 0.12.49-dev stopped naming Core's roof -- which is the proof doing its job. The property worth
 # asserting was never "it uses that particular def"; it is that the roof is THICK, so it cannot
 # vanish and leave a sky, and NON-COLLAPSING, so removing a wall or a pillar cannot drop it.
-ROOFS_PATH = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+ROOFS_PATH = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                           "RoofDefs", "RR_Roofs.xml")
 roofs_xml = read(ROOFS_PATH) if os.path.isfile(ROOFS_PATH) else ""
 check("mining can never open a hole in the world",

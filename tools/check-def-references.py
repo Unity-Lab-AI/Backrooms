@@ -143,7 +143,7 @@ def main():
         notes.append("%d def and abstract names parsed from %s" % (len(game_names), ", ".join(packs)))
 
     ours = set()
-    our_files = xml_files(os.path.join(MOD, "1.6", "Defs"))
+    our_files = xml_files(os.path.join(MOD, "1.7", "Defs"))
     for path in our_files:
         body = strip_comments(read(path))
         ours.update(re.findall(r"<defName>([^<]+)</defName>", body))

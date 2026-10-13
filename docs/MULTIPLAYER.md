@@ -1,7 +1,9 @@
 ﻿# Playing together
 
-**Nothing on this page has been tested in play.** No game has ever been launched from this
-repository. What follows is what the mod is built to do and what it is built not to do, read out
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
+**The multiplayer workflows on this page have not been verified in play.** Existing single-player
+launch and play observations used RimWorld 1.6; they do not establish 1.7 or two-client compatibility. What follows is what the mod is built to do and what it is built not to do, read out
 of the code and the server files. Treat every sentence as a design statement, not a result.
 
 ---
@@ -27,14 +29,14 @@ that mod makes them behave. This mod neither extends nor restricts them.
 
 | | |
 |---|---|
-| RimWorld | **1.6** |
+| RimWorld | **1.6 retained; 1.7 unstable target**. Match exact game versions across clients; verify RWT support for 1.7 separately |
 | RimWorld Together | Workshop ID `3005289691`, package `nova.rimworldtogether` |
 | Harmony | required by RimWorld Together, not by this mod |
 | This mod | no multiplayer-specific setting, and nothing to turn on |
 
-**This mod requires none of the above for solo play.** Its declared requirements are the
-does not know whether you are playing alone until it looks — which it only does to tell you, on
-the facilities page of the company panel.
+**Solo play requires RimWorld, but no other mod or expansion.** RimWorld Together and Harmony
+are relevant only when you choose their multiplayer route. The facilities page reports whether
+optional providers are present; presence does not establish compatibility.
 
 ---
 
@@ -92,7 +94,7 @@ All of it. Specifically:
 - no multiplayer session has been run with this mod loaded;
 - no two-client profile match has been performed against a live game;
 - no visit, trade or aid action has been observed with this mod present;
-- the 294-mod profile has never been loaded into a running game at all.
+- existing 1.6 full-profile play observations do not verify the multiplayer workflows above or any 1.7 configuration.
 
 The mod's own facilities page lists which optional mods it has a recorded position on and which of
 them are loaded, and it says the same thing this page says: **loaded means present, not proven.**

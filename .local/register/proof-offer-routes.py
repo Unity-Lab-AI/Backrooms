@@ -19,11 +19,11 @@ import sys
 import xml.etree.ElementTree as ET
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-REQUESTS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+REQUESTS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                         "RimroomsRequestDefs", "RR_Requests.xml")
 ROUTES_SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Company", "RequestRoutes.cs")
 DEFS_SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Company", "RequestDefs.cs")
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages", "English",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages", "English",
                      "Keyed")
 
 failures = []
@@ -144,7 +144,7 @@ for _path in _glob.glob(os.path.join(GAME, "**", "*.xml"), recursive=True):
         if _node.tag == "ThingDef" and _name:
             game_things.add(_name.strip())
 
-PROJECTS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+PROJECTS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                         "RimroomsProjectDefs", "RR_CompanyProjects.xml")
 projects = set()
 for _node in ET.parse(PROJECTS).getroot():

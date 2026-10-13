@@ -1,6 +1,6 @@
 import io, re
 
-M = 'Mod/Rimrooms - Async Industries/1.6/'
+M = 'Mod/Rimrooms - Async Industries/1.7/'
 
 # --- facility categories ---------------------------------------------------
 # Each says what the category is for and what goes wrong for a branch without it, because a

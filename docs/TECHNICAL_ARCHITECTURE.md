@@ -1,9 +1,13 @@
 ﻿# Technical architecture proposal
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
+**Current content and dependency rules:** original gameplay art, audio, items and benches may ship where a role needs them; reuse stays the default and provider files are never copied. No mod or expansion is a hard dependency. See [current owner decisions](DECISIONS_CURRENT.md) and [content policy](CONTENT_REUSE_POLICY.md).
+
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
 
-**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+**Historical content rule (2026-09-28), superseded in part on 2026-10-06:** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
 Most of this document is the full-campaign design target. The [0.3.0-dev company wave](implementation/PHASE_3_BUILD_RECORD.md) adds independent schema-1 personnel, procurement, laboratory-binding and evidence-creation owners, all linked to the existing branch; the campaign component remains the only USD/payroll owner. Facilities are transient observations, and the menu owns settings/presentation only. The [0.2.0 build record](implementation/PHASE_2_BUILD_RECORD.md) maps the implemented company/scenario/gate/destination/expedition/investigation/threat/UI subset and its source reviews. [BUILDING.md](BUILDING.md) records the compiler/reference/package setup; [SAVE_MIGRATION_POLICY.md](SAVE_MIGRATION_POLICY.md) records actual saved owners. First-slice company research uses a custom insight-gated `RimroomsProjectDef` with native Research work, preserving Core research. Expedition transfer moves the same native objects and journals interruptions. Other proposed types and optional integrations still require their own source review and implementation.
@@ -14,9 +18,9 @@ Most of this document is the full-campaign design target. The [0.3.0-dev company
 
 ## Runtime and package boundaries
 
-- Target RimWorld **1.6** and its Core APIs first.
-- **Declare the five expansions and the collection as requirements** (owner, 2026-10-01) and **keep every conditional integration guarded anyway**. `MayRequire` in XML and name lookups in C# are the same graceful guard; declaring the dependency is what makes a mod manager report an absence before the game loads. Both, not either.
-- Use the ordered profile as the research and test target it has always been. It is now also the requirement set, so **read the declared count from `About.xml`** rather than from any document — a typed figure here went stale within a day. Harmony and RWT remain specific to the co-op path.
+- Target RimWorld **1.7 unstable / Waylith**, retaining **1.6** and the shared `1.7/` payload. The current inspected Core API/reference baseline remains 1.6; qualify any changed 1.7 API before relying on it.
+- **Historical dependency rule, superseded on 2026-10-03; kept as history:** **Declare the five expansions and the collection as requirements** (owner, 2026-10-01) and **keep every conditional integration guarded anyway**. `MayRequire` in XML and name lookups in C# are the same graceful guard; declaring the dependency is what makes a mod manager report an absence before the game loads. Both, not either.
+- **Historical profile requirement reading, superseded on 2026-10-03:** Use the ordered profile as the research and test target it has always been. It is now also the requirement set, so **read the declared count from `About.xml`** rather than from any document — a typed figure here went stale within a day. Harmony and RWT remain specific to the co-op path.
 - **Attach-only QA tooling is never declared.** `.local/register/build-dependencies.py` generates both dependency blocks from the live load order and excludes it by name: a player told they need a debug server has been told something false.
 - Ship one main mod package initially. Keep content and code organized so future optional extension packages can be split out without changing saved identifiers.
 - Keep repository source under `src/` and make `Mod/Rimrooms - Async Industries/` the only loadable, copyable package root. Documentation, research, workbook, source files, build utilities, and evidence stay outside this folder; the packaging/staging script must copy only this root to RimSort's configured Local Mods directory.
@@ -38,11 +42,11 @@ Backrooms/
     Rimrooms - Async Industries/     only copyable/loadable mod package
       About/About.xml
       LoadFolders.xml
-      1.6/Assemblies/                 built RimroomsAsyncIndustries.dll
-      1.6/Defs/                       buildings, items, work, research, quests, maps
-      1.6/Languages/English/Keyed/
-      1.6/Patches/                    narrow, package-guarded patches
-      1.6/Textures/  1.6/Sounds/     no new gameplay assets; historical files awaiting replacement
+      1.7/Assemblies/                 built RimroomsAsyncIndustries.dll
+      1.7/Defs/                       buildings, items, work, research, quests, maps
+      1.7/Languages/English/Keyed/
+      1.7/Patches/                    narrow, package-guarded patches
+      1.7/Textures/  1.7/Sounds/     no new gameplay assets; historical files awaiting replacement
 ```
 
 The identity, load folders, MainButtonDef and English localization now exist in the foundation package. The other feature folders in this target layout are created only with implemented content. `About/About.xml` uses the accepted title/package ID and `Operator`. Keep C# source outside the package; copy only Rimrooms build/definition/text output and any separately approved presentation output into the package root; existing provider assets stay with their provider. Use [BUILDING.md](BUILDING.md), the [RimSort package/launch plan](research/RIMSORT_PACKAGE_AND_LAUNCH_PLAN.md) and [RimBridgeServer harness](research/RIMBRIDGE_TEST_HARNESS.md) for staging and post-build checks.
@@ -112,6 +116,8 @@ The older `rwmt/Multiplayer` compatibility wiki is for a distinct multiplayer pr
 The local RWT snapshot has Aid and Trade enabled, but no Visit/Activity setting was found; the server enforces Crashlanded. The official RWT trading guide says direct trades and gifts require both players online. Treat item exchange and offline visits as different workflows, and test pawn aid with identity, faction, health, equipment, destination, and reconnect checks in light of [upstream issue #296](https://github.com/RimWorld-Together/Rimworld-Together/issues/296). Use a disposable server configuration copy for mixed-start experiments.
 
 ## DLC strategy
+
+**Current rule:** all five expansions are optional. The requirement language in the following historical October 1 paragraph was superseded on October 3; keep absent-provider guards and qualify each advertised combination separately on 1.6 and 1.7.
 
 Build the base game loop so it does not *depend* on expansion-only types, then add conditional integrations by expansion. **All five are declared requirements**; the guard is what keeps an absent one from throwing, not a claim that absence is supported.
 

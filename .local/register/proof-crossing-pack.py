@@ -40,7 +40,7 @@ SERVICE = os.path.join(SRC, "Portals", "PortalCrossingService.cs")
 TRAVERSAL = os.path.join(SRC, "Portals", "PortalTraversalPolicy.cs")
 ADAPTERS = os.path.join(SRC, "ConnectedWork", "Adapters")
 GIVERS = os.path.join(SRC, "ConnectedWork")
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages",
                      "English", "Keyed", "RR_Portals.xml")
 
 

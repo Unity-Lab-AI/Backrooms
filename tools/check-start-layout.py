@@ -49,7 +49,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PACKAGE = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6")
+PACKAGE = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7")
 STARTS = os.path.join(PACKAGE, "Defs", "RimroomsStartDefs", "RR_Starts.xml")
 DEFAULT_GAME = r"C:\Program Files (x86)\Steam\steamapps\common\Rimworld"
 EDGE_MARGIN = 8

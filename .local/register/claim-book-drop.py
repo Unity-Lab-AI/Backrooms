@@ -32,7 +32,7 @@ _reqdef = io.open(os.path.join(SRC, "Company", "RimroomsRequestDef.cs"),
                   encoding="utf-8-sig").read() if os.path.isfile(
                       os.path.join(SRC, "Company", "RimroomsRequestDef.cs")) else ""
 _starts = io.open(os.path.join(
-    REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs", "RimroomsStartDefs",
+    REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs", "RimroomsStartDefs",
     "RR_Starts.xml"), encoding="utf-8-sig").read()
 
 check("THE CORPORATION SENDS A RECORD BOOK TO A BRANCH THAT HAS NONE",

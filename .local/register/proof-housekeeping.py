@@ -122,7 +122,7 @@ check("the compliance checker exists", os.path.isfile(os.path.join(TOOLS, "check
 # Definition AND the branch that acts on it. A rule's table survives `if False and rule:`
 # untouched, and four of these claims passed against exactly that plant before being rewritten.
 CHECKS = (
-    ("<supportedVersions>", "if versions != [\"1.6\"]:", "official RimWorld only"),
+    ("<supportedVersions>", "if versions != [\"1.6\", \"1.7\"]:", "official RimWorld only"),
     ("DESTRUCTIVE = (", "if destructive:", "no destructive patch operation"),
     ("GAME_BINARIES = (", "if bundled:", "no bundled game binary"),
     ("PATCHING = (", "if patching:", "no game assembly patching"),

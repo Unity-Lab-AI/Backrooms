@@ -78,7 +78,7 @@ sub("src/RimroomsAsyncIndustries/UI/OperationsFacilities.cs",
         private void DrawFacilities(Listing_Standard listing, RimroomsCampaignComponent campaign)""")
 
 # ------------------------------------------------------------------ the strings
-COMPANY = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Company.xml"
+COMPANY = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Company.xml"
 sub(COMPANY, u"</LanguageData>",
     u"""
   <!-- Containment: the procedure, the alarm and what the branch is holding. Row 761. -->
@@ -97,7 +97,7 @@ sub(COMPANY, u"</LanguageData>",
 </LanguageData>""")
 
 # ------------------------------------------------------------------ the alert strings
-PORTALS = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Portals.xml"
+PORTALS = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Portals.xml"
 sub(PORTALS, u"</LanguageData>",
     u"""
   <!-- Containment alerts. These speak ONLY about maps the player is not looking at; the base

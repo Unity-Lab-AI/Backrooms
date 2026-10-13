@@ -8,7 +8,7 @@ import sys
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PROOF = os.path.join('.local', 'register', 'proof-research-tier4.py')
 
-DEFS = os.path.join('Mod', 'Rimrooms - Async Industries', '1.6', 'Defs', 'RimroomsProjectDefs',
+DEFS = os.path.join('Mod', 'Rimrooms - Async Industries', '1.7', 'Defs', 'RimroomsProjectDefs',
                     'RR_CompanyProjects.xml')
 GATE = os.path.join('src', 'RimroomsAsyncIndustries', 'Gate', 'CompRimroomsGate.cs')
 FRONTIER = os.path.join('src', 'RimroomsAsyncIndustries', 'Portals', 'NaturalFrontierService.cs')

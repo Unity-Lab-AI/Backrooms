@@ -2,7 +2,7 @@
 import glob, re
 
 keys = {}
-for path in glob.glob("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/*.xml"):
+for path in glob.glob("Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/*.xml"):
     for m in re.finditer(r"<(RR_[A-Za-z0-9_]+)>(.*?)</\1>", open(path, encoding="utf-8").read(), re.S):
         keys[m.group(1)] = m.group(2)
 

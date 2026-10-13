@@ -47,6 +47,10 @@ That is a statement about what has been *verified*, not a prediction. Specifical
 
 ## If you try it
 
+**Match the exact game version too.** Rimrooms is being prepared for 1.7 unstable / Waylith while
+retaining 1.6. That does not establish RimWorld Together's 1.7 support. Check its current release
+requirements and qualify the chosen client/server pair separately; keep both branches' saves backed up.
+
 **Everyone needs the same mod list.** RimWorld Together's server does not enforce mod order or settings, so matching them is on you and the people you play with.
 
 Back up your save first. Treat single-player as the supported experience until somebody has run a real session and written down what happened.

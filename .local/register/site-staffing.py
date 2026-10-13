@@ -109,13 +109,13 @@ print('sites pane now shows staffing')
 
 # ------------------------------------------------------------------ strings
 for rel, keys, block in [
-    (os.path.join('Mod', 'Rimrooms - Async Industries', '1.6', 'Languages', 'English', 'Keyed',
+    (os.path.join('Mod', 'Rimrooms - Async Industries', '1.7', 'Languages', 'English', 'Keyed',
                   'RR_Procurement.xml'),
      ['RR_Proc_SiteUnstaffed'],
      u'  <RR_Proc_SiteUnstaffed>Nobody is at the place this shipment is bound for. The supplier '
      u'will not unload with no one to receive it; the order and its cargo are held until somebody '
      u'is there.</RR_Proc_SiteUnstaffed>\n'),
-    (os.path.join('Mod', 'Rimrooms - Async Industries', '1.6', 'Languages', 'English', 'Keyed',
+    (os.path.join('Mod', 'Rimrooms - Async Industries', '1.7', 'Languages', 'English', 'Keyed',
                   'RR_Operations.xml'),
      ['RR_Sites_RowUnstaffed'],
      u'  <RR_Sites_RowUnstaffed>{0} - on the books and reachable, but nobody is there. Shipments '

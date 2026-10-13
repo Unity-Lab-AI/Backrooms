@@ -41,7 +41,7 @@ import sys
 
 NL = chr(10)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MOD = os.path.join("Mod", "Rimrooms - Async Industries", "1.6")
+MOD = os.path.join("Mod", "Rimrooms - Async Industries", "1.7")
 
 PAPERWORK = os.path.join("src", "RimroomsAsyncIndustries", "Company", "QuestPaperwork.cs")
 REQUEST_LINE = os.path.join("src", "RimroomsAsyncIndustries", "Company", "RequestLine.cs")

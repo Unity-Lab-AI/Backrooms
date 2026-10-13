@@ -1,11 +1,13 @@
 ﻿# Rimrooms - Async Industries
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
 ### Build a company. Open the gate. Discover what lies beyond.
 
-*A RimWorld 1.6 company-management campaign: build a research facility, open an interdimensional gate, and bring your people home.*
+*A RimWorld company-management campaign, being prepared for 1.7 while retaining 1.6: build a research facility, open an interdimensional gate, and bring your people home.*
 
 ## Run the facility
 

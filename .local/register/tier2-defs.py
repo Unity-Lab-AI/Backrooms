@@ -5,7 +5,7 @@ import os
 import xml.etree.ElementTree as ET
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6', 'Defs',
+p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7', 'Defs',
                  'RimroomsProjectDefs', 'RR_CompanyProjects.xml')
 s = io.open(p, encoding='utf-8-sig').read()
 

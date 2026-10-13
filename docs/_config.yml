@@ -100,6 +100,7 @@ exclude:
   - CONTENT_REUSE_POLICY.md
   - CREDITS.md
   - CROSS_MAP_TRAVERSAL_BRIEF.md
+  - DECISIONS_CURRENT.md
   - DECOMPOSED.md
   - DEFERRED.md
   - FEATURE_TRACEABILITY.md
@@ -111,6 +112,7 @@ exclude:
   - GATE_0_DECISIONS.md
   - HOOKS.html
   - HOWTO.md
+  - INSPECTION_MATERIAL.md
   - JOURNAL_AND_QUEST_BRIEF.md
   - MENU_ART_BRIEF.md
   - MOD_INTEGRATION_PLAN.md
@@ -119,12 +121,14 @@ exclude:
   - OPERATIONS_ACTION_CONTRACTS.md
   - PLAYBOOK.md
   - PLAYING.md
+  - PLAYSCRIPT.md
   - PREPRODUCTION_AND_IMPLEMENTATION_TODO.md
   - PROCEDURAL_SPACE_CONTRACT.md
   - PUBLIC_RELEASE_PLAN.md
   - PUBLISHING.md
   - REGRESSION_CONTAINMENT.md
   - RESEARCH.md
+  - RIMPLC_DESIGN.md
   - RIMROOMS_MOD_OVERVIEW.md
   - ROADMAP.md
   - SAVE_MIGRATION_POLICY.md
@@ -140,11 +144,16 @@ exclude:
   - THREAT_DESIGN_SHEETS.md
   - TODO.md
   - TUTORIAL_SCRIPT.md
+  - TWITCH_PANELS.md
   - UNIVERSE_ADAPTATION.md
   - WHATS_NEW.md
   - WORKSHOP_COPY.md
   - implementation
+  - playbook.gates.json
+  - playbook.rules.json
   - research
+  - rimplc
+  - twitch-panels
   # END GENERATED EXCLUDE LIST
 
 defaults:

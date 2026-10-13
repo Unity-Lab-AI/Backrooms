@@ -429,3 +429,16 @@ Full record in [`implementation/MOD_REGISTER_REBUILD.md`](implementation/MOD_REG
 **Undeferred 2026-09-29 by owner direction** — moved here verbatim from `DEFERRED.md`, which is now empty of open rows:
 
 - [T] **Every runtime acceptance row** across M1–M6 (Gate 2 onward), including the per-checkpoint acceptance lists at the foot of each implementation record. These feed the phase above. They gate nothing.
+
+## RimWorld 1.7 target — future runtime acceptance (2026-10-12)
+
+Owner requested the Rimrooms and RimPLC 1.7 target plus all supporting docs/wiki. Package metadata, preview, shared loading, baseline compilation and documentation/export are complete; see implementation/RIMWORLD_1_7_MIGRATION.md and FINALIZED.md. The inspected game is still 1.6.4871. The following are planned cases, not runs:
+
+- [ ] Record an official owned 1.7 installation/build, assembly/layout/API evidence and actual mod/bridge/provider versions without overwriting the existing 1.6 profile or saves.
+- [ ] Observe Rimrooms startup, preview/main menu, three scenario starts, portal/work/material routing, research/evidence/economy and save/reload on the actual 1.7 target; keep failure/recovery and co-op evidence separate from old 1.6 results.
+- [ ] Observe RimPLC's ladder/editor, sensors, instructions, marks/tags, preset/user rules, file API and save/reload on 1.7; check the optional bridge separately. No world-changing output or absent integration is claimed from the version declaration.
+- [ ] Only after actual results, promote verified compatibility and publish any 1.7 release/Workshop compatibility claim. The existing development declaration is not a passed runtime gate.
+
+## Current 1.7 folder layout — future acceptance
+
+- [T] On separately authorized disposable 1.7 and retained-version sessions, confirm the current `LoadFolders.xml` selects the single `1.7/` folder, both DLLs/Defs/assets resolve without duplicate loading, and RimPLC's tab/preset and Rimrooms' scenarios/portal presentation still load. Current compile/hash comparisons are not this gameplay result. See `implementation/CONTENT_FOLDER_1_7_LAYOUT.md`.

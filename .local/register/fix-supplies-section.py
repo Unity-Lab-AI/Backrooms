@@ -25,7 +25,7 @@ import os
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PAGE = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Scenario",
                     "Page_RimroomsCompanySetup.cs")
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages", "English",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages", "English",
                      "Keyed", "RR_StartupSetup.xml")
 
 PAGE_OLD = u'''                listing.GapLine();

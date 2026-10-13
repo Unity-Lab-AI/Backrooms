@@ -19,7 +19,7 @@ CAMPAIGN = SRC + "/Company/RimroomsCampaignComponent.cs"
 SERVICES = SRC + "/Company/CampaignServices.cs"
 PANE = SRC + "/UI/OperationsFacilities.cs"
 REPORT = SRC + "/Facilities/FacilityReport.cs"
-CATS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsFacilityDefs/RR_FacilityCategories.xml"
+CATS = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsFacilityDefs/RR_FacilityCategories.xml"
 
 
 # **THE RESTORE DOES NOT SURVIVE THE PROCESS BEING KILLED.** `finally` handles an exception; it

@@ -1,13 +1,17 @@
 # Shared menu and generation-notice art brief
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
 **Living document.** This is the hand-off spec for whoever produces the main-menu images —
 another tool, another person, or the owner. Current rendering details are read from
 `Presentation/RimroomsSlideArt.cs`, `RimroomsMenuBackground.cs` and `RimroomsGenerationNotice.cs`
 under `src/RimroomsAsyncIndustries/`; package dimensions are measured from the PNGs.
 
-**Original main-menu images are the single declared exception to this project's no-new-art rule**
-(invariant 10). Nothing else in this mod may add art. That exception exists specifically so the
-menu can look like the game.
+**Current content rule (2026-10-06): original gameplay art and audio may ship again**, with reuse
+first and no copied provider assets. The older menu-only exception is superseded; this brief still
+owns the original menu images and their RimWorld-style presentation. For the October 12 preview
+edit, preserve the composition and replace only the game-version badge with **RimWorld 1.7**.
+Keep the mod release number dynamic in the menu UI, never baked into the preview artwork.
 
 ---
 
@@ -16,7 +20,7 @@ menu can look like the game.
 **Any PNG named `RR_Menu_*.png` in the folder below becomes a slide. No code change, ever.**
 
 ```
-Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/
+Mod/Rimrooms - Async Industries/1.7/Textures/UI/Menu/
 ```
 
 `RimroomsSlideArt` scans that folder once with `ContentFinder<Texture2D>.GetAllInFolder` and owns
@@ -32,7 +36,7 @@ slideshow. In a 294-mod install that is a certainty rather than a risk.
 allowlist, so each new PNG needs one line added to `tools/package-files.json`:
 
 ```json
-"1.6/Textures/UI/Menu/RR_Menu_YourSceneName.png",
+"1.7/Textures/UI/Menu/RR_Menu_YourSceneName.png",
 ```
 
 **Do not add a line before the file exists** — a listed file that is missing breaks the staging

@@ -1,5 +1,7 @@
 # Existing Core textbook as physical route evidence
 
+> **Navigation update — 2026-10-12:** package links below follow the current `1.7/` location. Recorded checkpoint paths, game versions, hashes and observations remain historical.
+
 **Source implemented 2026-09-28; lead integration/build and runtime acceptance are separate.** RR-EVD/RR-EXP/RR-UI under [content reuse](../CONTENT_REUSE_POLICY.md), [state ownership](../CAMPAIGN_STATE_DICTIONARY.md), [evidence actions](../OPERATIONS_ACTION_CONTRACTS.md), [first playable](../FIRST_PLAYABLE_CONTRACT.md) and [Phase 3 continuation](PHASE_3_BUILD_RECORD.md). Provider: Core row **4**, package **Ludeon.RimWorld**, existing **TextBook**. The [laboratory reuse record](PHASE_3_LABORATORY_REUSE_IMPLEMENTATION.md#core-textbook-suitability-review-only) records the exact native Book source prerequisite.
 
 Exclusive source files below now exist. Lead owns shared UI/recovery hook, new recovery keys, legacy item Def, package allowlist/build and FailedSiteRecovery integration. The independent schema-1 creation component/holder was approved after source review identified an interrupted-creation duplication gap in the old routine.
@@ -16,7 +18,7 @@ Creation failure must retain its saved attempt and any returned original object;
 | [EvidenceObservations.cs](../../src/RimroomsAsyncIndustries/Company/EvidenceObservations.cs) | Field facts require the exact bound item/load ID rather than a custom item Def name |
 | [CompRouteEvidence.cs](../../src/RimroomsAsyncIndustries/Investigation/CompRouteEvidence.cs) | Inactive-until-bound native book comp; provider/count/load-ID checks; legacy binding migration; only registered evidence gets company inspect/recover UI |
 | [RimroomsEvidenceCreationComponent.cs](../../src/RimroomsAsyncIndustries/Investigation/RimroomsEvidenceCreationComponent.cs) | Independent schema-1 attempt journal and deep holder for unfinished original books; no constructor/load grants |
-| [RR_ExistingEvidenceBook.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Patches/RR_ExistingEvidenceBook.xml) | Conditional addition of the dormant company comp to existing TextBook comps; native book Def/art/quality/outcomes remain in place |
+| [RR_ExistingEvidenceBook.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Patches/RR_ExistingEvidenceBook.xml) | Conditional addition of the dormant company comp to existing TextBook comps; native book Def/art/quality/outcomes remain in place |
 
 `EnsureRouteRecording(CoordinateRecord)` remains the public company entry point called before dispatch. With no prior evidence it validates the ready saved site/case/Office Copy slot, resumes any existing attempt, or requests the first native book. It never claims an ordinary unbound textbook lying on the site. A matching bound identity, including a suspicious invalid binding, is detected before attempting new creation; registration then validates it or refuses. One old unbound `RR_RouteRecording` on its original site may be explicitly registered for old development compatibility. Multiple possible originals refuse.
 
@@ -46,7 +48,7 @@ Static `CompRouteEvidence` helpers for lead recovery integration:
 - `IsEvidenceCarrierPresence(Thing)`: conservative scan for deliberate legacy carriers or bound/suspect native textbooks; ordinary textbooks return false.
 - `IsLegacyCarrier(Thing)` and `IsSupportedCarrier(Thing)`: explicit compatibility/provider checks.
 
-The lead integrated the creation holder into [failed-site recovery](../../src/RimroomsAsyncIndustries/Generation/FailedSiteRecovery.cs), treats existing attempts as irreversible for pristine-site readdressing, and uses the conservative presence helper plus `NativeCarrierDef` readiness. [Operations recovery](../../src/RimroomsAsyncIndustries/UI/OperationsEvidenceRecovery.cs) shows unfinished attempts, held originals, failure explanations, locate and same-original retry actions. [Keyed recovery text](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Languages/English/Keyed/RR_EvidenceRecovery.xml) and the native-book XML patch are in the reviewed package allowlist. The [current build record](PHASE_3_BUILD_RECORD.md) owns the integrated compiler result; this source linkage does not establish runtime behavior.
+The lead integrated the creation holder into [failed-site recovery](../../src/RimroomsAsyncIndustries/Generation/FailedSiteRecovery.cs), treats existing attempts as irreversible for pristine-site readdressing, and uses the conservative presence helper plus `NativeCarrierDef` readiness. [Operations recovery](../../src/RimroomsAsyncIndustries/UI/OperationsEvidenceRecovery.cs) shows unfinished attempts, held originals, failure explanations, locate and same-original retry actions. [Keyed recovery text](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Languages/English/Keyed/RR_EvidenceRecovery.xml) and the native-book XML patch are in the reviewed package allowlist. The [current build record](PHASE_3_BUILD_RECORD.md) owns the integrated compiler result; this source linkage does not establish runtime behavior.
 
 ## Source evidence and remaining acceptance
 

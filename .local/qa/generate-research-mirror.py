@@ -58,9 +58,9 @@ from collections import defaultdict
 
 NL = chr(10)
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-SOURCE = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+SOURCE = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                       "RimroomsProjectDefs", "RR_CompanyProjects.xml")
-TARGET = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+TARGET = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                       "ResearchProjectDefs", "RR_ResearchMirror.xml")
 TAB = "RR_Research"
 PREFIX = "RR_Mirror_"

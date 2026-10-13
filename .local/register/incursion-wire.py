@@ -68,7 +68,7 @@ io.open(p, 'w', encoding='utf-8', newline='').write(s)
 print('latch reset added')
 
 # Keyed strings.
-p = 'Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Portals.xml'
+p = 'Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Portals.xml'
 s = io.open(p, encoding='utf-8-sig').read()
 add = (
 u'  <RR_Incursion_Label>Something came through the gate</RR_Incursion_Label>\n'

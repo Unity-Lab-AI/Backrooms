@@ -16,7 +16,7 @@ from PIL import Image, ImageDraw
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "outputs/gate-cycle-assets-2026-10-06"
 MASTER = ROOT / "assets/source/phase2"
-PACKAGE = ROOT / "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates"
+PACKAGE = ROOT / "Mod/Rimrooms - Async Industries/1.7/Textures/Things/Building/Rimrooms/Gates"
 FAMILIES = (
     ("RR_GateCharge", "gate-charge-sheet.png", 4, 2),
     ("RR_GateActivation", "gate-activation-sheet.png", 3, 2),

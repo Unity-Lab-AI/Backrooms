@@ -1,5 +1,7 @@
 # Main-menu background extension audit
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.6/` content folder. [The migration record](../implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. This document's dated 1.6 source, profile and play observations remain unchanged; 1.7 runtime/profile acceptance is pending.
+
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 

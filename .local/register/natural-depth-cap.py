@@ -63,7 +63,7 @@ u"""            int depth = source == null ? 1 : source.Depth + 1;
 print('natural depth cap wired')
 
 # ------------------------------------------------------------------ the keyed string
-p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6', 'Languages', 'English',
+p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7', 'Languages', 'English',
                  'Keyed', 'RR_Portals.xml')
 s = io.open(p, encoding='utf-8-sig').read()
 key = u'  <RR_Frontier_BeyondNaturalReach>The doorway goes on, and nothing anybody can walk through goes with it. Whatever is past this is only reachable through a gate of your own.</RR_Frontier_BeyondNaturalReach>\n'

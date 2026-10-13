@@ -254,15 +254,15 @@ else:
 # RimWorld is the perfect check and cannot run here, because only the owner launches. The
 # imperfect check that catches the real case is worth more than the perfect one nobody can run.
 shipped_defs = set()
-for folder, _subdirs, files in os.walk(os.path.join(MOD, "1.6", "Defs")):
+for folder, _subdirs, files in os.walk(os.path.join(MOD, "1.7", "Defs")):
     for name in files:
         if name.lower().endswith(".xml"):
             shipped_defs.update(re.findall(
                 r"<defName>([^<]+)</defName>", read(os.path.join(folder, name))))
 
 START_FILES = [
-    os.path.join(MOD, "1.6", "Defs", "RimroomsStartDefs", "RR_Starts.xml"),
-    os.path.join(MOD, "1.6", "Defs", "ScenarioDefs", "RR_Scenarios.xml"),
+    os.path.join(MOD, "1.7", "Defs", "RimroomsStartDefs", "RR_Starts.xml"),
+    os.path.join(MOD, "1.7", "Defs", "ScenarioDefs", "RR_Scenarios.xml"),
 ]
 MOD_PREFIX = re.compile(r"^[A-Z]{2,5}_[A-Za-z0-9_]+$")
 # Element names that hold a def name, and the list wrappers whose `<li>` values are def names.
@@ -341,7 +341,7 @@ STEERED = {
     "StorytellerDef": "a StorytellerDef is an exclusive slot -- shipping one would ask a player to "
                       "give up Cassandra to play this mod",
 }
-defs_root = os.path.join(MOD, "1.6", "Defs")
+defs_root = os.path.join(MOD, "1.7", "Defs")
 for def_type, reason in sorted(STEERED.items()):
     offenders = []
     for path in package_xml_files():
@@ -423,7 +423,7 @@ PATCH_STEERED = {
                      "replacing their native menus.\" Row 821's company-first layout is this "
                      "package's own button's order field and nothing else",
 }
-patches_root = os.path.join(MOD, "1.6", "Patches")
+patches_root = os.path.join(MOD, "1.7", "Patches")
 for def_type, reason in sorted(PATCH_STEERED.items()):
     offenders = []
     for path in package_xml_files():
@@ -498,7 +498,7 @@ else:
 #       roughly ten times RimWorld's ~128 px per tile. Copying one in instead of cutting it is the
 #       obvious shortcut and it is invisible until a player's VRAM pays for it, so a shipped
 #       gameplay texture above `TEXTURE_CEILING` on either axis is refused by size alone.
-MENU_PREFIX = "1.6/Textures/UI/Menu/"
+MENU_PREFIX = "1.7/Textures/UI/Menu/"
 TEXTURE_CEILING = 1024
 ASSET_SOURCE = os.path.join(REPO, "assets", "source")
 
@@ -550,8 +550,8 @@ else:
 # -- 6b. things rotate
 shipped_textures = set()
 for rel, _path, _name in gameplay_assets:
-    if rel.lower().endswith(".png") and rel.startswith("1.6/Textures/"):
-        shipped_textures.add(rel[len("1.6/Textures/"):-len(".png")])
+    if rel.lower().endswith(".png") and rel.startswith("1.7/Textures/"):
+        shipped_textures.add(rel[len("1.7/Textures/"):-len(".png")])
 
 missing_rotations = []
 for path in package_xml_files():

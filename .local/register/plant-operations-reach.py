@@ -41,9 +41,9 @@ GATE = "src/RimroomsAsyncIndustries/Gate/CompRimroomsGate.cs"
 EQUIPMENT = "src/RimroomsAsyncIndustries/Gate/GateEquipmentLinks.cs"
 REVIEW = "src/RimroomsAsyncIndustries/Company/EvidenceReview.cs"
 EVIDENCE_UI = "src/RimroomsAsyncIndustries/UI/OperationsEvidence.cs"
-ROLES = ("Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsGateEquipmentDefs/"
+ROLES = ("Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsGateEquipmentDefs/"
          "RR_GateEquipment.xml")
-LINK_KEYED = ("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/"
+LINK_KEYED = ("Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/"
               "RR_GateLinks.xml")
 PROOF = ".local/register/proof-operations-reach.py"
 CHR_NL = chr(10)

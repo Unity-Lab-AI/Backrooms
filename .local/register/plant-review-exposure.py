@@ -31,7 +31,7 @@ SPINUP = "src/RimroomsAsyncIndustries/Gate/GateSpinUp.cs"
 EVIDENCE_UI = "src/RimroomsAsyncIndustries/UI/OperationsEvidence.cs"
 EXPEDITIONS_UI = "src/RimroomsAsyncIndustries/UI/OperationsExpeditions.cs"
 CREW_UI = "src/RimroomsAsyncIndustries/UI/OperationsCrewPlanner.cs"
-KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Investigation.xml"
+KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Investigation.xml"
 
 PROOF = ".local/register/proof-review-exposure.py"
 

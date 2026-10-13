@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-12 - Current content folders named 1.7
+
+- Renamed the current Rimrooms and RimPLC content directories to `1.7/`, following the owner's naming correction.
+- Both declared game versions select that one folder. Build outputs, package lists, exports, ZIP, current docs/wiki and operational scripts use the same paths.
+- Asset/DLL bytes and saved identifiers are unchanged. Old build/provenance records retain their dated observations; their navigation links follow relocated current files.
+- Compilation succeeded against the existing installed references; actual 1.7 runtime acceptance remains pending.
+
+## 0.13.0-dev - 2026-10-12 - RimWorld 1.7 loading target
+
+- Rimrooms declares RimWorld 1.7 alongside its retained 1.6 baseline, with both versions selecting the existing shared content through LoadFolders.xml.
+- The approved preview now reads RIMWORLD 1.7; its charcoal/gold composition and existing labels are retained.
+- RimPLC also declares both game targets using its existing root and 1.6 content. Its own release remains 0.1.0.
+- Current documentation and wiki distinguish the new Waylith/unstable target from dated 1.6 build and play observations. Package tooling resolves explicit load mappings instead of requiring duplicated version folders.
+- Actual 1.7 runtime/profile validation remains pending; no game installation, save or active mod profile was changed by this preparation.
+
 ## 0.13.0-dev - 2026-10-09 - The doors that lead somewhere go somewhere
 
 - **Found playing the solo/group inside start:** *"Walk through - this door leads somewhere else"*

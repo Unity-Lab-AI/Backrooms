@@ -14,7 +14,7 @@ import sys
 
 NL = chr(10)
 PATH = "docs/research/provenance-register.csv"
-SLIDES = "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu"
+SLIDES = "Mod/Rimrooms - Async Industries/1.7/Textures/UI/Menu"
 
 # The 2026-09-29 batch, recorded against the record that produced them.
 MISSING = [
@@ -49,7 +49,7 @@ for name, label in MISSING:
     row[5] = "../../outputs/menu-art-2026-09-29/prompts-and-provenance.json"
     row[10] = ("../../LICENSE; "
                "../../outputs/menu-art-2026-09-29/prompts-and-provenance.json")
-    row[12] = "../../Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/" + name + ".png"
+    row[12] = "../../Mod/Rimrooms - Async Industries/1.7/Textures/UI/Menu/" + name + ".png"
     row[13] = "Included in the shipped development package"
     row[14] = ("Built-in image_gen; no input images or borrowed frames; native resolution, not "
                "4K; no baked title or version. **Registered retroactively on 2026-10-04**: this "

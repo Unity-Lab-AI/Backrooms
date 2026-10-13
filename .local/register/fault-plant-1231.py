@@ -12,7 +12,7 @@ RUN = os.path.join('src', 'RimroomsAsyncIndustries', 'Gate', 'GateDoorRun.cs')
 BINDING = os.path.join('src', 'RimroomsAsyncIndustries', 'Gate', 'NativeGateBinding.cs')
 FOOTPRINT = os.path.join('src', 'RimroomsAsyncIndustries', 'Gate', 'GateFootprint.cs')
 COMP = os.path.join('src', 'RimroomsAsyncIndustries', 'Gate', 'CompRimroomsGate.cs')
-KEYS = os.path.join('Mod', 'Rimrooms - Async Industries', '1.6', 'Languages', 'English', 'Keyed',
+KEYS = os.path.join('Mod', 'Rimrooms - Async Industries', '1.7', 'Languages', 'English', 'Keyed',
                     'RR_NativeGate.xml')
 
 FAULTS = [

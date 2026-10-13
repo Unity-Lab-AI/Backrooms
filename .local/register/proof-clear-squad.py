@@ -28,7 +28,7 @@ import glob
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries")
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages",
                      "English", "Keyed", "RR_Requests.xml")
 DATA = r"C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Data"
 
@@ -84,7 +84,7 @@ check("AND IT IS SCOPED TO THE LABORATORY, WHICH IS WHAT THE OWNER ASKED FOR",
 
 check("and the laboratory's own start really carries that id",
       "<scenarioId>async_industries</scenarioId>"
-      in read(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+      in read(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
               "RimroomsStartDefs", "RR_Starts.xml"),
       "-- a scenario gate matched against an id no start declares is a feature that never fires")
 

@@ -1,5 +1,7 @@
 # Phase 2: physical evidence and company research
 
+> **Navigation update — 2026-10-12:** package links below follow the current `1.7/` location. Recorded checkpoint paths, game versions, hashes and observations remain historical.
+
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
@@ -36,7 +38,7 @@ When analysis completes, the record freezes a copy of the available observations
 - [Investigation service](../../src/RimroomsAsyncIndustries/Company/InvestigationServices.cs), [saved records](../../src/RimroomsAsyncIndustries/Company/CampaignRecords.cs), [field observations and frozen report](../../src/RimroomsAsyncIndustries/Company/EvidenceObservations.cs).
 - [Project Def](../../src/RimroomsAsyncIndustries/Investigation/RimroomsProjectDef.cs), [physical evidence component](../../src/RimroomsAsyncIndustries/Investigation/CompRouteEvidence.cs), [work checks](../../src/RimroomsAsyncIndustries/Investigation/LaboratoryUtility.cs), [work giver](../../src/RimroomsAsyncIndustries/Investigation/WorkGiver_CompanyLaboratory.cs), [job driver](../../src/RimroomsAsyncIndustries/Investigation/JobDriver_CompanyLaboratory.cs).
 - Package XML: `1.6/Defs/RimroomsProjectDefs/RR_CompanyProjects.xml`, `ThingDefs_Buildings/RR_InvestigationBuildings.xml`, `ThingDefs_Items/RR_FieldEquipment.xml`, `ThingCategoryDefs/RR_FieldCategories.xml`, `JobDefs/RR_InvestigationJobs.xml`, `WorkGiverDefs/RR_InvestigationWork.xml`, `RecipeDefs/RR_FieldEquipmentRecipes.xml` beneath the [mod root](../../Mod/Rimrooms%20-%20Async%20Industries/).
-- English: [RR_Investigation.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Languages/English/Keyed/RR_Investigation.xml).
+- English: [RR_Investigation.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Languages/English/Keyed/RR_Investigation.xml).
 
 ## Physical equipment and provisional tuning
 

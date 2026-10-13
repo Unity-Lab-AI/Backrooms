@@ -25,7 +25,7 @@ import io
 import os
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DEFS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+DEFS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                     "RimroomsRoomArchetypeDefs", "RR_RoomArchetypes.xml")
 
 CANTEEN_OLD = u"""    <defName>RR_Room_Canteen</defName>

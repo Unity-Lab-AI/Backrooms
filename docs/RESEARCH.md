@@ -1,6 +1,8 @@
 ﻿# Research and references
 
-**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. This document's dated 1.6 source, profile and play observations remain unchanged; 1.7 runtime/profile acceptance is pending.
+
+**Historical content rule (2026-09-28), superseded in part on 2026-10-06:** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
 **Research snapshot: 2026-09-27.** This file separates source facts, design inspiration, and content that still needs review. The selected references are Kane Pixels' Backrooms continuity and the A24 feature, to be adapted indirectly. Broader community canon is excluded from shipped content and is not treated as one unified canon.
@@ -42,6 +44,8 @@ Per the project owner's direction, the Backrooms creative reference is treated u
 Keep creator-led references, community-authored pages, photographs, fan games, and the A24 feature distinguishable in the source log. Broader community material is not part of the selected shipped-content scope; consult it only when needed to identify provenance or avoid accidental conflation.
 
 ## Primary technical sources
+
+- [Ludeon: Waylith engine and RimWorld 1.7 unstable announcement](https://store.steampowered.com/news/app/294100/view/672882362547178633) — current version-migration source, checked 2026-10-12. The stable branch remains 1.6; the publisher expects most mods to work unchanged but asks authors to test before publishing a compatible version. This expectation is not Rimrooms, RimPLC or optional-profile runtime evidence. See [the migration record](implementation/RIMWORLD_1_7_MIGRATION.md).
 
 - [RimWorld 1.6 and Odyssey release announcement](https://store.steampowered.com/news/posts/?appgroupname=RimWorld&appids=294100&enddate=1753200027&feed=steam_community_announcements) — confirms 1.6 is a free update separate from owning Odyssey.
 - [RimWorld 1.6 modding update guide](https://rimworldwiki.com/wiki/Modding_Tutorials/RimWorld_1.6_Mod_Updates) — versioning, load folders, assembly recompilation, and compatibility process.

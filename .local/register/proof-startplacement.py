@@ -39,8 +39,8 @@ from collections import deque
 NL = chr(10)
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries")
-MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6")
-STARTS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7")
+STARTS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                       "RimroomsStartDefs", "RR_Starts.xml")
 
 failures = []
@@ -71,7 +71,7 @@ page = strip_cs(read(os.path.join(SRC, "Scenario", "Page_RimroomsCompanySetup.cs
 frontier = strip_cs(read(os.path.join(SRC, "Portals", "NaturalFrontierService.cs")))
 starts_xml = read(STARTS)
 arrival_part = strip_cs(read(os.path.join(SRC, "Scenario", "ScenPart_RimroomsArrival.cs")))
-scenarios_xml = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+scenarios_xml = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                                   "ScenarioDefs", "RR_Scenarios.xml"))
 
 # --------------------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ check("no start def names a generator, and the field is gone",
       and "<mapGenerator>" not in starts_xml,
       "-- a field nothing reads is a job nobody finished; it is retired, not orphaned")
 
-patch_path = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Patches",
+patch_path = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Patches",
                           "RR_StartGenSteps.xml")
 check("the gen steps are patched into Core's own generator", os.path.isfile(patch_path))
 if os.path.isfile(patch_path):

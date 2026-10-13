@@ -46,7 +46,7 @@ import xml.etree.ElementTree as ET
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries")
 MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries")
-KEYED = os.path.join(MOD, "1.6", "Languages", "English", "Keyed")
+KEYED = os.path.join(MOD, "1.7", "Languages", "English", "Keyed")
 
 failures = []
 
@@ -79,7 +79,7 @@ def flatten(text):
 
 window = strip_cs_comments(read(os.path.join(SRC, "UI", "MainTabWindow_Operations.cs")))
 help_pane = strip_cs_comments(read(os.path.join(SRC, "UI", "OperationsHelp.cs")))
-button_xml = read(os.path.join(MOD, "1.6", "Defs", "MainButtonDefs", "RR_MainButtons.xml"))
+button_xml = read(os.path.join(MOD, "1.7", "Defs", "MainButtonDefs", "RR_MainButtons.xml"))
 help_keys = read(os.path.join(KEYED, "RR_Help.xml"))
 operations_keys = read(os.path.join(KEYED, "RR_Operations.xml"))
 playing = read(os.path.join(REPO, "docs", "PLAYING.md"))
@@ -159,7 +159,7 @@ check("the tab exists without a map",
 
 # The unbuilt half of row 821, asserted as an absence. A patch against Core's own main buttons
 # would be the invasive reading of "remap", and it is the reading the row itself challenges.
-patch_files = glob.glob(os.path.join(MOD, "1.6", "Patches", "*.xml"))
+patch_files = glob.glob(os.path.join(MOD, "1.7", "Patches", "*.xml"))
 patched = [os.path.basename(p) for p in patch_files if "MainButtonDef" in read(p)]
 check("nothing patches Core's main buttons", not patched,
       "-- %s does; remapping the base game's tab bar would fight every interface mod installed, "

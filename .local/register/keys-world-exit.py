@@ -14,7 +14,7 @@ import io
 import os
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-PATH = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6',
+PATH = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7',
                     'Languages', 'English', 'Keyed', 'RR_Portals.xml')
 
 BLOCK = u"""

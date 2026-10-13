@@ -30,7 +30,7 @@ SQUAD = "src/RimroomsAsyncIndustries/Company/CompanyClearSquad.cs"
 RELIEF = "src/RimroomsAsyncIndustries/Company/FacilityRelief.cs"
 COMPONENT = "src/RimroomsAsyncIndustries/Company/RimroomsCampaignComponent.cs"
 UPKEEP = "src/RimroomsAsyncIndustries/ConnectedWork/Providers/UpkeepProviders.cs"
-KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Requests.xml"
+KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Requests.xml"
 
 PROOF = ".local/register/proof-clear-squad.py"
 RELIEF_PROOF = ".local/register/proof-facility-relief.py"

@@ -23,7 +23,7 @@ SKIP = ("src/RimroomsAsyncIndustries/Gate/CompRimroomsGateConsole.cs",
     u"            foreach (Gizmo gizmo in Company.CorporateContactGizmo.For(parent))")
 
 # ------------------------------------------------------------------ the tenth category
-sub("Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsFacilityDefs/RR_FacilityCategories.xml",
+sub("Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsFacilityDefs/RR_FacilityCategories.xml",
     u"  <RimroomsAsyncIndustries.Facilities.RimroomsFacilityCategoryDef>\n"
     u"    <defName>RR_Facility_Storage</defName>",
     u"""  <!-- Containment is matched by capability rather than by name, so there is no

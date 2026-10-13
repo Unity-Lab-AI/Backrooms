@@ -1,5 +1,7 @@
 # Phase 5: main-menu slideshow implementation
 
+> **Navigation update — 2026-10-12:** package links below follow the current `1.7/` location. Recorded checkpoint paths, game versions, hashes and observations remain historical.
+
 **Status:** source implementation is present; in-game presentation and profile acceptance remain pending. This document records the implementation and its limits, not a compatibility claim.
 
 ## Included behavior
@@ -17,6 +19,6 @@ The renderer pauses slideshow timing while the pointer is over the expansion-ico
 
 ## Source basis and verification boundary
 
-Native source inspection is recorded in [PHASE_5_MENU_CONTROLLER_SOURCE.md](PHASE_5_MENU_CONTROLLER_SOURCE.md), including the inspected RimWorld `Assembly-CSharp.dll` hash and the static-constructor runner, `LongEventHandler`, `UIRoot_Entry`, `UIMenuBackgroundManager`, `UI_BackgroundMain`, and `MainMenuDrawer` surfaces. The bootstrap/controller and renderer are in [RimroomsMenuController.cs](../../src/RimroomsAsyncIndustries/Presentation/RimroomsMenuController.cs) and [RimroomsMenuBackground.cs](../../src/RimroomsAsyncIndustries/Presentation/RimroomsMenuBackground.cs). Persistent choices, cached version text, and settings UI are in [RimroomsSettings.cs](../../src/RimroomsAsyncIndustries/Core/RimroomsSettings.cs), [RimroomsMod.cs](../../src/RimroomsAsyncIndustries/Core/RimroomsMod.cs), and [RR_Menu.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Languages/English/Keyed/RR_Menu.xml).
+Native source inspection is recorded in [PHASE_5_MENU_CONTROLLER_SOURCE.md](PHASE_5_MENU_CONTROLLER_SOURCE.md), including the inspected RimWorld `Assembly-CSharp.dll` hash and the static-constructor runner, `LongEventHandler`, `UIRoot_Entry`, `UIMenuBackgroundManager`, `UI_BackgroundMain`, and `MainMenuDrawer` surfaces. The bootstrap/controller and renderer are in [RimroomsMenuController.cs](../../src/RimroomsAsyncIndustries/Presentation/RimroomsMenuController.cs) and [RimroomsMenuBackground.cs](../../src/RimroomsAsyncIndustries/Presentation/RimroomsMenuBackground.cs). Persistent choices, cached version text, and settings UI are in [RimroomsSettings.cs](../../src/RimroomsAsyncIndustries/Core/RimroomsSettings.cs), [RimroomsMod.cs](../../src/RimroomsAsyncIndustries/Core/RimroomsMod.cs), and [RR_Menu.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Languages/English/Keyed/RR_Menu.xml).
 
 Static source/path review only. No build, game launch, profile modification, or runtime menu test was performed for this record. Acceptance still needs to inspect first entry and return-to-menu behavior; fixed/random native preferences; DLC hover previews; the incoming crossfade pause; missing-art fallback; disable/reenable; reduced-motion still; third-party background ownership; crop and text at supported resolutions/UI scales; and the selected profile's menu-changing mods. Until those observations are recorded, slideshow behavior and mod interactions are not runtime-verified.

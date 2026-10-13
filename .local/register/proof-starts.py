@@ -29,7 +29,7 @@ from collections import deque
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 GAME = r"C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Data"
-MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6")
+MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7")
 
 failures = []
 
@@ -458,7 +458,7 @@ def _rr_read(*parts):
 services = _rr_read("src", "RimroomsAsyncIndustries", "Company", "CampaignServices.cs")
 component = _rr_read("src", "RimroomsAsyncIndustries", "Company", "RimroomsCampaignComponent.cs")
 gatecomp = _rr_read("src", "RimroomsAsyncIndustries", "Gate", "CompRimroomsGate.cs")
-starts_xml = _rr_read("Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+starts_xml = _rr_read("Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                       "RimroomsStartDefs", "RR_Starts.xml")
 
 # ------------------------------- the corporate start disabled itself on turn one
@@ -894,7 +894,7 @@ _route = io.open(os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Investiga
 _required = re.search(r"RecordBooksRequired\s*=\s*(\d+)", _cargo)
 _carrier = re.search(r'GetNamedSilentFail\("([A-Za-z_]+)"\)', _route)
 _starts_xml = io.open(os.path.join(
-    REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs", "RimroomsStartDefs",
+    REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs", "RimroomsStartDefs",
     "RR_Starts.xml"), encoding="utf-8-sig").read()
 _lab = re.search(r"<scenarioId>async_industries</scenarioId>.*?(?=<RimroomsStartDef>|$)",
                  _starts_xml, re.S)

@@ -1,5 +1,7 @@
 # Company scenario customization implementation
 
+> **Navigation update — 2026-10-12:** package links below follow the current `1.7/` location. Recorded checkpoint paths, game versions, hashes and observations remain historical.
+
 **Task started 2026-09-28.** RR-SCEN/RR-STA/RR-FAC/RR-COMPAT, master TODO scenario setup work. Read [latest scenario contract](../SCENARIO_SETUP_AND_PORTAL_NETWORK.md), [source review](SCENARIO_AND_DOOR_PROVIDER_SOURCE.md), [scenario cards](../SCENARIOS.md), [state dictionary](../CAMPAIGN_STATE_DICTIONARY.md) and [existing-content policy](../CONTENT_REUSE_POLICY.md). Source pins: Core row 4 and optional EdB Prepare Carefully row 85 as recorded in the linked review.
 
 **Exclusive scope:** Scenario C# files; scenario/start/ScenPart XML; new `RR_StartupSetup.xml` keyed file; this evidence record. Company services, common UI, version, allowlist, profiles and Git remain lead-owned. No build, tests or game launch in this assignment.
@@ -49,7 +51,7 @@ Additional UI source inspected: `RimWorld.Page`, with `PageTitle`, `DrawPageTitl
 
 - New: [RimroomsStartupComponent.cs](../../src/RimroomsAsyncIndustries/Scenario/RimroomsStartupComponent.cs), [Page_RimroomsCompanySetup.cs](../../src/RimroomsAsyncIndustries/Scenario/Page_RimroomsCompanySetup.cs), [ScenPart_RimroomsArrival.cs](../../src/RimroomsAsyncIndustries/Scenario/ScenPart_RimroomsArrival.cs).
 - Changed: [ScenPart_RimroomsStart.cs](../../src/RimroomsAsyncIndustries/Scenario/ScenPart_RimroomsStart.cs), [HeadquartersSetupComponent.cs](../../src/RimroomsAsyncIndustries/Scenario/HeadquartersSetupComponent.cs), [GenStep_Headquarters.cs](../../src/RimroomsAsyncIndustries/Scenario/GenStep_Headquarters.cs), [RimroomsStartDef.cs](../../src/RimroomsAsyncIndustries/Scenario/RimroomsStartDef.cs).
-- Package: [RR_Scenarios.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/ScenarioDefs/RR_Scenarios.xml), [RR_ScenarioParts.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/ScenPartDefs/RR_ScenarioParts.xml), [RR_Starts.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/RimroomsStartDefs/RR_Starts.xml), new [RR_StartupSetup.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Languages/English/Keyed/RR_StartupSetup.xml).
+- Package: [RR_Scenarios.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Defs/ScenarioDefs/RR_Scenarios.xml), [RR_ScenarioParts.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Defs/ScenPartDefs/RR_ScenarioParts.xml), [RR_Starts.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Defs/RimroomsStartDefs/RR_Starts.xml), new [RR_StartupSetup.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Languages/English/Keyed/RR_StartupSetup.xml).
 - This implementation record. No parent UI hook is needed: native scenario page stitching supplies the review. The lead owns allowlisting the new keyed file and the integrated compiler/package record.
 
 ## Source completion and pending acceptance

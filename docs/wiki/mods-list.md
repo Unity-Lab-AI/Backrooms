@@ -9,6 +9,8 @@ Rimrooms was built alongside **296** mods and expansions. This page says what ea
 
 The base game is listed too, for context. It is not counted in that 296.
 
+**Game-version boundary:** the October 2026 play observations below used RimWorld 1.6. RimWorld 1.7 unstable / Waylith is the new target, and its compatibility with this profile has not been verified. Third-party names and recorded versions remain exactly as observed.
+
 **This whole page is the recommended list.** Every mod on it was part of the profile Rimrooms was built in. The tag says what each one *adds*, not whether to install it.
 
 ## It runs on vanilla, with no expansions
@@ -98,7 +100,7 @@ All **297**, in one list. The tag is the second column.
 | **CM Color Coded Mood Bar [1.1+]** | Optional | Rimrooms uses it for your colonists and who does the work and the interface. | Nothing breaks. The feature it feeds still works without it. | Read and settled, and played alongside Rimrooms (2026-10-07), loaded and active, with no error naming it in the game log. |
 | **Common Sense** | Optional | Rimrooms uses it for your colonists and who does the work, building and powering a branch, expeditions and the crews you send and outposts and the world map. | Nothing breaks. The feature it feeds still works without it. | Read and settled, and played alongside Rimrooms (2026-10-07), loaded and active, with no error naming it in the game log. |
 | **Compact Work Tab (Continued)** | Optional | Rimrooms uses it for your colonists and who does the work. | Nothing breaks. The feature it feeds still works without it. | Read and settled, and played alongside Rimrooms (2026-10-07), loaded and active, with no error naming it in the game log. |
-| **Core** | Required | Everything. Every gate is one of Core's own doors, every cue falls back to a Core sound, and every object Rimrooms cannot supply is one Core already ships. | This is the game itself. | Rimrooms targets RimWorld 1.6. |
+| **Core** | Required | Everything. Every gate is one of Core's own doors, every cue falls back to a Core sound, and every object Rimrooms cannot supply is one Core already ships. | This is the game itself. | Rimrooms targets RimWorld 1.7 unstable / Waylith while retaining 1.6. Earlier play observations used 1.6; 1.7 compatibility is unverified. |
 | **Corpse info** | Optional | Rimrooms uses it for your colonists and who does the work and evidence, journals and analysis. | Nothing breaks. The feature it feeds still works without it. | Played alongside Rimrooms (2026-10-07), loaded and active, with no error naming it in the game log. |
 | **Craftable Mountains** | Optional | Rimrooms uses it for building and powering a branch and ships and space travel. | Nothing breaks. The feature it feeds still works without it. | Played alongside Rimrooms (2026-10-07), loaded and active, with no error naming it in the game log. |
 | **Custom Prisoner Interactions** | Optional | Rimrooms uses it for your colonists and who does the work, what you meet out there, company money and trade and playing with other people. | Nothing breaks. The feature it feeds still works without it. | Played alongside Rimrooms (2026-10-07), loaded and active, with no error naming it in the game log. |

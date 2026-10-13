@@ -50,7 +50,7 @@ import re
 import sys
 
 NL = chr(10)
-PATH = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsStartDefs/RR_Starts.xml"
+PATH = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsStartDefs/RR_Starts.xml"
 
 REPLACEMENT = (
     "    <!-- **THE VIEWING WALL'S GLASS IS GONE, 0.12.87-dev.** Owner, 2026-10-04:" + NL

@@ -23,8 +23,8 @@ import subprocess
 import sys
 import time
 
-PROJECTS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsProjectDefs/RR_CompanyProjects.xml"
-KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Palette.xml"
+PROJECTS = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsProjectDefs/RR_CompanyProjects.xml"
+KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Palette.xml"
 FRONTIER = "src/RimroomsAsyncIndustries/Portals/NaturalFrontierService.cs"
 DIAL = "src/RimroomsAsyncIndustries/Portals/PortalRandomDial.cs"
 HINTS = "src/RimroomsAsyncIndustries/Company/SoloGroupHints.cs"

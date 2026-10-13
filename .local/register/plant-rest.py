@@ -27,7 +27,7 @@ BONDCOMP = SRC + "/Economy/CompRimroomsBond.cs"
 BONDSVC = SRC + "/Economy/BondService.cs"
 HANDLING = SRC + "/Economy/BondHandling.cs"
 TREASURY = SRC + "/Company/BondTreasury.cs"
-BONDTEXT = ("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Bonds.xml")
+BONDTEXT = ("Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Bonds.xml")
 BONDS_PROOF = ".local/register/proof-bonds.py"
 AREAS_PROOF = ".local/register/proof-areas-and-debrief.py"
 

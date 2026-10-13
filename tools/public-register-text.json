@@ -21,7 +21,7 @@
    "tag": "Required",
    "uses": "Everything. Every gate is one of Core's own doors, every cue falls back to a Core sound, and every object Rimrooms cannot supply is one Core already ships.",
    "without": "This is the game itself.",
-   "watch": "Rimrooms targets RimWorld 1.6."
+   "watch": "Rimrooms targets RimWorld 1.7 unstable / Waylith while retaining 1.6. Earlier play observations used 1.6; 1.7 compatibility is unverified."
   },
   "77": {
    "tag": "Recommended",

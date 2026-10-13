@@ -119,7 +119,7 @@ NEW = '''    # ------------------------------------------------- 0.12.47-dev: bu
 '''
 
 NAMES_ANCHOR = 'PROOF = ".local/register/proof-startplacement.py"'
-NAMES_NEW = ('SCENARIOS = "Mod/Rimrooms - Async Industries/1.6/Defs/ScenarioDefs/RR_Scenarios.xml"\n'
+NAMES_NEW = ('SCENARIOS = "Mod/Rimrooms - Async Industries/1.7/Defs/ScenarioDefs/RR_Scenarios.xml"\n'
              'ARRIVAL = SCEN + "/ScenPart_RimroomsArrival.cs"\n'
              'PROOF = ".local/register/proof-startplacement.py"')
 

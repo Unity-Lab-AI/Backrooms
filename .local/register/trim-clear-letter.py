@@ -15,7 +15,7 @@ import io
 import os
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages",
                      "English", "Keyed", "RR_Requests.xml")
 
 OLD = u"""Everyone at the laboratory went down. The Company does not lose a facility, and it does not leave anybody behind who was there.

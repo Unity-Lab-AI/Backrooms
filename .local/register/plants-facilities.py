@@ -62,7 +62,7 @@ suite = suite.replace(
     T_ANCHOR
     + u'\nFACILITY_PROOF = ".local/register/proof-facilities.py"'
     + u'\nFACILITY = "src/RimroomsAsyncIndustries/Generation/FacilityPlanner.cs"'
-    + u'\nARCHETYPES = ("Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsRoomArchetypeDefs/"'
+    + u'\nARCHETYPES = ("Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsRoomArchetypeDefs/"'
     + u'\n              "RR_RoomArchetypes.xml")', 1)
 io.open(SUITE, "w", encoding="utf-8", newline="").write(suite)
 print("five plants added for the institutions and the loot")

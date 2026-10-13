@@ -46,9 +46,9 @@ GENERATION = SRC + "/Company/RequestGeneration.cs"
 TENURE = SRC + "/Company/RemoteSiteTenure.cs"
 SITES = SRC + "/Company/RemoteSites.cs"
 SERVICES = SRC + "/Company/CampaignServices.cs"
-CERT_DEFS = ("Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsCertificationDefs/"
+CERT_DEFS = ("Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsCertificationDefs/"
              "RR_Certifications.xml")
-RECIPES = "Mod/Rimrooms - Async Industries/1.6/Defs/RecipeDefs/RR_TrainingRecipes.xml"
+RECIPES = "Mod/Rimrooms - Async Industries/1.7/Defs/RecipeDefs/RR_TrainingRecipes.xml"
 PROOF = ".local/register/proof-tenure-and-disposition.py"
 NL = chr(10)
 

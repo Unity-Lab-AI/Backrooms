@@ -47,7 +47,7 @@ import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries")
-MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6")
+MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7")
 
 failures = []
 
@@ -202,7 +202,7 @@ _reqdef = io.open(os.path.join(SRC, "Company", "RimroomsRequestDef.cs"),
                   encoding="utf-8-sig").read() if os.path.isfile(
                       os.path.join(SRC, "Company", "RimroomsRequestDef.cs")) else ""
 _starts = io.open(os.path.join(
-    REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs", "RimroomsStartDefs",
+    REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs", "RimroomsStartDefs",
     "RR_Starts.xml"), encoding="utf-8-sig").read()
 
 check("THE CORPORATION SENDS A RECORD BOOK TO A BRANCH THAT HAS NONE",
@@ -251,7 +251,7 @@ check("THE QUEST LINE HAS NO SCENARIO GATE, SO IT REACHES EVERY START",
 # Read out of the request defs, in tutorial order, so the claim is about what the line
 # actually offers first rather than about two names existing somewhere.
 _reqxml = io.open(os.path.join(
-    REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs", "RimroomsRequestDefs",
+    REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs", "RimroomsRequestDefs",
     "RR_Requests.xml"), encoding="utf-8-sig").read()
 _tutorial = re.findall(
     r"<defName>(RR_Request_[A-Za-z]+)</defName>(?:(?!</RimroomsAsync).)*?"

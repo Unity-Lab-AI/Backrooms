@@ -104,7 +104,7 @@ u"""        /// <summary>
 print('gate binding widened to any place the branch operates')
 
 # ------------------------------------------------------------------ the refusal stops saying HQ
-p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6', 'Languages', 'English',
+p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7', 'Languages', 'English',
                  'Keyed', 'RR_NativeGate.xml')
 sub(p, u'  <RR_NativeGate_HeadquartersRequired>Choose existing player-owned infrastructure on the active company headquarters map.</RR_NativeGate_HeadquartersRequired>',
        u'  <RR_NativeGate_HeadquartersRequired>Choose existing player-owned infrastructure standing on this same map, at the headquarters or at a site the branch has on the books. A gate runs on the equipment beside it, never on equipment somewhere else.</RR_NativeGate_HeadquartersRequired>')

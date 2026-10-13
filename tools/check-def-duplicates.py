@@ -31,7 +31,7 @@ import sys
 import xml.etree.ElementTree as ElementTree
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DEFS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs")
+DEFS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs")
 
 GAME_ROOTS = [
     r"C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Data",

@@ -4,7 +4,7 @@ import io
 import os
 import re
 
-MOD = os.path.join('Mod', 'Rimrooms - Async Industries', '1.6')
+MOD = os.path.join('Mod', 'Rimrooms - Async Industries', '1.7')
 ARCHIVE = os.path.join('docs', 'implementation', 'historical-content', '0.10.9-dev')
 
 for sub in ('1.6/Defs/ThingDefs_Items', '1.6/Defs/RecipeDefs', '1.6/Textures/Items/Field'):

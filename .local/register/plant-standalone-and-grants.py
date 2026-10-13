@@ -27,7 +27,7 @@ import sys
 import time
 
 SRC = "src/RimroomsAsyncIndustries"
-ROLES = ("Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsGateEquipmentDefs/"
+ROLES = ("Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsGateEquipmentDefs/"
          "RR_GateEquipment.xml")
 LINKS = SRC + "/Gate/GateEquipmentLinks.cs"
 ARRIVAL = SRC + "/Scenario/ScenPart_RimroomsArrival.cs"
@@ -36,7 +36,7 @@ RECEIPT = SRC + "/Scenario/HeadquartersSetupComponent.cs"
 HQ = SRC + "/Scenario/GenStep_Headquarters.cs"
 GUARANTEE = "tools/check-standalone-guarantee.py"
 GATING = "tools/check-dlc-gating.py"
-GIVERS = ("Mod/Rimrooms - Async Industries/1.6/Defs/WorkGiverDefs/RR_ConnectedWork.xml")
+GIVERS = ("Mod/Rimrooms - Async Industries/1.7/Defs/WorkGiverDefs/RR_ConnectedWork.xml")
 MODFILE = SRC + "/Core/RimroomsMod.cs"
 PRIORITIES = SRC + "/Core/ConnectedWorkPriorities.cs"
 PROOF = ".local/register/proof-standalone-and-grants.py"

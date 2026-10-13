@@ -7,8 +7,8 @@ import sys
 NL = chr(10)
 
 EMERGENCE = "src/RimroomsAsyncIndustries/Portals/CompRimroomsEmergence.cs"
-JOBDEFS = "Mod/Rimrooms - Async Industries/1.6/Defs/JobDefs/RR_PortalJobs.xml"
-KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Portals.xml"
+JOBDEFS = "Mod/Rimrooms - Async Industries/1.7/Defs/JobDefs/RR_PortalJobs.xml"
+KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Portals.xml"
 
 GIZMO = '''
             // **BOARDING IT UP, ON THE DOOR, BY A PAWN, FOR WOOD.** Owner, 2026-10-04: *"the

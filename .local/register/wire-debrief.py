@@ -146,7 +146,7 @@ sub("src/RimroomsAsyncIndustries/UI/OperationsFacilities.cs",
         private void DrawFacilities(Listing_Standard listing, RimroomsCampaignComponent campaign)''')
 
 # ------------------------------------------------------------------ strings
-COMPANY = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Company.xml"
+COMPANY = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Company.xml"
 sub(COMPANY, u"</LanguageData>",
     u"""
   <!-- Staff debrief, and quarantine, which is the same mechanism: you do not go back out until
@@ -168,7 +168,7 @@ sub(COMPANY, u"</LanguageData>",
   <RR_Event_StaffDebriefed>Staff debriefed after returning from the field</RR_Event_StaffDebriefed>
 </LanguageData>""")
 
-sub("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Expedition.xml",
+sub("Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Expedition.xml",
     u"</LanguageData>",
     u"""  <RR_Exp_AwaitingDebrief>Somebody on this crew has not reported in from the last trip. Debrief them from the facilities pane before sending them out again.</RR_Exp_AwaitingDebrief>
 </LanguageData>""")

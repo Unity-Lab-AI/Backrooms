@@ -20,7 +20,7 @@ import io
 import os
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-PATH = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6', 'Defs',
+PATH = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7', 'Defs',
                     'RimroomsProjectDefs', 'RR_CompanyProjects.xml')
 
 HEADER = u"""

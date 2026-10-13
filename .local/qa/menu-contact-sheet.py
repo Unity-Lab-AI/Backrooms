@@ -11,7 +11,7 @@ import sys
 
 from PIL import Image, ImageDraw
 
-SRC = "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/*.png"
+SRC = "Mod/Rimrooms - Async Industries/1.7/Textures/UI/Menu/*.png"
 OUT = "artifacts/menu-contact-sheet.png"
 COLS = 3
 WIDTH = 420

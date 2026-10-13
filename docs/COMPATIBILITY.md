@@ -1,11 +1,19 @@
 ﻿# Compatibility and local multiplayer profile
 
-**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
+**Current content and dependency rules:** original gameplay art, audio, items and benches may ship where a role needs them; reuse stays the default and provider files are never copied. No mod or expansion is a hard dependency. See [current owner decisions](DECISIONS_CURRENT.md) and [content policy](CONTENT_REUSE_POLICY.md).
+
+**Historical content rule (2026-09-28), superseded in part on 2026-10-06:** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
 ## Support target
 
-**Selected support target:** RimWorld **1.6**. **The five expansions and the collection loaded alongside them are declared requirements** in `About.xml`, by owner decision 2026-10-01; the earlier target of an optional-expansion, Core-playable package is superseded. Co-op additionally requires RimWorld Together and Harmony.
+**Selected game target:** RimWorld **1.7 unstable / Waylith**, retaining **1.6** and sharing the `1.7/` package payload. **1.7 compatibility is not verified.**
+
+**Current dependency position (2026-10-03): no hard dependencies; all five expansions and profile mods are optional, with guarded lookups and load-order advice.** The following October 1 requirement paragraph is superseded and retained as history.
+
+**Historical dependency position, 2026-10-01:** **The five expansions and the collection loaded alongside them are declared requirements** in `About.xml`, by owner decision 2026-10-01; the earlier target of an optional-expansion, Core-playable package is superseded. Co-op additionally requires RimWorld Together and Harmony.
 
 **Nothing in the profile is optional any more, and that is the change.** The sentence that used to follow this one said every entry beyond the expansions was optional, which stopped being true the moment the requirements were declared. The ordered list is still the research and test target it always was; it is now also the requirement set.
 
@@ -60,7 +68,7 @@ The local list also contains a large set of combat, medical, pawn, and quality-o
 
 ## Compatibility rules
 
-1. **Declare the requirement, and keep the graceful guard anyway.** Declaring a dependency is what lets a mod manager say *this is missing*; looking content up by name, never assuming it, is what lets a player who ignored the warning degrade instead of crash. The owner chose both, not either. Harmony and RWT remain specific to the co-op path.
+1. **Current: declare no hard dependencies and keep graceful guards.** DLC/profile entries remain optional load-order advice; verify each advertised configuration separately for 1.6 and 1.7. **Historical October 1 rule, superseded October 3:** **Declare the requirement, and keep the graceful guard anyway.** Declaring a dependency is what lets a mod manager say *this is missing*; looking content up by name, never assuming it, is what lets a player who ignored the warning degrade instead of crash. The owner chose both, not either. Harmony and RWT remain specific to the co-op path.
 2. Detect DLC and optional user mods by their stable package IDs; place each integration in isolated XML patches or adapter code.
 3. Avoid overwriting another mod's Def. Prefer targeted `PatchOperation` changes only when there is a concrete interaction to solve.
 4. Keep a minimal recommended load-order note after the 1.6 folder and metadata rules are checked against the final package.
