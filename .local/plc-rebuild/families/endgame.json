@@ -1,0 +1,748 @@
+{
+ "family": "endgame",
+ "rungs": [
+  {
+   "id": "empire-dominion",
+   "priority": 95,
+   "family": "endgame",
+   "when": {
+    "ready": {
+     "any": [
+      {
+       "mark_title_rank": ">={TARGET_TITLE}"
+      },
+      {
+       "mark_gravship_ready": true
+      },
+      {
+       "ship_research_done": true
+      },
+      {
+       "colonists": ">={ENDGAME_COLONISTS}"
+      }
+     ]
+    },
+    "mark_ending_chosen": false,
+    "mark_mountain_base_done": true
+   },
+   "then": [
+    "game_state -- read colonists, wealth, title_seniority, grav_parts, ship_research_done, count_aipersonacore",
+    "say -- put the endings to chat in one clean line: vanilla ship launch, gravship voyage, royal ascent (high title), archonexus",
+    "no answer from chat: take the vanilla ship launch",
+    "ladder_set mark ending_ship true (or ending_gravship / ending_royal / ending_archonexus for the one chosen)",
+    "ladder_set mark ending_chosen true"
+   ],
+   "never": [
+    "choose an ending before the mountain base is sealed (mark_mountain_base_done)",
+    "wait on chat forever"
+   ],
+   "latch": true,
+   "why": [
+    "owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+    "owner: \"dominate the universe with a space ewarfare and planet domination\"",
+    "owner: \"update the viewers they are your # one perform for them and entertain! make a empire space flying galactic civ\"",
+    "owner: \"if they done answer just keep toward your goals of empire world domination and space warfare\"",
+    "walkthrough walkthrough-economy-growth-space.md: [space] Alternatives: journey offer ship (18 colonists), royal ascent, archonexus, void endings -- W Ending"
+   ],
+   "note": "id kept; the ending marks interlock every later endgame rung"
+  },
+  {
+   "id": "endgame-ship-research",
+   "priority": 95.1,
+   "family": "endgame",
+   "when": {
+    "mark_ending_ship": true,
+    "research_shipreactor": false,
+    "research_queue_empty": true
+   },
+   "then": [
+    "game_state -- read research_current and the research_ship* keys",
+    "queue in this order: ShipBasics -> ShipCryptosleep -> ShipReactor -> ShipEngine -> ShipComputerCore -> ShipSensorCluster (research_queue is a missing tool; until it exists: game_open_main_tab Research, game_take_screenshot, game_drag_cell to pan, game_click_ui_target on the project, game_close_main_tab)",
+    "a click that does nothing: ladder_set mark research_click_refused true",
+    "say -- one clean line on what is being researched"
+   ],
+   "never": [
+    "guess prerequisites -- read the tree"
+   ],
+   "latch": false,
+   "why": [
+    "owner: \"dominate the universe with a space ewarfare and planet domination\"",
+    "owner: \"you have to research microelelectronics to get trade beacons otherwise you have to wait for someone to show up to base\"",
+    "walkthrough walkthrough-economy-growth-space.md: [research] Ship tree: Starflight basics -> Ship basics -> Ship cryptosleep -> Ship reactor -> Ship engine -> Ship computer core -> Ship sensor cluster -- W Research"
+   ]
+  },
+  {
+   "id": "endgame-research-refused",
+   "priority": 95.15,
+   "family": "endgame",
+   "when": {
+    "mark_ending_ship": true,
+    "research_shipreactor": false,
+    "stuck": {
+     "ctu": {
+      "mark_research_click_refused": true
+     },
+     "preset": 3,
+     "reset": {
+      "research_shipreactor": true
+     }
+    }
+   },
+   "then": [
+    "reply_owner -- the research tab refused three times; ask him to queue the ship research by hand",
+    "ladder_set mark research_click_refused false"
+   ],
+   "latch": false,
+   "why": [
+    "owner: \"make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done\""
+   ],
+   "note": "fallback for endgame-ship-research"
+  },
+  {
+   "id": "endgame-ship-materials",
+   "priority": 95.2,
+   "family": "endgame",
+   "when": {
+    "mark_ending_ship": true,
+    "ship_research_done": true,
+    "mark_ship_materials_ready": false
+   },
+   "then": [
+    "game_state -- compare steel, plasteel, uranium, adv_components, components, gold against the SHIP_* variables",
+    "empire_pass -- stock orders for the shortfall",
+    "game_set cmd add_bill recipe ComponentIndustrial count {SHIP_COMPS}; fabrication bench recipe AdvancedComponent count {SHIP_ADV_COMPS} (read the bench's real recipe names)",
+    "game_set cmd set_work_priority pawn <best miner> work Mining level 1; game_get_cells_info to find plasteel/uranium/gold veins; order_pawn option 'Mine'",
+    "trade the rest: best Social pawn order_pawn on the comms console, call a trader to land from the drop down (not the orbital trader), select it on the comms again; buy plasteel, uranium, advanced components",
+    "all counts at the variables: ladder_set mark ship_materials_ready true"
+   ],
+   "never": [
+    "build any ship part before every material is in",
+    "sell irreplaceable tech to pay for it"
+   ],
+   "latch": false,
+   "why": [
+    "owner: \"as you colony grows you want it to grow be greedy you empire is the goal you need stockpiles of everything you want supplies of everything where is you vault? you want armies defences turrets all of it\"",
+    "owner: \"u want to use call a trader to land\"",
+    "owner: \"not orbital trader that one sucks\"",
+    "owner: \"u have to select the the drop down\"",
+    "owner: \"once u call them select them on the comms again\"",
+    "owner: \"you haver t o use comms console to call trade hub to trade or call a ship to land or trade with trades via pawns dirrectly when they show up\"",
+    "owner: \"You need a powered orbital trade beacon to trade with a ship.\"",
+    "walkthrough walkthrough-economy-growth-space.md: [space] Ship: 1 reactor, 3 engines, 1 computer core, 1 sensor cluster, 1+ cryptosleep caskets, structural beams connecting; min ~1740 steel, 740 plasteel, 294 uranium, 40 advanced comps, 12 comps, 74 gold, 1 persona core -- W Ship",
+    "walkthrough walkthrough-economy-growth-space.md: [meta] ship research done and plasteel >= 740 and uranium >= 294 and advanced comps >= 40 -> build ship parts"
+   ]
+  },
+  {
+   "id": "endgame-materials-check",
+   "priority": 95.21,
+   "family": "endgame",
+   "when": {
+    "mark_ending_ship": true,
+    "mark_ship_materials_ready": false,
+    "plasteel": ">={SHIP_PLASTEEL}",
+    "uranium": ">={SHIP_URANIUM}",
+    "adv_components": ">={SHIP_ADV_COMPS}",
+    "steel": ">={SHIP_STEEL}",
+    "components": ">={SHIP_COMPS}",
+    "gold": ">={SHIP_GOLD}"
+   },
+   "then": [
+    "ladder_set mark ship_materials_ready true"
+   ],
+   "latch": true,
+   "why": [
+    "walkthrough walkthrough-economy-growth-space.md: [meta] ship research done and plasteel >= 740 and uranium >= 294 and advanced comps >= 40 -> build ship parts",
+    "walkthrough walkthrough-economy-growth-space.md: [space] Ship: 1 reactor, 3 engines, 1 computer core, 1 sensor cluster, 1+ cryptosleep caskets, structural beams connecting; min ~1740 steel, 740 plasteel, 294 uranium, 40 advanced comps, 12 comps, 74 gold, 1 persona core -- W Ship"
+   ]
+  },
+  {
+   "id": "endgame-persona-core",
+   "priority": 95.3,
+   "family": "endgame",
+   "when": {
+    "mark_ending_ship": true,
+    "ship_research_done": true,
+    "count_aipersonacore": "<1"
+   },
+   "then": [
+    "game_list_letters / game_open_letter -- take quests that reward an AI persona core",
+    "comms console: best Social pawn order_pawn option 'Call', pick an exotic goods trader from the drop down, select it on the comms again, buy the core",
+    "ancient shrine on the map: arm everyone first, then order_pawn option 'Open' on its casket",
+    "count_aipersonacore >= 1 clears this rung (no mark)"
+   ],
+   "never": [
+    "open an ancient shrine with fewer than {LAUNCH_SHOOTERS} armed shooters (able_shooters_armed)"
+   ],
+   "latch": false,
+   "why": [
+    "owner: \"u want to use call a trader to land\"",
+    "owner: \"not orbital trader that one sucks\"",
+    "owner: \"u have to select the the drop down\"",
+    "owner: \"once u call them select them on the comms again\"",
+    "walkthrough walkthrough-economy-growth-space.md: [space] Persona core from ancient shrines, crashed ship parts or exotic traders -- W AI_persona_core"
+   ]
+  },
+  {
+   "id": "endgame-persona-core-stuck",
+   "priority": 95.31,
+   "family": "endgame",
+   "when": {
+    "mark_ending_ship": true,
+    "count_aipersonacore": "<1",
+    "waited": {
+     "ton": {
+      "ship_research_done": true,
+      "count_aipersonacore": "<1"
+     },
+     "hours": "{PERSONA_CORE_WAIT_HOURS}"
+    }
+   },
+   "then": [
+    "say -- ask chat to watch for exotic traders",
+    "reply_owner -- no persona core after {PERSONA_CORE_WAIT_HOURS} game hours; the rest of the ship work continues"
+   ],
+   "latch": false,
+   "why": [
+    "owner: \"if they done answer just keep toward your goals of empire world domination and space warfare\""
+   ],
+   "note": "fallback timer for endgame-persona-core"
+  },
+  {
+   "id": "endgame-launch-defence",
+   "priority": 95.4,
+   "family": "endgame",
+   "when": {
+    "mark_ending_ship": true,
+    "mark_ship_materials_ready": true,
+    "mark_launch_defence_ready": false
+   },
+   "then": [
+    "game_state -- turrets, defences_built, days_of_food, medicine, able_shooters_armed vs colonists",
+    "empire_pass -- arms for every colonist, meal and medicine stock orders",
+    "game_list_architect_designators Security, then game_apply_architect_designator turrets / mortars / sandbags on the kill box until turrets >= {LAUNCH_TURRETS}",
+    "game_set cmd add_bill recipe CookMealSurvival (or CookMealSimple) until days_of_food >= {LAUNCH_FOOD_DAYS}",
+    "all hold: ladder_set mark launch_defence_ready true"
+   ],
+   "never": [
+    "start the reactor before this mark",
+    "a power building outside the wall"
+   ],
+   "latch": false,
+   "why": [
+    "owner: \"dominate the universe with a space ewarfare and planet domination\"",
+    "owner: \"as you colony grows you want it to grow be greedy you empire is the goal you need stockpiles of everything you want supplies of everything where is you vault? you want armies defences turrets all of it\"",
+    "owner: \"and ur gonna need LOTS OF BATTERIES!\"",
+    "owner: \"might want to design a power facility generators outside batteries in reactors later\"",
+    "walkthrough walkthrough-economy-growth-space.md: [space] Before reactor: turrets + kill box + mortars, food >= 30 days, medicine >= 20, every colonist armed -- W Ship",
+    "walkthrough walkthrough-economy-growth-space.md: [meta] wealth rising and defence weak -> spend silver on arms/turrets before vault"
+   ]
+  },
+  {
+   "id": "endgame-defence-check",
+   "priority": 95.41,
+   "family": "endgame",
+   "when": {
+    "mark_ending_ship": true,
+    "mark_launch_defence_ready": false,
+    "turrets": ">={LAUNCH_TURRETS}",
+    "days_of_food": ">={LAUNCH_FOOD_DAYS}",
+    "medicine": ">={LAUNCH_MEDICINE}",
+    "able_shooters_armed": ">={ENDGAME_COLONISTS}"
+   },
+   "then": [
+    "ladder_set mark launch_defence_ready true"
+   ],
+   "latch": true,
+   "why": [
+    "walkthrough walkthrough-economy-growth-space.md: [space] Before reactor: turrets + kill box + mortars, food >= 30 days, medicine >= 20, every colonist armed -- W Ship"
+   ]
+  },
+  {
+   "id": "endgame-ship-site",
+   "priority": 95.5,
+   "family": "endgame",
+   "when": {
+    "mark_ending_ship": true,
+    "mark_ship_materials_ready": true,
+    "mark_ship_site_set": false
+   },
+   "then": [
+    "game_get_cells_info -- a mined-out room inside the mountain beside the kill box, big enough for beams and every part",
+    "game_set cmd set_area area Home over it; note the corner x,z",
+    "ladder_set mark ship_site_set true"
+   ],
+   "never": [
+    "build the ship outside the walls"
+   ],
+   "latch": true,
+   "why": [
+    "owner: \"your gonna have to mine alot nothing is exposed struture out side the mountina walls and plan for the intoer rooms wall too so 2x mountain space along all inrteror warooms\"",
+    "walkthrough walkthrough-economy-growth-space.md: [space] Build ship inside/adjacent to the fortified base -- W Ship"
+   ],
+   "note": "UNVERIFIED: whether thick mountain roof blocks a vanilla launch in 1.7 -- read ship_launch_fail_reason once measured"
+  },
+  {
+   "id": "endgame-ship-build",
+   "priority": 95.6,
+   "family": "endgame",
+   "when": {
+    "mark_ending_ship": true,
+    "mark_ship_site_set": true,
+    "mark_launch_defence_ready": true,
+    "count_aipersonacore": ">=1",
+    "mark_ship_built": false
+   },
+   "then": [
+    "game_list_architect_designators category Ship -- read the real designator names",
+    "game_apply_architect_designator: structural beams first, then cryptosleep caskets (one per colonist leaving), computer core, sensor cluster, 3 engines, reactor last",
+    "play_slices 6 between builds; game_state ship_parts to confirm",
+    "a placement refused: ladder_set mark ship_place_refused true",
+    "ship_parts >= {SHIP_PARTS_TARGET}: ladder_set mark ship_built true"
+   ],
+   "never": [
+    "build parts early (before materials and defence): each part raises wealth and raid size"
+   ],
+   "latch": false,
+   "why": [
+    "owner: \"dominate the universe with a space ewarfare and planet domination\"",
+    "walkthrough walkthrough-economy-growth-space.md: [space] Ship: 1 reactor, 3 engines, 1 computer core, 1 sensor cluster, 1+ cryptosleep caskets, structural beams connecting; min ~1740 steel, 740 plasteel, 294 uranium, 40 advanced comps, 12 comps, 74 gold, 1 persona core -- W Ship",
+    "walkthrough walkthrough-economy-growth-space.md: [space] Do not build parts early: each part raises wealth and raid size -- W Ship"
+   ]
+  },
+  {
+   "id": "endgame-ship-build-refused",
+   "priority": 95.61,
+   "family": "endgame",
+   "when": {
+    "mark_ending_ship": true,
+    "mark_ship_built": false,
+    "stuck": {
+     "ctu": {
+      "mark_ship_place_refused": true
+     },
+     "preset": 3,
+     "reset": {
+      "mark_ship_built": true
+     }
+    }
+   },
+   "then": [
+    "game_take_screenshot of the site; game_get_cell_info on the refused cell",
+    "ladder_set mark ship_site_set false (pick another room)",
+    "reply_owner -- placement refused three times, site moved",
+    "ladder_set mark ship_place_refused false"
+   ],
+   "latch": false,
+   "why": [
+    "owner: \"make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done\""
+   ],
+   "note": "fallback for endgame-ship-build"
+  },
+  {
+   "id": "endgame-reactor-start",
+   "priority": 95.7,
+   "family": "endgame",
+   "when": {
+    "mark_ship_built": true,
+    "mark_launch_defence_ready": true,
+    "mark_reactor_started": false,
+    "hostiles_on_map": "0",
+    "colonist_hurt": false
+   },
+   "then": [
+    "game_click_cell on the reactor, game_list_selected_gizmos, game_execute_gizmo the start-up gizmo (read its label)",
+    "say -- the countdown has started and raids are coming",
+    "ladder_set mark reactor_started true"
+   ],
+   "never": [
+    "start it with hostiles on the map or a hurt colonist"
+   ],
+   "latch": true,
+   "why": [
+    "walkthrough walkthrough-economy-growth-space.md: [meta] all ship parts built and defence ready -> activate reactor",
+    "walkthrough walkthrough-economy-growth-space.md: [space] Reactor startup = 15 days of constant human+mech raids -- W Ship"
+   ]
+  },
+  {
+   "id": "endgame-reactor-hold",
+   "priority": 95.8,
+   "family": "endgame",
+   "when": {
+    "mark_reactor_started": true,
+    "mark_launched": false
+   },
+   "then": [
+    "empire_pass every turn (arms, tend, food)",
+    "hostiles_on_map > 0: game_set_draft everyone behind the turrets; grenadiers, snipers and rocket carriers first",
+    "buildings_damaged > 0: game_apply_architect_designator to rebuild lost turrets",
+    "game_set cmd add_bill to keep meals and medicine above the LAUNCH_* variables"
+   ],
+   "never": [
+    "leave the kill box to chase raiders"
+   ],
+   "latch": false,
+   "why": [
+    "owner: \"dominate the universe with a space ewarfare and planet domination\"",
+    "walkthrough walkthrough-economy-growth-space.md: [space] Reactor startup = 15 days of constant human+mech raids -- W Ship"
+   ]
+  },
+  {
+   "id": "endgame-load-caskets",
+   "priority": 95.9,
+   "family": "endgame",
+   "when": {
+    "mark_reactor_started": true,
+    "hostiles_on_map": "0",
+    "mark_caskets_loaded": false,
+    "held": {
+     "ton": {
+      "mark_reactor_started": true
+     },
+     "hours": "{REACTOR_HOURS}"
+    }
+   },
+   "then": [
+    "for each colonist: order_pawn pawn_id <id> x z of a casket, option 'Enter'",
+    "animals leaving: order_pawn the handler, option 'Carry to cryptosleep casket'",
+    "game_list_colonists -- nobody left outside",
+    "ladder_set mark caskets_loaded true"
+   ],
+   "never": [
+    "launch with a colonist left outside"
+   ],
+   "latch": true,
+   "why": [
+    "walkthrough walkthrough-economy-growth-space.md: [space] One casket per colonist/animal leaving; load all before launch -- W Ship",
+    "walkthrough walkthrough-economy-growth-space.md: [growth] Target 6-8 colonists by year 1, 10-15 by ship time; ship holds max 25 caskets -- W Ship"
+   ]
+  },
+  {
+   "id": "endgame-launch",
+   "priority": 96,
+   "family": "endgame",
+   "when": {
+    "mark_caskets_loaded": true,
+    "mark_launched": false
+   },
+   "then": [
+    "game_click_cell on the reactor, game_list_selected_gizmos, game_execute_gizmo 'Launch ship'",
+    "say -- a clean farewell line for chat",
+    "webcam -- launch mood",
+    "ladder_set mark launched true"
+   ],
+   "latch": true,
+   "why": [
+    "owner: \"dominate the universe with a space ewarfare and planet domination\"",
+    "owner: \"update the viewers they are your # one perform for them and entertain! make a empire space flying galactic civ\""
+   ]
+  },
+  {
+   "id": "endgame-gravship-voyage",
+   "priority": 96.1,
+   "family": "endgame",
+   "when": {
+    "mark_ending_gravship": true,
+    "mark_gravship_ready": true,
+    "mark_launched": false
+   },
+   "then": [
+    "before take-off: every colonist, the freezer, workshop and turrets on the substructure",
+    "pilot console: game_click_cell, game_list_selected_gizmos, game_execute_gizmo launch; the tile pick needs world_tile_select (missing) -- reply_owner for it",
+    "after landing near a target faction: ladder_set mark war_target_set true (megaship-drop takes over)"
+   ],
+   "latch": false,
+   "why": [
+    "owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+    "owner: \"update the viewers they are your # one perform for them and entertain! make a empire space flying galactic civ\"",
+    "owner: \"dominate the universe with a space ewarfare and planet domination\""
+   ],
+   "note": "gravship construction stays in grav-core / grav-build / grav-ready (space family)"
+  },
+  {
+   "id": "endgame-royal-ascent",
+   "priority": 96.2,
+   "family": "endgame",
+   "when": {
+    "mark_ending_royal": true,
+    "mark_title_rank": ">={TARGET_TITLE}",
+    "royal_letter": {
+     "ons": {
+      "empire_letter": true
+     }
+    }
+   },
+   "then": [
+    "game_open_letter -- the royal ascent quest; accept",
+    "the shuttle wait is held like endgame-reactor-hold",
+    "the shuttle leaves: ladder_set mark launched true"
+   ],
+   "latch": false,
+   "why": [
+    "walkthrough walkthrough-economy-growth-space.md: [space] Alternatives: journey offer ship (18 colonists), royal ascent, archonexus, void endings -- W Ending"
+   ]
+  },
+  {
+   "id": "endgame-archonexus",
+   "priority": 96.3,
+   "family": "endgame",
+   "when": {
+    "mark_ending_archonexus": true,
+    "arch_letter": {
+     "ons": {
+      "quest_letter": true
+     }
+    }
+   },
+   "then": [
+    "game_open_letter -- the archonexus quest; read the price",
+    "sell toward the price at the comms console",
+    "caravan to the archonexus needs form_caravan (missing) -- reply_owner for it"
+   ],
+   "latch": false,
+   "why": [
+    "owner: \"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?\"",
+    "walkthrough walkthrough-economy-growth-space.md: [space] Alternatives: journey offer ship (18 colonists), royal ascent, archonexus, void endings -- W Ending"
+   ]
+  },
+  {
+   "id": "endgame-journey-offer",
+   "priority": 96.4,
+   "family": "endgame",
+   "when": {
+    "mark_ending_chosen": false,
+    "journey": {
+     "ons": {
+      "letter_matches": "journey"
+     }
+    }
+   },
+   "then": [
+    "game_open_letter -- read it",
+    "say -- a ship offer arrived",
+    "accept; ladder_set mark ending_journey true; ladder_set mark ending_chosen true"
+   ],
+   "latch": false,
+   "why": [
+    "walkthrough walkthrough-economy-growth-space.md: [space] Alternatives: journey offer ship (18 colonists), royal ascent, archonexus, void endings -- W Ending",
+    "owner: \"if they done answer just keep toward your goals of empire world domination and space warfare\""
+   ]
+  },
+  {
+   "id": "endgame-greed",
+   "priority": 96.5,
+   "family": "endgame",
+   "when": {
+    "mark_ending_chosen": true,
+    "mark_launched": false,
+    "idle": true
+   },
+   "then": [
+    "run_list -- the first FIX is the next goal",
+    "empire_pass",
+    "grow toward the ending: colonists, wealth, gifts to factions by drop pod (pod_launchers > 0)"
+   ],
+   "latch": false,
+   "why": [
+    "owner: \"now make sure everything ive evr told you to do is a running check list that is never complete and is always checking all things are done wto keep your empire moveing up\"",
+    "owner: \"make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done\"",
+    "owner: \"as you colony grows you want it to grow be greedy you empire is the goal you need stockpiles of everything you want supplies of everything where is you vault? you want armies defences turrets all of it\"",
+    "owner: \"be greedy u want welath and power while making all factions you can your allies by send gifts with drop pods\"",
+    "owner: \"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?\"",
+    "owner: \"if they done answer just keep toward your goals of empire world domination and space warfare\""
+   ]
+  }
+ ],
+ "prompts": {
+  "empire-dominion": "Look first: game_state (colonists, title_seniority, grav_parts, ship_research_done).\nSay the endings to chat in one clean line: vanilla ship, gravship, royal ascent, archonexus.\nNo answer from chat = vanilla ship.\nDone: ladder_set mark ending_<choice> true, then ladder_set mark ending_chosen true.\nOwner: \"dominate the universe with a space ewarfare and planet domination\"\nOwner: \"if they done answer just keep toward your goals of empire world domination and space warfare\"",
+  "endgame-ship-research": "Look first: game_state research_current and research_ship*.\nOrder: ShipBasics, ShipCryptosleep, ShipReactor, ShipEngine, ShipComputerCore, ShipSensorCluster.\nNo research tool: game_open_main_tab Research, game_take_screenshot, game_drag_cell to pan, game_click_ui_target the project, game_close_main_tab.\nA click that does nothing: ladder_set mark research_click_refused true (three = ask the owner).\nDone: research_shipreactor true and the rest queued.\nOwner: \"dominate the universe with a space ewarfare and planet domination\"",
+  "endgame-research-refused": "The research tab refused three times.\nreply_owner: ask him to queue the ship research by hand.\nladder_set mark research_click_refused false.\nKeep working other rungs meanwhile.",
+  "endgame-ship-materials": "Look first: steel, plasteel, uranium, adv_components, components, gold vs SHIP_*.\nempire_pass; add_bill for components; Mining priority 1 on plasteel/uranium/gold veins.\nTrade the rest: best Social pawn on the comms console, call a trader to land from the drop down, select it on the comms again.\nRefused trade: next trader. Never build a ship part yet.\nDone: ladder_set mark ship_materials_ready true.\nOwner: \"u want to use call a trader to land\" / \"not orbital trader that one sucks\"",
+  "endgame-materials-check": "Every ship material is in. ladder_set mark ship_materials_ready true. Nothing else.",
+  "endgame-persona-core": "Look first: count_aipersonacore.\nSources: quest rewards (game_list_letters), exotic trader via the comms console, ancient shrine casket (arm everyone first).\nRefused trade: wait for the next trader; never sell irreplaceable tech.\nDone: count_aipersonacore >= 1.\nOwner: \"u have to select the the drop down\"",
+  "endgame-persona-core-stuck": "No persona core for a long while.\nsay: ask chat to watch for exotic traders. reply_owner once.\nKeep building everything else.",
+  "endgame-launch-defence": "Look first: turrets, days_of_food, medicine, able_shooters_armed vs colonists.\nempire_pass for arms and stock; turrets and mortars on the kill box via game_apply_architect_designator; meal bills.\nRefused placement: game_get_cell_info, move one cell.\nDone: ladder_set mark launch_defence_ready true. Never start the reactor before it.\nOwner: \"and ur gonna need LOTS OF BATTERIES!\"",
+  "endgame-defence-check": "Defence numbers hold. ladder_set mark launch_defence_ready true.",
+  "endgame-ship-site": "Look first: game_get_cells_info around the kill box inside the mountain.\nA room big enough for beams and every part, inside the walls.\nset_area Home over it; remember the corner.\nDone: ladder_set mark ship_site_set true.\nOwner: \"your gonna have to mine alot nothing is exposed struture out side the mountina walls ...\"",
+  "endgame-ship-build": "Look first: game_list_architect_designators Ship (real names).\nBeams, caskets (one per colonist), computer core, sensor cluster, 3 engines, reactor last.\nplay_slices 6 between; game_state ship_parts.\nRefused placement: ladder_set mark ship_place_refused true (three = the site moves).\nDone: ladder_set mark ship_built true.\nOwner: \"dominate the universe with a space ewarfare and planet domination\"",
+  "endgame-ship-build-refused": "Placement refused three times.\nScreenshot, game_get_cell_info the cell, ladder_set mark ship_site_set false, reply_owner, ladder_set mark ship_place_refused false.",
+  "endgame-reactor-start": "Check: no hostiles, nobody hurt.\nClick the reactor, game_list_selected_gizmos, game_execute_gizmo the start label.\nNo gizmo: game_take_screenshot and reply_owner.\nsay: the countdown is on, raids are coming.\nDone: ladder_set mark reactor_started true.",
+  "endgame-reactor-hold": "Standing order for the whole countdown.\nempire_pass every turn. Hostiles: draft behind the turrets; grenadiers, snipers, rockets first.\nRebuild lost turrets; keep meals and medicine up.\nNever leave the kill box.",
+  "endgame-load-caskets": "Countdown done, no hostiles.\norder_pawn each colonist onto a casket, option 'Enter'; handlers carry animals.\ngame_list_colonists: nobody outside.\nDone: ladder_set mark caskets_loaded true.",
+  "endgame-launch": "Click the reactor, game_execute_gizmo 'Launch ship'.\nsay a clean farewell; webcam launch mood.\nDone: ladder_set mark launched true.\nOwner: \"update the viewers they are your # one perform for them and entertain! make a empire space flying galactic civ\"",
+  "endgame-gravship-voyage": "Look first: everything on the substructure, fuel full.\nPilot console gizmo to launch; the tile pick has no tool yet -- reply_owner for it.\nAfter landing near a target: ladder_set mark war_target_set true.\nOwner: \"... drop poding down from your megaship to a tribal village ...\"",
+  "endgame-royal-ascent": "Open the royal ascent letter, accept.\nHold the shuttle wait like the reactor hold.\nDone: ladder_set mark launched true when the shuttle leaves.",
+  "endgame-archonexus": "Open the archonexus letter; read the price.\nSell toward it at the comms console.\nCaravan has no tool yet: reply_owner for that step.\nOwner: \"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold ...\"",
+  "endgame-journey-offer": "A ship offer letter arrived: game_open_letter, say it to chat.\nAccept: ladder_set mark ending_journey true and ending_chosen true.",
+  "endgame-greed": "Standing order while the ending is underway and nobody is busy.\nrun_list: the first FIX is the goal. empire_pass.\nGrow: colonists, wealth, gifts by drop pod.\nOwner: \"be greedy u want welath and power while making all factions you can your allies by send gifts with drop pods\""
+ },
+ "sensors_needed": [
+  {
+   "key": "count_aipersonacore",
+   "how": "generic count_ already; verify ThingByKey resolves AIPersonaCore and counts it in storage"
+  },
+  {
+   "key": "research_shipreactor (and shipcryptosleep, shipengine, shipcomputercore, shipsensorcluster)",
+   "how": "generic research_<defName>; UNVERIFIED that 1.7 keeps these defNames (DefDatabase<ResearchProjectDef>.GetNamedSilentFail)"
+  },
+  {
+   "key": "ship_reactor / ship_engines / ship_caskets / ship_computer_core / ship_sensor_cluster / ship_beams",
+   "how": "map.listerBuildings.allBuildingsColonist grouped by def.defName (Ship_Reactor, Ship_Engine, Ship_CryptosleepCasket, Ship_ComputerCore, Ship_SensorCluster, Ship_Beam)"
+  },
+  {
+   "key": "ship_launchable",
+   "how": "reactor = first Building_ShipReactor; ShipUtility.LaunchFailReasons(reactor).Any() == false"
+  },
+  {
+   "key": "ship_launch_fail_reason",
+   "how": "first string of ShipUtility.LaunchFailReasons(reactor)"
+  },
+  {
+   "key": "reactor_started",
+   "how": "reactor.TryGetComp<CompHibernatable>().State != HibernatableStateDefOf.Hibernating"
+  },
+  {
+   "key": "caskets_empty",
+   "how": "Building_CryptosleepCasket in ShipUtility.ShipBuildingsAttachedTo(reactor) with !HasAnyContents"
+  },
+  {
+   "key": "letter_matches",
+   "how": "used by existing rungs but not emitted in Sensors.cs: Find.LetterStack.LettersListForReading.Any(l => l.Label contains value, case-insensitive)"
+  }
+ ],
+ "variables_needed": [
+  {
+   "name": "TARGET_TITLE",
+   "value": 4,
+   "rule": "title rank (mark_title_rank 0-7 table) that makes the royal ending ready"
+  },
+  {
+   "name": "ENDGAME_COLONISTS",
+   "value": 10,
+   "rule": "W: 10-15 colonists by ship time"
+  },
+  {
+   "name": "SHIP_STEEL",
+   "value": 1740,
+   "rule": "W Ship"
+  },
+  {
+   "name": "SHIP_PLASTEEL",
+   "value": 740,
+   "rule": "W Ship"
+  },
+  {
+   "name": "SHIP_URANIUM",
+   "value": 294,
+   "rule": "W Ship"
+  },
+  {
+   "name": "SHIP_ADV_COMPS",
+   "value": 40,
+   "rule": "W Ship"
+  },
+  {
+   "name": "SHIP_COMPS",
+   "value": 12,
+   "rule": "W Ship"
+  },
+  {
+   "name": "SHIP_GOLD",
+   "value": 74,
+   "rule": "W Ship"
+  },
+  {
+   "name": "SHIP_PARTS_TARGET",
+   "value": 16,
+   "rule": "1 reactor + 3 engines + 1 core + 1 sensor + 10 caskets (beams excluded if ship_parts counts them; replace with ship_launchable once measured)"
+  },
+  {
+   "name": "LAUNCH_FOOD_DAYS",
+   "value": 30,
+   "rule": "W Before reactor"
+  },
+  {
+   "name": "LAUNCH_MEDICINE",
+   "value": 20,
+   "rule": "W Before reactor"
+  },
+  {
+   "name": "LAUNCH_TURRETS",
+   "value": 8,
+   "rule": "judgement: W says turrets + kill box + mortars"
+  },
+  {
+   "name": "LAUNCH_SHOOTERS",
+   "value": 4,
+   "rule": "armed shooters before opening an ancient shrine"
+  },
+  {
+   "name": "REACTOR_HOURS",
+   "value": 360,
+   "rule": "15 days x 24 h (W Reactor startup)"
+  },
+  {
+   "name": "PERSONA_CORE_WAIT_HOURS",
+   "value": 480,
+   "rule": "20 days without a core -> ask chat and the owner"
+  }
+ ],
+ "missing_tools": [
+  {
+   "tool": "research_queue",
+   "why": "queue a research project by defName; today only cursor clicks on the research tab"
+  },
+  {
+   "tool": "world_tile_select",
+   "why": "pick a destination tile for a gravship flight / pod launch"
+  },
+  {
+   "tool": "form_caravan",
+   "why": "archonexus and cavalry steps need a caravan"
+  }
+ ],
+ "unplaced_rules": [
+  {
+   "quote": "and wtf why are you storing plant materials resources in the fucking hallway that needs to be in freezer",
+   "reason": "storage layout -- space/economy family"
+  },
+  {
+   "quote": "and u need to make sure all storage zones and shelfes and items are withing a orbital trade beacon u might need to move/add some",
+   "reason": "trade beacon coverage -- space family"
+  },
+  {
+   "quote": "farming trader.. comeon always trade and look to make silver and money and get things you need",
+   "reason": "general trading -- economy family"
+  },
+  {
+   "quote": "might have to buy from trader marble blocks",
+   "reason": "economy family"
+  },
+  {
+   "quote": "Tried to get a resource ... from a different thread",
+   "reason": "engineering note, not gameplay"
+  },
+  {
+   "quote": "ther is no pollinations you need to fix it up with the 3d models default image gen",
+   "reason": "stream tooling, not gameplay"
+  },
+  {
+   "quote": "and take live wenbcam off your rimchat and put AI representation",
+   "reason": "stream tooling"
+  },
+  {
+   "quote": "or better just reporesentation",
+   "reason": "stream tooling"
+  },
+  {
+   "quote": "somthing is up! we arent hearing you on twitch how you gonna pipe your voice in",
+   "reason": "stream tooling"
+  },
+  {
+   "quote": "what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?",
+   "reason": "meta audit request, no single rung"
+  },
+  {
+   "note": "no owner rule in owner-rules-a/b/c.jsonl carries family 'endgame'; these rungs draw on 'space' and 'meta' rules plus the walkthrough [space]/[meta] ship lines"
+  }
+ ]
+}

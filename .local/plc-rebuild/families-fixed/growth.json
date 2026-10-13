@@ -1,0 +1,425 @@
+{
+ "family": "growth",
+ "rungs": [
+  {
+   "id": "growth-rescue-and-tend",
+   "priority": 2.5,
+   "family": "growth",
+   "when": {
+    "alert_colonist_needs_rescue": true,
+    "hostiles_on_map": 0
+   },
+   "then": [
+    "game_state: find the downed colonist and the best doctor (highest Medicine, not downed)",
+    "MISSING set_self_tend: turn the patient's self-tend OFF so a doctor tends him, not himself",
+    "order_pawn pawn=<doctor> at the patient's x z, option Rescue (carries him to a medical bed)",
+    "order_pawn pawn=<doctor> on the patient, option Tend (best medicine in stock)",
+    "MISSING set_self_tend: turn the patient's self-tend back ON after the tend",
+    "say who was saved (clean line)",
+    "still downed after the order: the rung stays live; say it on stream and check again next pass (rescue and tend inside the same day)"
+   ],
+   "why": "owner: \"have someone save him\" / \"and tend to him\" / \"hes the KING force that shit\" (docs/playbook.rules.json + docs/PLAYSCRIPT.md: turn the patient's self-tend off, Rescue with a doctor (prio.py PAWN X Z \"Rescue\"), turn self-tend back on after)",
+   "latch": false,
+   "never": [
+    "leave a downed colonist lying while hostiles_on_map is 0",
+    "let the patient self-tend when a doctor is free"
+   ],
+   "owner_rules": [
+    "have someone save him",
+    "and tend to him",
+    "hes the KING force that shit"
+   ]
+  },
+  {
+   "id": "growth-joiner-letter",
+   "priority": 2.52,
+   "family": "growth",
+   "when": {
+    "joiner": {
+     "ons": {
+      "quest_letter": true
+     }
+    }
+   },
+   "then": [
+    "read the letter (game_get_ui_layout); a joiner/refugee/wanderer: Accept unless pursuers outnumber the colony (fight_ratio < 1)",
+    "any other quest: leave it for the quest rungs"
+   ],
+   "why": "owner: \"accept neew employees hire them\" (docs/PLAYBOOK.md 4. Work and pawns) / walkthrough [growth] Accept wanderer/refugee quests unless pursuers exceed colony defence -- W Quests",
+   "latch": false,
+   "never": [
+    "let a joiner letter expire unread"
+   ],
+   "owner_rules": [
+    "accept neew employees hire them"
+   ]
+  },
+  {
+   "id": "growth-needs-watch",
+   "priority": 10.1,
+   "family": "growth",
+   "when": {
+    "colony_exists": true,
+    "lowest_mood": "<0.35"
+   },
+   "then": [
+    "pawn_check the lowest-mood colonist: Needs tab, read which need is lowest (food, rest, joy, comfort, beauty, outdoors, temperature)",
+    "food: game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET}; rest: game_set cmd beds; temperature: the cold/heat rungs",
+    "joy: MISSING build_furniture (horseshoes pin first, then chess/billiards/TV)",
+    "lowest_mood below 0.2 (20%): no new orders for that pawn, game_set cmd set_area pawn=<pawn> area Home",
+    "say the cause on stream (clean)"
+   ],
+   "why": "owner: \"maintain ur colonists' needs\" / \"maintain and watch your resources\" (docs/PLAYBOOK.md: 1. Keep the colonists alive -- FIRST, every check) / walkthrough [growth] Mental breaks: minor < 35%, major < 20%, extreme < 5% mood; intervene below 35% -- W Mental_break / sensor note: lowest_mood is Need_Mood.CurLevel, 0..1, so 35% is 0.35",
+   "latch": false,
+   "owner_rules": [
+    "maintain ur colonists' needs",
+    "maintain and watch your resources"
+   ]
+  },
+  {
+   "id": "growth-catch-up",
+   "priority": 10.11,
+   "family": "growth",
+   "when": {
+    "backlog": {
+     "ton": {
+      "blueprints": ">{BLUEPRINT_BACKLOG}"
+     },
+     "hours": 2
+    }
+   },
+   "then": [
+    "STOP adding new build orders this pass",
+    "play_slices 3 and let the pawns work the backlog down",
+    "run_list: every standing order (bills, shelves, beds, priorities) re-checked -- maintenance, not one-and-done"
+   ],
+   "why": "owner: \"leave it let everyone catch up on tasks before you do more... and make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done\" / \"leave it let everyone catch up on tasks before you do more\" (docs/PLAYSCRIPT.md 3. Colonists)",
+   "latch": false,
+   "never": [
+    "place more blueprints while this rung is live"
+   ],
+   "owner_rules": [
+    "leave it let everyone catch up on tasks before you do more... and make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done",
+    "leave it let everyone catch up on tasks before you do more"
+   ]
+  },
+  {
+   "id": "growth-look-at-world",
+   "priority": 25.0,
+   "family": "growth",
+   "when": {
+    "mark_camp_stable": true
+   },
+   "then": [
+    "game_open_main_tab World; look at nearby settlements, factions, resources",
+    "note the nearest hostile and friendly settlements",
+    "ladder_set mark growth_look_at_world_done true"
+   ],
+   "why": "owner: \"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?\"",
+   "latch": true,
+   "owner_rules": [
+    "you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?"
+   ]
+  },
+  {
+   "id": "recruit-past-three",
+   "priority": 25.1,
+   "family": "growth",
+   "when": {
+    "mark_camp_stable": true,
+    "colony_exists": true,
+    "colonists": "<{COLONIST_TARGET}"
+   },
+   "then": [
+    "a joiner, refugee or wanderer letter: ACCEPT (more hands is the empire) unless pursuers outnumber the colony (fight_ratio < 1)",
+    "a downed raider: order_pawn Capture to the prisoner bed; Warden on the best Social pawn (game_set cmd set_work_priority work Warden level 1); interaction Reduce resistance then Recruit (MISSING set_prisoner_interaction)",
+    "a transport pod crash with a survivor: rescue and recruit",
+    "trade for a slave or a prisoner when a caravan offers one and silver >= {TRADE_SILVER_MIN}",
+    "prefer recruits who fill Construction, Mining, Cooking, Medicine gaps; skip addicts and chronic illness; no pyromaniac or incapable-of-violence as a fighter",
+    "each recruit then runs setup:setup-9-new-pawn (priorities one cell at a time, read back)"
+   ],
+   "why": "owner: \"accept neew employees hire them\" (docs/PLAYBOOK.md) / \"do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\") / walkthroughs [growth]: Target 6-8 colonists by year 1, 10-15 by ship time -- W Ship; Recruit to fill skill gaps (Construction, Mining, Cooking, Medicine); avoid pyromaniac / incapable of violence as fighters -- W Traits; Recruit prisoners only if useful (no addiction, no chronic illness, has skills) [Q]",
+   "latch": false,
+   "never": [
+    "execute or release a recruitable prisoner",
+    "refuse a wanderer joiner"
+   ],
+   "owner_rules": [
+    "accept neew employees hire them",
+    "do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them"
+   ]
+  },
+  {
+   "id": "growth-prisoner-keep",
+   "priority": 25.2,
+   "family": "growth",
+   "when": {
+    "mark_camp_stable": true,
+    "prisoners": ">0"
+   },
+   "then": [
+    "game_set cmd set_work_priority pawn=<highest Social> work Warden level 1",
+    "MISSING set_prisoner_interaction: Reduce resistance, then Recruit once resistance is 0",
+    "prisoner mood > 35%: a bed (game_set cmd set_bed_owner owner prisoner), food, 15-24C in the prison room",
+    "recruited -> setup:setup-9-new-pawn; unrecruitable -> works contained inside the walls, doors locked to the work areas"
+   ],
+   "why": "owner: \"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?\" / \"come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations\" / walkthroughs [growth]: Prisoner mode Reduce resistance then Recruit; warden = highest Social -- W Recruitment; Keep prisoner mood > 35% (bed, food, 15-24C) to avoid break/escape -- W Prisoner",
+   "latch": false,
+   "never": [
+    "execute or release a recruitable prisoner"
+   ],
+   "owner_rules": [
+    "you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?",
+    "come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations"
+   ]
+  },
+  {
+   "id": "growth-spare-bed",
+   "priority": 25.3,
+   "family": "growth",
+   "when": {
+    "mark_camp_stable": true,
+    "colony_exists": true,
+    "beds": "<{BEDS_NEEDED}"
+   },
+   "then": [
+    "game_set cmd beds",
+    "game_set cmd set_bed_owner x z owner colonist for each colonist without a bed"
+   ],
+   "why": "owner: \"tell reve its one the list Rev character(ask if any requests when u get to making him, as an extra hand will be helpopfull just have to always set up everything for new pawns\" / walkthrough [growth] Keep 1 spare bed per expected recruit; bedroom interior >= 2x3 -- W Bedroom",
+   "latch": false,
+   "owner_rules": [
+    "tell reve its one the list Rev character(ask if any requests when u get to making him, as an extra hand will be helpopfull just have to always set up everything for new pawns"
+   ]
+  },
+  {
+   "id": "growth-healroot-and-cash-crops",
+   "priority": 25.4,
+   "family": "growth",
+   "when": {
+    "mark_camp_stable": true,
+    "growing_cells": ">={FIELD_CELLS_TOTAL}",
+    "healroot_plants": 0,
+    "best_plants_skill": ">=8"
+   },
+   "then": [
+    "game_set cmd crops plant Plant_Healroot (10-20 tiles)",
+    "then a cash crop: game_set cmd crops plant Plant_Smokeleaf or Plant_Devilstrand",
+    "cash crops are for selling: smokeleaf goes on to joints, not leaves (economy owns the sell zone / Guests tab)"
+   ],
+   "why": "owner: \"come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations\" / walkthrough-food-and-medicine [growth] Grow healroot (needs Plants 8) in a 10-20 tile field once someone qualifies, so herbal medicine keeps coming / \"start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process\"",
+   "latch": false,
+   "owner_rules": [
+    "come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations",
+    "start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process"
+   ]
+  },
+  {
+   "id": "growth-dining-and-rec",
+   "priority": 25.5,
+   "family": "growth",
+   "when": {
+    "mark_mountain_base_done": true
+   },
+   "then": [
+    "MISSING build_furniture: a table + chairs in a dining room >= 30 tiles",
+    "recreation: horseshoes pin first, then chess/billiards/TV, at least 2 types (MISSING build_furniture)",
+    "floors, lights, art there; game_set cmd set_work_priority work Cleaning level 2 on the low-skill pawns",
+    "ladder_set mark growth_dining_and_rec_done true"
+   ],
+   "why": "owner: \"maintain ur colonists' needs\" / \"keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them\" / walkthroughs [growth]: Dining room with table + chairs (avoid \"ate without table\") -- W Table; Recreation: horseshoes pin days 1-3, then chess/billiards/TV; >= 2 recreation types -- W Recreation; Floors, lights, clean rooms; cleaning priority on low-skill pawns -- W Beauty; Impressive dining/rec room: art + floors + >= 30 tiles -- W Room_stats",
+   "latch": true,
+   "owner_rules": [
+    "maintain ur colonists' needs",
+    "keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them"
+   ]
+  },
+  {
+   "id": "growth-ideology-content",
+   "priority": 25.6,
+   "family": "growth",
+   "when": {
+    "mark_mountain_base_done": true,
+    "mark_ideo_roles_set": true
+   },
+   "then": [
+    "fill every ideology role (game_open_main_tab Ideoligion; an empty-role alert like Pujari means a role is open)",
+    "MISSING build_furniture: ideology statues / altar, a party room, landing pads",
+    "throne room: royalty family's throne-room rung",
+    "ladder_set mark growth_ideology_content_done true"
+   ],
+   "why": "owner: \"who is your leader role that you need to set\" (docs/PLAYSCRIPT.md: and every role filled (the *Pujari* alert means a role is empty)) / \"keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them\"",
+   "latch": true,
+   "owner_rules": [
+    "who is your leader role that you need to set",
+    "keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them"
+   ]
+  },
+  {
+   "id": "growth-family",
+   "priority": 25.7,
+   "family": "growth",
+   "when": {
+    "mark_mountain_base_done": true,
+    "colonists": ">={COLONIST_TARGET}",
+    "lovers_unmarried": ">0"
+   },
+   "then": [
+    "private double-bed room for the couple first (base-and-fortress:double-bed-rooms owns the room); game_set cmd set_bed_owner both lovers on that double bed",
+    "MISSING propose_marriage: proposal / wedding ritual (say it on stream)",
+    "milk, cribs and toys before a birth: a nursery and crib inside the walls; children never outside the defences",
+    "children raised: learning time, protected inside the mountain; at growth moments pick combat traits and combat passions (soldiers)"
+   ],
+   "why": "owner: \"do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them\" / \"keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them\" / \"cant have kids until u build privet rooms with double beds and set them to sleep there. can swap em in and out till all, one guy can knock up[ many\" / \"kids need milk and cribs and toys\" / \"duble beds to start families\" / \"mix an match need soldier born\" (rule: adult couples get private double-bed rooms; milk, cribs and toys before births; raise soldiers (combat traits))",
+   "latch": false,
+   "never": [
+    "pair, romance or give a family bed to anyone under 18 (adults only)"
+   ],
+   "owner_rules": [
+    "do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them",
+    "keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them",
+    "cant have kids until u build privet rooms with double beds and set them to sleep there. can swap em in and out till all, one guy can knock up[ many",
+    "kids need milk and cribs and toys",
+    "duble beds to start families",
+    "mix an match need soldier born"
+   ]
+  },
+  {
+   "id": "growth-upgrade-everyone",
+   "priority": 25.8,
+   "family": "growth",
+   "when": {
+    "mark_rung_4_production_done": true,
+    "colonists_without_armor": ">0"
+   },
+   "then": [
+    "empire_pass (arms and sidearms)",
+    "MISSING equip_apparel: armor and helmets on everyone",
+    "bionics for missing limbs once researched"
+   ],
+   "why": "owner: \"do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them\"",
+   "latch": false,
+   "owner_rules": [
+    "do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them"
+   ]
+  },
+  {
+   "id": "growth-second-colony",
+   "priority": 25.9,
+   "family": "growth",
+   "when": {
+    "mark_launched": true
+   },
+   "then": [
+    "reply_owner: the ship has launched; ask whether to start the second colony with a whole new group and supplies (Gee, Scar, Unity carry over)",
+    "never call new_colony here: meta:new-colony runs it only after the owner orders it (mark_owner_ordered_new_colony)",
+    "ladder_set mark growth_second_colony_done true"
+   ],
+   "why": "owner: \"we are gonna start new colonies with like a whole neew group and supplies / long time from now all the above we stal uss 3\" (docs/PLAYSCRIPT.md:115: later -- not now, finish Marble Hollow first)",
+   "latch": true,
+   "never": [
+    "start a second colony before the ship launches",
+    "call new_colony without the owner's order"
+   ],
+   "owner_rules": [
+    "we are gonna start new colonies with like a whole neew group and supplies"
+   ]
+  }
+ ],
+ "prompts": {
+  "growth-rescue-and-tend": "LIVE: a colonist needs rescue and no hostiles are on the map.\nLook first: game_state -> who is downed, where, and who has the highest Medicine.\nSequence: (1) self-tend OFF on the patient (no tool yet: say so, go on), (2) order_pawn doctor x z Rescue, (3) order_pawn doctor on patient Tend.\nIf order_pawn refuses Rescue: try the next-best doctor; if no bed exists, game_set cmd beds first.\nDone: alert_colonist_needs_rescue goes false, then self-tend back ON.\nOwner: \"have someone save him\" / \"and tend to him\" / \"hes the KING force that shit\".",
+  "growth-joiner-letter": "LIVE (one scan): a quest letter just arrived.\nLook first: open the letter, read who offers to join and who chases them.\nSequence: game_get_ui_layout -> click Accept for joiners/refugees/wanderers.\nIf pursuers outnumber us (fight_ratio < 1): decline that one, say why.\nDone: the letter is answered (one-shot rung).\nOwner: \"accept neew employees hire them\".",
+  "growth-needs-watch": "LIVE: lowest_mood < 0.35 (35%; the sensor reads 0..1) (minor break threshold).\nLook first: pawn_check that pawn, Needs tab -- which bar is lowest.\nFix that one need: food -> game_set add_bill CookMealSimple {MEAL_BILL_TARGET}; rest -> game_set beds; joy -> recreation (no tool: say it).\nIf the tool refuses: play_slices 3 and re-read mood.\nDone: lowest_mood >= 0.35 (standing order, no mark).\nOwner: \"maintain ur colonists' needs\".\nBelow 0.2: no new orders for that pawn; keep them in Home.\nOwner also: \"maintain and watch your resources\".",
+  "growth-catch-up": "LIVE: blueprints have stayed over {BLUEPRINT_BACKLOG} for 2 game hours -- the crew is behind.\nLook first: ladder (what else is live); order nothing new to build.\nSequence: play_slices 3 -> run_list (maintain every standing order) -> re-read blueprints.\nIf blueprints never fall: materials are short (blueprints-but-no-material) -- feed materials, not orders.\nDone: blueprints <= {BLUEPRINT_BACKLOG}.\nOwner: \"leave it let everyone catch up on tasks before you do more\" ... \"not a one and done\".",
+  "growth-look-at-world": "LIVE: the camp is stable (mark camp_stable) and you never looked at the world.\nSequence: game_open_main_tab World -> look -> note nearest friends and enemies -> back to the colony.\nIf the tab will not open: game_get_ui_layout and click the World button.\nDone: ladder_set mark growth_look_at_world_done true (the latch writes it).\nOwner: \"have you even looked at the world yet?\" / \"capture prisoners and rule the world\".",
+  "recruit-past-three": "LIVE: colonists < {COLONIST_TARGET} -- the empire needs hands.\nLook first: letters (joiner/refugee/pod crash) and humanlikes_not_ours.\nSequence: accept joiner letters; downed raider -> order_pawn Capture -> Warden 1 on best Social -> Recruit.\nIf a letter's pursuers outnumber us (fight_ratio < 1): decline that one only.\nDone: colonists >= {COLONIST_TARGET}; each new pawn then runs setup-9-new-pawn.\nOwner: \"accept neew employees hire them\".\nGate: camp_stable.",
+  "growth-prisoner-keep": "LIVE: a prisoner is held.\nLook first: pawn_check the prisoner (mood, resistance) and find the best Social colonist.\nSequence: set_work_priority Warden 1 on that colonist -> Reduce resistance then Recruit (no tool yet: say it).\nIf prisoner mood < 35%: bed, food, temperature first.\nDone: prisoners = 0 because they joined, or they work contained.\nOwner: \"capture prisoners and rule the world\" / \"get prisoners working keep then contained\".\nRecruited: setup-9-new-pawn sets them up. Standing order, no done-mark. Gate: camp_stable.",
+  "growth-spare-bed": "LIVE: beds < {BEDS_NEEDED} (one per colonist plus a spare).\nSequence: game_set cmd beds -> re-read beds.\nIf beds refuses (no room / no wood): game_set cmd shelter w 4 h 4, then beds again.\nDone: beds >= {BEDS_NEEDED} (standing).\nOwner: \"just have to always set up everything for new pawns\".\nGate: camp_stable.",
+  "growth-healroot-and-cash-crops": "LIVE: camp stable, food fields full (growing_cells >= {FIELD_CELLS_TOTAL}), someone has Plants 8, no healroot grows.\nSequence: game_set cmd crops plant Plant_Healroot (10-20 tiles) -> one cash crop field (Plant_Smokeleaf or Plant_Devilstrand).\nIf crops refuses: game_set set_zone_plant on an existing zone.\nSmokeleaf goes on to joints, not leaves; the sell zone is economy's.\nDone: healroot_plants > 0 (standing, no mark).\nOwner: \"start growing cash cropsa\" / \"start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process\".",
+  "growth-dining-and-rec": "LIVE: base done, no dining/rec room yet.\nSequence: table+chairs, 2 recreation types, floor+lights, Cleaning 2 on low-skill pawns.\nIf furniture cannot be placed (no tool): do what game_set can, say what is missing.\nDone: ladder_set mark growth_dining_and_rec_done true (the latch writes it).\nOwner: \"party room\" / \"maintain ur colonists' needs\".",
+  "growth-ideology-content": "LIVE: base done, leader set, no ideology buildings.\nLook first: alerts for an empty role -> fill it in the Ideoligion tab.\nSequence: roles -> statues/altar -> party room -> landing pads (no build tool: say it).\nIf a build refuses (no build_furniture): say it, finish the roles anyway.\nDone: ladder_set mark growth_ideology_content_done true (the latch writes it).\nOwner: \"who is your leader role that you need to set\" / \"do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads\".",
+  "growth-family": "LIVE: mountain base done, colonists >= {COLONIST_TARGET}, a couple is unmarried (lovers_unmarried).\nLook first: game_set cmd rooms -> is there a private double-bed room (base-and-fortress:double-bed-rooms builds it).\nSequence: game_set cmd set_bed_owner both lovers on the double bed -> proposal (no tool: say it) -> milk, crib, toys, nursery inside the walls before a birth.\nAdults only: nobody under 18 pairs.\nIf refused: raise their mood first, try later.\nDone: lovers_unmarried = 0 (standing, no mark).\nOwner: \"marry have kids, raise them protect them\" / \"duble beds to start families\" / \"kids need milk and cribs and toys\" / \"mix an match need soldier born\".",
+  "growth-upgrade-everyone": "LIVE: production runs and someone has no armor.\nSequence: empire_pass -> armor on each (no tool: say it) -> bionics for missing limbs.\nDone: colonists_without_armor = 0 (standing).\nOwner: \"upgrade them arm them defense items them\".\nIf equip refuses (no equip_apparel): say it on stream, keep arming via empire_pass.\nGate: rung_4_production_done.",
+  "growth-second-colony": "LIVE: the ship has launched (mark launched).\nSequence: reply_owner and ask about the second colony; wait. Only meta:new-colony runs new_colony, on the owner's order.\nFallback: no answer -> keep playing the current colony.\nDone: ladder_set mark growth_second_colony_done true (the latch writes it).\nOwner: \"we are gonna start new colonies with like a whole neew group and supplies / long time from now all the above we stal uss 3\"."
+ },
+ "sensors_needed": [
+  {
+   "key": "prisoners",
+   "status": "TO_BUILD",
+   "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+   "csharp": "st[\"prisoners\"] = (double)home.mapPawns.PrisonersOfColonySpawnedCount;"
+  },
+  {
+   "key": "lovers_unmarried",
+   "status": "TO_BUILD",
+   "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+   "csharp": "int l = home.mapPawns.FreeColonistsSpawned.Count(p => { Pawn q = LovePartnerRelationUtility.ExistingLovePartner(p); return q != null && !p.relations.DirectRelationExists(PawnRelationDefOf.Spouse, q); }); st[\"lovers_unmarried\"] = (double)(l / 2);"
+  },
+  {
+   "key": "colonists_without_armor",
+   "status": "TO_BUILD",
+   "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+   "csharp": "st[\"colonists_without_armor\"] = (double)home.mapPawns.FreeColonistsSpawned.Count(p => p.GetStatValue(StatDefOf.ArmorRating_Sharp) < 0.3f);"
+  },
+  {
+   "key": "best_plants_skill",
+   "status": "TO_BUILD",
+   "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+   "csharp": "var crew = home.mapPawns.FreeColonistsSpawned; if (crew.Count > 0) st[\"best_plants_skill\"] = (double)crew.Max(p => p.skills?.GetSkill(SkillDefOf.Plants).Level ?? 0);"
+  }
+ ],
+ "variables_needed": [
+  {
+   "name": "COLONIST_TARGET",
+   "value": 7,
+   "rule": "walkthrough W Ship: 6-8 colonists by year 1, 10-15 by ship time; 7 until mark_mountain_base_done, then 12 (min 3, max 25)",
+   "gates_py": "tags(): computed['COLONIST_TARGET'] = 7, 12 once mark_mountain_base_done; spec min 3 max 25",
+   "note": "must be added to docs/playbook.gates.json tags.variables, else the {TAG} is unresolved and the rung never fires"
+  },
+  {
+   "name": "BLUEPRINT_BACKLOG",
+   "value": 19,
+   "rule": "10 + 3 per colonist",
+   "gates_py": "tags(): computed['BLUEPRINT_BACKLOG'] = 10 + 3 * n",
+   "note": "must be added to docs/playbook.gates.json tags.variables, else the {TAG} is unresolved and the rung never fires"
+  },
+  {
+   "name": "FIELD_CELLS_TOTAL",
+   "value": 75,
+   "rule": "25 per colonist on normal soil (walkthrough B: 75 tiles for 3)",
+   "gates_py": "tags(): computed['FIELD_CELLS_TOTAL'] = 25 * n",
+   "note": "must be added to docs/playbook.gates.json tags.variables, else the {TAG} is unresolved and the rung never fires"
+  }
+ ],
+ "missing_tools": [
+  "set_self_tend (pawn, on|off)",
+  "set_prisoner_interaction (pawn, reduce_resistance|recruit|enslave|work)",
+  "build_furniture (def, x, z, rot): tables, chairs, recreation, statues, altar, landing pad, crib",
+  "equip_apparel (pawn, def) or an armor outfit policy",
+  "propose_marriage (pawn, partner)"
+ ],
+ "unplaced_rules": [
+  {
+   "quote": "and move the colony name at the top a bit to the left so not blocking characters",
+   "why": "stream overlay CSS (colony-name tab left: 80px), not a game action; no rung can carry it; belongs to the overlay, not the ladder"
+  },
+  {
+   "quote": "work towrds starting up the gate and get in to the back rooms ... build a vault ... embracures near boarders ... u have to pause at the right times (parts of TEST.md:71)",
+   "why": "an excerpt of the full 'come one do stuff..' quote, which is placed VERBATIM in growth-prisoner-keep and growth-healroot-and-cash-crops owner_rules; the gate/vault/embrasure/pause parts are backrooms, economy, base-and-fortress and war rungs"
+  }
+ ],
+ "notes": [
+  "see setup:setup-9-new-pawn (deleted growth-new-pawn-setup; owner quotes it carried, copy VERBATIM into the survivor's owner_rules: \"tell reve its one the list Rev character(ask if any requests when u get to making him, as an extra hand will be helpopfull just have to always set up everything for new pawns\" / \"stop ur fucking up the priorities i told you how to set them\")",
+  "see survival:hospital-setup (deleted growth-hospital; owner quotes it carried, copy VERBATIM into the survivor's owner_rules: \"meds in hospital\" / \"come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations\")",
+  "see survival:hospital-setup (deleted growth-hospital-fallback; owner quotes it carried, copy VERBATIM into the survivor's owner_rules: \"meds in hospital\")",
+  "see base-and-fortress:bedrooms-owned (deleted growth-private-rooms; owner quotes it carried, copy VERBATIM into the survivor's owner_rules: \"keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them\")",
+  "see base-and-fortress:bedrooms-owned (deleted growth-private-rooms-fallback; owner quotes it carried, copy VERBATIM into the survivor's owner_rules: \"keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them\")",
+  "see base-and-fortress:storage-shelves (deleted growth-shelves-everything; owner quotes it carried, copy VERBATIM into the survivor's owner_rules: \"keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them\" / \"come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations\")",
+  "throne rooms and landing pads (TEST.md:94): placed verbatim inside the full 'keep going and wtf..' quote on growth-ideology-content; the throne room itself is royalty's rung",
+  "critic section 6 'start growing cash crops / what can u doi to make the next visitors happier...' placed verbatim on growth-healroot-and-cash-crops; its sell zone is economy's",
+  "critic section 6 'adult couples get private double-bed rooms; milk, cribs and toys before births; raise soldiers (combat traits)': its four stored quotes placed verbatim on growth-family (base-and-fortress:double-bed-rooms owns the room)",
+  "growth-second-colony reads mark_launched (mark_ship_launched retired) and no longer calls new_colony (chain 'new colony': only meta:new-colony may)",
+  "lowest_mood is 0..1 in Sensors.cs (Need_Mood.CurLevel): thresholds rewritten from 35/20 to 0.35/0.2",
+  "mark_camp_defence (set only by deleted camp-wood-wall-*) replaced by progression stage mark mark_camp_stable"
+ ]
+}

@@ -1,0 +1,316 @@
+{
+ "family": "space",
+ "rungs": [
+  {
+   "id": "rung-6-off-world",
+   "priority": 41.0,
+   "family": "space",
+   "latch": true,
+   "when": {
+    "mark_empire_ready": true,
+    "mark_space_program_open": false
+   },
+   "then": [
+    "ladder_set mark space_program_open true (opens the space rungs; nothing here starts before economy:econ-checklist sets empire_ready)",
+    "speak: tell chat the empire is now going for the stars (clean)"
+   ],
+   "never": [
+    "chase any space rung while anything below it is unfinished"
+   ],
+   "why": "owner: \"dominate the universe with a space ewarfare and planet domination\" / \"update the viewers they are your # one perform for them and entertain! make a empire space flying galactic civ\" / \"as you colony grows you want it to grow be greedy you empire is the goal you need stockpiles of everything you want supplies of everything where is you vault? you want armies defences turrets all of it\" (stockpiles + vault: economy:vault; armies/defences/turrets before launch: endgame:endgame-launch-defence)",
+   "owner_rules": [
+    "\"dominate the universe with a space ewarfare and planet domination\"",
+    "\"update the viewers they are your # one perform for them and entertain! make a empire space flying galactic civ\"",
+    "\"as you colony grows you want it to grow be greedy you empire is the goal you need stockpiles of everything you want supplies of everything where is you vault? you want armies defences turrets all of it\""
+   ]
+  },
+  {
+   "id": "space-microelectronics",
+   "priority": 41.1,
+   "family": "space",
+   "latch": false,
+   "when": {
+    "mark_space_program_open": true,
+    "research_microelectronicsbasics": false
+   },
+   "then": [
+    "if research_current already shows MicroelectronicsBasics: do nothing this scan",
+    "MISSING TOOL research_queue: queue MicroelectronicsBasics (fallback: game_open_main_tab Research, game_take_screenshot, game_click_ui_target the project)",
+    "pawn_priorities: best Intellectual pawn Research=1"
+   ],
+   "why": "owner: \"you have to research microelelectronics to get trade beacons otherwise you have to wait for someone to show up to base\" (not latched: the rung goes dark when research_microelectronicsbasics turns true, so a refused queue click is retried)",
+   "owner_rules": [
+    "\"you have to research microelelectronics to get trade beacons otherwise you have to wait for someone to show up to base\""
+   ]
+  },
+  {
+   "id": "space-trade-beacon",
+   "priority": 41.2,
+   "family": "space",
+   "latch": false,
+   "when": {
+    "mark_camp_stable": true,
+    "research_microelectronicsbasics": true,
+    "comms_console": true,
+    "has_power": true,
+    "count_orbitaltradebeacon": "<{BEACONS_TARGET}"
+   },
+   "then": [
+    "game_list_zones + game_set cmd rooms: list every stockpile/shelf room",
+    "game_select_architect_designator OrbitalTradeBeacon; game_apply_architect_designator INSIDE each storage room (a beacon reaches only its own room)",
+    "when every storage room holds a powered beacon: ladder_set mark trade_beacons_cover true"
+   ],
+   "never": [
+    "lay a stockpile in a corridor for a beacon's sake",
+    "store plant matter in a hallway -- it goes to the freezer shelves"
+   ],
+   "why": "owner: \"and u need to make sure all storage zones and shelfes and items are withing a orbital trade beacon u might need to move/add some\" / \"and wtf why are you storing plant materials resources in the fucking hallway that needs to be in freezer\" / \"You need a powered orbital trade beacon to trade with a ship.\" -- PLAYSCRIPT.md:389 (reads camp_stable, not space_program_open: economy:trade-run needs beacons long before the empire stage)",
+   "owner_rules": [
+    "\"and u need to make sure all storage zones and shelfes and items are withing a orbital trade beacon u might need to move/add some\"",
+    "\"and wtf why are you storing plant materials resources in the fucking hallway that needs to be in freezer\""
+   ]
+  },
+  {
+   "id": "space-ally-gifts",
+   "priority": 41.3,
+   "family": "space",
+   "latch": false,
+   "when": {
+    "mark_space_program_open": true,
+    "pod_launchers": ">=1",
+    "transport_pods": ">=1",
+    "silver": ">=1000",
+    "mark_gift_sent": false
+   },
+   "then": [
+    "MISSING TOOL pod_load_and_launch; fallback: game_execute_gizmo 'Load' on the pod, add silver, then 'Launch' to a friendly settlement tile, gift option",
+    "after the pod is away: ladder_set mark gift_sent true"
+   ],
+   "why": "owner: \"be greedy u want welath and power while making all factions you can your allies by send gifts with drop pods\" (space-ally-gifts-cooldown clears gift_sent after 15 days)",
+   "owner_rules": [
+    "\"be greedy u want welath and power while making all factions you can your allies by send gifts with drop pods\""
+   ]
+  },
+  {
+   "id": "space-ally-gifts-cooldown",
+   "priority": 41.35,
+   "family": "space",
+   "latch": false,
+   "when": {
+    "t_gift": {
+     "ton": {
+      "mark_gift_sent": true
+     },
+     "hours": 360
+    }
+   },
+   "then": [
+    "ladder_set mark gift_sent false (15 days passed: the next gift may go)"
+   ],
+   "why": "owner: \"be greedy u want welath and power while making all factions you can your allies by send gifts with drop pods\" -- cooldown half of space-ally-gifts (a ton on a mark that stays true never re-arms by itself)",
+   "owner_rules": [
+    "\"be greedy u want welath and power while making all factions you can your allies by send gifts with drop pods\""
+   ]
+  },
+  {
+   "id": "grav-core",
+   "priority": 41.5,
+   "family": "space",
+   "latch": false,
+   "when": {
+    "mark_space_program_open": true,
+    "quest_letter": true,
+    "mark_gravcore_found": false
+   },
+   "then": [
+    "game_list_letters; game_open_letter quests that reward the grav engine / gravcore; accept",
+    "when the gravcore is on the map: ladder_set mark gravcore_found true"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" (not latched: the receipt step must be re-checked on later scans)",
+   "note": "UNVERIFIED: Odyssey quest wording and gravcore name",
+   "owner_rules": [
+    "\"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\""
+   ]
+  },
+  {
+   "id": "grav-build",
+   "priority": 41.6,
+   "family": "space",
+   "latch": false,
+   "when": {
+    "mark_space_program_open": true,
+    "mark_gravcore_found": true,
+    "grav_parts": "<{GRAV_PARTS_TARGET}"
+   },
+   "then": [
+    "game_list_architect_designators Odyssey category (never guess)",
+    "lay substructure; engine, thrusters, fuel storage, pilot console",
+    "move barracks, freezer, workshop and turrets onto it"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: every gravship defName (grav_parts = defName contains 'Grav')",
+   "owner_rules": [
+    "\"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\""
+   ]
+  },
+  {
+   "id": "grav-ready",
+   "priority": 41.7,
+   "family": "space",
+   "latch": false,
+   "when": {
+    "mark_gravcore_found": true,
+    "grav_parts": ">={GRAV_PARTS_TARGET}",
+    "mark_gravship_ready": false
+   },
+   "then": [
+    "fill fuel",
+    "check the launch prerequisites on the console (game_list_selected_gizmos)",
+    "when the console lists no missing prerequisite: ladder_set mark gravship_ready true"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" (gravship_ready is read by endgame:empire-dominion -> ending_gravship)",
+   "note": "UNVERIFIED: fuel type, amounts, cooldown",
+   "owner_rules": [
+    "\"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\""
+   ]
+  },
+  {
+   "id": "megaship-drop",
+   "priority": 41.8,
+   "family": "space",
+   "latch": true,
+   "when": {
+    "mark_gravship_ready": true,
+    "mark_war_target_set": true
+   },
+   "then": [
+    "fly the ship near the target tile",
+    "launch the pod assault from the ship's own launchers",
+    "cavalry follows by caravan if the terrain allows"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner: \"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?\" (war_target_set is set by war and endgame:endgame-gravship-voyage)",
+   "owner_rules": [
+    "\"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+    "\"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?\""
+   ]
+  },
+  {
+   "id": "space-ask-chat",
+   "priority": 42.0,
+   "family": "space",
+   "latch": false,
+   "when": {
+    "mark_space_program_open": true,
+    "mark_space_chat_asked": false
+   },
+   "then": [
+    "twitch_chat: ask chat which space move is next (clean)",
+    "ladder_set mark space_chat_asked true",
+    "no answer within a game hour: keep climbing the space rungs"
+   ],
+   "why": "owner: \"if they done answer just keep toward your goals of empire world domination and space warfare\"",
+   "owner_rules": [
+    "\"if they done answer just keep toward your goals of empire world domination and space warfare\""
+   ]
+  },
+  {
+   "id": "space-ask-chat-cooldown",
+   "priority": 42.05,
+   "family": "space",
+   "latch": false,
+   "when": {
+    "t_ask": {
+     "ton": {
+      "mark_space_chat_asked": true
+     },
+     "hours": 24
+    }
+   },
+   "then": [
+    "ladder_set mark space_chat_asked false (a day passed: ask again)"
+   ],
+   "why": "owner: \"if they done answer just keep toward your goals of empire world domination and space warfare\" -- cooldown half of space-ask-chat",
+   "owner_rules": [
+    "\"if they done answer just keep toward your goals of empire world domination and space warfare\""
+   ]
+  }
+ ],
+ "prompts": {
+  "rung-6-off-world": "Look first: mark empire_ready is true (economy:econ-checklist).\nDo: ladder_set mark space_program_open true, then speak one clean line to chat.\nFallback: speak refused -> still set the mark; the chat line is optional.\nDone: mark space_program_open true; latch rung_6_off_world_done.\nOwner: \"dominate the universe with a space ewarfare and planet domination\".\nOwner: \"be greedy you empire is the goal\" ... \"you want armies defences turrets all of it\".",
+  "space-microelectronics": "Look first: research_current, research_microelectronicsbasics.\nIf MicroelectronicsBasics is already the current project: nothing to do.\nDo: queue MicroelectronicsBasics (Research tab, game_take_screenshot, game_click_ui_target it); pawn_priorities best brain Research=1.\nRefused / no bench: hand back to production; the rung retries next scan.\nDone: research_microelectronicsbasics true (the rung goes dark).\nOwner: \"you have to research microelelectronics to get trade beacons\".",
+  "space-trade-beacon": "Look first: game_list_zones -- every storage room.\nDo: game_select_architect_designator OrbitalTradeBeacon, apply one INSIDE each storage room (range = its own room).\nRefused: check has_power, steel, components; screenshot, move one cell, retry.\nNever: corridor stockpiles; plant matter goes to the freezer.\nDone: every storage room has a powered beacon -> ladder_set mark trade_beacons_cover true.\nOwner: \"all storage zones and shelfes and items are withing a orbital trade beacon\".",
+  "space-ally-gifts": "Look first: transport_pods, pod_launchers, silver >= 1000.\nDo: load a pod with silver, launch it at a friendly settlement as a gift (gizmos Load, then Launch).\nRefused (no fuel / no friendly tile): skip; the rung fires again next scan.\nDone: ladder_set mark gift_sent true (cooldown rung clears it in 15 days).\nOwner: \"making all factions you can your allies by send gifts with drop pods\".",
+  "space-ally-gifts-cooldown": "Timer only: gift_sent has held 15 days.\nDo: ladder_set mark gift_sent false.\nFallback: none needed.\nDone: gift_sent false -> space-ally-gifts may fire.\nOwner: \"send gifts with drop pods\".",
+  "grav-core": "Look first: game_list_letters for quests rewarding a grav engine / gravcore.\nDo: game_open_letter, accept.\nFallback: no such quest -> nothing; the rung waits on quest_letter.\nDone: gravcore on the map -> ladder_set mark gravcore_found true.\nOwner: \"drop poding down from your megaship to a tribal village\".",
+  "grav-build": "Look first: game_list_architect_designators Odyssey category (never guess names).\nDo: substructure, engine, thrusters, fuel storage, pilot console; move barracks/freezer/workshop/turrets on.\nRefused placement: game_take_screenshot, move one cell, retry.\nDone: grav_parts >= GRAV_PARTS_TARGET (the rung goes dark).\nOwner: \"an empire space domination run\".",
+  "grav-ready": "Look first: grav_parts at target, fuel level.\nDo: fill fuel, select the pilot console, game_list_selected_gizmos for launch prerequisites.\nMissing prerequisite: build or fuel it, check again.\nDone: no prerequisite missing -> ladder_set mark gravship_ready true.\nOwner: \"drop poding down from your megaship\".",
+  "megaship-drop": "Look first: mark war_target_set, mark gravship_ready.\nDo: fly near the target tile, pod assault from the ship's launchers, cavalry by caravan.\nTile pick refused / no tool: reply_owner and wait.\nDone: latch megaship_drop_done.\nOwner: \"capture prisoners and rule the world. have you even looked at the world yet?\"",
+  "space-ask-chat": "Do: twitch_chat, ask (clean) which space move is next.\nThen: ladder_set mark space_chat_asked true.\nNo answer within a game hour: keep climbing.\nDone: space_chat_asked true (cooldown clears it after a day).\nOwner: \"if they done answer just keep toward your goals of empire world domination and space warfare\".",
+  "space-ask-chat-cooldown": "Timer only: space_chat_asked has held 24 hours.\nDo: ladder_set mark space_chat_asked false.\nFallback: none needed.\nDone: space-ask-chat may ask again.\nOwner: \"if they done answer just keep toward your goals\"."
+ },
+ "sensors_needed": [
+  {
+   "key": "count_orbitaltradebeacon",
+   "how to measure in C# (RimWorld API)": "EXISTS: generic count_<defName lower> (OrbitalTradeBeacon); no TO_BUILD sensor needed by this family"
+  }
+ ],
+ "variables_needed": [
+  {
+   "name": "BEACONS_TARGET",
+   "value": 2,
+   "rule": "one per storage room (freezer + main store); raise as rooms are added -- NEW tag, add to playbook tags.variables"
+  },
+  {
+   "name": "GRAV_PARTS_TARGET",
+   "value": 12,
+   "rule": "existing tag in playbook, UNVERIFIED"
+  }
+ ],
+ "missing_tools": [
+  "research_queue (set the current research project by defName)",
+  "pod_load_and_launch (load a transport pod with listed things and launch it to a tile as a gift)",
+  "beacons (game_set cmd: one powered orbital trade beacon inside every storage room)"
+ ],
+ "unplaced_rules": [
+  {
+   "quote": "\"Tried to get a resource ... from a different thread\" -- build/stage only with the game closed",
+   "justified": "tooling rule (build/stage process), not a ladder rung; host build tooling"
+  },
+  {
+   "quote": "\"ther is no pollinations you need to fix it up with the 3d models default image gen\"",
+   "justified": "stream image tooling, outside the game ladder"
+  },
+  {
+   "quote": "\"and take live wenbcam off your rimchat and put AI representation\" / \"or better just reporesentation\"",
+   "justified": "overlay label, outside the game ladder"
+  },
+  {
+   "quote": "\"somthing is up! we arent hearing you on twitch how you gonna pipe your voice in\"",
+   "justified": "voice pipe tooling, outside the game ladder"
+  },
+  {
+   "quote": "\"your freezer has holes in the walls!! u never added enough ac units for such a big space / are you writing this all down and maintinaing it\"",
+   "justified": "freezer/cooling belongs to base-and-fortress; misfiled as space"
+  },
+  {
+   "quote": "\"need to get ur benches insie with wall lights use wall light this time they dont take up floor space just be weirry they aree actual infront of the wall to select / minimum 2 lights per room for full brightness\"",
+   "justified": "lighting belongs to base-and-fortress; misfiled as space"
+  }
+ ],
+ "notes": [
+  "see research:research-ship-tree (was space-ship-research)",
+  "see endgame:endgame-persona-core (was space-persona-core)",
+  "see endgame:endgame-ship-materials (was space-ship-materials)",
+  "see endgame:endgame-launch-defence (was space-prelaunch-defence)",
+  "see endgame:endgame-ship-build (was ship-launch)",
+  "see endgame:endgame-reactor-start (was space-reactor-start)",
+  "see endgame:endgame-reactor-hold (was space-reactor-hold)",
+  "see endgame:endgame-launch (was space-launch-load)",
+  "see economy:trade-run (was space-trade-comms and space-trade-comms-fallback)",
+  "Quotes to move VERBATIM into survivors in other families: economy:trade-run <- \"you haver t o use comms console to call trade hub to trade or call a ship to land or trade with trades via pawns dirrectly when they show up\" / \"u want to use call a trader to land\" / \"not orbital trader that one sucks\" / \"u have to select the the drop down\" / \"once u call them select them on the comms again\" / \"farming trader.. comeon always trade and look to make silver and money and get things you need\" / \"might have to buy from trader marble blocks\"; endgame:endgame-ship-build / endgame-ship-materials / endgame-launch <- \"dominate the universe with a space ewarfare and planet domination\"; endgame:endgame-launch-defence <- \"you want armies defences turrets all of it\"",
+  "rung-6-off-world reads mark_empire_ready (decisions progression), not mark_mountain_base_done.",
+  "Retired here: research_ship_basics, persona_core_held, ship_defence_ready, ship_launched, ship_site, microelectronics_done (no reader), traded_recently, trade_call_failed, reactor_started.",
+  "Marks set here: space_program_open, trade_beacons_cover, gift_sent, gravcore_found, gravship_ready (read by endgame:empire-dominion), space_chat_asked, latches rung_6_off_world_done, megaship_drop_done. Read from other families: empire_ready (economy:econ-checklist), camp_stable (setup:setup-8-camp-stable), war_target_set (war / endgame:endgame-gravship-voyage).",
+  "No ctu counters remain in this family; cooldowns are ton-reset rung pairs."
+ ]
+}

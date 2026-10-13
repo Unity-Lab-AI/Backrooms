@@ -609,6 +609,13 @@ class Toolbox:
         except (OSError, ValueError):
             pass
         text, _src = self._gates().ladder_result(call=self._rimplc_call())
+        try:   # the live top rung's meta prompt rides along (rung-prompts.json)
+            rp = json.load(open(os.path.join(HERE, "rung-prompts.json"), encoding="utf-8"))
+            top = next((i for i in re.findall(r'"id":\s*"([^"]+)"', text) if i in rp), None)
+            if top:
+                text += chr(10) + chr(10) + "HOW TO DO [%s] NOW:" % top + chr(10) + rp[top]
+        except (OSError, ValueError):
+            pass
         return text
 
     def _book(self):

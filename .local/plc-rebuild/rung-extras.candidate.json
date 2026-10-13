@@ -1,0 +1,1293 @@
+{
+ "animals-hunt-food": {
+  "owner_rules": [
+   "cook bill maintained at 50 rather than 10",
+   "how u plan on cutting up them animals?",
+   "you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!"
+  ]
+ },
+ "animals-hunt-fallback": {
+  "owner_rules": [
+   "IS AUTO HARVETS NOT WORKING? CROPS NEED HARVET",
+   "collecting resources planting crops and setting bills for food",
+   "you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!"
+  ]
+ },
+ "animals-danger-clear": {
+  "owner_rules": [
+   "remmebr always field tnde directly brefopre cpature and haul",
+   "set everyone to attack not flee and group up when something attacks and draft and flee attack never letting someone melle person or animal get close to your pawns kill them with range at all costs"
+  ]
+ },
+ "animals-food-steady": {
+  "owner_rules": [
+   "let your people get good on food and set up camp before moving into the base like u said itll tak a while"
+  ]
+ },
+ "animals-handler": {
+  "owner_rules": [
+   "you havent set up your work tab manual priorities, everything from firefighting to cooking should be hieghest 1s and you only put 2s on the teask u want each colonist doing spliting theri work up so u have like on guy cutting and planting and one crafting and constructing and one hunting and everyhting else"
+  ]
+ },
+ "tame-mounts": {
+  "owner_rules": [
+   "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving"
+  ]
+ },
+ "animal-pen": {
+  "owner_rules": [
+   "dont put roof over you pen",
+   "have to trade, make a corral for cows and such, buy cows, get a silver supply like cash",
+   "need milk right look for milk makers tame some build a fences in field to put them"
+  ]
+ },
+ "animals-pen-soil": {
+  "owner_rules": [
+   "dont forget terriforming for soil plots",
+   "fix ur tower and walls and fenses and put soil under ur famrs and feilds and animal areas so they have grass grow",
+   "terriform u pen"
+  ]
+ },
+ "animals-milk-herd": {
+  "owner_rules": [
+   "have to trade, make a corral for cows and such, buy cows, get a silver supply like cash",
+   "kids need milk and cribs and toys",
+   "need milk right look for milk makers tame some build a fences in field to put them"
+  ]
+ },
+ "animals-haygrass": {
+  "owner_rules": [
+   "fix ur tower and walls and fenses and put soil under ur famrs and feilds and animal areas so they have grass grow"
+  ]
+ },
+ "animals-kibble": {
+  "owner_rules": [
+   "set amounts higher and higher as your base grows"
+  ]
+ },
+ "train-mounts": {
+  "owner_rules": [
+   "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving"
+  ]
+ },
+ "armor-mounts": {
+  "owner_rules": [
+   "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving"
+  ]
+ },
+ "animals-autumn-cull": {
+  "owner_rules": []
+ },
+ "cavalry-check": {
+  "owner_rules": [
+   "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving"
+  ]
+ },
+ "cavalry-tactics": {
+  "owner_rules": [
+   "set everyone to attack not flee and group up when something attacks and draft and flee attack never letting someone melle person or animal get close to your pawns kill them with range at all costs",
+   "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving"
+  ]
+ },
+ "prisoner-bed-before-fight": {
+  "owner_rules": [],
+  "done_mark": "prisoner_bed_before_fight_done"
+ },
+ "mine-before-wall": {
+  "owner_rules": []
+ },
+ "perimeter-hole": {
+  "owner_rules": [
+   "no u need to fix the whole wall"
+  ]
+ },
+ "terraform-water-first": {
+  "owner_rules": [
+   "dont forget terriforming for soil plots"
+  ],
+  "done_mark": "terraform_water_first_done"
+ },
+ "defense-0-reset-embrasures": {
+  "owner_rules": []
+ },
+ "defense-0-reset-turrets": {
+  "owner_rules": []
+ },
+ "defense-0-reset-damage": {
+  "owner_rules": []
+ },
+ "defense-1-secure": {
+  "owner_rules": []
+ },
+ "defense-2-embrasures": {
+  "owner_rules": []
+ },
+ "defense-3-turrets": {
+  "owner_rules": []
+ },
+ "rung-2-power-and-cold": {
+  "owner_rules": [
+   "generators need to be out side",
+   "and make sure you zone shit in right like roofs so courtyards are unroofed and generators need to be out side",
+   "u never did your generators youd place them then jsut cancle their palcement",
+   "set up generators still not done",
+   "come on organize your generator like batteries are fucker,,, not all over the place no ryme or reason.. and u need better power not 10000 wood gens",
+   "u got panels out side the security zone",
+   "and you need to move thos wood generators out of middle of base room can be better used putting them in a real generator area",
+   "Title: The Galaxy"
+  ],
+  "merged_from": [
+   "ideology-biotech-anomaly:power-generators-outside",
+   "royalty:generators-out"
+  ]
+ },
+ "power-generators-fallback": {
+  "owner_rules": [
+   "u never did your generators youd place them then jsut cancle their palcement"
+  ],
+  "merged_from": [
+   "ideology-biotech-anomaly:power-generators-fallback"
+  ],
+  "done_mark": "power_generators_fallback_done"
+ },
+ "fortress-ring": {
+  "owner_rules": []
+ },
+ "stone-blocks-bench": {
+  "owner_rules": [],
+  "done_mark": "stone_blocks_bench_done"
+ },
+ "rung-3-defence": {
+  "owner_rules": [],
+  "done_mark": "rung_3_defence_done"
+ },
+ "firebreak-ring": {
+  "owner_rules": [
+   "make it of wood just exterior make 3wide terrriom stone smooth marble for fire break"
+  ],
+  "merged_from": [
+   "survival:firebreak"
+  ],
+  "done_mark": "firebreak_ring_done"
+ },
+ "killbox-funnel": {
+  "owner_rules": [],
+  "done_mark": "killbox_funnel_done"
+ },
+ "turret-line": {
+  "owner_rules": []
+ },
+ "power-every-consumer": {
+  "owner_rules": [
+   "you have shit all over your base that doesnt have power",
+   "8138 W (8400 Wd stored)",
+   "and u need to power the things in your base without power always by conduit builds connecting near by",
+   "you got shit without power need conduit, ive told you this already!!!!",
+   "you still have holes in you embrasures and wires that arent connected just not connected string of conduit"
+  ],
+  "merged_from": [
+   "survival:power-every-consumer",
+   "ideology-biotech-anomaly:power-grid-standing"
+  ]
+ },
+ "power-generation-margin": {
+  "owner_rules": []
+ },
+ "power-alternate": {
+  "moved_from": "ideology-biotech-anomaly:power-alternate",
+  "owner_rules": [
+   "your gonna need some alternate power"
+  ]
+ },
+ "battery-room": {
+  "owner_rules": [
+   "the battery braw needs to be consistant not tied to a single battery",
+   "battery room need redesign and path to all batteryies",
+   "and ur gonna need LOTS OF BATTERIES!",
+   "might want to design a power facility generators outside batteries in reactors later"
+  ],
+  "merged_from": [
+   "ideology-biotech-anomaly:power-batteries"
+  ],
+  "done_mark": "battery_room_done"
+ },
+ "coolers-and-vents": {
+  "owner_rules": [
+   "you still need to figure out storages and frideges you keep forgetting to go back and finish things u need power and ac units and shit just like the last paly through",
+   "fix ur storage ur about to starve",
+   "u need to move those two cooler on the morgue freezer to east side of that narro room so they ppush outside correctly"
+  ],
+  "merged_from": [
+   "ideology-biotech-anomaly:power-ac-fridge"
+  ]
+ },
+ "electric-lights": {
+  "owner_rules": []
+ },
+ "storage-shelves": {
+  "owner_rules": [
+   "ur dry storage needs more shleves",
+   "add another shelfe N side of existing ones directly",
+   "and missing ones",
+   "ur dry storage needs more shleves / add another shelfe N side of existing ones directly / and missing ones",
+   "shes mentioned storage like 10 times and hasnt placed a storage yet, are you seeing this,, this is the shit you are to be monitoring for",
+   "u can set one and use copy button to paste it to other shelves with paste",
+   "full base storage logic rewaork and maintain",
+   "use proper prioritys normal on all places like stockpiles and warhouses and use higher teirs to pull to resource nodes around base  come on ur not silly dont just critical everything use logic chains",
+   "use proper prioritys normal on all places like stockpiles and warhouses and use higher teirs to pull to resource nodes around base come on ur not silly dont just critical everything use logic chains",
+   "keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them",
+   "come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations"
+  ],
+  "merged_from": [
+   "growth:growth-shelves-everything"
+  ]
+ },
+ "dining-room": {
+  "owner_rules": [],
+  "done_mark": "dining_room_done"
+ },
+ "mountain-base-plan": {
+  "owner_rules": [
+   "you can plan your base out into the mountain in that moutain cut out that surounded on 3 sides",
+   "main room ienter is the throne room centered on spine labs and tech stuff deepeer in with insta right and left halls to prison and guests seperate",
+   "then teriform the rocks to make all planting areas in the cutout mountin ears that aready exists to the se",
+   "okay lets dosomething else new game just a crashlanded scenrio and plan out a massive base with planning tool and refine it as you go building bedrooms, throne rooms, altar rooms, bedrooms for kigs and royals, facilites, hospiotals, prisons, recreation rooms, guest questers and stores and areas, and prisons and vaults with high value goods, and get to use questional ethics mod and start cloning yourself",
+   "and you need to move thos wood generators out of middle of base room can be better used putting them in a real generator area",
+   "disection rooms behind securety emprasure halls",
+   "you might want to at sum point long later plan on moving the natural gate to a labratory where u plan to build the gate faciltiy all secure and ur base secure, you might want to plan on putting you bas inside that natural cut out and not let your base have more that a single door into the mountain never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spinein going through the gut south into the main moutian",
+   "NE i mean",
+   "and that generator corrador need to run up to main gate entrance all centered on throne",
+   "City gate to throne",
+   "you can uninstall and reinstall monlith somnewhere if its in you way",
+   "and put them from the wall out not wall in and embrasure on all sides"
+  ],
+  "merged_from": [
+   "royalty:throne-base-plan",
+   "backrooms:br-base-layout"
+  ],
+  "done_mark": "mountain_base_plan_done"
+ },
+ "rung-5-the-mountain-base": {
+  "owner_rules": [
+   "your gonna have to mine alot nothing is exposed struture out side the mountina walls and plan for the intoer rooms wall too so 2x mountain space along all inrteror warooms / on exterior maountain walls bunped up to rooms / need 2 so u have rrom for you room wall with out breaking the exposed mountain",
+   "on exterior maountain walls bunped up to rooms",
+   "need 2 so u have rrom for you room wall with out breaking the exposed mountain"
+  ]
+ },
+ "bedrooms-owned": {
+  "owner_rules": [
+   "keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them"
+  ],
+  "merged_from": [
+   "growth:growth-private-rooms",
+   "growth:growth-private-rooms-fallback"
+  ]
+ },
+ "finish-before-new": {
+  "owner_rules": [
+   "something is wrong u are clicking a million times in a row and it looked weird on steeam",
+   "something is wrong u are clicking a million times in a row and it looked weird on steeam / sounds spammy, warn viewers for shit before like that",
+   "talk come on NEVER FUCKING IGNORE CHAT TELL THEM IF U HAVE TO PROCESS SOMETHING GIVE TO BARE WITH YOU",
+   "upgrade build shit you need"
+  ]
+ },
+ "walls-halls-roofs": {
+  "owner_rules": [
+   "your base sucks you are a shitty achitect",
+   "you build it as you play i mena shit make some goals not some indefencable narrow halled peice of shit",
+   "you have to continue halls and shit u cnat just attach rooms to a fucking straightr other room u need appropriate pathing",
+   "dont forget cros paths dont want mile long corridors and need vents and lights and furnature for beds",
+   "dont make single widthc halways quickly redo that",
+   "and archetecture archetuecture look shit up if u need to u can move walss and shit anywehere to fill holes and fix building layout to anything at all you can completely redo it to make it your dream hive for your peoples",
+   "come on archeteture archeteture fix your archetecture completely door in correct place no blocked pathing walls complete embrasure fixed and powered , nothing without power need one power gen place not spead all over and not not organized",
+   "and you need make a straight wall north of edge wall of the alter room",
+   "u got double doors side ways one path thinck",
+   "comew on your base sucks think industrial facility designer and archetect, get shit finished up"
+  ]
+ },
+ "flooring-by-purpose": {
+  "owner_rules": []
+ },
+ "prison-wing": {
+  "owner_rules": [
+   "nmake that sotrage room a prison hold toss in a spot and put the storage where the table and chairs are might have to move benches, compelte evertthing ive sdaid"
+  ],
+  "done_mark": "prison_wing_done"
+ },
+ "double-bed-rooms": {
+  "owner_rules": [
+   "cant have kids until u build privet rooms with double beds and set them to sleep there. can swap em in and out till all, one guy can knock up[ many",
+   "kids need milk and cribs and toys",
+   "duble beds to start families",
+   "mix an match need soldier born",
+   "cant have kids until u privet rooms with double beds, one guy can knock up[ many / read now.md to continue : cant have kids until u build privet rooms with double beds and set them to sleep there. can swap em in and out till all, one guy can knock up[ many",
+   "king get cnew concumbines each night free love check ideology",
+   "cancle that contruction"
+  ],
+  "merged_from": [
+   "ideology-biotech-anomaly:bio-family-rooms"
+  ],
+  "done_mark": "double_bed_rooms_done"
+ },
+ "infestation-walloff": {
+  "owner_rules": [],
+  "done_mark": "infestation_walloff_done"
+ },
+ "furniture-tight-and-uniform": {
+  "owner_rules": [
+   "you need to put horse shoes up against wide wall so action area isnt clicked need at minimum one action area unblocked"
+  ]
+ },
+ "econ-trader-arrived": {
+  "owner_rules": [
+   "dont ignore you messages / are you reading pop up messages a good tradeer just arrived wtf !!! use the comms console / ive alkready told yuou already read messages always instantly!!!!! your under attrack!!!!",
+   "farming trader.. comeon always trade and look to make silver and money and get things you need",
+   "someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need",
+   "might have to buy from trader marble blocks",
+   "have to trade, make a corral for cows and such, buy cows, get a silver supply like cash",
+   "you need to read message and pop up s shit its like im having to teach you how to play all over again wtf happened to everything ive taught you"
+  ]
+ },
+ "econ-dump-zone": {
+  "owner_rules": [
+   "get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion",
+   "and dont out set builds beyound your material supply, got to gain meore any means available",
+   "get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion / and remember you dont want visitors walking through you labratory you want them in the zone gor guestss and shops with in your protected base"
+  ]
+ },
+ "econ-corpses-standing": {
+  "owner_rules": [
+   "get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion"
+  ]
+ },
+ "econ-stray-blueprint": {
+  "owner_rules": [
+   "and why is there a bed in the middle of the river delete that and remove bridge in sturcture",
+   "and dont out set builds beyound your material supply, got to gain meore any means available"
+  ]
+ },
+ "rung-4-production": {
+  "owner_rules": [
+   "lots to sell and production",
+   "set amounts higher and higher as your base grows",
+   "what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process",
+   "all of the crops grow them all and make products from them for guests",
+   "and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on",
+   "start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process"
+  ]
+ },
+ "econ-wood-winter": {
+  "owner_rules": [
+   "and dont out set builds beyound your material supply, got to gain meore any means available"
+  ]
+ },
+ "econ-wood-reset": {
+  "owner_rules": [
+   "and dont out set builds beyound your material supply, got to gain meore any means available"
+  ]
+ },
+ "crops-full-set": {
+  "owner_rules": [
+   "need berrys potatos corn and healroot minimum plus cotton smoke leaf psycoid and hops so lots to sell and production",
+   "need psycoid and hops too, you dont need two crops of smokeleaf",
+   "fidure it our ur not sleecting crops right",
+   "all of the crops grow them all and make products from them for guests",
+   "start growing cash cropsa",
+   "you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need",
+   "not limited to three obviously",
+   "items as u unlock",
+   "you still havent started growing cash crops and you still havent figured out you freezer storage as ive already told you how , you have shelfs outside the freezer set to hold freezer goods and good in the freezer not ment to be frozen, i already told you how to set up the shelves and zones, do it",
+   "start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process"
+  ]
+ },
+ "econ-crops-fallback": {
+  "owner_rules": [
+   "fidure it our ur not sleecting crops right"
+  ]
+ },
+ "stockpiles-sized": {
+  "owner_rules": [
+   "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving",
+   "what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?",
+   "get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion",
+   "get your shellves organized so like i already told you"
+  ]
+ },
+ "comms": {
+  "owner_rules": [
+   "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving",
+   "dont ignore you messages / are you reading pop up messages a good tradeer just arrived wtf !!! use the comms console / ive alkready told yuou already read messages always instantly!!!!! your under attrack!!!!",
+   "you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need"
+  ]
+ },
+ "supply-food-0-reset": {
+  "owner_rules": [
+   "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+  ]
+ },
+ "supply-food-1-low": {
+  "owner_rules": [
+   "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+  ]
+ },
+ "supply-steel-0-reset": {
+  "owner_rules": [
+   "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+  ]
+ },
+ "supply-steel-1-buy": {
+  "owner_rules": [
+   "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean",
+   "and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on",
+   "better mine steel or order some trade is your go to once u figure it out"
+  ]
+ },
+ "supply-steel-2-mine": {
+  "owner_rules": [
+   "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean",
+   "and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on",
+   "better mine steel or order some trade is your go to once u figure it out"
+  ]
+ },
+ "supply-podfuel-0-reset": {
+  "owner_rules": [
+   "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+  ]
+ },
+ "supply-podfuel-1-low": {
+  "owner_rules": [
+   "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+  ]
+ },
+ "supply-shipfuel-0-reset": {
+  "owner_rules": [
+   "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+  ]
+ },
+ "supply-shipfuel-1-low": {
+  "owner_rules": [
+   "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+  ]
+ },
+ "supply-weapons-0-reset": {
+  "owner_rules": [
+   "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+  ]
+ },
+ "supply-weapons-1-sell": {
+  "owner_rules": [
+   "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean",
+   "you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need"
+  ]
+ },
+ "supply-weapons-2-smelt": {
+  "owner_rules": [
+   "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+  ]
+ },
+ "trade-run": {
+  "owner_rules": [
+   "you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need",
+   "farming trader.. comeon always trade and look to make silver and money and get things you need",
+   "someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need",
+   "might have to buy from trader marble blocks",
+   "not orbital trader that one sucks"
+  ]
+ },
+ "econ-trade-reset": {
+  "owner_rules": [
+   "you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need"
+  ]
+ },
+ "econ-silver-company": {
+  "owner_rules": [
+   "and order some silver from the company",
+   "get a silver supply like cash",
+   "start buisnesss / make company money from quests / do quests and missions increase ur cash / get a silver supply like cash"
+  ]
+ },
+ "econ-quests-cash": {
+  "owner_rules": [
+   "start buisnesss / make company money from quests / do quests and missions increase ur cash / get a silver supply like cash",
+   "and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on",
+   "Order … to collect the record book",
+   "Operator station lost",
+   "Emergency-return window expired",
+   "anser them most are shit never pay them",
+   "make sure pops ups dont monkey wrentch everything / anser them most are shit never pay them / yes that one was to accept visitor if u refussed that pop up non will arrive until u set it in hospitality tab / you need to read message and pop up s shit its like im having to teach you how to play all over again wtf happened to everything ive taught you"
+  ]
+ },
+ "components-low": {
+  "owner_rules": [
+   "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving",
+   "what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?"
+  ]
+ },
+ "econ-marble": {
+  "owner_rules": [
+   "might have to buy from trader marble blocks"
+  ]
+ },
+ "econ-components-reset": {
+  "owner_rules": [
+   "maintain everything in totality ive evr told you"
+  ]
+ },
+ "vault": {
+  "owner_rules": [
+   "build a vault ... cash silver gold high valuable gemms irvory in vaults",
+   "come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations",
+   "you need to set bed prices and make facilities for guests and use locks so they dont wonder into your vaults only wher u sell stuff and buetify thir rooms and not barracks style rooms"
+  ]
+ },
+ "econ-wealth-junk": {
+  "owner_rules": [
+   "you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need"
+  ]
+ },
+ "drugs-econ": {
+  "owner_rules": [
+   "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving",
+   "drugs are for hospitality guests",
+   "all of the crops grow them all and make products from them for guests",
+   "what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process"
+  ]
+ },
+ "econ-druglab": {
+  "owner_rules": [
+   "and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on"
+  ]
+ },
+ "econ-art": {
+  "owner_rules": [
+   "better sucurity and flooring and beutification of rooms nned money crops and production and sales"
+  ]
+ },
+ "guest-wing": {
+  "owner_rules": [
+   "build prison build guest questers",
+   "and remember you dont want visitors walking through you labratory you want them in the zone gor guestss and shops with in your protected base",
+   "you need to set bed prices and make facilities for guests and use locks so they dont wonder into your vaults only wher u sell stuff and buetify thir rooms and not barracks style rooms",
+   "what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process",
+   "Invite {name} to stay (No guest beds) / Guest bed ... Price: $20 / Beds in use: 3/3 / Beds in use: 5/3 / Not enough guest beds x2 / Unwaveringly loyal",
+   "make sure pops ups dont monkey wrentch everything / anser them most are shit never pay them / yes that one was to accept visitor if u refussed that pop up non will arrive until u set it in hospitality tab / you need to read message and pop up s shit its like im having to teach you how to play all over again wtf happened to everything ive taught you",
+   "come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations",
+   "start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process",
+   "get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion / and remember you dont want visitors walking through you labratory you want them in the zone gor guestss and shops with in your protected base"
+  ]
+ },
+ "econ-guest-beds-full": {
+  "owner_rules": [
+   "Invite {name} to stay (No guest beds) / Guest bed ... Price: $20 / Beds in use: 3/3 / Beds in use: 5/3 / Not enough guest beds x2 / Unwaveringly loyal",
+   "you need to set bed prices and make facilities for guests and use locks so they dont wonder into your vaults only wher u sell stuff and buetify thir rooms and not barracks style rooms"
+  ]
+ },
+ "econ-fields-outside": {
+  "owner_rules": [
+   "put famrs out side the walls when u get to it",
+   "need berrys potatos corn and healroot minimum plus cotton smoke leaf psycoid and hops so lots to sell and production",
+   "items as u unlock",
+   "put famrs out side the walls when u get to it / need berrys potatos corn and healroot minimum plus cotton smoke leaf psycoid and hops so lots to sell and production / items as u unlock"
+  ]
+ },
+ "econ-corral": {
+  "owner_rules": [
+   "have to trade, make a corral for cows and such, buy cows, get a silver supply like cash"
+  ]
+ },
+ "econ-money-to-security": {
+  "owner_rules": [
+   "better sucurity and flooring and beutification of rooms nned money crops and production and sales",
+   "come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations"
+  ]
+ },
+ "econ-checklist": {
+  "owner_rules": [
+   "maintain everything in totality ive evr told you",
+   "evrything in the game is fair game get to it"
+  ]
+ },
+ "empire-dominion": {
+  "owner_rules": [
+   "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving",
+   "dominate the universe with a space ewarfare and planet domination",
+   "update the viewers they are your # one perform for them and entertain! make a empire space flying galactic civ",
+   "if they done answer just keep toward your goals of empire world domination and space warfare"
+  ],
+  "done_mark": "mark_empire_dominion_done"
+ },
+ "endgame-research-refused": {
+  "owner_rules": [
+   "make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done"
+  ]
+ },
+ "endgame-ship-materials": {
+  "owner_rules": [
+   "as you colony grows you want it to grow be greedy you empire is the goal you need stockpiles of everything you want supplies of everything where is you vault? you want armies defences turrets all of it",
+   "u want to use call a trader to land",
+   "not orbital trader that one sucks",
+   "u have to select the the drop down",
+   "once u call them select them on the comms again",
+   "you haver t o use comms console to call trade hub to trade or call a ship to land or trade with trades via pawns dirrectly when they show up",
+   "You need a powered orbital trade beacon to trade with a ship.",
+   "farming trader.. comeon always trade and look to make silver and money and get things you need",
+   "and u need to make sure all storage zones and shelfes and items are withing a orbital trade beacon u might need to move/add some"
+  ]
+ },
+ "endgame-materials-check": {
+  "owner_rules": [],
+  "done_mark": "mark_endgame_materials_check_done"
+ },
+ "endgame-persona-core": {
+  "owner_rules": [
+   "u want to use call a trader to land",
+   "not orbital trader that one sucks",
+   "u have to select the the drop down",
+   "once u call them select them on the comms again"
+  ]
+ },
+ "endgame-persona-core-stuck": {
+  "owner_rules": [
+   "if they done answer just keep toward your goals of empire world domination and space warfare"
+  ]
+ },
+ "endgame-launch-defence": {
+  "owner_rules": [
+   "dominate the universe with a space ewarfare and planet domination",
+   "as you colony grows you want it to grow be greedy you empire is the goal you need stockpiles of everything you want supplies of everything where is you vault? you want armies defences turrets all of it",
+   "and ur gonna need LOTS OF BATTERIES!",
+   "might want to design a power facility generators outside batteries in reactors later"
+  ]
+ },
+ "endgame-defence-check": {
+  "owner_rules": [],
+  "done_mark": "mark_endgame_defence_check_done"
+ },
+ "endgame-ship-site": {
+  "owner_rules": [
+   "your gonna have to mine alot nothing is exposed struture out side the mountina walls and plan for the intoer rooms wall too so 2x mountain space along all inrteror warooms"
+  ]
+ },
+ "endgame-ship-build": {
+  "owner_rules": [
+   "dominate the universe with a space ewarfare and planet domination"
+  ]
+ },
+ "endgame-ship-build-refused": {
+  "owner_rules": [
+   "make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done"
+  ]
+ },
+ "endgame-reactor-start": {
+  "owner_rules": [],
+  "done_mark": "mark_endgame_reactor_start_done"
+ },
+ "endgame-reactor-hold": {
+  "owner_rules": [
+   "dominate the universe with a space ewarfare and planet domination"
+  ]
+ },
+ "endgame-load-caskets": {
+  "owner_rules": [],
+  "done_mark": "mark_endgame_load_caskets_done"
+ },
+ "endgame-launch": {
+  "owner_rules": [
+   "dominate the universe with a space ewarfare and planet domination",
+   "update the viewers they are your # one perform for them and entertain! make a empire space flying galactic civ"
+  ],
+  "done_mark": "mark_endgame_launch_done"
+ },
+ "endgame-gravship-voyage": {
+  "owner_rules": [
+   "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving",
+   "update the viewers they are your # one perform for them and entertain! make a empire space flying galactic civ",
+   "dominate the universe with a space ewarfare and planet domination"
+  ]
+ },
+ "endgame-royal-ascent": {
+  "owner_rules": []
+ },
+ "endgame-archonexus": {
+  "owner_rules": [
+   "you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?"
+  ]
+ },
+ "endgame-journey-offer": {
+  "owner_rules": [
+   "if they done answer just keep toward your goals of empire world domination and space warfare"
+  ]
+ },
+ "endgame-greed": {
+  "owner_rules": [
+   "now make sure everything ive evr told you to do is a running check list that is never complete and is always checking all things are done wto keep your empire moveing up",
+   "make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done",
+   "as you colony grows you want it to grow be greedy you empire is the goal you need stockpiles of everything you want supplies of everything where is you vault? you want armies defences turrets all of it",
+   "be greedy u want welath and power while making all factions you can your allies by send gifts with drop pods",
+   "you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?",
+   "if they done answer just keep toward your goals of empire world domination and space warfare",
+   "what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?"
+  ]
+ },
+ "growth-rescue-and-tend": {
+  "owner_rules": [
+   "have someone save him",
+   "and tend to him",
+   "hes the KING force that shit"
+  ]
+ },
+ "growth-joiner-letter": {
+  "owner_rules": [
+   "accept neew employees hire them"
+  ]
+ },
+ "growth-needs-watch": {
+  "owner_rules": [
+   "maintain ur colonists' needs",
+   "maintain and watch your resources"
+  ]
+ },
+ "growth-catch-up": {
+  "owner_rules": [
+   "leave it let everyone catch up on tasks before you do more... and make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done",
+   "leave it let everyone catch up on tasks before you do more"
+  ]
+ },
+ "growth-look-at-world": {
+  "owner_rules": [
+   "you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?"
+  ]
+ },
+ "recruit-past-three": {
+  "owner_rules": [
+   "accept neew employees hire them",
+   "do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them"
+  ]
+ },
+ "growth-prisoner-keep": {
+  "owner_rules": [
+   "you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?",
+   "come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations"
+  ]
+ },
+ "growth-spare-bed": {
+  "owner_rules": [
+   "tell reve its one the list Rev character(ask if any requests when u get to making him, as an extra hand will be helpopfull just have to always set up everything for new pawns"
+  ]
+ },
+ "growth-healroot-and-cash-crops": {
+  "owner_rules": [
+   "come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations",
+   "start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process"
+  ]
+ },
+ "growth-dining-and-rec": {
+  "owner_rules": [
+   "maintain ur colonists' needs",
+   "keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them"
+  ]
+ },
+ "growth-ideology-content": {
+  "owner_rules": [
+   "who is your leader role that you need to set",
+   "keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them"
+  ]
+ },
+ "growth-family": {
+  "owner_rules": [
+   "do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them",
+   "keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them",
+   "cant have kids until u build privet rooms with double beds and set them to sleep there. can swap em in and out till all, one guy can knock up[ many",
+   "kids need milk and cribs and toys",
+   "duble beds to start families",
+   "mix an match need soldier born"
+  ]
+ },
+ "growth-upgrade-everyone": {
+  "owner_rules": [
+   "do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them"
+  ]
+ },
+ "growth-second-colony": {
+  "owner_rules": [
+   "we are gonna start new colonies with like a whole neew group and supplies"
+  ]
+ },
+ "ideo-roles": {
+  "done_mark": "mark_ideo_roles_done"
+ },
+ "ideo-roles-fallback": {
+  "done_mark": "mark_ideo_roles_fallback_done"
+ },
+ "ideo-ritual": {
+  "done_mark": "mark_ideo_ritual_done"
+ },
+ "mechanitor": {
+  "done_mark": "mark_mechanitor_done"
+ },
+ "genes": {
+  "done_mark": "mark_genes_done"
+ },
+ "ideo-party-room": {
+  "done_mark": "mark_ideo_party_room_done"
+ },
+ "anomaly-dissection": {
+  "done_mark": "mark_anomaly_dissection_done"
+ },
+ "bio-milk-pen": {
+  "done_mark": "mark_bio_milk_pen_done"
+ },
+ "bio-child-care": {
+  "done_mark": "mark_bio_child_care_done"
+ },
+ "research-idle": {
+  "owner_rules": [
+   "u can do the research as u need it",
+   "its like u are open research skeen and dragging the wrong dirrectgion to explore it not using the search at all"
+  ]
+ },
+ "research-idle-fallback": {
+  "owner_rules": [
+   "its like u are open research skeen and dragging the wrong dirrectgion to explore it not using the search at all"
+  ]
+ },
+ "research-bench": {
+  "owner_rules": [
+   "need to get ur benches insie with wall lights use wall light this time they dont take up floor space just be weirry they aree actual infront of the wall to select",
+   "research what u need to unlock better things u can produce",
+   "research and manage your pawns"
+  ]
+ },
+ "research-bench-fallback": {
+  "owner_rules": [
+   "research what u need to unlock better things u can produce"
+  ]
+ },
+ "research-rush-micro": {
+  "owner_rules": [
+   "you have to research microelelectronics to get trade beacons otherwise you have to wait for someone to show up to base / and you should be rushing microelectionices then the mico analysis things then the computing reasearching building them as you research them to massively speed up research you need the adv research bench / come on you are AI you should know about upgrading / you always wantr to upgrade and makz out research ability, so mulit analyses adv benches always building benches to get better faster research removing ther out dated benches / research what u need to unlock better things u can produce / u can do the research as u need it"
+  ]
+ },
+ "research-queue-multi": {
+  "owner_rules": [
+   "and you should be rushing microelectionices then the mico analysis things then the computing reasearching building them as you research them to massively speed up research you need the adv research bench",
+   "you havent even upgrade research benches yet, wtf are you doing, u got microelectronics done, you should be upgrade the old benches and putting the research shit like multi analizers and computer and shit in"
+  ]
+ },
+ "research-next": {
+  "owner_rules": [
+   "research what u need to unlock better things u can produce",
+   "u can do the research as u need it"
+  ]
+ },
+ "research-antibiotics-queue": {
+  "owner_rules": [
+   "you also might want to research antibiotics and assign everyones drug scheldule manage to take peneacycline every 5 days once you build it at drug lab after researching antibiotics in game"
+  ]
+ },
+ "hitech-bench": {
+  "owner_rules": [
+   "you always wantr to upgrade and makz out research ability, so mulit analyses adv benches always building benches to get better faster research removing ther out dated benches",
+   "come on you are AI you should know about upgrading",
+   "you havent even upgrade research benches yet, wtf are you doing, u got microelectronics done, you should be upgrade the old benches and putting the research shit like multi analizers and computer and shit in"
+  ]
+ },
+ "research-multi-analyzer": {
+  "owner_rules": [
+   "and you should be rushing microelectionices then the mico analysis things then the computing reasearching building them as you research them to massively speed up research you need the adv research bench",
+   "you always wantr to upgrade and makz out research ability, so mulit analyses adv benches always building benches to get better faster research removing ther out dated benches",
+   "you havent even upgrade research benches yet, wtf are you doing, u got microelectronics done, you should be upgrade the old benches and putting the research shit like multi analizers and computer and shit in"
+  ]
+ },
+ "research-lab-room": {
+  "owner_rules": [
+   "need to get ur benches insie with wall lights use wall light this time they dont take up floor space just be weirry they aree actual infront of the wall to select",
+   "minimum 2 lights per room for full brightness",
+   "nmake that sotrage room a prison hold toss in a spot and put the storage where the table and chairs are might have to move benches, compelte evertthing ive sdaid"
+  ]
+ },
+ "research-antibiotics": {
+  "owner_rules": [
+   "you also might want to research antibiotics and assign everyones drug scheldule manage to take peneacycline every 5 days once you build it at drug lab after researching antibiotics in game"
+  ]
+ },
+ "research-upgrade-sweep": {
+  "owner_rules": [
+   "you always wantr to upgrade and makz out research ability, so mulit analyses adv benches always building benches to get better faster research removing ther out dated benches",
+   "come on you are AI you should know about upgrading",
+   "you need to be upgrading research benches and equipemnet u remmebr"
+  ]
+ },
+ "research-equipment-tiers": {
+  "owner_rules": [
+   "research what u need to unlock better things u can produce",
+   "you need to be upgrading research benches and equipemnet u remmebr",
+   "you need to be upgrading research benches and equipemnet u remmebr / and ur gonna need LOTS OF BATTERIES!"
+  ]
+ },
+ "research-production-money": {
+  "owner_rules": [
+   "and research benches.. need to start making money nneed guests and products to sell them in seles zone have u even used hospitality tab",
+   "research what u need to unlock better things u can produce",
+   "okay but you sold whit that was very high tech thats will keep ur colonists from dying from old age and u cant get more...... u need cash crops to sell to bulk goods traders and refine them into better products u need research to make money(silver) or order it from company"
+  ]
+ },
+ "research-researcher-balance": {
+  "owner_rules": [
+   "research and manage your pawns"
+  ]
+ },
+ "research-ship-tree": {
+  "owner_rules": []
+ },
+ "setup-0-pause-on-land": {
+  "owner_rules": [
+   "FUCK!!!! I PAUSED THE GAME SINCE SHE WOULDNT! FUCK WHY WONT SHE SET SHIT UP!!!!!!!",
+   "wtf!!!!! time is flyying awayy!!!! why did she unpause beforee seeting all the pawn settings this is the fifth time ive told you all of this",
+   "see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause",
+   "i think it doesnt know how to click off the operation menu to use the pawns",
+   "three peopel are there its selecting them but no pawn options apear like draft major bug the model cant haddle"
+  ]
+ },
+ "setup-0-starting-goods": {
+  "done_mark": "setup_0_starting_goods_done",
+  "owner_rules": [
+   "okay bug hunt feature branch 1. im not correctly starting weith my set up prepare carfully goods and the scenerios starting good... as you can see they are not accurate if you check the current running game, just as an example of whats not right.. my preparecarfully mod food did not appear and the starting scenerio supplies of food did not appear and should start scenerio with survival meals not simple meals and should be like 100 to start besides whats set in prepare carfully so check the current game and whats on the map versus what they were suppose to start with verses how to fix it properly now"
+  ]
+ },
+ "arms-out-fallback": {
+  "owner_rules": [
+   "once again u arnt armed!!! wtf!!!!",
+   "she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee"
+  ]
+ },
+ "arms-out-first": {
+  "owner_rules": [
+   "once again u arnt armed!!! wtf!!!!",
+   "put your weapons-out rung FIRST (priority above every setup rung)",
+   "she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee",
+   "make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC"
+  ]
+ },
+ "setup-2-pawns-fallback": {
+  "owner_rules": [
+   "she is bnot to skip priorities that is what she must to after exploring wtf am i talking to a wall all week",
+   "set up priorities u fool / pawns have none set / your prioties for work are all fucked come on fix it for next time u know how to do it fix why u didnt do it and do it"
+  ]
+ },
+ "setup-2-pawns": {
+  "owner_rules": [
+   "set up priorities u fool / pawns have none set / your prioties for work are all fucked come on fix it for next time u know how to do it fix why u didnt do it and do it",
+   "set it how ive told you every day weve played all of them for every one using coopy paste",
+   "set your priorities, dont need everyone choopping wood, multitask",
+   "she is bnot to skip priorities that is what she must to after exploring wtf am i talking to a wall all week",
+   "she is letting time pass and hasnt set a priority or shelf or schedula",
+   "see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause",
+   "set up all priorities this is the last time i telling you set it how ive told you every day weve played all of them for every one using coopy paste ...",
+   "stop ur fucking up the priorities i told you how to set them"
+  ]
+ },
+ "setup-3-assign": {
+  "done_mark": "setup_3_assign_done",
+  "owner_rules": [
+   "she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee",
+   "drugs are for hospitality guests",
+   "set theri scheldule to anything at all times for all pawns / research and manage your pawns",
+   "u have ppriorities set on stockpiles so thay pull it all through and do you have all the paws set up to heal attack and sleep whenever and take only antibiotic pencylcin every 5 days and carry 2",
+   "set up drugs and scar to attack",
+   "shes just repeating same things not living in the momnet and she still hasent set all the priorties scheduled drug use attakck heal and all that on assign",
+   "were ur crops u get priorities done and scedukele and drug assignment and antibiotics",
+   "wtf!!!!! time is flyying awayy!!!! why did she unpause beforee seeting all the pawn settings this is the fifth time ive told you all of this",
+   "you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax and starting up you facitly small first massive later get ur needs food security and shit settled / you should have a maintaince list of thinge proprigating what all you need to do / make sure u arm up and set everyones setting attack, heal self, schedule, priorities, drugs to no drugs, all of it pause and do it and set control shift carry but becasre full sending them on 50 runs without a break"
+  ]
+ },
+ "leader-moral-guide": {
+  "done_mark": "leader_moral_guide_done",
+  "owner_rules": [
+   "now u have a leader u need a morasl guide and they ahave abilities u want to always use",
+   "make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC",
+   "click the option s one not twice",
+   "some time u click twice it selects all firelds be werry"
+  ]
+ },
+ "setup-1-explore-fallback": {
+  "owner_rules": [
+   "exploring is not finished damn it ive said this repeadidily the map is even on screen becsue it never went through EVERY DOOR",
+   "explore the hidden rooms and get outside her walls"
+  ]
+ },
+ "setup-1-explore": {
+  "owner_rules": [
+   "explore the hidden rooms and get outside her walls",
+   "exploring is not finished damn it ive said this repeadidily the map is even on screen becsue it never went through EVERY DOOR",
+   "you still have t explored your facility to find the bed rooms and other unexplored rooms",
+   "the whole logic gate chain like a plc i told you to have it use and edit on the fly"
+  ]
+ },
+ "setup-2b-priorities-after-explore": {
+  "owner_rules": [
+   "she is bnot to skip priorities that is what she must to after exploring wtf am i talking to a wall all week",
+   "set it how ive told you every day weve played all of them for every one using coopy paste"
+  ]
+ },
+ "setup-chop": {
+  "owner_rules": [
+   "and a big issue its it never auto unforbid all the starting materials and never copped wood to build starting structures rooms",
+   "set your priorities, dont need everyone choopping wood, multitask",
+   "there is no wood no trees on this map, thats why in advanced setting on world gen setup you set 300x300 mapo and spring, and then when choosing a map tile u pic on that has mountains(the rock areas on map) in forest area and jungle areas the light green and green, terrain tab on left tells u all this when u highlight via select the tiles"
+  ]
+ },
+ "setup-4-stores-fallback": {
+  "owner_rules": [
+   "you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses",
+   "look at that shit she is setting fucking rooms to build deep inside the moutain with no ryhme or reason"
+  ]
+ },
+ "setup-4-stores": {
+  "owner_rules": [
+   "you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses",
+   "look at that shit she is setting fucking rooms to build deep inside the moutain with no ryhme or reason",
+   "she is letting time pass and hasnt set a priority or shelf or schedula",
+   "what the fuck do we need to restart it all if so do it so she doesnt fuck it up this time and properly doesnt repeat the exac same shit everything oioriginal and fucking have here actual do the inital game and in game pawn sett up and stockpiles and know wtf to do with freezers",
+   "you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax and starting up you facitly small first massive later get ur needs food security and shit settled / you should have a maintaince list of thinge proprigating what all you need to do / make sure u arm up and set everyones setting attack, heal self, schedule, priorities, drugs to no drugs, all of it pause and do it and set control shift carry but becasre full sending them on 50 runs without a break"
+  ]
+ },
+ "setup-4b-shelter-fallback": {
+  "owner_rules": [
+   "you retarn u put doors the the extreem corners thats not gonna work",
+   "camp fridege all of it workshop every thing u need in the camp tight and no blocked paths"
+  ]
+ },
+ "setup-4b-shelter": {
+  "owner_rules": [
+   "camp fridege all of it workshop every thing u need in the camp tight and no blocked paths",
+   "door on corner and sides",
+   "you retarn u put doors the the extreem corners thats not gonna work",
+   "see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause",
+   "use teriform to remove mud and shit like water inside camp perimeter",
+   "ur dry storage needs more shleves / add another shelfe N side of existing ones directly / and missing ones"
+  ]
+ },
+ "setup-5-stove": {
+  "owner_rules": [
+   "the whole logic gate chain like a plc i told you to have it use and edit on the fly",
+   "and set amounts higher and higher as your base grows"
+  ]
+ },
+ "setup-6-run": {
+  "owner_rules": [
+   "okay is it ever going to play the game?(set up cololnist, zones, and shit)",
+   "the whole logic gate chain like a plc i told you to have it use and edit on the fly",
+   "and your operations manual script or .md obviousliy isnt good becasue it doesnt have everything ive fucking ever told you as you arent even reading messages and clearing them",
+   "make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done",
+   "you are suppose tho be checking off todo items of the tests stuff while playing the full game to do so",
+   "how are we gonna do the fucking tests if u dont play the game?"
+  ]
+ },
+ "setup-6b-crops": {
+  "owner_rules": [
+   "you are going nothing but potatoes everywhere wtf!",
+   "were ur crops u get priorities done and scedukele and drug assignment and antibiotics",
+   "dont forget terriforming for soil plots"
+  ]
+ },
+ "setup-7-camp-defence-fallback": {
+  "owner_rules": [
+   "make it of wood just exterior make 3wide terrriom stone smooth marble for fire break"
+  ]
+ },
+ "setup-7-camp-defence": {
+  "owner_rules": [
+   "you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses",
+   "make it of wood just exterior make 3wide terrriom stone smooth marble for fire break",
+   "all those walls over top of water need to be cancled and use terraform to change it to dirt first",
+   "hold some places you put walls where doors are to be opn outer wall",
+   "something is wrong u are clicking a million times in a row and it looked weird on steeam / sounds spammy, warn viewers for shit before like that"
+  ]
+ },
+ "setup-8-camp-stable": {
+  "done_mark": "setup_8_camp_stable_done",
+  "owner_rules": [
+   "dont go building a massive camp just get telled and start on the mountain base.",
+   "remmeber dont go building a massive camp just get telled and start on the mountain base might need a replan based on starting entrance near or N most farms",
+   "let your people get good on food and set up camp before moving into the base like u said itll tak a while",
+   "and try to get to where everything is stable and food supply is handled production  so that things can settle down and u can start mining out the base, but lots before then"
+  ]
+ },
+ "setup-9-new-pawn": {
+  "owner_rules": [
+   "set it how ive told you every day weve played all of them for every one using coopy paste",
+   "tell reve its one the list Rev character(ask if any requests when u get to making him, as an extra hand will be helpopfull just have to always set up everything for new pawns",
+   "stop ur fucking up the priorities i told you how to set them",
+   "set up all priorities this is the last time i telling you set it how ive told you every day weve played all of them for every one using coopy paste ..."
+  ]
+ },
+ "rung-6-off-world": {
+  "owner_rules": [
+   "\"dominate the universe with a space ewarfare and planet domination\"",
+   "\"update the viewers they are your # one perform for them and entertain! make a empire space flying galactic civ\"",
+   "\"as you colony grows you want it to grow be greedy you empire is the goal you need stockpiles of everything you want supplies of everything where is you vault? you want armies defences turrets all of it\""
+  ]
+ },
+ "space-microelectronics": {
+  "owner_rules": [
+   "\"you have to research microelelectronics to get trade beacons otherwise you have to wait for someone to show up to base\""
+  ]
+ },
+ "space-trade-beacon": {
+  "owner_rules": [
+   "\"and u need to make sure all storage zones and shelfes and items are withing a orbital trade beacon u might need to move/add some\"",
+   "\"and wtf why are you storing plant materials resources in the fucking hallway that needs to be in freezer\""
+  ]
+ },
+ "space-ally-gifts": {
+  "owner_rules": [
+   "\"be greedy u want welath and power while making all factions you can your allies by send gifts with drop pods\""
+  ]
+ },
+ "space-ally-gifts-cooldown": {
+  "owner_rules": [
+   "\"be greedy u want welath and power while making all factions you can your allies by send gifts with drop pods\""
+  ]
+ },
+ "grav-core": {
+  "owner_rules": [
+   "\"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\""
+  ]
+ },
+ "grav-build": {
+  "owner_rules": [
+   "\"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\""
+  ]
+ },
+ "grav-ready": {
+  "owner_rules": [
+   "\"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\""
+  ]
+ },
+ "megaship-drop": {
+  "owner_rules": [
+   "\"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "\"you need to be eutropanuer like and have a will to expand, learn , explore, and buiold, and capture prisoners and rule the world. have you even looked at the world yet?\""
+  ]
+ },
+ "space-ask-chat": {
+  "owner_rules": [
+   "\"if they done answer just keep toward your goals of empire world domination and space warfare\""
+  ]
+ },
+ "space-ask-chat-cooldown": {
+  "owner_rules": [
+   "\"if they done answer just keep toward your goals of empire world domination and space warfare\""
+  ]
+ },
+ "start-colony-lost": {
+  "owner_rules": [
+   "If the colony dies, start another.",
+   "Never load old saves; start new colony scenarios.",
+   "STOP LOADING SAVES!! AND START THE SCENERIOS THROUGH THE NORMAL PATHWAY!"
+  ]
+ },
+ "start-kind-unknown": {
+  "owner_rules": [
+   "Know the full start colony process head to toe through to the Backrooms and outer space while staying alive.",
+   "you need to be testing all three scenerios trying to get a gate built in all three",
+   "not peace full you cheap skat community buiilder go back"
+  ]
+ },
+ "start-crashlanded": {
+  "owner_rules": [
+   "First thing after landing: unforbid all starting materials, then chop wood to build the starting rooms.",
+   "The run is 3 pawns toward empire and space; on landing unforbid all starting materials and chop wood to build the first structures.",
+   "game_set cmd unforbid -- every starting item (owner: \"it never auto unforbid all the starting materials\")",
+   "pause, then: equip the charge rifles; every colonist hostility Attack, self-tend on, a schedule with sleep and recreation, work priorities set, drug policy No drugs; queue carry runs with ctrl/shift but in short batches with breaks; a propagating maintenance list (.local/qa/run-list.py) of everything still to do; facility small first, massive later; food security first |"
+  ]
+ },
+ "start-tribal": {
+  "owner_rules": [
+   "game_set cmd unforbid -- every starting item (owner: \"it never auto unforbid all the starting materials\")"
+  ]
+ },
+ "start-naked": {
+  "owner_rules": [
+   "game_set cmd unforbid -- every starting item (owner: \"it never auto unforbid all the starting materials\")"
+  ]
+ },
+ "start-async": {
+  "owner_rules": [
+   "game_set cmd unforbid -- every starting item (owner: \"it never auto unforbid all the starting materials\")",
+   "you need to be testing all three scenerios trying to get a gate built in all three"
+  ]
+ },
+ "start-store": {
+  "owner_rules": [
+   "game_set cmd unforbid -- every starting item (owner: \"it never auto unforbid all the starting materials\")"
+  ]
+ },
+ "start-lone": {
+  "owner_rules": [
+   "game_set cmd unforbid -- every starting item (owner: \"it never auto unforbid all the starting materials\")"
+  ]
+ },
+ "start-explore-facility": {
+  "owner_rules": [
+   "Explore through every door until exploring is finished.",
+   "explore the fogged start before designating; a mine order is a seam or a room on cells already read, never half a mountain"
+  ]
+ },
+ "start-explore-facility-fallback": {
+  "owner_rules": [
+   "Explore through every door until exploring is finished."
+  ]
+ },
+ "mental-break": {
+  "owner_rules": [
+   "you are slacking ther should be a order of operation between talking to chat always sayiong hi, keeping pawns needs up and healthy, and chating, and making images and guidesing them through think on everything in gaem"
+  ]
+ },
+ "after-the-kill": {
+  "owner_rules": []
+ },
+ "work-grid-set": {
+  "owner_rules": [
+   "you can set one pawn then paste templet to others then a customize them character editor tab bottom right is a go, correct the record"
+  ]
+ },
+ "hunter-weapon": {
+  "owner_rules": []
+ },
+ "food-low": {
+  "owner_rules": [
+   "mining the fortress waits; first a steady food supply (forage, hunt, rice, cooking) and a working camp by the shell; the fortress plan stays drawn |",
+   "the fortress digs only once food supply, production and the camp are stable; until then camp work comes first |"
+  ]
+ },
+ "butcher-table": {
+  "owner_rules": []
+ },
+ "butcher-fast": {
+  "owner_rules": []
+ },
+ "repair-2-set": {
+  "owner_rules": []
+ },
+ "beds-short": {
+  "owner_rules": [
+   "chat RoomsIdleHands: ; owner, 2026-10-09, verbatim: -- QUEUED: make a Rev pawn (Character Editor); when starting, ask RoomsIdleHands in chat for requests; every new pawn gets the full setup at once"
+  ]
+ },
+ "food-rotting-or-no-cold": {
+  "owner_rules": []
+ },
+ "freezer-sorting": {
+  "owner_rules": []
+ },
+ "storage-logic": {
+  "owner_rules": [
+   "ur dry storage needs more shleves / add another shelfe N side of existing ones directly / and missing ones"
+  ]
+ },
+ "hospital-setup": {
+  "owner_rules": []
+ }
+}

@@ -1,0 +1,1244 @@
+{
+ "family": "economy",
+ "rungs": [
+  {
+   "id": "econ-trader-arrived",
+   "priority": 20.0,
+   "family": "economy",
+   "when": {
+    "arrival": {
+     "ons": {
+      "trader_letter": {
+       "any": [
+        {
+         "letter_matches": "trader"
+        },
+        {
+         "letter_matches": "caravan"
+        }
+       ]
+      }
+     }
+    }
+   },
+   "then": [
+    "read the letter now (game_state letters); letter_matches \"trader\" / \"caravan\"",
+    "order_pawn the highest-Social colonist to the trader",
+    "trade_dialog (MISSING): sell joints, beer, clothes, art, junk_weapons, tainted gear; buy steel, components, plasteel, marble blocks, cows, tech that is needed"
+   ],
+   "why": "owner: \"dont ignore you messages / are you reading pop up messages a good tradeer just arrived wtf !!! use the comms console / ive alkready told yuou already read messages always instantly!!!!! your under attrack!!!!\" / owner: \"farming trader.. comeon always trade and look to make silver and money and get things you need\" / owner: \"someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need\" / owner: \"might have to buy from trader marble blocks\" / owner: \"have to trade, make a corral for cows and such, buy cows, get a silver supply like cash\" / owner: \"you need to read message and pop up s shit its like im having to teach you how to play all over again wtf happened to everything ive taught you\" | walkthrough: walkthrough-economy-growth-space.md [economy] Trader = highest Social colonist; sell art/clothes/drugs, buy components/plasteel",
+   "latch": false,
+   "never": [
+    "paying demands, ransoms or tribute",
+    "buying what the colony does not need",
+    "the orbital trader as the main trade path"
+   ],
+   "owner_rules": [
+    "dont ignore you messages / are you reading pop up messages a good tradeer just arrived wtf !!! use the comms console / ive alkready told yuou already read messages always instantly!!!!! your under attrack!!!!",
+    "farming trader.. comeon always trade and look to make silver and money and get things you need",
+    "someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need",
+    "might have to buy from trader marble blocks",
+    "have to trade, make a corral for cows and such, buy cows, get a silver supply like cash",
+    "you need to read message and pop up s shit its like im having to teach you how to play all over again wtf happened to everything ive taught you"
+   ]
+  },
+  {
+   "id": "econ-dump-zone",
+   "priority": 20.12,
+   "family": "economy",
+   "when": {
+    "colony_exists": true,
+    "corpses": ">0",
+    "mark_dump_zone_set": false
+   },
+   "then": [
+    "zone_create (MISSING) / game_apply_architect_designator Stockpile zone: 6x6 OUTSIDE the walls/camp, away from doors",
+    "game_set cmd stockpile_filter x,z mode all priority Low (dump filter = corpses + chunks: MISSING mode)",
+    "ladder_set mark dump_zone_set true"
+   ],
+   "why": "owner: \"get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion\" / owner: \"and dont out set builds beyound your material supply, got to gain meore any means available\" | walkthrough: PLAYSCRIPT.md:55 dumping zone outside the walls / owner: \"get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion / and remember you dont want visitors walking through you labratory you want them in the zone gor guestss and shops with in your protected base\"",
+   "latch": true,
+   "owner_rules": [
+    "get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion",
+    "and dont out set builds beyound your material supply, got to gain meore any means available",
+    "get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion / and remember you dont want visitors walking through you labratory you want them in the zone gor guestss and shops with in your protected base"
+   ]
+  },
+  {
+   "id": "econ-corpses-standing",
+   "priority": 20.24,
+   "family": "economy",
+   "when": {
+    "mark_dump_zone_set": true,
+    "held": {
+     "ton": {
+      "corpses": ">{CORPSE_LIMIT}"
+     },
+     "hours": 12
+    }
+   },
+   "then": [
+    "game_set cmd set_work_priority pawn=<least busy> work=Hauling level=1",
+    "order_pawn that pawn: haul the oldest corpse to the dump zone",
+    "animal corpses to the butcher table first when count_tablebutcher > 0"
+   ],
+   "why": "owner: \"get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion\" | walkthrough: walkthrough-food-and-medicine.md [economy] butcher corpses within 1 day",
+   "latch": false,
+   "owner_rules": [
+    "get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion"
+   ]
+  },
+  {
+   "id": "econ-stray-blueprint",
+   "priority": 20.36,
+   "family": "economy",
+   "when": {
+    "blueprints": ">0",
+    "mark_blueprints_audited": false
+   },
+   "then": [
+    "game_state + game_get_cell_info on odd blueprints: a bed/wall in water and the bridge laid to reach it -> game_apply_architect_designator Cancel on those cells",
+    "cancel the newest blueprints the stock (wood/steel) cannot pay for",
+    "ladder_set mark blueprints_audited true"
+   ],
+   "why": "owner: \"and why is there a bed in the middle of the river delete that and remove bridge in sturcture\" / owner: \"and dont out set builds beyound your material supply, got to gain meore any means available\"",
+   "latch": true,
+   "owner_rules": [
+    "and why is there a bed in the middle of the river delete that and remove bridge in sturcture",
+    "and dont out set builds beyound your material supply, got to gain meore any means available"
+   ]
+  },
+  {
+   "id": "rung-4-production",
+   "priority": 20.48,
+   "when": {
+    "mark_camp_stable": true,
+    "days_of_food": ">{FOOD_COMFORT_DAYS}",
+    "has_power": true,
+    "defences_built": true,
+    "mark_crops_full": true
+   },
+   "then": [
+    "game_set cmd add_bill recipe Make_Beer count {PRODUCT_BILL} (brewery; research_brewing)",
+    "game_set cmd add_bill recipe Make_SmokeleafJoint count {PRODUCT_BILL}",
+    "game_set cmd add_bill recipe Make_PsychiteTea count {PRODUCT_BILL}",
+    "game_set cmd add_bill recipe <tailoring apparel> count colonists + {PRODUCT_BILL} (parkas before winter)",
+    "game_set cmd add_bill recipe Make_StoneBlocks<stone> count {STONE_BLOCK_TARGET}",
+    "game_set cmd set_work_priority Crafting 2 / Tailoring 2 on a free pawn",
+    "ladder_set mark production_running true",
+    "ladder_set mark rung_4_production_done true"
+   ],
+   "why": "owner: \"lots to sell and production\" / owner: \"set amounts higher and higher as your base grows\" / owner: \"what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process\" / owner: \"all of the crops grow them all and make products from them for guests\" / owner: \"and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on\" | walkthrough: walkthrough-economy-growth-space.md [economy] Sell art, clothes, drugs; Stonecutter keep >= 200 stone blocks; walkthrough-food-and-medicine.md Cotton -> cloth -> tailoring bench / owner: \"start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process\"",
+   "latch": true,
+   "family": "economy",
+   "never": [
+    "a skill restriction on a bill",
+    "selling raw smokeleaf when joints can be made"
+   ],
+   "owner_rules": [
+    "lots to sell and production",
+    "set amounts higher and higher as your base grows",
+    "what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process",
+    "all of the crops grow them all and make products from them for guests",
+    "and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on",
+    "start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process"
+   ]
+  },
+  {
+   "id": "econ-wood-winter",
+   "priority": 20.6,
+   "family": "economy",
+   "when": {
+    "mark_camp_stable": true,
+    "wood": "<{WOOD_RESERVE}",
+    "mark_wood_short_set": false
+   },
+   "then": [
+    "game_set cmd chop count {WOOD_RESERVE}",
+    "ladder_set mark wood_short_set true"
+   ],
+   "why": "owner: \"and dont out set builds beyound your material supply, got to gain meore any means available\" | walkthrough: walkthrough-food-and-medicine.md [economy] Stockpile >= 200 wood before first winter",
+   "latch": false,
+   "owner_rules": [
+    "and dont out set builds beyound your material supply, got to gain meore any means available"
+   ]
+  },
+  {
+   "id": "econ-wood-reset",
+   "priority": 20.72,
+   "family": "economy",
+   "when": {
+    "mark_wood_short_set": true,
+    "wood": ">={WOOD_RESERVE}"
+   },
+   "then": [
+    "ladder_set mark wood_short_set false"
+   ],
+   "why": "owner: \"and dont out set builds beyound your material supply, got to gain meore any means available\"",
+   "latch": false,
+   "owner_rules": [
+    "and dont out set builds beyound your material supply, got to gain meore any means available"
+   ]
+  },
+  {
+   "id": "crops-full-set",
+   "priority": 20.84,
+   "family": "economy",
+   "when": {
+    "mark_camp_stable": true,
+    "growing_cells": ">0",
+    "days_of_food": ">{FOOD_COMFORT_DAYS}",
+    "mark_crops_full": false,
+    "tries": {
+     "not": {
+      "under_3": {
+       "ctu": {
+        "mark_crops_tried": true
+       },
+       "preset": 3,
+       "reset": {
+        "mark_crops_full": true
+       }
+      }
+     }
+    }
+   },
+   "then": [
+    "ladder_set mark crops_tried false",
+    "game_set cmd crops",
+    "game_set cmd set_zone_plant x,z plant=<one per zone>: Plant_Berry, Plant_Potato, Plant_Corn, Plant_Healroot (grower Plants >= 8), Plant_Cotton, Plant_Smokeleaf, Plant_Psychoid, Plant_Hops, then every other crop as research unlocks it",
+    "on a refused set_zone_plant: ladder_set mark crops_tried true (3 refusals hand over to econ-crops-fallback)",
+    "re-read fields_all_default_crop: must be false",
+    "when fields_all_default_crop is false: ladder_set mark crops_full true"
+   ],
+   "never": [
+    "two zones of the same drug crop",
+    "every field left on the default crop"
+   ],
+   "why": "owner: \"need berrys potatos corn and healroot minimum plus cotton smoke leaf psycoid and hops so lots to sell and production\" / owner: \"need psycoid and hops too, you dont need two crops of smokeleaf\" / owner: \"fidure it our ur not sleecting crops right\" / owner: \"all of the crops grow them all and make products from them for guests\" / owner: \"start growing cash cropsa\" / owner: \"you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need\" / owner: \"not limited to three obviously\" / owner: \"items as u unlock\" | walkthrough: walkthrough-food-and-medicine.md [economy] Plant rice first, corn for long storage, healroot when Plants >= 8 / owner: \"you still havent started growing cash crops and you still havent figured out you freezer storage as ive already told you how , you have shelfs outside the freezer set to hold freezer goods and good in the freezer not ment to be frozen, i already told you how to set up the shelves and zones, do it\" / owner: \"start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process\"",
+   "owner_rules": [
+    "need berrys potatos corn and healroot minimum plus cotton smoke leaf psycoid and hops so lots to sell and production",
+    "need psycoid and hops too, you dont need two crops of smokeleaf",
+    "fidure it our ur not sleecting crops right",
+    "all of the crops grow them all and make products from them for guests",
+    "start growing cash cropsa",
+    "you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need",
+    "not limited to three obviously",
+    "items as u unlock",
+    "you still havent started growing cash crops and you still havent figured out you freezer storage as ive already told you how , you have shelfs outside the freezer set to hold freezer goods and good in the freezer not ment to be frozen, i already told you how to set up the shelves and zones, do it",
+    "start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process"
+   ],
+   "latch": false
+  },
+  {
+   "id": "econ-crops-fallback",
+   "priority": 20.96,
+   "family": "economy",
+   "when": {
+    "mark_camp_stable": true,
+    "mark_crops_full": false,
+    "tries": {
+     "ctu": {
+      "mark_crops_tried": true
+     },
+     "preset": 3,
+     "reset": {
+      "mark_crops_full": true
+     }
+    }
+   },
+   "then": [
+    "ladder_set mark crops_tried false",
+    "game_get_cell_info on one cell of each growing zone: read the plant and allowed plants",
+    "game_set cmd set_zone_plant with that exact defName",
+    "on a refused set_zone_plant: ladder_set mark crops_tried true",
+    "ladder_set mark crops_full true"
+   ],
+   "why": "owner: \"fidure it our ur not sleecting crops right\"",
+   "latch": true,
+   "owner_rules": [
+    "fidure it our ur not sleecting crops right"
+   ]
+  },
+  {
+   "id": "stockpiles-sized",
+   "priority": 21.08,
+   "family": "economy",
+   "when": {
+    "stockpile_cells": "<{STOCK_CELLS}",
+    "mark_stockpiles_sized": false
+   },
+   "then": [
+    "camp: game_set cmd stockpile_camp mode nofood; base: game_set cmd stockpile_room room <id> mode nofood",
+    "game_set cmd shelves (adaptive.storage.framework / asf.deepstorage), one priority above the room's stockpile",
+    "ladder_set mark stockpiles_sized true"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\"): never latched and starved research; now done once per stage / owner: \"get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion\" / owner: \"get your shellves organized so like i already told you\"",
+   "latch": true,
+   "owner_rules": [
+    "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving",
+    "what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?",
+    "get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion",
+    "get your shellves organized so like i already told you"
+   ]
+  },
+  {
+   "id": "comms",
+   "priority": 21.2,
+   "family": "economy",
+   "when": {
+    "mark_camp_stable": true,
+    "has_power": true,
+    "comms_console": false,
+    "research_microelectronicsbasics": true
+   },
+   "then": [
+    "game_apply_architect_designator CommsConsole, powered, inside the walls",
+    "when built: select it, game_list_selected_gizmos -- read the call-a-trader buttons (arakos.callatrader.acat, zal.calltradeships)",
+    "ladder_set mark comms_set true"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner: \"dont ignore you messages / are you reading pop up messages a good tradeer just arrived wtf !!! use the comms console / ive alkready told yuou already read messages always instantly!!!!! your under attrack!!!!\" / owner: \"you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need\" | walkthrough: walkthrough-economy-growth-space.md [economy] Build comms console after Microelectronics",
+   "note": "UNVERIFIED: how the call-a-trader mods work",
+   "latch": true,
+   "owner_rules": [
+    "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving",
+    "dont ignore you messages / are you reading pop up messages a good tradeer just arrived wtf !!! use the comms console / ive alkready told yuou already read messages always instantly!!!!! your under attrack!!!!",
+    "you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need"
+   ]
+  },
+  {
+   "id": "supply-food-0-reset",
+   "priority": 21.32,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "food back at FOOD_COMFORT_DAYS",
+   "when": {
+    "mark_food_short_set": true,
+    "days_of_food": ">={FOOD_COMFORT_DAYS}"
+   },
+   "then": [
+    "ladder_set mark food_short_set false"
+   ],
+   "notice": "Food back at level.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "owner_rules": [
+    "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+   ],
+   "latch": false
+  },
+  {
+   "id": "supply-food-1-low",
+   "priority": 21.44,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "supply level: days_of_food < FOOD_COMFORT_DAYS",
+   "when": {
+    "days_of_food": "<{FOOD_COMFORT_DAYS}",
+    "mark_food_short_set": false
+   },
+   "then": [
+    "game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET}",
+    "game_set cmd hunt",
+    "game_set cmd crops (zone sized colonists x FIELD_CELLS_PER_PAWN)",
+    "ladder_set mark food_short_set true"
+   ],
+   "notice": "Food below comfort level: bills and fields raised.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "owner_rules": [
+    "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+   ],
+   "latch": false
+  },
+  {
+   "id": "supply-steel-0-reset",
+   "priority": 21.56,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "steel back at STEEL_RESERVE",
+   "when": {
+    "mark_steel_short_set": true,
+    "steel": ">={STEEL_RESERVE}"
+   },
+   "then": [
+    "ladder_set mark steel_short_set false"
+   ],
+   "notice": "Steel back at level.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "owner_rules": [
+    "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+   ],
+   "latch": false
+  },
+  {
+   "id": "supply-steel-1-buy",
+   "priority": 21.68,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "supply level: steel < STEEL_RESERVE, comms + silver -> buy",
+   "when": {
+    "mark_camp_stable": true,
+    "steel": "<{STEEL_RESERVE}",
+    "comms_console": true,
+    "silver": ">={TRADE_SILVER_MIN}",
+    "mark_steel_short_set": false
+   },
+   "then": [
+    "call_trader (MISSING) from the comms console + trade_dialog (MISSING): buy steel",
+    "or company_order (MISSING): Company Procurement steel",
+    "ladder_set mark steel_short_set true"
+   ],
+   "notice": "Steel short: buying from a trader.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on\" / owner: \"better mine steel or order some trade is your go to once u figure it out\"",
+   "owner_rules": [
+    "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean",
+    "and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on",
+    "better mine steel or order some trade is your go to once u figure it out"
+   ],
+   "latch": false
+  },
+  {
+   "id": "supply-steel-2-mine",
+   "priority": 21.8,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "supply level: steel < STEEL_RESERVE -> mine",
+   "when": {
+    "mark_camp_stable": true,
+    "steel": "<{STEEL_RESERVE}",
+    "mark_steel_short_set": false
+   },
+   "then": [
+    "game_apply_architect_designator Mine on compacted steel near the base",
+    "deconstruct steel junk; game_set cmd add_bill recipe SmeltWeapon / ExtractMetalFromSlag at the electric smelter",
+    "deep drill once surface steel runs out (research_deepdrilling)",
+    "ladder_set mark steel_short_set true"
+   ],
+   "notice": "Steel short: mining for more.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on\" / owner: \"better mine steel or order some trade is your go to once u figure it out\"",
+   "owner_rules": [
+    "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean",
+    "and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on",
+    "better mine steel or order some trade is your go to once u figure it out"
+   ],
+   "latch": false
+  },
+  {
+   "id": "supply-podfuel-0-reset",
+   "priority": 21.92,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "pod fuel back at POD_FUEL",
+   "when": {
+    "mark_fuel_short_set": true,
+    "chemfuel": ">={POD_FUEL}"
+   },
+   "then": [
+    "ladder_set mark fuel_short_set false"
+   ],
+   "notice": "Pod fuel back at level.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "owner_rules": [
+    "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+   ],
+   "latch": false
+  },
+  {
+   "id": "supply-podfuel-1-low",
+   "priority": 22.04,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "supply level: chemfuel < POD_FUEL with pod launchers built",
+   "when": {
+    "pod_launchers": ">0",
+    "chemfuel": "<{POD_FUEL}",
+    "mark_fuel_short_set": false
+   },
+   "then": [
+    "game_set cmd add_bill recipe Make_Chemfuel count {POD_FUEL} at the biofuel refinery",
+    "ladder_set mark fuel_short_set true"
+   ],
+   "notice": "Pod fuel low: refinery bill set.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "owner_rules": [
+    "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+   ],
+   "latch": false
+  },
+  {
+   "id": "supply-shipfuel-0-reset",
+   "priority": 22.16,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "ship fuel back at SHIP_FUEL_RESERVE",
+   "when": {
+    "mark_shipfuel_short_set": true,
+    "chemfuel": ">={SHIP_FUEL_RESERVE}"
+   },
+   "then": [
+    "ladder_set mark shipfuel_short_set false"
+   ],
+   "notice": "Ship fuel back at level.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "owner_rules": [
+    "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+   ],
+   "latch": false
+  },
+  {
+   "id": "supply-shipfuel-1-low",
+   "priority": 22.28,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "supply level: chemfuel < SHIP_FUEL_RESERVE with a gravship started",
+   "when": {
+    "grav_parts": ">0",
+    "chemfuel": "<{SHIP_FUEL_RESERVE}",
+    "mark_shipfuel_short_set": false
+   },
+   "then": [
+    "game_set cmd add_bill recipe Make_Chemfuel count {SHIP_FUEL_RESERVE} (read the console for the real fuel first)",
+    "ladder_set mark shipfuel_short_set true"
+   ],
+   "notice": "Ship fuel low: refuel bill set.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "note": "UNVERIFIED: the gravship fuel type and amount (chemfuel assumed)",
+   "owner_rules": [
+    "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+   ],
+   "latch": false
+  },
+  {
+   "id": "supply-weapons-0-reset",
+   "priority": 22.4,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "loose weapons back at WEAPON_KEEP or fewer",
+   "when": {
+    "mark_junk_weapons_set": true,
+    "loose_weapons": "<={WEAPON_KEEP}"
+   },
+   "then": [
+    "ladder_set mark junk_weapons_set false"
+   ],
+   "notice": "Weapon pile cleared.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "owner_rules": [
+    "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+   ],
+   "latch": false
+  },
+  {
+   "id": "supply-weapons-1-sell",
+   "priority": 22.52,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "supply level: loose_weapons > WEAPON_KEEP, a trader can be called -> sell",
+   "when": {
+    "mark_camp_stable": true,
+    "loose_weapons": ">{WEAPON_KEEP}",
+    "comms_console": true,
+    "mark_junk_weapons_set": false
+   },
+   "then": [
+    "call_trader + trade_dialog (MISSING): sell junk_weapons first",
+    "ladder_set mark junk_weapons_set true"
+   ],
+   "notice": "Too many spare weapons: selling them.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need\"",
+   "owner_rules": [
+    "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean",
+    "you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need"
+   ],
+   "latch": false
+  },
+  {
+   "id": "supply-weapons-2-smelt",
+   "priority": 22.64,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "supply level: loose_weapons > WEAPON_KEEP -> smelt",
+   "when": {
+    "mark_camp_stable": true,
+    "loose_weapons": ">{WEAPON_KEEP}",
+    "mark_junk_weapons_set": false
+   },
+   "then": [
+    "game_set cmd add_bill recipe SmeltWeapon count 0 at the electric smelter (UNVERIFIED recipe name)",
+    "ladder_set mark junk_weapons_set true"
+   ],
+   "notice": "Too many spare weapons: smelting them.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "note": "UNVERIFIED: the smelt-weapon recipe name in this mod set",
+   "owner_rules": [
+    "option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean"
+   ],
+   "latch": false
+  },
+  {
+   "id": "trade-run",
+   "priority": 22.76,
+   "family": "economy",
+   "when": {
+    "mark_camp_stable": true,
+    "mark_comms_set": true,
+    "silver": ">{TRADE_SILVER_MIN}",
+    "mark_trade_run_done": false
+   },
+   "then": [
+    "call_trader (MISSING) via the comms console gizmo; calling costs goodwill",
+    "trade_dialog (MISSING): sell art, drugs, clothes, extra weapons -- never what the colony needs",
+    "buy components, plasteel, steel, marble blocks",
+    "ladder_set mark trade_run_done true"
+   ],
+   "why": "owner: \"you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need\" / owner: \"farming trader.. comeon always trade and look to make silver and money and get things you need\" / owner: \"someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need\" / owner: \"might have to buy from trader marble blocks\" / owner: \"not orbital trader that one sucks\"",
+   "latch": false,
+   "note": "reset the latch (ladder_set mark trade_run_done false) to trade again",
+   "never": [
+    "rely on the orbital trader (owner: \"not orbital trader that one sucks\")",
+    "selling raw crops when the processed product can be made"
+   ],
+   "owner_rules": [
+    "you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need",
+    "farming trader.. comeon always trade and look to make silver and money and get things you need",
+    "someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need",
+    "might have to buy from trader marble blocks",
+    "not orbital trader that one sucks"
+   ]
+  },
+  {
+   "id": "econ-trade-reset",
+   "priority": 22.88,
+   "family": "economy",
+   "when": {
+    "held": {
+     "ton": {
+      "mark_trade_run_done": true
+     },
+     "hours": 72
+    }
+   },
+   "then": [
+    "ladder_set mark trade_run_done false"
+   ],
+   "why": "owner: \"you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need\"",
+   "latch": false,
+   "owner_rules": [
+    "you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need"
+   ]
+  },
+  {
+   "id": "econ-silver-company",
+   "priority": 23.0,
+   "family": "economy",
+   "when": {
+    "mark_camp_stable": true,
+    "silver": "<{TRADE_SILVER_MIN}",
+    "mark_silver_ordered": false
+   },
+   "then": [
+    "empire_pass: read company standing",
+    "company_order (MISSING): Company Procurement silver",
+    "ladder_set mark silver_ordered true"
+   ],
+   "why": "owner: \"and order some silver from the company\" / owner: \"get a silver supply like cash\" / owner: \"start buisnesss / make company money from quests / do quests and missions increase ur cash / get a silver supply like cash\"",
+   "latch": true,
+   "owner_rules": [
+    "and order some silver from the company",
+    "get a silver supply like cash",
+    "start buisnesss / make company money from quests / do quests and missions increase ur cash / get a silver supply like cash"
+   ]
+  },
+  {
+   "id": "econ-quests-cash",
+   "priority": 23.12,
+   "family": "economy",
+   "when": {
+    "offer": {
+     "ons": {
+      "quest_letter": true
+     }
+    }
+   },
+   "then": [
+    "read the quest letter (game_state letters); quest_accept (MISSING) when it pays silver/goods and fight_ratio >= FIGHT_RATIO_MIN",
+    "Rimrooms surveys/missions: collect the record book before the emergency-return window expires; operator station must survive",
+    "refuse demands and ransoms"
+   ],
+   "why": "owner: \"start buisnesss / make company money from quests / do quests and missions increase ur cash / get a silver supply like cash\" / owner: \"and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on\" / owner: \"Order … to collect the record book\" / owner: \"Operator station lost\" / owner: \"Emergency-return window expired\" / owner: \"anser them most are shit never pay them\" / owner: \"make sure pops ups dont monkey wrentch everything / anser them most are shit never pay them / yes that one was to accept visitor if u refussed that pop up non will arrive until u set it in hospitality tab / you need to read message and pop up s shit its like im having to teach you how to play all over again wtf happened to everything ive taught you\"",
+   "latch": false,
+   "never": [
+    "paying any demand or ransom",
+    "refusing the accept-visitor pop-up"
+   ],
+   "owner_rules": [
+    "start buisnesss / make company money from quests / do quests and missions increase ur cash / get a silver supply like cash",
+    "and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on",
+    "Order … to collect the record book",
+    "Operator station lost",
+    "Emergency-return window expired",
+    "anser them most are shit never pay them",
+    "make sure pops ups dont monkey wrentch everything / anser them most are shit never pay them / yes that one was to accept visitor if u refussed that pop up non will arrive until u set it in hospitality tab / you need to read message and pop up s shit its like im having to teach you how to play all over again wtf happened to everything ive taught you"
+   ]
+  },
+  {
+   "id": "components-low",
+   "priority": 23.24,
+   "family": "economy",
+   "when": {
+    "mark_camp_stable": true,
+    "components": "<{COMPONENT_RESERVE}",
+    "mark_components_short_set": false
+   },
+   "then": [
+    "game_set cmd add_bill recipe ComponentIndustrial count {COMPONENT_RESERVE} (fabrication bench, research_fabrication)",
+    "else game_apply_architect_designator Mine on compacted machinery",
+    "else deep drill / buy at the next trader",
+    "ladder_set mark components_short_set true"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\"): never latched and starved research; now done once per stage",
+   "latch": false,
+   "owner_rules": [
+    "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving",
+    "what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?"
+   ]
+  },
+  {
+   "id": "econ-marble",
+   "priority": 23.36,
+   "family": "economy",
+   "when": {
+    "mark_mountain_base_done": true,
+    "count_blocksmarble": "<{STONE_BLOCK_TARGET}",
+    "mark_marble_set": false
+   },
+   "then": [
+    "game_set cmd add_bill recipe Make_StoneBlocksMarble count {STONE_BLOCK_TARGET} on every stonecutter",
+    "buy marble blocks from every trader that has them",
+    "ladder_set mark marble_set true"
+   ],
+   "why": "owner: \"might have to buy from trader marble blocks\" | walkthrough: PLAYSCRIPT.md:75",
+   "latch": true,
+   "owner_rules": [
+    "might have to buy from trader marble blocks"
+   ]
+  },
+  {
+   "id": "econ-components-reset",
+   "priority": 23.48,
+   "family": "economy",
+   "when": {
+    "mark_components_short_set": true,
+    "components": ">={COMPONENT_RESERVE}"
+   },
+   "then": [
+    "ladder_set mark components_short_set false"
+   ],
+   "why": "owner: \"maintain everything in totality ive evr told you\"",
+   "latch": false,
+   "owner_rules": [
+    "maintain everything in totality ive evr told you"
+   ]
+  },
+  {
+   "id": "vault",
+   "priority": 23.6,
+   "family": "economy",
+   "when": {
+    "silver": ">{TRADE_SILVER_MIN}",
+    "mark_vault_set": false,
+    "mark_mountain_base_done": true
+   },
+   "then": [
+    "game_set cmd rooms -> an inner room no guest/prisoner path crosses; else game_apply_architect_designator Wall: roofed room, 2-thick walls, one door",
+    "game_set cmd stockpile_room room <vault> mode all, filter silver, gold, gems, ivory only (filter mode valuables: MISSING)",
+    "door locked to colonists only (door_lock: MISSING)",
+    "ladder_set mark vault_set true"
+   ],
+   "never": [
+    "guests or prisoners able to path into the vault"
+   ],
+   "why": "owner: \"build a vault ... cash silver gold high valuable gemms irvory in vaults\" / owner: \"come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations\" / owner: \"you need to set bed prices and make facilities for guests and use locks so they dont wonder into your vaults only wher u sell stuff and buetify thir rooms and not barracks style rooms\" | walkthrough: walkthrough-economy-growth-space.md [economy] Vault silver in a locked inner room, 2-thick walls",
+   "owner_rules": [
+    "build a vault ... cash silver gold high valuable gemms irvory in vaults",
+    "come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations",
+    "you need to set bed prices and make facilities for guests and use locks so they dont wonder into your vaults only wher u sell stuff and buetify thir rooms and not barracks style rooms"
+   ],
+   "latch": false
+  },
+  {
+   "id": "econ-wealth-junk",
+   "priority": 23.72,
+   "family": "economy",
+   "when": {
+    "mark_camp_stable": true,
+    "mark_trade_run_done": true,
+    "junk_weapons": ">0",
+    "loose_weapons": ">{WEAPON_KEEP}"
+   },
+   "then": [
+    "game_set cmd add_bill recipe SmeltWeapon / BurnApparel count 0 for what the trader did not take"
+   ],
+   "why": "owner: \"you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need\" | walkthrough: walkthrough-economy-growth-space.md [economy] Raid points scale with wealth: burn/sell tainted apparel and junk",
+   "latch": false,
+   "owner_rules": [
+    "you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need"
+   ]
+  },
+  {
+   "id": "drugs-econ",
+   "priority": 23.84,
+   "family": "economy",
+   "when": {
+    "mark_production_running": true,
+    "mark_guests_set": true,
+    "mark_guest_drugs_set": false
+   },
+   "then": [
+    "game_set cmd add_bill recipe Make_Beer / Make_SmokeleafJoint / Make_PsychiteTea count {GUEST_DRUG_STOCK}",
+    "game_set cmd stockpile_filter on a guest-wing shelf (drugs mode: MISSING)",
+    "colonist drug policy stays No drugs (set_drug_policy: MISSING to verify)",
+    "ladder_set mark guest_drugs_set true"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner 2026-10-13: \"drugs are for hospitality guests\" / owner: \"all of the crops grow them all and make products from them for guests\" / owner: \"what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process\"",
+   "latch": true,
+   "owner_rules": [
+    "the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving",
+    "drugs are for hospitality guests",
+    "all of the crops grow them all and make products from them for guests",
+    "what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process"
+   ]
+  },
+  {
+   "id": "econ-druglab",
+   "priority": 23.96,
+   "family": "economy",
+   "when": {
+    "mark_production_running": true,
+    "research_drugproduction": true,
+    "count_druglab": "<1",
+    "mark_druglab_set": false
+   },
+   "then": [
+    "game_apply_architect_designator DrugLab inside the walls, off the guest path",
+    "game_set cmd add_bill recipe Make_PsychiteTea / Make_Yayo / Make_Flake as ingredients allow, count {PRODUCT_BILL}",
+    "ladder_set mark druglab_set true"
+   ],
+   "why": "owner: \"and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on\" | walkthrough: walkthrough-economy-growth-space.md [economy] Drug lab output is trade goods only",
+   "latch": true,
+   "never": [
+    "drugs for colonists (policy No drugs)"
+   ],
+   "owner_rules": [
+    "and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on"
+   ]
+  },
+  {
+   "id": "econ-art",
+   "priority": 24.08,
+   "family": "economy",
+   "when": {
+    "mark_production_running": true,
+    "count_tablesculpting": ">0",
+    "mark_art_bill_set": false
+   },
+   "then": [
+    "game_set cmd add_bill recipe MakeSculptureSmall count {ART_BILL}",
+    "game_set cmd set_work_priority Art 2 on the best Artistic pawn",
+    "ladder_set mark art_bill_set true"
+   ],
+   "why": "owner: \"better sucurity and flooring and beutification of rooms nned money crops and production and sales\" | walkthrough: walkthrough-economy-growth-space.md [economy] Sculptor's table art with Artistic >= 6",
+   "latch": true,
+   "owner_rules": [
+    "better sucurity and flooring and beutification of rooms nned money crops and production and sales"
+   ]
+  },
+  {
+   "id": "guest-wing",
+   "priority": 24.2,
+   "family": "economy",
+   "when": {
+    "mark_mountain_base_done": true,
+    "mark_guests_set": false
+   },
+   "then": [
+    "game_apply_architect_designator: single guest rooms inside the walls with floor, art, lamps -- never a barracks",
+    "set_bed_price (MISSING): a price on every guest bed",
+    "guest facilities: dining, rec, toilet if any",
+    "hospitality_sell_zone (MISSING): a sell zone set from the Guests tab, surplus only",
+    "door_lock (MISSING): guests reach only the shop/sell zone, never the lab, vault or prison",
+    "accept the visitor pop-up / set it in the Hospitality tab",
+    "ladder_set mark guests_set true"
+   ],
+   "never": [
+    "guests walking through the laboratory",
+    "guests reaching vaults",
+    "barracks-style guest rooms",
+    "refusing the visitor pop-up"
+   ],
+   "why": "owner: \"build prison build guest questers\" / owner: \"and remember you dont want visitors walking through you labratory you want them in the zone gor guestss and shops with in your protected base\" / owner: \"you need to set bed prices and make facilities for guests and use locks so they dont wonder into your vaults only wher u sell stuff and buetify thir rooms and not barracks style rooms\" / owner: \"what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process\" / owner: \"Invite {name} to stay (No guest beds) / Guest bed ... Price: $20 / Beds in use: 3/3 / Beds in use: 5/3 / Not enough guest beds x2 / Unwaveringly loyal\" / owner: \"make sure pops ups dont monkey wrentch everything / anser them most are shit never pay them / yes that one was to accept visitor if u refussed that pop up non will arrive until u set it in hospitality tab / you need to read message and pop up s shit its like im having to teach you how to play all over again wtf happened to everything ive taught you\" / owner: \"come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations\" / owner: \"start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process\" / owner: \"get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion / and remember you dont want visitors walking through you labratory you want them in the zone gor guestss and shops with in your protected base\"",
+   "owner_rules": [
+    "build prison build guest questers",
+    "and remember you dont want visitors walking through you labratory you want them in the zone gor guestss and shops with in your protected base",
+    "you need to set bed prices and make facilities for guests and use locks so they dont wonder into your vaults only wher u sell stuff and buetify thir rooms and not barracks style rooms",
+    "what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process",
+    "Invite {name} to stay (No guest beds) / Guest bed ... Price: $20 / Beds in use: 3/3 / Beds in use: 5/3 / Not enough guest beds x2 / Unwaveringly loyal",
+    "make sure pops ups dont monkey wrentch everything / anser them most are shit never pay them / yes that one was to accept visitor if u refussed that pop up non will arrive until u set it in hospitality tab / you need to read message and pop up s shit its like im having to teach you how to play all over again wtf happened to everything ive taught you",
+    "come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations",
+    "start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process",
+    "get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion / and remember you dont want visitors walking through you labratory you want them in the zone gor guestss and shops with in your protected base"
+   ],
+   "latch": false
+  },
+  {
+   "id": "econ-guest-beds-full",
+   "priority": 24.32,
+   "family": "economy",
+   "when": {
+    "mark_guests_set": true,
+    "full": {
+     "ons": {
+      "letter_matches": "not enough guest beds"
+     }
+    }
+   },
+   "then": [
+    "game_apply_architect_designator: one more single room + bed per missing guest bed",
+    "set_bed_price (MISSING) on it"
+   ],
+   "why": "owner: \"Invite {name} to stay (No guest beds) / Guest bed ... Price: $20 / Beds in use: 3/3 / Beds in use: 5/3 / Not enough guest beds x2 / Unwaveringly loyal\" / owner: \"you need to set bed prices and make facilities for guests and use locks so they dont wonder into your vaults only wher u sell stuff and buetify thir rooms and not barracks style rooms\"",
+   "latch": false,
+   "owner_rules": [
+    "Invite {name} to stay (No guest beds) / Guest bed ... Price: $20 / Beds in use: 3/3 / Beds in use: 5/3 / Not enough guest beds x2 / Unwaveringly loyal",
+    "you need to set bed prices and make facilities for guests and use locks so they dont wonder into your vaults only wher u sell stuff and buetify thir rooms and not barracks style rooms"
+   ]
+  },
+  {
+   "id": "econ-fields-outside",
+   "priority": 24.44,
+   "family": "economy",
+   "when": {
+    "mark_mountain_base_done": true,
+    "mark_crops_full": true,
+    "mark_fields_outside_set": false
+   },
+   "then": [
+    "zone_create (MISSING) / game_apply_architect_designator growing zones: eight plots outside the wall on fertile ground near a gate",
+    "game_set cmd set_zone_plant per plot: berries, potatoes, corn, healroot, cotton, smokeleaf, psychoid, hops",
+    "harvest the field inside the walls, then delete it",
+    "ladder_set mark fields_outside_set true"
+   ],
+   "why": "owner: \"put famrs out side the walls when u get to it\" / owner: \"need berrys potatos corn and healroot minimum plus cotton smoke leaf psycoid and hops so lots to sell and production\" / owner: \"items as u unlock\" / owner: \"put famrs out side the walls when u get to it / need berrys potatos corn and healroot minimum plus cotton smoke leaf psycoid and hops so lots to sell and production / items as u unlock\"",
+   "latch": true,
+   "owner_rules": [
+    "put famrs out side the walls when u get to it",
+    "need berrys potatos corn and healroot minimum plus cotton smoke leaf psycoid and hops so lots to sell and production",
+    "items as u unlock",
+    "put famrs out side the walls when u get to it / need berrys potatos corn and healroot minimum plus cotton smoke leaf psycoid and hops so lots to sell and production / items as u unlock"
+   ]
+  },
+  {
+   "id": "econ-corral",
+   "priority": 24.56,
+   "family": "economy",
+   "when": {
+    "mark_mountain_base_done": true,
+    "mark_corral_set": false
+   },
+   "then": [
+    "game_apply_architect_designator Fence + FenceGate: a pen in a field, never roofed, sized for grazing (or a hay stockpile inside)",
+    "buy cows/milk animals at the next trader",
+    "game_set cmd set_work_priority Handling 2 on one pawn",
+    "ladder_set mark corral_set true"
+   ],
+   "why": "owner: \"have to trade, make a corral for cows and such, buy cows, get a silver supply like cash\"",
+   "latch": true,
+   "owner_rules": [
+    "have to trade, make a corral for cows and such, buy cows, get a silver supply like cash"
+   ]
+  },
+  {
+   "id": "econ-money-to-security",
+   "priority": 24.68,
+   "family": "economy",
+   "when": {
+    "mark_camp_stable": true,
+    "silver": ">{SECURITY_SILVER}",
+    "mark_security_spend_set": false,
+    "mark_mountain_base_done": true
+   },
+   "then": [
+    "game_apply_architect_designator: turrets/blast doors first, then floors, then art, plants, lamps in every room",
+    "ladder_set mark security_spend_set true"
+   ],
+   "why": "owner: \"better sucurity and flooring and beutification of rooms nned money crops and production and sales\" / owner: \"come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations\"",
+   "latch": true,
+   "owner_rules": [
+    "better sucurity and flooring and beutification of rooms nned money crops and production and sales",
+    "come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations"
+   ]
+  },
+  {
+   "id": "econ-checklist",
+   "priority": 24.8,
+   "family": "economy",
+   "when": {
+    "held": {
+     "ton": {
+      "colony_exists": true
+     },
+     "hours": 24
+    }
+   },
+   "then": [
+    "re-read every economy mark against its sensor (bill_rows, fields_all_default_crop, stockpile_cells, alert_food_rot, comms_console); ladder_set mark <x> false for each one whose sensor fell back",
+    "for a latched economy rung whose sensor fell back, clear its own mark AND its done-latch (e.g. ladder_set mark stockpiles_sized false + ladder_set mark stockpiles_sized_done false)",
+    "when mark_mountain_base_done is true and colonists >= {ENDGAME_COLONISTS} and silver >= {EMPIRE_SILVER} and research_multianalyzer is true: ladder_set mark empire_ready true"
+   ],
+   "why": "owner: \"maintain everything in totality ive evr told you\" / owner: \"evrything in the game is fair game get to it\"",
+   "latch": false,
+   "owner_rules": [
+    "maintain everything in totality ive evr told you",
+    "evrything in the game is fair game get to it"
+   ]
+  }
+ ],
+ "prompts": {
+  "econ-trader-arrived": "TRADER ARRIVED (one scan, letter_matches trader/caravan). Look first: the letter and the trader's goods.\n1. order_pawn the highest-Social colonist to the trader.\n2. Sell surplus products and junk weapons; buy steel/components/plasteel/marble/cows/needed tech.\nFallback: trade_dialog missing -> say on stream what to buy, keep playing.\nDone = trader handled (one-shot, no mark).\nOwner: \"farming trader.. comeon always trade and look to make silver and money and get things you need\" / \"someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need\"",
+  "econ-dump-zone": "DUMP ZONE. Look first: corpses sensor; where the wall/camp edge is (game_state).\n1. game_apply_architect_designator Stockpile zone outside the wall, away from doors.\n2. game_set cmd stockpile_filter x,z on it, priority Low.\nFallback: filter refuses -> keep the zone, haul corpses there with order_pawn.\nDone = ladder_set mark dump_zone_set true (latch econ_dump_zone_done).\nOwner: \"get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion\"\nOwner: \"and remember you dont want visitors walking through you labratory you want them in the zone gor guestss and shops with in your protected base\"",
+  "econ-corpses-standing": "CORPSES PILING (over CORPSE_LIMIT for 12 h).\n1. game_set cmd set_work_priority Hauling 1 on the least busy pawn.\n2. order_pawn haul corpses to the dump zone; animals to the butcher table.\nFallback: order_pawn refuses -> Hauling 1 on a second pawn.\nDone = corpses <= CORPSE_LIMIT (standing order, no mark).\nOwner: \"get that dead body and chuncks out\"",
+  "econ-stray-blueprint": "BLUEPRINT AUDIT. Look first: blueprints count, then game_get_cell_info on any in water.\n1. Cancel designator on a bed in the river and the bridge under it.\n2. Cancel newest blueprints until wood/steel cover the rest.\nFallback: Cancel refuses -> game_right_click_cell and read the menu.\nDone = ladder_set mark blueprints_audited true (latch econ_stray_blueprint_done).\nOwner: \"and dont out set builds beyound your material supply, got to gain meore any means available\"",
+  "rung-4-production": "PRODUCTION (stage 3). Look first: bill_rows, count_beer, count_smokeleafjoint, count_psychitetea, cloth.\n1. game_set cmd add_bill for beer, joints, tea, clothes, stone blocks, Do until PRODUCT_BILL.\n2. game_set cmd set_work_priority Crafting 2 / Tailoring 2 on a free pawn.\nFallback: add_bill refuses -> bench missing or recipe locked; skip it, name it on stream.\nDone = ladder_set mark production_running true; the latch sets rung_4_production_done (the base family waits on it).\nOwner: \"lots to sell and production\" / \"set amounts higher and higher as your base grows\" / \"only sell what u dont need like smoneleaft on its higher process\"",
+  "econ-wood-winter": "WOOD LOW.\n1. game_set cmd chop count WOOD_RESERVE.\nFallback: chop finds no trees -> order_pawn a pawn to cut farther out.\nDone = ladder_set mark wood_short_set true (econ-wood-reset clears it).\nOwner: \"got to gain meore any means available\"",
+  "econ-wood-reset": "WOOD RESET. Look first: wood vs WOOD_RESERVE.\n1. ladder_set mark wood_short_set false.\nFallback: none needed (a mark write).\nDone = wood_short_set false; econ-wood-winter can fire again.\nOwner: \"got to gain meore any means available\"",
+  "crops-full-set": "FULL CROP SET (after camp_stable). Look first: fields_all_default_crop, growing_cells, the plant in each zone.\n0. ladder_set mark crops_tried false.\n1. game_set cmd set_zone_plant x,z plant=Plant_Berry / Potato / Corn / Healroot / Cotton / Smokeleaf / Psychoid / Hops, one zone each.\n2. Re-read fields_all_default_crop: false.\nFallback: a plant refused -> ladder_set mark crops_tried true; 3 refusals -> econ-crops-fallback.\nDone = ladder_set mark crops_full true.\nOwner: \"need psycoid and hops too, you dont need two crops of smokeleaf\" / \"fidure it our ur not sleecting crops right\" / \"start growing cash cropsa\"",
+  "econ-crops-fallback": "CROPS FALLBACK (set_zone_plant refused 3 times).\n0. ladder_set mark crops_tried false.\n1. game_get_cell_info on each zone; read the exact plant defName.\n2. game_set cmd set_zone_plant with it.\nFallback: refused again -> ladder_set mark crops_tried true, name the zone on stream.\nDone = ladder_set mark crops_full true (latch econ_crops_fallback_done).\nOwner: \"fidure it our ur not sleecting crops right\"",
+  "stockpiles-sized": "STORAGE SIZE. stockpile_cells under STOCK_CELLS.\n1. game_set cmd stockpile_room (base) or stockpile_camp (camp), mode nofood.\n2. game_set cmd shelves; shelves one priority above the floor stockpile.\nFallback: stockpile_room refuses (no room) -> stockpile_camp.\nDone = ladder_set mark stockpiles_sized true (econ-checklist clears it when STOCK_CELLS grows) (latch stockpiles_sized_done).\nOwner: \"where is your freexzer shelves torages sized for expansion\"",
+  "comms": "COMMS CONSOLE. Look first: has_power, research_microelectronicsbasics.\n1. game_apply_architect_designator CommsConsole inside the walls.\n2. Built -> game_list_selected_gizmos: read the call-a-trader buttons.\nFallback: no power -> power family first.\nDone = ladder_set mark comms_set true (latch comms_done).\nOwner: \"a good tradeer just arrived wtf !!! use the comms console\"",
+  "supply-food-0-reset": "SUPPLY: food back at FOOD_COMFORT_DAYS.\nSteps: ladder_set mark food_short_set false\nFallback: a tool refuses -> the next rung of this chain fires on the next scan.\nDone = the mark in the last step.\nOwner: \"too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level\"",
+  "supply-food-1-low": "SUPPLY: supply level: days_of_food < FOOD_COMFORT_DAYS.\nSteps: game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET}; game_set cmd hunt; game_set cmd crops (zone sized colonists x FIELD_CELLS_PER_PAWN); ladder_set mark food_short_set true\nFallback: a tool refuses -> the next rung of this chain fires on the next scan.\nDone = the mark in the last step.\nOwner: \"too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level\"",
+  "supply-steel-0-reset": "SUPPLY: steel back at STEEL_RESERVE.\nSteps: ladder_set mark steel_short_set false\nFallback: a tool refuses -> the next rung of this chain fires on the next scan.\nDone = the mark in the last step.\nOwner: \"too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level\"",
+  "supply-steel-1-buy": "SUPPLY: supply level: steel < STEEL_RESERVE, comms + silver -> buy.\nSteps: call_trader (MISSING) from the comms console + trade_dialog (MISSING): buy steel; or company_order (MISSING): Company Procurement steel; ladder_set mark steel_short_set true\nFallback: a tool refuses -> the next rung of this chain fires on the next scan.\nDone = the mark in the last step.\nOwner: \"too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level\"",
+  "supply-steel-2-mine": "SUPPLY: supply level: steel < STEEL_RESERVE -> mine.\nSteps: game_apply_architect_designator Mine on compacted steel near the base; deconstruct steel junk; game_set cmd add_bill recipe SmeltWeapon / ExtractMetalFromSlag at the electric smelter; deep drill once surface steel runs out (research_deepdrilling); ladder_set mark steel_short_set true\nFallback: a tool refuses -> the next rung of this chain fires on the next scan.\nDone = the mark in the last step.\nOwner: \"too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level\"",
+  "supply-podfuel-0-reset": "SUPPLY: pod fuel back at POD_FUEL.\nSteps: ladder_set mark fuel_short_set false\nFallback: a tool refuses -> the next rung of this chain fires on the next scan.\nDone = the mark in the last step.\nOwner: \"too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level\"",
+  "supply-podfuel-1-low": "SUPPLY: supply level: chemfuel < POD_FUEL with pod launchers built.\nSteps: game_set cmd add_bill recipe Make_Chemfuel count {POD_FUEL} at the biofuel refinery; ladder_set mark fuel_short_set true\nFallback: a tool refuses -> the next rung of this chain fires on the next scan.\nDone = the mark in the last step.\nOwner: \"too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level\"",
+  "supply-shipfuel-0-reset": "SUPPLY: ship fuel back at SHIP_FUEL_RESERVE.\nSteps: ladder_set mark shipfuel_short_set false\nFallback: a tool refuses -> the next rung of this chain fires on the next scan.\nDone = the mark in the last step.\nOwner: \"too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level\"",
+  "supply-shipfuel-1-low": "SUPPLY: supply level: chemfuel < SHIP_FUEL_RESERVE with a gravship started.\nSteps: game_set cmd add_bill recipe Make_Chemfuel count {SHIP_FUEL_RESERVE} (read the console for the real fuel first); ladder_set mark shipfuel_short_set true\nFallback: a tool refuses -> the next rung of this chain fires on the next scan.\nDone = the mark in the last step.\nOwner: \"too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level\"",
+  "supply-weapons-0-reset": "SUPPLY: loose weapons back at WEAPON_KEEP or fewer.\nSteps: ladder_set mark junk_weapons_set false\nFallback: a tool refuses -> the next rung of this chain fires on the next scan.\nDone = the mark in the last step.\nOwner: \"too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level\"",
+  "supply-weapons-1-sell": "SUPPLY: supply level: loose_weapons > WEAPON_KEEP, a trader can be called -> sell.\nSteps: call_trader + trade_dialog (MISSING): sell junk_weapons first; ladder_set mark junk_weapons_set true\nFallback: a tool refuses -> the next rung of this chain fires on the next scan.\nDone = the mark in the last step.\nOwner: \"too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level\"",
+  "supply-weapons-2-smelt": "SUPPLY: supply level: loose_weapons > WEAPON_KEEP -> smelt.\nSteps: game_set cmd add_bill recipe SmeltWeapon count 0 at the electric smelter (UNVERIFIED recipe name); ladder_set mark junk_weapons_set true\nFallback: a tool refuses -> the next rung of this chain fires on the next scan.\nDone = the mark in the last step.\nOwner: \"too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level\"",
+  "trade-run": "TRADE RUN. Look first: silver, junk_weapons, product counts.\n1. Call a trader from the comms console gizmo.\n2. Sell surplus, buy steel/components/plasteel/marble.\nFallback: no call gizmo -> wait for caravans (econ-trader-arrived).\nDone = ladder_set mark trade_run_done true (econ-trade-reset clears it after 3 days).\nOwner: \"calling traders selling all ur junk and crap u dont need\"",
+  "econ-trade-reset": "TRADE RESET. 72 h since trade_run_done went true.\n1. ladder_set mark trade_run_done false.\nFallback: none needed (a mark write).\nDone = trade-run can fire again.\nOwner: \"calling traders selling all ur junk and crap u dont need\"",
+  "econ-silver-company": "SILVER FROM THE COMPANY. silver under TRADE_SILVER_MIN.\n1. empire_pass to read standing.\n2. Company Procurement: order silver.\nFallback: tool missing -> sell products to the next caravan.\nDone = ladder_set mark silver_ordered true (latch econ_silver_company_done).\nOwner: \"and order some silver from the company\"",
+  "econ-quests-cash": "QUEST OFFER (one scan). Look first: reward and threat in the letter.\n1. Accept if it pays and fight_ratio >= FIGHT_RATIO_MIN.\n2. Missions: collect the record book; watch the emergency-return window.\nFallback: no accept tool -> popup-guard handles it; never pay.\nDone = letter handled.\nOwner: \"do quests and missions increase ur cash\" / \"anser them most are shit never pay them\"",
+  "components-low": "COMPONENTS LOW.\n1. game_set cmd add_bill ComponentIndustrial at the fabrication bench.\n2. Else Mine compacted machinery, else deep drill, else buy.\nFallback: no fabrication research -> buy at the next trader.\nDone = ladder_set mark components_short_set true (econ-components-reset clears it).\nOwner: \"not enough steel supply shortage needed supplies at level\"",
+  "econ-marble": "MARBLE. count_blocksmarble under STONE_BLOCK_TARGET.\n1. game_set cmd add_bill Make_StoneBlocksMarble on each stonecutter.\n2. Buy marble blocks at the next trader.\nFallback: no marble on the map -> trade-run buys it.\nDone = ladder_set mark marble_set true (latch econ_marble_done).\nOwner: \"might have to buy from trader marble blocks\"",
+  "econ-components-reset": "COMPONENTS RESET. Look first: components vs COMPONENT_RESERVE.\n1. ladder_set mark components_short_set false.\nFallback: none needed (a mark write).\nDone = components_short_set false; components-low can fire again.\nOwner: \"maintain everything in totality ive evr told you\"",
+  "vault": "VAULT. Look first: game_set cmd rooms for an inner room off every guest path.\n1. Roofed room, 2-thick walls, one door.\n2. game_set cmd stockpile_room room <id>; silver/gold/gems/ivory only.\n3. Lock the door to colonists.\nFallback: no inner room -> Wall designator, wait a build cycle.\nDone = ladder_set mark vault_set true.\nOwner: \"build a vault ... cash silver gold high valuable gemms irvory in vaults\"",
+  "econ-wealth-junk": "WEALTH JUNK after a trade run.\n1. game_set cmd add_bill SmeltWeapon / BurnApparel.\nFallback: no smelter -> sell the rest at the next trader.\nDone = loose_weapons <= WEAPON_KEEP.\nOwner: \"selling all ur junk and crap u dont need\"",
+  "drugs-econ": "GUEST DRUGS. Look first: mark_guests_set.\n1. game_set cmd add_bill beer/joints/tea to GUEST_DRUG_STOCK.\n2. stockpile_filter a guest-wing shelf for them.\nFallback: filter mode missing -> bills only.\nDone = ladder_set mark guest_drugs_set true (latch drugs_econ_done).\nOwner: \"drugs are for hospitality guests\"",
+  "econ-druglab": "DRUG LAB. Look first: research_drugproduction, psychoid/smokeleaf counts.\n1. game_apply_architect_designator DrugLab inside the walls, off guest paths.\n2. game_set cmd add_bill for what the ingredients allow.\nFallback: research missing -> leave it to the research family.\nDone = ladder_set mark druglab_set true (latch econ_druglab_done).\nOwner: \"reserch druglab and make what u can accire the ingrediants sell products to guest\"",
+  "econ-art": "ART. Look first: count_tablesculpting.\n1. game_set cmd add_bill MakeSculptureSmall count ART_BILL.\n2. Art 2 on the best artist.\nFallback: no sculpting table -> build one (TableSculpting) first.\nDone = ladder_set mark art_bill_set true (latch econ_art_done).\nOwner: \"better sucurity and flooring and beutification of rooms nned money crops and production and sales\"",
+  "guest-wing": "GUEST WING. Look first: game_set cmd rooms for space inside the walls, away from lab/vault/prison.\n1. Single beautified rooms (floor, art, light).\n2. Guest beds with a price; facilities.\n3. Sell zone from the Guests tab, surplus only; locks keep guests to it.\n4. Accept the visitor pop-up.\nFallback: price/lock tools missing -> build the rooms, name what is left on stream.\nDone = ladder_set mark guests_set true.\nOwner: \"you need to set bed prices and make facilities for guests and use locks so they dont wonder into your vaults only wher u sell stuff and buetify thir rooms and not barracks style rooms\"\nOwner: \"have to set a sell zone and use guests tab and only sell what u dont need\"",
+  "econ-guest-beds-full": "GUEST BEDS FULL (one scan).\n1. One single room + bed per missing bed.\nFallback: set_bed_price missing -> build the bed, name the price on stream.\nDone = no 'Not enough guest beds' letter.\nOwner: \"Beds in use: 5/3 / Not enough guest beds x2\"",
+  "econ-fields-outside": "FIELDS OUTSIDE THE WALLS. Look first: fertile soil outside the wall near a gate.\n1. Eight growing zones, one crop each.\n2. game_set cmd set_zone_plant per zone.\n3. Inside fields: harvest, then delete.\nFallback: zone refused -> extend an existing zone outward.\nDone = ladder_set mark fields_outside_set true (latch econ_fields_outside_done).\nOwner: \"put famrs out side the walls when u get to it\" / \"items as u unlock\" / \"need berrys potatos corn and healroot minimum plus cotton smoke leaf psycoid and hops\"",
+  "econ-corral": "CORRAL. Look first: open grass near the base.\n1. Fence + gate, no roof.\n2. Buy cows at the next trader.\n3. Handling 2 on one pawn.\nFallback: fence refused -> wood short, chop first.\nDone = ladder_set mark corral_set true (latch econ_corral_done).\nOwner: \"have to trade, make a corral for cows and such, buy cows, get a silver supply like cash\"",
+  "econ-money-to-security": "MONEY TO SECURITY (after the mountain base). silver over SECURITY_SILVER.\n1. Turrets/blast doors, then floors, then beauty.\nFallback: steel short -> supply-steel chain first.\nDone = ladder_set mark security_spend_set true (latch econ_money_to_security_done).\nOwner: \"better sucurity and flooring and beutification of rooms nned money crops and production and sales\"",
+  "econ-checklist": "DAILY ECONOMY CHECK. Look first: bill_rows, fields_all_default_crop, stockpile_cells, silver, colonists.\n1. A job whose sensor fell back: ladder_set its mark false AND its <id>_done latch false.\n2. mark_mountain_base_done + colonists >= ENDGAME_COLONISTS + silver >= EMPIRE_SILVER + research_multianalyzer: ladder_set mark empire_ready true.\nFallback: a sensor unmeasured -> leave that mark alone.\nDone = every economy sensor at level (standing check, no mark).\nOwner: \"maintain everything in totality ive evr told you\" / \"evrything in the game is fair game get to it\""
+ },
+ "sensors_needed": [
+  {
+   "key": "freezer_temp",
+   "how": "rooms containing a Building_Cooler: room.Temperature, min over rooms whose stockpile allows food",
+   "status": "PROPOSED (not in decisions.json TO_BUILD; no fixed rung reads it)"
+  },
+  {
+   "key": "food_outside_freezer",
+   "how": "rottable food stacks (CompRottable) on cells whose GetRoom().Temperature > 0",
+   "status": "PROPOSED (not in decisions.json TO_BUILD; no fixed rung reads it)"
+  },
+  {
+   "key": "guest_beds",
+   "how": "Hospitality: Building_GuestBed instances (reflection on type name) count",
+   "status": "PROPOSED (not in decisions.json TO_BUILD; no fixed rung reads it)"
+  },
+  {
+   "key": "guest_beds_priced",
+   "how": "Hospitality Building_GuestBed rentalFee field > 0 via reflection",
+   "status": "PROPOSED (not in decisions.json TO_BUILD; no fixed rung reads it)"
+  },
+  {
+   "key": "sell_zone_set",
+   "how": "Hospitality guest shopping area (reflection on MapComponent_GuestAreas / Area label)",
+   "status": "PROPOSED (not in decisions.json TO_BUILD; no fixed rung reads it)"
+  },
+  {
+   "key": "vault_set",
+   "how": "a room (roofed, 1 door, not PsychologicallyOutdoors) whose Zone_Stockpile filter allows Silver/Gold and nothing food",
+   "status": "PROPOSED (not in decisions.json TO_BUILD; no fixed rung reads it)"
+  },
+  {
+   "key": "fields_outside_walls",
+   "how": "Zone_Growing cells where cell.GetRoom(map).PsychologicallyOutdoors and outside the home-wall enclosure",
+   "status": "PROPOSED (not in decisions.json TO_BUILD; no fixed rung reads it)"
+  },
+  {
+   "key": "pen_cells",
+   "how": "CompAnimalPenMarker on map.listerBuildings: PenState.ConnectedRegions cell count",
+   "status": "PROPOSED (not in decisions.json TO_BUILD; no fixed rung reads it)"
+  },
+  {
+   "key": "trader_on_map",
+   "how": "map.mapPawns.AllPawnsSpawned any p.trader?.traderKind != null && !p.HostileTo(Faction.OfPlayer); plus map.passingShipManager.passingShips.Count",
+   "status": "PROPOSED (not in decisions.json TO_BUILD; no fixed rung reads it)"
+  },
+  {
+   "key": "dump_zone_set",
+   "how": "Zone_Stockpile whose settings.filter allows ThingCategoryDefOf.Corpses, unroofed, outside the walls",
+   "status": "PROPOSED (not in decisions.json TO_BUILD; no fixed rung reads it)"
+  },
+  {
+   "key": "colonist_drug_policy_none",
+   "how": "all colonists p.drugs.CurrentPolicy == Current.Game.drugPolicyDatabase default No drugs",
+   "status": "PROPOSED (not in decisions.json TO_BUILD; no fixed rung reads it)"
+  },
+  {
+   "key": "defnames_to_verify",
+   "status": "CHECK",
+   "how": "count_druglab (was count_drug_lab), count_tablesculpting, count_blocksmarble, research_drugproduction, research_microelectronicsbasics, research_multianalyzer, research_brewing, research_fabrication, research_deepdrilling: confirm defNames in-game"
+  }
+ ],
+ "variables_needed": [
+  {
+   "name": "PRODUCT_BILL",
+   "value": "10 * colonists",
+   "rule": "set amounts higher and higher as your base grows"
+  },
+  {
+   "name": "GUEST_DRUG_STOCK",
+   "value": "5 * guest_beds",
+   "rule": "drugs are for hospitality guests"
+  },
+  {
+   "name": "STONE_BLOCK_TARGET",
+   "value": 200,
+   "rule": "walkthrough: Stonecutter keep >= 200 stone blocks"
+  },
+  {
+   "name": "ART_BILL",
+   "value": "2 * colonists",
+   "rule": "better sucurity and flooring and beutification of rooms"
+  },
+  {
+   "name": "SECURITY_SILVER",
+   "value": "3 * TRADE_SILVER_MIN",
+   "rule": "the money pays for security, floors, beauty"
+  },
+  {
+   "name": "WOOD_RESERVE",
+   "value": "max(200, 60 * colonists) before first winter",
+   "rule": "walkthrough: >= 200 wood before first winter"
+  },
+  {
+   "name": "CORPSE_LIMIT",
+   "value": 0,
+   "rule": "bodies are hauled the day they drop"
+  },
+  {
+   "name": "EMPIRE_SILVER",
+   "value": "4 * TRADE_SILVER_MIN",
+   "rule": "decisions.json progression: empire_ready needs silver >= EMPIRE_SILVER (new tag)"
+  },
+  {
+   "name": "ENDGAME_COLONISTS",
+   "value": "as defined by the endgame family",
+   "rule": "shared tag; read by the econ-checklist empire_ready step"
+  }
+ ],
+ "missing_tools": [
+  "call_trader: press the comms console / call-a-trader mod gizmo by label",
+  "trade_dialog: open a caravan/ship trade, list goods, buy/sell by defName + count",
+  "company_order: Rimrooms Company Procurement (steel, silver)",
+  "zone_create: growing/stockpile zone by rect x1,z1,x2,z2",
+  "stockpile_filter modes valuables | medicine | dump | drugs",
+  "set_bed_price: Hospitality guest bed fee",
+  "hospitality_sell_zone: Guests tab sell area",
+  "door_lock: Locks mod door access",
+  "quest_accept: accept/decline a quest letter by id",
+  "set_drug_policy: keep colonists on No drugs"
+ ],
+ "unplaced_rules": [],
+ "notes": [
+  "see survival:freezer-sorting (was economy:econ-freezer-shelves)",
+  "see survival:freezer-sorting (was economy:econ-freezer-fallback)",
+  "see survival:butcher-table (was economy:econ-butcher)",
+  "see economy:trade-run (space:space-trade-comms and space:space-trade-comms-fallback point here)"
+ ],
+ "moved_to_other_families": {
+  "econ-freezer-shelves": {
+   "see": "survival:freezer-sorting",
+   "owner_rules_to_move_verbatim": [
+    "you still havent started growing cash crops and you still havent figured out you freezer storage as ive already told you how , you have shelfs outside the freezer set to hold freezer goods and good in the freezer not ment to be frozen, i already told you how to set up the shelves and zones, do it",
+    "get your shellves organized so like i already told you",
+    "come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations"
+   ],
+   "steps_to_merge": [
+    "game_set cmd rooms -> the room holding the cooler is the freezer",
+    "game_set cmd stockpile_room room <freezer> mode food",
+    "game_set cmd stockpile_filter x,z mode nofood on EVERY shelf outside the freezer",
+    "medicine only in the hospital room (stockpile_filter mode medicine: MISSING)",
+    "set one shelf, copy to the rest; shelves one priority above the room stockpile",
+    "ladder_set mark freezer_attempt true; once alert_food_rot is false and food sits in the freezer: ladder_set mark freezer_shelves_set true"
+   ],
+   "never": [
+    "food on shelves outside the freezer",
+    "non-food in the freezer"
+   ]
+  },
+  "econ-freezer-fallback": {
+   "see": "survival:freezer-sorting",
+   "owner_rules_to_move_verbatim": [
+    "you still havent started growing cash crops and you still havent figured out you freezer storage as ive already told you how , you have shelfs outside the freezer set to hold freezer goods and good in the freezer not ment to be frozen, i already told you how to set up the shelves and zones, do it"
+   ],
+   "steps_to_merge": [
+    "game_set cmd stockpile_camp mode food (roofed, beside the stove)",
+    "game_set cmd stockpile_filter mode nofood on every other store",
+    "ladder_set mark freezer_shelves_set true"
+   ],
+   "never": []
+  },
+  "econ-butcher": {
+   "see": "survival:butcher-table",
+   "owner_rules_to_move_verbatim": [
+    "get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion"
+   ],
+   "steps_to_merge": [
+    "game_apply_architect_designator TableButcher next to the freezer",
+    "game_set cmd add_bill recipe ButcherCorpseFlesh count 0 (forever)",
+    "ladder_set mark butcher_set true"
+   ],
+   "never": []
+  }
+ },
+ "fix_log": [
+  "deleted econ-freezer-shelves, econ-freezer-fallback -> survival:freezer-sorting; econ-butcher -> survival:butcher-table (decisions chains); quotes/steps listed under moved_to_other_families for the survival fixer",
+  "priorities re-banded into 20.00-24.99 in old relative order, step 0.12, no ties",
+  "count_drug_lab -> count_druglab; letter_labels '~x' -> letter_matches 'x'",
+  "illegal shapes fixed: not{ctu,preset,reset} and ons{any} wrapped in a label",
+  "ctu input mark_crops_attempt -> mark_crops_tried: set true on a refused set_zone_plant, false at the start of each attempt, in both crops rungs",
+  "stage interlock: mark_camp_stable on crops-full-set onward (alarms, resets, trader/quest events excepted); rung-4-production latch writes rung_4_production_done",
+  "econ-checklist sets mark_empire_ready (decisions progression)",
+  "owner_rules filled from each rung's why; 3 combined section-6 / owner-rules-b quotes placed verbatim"
+ ]
+}

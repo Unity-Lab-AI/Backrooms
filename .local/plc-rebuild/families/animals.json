@@ -1,0 +1,535 @@
+{
+ "family": "animals",
+ "rungs": [
+  {
+   "id": "animals-food-steady",
+   "priority": 49.0,
+   "family": "animals",
+   "when": {
+    "colony_exists": true,
+    "mark_camp_food_steady": false,
+    "food_held": {
+     "ton": {
+      "days_of_food": ">={FOOD_COMFORT_DAYS}",
+      "meals": ">0"
+     },
+     "hours": 24
+    }
+   },
+   "then": [
+    "game_state -- read days_of_food, meals, raw_food once more",
+    "ladder_set mark camp_food_steady true"
+   ],
+   "never": [
+    "never start taming, pens or mounts before this mark is set: food and the camp come first"
+   ],
+   "latch": true,
+   "why": "owner: \"let your people get good on food and set up camp before moving into the base like u said itll tak a while\" -- walkthrough-food-and-medicine Q (hunt and gather to bridge the gap until the first harvest)"
+  },
+  {
+   "id": "animals-hunter-armed",
+   "priority": 4.15,
+   "family": "animals",
+   "when": {
+    "colony_exists": true,
+    "alert_hunterlacksrangedweapon": true
+   },
+   "then": [
+    "game_list_colonists -- the pawn with Hunting on and the best Shooting",
+    "game_set cmd unforbid (loose guns)",
+    "order_pawn <hunter> equip the best loose ranged weapon (bow/rifle) -- read the equipment back",
+    "pawn_priorities <hunter> custom {Hunting:2}"
+   ],
+   "never": [
+    "never send a melee-only or unarmed pawn to hunt"
+   ],
+   "latch": false,
+   "why": "owner: \"Missing 0.5x raw food / No hunter has a valid hunting weapon\" / \"you havent set up your work tab manual priorities, everything from firefighting to cooking should be hieghest 1s and you only put 2s on the teask u want each colonist doing spliting theri work up so u have like on guy cutting and planting and one crafting and constructing and one hunting and everyhting else\" -- walkthrough W Hunting"
+  },
+  {
+   "id": "animals-hunt-food",
+   "priority": 4.16,
+   "family": "animals",
+   "when": {
+    "colony_exists": true,
+    "days_of_food": "<{FOOD_MIN_DAYS}",
+    "wild_game": ">0",
+    "alert_hunterlacksrangedweapon": false,
+    "hostiles_on_map": 0,
+    "hunt_ok": {
+     "not": {
+      "ctu": {
+       "designations_hunt": 0
+      },
+      "preset": 3,
+      "reset": {
+       "days_of_food": ">={FOOD_MIN_DAYS}"
+      }
+     }
+    }
+   },
+   "then": [
+    "game_set cmd hunt -- designates every safe wild animal (skips NEVER_HUNT); read the count it returns",
+    "designations_hunt still 0: game_select_architect_designator Orders/Hunt then game_apply_architect_designator on each wild_game animal's cell (game_get_cells_info finds them)",
+    "mark_butcher_built false: survival rung butcher-table first (butcher table before the first hunt)",
+    "game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET}"
+   ],
+   "never": [
+    "never hunt NEVER_HUNT animals (boomalope, boomrat, thrumbo, bear, elephant, rhino, megasloth, insects), packs or predators",
+    "never hunt while hostiles are on the map"
+   ],
+   "latch": false,
+   "why": "owner: \"you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!\" / \"how u plan on cutting up them animals?\" / \"cook bill maintained at 50 rather than 10\" -- walkthrough W Hunting (hunt when food < 5 days and safe game is on map; never hunt boomalopes near base, thrumbos or packs); walkthrough Q (never hunt boomrats, boomalopes, pack animals or predators)"
+  },
+  {
+   "id": "animals-hunt-fallback",
+   "priority": 4.17,
+   "family": "animals",
+   "when": {
+    "colony_exists": true,
+    "days_of_food": "<{FOOD_MIN_DAYS}",
+    "hunt_ok": {
+     "ctu": {
+      "designations_hunt": 0
+     },
+     "preset": 3,
+     "reset": {
+      "days_of_food": ">={FOOD_MIN_DAYS}"
+     }
+    }
+   },
+   "then": [
+    "say on stream: no safe game to hunt -- switching to gathering",
+    "berry_bushes>0: game_select_architect_designator Orders/Harvest and game_apply_architect_designator on every berry bush",
+    "growing_cells = 0: game_set cmd crops plant Plant_Rice; else check every field is harvesting",
+    "colony_animals>1: Orders/Slaughter the least useful colony animal, never a trained mount or milk animal"
+   ],
+   "never": [
+    "never hunt a NEVER_HUNT animal out of desperation"
+   ],
+   "latch": false,
+   "why": "owner: \"you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!\" / \"IS AUTO HARVETS NOT WORKING? CROPS NEED HARVET\" / \"collecting resources planting crops and setting bills for food\" -- walkthrough Q (hunt and gather to bridge the gap until the first harvest)"
+  },
+  {
+   "id": "animals-butcher-standing",
+   "priority": 4.25,
+   "family": "animals",
+   "when": {
+    "colony_exists": true,
+    "mark_butcher_built": true,
+    "corpses": ">0",
+    "hostiles_on_map": 0
+   },
+   "then": [
+    "game_set cmd unforbid (the kill)",
+    "game_set cmd add_bill recipe ButcherCorpseFlesh count 20 -- only if the butcher table lacks it (read the bill list first)",
+    "game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET} at the stove",
+    "game_set cmd stockpile_filter x z (freezer) mode food priority 3 -- raw meat goes cold"
+   ],
+   "never": [
+    "never butcher a rotten corpse (it cannot be butchered)",
+    "never a bill on Do forever: Do until X, raised as the base grows",
+    "never click an option twice: one click, read it back"
+   ],
+   "latch": false,
+   "why": "owner: \"how u plan on cutting up them animals?\" / \"u need to make meals sooner than later and get your shellves organized so like i already told you. so wtf are you not making a guide of everything ive told you becasue im not fucking around you are gonna die if u dont take care of them\" / \"cook bill maintained at 50 rather than 10\" / \"your freezer is completely empty\" / \"set amounts higher and higher as your base grows\" / \"make sure u set it right ur clicking the options twice\" -- walkthrough Q (butcher fresh corpses only; rotten corpses cannot be butchered)"
+  },
+  {
+   "id": "animals-danger-clear",
+   "priority": 4.3,
+   "family": "animals",
+   "when": {
+    "colony_exists": true,
+    "danger_animals_near": ">0"
+   },
+   "then": [
+    "game_list_colonists -- anyone working near the dangerous animal?",
+    "game_set cmd set_area pawn <each colonist> area Home",
+    "it attacks / goes manhunter: game_set_draft the shooters, kill it at range before it closes"
+   ],
+   "never": [
+    "never designate hunting or taming on it",
+    "never let it reach melee range of a pawn"
+   ],
+   "latch": false,
+   "why": "owner: \"set everyone to attack not flee and group up when something attacks and draft and flee attack never letting someone melle person or animal get close to your pawns kill them with range at all costs\" -- walkthrough W Hunting (never hunt boomalopes near base, thrumbos or packs)"
+  },
+  {
+   "id": "animals-handler",
+   "priority": 49.5,
+   "family": "animals",
+   "when": {
+    "colony_exists": true,
+    "mark_camp_food_steady": true,
+    "mark_handler_set": false
+   },
+   "then": [
+    "game_list_colonists -- the best Animals skill",
+    "pawn_priorities <that pawn> custom {Handling:2}",
+    "everyone else Handling 3 (never blank)",
+    "ladder_set mark handler_set true"
+   ],
+   "latch": true,
+   "why": "owner: \"you havent set up your work tab manual priorities, everything from firefighting to cooking should be hieghest 1s and you only put 2s on the teask u want each colonist doing spliting theri work up so u have like on guy cutting and planting and one crafting and constructing and one hunting and everyhting else\" -- walkthrough W Animals"
+  },
+  {
+   "id": "tame-mounts",
+   "priority": 50,
+   "family": "animals",
+   "when": {
+    "mount_candidates": ">0",
+    "mark_mounts_trained": "<{MOUNT_TARGET}",
+    "colonists": ">3",
+    "mark_camp_food_steady": true,
+    "mark_handler_set": true,
+    "danger_animals_near": 0,
+    "tame_ok": {
+     "not": {
+      "ctu": {
+       "designations_tame": 0
+      },
+      "preset": 3,
+      "reset": {
+       "colony_animals": ">0"
+      }
+     }
+    }
+   },
+   "then": [
+    "game_get_cells_info: the best MOUNT_DEFS animal in sight (Horse, Dromedary, Muffalo first; Elephant/Thrumbo only with RIFLES_FOR_BIG_GAME armed shooters drafted)",
+    "game_select_architect_designator Orders/Tame then game_apply_architect_designator on its cell",
+    "read designations_tame back"
+   ],
+   "never": [
+    "never tame an elephant or thrumbo without guards drafted (they go manhunter when taming fails)"
+   ],
+   "latch": false,
+   "why": "owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" -- walkthrough W Animals (good tames: muffalo/dromedary (wool, milk, pack), huskies/labradors for war)",
+   "note": "UNVERIFIED: which MOUNT_DEFS species Giddy-up can ride; after 3 failed scans with no tame designation the rung drops out -- buy mounts from a trader"
+  },
+  {
+   "id": "animal-pen",
+   "priority": 50.5,
+   "family": "animals",
+   "when": {
+    "colony_exists": true,
+    "mark_camp_food_steady": true,
+    "mark_pen_built": false,
+    "has_stock": {
+     "any": [
+      {
+       "colony_animals": ">={PEN_MIN_ANIMALS}"
+      },
+      {
+       "mount_candidates": ">0"
+      }
+     ]
+    }
+   },
+   "then": [
+    "pick open soil inside the defended camp beside the fields (game_get_cells_info: not marsh/water)",
+    "game_list_architect_designators Structure: Fence -- game_drag_cell a closed ring of {PEN_CELLS_PER_ANIMAL} cells per animal; a fence gate; a pen marker inside",
+    "anything roofed it: Orders/Remove roof over the whole pen",
+    "animal sleeping spots inside; game_set cmd stockpile_filter x z (pen corner) mode all for hay/kibble",
+    "ladder_set mark pen_built true"
+   ],
+   "never": [
+    "never roof the pen",
+    "never place the pen outside the defences"
+   ],
+   "latch": true,
+   "why": "owner: \"need milk right look for milk makers tame some build a fences in field to put them\" / \"have to trade, make a corral for cows and such, buy cows, get a silver supply like cash\" / \"dont put roof over you pen\" -- walkthrough W Animals (fenced animal area with sleeping spots once Animals >= 5)",
+   "note": "UNVERIFIED: whether list_colonists lists colony animals"
+  },
+  {
+   "id": "animals-pen-soil",
+   "priority": 50.6,
+   "family": "animals",
+   "when": {
+    "mark_pen_built": true,
+    "mark_pen_soil": false
+   },
+   "then": [
+    "game_get_cells_info over the pen: every marsh/mud/sand/water cell",
+    "terraform those cells to Soil (designator name UNVERIFIED: find it in game_list_architect_designators)",
+    "ladder_set mark pen_soil true"
+   ],
+   "latch": true,
+   "why": "owner: \"fix ur tower and walls and fenses and put soil under ur famrs and feilds and animal areas so they have grass grow\" / \"terriform u pen\""
+  },
+  {
+   "id": "animals-milk-herd",
+   "priority": 50.7,
+   "family": "animals",
+   "when": {
+    "mark_pen_built": true,
+    "mark_handler_set": true,
+    "mark_milk_herd": false
+   },
+   "then": [
+    "game_get_cells_info / game_take_screenshot: wild cows, goats, muffalo, dromedaries, chickens",
+    "game_select_architect_designator Orders/Tame then game_apply_architect_designator on each (not NEVER_HUNT)",
+    "a trader with cows and silver >= TRADE_SILVER_MIN: buy them",
+    "count_cow + count_muffalo + count_goat + count_dromedary >= 2: ladder_set mark milk_herd true"
+   ],
+   "never": [
+    "never tame a predator or a NEVER_HUNT animal for milk"
+   ],
+   "latch": true,
+   "why": "owner: \"need milk right look for milk makers tame some build a fences in field to put them\" / \"have to trade, make a corral for cows and such, buy cows, get a silver supply like cash\" / \"kids need milk and cribs and toys\" -- walkthrough W Animals (muffalo/dromedary (wool, milk, pack), chickens (eggs))",
+   "note": "UNVERIFIED: count_<def> counts things, not pawns -- needs sensor milk_animals"
+  },
+  {
+   "id": "animals-haygrass",
+   "priority": 50.8,
+   "family": "animals",
+   "when": {
+    "mark_pen_built": true,
+    "colony_animals": ">=3",
+    "quadrum_index": "<3",
+    "mark_haygrass": false
+   },
+   "then": [
+    "game_set cmd crops plant Plant_Haygrass -- {HAY_CELLS_PER_ANIMAL} cells per colony animal next to the pen",
+    "crops reused the rice field: game_set cmd set_zone_plant x z Plant_Haygrass on the new field",
+    "ladder_set mark haygrass true"
+   ],
+   "latch": true,
+   "why": "walkthrough W Haygrass (plant haygrass for grazers in growing season); walkthrough F (1 haygrass field per 2-3 large animals); owner: \"fix ur tower and walls and fenses and put soil under ur famrs and feilds and animal areas so they have grass grow\""
+  },
+  {
+   "id": "animals-kibble",
+   "priority": 50.9,
+   "family": "animals",
+   "when": {
+    "colony_animals": ">={KIBBLE_FROM_ANIMALS}",
+    "mark_butcher_built": true
+   },
+   "then": [
+    "game_set cmd add_bill recipe Make_Kibble count {KIBBLE_TARGET} (bench UNVERIFIED in this mod list)",
+    "animals eat kibble/hay, never meals (Animals tab food restriction -- see missing_tools)"
+   ],
+   "never": [
+    "never let animals eat the colonists' meals"
+   ],
+   "latch": false,
+   "why": "walkthrough W Kibble (50 meat/eggs + 50 hay/rice -> 75 kibble; feed animals kibble not meals); owner: \"set amounts higher and higher as your base grows\""
+  },
+  {
+   "id": "train-mounts",
+   "priority": 51,
+   "family": "animals",
+   "when": {
+    "colony_animals": ">0",
+    "mark_mounts_trained": "<{MOUNT_TARGET}",
+    "mark_handler_set": true
+   },
+   "then": [
+    "game_open_main_tab Animals: training Obedience, then Release, for each mount (one box per click, read back)",
+    "game_set cmd set_area pawn <animal> area <pen>",
+    "ladder_set mark mounts_trained <n>"
+   ],
+   "latch": false,
+   "why": "owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: whether set_area accepts an animal"
+  },
+  {
+   "id": "armor-mounts",
+   "priority": 51.5,
+   "family": "animals",
+   "when": {
+    "mark_mounts_trained": ">2"
+   },
+   "then": [
+    "game_set cmd add_bill recipe <animal armor recipe> count 1 per mount -- only if the bench offers it"
+   ],
+   "latch": true,
+   "why": "owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: animal armor recipes (ingendum.animalarmorbasic)"
+  },
+  {
+   "id": "animals-autumn-cull",
+   "priority": 51.8,
+   "family": "animals",
+   "when": {
+    "quadrum_index": 2,
+    "colony_animals": ">{WINTER_ANIMAL_CAP}",
+    "autumn": {
+     "ons": {
+      "quadrum_index": 2
+     }
+    }
+   },
+   "then": [
+    "game_open_main_tab Animals -- pick the oldest/least useful, never a trained mount or a milk animal",
+    "Orders/Slaughter designator on each until colony_animals <= WINTER_ANIMAL_CAP",
+    "the meat: animals-butcher-standing takes it"
+   ],
+   "latch": false,
+   "why": "walkthrough W Animals (slaughter excess animals in autumn when count > winter food capacity)"
+  },
+  {
+   "id": "cavalry-check",
+   "priority": 52,
+   "family": "animals",
+   "when": {
+    "mark_mounts_trained": ">0",
+    "mark_mounted_ready": false,
+    "CAVALRY_ENABLED": ">0"
+   },
+   "then": [
+    "game_set_draft one rider",
+    "game_list_selected_gizmos",
+    "mount gizmo there: game_execute_gizmo mount, then ladder_set mark mounted_ready true",
+    "no gizmo: ladder_set tag CAVALRY_ENABLED 0 -- war rungs fall back to infantry with animals on Release"
+   ],
+   "latch": true,
+   "why": "owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: the Giddy-up mount gizmo"
+  },
+  {
+   "id": "cavalry-tactics",
+   "priority": 53,
+   "family": "animals",
+   "when": {
+    "hostiles_on_map": ">0",
+    "mark_mounted_ready": true,
+    "CAVALRY_ENABLED": ">0"
+   },
+   "then": [
+    "mounted riders flank on open ground, Run and Gun shooting on the move (memegoddess.runandgun)",
+    "elephants front-line on Release",
+    "retreat behind embrasures when hurt"
+   ],
+   "never": [
+    "never charge a turret line or mortars",
+    "never let melee close on a pawn"
+   ],
+   "latch": false,
+   "why": "owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / \"set everyone to attack not flee and group up when something attacks and draft and flee attack never letting someone melle person or animal get close to your pawns kill them with range at all costs\""
+  }
+ ],
+ "prompts": {
+  "animals-food-steady": "Look first: game_state days_of_food, meals, raw_food.\nThis fires only after food has held at FOOD_COMFORT_DAYS for a full game day.\nTool: ladder_set mark camp_food_steady true. Nothing else.\nDone: mark camp_food_steady = true. Until then: no pens, no taming, no mounts.\nOwner: \"let your people get good on food and set up camp before moving into the base like u said itll tak a while\"",
+  "animals-hunter-armed": "Look first: game_list_colonists -- who has Hunting on, who shoots best.\n1) game_set cmd unforbid  2) order_pawn <hunter> equip the best loose bow/rifle  3) pawn_priorities <hunter> {Hunting:2}.\nRefused / no gun: give Hunting 2 to a pawn already carrying a ranged weapon.\nDone: alert_hunterlacksrangedweapon goes false.\nOwner: \"No hunter has a valid hunting weapon\"",
+  "animals-hunt-food": "Look first: days_of_food, wild_game, danger_animals_near.\n1) game_set cmd hunt -- read the count.  2) count 0: Orders/Hunt designator by hand on each safe animal cell.\n3) no butcher table yet: build it first.  4) add_bill CookMealSimple count MEAL_BILL_TARGET.\nNever NEVER_HUNT, never packs/predators, never during a raid.\nFails 3 scans: the fallback rung takes over (gathering).\nDone: designations_hunt > 0, then days_of_food back above FOOD_MIN_DAYS.\nOwner: \"you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!\"",
+  "animals-hunt-fallback": "Hunting failed 3 times. Say it on stream, then gather.\n1) Orders/Harvest on every berry bush.  2) no field: game_set cmd crops plant Plant_Rice; check fields are harvesting.\n3) last resort: Orders/Slaughter the least useful animal, never a mount.\nDone: days_of_food >= FOOD_MIN_DAYS (the counter resets).\nOwner: \"IS AUTO HARVETS NOT WORKING? CROPS NEED HARVET\"",
+  "animals-butcher-standing": "Look first: corpses, the butcher table's bill list, the freezer.\n1) game_set cmd unforbid  2) add_bill ButcherCorpseFlesh count 20 (only if missing)  3) add_bill CookMealSimple count MEAL_BILL_TARGET\n4) stockpile_filter freezer mode food -- meat goes cold.\nRotten corpses cannot be butchered: leave them. One click per option, read it back.\nStanding order, no mark. Done for now: corpses 0, meals rising.\nOwner: \"how u plan on cutting up them animals?\" / \"cook bill maintained at 50 rather than 10\"",
+  "animals-danger-clear": "Look first: where the dangerous animal is vs your pawns.\n1) set_area every colonist to Home.  2) it charges: game_set_draft the shooters, kill it at range.\nNever hunt or tame it.\nDone: danger_animals_near 0 or it is dead.\nOwner: \"never letting someone melle person or animal get close to your pawns kill them with range at all costs\"",
+  "animals-handler": "Look first: game_list_colonists Animals skill.\n1) pawn_priorities <best> {Handling:2}  2) everyone else Handling 3, never blank.\nRefused: game_set cmd set_work_priority pawn <p> work Handling level 2.\nDone: ladder_set mark handler_set true.\nOwner: \"...one guy cutting and planting and one crafting and constructing and one hunting and everyhting else\"",
+  "tame-mounts": "Look first: mount candidates on the map; danger_animals_near must be 0.\n1) Orders/Tame on the best MOUNT_DEFS animal (horse/dromedary/muffalo first).\nElephant/thrumbo: draft armed guards first.\nFails 3 scans: stop taming, buy mounts from a trader.\nDone: designations_tame > 0, then the animal joins the colony.\nOwner: \"...from elephant riding armies drop poding down from your megaship...\"",
+  "animal-pen": "Look first: open soil inside the defences next to the fields.\n1) Fence ring (Structure/Fence, game_drag_cell) + fence gate + pen marker.\n2) No roof over it -- remove roof if any.  3) sleeping spots, a hay/kibble stockpile in a corner.\nRefused drag: one side at a time, read each back.\nDone: ladder_set mark pen_built true.\nOwner: \"need milk right look for milk makers tame some build a fences in field to put them\" / \"dont put roof over you pen\"",
+  "animals-pen-soil": "Look first: game_get_cells_info across the pen -- marsh, mud, sand, water.\n1) Terrain designator to Soil on each bad cell (find it in game_list_architect_designators).\nRefused: small drags; report which cells stayed bad.\nDone: ladder_set mark pen_soil true.\nOwner: \"put soil under ur famrs and feilds and animal areas so they have grass grow\" / \"terriform u pen\"",
+  "animals-milk-herd": "Look first: tameable milk makers on the map (cow, goat, muffalo, dromedary) and any trader.\n1) Orders/Tame on each.  2) a trader with cows: buy them.\nNone on map: wait for a trader; the rung stays live.\nDone: 2+ milk animals, ladder_set mark milk_herd true.\nOwner: \"need milk right look for milk makers tame some build a fences in field to put them\" / \"have to trade, make a corral for cows and such, buy cows\"",
+  "animals-haygrass": "Look first: colony_animals, season (not winter).\n1) game_set cmd crops plant Plant_Haygrass beside the pen, HAY_CELLS_PER_ANIMAL per animal.\nRefused: set_zone_plant on an existing zone.\nDone: ladder_set mark haygrass true.\nWalkthrough: one haygrass field per 2-3 large animals.",
+  "animals-kibble": "Look first: kibble count and the bench bills.\n1) add_bill Make_Kibble count KIBBLE_TARGET.\nRefused (no bench offers it): say so, keep hay stocked instead.\nAnimals eat kibble or hay, never meals. Standing order.\nOwner: \"set amounts higher and higher as your base grows\"",
+  "train-mounts": "Look first: Animals tab, trained skills of each mount.\n1) Obedience, then Release, for each.  2) set_area the animal to the pen.\nNo tool to tick training: Animals tab, one box per click, read back.\nDone: ladder_set mark mounts_trained <n>.",
+  "armor-mounts": "Look first: the bench bill picker for animal armor.\n1) add_bill <recipe> count 1 per mount.\nNot offered: skip and say so.\nDone: one armor per trained mount (latched).",
+  "animals-autumn-cull": "Autumn: more animals than winter can feed.\n1) Animals tab: oldest/least useful, never mounts or milk animals.  2) Orders/Slaughter each until colony_animals <= WINTER_ANIMAL_CAP.\nThe meat goes to the butcher.\nDone: count at the cap.",
+  "cavalry-check": "1) game_set_draft one rider  2) game_list_selected_gizmos.\nMount gizmo: game_execute_gizmo it, ladder_set mark mounted_ready true.\nNo gizmo: ladder_set tag CAVALRY_ENABLED 0 -- infantry with animals on Release.\nDone: mounted_ready true or CAVALRY_ENABLED 0.",
+  "cavalry-tactics": "Raid on the map with mounted riders.\n1) riders flank on open ground, shooting on the move.  2) elephants front line on Release.  3) hurt: back behind embrasures.\nNever charge turrets or mortars; never let melee close.\nDone: hostiles_on_map 0.\nOwner: \"kill them with range at all costs\""
+ },
+ "sensors_needed": [
+  {
+   "key": "alert_hunterlacksrangedweapon",
+   "how to measure in C# (RimWorld API)": "generic AlertKey of Alert_HunterLacksRangedWeapon -- confirm the class is in AlertClasses so the key is always written (missing key never fires)"
+  },
+  {
+   "key": "milk_animals",
+   "how to measure in C# (RimWorld API)": "home.mapPawns.SpawnedColonyAnimals.Count(p => p.GetComp<CompMilkable>() != null)"
+  },
+  {
+   "key": "tame_candidates",
+   "how to measure in C# (RimWorld API)": "wild animals (Faction == null, RaceProps.Animal) where !NeverHuntDefs.Contains(def) && !RaceProps.predator && p.RaceProps.wildness < 0.75"
+  },
+  {
+   "key": "pen_markers",
+   "how to measure in C# (RimWorld API)": "home.listerBuildings.AllBuildingsColonistOfDef(ThingDefOf.PenMarker).Count()"
+  },
+  {
+   "key": "pen_roofed_cells",
+   "how to measure in C# (RimWorld API)": "for each pen marker: CompAnimalPenMarker.PenState enclosed cells where home.roofGrid.Roofed(c)"
+  },
+  {
+   "key": "pen_bad_soil_cells",
+   "how to measure in C# (RimWorld API)": "pen cells where home.terrainGrid.TerrainAt(c).fertility < 1.0f"
+  },
+  {
+   "key": "fresh_corpses",
+   "how to measure in C# (RimWorld API)": "ThingRequestGroup.Corpse where ((Corpse)t).GetRotStage() == RotStage.Fresh && InnerPawn.RaceProps.Animal"
+  },
+  {
+   "key": "animals_hungry",
+   "how to measure in C# (RimWorld API)": "SpawnedColonyAnimals.Count(p => p.needs.food != null && p.needs.food.CurCategory >= HungerCategory.Hungry)"
+  },
+  {
+   "key": "animal_food_days",
+   "how to measure in C# (RimWorld API)": "(hay + kibble nutrition from resourceCounter) / sum over colony animals of needs.food.FoodFallPerTick * 60000"
+  },
+  {
+   "key": "trained_mounts",
+   "how to measure in C# (RimWorld API)": "SpawnedColonyAnimals.Count(p => MountDefs.Contains(p.def.defName) && p.training.HasLearned(TrainableDefOf.Obedience)) -- replaces hand-set mark mounts_trained"
+  },
+  {
+   "key": "handler_priority_set",
+   "how to measure in C# (RimWorld API)": "any free colonist with workSettings.GetPriority(WorkTypeDefOf.Handling) == 2 -- replaces mark handler_set"
+  },
+  {
+   "key": "designations_slaughter",
+   "how to measure in C# (RimWorld API)": "add {\"Slaughter\", \"designations_slaughter\"} to DesignationKeys"
+  }
+ ],
+ "variables_needed": [
+  {
+   "name": "PEN_CELLS_PER_ANIMAL",
+   "value": 30,
+   "rule": "grazing area per animal; min 15 max 200"
+  },
+  {
+   "name": "HAY_CELLS_PER_ANIMAL",
+   "value": 15,
+   "rule": "walkthrough F: 1 haygrass field per 2-3 large animals; min 8 max 60"
+  },
+  {
+   "name": "KIBBLE_FROM_ANIMALS",
+   "value": 3,
+   "rule": "start kibble at this many colony animals; min 1 max 20"
+  },
+  {
+   "name": "KIBBLE_TARGET",
+   "value": 75,
+   "rule": "walkthrough W Kibble: one batch = 75; 25 per animal, min 75 max 2000"
+  },
+  {
+   "name": "WINTER_ANIMAL_CAP",
+   "value": 6,
+   "rule": "2 per colonist until animal_food_days is measured; min 2 max 60"
+  },
+  {
+   "name": "PEN_MIN_ANIMALS",
+   "value": 1,
+   "rule": "walkthrough says pen at Animals >= 5; owner wants a pen for milk animals from the first tame, so 1"
+  }
+ ],
+ "missing_tools": [
+  "game_set cmd tame (every safe tame candidate / a named def) -- today only via Orders/Tame designator by hand",
+  "game_set cmd slaughter (def or count; never mounts or milk animals)",
+  "game_set cmd harvest_wild (designate every berry bush / agave)",
+  "game_set cmd train (animal, Obedience|Release|Rescue|Haul)",
+  "game_set cmd animal_food (animal or all, food restriction e.g. Kibble+Hay)",
+  "game_set cmd pen (x,z,w,h: fence ring + gate + pen marker, unroofed)",
+  "game_set cmd terraform_soil (x,z,w,h)",
+  "game_set cmd equip (pawn, thing) -- order_pawn equip is free text, unverified",
+  "game_set cmd buy (def, count) at a present trader"
+ ],
+ "unplaced_rules": [
+  {
+   "quote": "u need to move those two cooler on the morgue freezer to east side of that narro room so they ppush outside correctly",
+   "why": "cooler placement -- belongs to survival/temperature, not animals"
+  },
+  {
+   "quote": "update the peeps watching... update your profile pic u arnt doing that oftern enough it should be comon place / basicly update your pic more in rimchat / still havnet update your pics yet you are suppose to be doing that,, you can even post game screenshots highlighted things that happen with your hand writting drawn o",
+   "why": "stream/meta rule mis-tagged animals; belongs to meta"
+  }
+ ]
+}

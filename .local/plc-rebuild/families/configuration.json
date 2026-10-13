@@ -1,0 +1,568 @@
+{
+ "family": "configuration",
+ "rungs": [
+  {
+   "id": "config-ui-clear",
+   "priority": 1.6,
+   "family": "configuration",
+   "when": {
+    "dialog_open": true
+   },
+   "then": [
+    "game_close_window (the top window: operations / bills / any menu)",
+    "game_close_main_tab",
+    "game_list_colonists, then game_select_pawn on ONE pawn and game_list_selected_gizmos: the Draft gizmo must be listed",
+    "if no gizmo is listed: game_press_accept once, then game_close_window again"
+   ],
+   "never": [
+    "act on a pawn while a dialog or main tab is still open",
+    "sleep, wait or set a timer of any length (owner: \"stop setting timeres all timers are forbidden aCT NOW!\")"
+   ],
+   "latch": false,
+   "why": "owner: \"i think it doesnt know how to click off the operation menu to use the pawns\" / \"three peopel are there its selecting them but no pawn options apear like draft major bug the model cant haddle\""
+  },
+  {
+   "id": "config-ui-clear-stuck",
+   "priority": 1.5,
+   "family": "configuration",
+   "when": {
+    "stuck": {
+     "ctu": {
+      "dialog_open": true
+     },
+     "preset": 3,
+     "reset": {
+      "paused": false
+     }
+    }
+   },
+   "then": [
+    "game_take_screenshot once and read which window is on top",
+    "game_get_ui_layout, then game_click_ui_target on its Close / X / Cancel button",
+    "game_close_main_tab",
+    "ladder_set mark ui_stuck_reported true and say in chat (clean) that a window is stuck"
+   ],
+   "never": [
+    "burst game_take_screenshot (owner: \"i lost the hud in my game here on the system i see no hud ui of the game when u where mass clicking shit it disappeared fix it\")"
+   ],
+   "latch": false,
+   "why": "owner: \"i think it doesnt know how to click off the operation menu to use the pawns\" -- fallback after 3 re-opens"
+  },
+  {
+   "id": "config-hud-restore",
+   "priority": 1.4,
+   "family": "configuration",
+   "disabled": "hud_visible has no measurement yet (see sensors_needed)",
+   "when": {
+    "hud_visible": false
+   },
+   "then": [
+    "game_pause_game",
+    "save_game (missing tool) rimbridge_save_hudfix",
+    "toggle_hud (missing tool: F11) or reload that save",
+    "ladder_set mark hud_restored true"
+   ],
+   "never": [
+    "take more than one screenshot per look"
+   ],
+   "latch": false,
+   "why": "owner: \"i lost the hud in my game here on the system i see no hud ui of the game when u where mass clicking shit it disappeared fix it\" / \"save your peopel fix the game hud relaod it if its fucking busted wtf... we cant paly with no hud\""
+  },
+  {
+   "id": "config-window-fullscreen",
+   "priority": 40,
+   "family": "configuration",
+   "disabled": "window_fullscreen has no measurement yet; no tool sets the display mode",
+   "when": {
+    "window_fullscreen": false,
+    "colony_exists": true
+   },
+   "then": [
+    "set_window_mode fullscreen (missing tool)"
+   ],
+   "latch": true,
+   "why": "owner: \"and change the game back to fullscreen not boarderless so i can tab in and out and u can still do everything u need in game\""
+  },
+  {
+   "id": "work-priorities-unset",
+   "priority": 10,
+   "family": "configuration",
+   "when": {
+    "colony_exists": true,
+    "grid_matches_plan": false
+   },
+   "then": [
+    "game_pause_game",
+    "game_list_colonists and read each pawn's skills, passions and incapables",
+    "pawn_priorities once per pawn (Firefighter through Cooking = 1 is the paste; it also switches manual priorities ON)",
+    "custom per pawn after Cooking: that pawn's specialty = 2 (crafter: Construction/Crafting/Smithing/Tailoring; grower: Growing/PlantCutting/Research; hunter: Hunting/Mining/Hauling), every other column = 3, 0 only where incapable",
+    "Doctor = 1 is already in the paste; the best Medicine pawn keeps it, the best Cooking pawn is the main cook",
+    "Hauling = 1 for everyone while the pod drop lies outside (stockpile_cells 0), then back to 3",
+    "one pawn keeps Cleaning = 2 once the colony has more than 3 rooms",
+    "game_set cmd set_work_priority (pawn, work, level) to correct any single cell; then re-read grid_matches_plan"
+   ],
+   "never": [
+    "leave a cell blank unless the pawn is incapable",
+    "count clicks or set a cell right and then paste a wrong row over it",
+    "put everyone on PlantCutting",
+    "sleep, wait or set a timer of any length (owner: \"stop setting timeres all timers are forbidden aCT NOW!\")"
+   ],
+   "latch": false,
+   "why": "owner: \"set it how ive told you every day weve played all of them for every one using coopy paste\" / \"set up all priorities this is the last time i telling you set it how ive told you every day weve played all of them for every one using coopy paste to paste one to the tosthers then customize keep all the 1s firsefiring through cooking\" / \"you havent set up your work tab manual priorities, everything from firefighting to cooking should be hieghest 1s and you only put 2s on the teask u want each colonist doing spliting theri work up so u have like on guy cutting and planting and one crafting and constructing and one hunting and everyhting else\" / \"set your priorities, dont need everyone choopping wood, multitask\" / \"dint leave a bunch blankk\" / \"set up priorities u fool\" / \"pawns have none set\" / \"your prioties for work are all fucked come on fix it for next time u know how to do it fix why u didnt do it and do it\" / \"stop ur fucking up the priorities i told you how to set them, now get back to it\" / \"you did it iagin you set it correct then set it wrong and the n pasted wrongly to all\" / \"work priorites yours and the pawns\" / walkthrough-opening-and-camp.md [configuration] B,Q (manual ON, Firefight/Patient/Bed rest/Basic 1, Hauling 1 in the opening, best-skill pawn on Doctor/Cook) -- where the walkthrough says 4 for the rest, the owner's 3 wins"
+  },
+  {
+   "id": "work-priorities-fallback",
+   "priority": 9.9,
+   "family": "configuration",
+   "when": {
+    "held": {
+     "ton": {
+      "grid_matches_plan": false
+     },
+     "hours": 3
+    }
+   },
+   "then": [
+    "game_open_main_tab Work, game_get_ui_layout",
+    "for each wrong cell: game_set cmd set_work_priority (pawn, work, level) one cell at a time",
+    "read each digit back from game_get_ui_layout and click only until it matches",
+    "game_close_main_tab"
+   ],
+   "never": [
+    "paste a row before the source row reads right"
+   ],
+   "latch": false,
+   "why": "owner: \"you have to use the mouse to change the work priorities come on get it done\" / \"you did it iagin you set it correct then set it wrong and the n pasted wrongly to all\" -- fallback when pawn_priorities has not made the grid match for 3 game hours"
+  },
+  {
+   "id": "config-priorities-new-pawn",
+   "priority": 10.5,
+   "family": "configuration",
+   "when": {
+    "rejoined": {
+     "ctu": {
+      "grid_matches_plan": false
+     },
+     "preset": 2,
+     "reset": {
+      "mark_config_priorities_audited": true
+     }
+    }
+   },
+   "then": [
+    "the grid broke twice (a pawn joined or drift): pawn_priorities for every pawn again",
+    "ladder_set mark config_priorities_audited true"
+   ],
+   "latch": false,
+   "why": "owner: \"set up all priorities this is the last time i telling you set it how ive told you every day weve played all of them for every one using coopy paste ...\" (standing order: every pawn, every time)"
+  },
+  {
+   "id": "config-assign-tab",
+   "priority": 13,
+   "family": "configuration",
+   "when": {
+    "colony_exists": true,
+    "grid_matches_plan": true
+   },
+   "then": [
+    "game_set cmd assign (pawn empty = all, food Fine, medicine Best, hostility Attack)",
+    "read the result: every pawn listed with hostility Attack",
+    "self-tend ON for every pawn (missing tool set_self_tend)",
+    "ladder_set mark config_assign_set true"
+   ],
+   "never": [
+    "assign hard drugs"
+   ],
+   "latch": true,
+   "why": "owner: \"u have ppriorities set on stockpiles so thay pull it all through and do you have all the paws set up to heal attack and sleep whenever and take only antibiotic pencylcin every 5 days and carry 2\" / \"set up drugs and scar to attack\" / \"shes just repeating same things not living in the momnet and she still hasent set all the priorties scheduled drug use attakck heal and all that on assign\" / walkthrough-food-and-medicine.md [configuration] M: colonists best up to industrial, prisoners/animals herbal or worse"
+  },
+  {
+   "id": "config-schedule-anything",
+   "priority": 13.5,
+   "family": "configuration",
+   "when": {
+    "colony_exists": true,
+    "mark_config_assign_set": true
+   },
+   "then": [
+    "set_schedule all pawns Anything 24h (missing tool)",
+    "until it exists: game_open_main_tab Schedule, game_get_ui_layout, game_click_ui_target the Anything brush, game_drag_cell / game_click_ui_target across each pawn's 24 hours, read back",
+    "game_close_main_tab",
+    "ladder_set mark config_schedule_set true"
+   ],
+   "latch": true,
+   "why": "owner: \"set theri scheldule to anything at all times for all pawns / research and manage your pawns\" / \"were ur crops u get priorities done and scedukele and drug assignment and antibiotics\""
+  },
+  {
+   "id": "config-drug-policy",
+   "priority": 14,
+   "family": "configuration",
+   "when": {
+    "colony_exists": true,
+    "mark_config_schedule_set": true
+   },
+   "then": [
+    "set_drug_policy all colonists 'No hard drugs' (missing tool; social drugs are for hospitality guests)",
+    "until it exists: game_open_main_tab Assign, game_get_ui_layout, game_click_ui_target each pawn's drug column, pick the no-hard-drugs policy, read back",
+    "ladder_set mark config_drug_policy_set true"
+   ],
+   "never": [
+    "give colonists hard drugs"
+   ],
+   "latch": true,
+   "why": "owner: \"set up drugs and scar to attack\" / \"were ur crops u get priorities done and scedukele and drug assignment and antibiotics\""
+  },
+  {
+   "id": "config-antibiotics",
+   "priority": 14.5,
+   "family": "configuration",
+   "when": {
+    "mark_config_drug_policy_set": true,
+    "research_PenoxycylineProduction": true
+   },
+   "then": [
+    "game_set cmd add_bill (recipe Make_Penoxycyline, count {PENOX_STOCK}) -- it finds the drug lab",
+    "if the result says no table: ladder_set mark need_drug_lab true and stop",
+    "edit_drug_policy: Penoxycyline every 5 days, carry 2 (missing tool; else Assign tab -> Manage drug policies by game_click_ui_target, read back)",
+    "ladder_set mark config_antibiotics_set true"
+   ],
+   "latch": true,
+   "why": "owner: \"you also might want to research antibiotics and assign everyones drug scheldule manage to take peneacycline every 5 days once you build it at drug lab after researching antibiotics in game\" / \"u have ppriorities set on stockpiles so thay pull it all through and do you have all the paws set up to heal attack and sleep whenever and take only antibiotic pencylcin every 5 days and carry 2\""
+  },
+  {
+   "id": "bills-missing",
+   "priority": 12,
+   "family": "configuration",
+   "when": {
+    "colony_exists": true,
+    "stoves": ">0",
+    "bill_rows": 0
+   },
+   "then": [
+    "game_set cmd add_bill (recipe CookMealSimple, count {MEAL_BILL}) -- Do until X, never Forever",
+    "re-read bill_rows: the Add-bill menu can throw and add nothing",
+    "no skill restriction on the bill, so everyone trains; the best Cooking pawn stays the main cook"
+   ],
+   "never": [
+    "set a meal bill to Do forever",
+    "sleep, wait or set a timer of any length (owner: \"stop setting timeres all timers are forbidden aCT NOW!\")"
+   ],
+   "latch": false,
+   "why": "owner: \"how ive alllready tolsdd you how to do it effienctly so everyone can train and still get the most in one go\" / \"and set amounts higher and higher as your base grows\" / \"cook bill maintained at 50 rather than 10\" / walkthrough-food-and-medicine.md [configuration] F,R (Do until X, best cook)"
+  },
+  {
+   "id": "bills-missing-fallback",
+   "priority": 11.9,
+   "family": "configuration",
+   "when": {
+    "tries": {
+     "ctu": {
+      "bill_rows": 0
+     },
+     "preset": 3,
+     "reset": {
+      "bill_rows": ">0"
+     }
+    }
+   },
+   "then": [
+    "game_jump_camera_to_cell on the stove, select it, open Bills via game_get_ui_layout, Add bill -> simple meal, set Do until {MEAL_BILL}",
+    "read bill_rows again"
+   ],
+   "latch": false,
+   "why": "owner: \"how ive alllready tolsdd you how to do it effienctly so everyone can train and still get the most in one go\" -- fallback after add_bill came back empty 3 times"
+  },
+  {
+   "id": "bills-raise-target",
+   "priority": 30,
+   "family": "configuration",
+   "when": {
+    "bill_rows": ">0",
+    "meals": ">={MEAL_BILL}"
+   },
+   "then": [
+    "set_bill_count (missing tool): raise the meal bill to {MEAL_BILL} as the colony grows",
+    "until it exists: game_set cmd add_bill (CookMealSimple, count {MEAL_BILL}) only if no meal bill exists"
+   ],
+   "latch": false,
+   "why": "owner: \"and set amounts higher and higher as your base grows\" / \"cook bill maintained at 50 rather than 10\""
+  },
+  {
+   "id": "fields-wrong",
+   "priority": 11,
+   "family": "configuration",
+   "when": {
+    "fields_all_default_crop": true
+   },
+   "then": [
+    "game_list_zones: list growing zones near the camp",
+    "per zone: game_set cmd set_zone_plant (x, z, plant) -- rice, corn, healroot, cotton/devilstrand, each field its own crop",
+    "far main-base fields: game_set cmd set_zone_sowing (x, z, allow false) until the crew moves in"
+   ],
+   "never": [
+    "act unless exactly ONE zone is selected",
+    "click a field twice"
+   ],
+   "latch": false,
+   "why": "owner: \"you are going nothing but potatoes everywhere wtf!\" / \"get rid of all the base base fields and just keep the ones close to camp for now\" / \"some time u click twice it selects all firelds be werry\" / \"click the option s one not twice\""
+  },
+  {
+   "id": "fields-wrong-fallback",
+   "priority": 10.9,
+   "family": "configuration",
+   "when": {
+    "held": {
+     "ton": {
+      "fields_all_default_crop": true
+     },
+     "hours": 4
+    }
+   },
+   "then": [
+    "game_click_cell the zone cell; click once more ONLY if the first click selected a plant (read game_list_selected_gizmos)",
+    "game_get_context_menu_options / game_execute_gizmo for the crop, picking the REAL label by substring",
+    "re-read fields_all_default_crop"
+   ],
+   "latch": false,
+   "why": "owner: \"click the option s one not twice\" -- fallback when set_zone_plant has not changed the crop in 4 hours"
+  },
+  {
+   "id": "blueprints-but-no-material",
+   "priority": 7,
+   "family": "configuration",
+   "when": {
+    "blueprints": ">0",
+    "wood": "<{WOOD_FLOOR}"
+   },
+   "then": [
+    "game_set cmd chop (count {WOOD_FLOOR}) -- nearest trees to the crew",
+    "count wood lying at stumps too: game_set cmd unforbid",
+    "if two build queues compete, cancel the lower one (cancel_blueprint missing tool)"
+   ],
+   "never": [
+    "call pawns idle while blueprints wait on wood"
+   ],
+   "latch": false,
+   "why": "owner: \"keep building what you need to\" -- 30 blueprints waited on 2 wood logs"
+  },
+  {
+   "id": "config-stockpile-priority",
+   "priority": 15,
+   "family": "configuration",
+   "when": {
+    "stockpile_cells": ">0",
+    "colony_exists": true
+   },
+   "then": [
+    "game_list_zones: find every stockpile",
+    "freezer/food store: game_set cmd stockpile_filter (x, z, mode food, priority Important)",
+    "main store: game_set cmd stockpile_filter (x, z, mode nofood, priority Preferred)",
+    "dumping/outside piles: priority Low so pawns pull it all through",
+    "ladder_set mark config_stockpile_priority_set true"
+   ],
+   "never": [
+    "click a storage row twice"
+   ],
+   "latch": true,
+   "why": "owner: \"u have ppriorities set on stockpiles so thay pull it all through and do you have all the paws set up to heal attack and sleep whenever and take only antibiotic pencylcin every 5 days and carry 2\" / walkthrough-food-and-medicine.md [configuration] C (freezer food + corpses; medicine near hospital)"
+  },
+  {
+   "id": "config-haul-out-paced",
+   "priority": 16,
+   "family": "configuration",
+   "disabled": "loose_items_unstored has no measurement yet",
+   "when": {
+    "loose_items_unstored": ">20",
+    "stockpile_cells": ">0"
+   },
+   "then": [
+    "Hauling 1 for two pawns only (game_set cmd set_work_priority)",
+    "order_pawn haul-to-capacity, one batch per pawn, then let rest/food/joy happen",
+    "re-check loose_items_unstored next scan"
+   ],
+   "never": [
+    "send pawns on 50 runs without a break"
+   ],
+   "latch": false,
+   "why": "owner: \"you need to set stockpile and get everyone hueling stuff out without exahusting them / set control shift carry but becasre full sending them on 50 runs without a break\""
+  },
+  {
+   "id": "config-hospitality-visitors",
+   "priority": 25,
+   "family": "configuration",
+   "when": {
+    "colony_exists": true,
+    "mark_config_drug_policy_set": true
+   },
+   "then": [
+    "set_hospitality_accept true (missing tool)",
+    "until it exists: game_open_main_tab Hospitality, game_get_ui_layout, click 'accept visitors', read back",
+    "ladder_set mark config_visitors_on true"
+   ],
+   "never": [
+    "refuse the visitor pop-up"
+   ],
+   "latch": true,
+   "why": "owner: \"yes that one was to accept visitor if u refussed that pop up non will arrive until u set it in hospitality tab\""
+  },
+  {
+   "id": "config-post-strictness",
+   "priority": 26,
+   "family": "configuration",
+   "disabled": "no setting exists yet: needs a post-strictness option in the Rimrooms mod",
+   "when": {
+    "comms_console": ">0"
+   },
+   "then": [
+    "set_post_strictness {POST_STRICTNESS} (missing tool: strict / default / mild)"
+   ],
+   "never": [
+    "let a manning pawn skip eating or safety"
+   ],
+   "latch": true,
+   "why": "owner: \"current a pawn dies at the comms console... and we cant have them not going to eat or finding saftey, but there needs to be like a driop down sleector thing stay at post strict mild, default> inbetween strict and mild\""
+  },
+  {
+   "id": "config-medicine-doctor",
+   "priority": 17,
+   "family": "configuration",
+   "when": {
+    "mark_config_assign_set": true,
+    "needs_tend_count": ">0"
+   },
+   "then": [
+    "the best Medicine pawn is Doctor 1 (pawn_priorities custom), one backup Doctor 2",
+    "herbal for small cuts, industrial for infection/disease, glitterworld only when a pawn is about to die",
+    "one pawn Cleaning 1 while the hospital is dirty"
+   ],
+   "latch": false,
+   "why": "walkthrough-food-and-medicine.md [configuration] D,M,I"
+  }
+ ],
+ "prompts": {
+  "config-ui-clear": "A window is open and pawns cannot be ordered.\n1. game_close_window, then game_close_main_tab.\n2. game_list_colonists, game_select_pawn ONE pawn, game_list_selected_gizmos.\n3. Draft listed = done. Not listed: game_press_accept once, close again.\nNever burst screenshots. Owner: \"i think it doesnt know how to click off the operation menu to use the pawns\".",
+  "config-ui-clear-stuck": "The window came back 3 times.\n1. ONE game_take_screenshot, name the top window.\n2. game_get_ui_layout, game_click_ui_target its Close/X/Cancel.\n3. game_close_main_tab.\nDone: ladder_set mark ui_stuck_reported true, one clean chat line.\nOwner: \"i lost the hud in my game here on the system i see no hud ui of the game when u where mass clicking shit it disappeared fix it\".",
+  "config-hud-restore": "HUD is gone.\n1. game_pause_game.\n2. Save, then toggle HUD or reload that save (tools missing).\nDone: ladder_set mark hud_restored true.\nOwner: \"save your peopel fix the game hud relaod it if its fucking busted wtf... we cant paly with no hud\".",
+  "config-window-fullscreen": "Game should be fullscreen, not borderless. No tool sets it: leave it.\nOwner: \"and change the game back to fullscreen not boarderless so i can tab in and out and u can still do everything u need in game\".",
+  "work-priorities-unset": "The work grid does not match the plan.\n1. game_pause_game, game_list_colonists (skills, passions, incapables).\n2. pawn_priorities once per pawn: Firefighter..Cooking = 1 is the paste.\n3. custom after Cooking: specialty 2, all else 3, 0 only if incapable. Split: one cuts/plants, one crafts/constructs, one hunts.\n4. Fix single cells with game_set cmd set_work_priority, then re-read grid_matches_plan.\nRefused? the fallback rung does it cell by cell.\nDone: grid_matches_plan true.\nOwner: \"keep all the 1s firsefiring through cooking\" / \"dint leave a bunch blankk\".",
+  "work-priorities-fallback": "pawn_priorities did not fix the grid in 3 hours.\n1. game_open_main_tab Work, game_get_ui_layout.\n2. game_set cmd set_work_priority one wrong cell at a time; read each digit back.\n3. game_close_main_tab.\nDone: grid_matches_plan true.\nOwner: \"you did it iagin you set it correct then set it wrong and the n pasted wrongly to all\".",
+  "config-priorities-new-pawn": "The grid broke again (new pawn or drift).\n1. pawn_priorities for every pawn, same plan.\n2. Done: ladder_set mark config_priorities_audited true.\nOwner: \"set it how ive told you every day weve played all of them for every one using coopy paste\".",
+  "config-assign-tab": "Assign tab next.\n1. game_set cmd assign (all pawns, food Fine, medicine Best, hostility Attack).\n2. Read the result: every pawn Attack.\n3. Self-tend has no tool yet.\nDone: ladder_set mark config_assign_set true.\nOwner: \"do you have all the paws set up to heal attack and sleep whenever\".",
+  "config-schedule-anything": "Schedule: Anything all 24 hours, every pawn.\n1. game_open_main_tab Schedule, game_get_ui_layout.\n2. Pick the Anything brush, paint each pawn's row, read back.\n3. game_close_main_tab.\nDone: ladder_set mark config_schedule_set true.\nOwner: \"set theri scheldule to anything at all times for all pawns\".",
+  "config-drug-policy": "Drug policy: no hard drugs for colonists.\n1. game_open_main_tab Assign, game_get_ui_layout.\n2. Each pawn's drug column -> the no-hard-drugs policy; read back.\nDone: ladder_set mark config_drug_policy_set true.\nOwner: \"were ur crops u get priorities done and scedukele and drug assignment and antibiotics\".",
+  "config-antibiotics": "Penoxycyline is researched.\n1. game_set cmd add_bill (Make_Penoxycyline, count {PENOX_STOCK}).\n2. No drug lab in the result: ladder_set mark need_drug_lab true, stop.\n3. Drug policy: Penoxycyline every 5 days, carry 2 (Assign tab, Manage drug policies), read back.\nDone: ladder_set mark config_antibiotics_set true.\nOwner: \"take only antibiotic pencylcin every 5 days and carry 2\".",
+  "bills-missing": "A stove has no bills.\n1. game_set cmd add_bill (CookMealSimple, count {MEAL_BILL}): Do until X, never forever.\n2. Re-read bill_rows; 0 means it silently failed.\nNo skill limit: everyone trains.\nDone: bill_rows > 0.\nOwner: \"cook bill maintained at 50 rather than 10\" / \"and set amounts higher and higher as your base grows\".",
+  "bills-missing-fallback": "add_bill failed 3 times.\n1. game_jump_camera_to_cell the stove, select it, open Bills via game_get_ui_layout.\n2. Add bill -> simple meal -> Do until {MEAL_BILL}.\nDone: bill_rows > 0.\nOwner: \"how ive alllready tolsdd you how to do it effienctly so everyone can train and still get the most in one go\".",
+  "bills-raise-target": "Meals reached the target: raise it as the base grows.\nset_bill_count is missing; do not add a duplicate bill.\nOwner: \"and set amounts higher and higher as your base grows\".",
+  "fields-wrong": "Every field grows the default crop.\n1. game_list_zones: growing zones near camp.\n2. game_set cmd set_zone_plant (x,z,plant) per field, each its own crop (rice, corn, healroot, cotton).\n3. Far main-base fields: game_set cmd set_zone_sowing allow false.\nNever click a field twice.\nDone: fields_all_default_crop false.\nOwner: \"you are going nothing but potatoes everywhere wtf!\".",
+  "fields-wrong-fallback": "set_zone_plant has not landed in 4 hours.\n1. game_click_cell the zone; if a plant got selected, click once more to reach the zone.\n2. Exactly ONE zone selected? then pick the crop by its real label.\nDone: fields_all_default_crop false.\nOwner: \"some time u click twice it selects all firelds be werry\".",
+  "blueprints-but-no-material": "Blueprints wait on wood.\n1. game_set cmd chop (count {WOOD_FLOOR}).\n2. game_set cmd unforbid for wood at the stumps.\n3. Two queues competing: keep the one that keeps pawns alive.\nDone: wood >= {WOOD_FLOOR}.\nOwner: \"keep building what you need to\".",
+  "config-stockpile-priority": "Set stockpile priorities so goods flow inward.\n1. game_list_zones.\n2. Freezer: game_set cmd stockpile_filter (x,z,food, Important). Main store: nofood, Preferred. Dumping piles: Low.\nNever click a storage row twice.\nDone: ladder_set mark config_stockpile_priority_set true.\nOwner: \"u have ppriorities set on stockpiles so thay pull it all through\".",
+  "config-haul-out-paced": "Loose items outside storage.\n1. Two haulers at Hauling 1 (game_set cmd set_work_priority).\n2. One carry-to-capacity batch each, then let them rest and eat.\nDone: loose_items_unstored low.\nOwner: \"set control shift carry but becasre full sending them on 50 runs without a break\".",
+  "config-hospitality-visitors": "Visitors must be accepted.\n1. game_open_main_tab Hospitality, game_get_ui_layout, click accept visitors, read back.\nDone: ladder_set mark config_visitors_on true.\nOwner: \"yes that one was to accept visitor if u refussed that pop up non will arrive until u set it in hospitality tab\".",
+  "config-post-strictness": "Post-holding strictness should be default (between strict and mild). No setting exists yet.\nOwner: \"we cant have them not going to eat or finding saftey\".",
+  "config-medicine-doctor": "Someone needs tending.\n1. Best Medicine pawn Doctor 1, a backup Doctor 2 (pawn_priorities custom).\n2. Herbal for small cuts, industrial for infections, glitterworld only to save a life.\n3. One pawn cleans the hospital first.\nDone: needs_tend_count 0."
+ },
+ "sensors_needed": [
+  {
+   "key": "hud_visible",
+   "how": "!Find.UIRoot (UIRoot_Play).screenshotMode.Active"
+  },
+  {
+   "key": "window_fullscreen",
+   "how": "UnityEngine.Screen.fullScreenMode == FullScreenMode.ExclusiveFullScreen"
+  },
+  {
+   "key": "manual_priorities",
+   "how": "Current.Game.playSettings.useWorkPriorities"
+  },
+  {
+   "key": "schedule_all_anything",
+   "how": "all free colonists: pawn.timetable.times.All(t => t == TimeAssignmentDefOf.Anything)"
+  },
+  {
+   "key": "drug_policy_no_hard",
+   "how": "all colonists: pawn.drugs.CurrentPolicy entries with drug.IsHardDrug have allowedForJoy/allowedForAddiction/allowScheduled all false"
+  },
+  {
+   "key": "penox_policy_set",
+   "how": "all colonists: CurrentPolicy[ThingDef Penoxycyline].allowScheduled && daysFrequency==5 && takeToInventory==2"
+  },
+  {
+   "key": "hostility_all_attack",
+   "how": "all colonists: pawn.playerSettings.hostilityResponse == HostilityResponseMode.Attack"
+  },
+  {
+   "key": "self_tend_all",
+   "how": "all colonists capable of Doctor: pawn.playerSettings.selfTend"
+  },
+  {
+   "key": "meal_bill_target",
+   "how": "max Bill_Production.targetCount over stoves' BillStack where recipe produces a meal and repeatMode == BillRepeatModeDefOf.TargetCount"
+  },
+  {
+   "key": "room_count",
+   "how": "map.regionGrid.AllRooms.Count(r => r.ProperRoom && !r.PsychologicallyOutdoors && !r.IsDoorway)"
+  },
+  {
+   "key": "loose_items_unstored",
+   "how": "map.listerHaulables.ThingsPotentiallyNeedingHauling().Count"
+  },
+  {
+   "key": "stockpile_priorities_set",
+   "how": "map.zoneManager.AllZones.OfType<Zone_Stockpile>() Select(settings.Priority).Distinct().Count() > 1 when 2+ stockpiles"
+  },
+  {
+   "key": "visitors_accepted",
+   "how": "Hospitality mod world component accept-visitors flag via reflection"
+  },
+  {
+   "key": "cleaning_assigned",
+   "how": "any colonist workSettings.GetPriority(WorkTypeDefOf.Cleaning) in 1..2"
+  }
+ ],
+ "variables_needed": [
+  {
+   "name": "MEAL_BILL",
+   "value": 50,
+   "rule": "max(50, 10 x colonists); raised as the colony grows"
+  },
+  {
+   "name": "PENOX_STOCK",
+   "value": 6,
+   "rule": "2 x colonists (each carries 2)"
+  },
+  {
+   "name": "WOOD_FLOOR",
+   "value": 100,
+   "rule": "cost of queued blueprints, min 100"
+  },
+  {
+   "name": "POST_STRICTNESS",
+   "value": "default",
+   "rule": "strict / default / mild; default lets pawns eat and seek safety"
+  }
+ ],
+ "missing_tools": [
+  "toggle_hud (F11) / reload save",
+  "save_game",
+  "set_window_mode fullscreen",
+  "set_self_tend",
+  "set_schedule (pawn or all, hours, Anything/Work/Sleep/Joy)",
+  "set_drug_policy (pawn or all, policy)",
+  "edit_drug_policy (drug, days_frequency, carry)",
+  "set_bill_count (bill, target count, repeat mode)",
+  "cancel_blueprint",
+  "set_hospitality_accept",
+  "set_post_strictness (strict/default/mild)",
+  "set_medical_care defaults (colonists/prisoners/animals)",
+  "set_food_restriction (block raw food / human meat)"
+ ],
+ "unplaced_rules": [
+  "\"quit mentioning the mod test count until u actually mark one off or atleast get something completed be chaekcing them all what can be marked offf, work towrdas the others\" -- stream voice, not a ladder rule",
+  "\"put all the mod wiki urls and github mod repo and stuff in the twitch write ups they are all blank too\" -- Twitch panels, outside the game",
+  "\"shes just repeating same things not living in the momnet and she still hasent set all the priorties scheduled drug use attakck heal and all that on assign\" -- the not-repeating half is a voice/prompt rule; the assign half is in config-assign-tab",
+  "walkthrough-food-and-medicine.md [configuration] F: Block raw food (-7 mood) and human meat -- needs set_food_restriction (missing tool)",
+  "walkthrough-food-and-medicine.md [configuration] M: Default medical care colonists best up to industrial, prisoners/animals herbal or worse -- needs set_medical_care (missing tool); assign only sets medicine Best"
+ ]
+}

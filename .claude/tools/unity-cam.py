@@ -16,17 +16,18 @@ def studio_token():
         return ""
 
 
-BASE = ("photo of a 25 year old woman, girl next door, natural goth emo style, dark brown hair with subtle pink streaks, "
-        "busty, black lace spaghetti strap camisole with deep cleavage, fully covered, at a home gaming desk, warm desk lamp light, bedroom, candid webcam photo, realistic, ")
+BASE = ("amateur webcam photo, real human, natural skin texture with visible pores and small imperfections, her own grey-green eyes, slight webcam grain, natural lighting, unretouched, candid gaming webcam photo, waist-up, a 25 year old woman at her desk gaming, girl next door with a hint of emo, light caucasian "
+        "skin with a warm glow, black wavy bob with pink ends, small black choker, busty, lifted cleavage, cozy bedroom, string lights, realistic, ")
 MOODS = {
     "chill": "relaxed half smile, sleepy eyes, chin resting on her hand",
     "hype": "excited wide grin, leaning toward the camera, fist raised",
     "angry": "furious scowl, yelling at the monitor, gripping the headset",
-    "focus": "intense focused stare at the screen, typing fast, joint in the ashtray",
-    "laugh": "laughing hard, head back, joint between fingers",
-    "smug": "smug smirk at the camera, one eyebrow raised, exhaling smoke",
+    "focus": "intense focused stare at the screen, typing fast, lip bitten",
+    "laugh": "laughing hard, head back, eyes squeezed shut, hand on her chest",
+    "smug": "smug smirk at the camera, one eyebrow raised, arms crossed",
     "scared": "shocked wide eyes, hand over mouth, monitor glow on face",
     "sad": "pouting, chin on hand, glossy eyes",
+    "flirty": "playful wink at the camera, finger twirling her hair, teasing smile",
 }
 
 

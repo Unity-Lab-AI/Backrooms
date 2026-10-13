@@ -1,0 +1,635 @@
+{
+ "family": "start",
+ "rungs": [
+  {
+   "id": "start-colony-lost",
+   "priority": 3.29,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "colonists": 0,
+    "lost": {
+     "ons": {
+      "colonists": 0
+     }
+    }
+   },
+   "then": [
+    "say a clean line: the colony fell",
+    "new_colony reason \"colony died\" (normal pathway, never a save)"
+   ],
+   "why": "owner: \"colony dies... start another\" / owner: \"do not load old saves ytou fucvkign itodiot , stasart new fucking colonoly scenerios that we need to test u fuck\"",
+   "latch": false,
+   "owner_rules": [
+    "If the colony dies, start another.",
+    "Never load old saves; start new colony scenarios."
+   ]
+  },
+  {
+   "id": "start-new-colony",
+   "priority": 3.3,
+   "family": "start",
+   "when": {
+    "colony_exists": false
+   },
+   "then": [
+    "twitch_chat action title / category if the stream is not live; say a clean line that a new colony is starting",
+    "new_colony reason \"<first run | colony died | owner ordered a scenario>\" -- the normal pathway: New colony on the main menu, never a save",
+    "on the setup screens (game_get_ui_layout / game_click_ui_target if new_colony stops on a dialog): scenario Crashlanded unless the owner named another; storyteller Cassandra Classic (Community builder), never Peaceful",
+    "factions: remove the starting three, keep only normal pirates, add normal cannibals and a nude tribe",
+    "Advanced settings: map 300x300, season Spring; tile = mountains inside forest/jungle (light green/green); read the Terrain tab of the selected tile before landing",
+    "after landing: ladder_set mark start_kind <1-6 read off the scenario>"
+   ],
+   "why": "owner: \"the button you are looking for is new colony on the main menu u fucking idiot\" / owner: \"STOP LOADING SAVES!! AND START THE SCENERIOS THROUGH THE NORMAL PATHWAY!\" / owner: \"do not load old saves ytou fucvkign itodiot , stasart new fucking colonoly scenerios that we need to test u fuck\" / owner: \"YOU HAVE TO USE PROPER PROCEESURE ONLY HAVE NORMAL PIRATES REMOVE THAE STARTING 3 and add normal canibals and a nude tribe when u set it up\" / owner: \"there is no wood no trees on this map, thats why in advanced setting on world gen setup you set 300x300 mapo and spring, and then when choosing a map tile u pic on that has mountains(the rock areas on map) in forest area and jungle areas the light green and green, terrain tab on left tells u all this when u highlight via select the tiles\" / owner: \"see you are forgeting shit 300x300 adv set\" / owner: \"okay we will be starting a crashlanded again with all our goals in mind once you get to main menu start up the stream with your chat overlay all ready and working\" / owner: \"colony dies... start another\" / owner: \"we are gonna start new colonies with like a whole neew group and supplies\" / owner: \"okay u fucking play the game and restart the scenerios as needed to test whats needed\" / owner: \"UNITY FUCKING RUNS EVERYTHING AS HERSELF PERFECTLY LOCAL MODEL on start.bat press\" / owner: \"and Unity knows how to work twich and start new streams and talk in chat\"",
+   "latch": false,
+   "never": [
+    "load an old save",
+    "Peaceful storyteller",
+    "a tile with no trees or no mountain",
+    "skip the 300x300 / Spring advanced settings"
+   ],
+   "note": "overlaps meta rung new-colony (priority lower there); this one carries the start procedure",
+   "owner_rules": [
+    "Use New colony on the main menu.",
+    "Start scenarios through the normal pathway, not saves.",
+    "Never load old saves; start new colony scenarios.",
+    "start a scenario via the fixed procedure: Cassandra Classic / Community builder, never Peaceful; factions only normal pirates (remove the starting three), add normal cannibals and a nude tribe",
+    "new colony world gen: Advanced settings map 300x300, season Spring; pick a landing tile with mountains in forest/jungle (light green/green), read the Terrain tab on the selected tile",
+    "new colony world gen: Advanced settings map 300x300, season Spring; pick a landing tile with mountains in forest/jungle (light green/green), read the Terrain tab on the selected tile",
+    "Start a Crashlanded colony with all goals in mind; once at main menu start the stream with chat overlay working.",
+    "If the colony dies, start another.",
+    "later: second colonies in this world and fresh games, each with a whole new group and supplies, and the three founders (Gee, Scar, Unity) carry over into every one. Not now -- finish Marble Hollow first",
+    "PLAYSCRIPT — the operations manual: a Rimrooms run, start to empire",
+    "Verbatim: UNITY FUCKING RUNS EVERYTHING AS HERSELF PERFECTLY LOCAL MODEL on start.bat press",
+    "Verbatim: and Unity knows how to work twich and start new streams and talk in chat"
+   ]
+  },
+  {
+   "id": "start-kind-unknown",
+   "priority": 3.31,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_kind": 0
+   },
+   "then": [
+    "game_state -- colonists and letters (the scenario intro letter names the start)",
+    "look -- pods and wreckage = Crashlanded",
+    "ladder_set mark start_kind <1 Crashlanded | 2 Lost Tribe | 3 Naked Brutality | 4 Async Industries | 5 The Store | 6 Lone survivor>"
+   ],
+   "why": "owner: \"is fucking Unity going to run the show now? when i do press it and my admin pane chat opens on my computer and the resoultion is fixed in twitech and it knows the full start colonly process from head to toe to get into the spaces of backrooms and outerspace while staying alive and doing everything it need to in game and with the play scripts?\"",
+   "latch": false,
+   "owner_rules": [
+    "Know the full start colony process head to toe through to the Backrooms and outer space while staying alive."
+   ]
+  },
+  {
+   "id": "start-crashlanded",
+   "priority": 3.4,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_kind": 1
+   },
+   "then": [
+    "keep the game paused for this rung",
+    "game_set cmd unforbid -- every starting item",
+    "game_set cmd assign (pawn empty = all; food Fine, medicine Best, hostility Attack)",
+    "empire_pass -- arms (best shooter rifle, next revolver, best melee knife), self-tend on",
+    "pawn_priorities pawn <name> -- one call per pawn",
+    "ladder_set mark start_crashlanded_done true"
+   ],
+   "why": "owner: \"and a big issue its it never auto unforbid all the starting materials and never copped wood to build starting structures rooms\" / owner: \"okay what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns? / Everything now, restart the game / and a big issue its it never auto unforbid all the starting materials and never copped wood to build starting structures rooms / and you do know what and how a real PLC works right? its not just yes no questions there are relays contactors signalling sensors or all variations and type and controls circuits and settings and variable and a way to read it all\" / owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner: \"you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax and starting up you facitly small first massive later get ur needs food security and shit settled / you should have a maintaince list of thinge proprigating what all you need to do / make sure u arm up and set everyones setting attack, heal self, schedule, priorities, drugs to no drugs, all of it pause and do it and set control shift carry but becasre full sending them on 50 runs without a break\" | walkthrough-opening-and-camp.md [start] (rimworldwiki Room/Temperature, B, Q, F sources)",
+   "latch": true,
+   "never": [
+    "unpause before unforbid and arms are done",
+    "flak vest / flak pants early (they slow movement); wear the helmet"
+   ],
+   "note": "kept id; the camp build is now the start-camp-* chain interlocked on mark_start_crashlanded_done",
+   "owner_rules": [
+    "First thing after landing: unforbid all starting materials, then chop wood to build the starting rooms.",
+    "The run is 3 pawns toward empire and space; on landing unforbid all starting materials and chop wood to build the first structures.",
+    "game_set cmd unforbid -- every starting item (owner: \"it never auto unforbid all the starting materials\")",
+    "pause, then: equip the charge rifles; every colonist hostility Attack, self-tend on, a schedule with sleep and recreation, work priorities set, drug policy No drugs; queue carry runs with ctrl/shift but in short batches with breaks; a propagating maintenance list (.local/qa/run-list.py) of everything still to do; facility small first, massive later; food security first |"
+   ]
+  },
+  {
+   "id": "start-tribal",
+   "priority": 3.41,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_kind": 2
+   },
+   "then": [
+    "game_set cmd unforbid",
+    "game_set cmd assign",
+    "game_set cmd hunt (recurve/short bows only, never NEVER_HUNT)",
+    "game_set cmd stove (campfire); add_bill pemmican once a cooking spot exists",
+    "research Complex furniture or Stonecutting -> Smithing -> Electricity (set_research missing)",
+    "ladder_set mark start_crashlanded_done true -- enters the start-camp-* chain"
+   ],
+   "why": "owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "kept id",
+   "owner_rules": [
+    "game_set cmd unforbid -- every starting item (owner: \"it never auto unforbid all the starting materials\")"
+   ]
+  },
+  {
+   "id": "start-naked",
+   "priority": 3.42,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_kind": 3
+   },
+   "then": [
+    "harvest berries and pick up everything before night (game_set cmd unforbid)",
+    "crafting spot, club, knife (build tool missing)",
+    "game_set cmd shelter w 3 h 3",
+    "accept every wanderer/refugee offer (letters)",
+    "ladder_set mark start_crashlanded_done true"
+   ],
+   "why": "owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "kept id",
+   "owner_rules": [
+    "game_set cmd unforbid -- every starting item (owner: \"it never auto unforbid all the starting materials\")"
+   ]
+  },
+  {
+   "id": "start-async",
+   "priority": 3.43,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_kind": 4
+   },
+   "then": [
+    "start-explore-facility first",
+    "restore power",
+    "gate sections at the linked machining tables: 25 steel + 2 components a section, 100 steel + 8 components whole gate",
+    "ladder_set mark gate_designated true; ladder_set mark gate_sections_done <n>",
+    "one crossing, a record, then the backrooms rungs"
+   ],
+   "why": "owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "kept id",
+   "owner_rules": [
+    "game_set cmd unforbid -- every starting item (owner: \"it never auto unforbid all the starting materials\")"
+   ]
+  },
+  {
+   "id": "start-store",
+   "priority": 3.44,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_kind": 5
+   },
+   "then": [
+    "secure the public area, account for anyone missing",
+    "pick ONE approach; ladder_set mark store_approach 1|2|3"
+   ],
+   "why": "owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "kept id",
+   "owner_rules": [
+    "game_set cmd unforbid -- every starting item (owner: \"it never auto unforbid all the starting materials\")"
+   ]
+  },
+  {
+   "id": "start-lone",
+   "priority": 3.45,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_kind": 6
+   },
+   "then": [
+    "stay alive, learn a local rule, record a way out",
+    "fall back to the survival rungs every turn"
+   ],
+   "why": "owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "kept id",
+   "owner_rules": [
+    "game_set cmd unforbid -- every starting item (owner: \"it never auto unforbid all the starting materials\")"
+   ]
+  },
+  {
+   "id": "start-camp-chop",
+   "priority": 3.46,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_crashlanded_done": true,
+    "wood": "<{CAMP_WOOD}",
+    "chop_fail": {
+     "not": {
+      "ctu": {
+       "mark_chop_refused": true
+      },
+      "preset": "{TRY_PRESET}",
+      "reset": {
+       "wood": ">={CAMP_WOOD}"
+      }
+     }
+    }
+   },
+   "then": [
+    "game_set cmd chop count {CAMP_WOOD} -- nearest trees to the crew (site trees first)",
+    "read the reply: refused or 0 trees -> ladder_set mark chop_refused true; next turn set it false and retry",
+    "unpause so it is cut (designations_cut > 0 = queued)",
+    "wood >= {CAMP_WOOD}: ladder_set mark start_camp_chop_done true"
+   ],
+   "why": "owner: \"and a big issue its it never auto unforbid all the starting materials and never copped wood to build starting structures rooms\" | walkthrough-opening-and-camp.md [start] (rimworldwiki Room/Temperature, B, Q, F sources)",
+   "latch": true,
+   "owner_rules": [
+    "First thing after landing: unforbid all starting materials, then chop wood to build the starting rooms."
+   ]
+  },
+  {
+   "id": "start-camp-chop-fallback",
+   "priority": 3.461,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_crashlanded_done": true,
+    "wood": "<{SHELTER_WOOD}",
+    "chop_fail": {
+     "ctu": {
+      "mark_chop_refused": true
+     },
+     "preset": "{TRY_PRESET}",
+     "reset": {
+      "wood": ">={CAMP_WOOD}"
+     }
+    }
+   },
+   "then": [
+    "game_set cmd explore -- find trees beyond the crew's reach",
+    "game_get_cells_info on the wooded cells, then game_apply_architect_designator Chop wood over them",
+    "no trees on the map: reply_owner with the chop reply (shelter material arg is a missing tool)",
+    "ladder_set mark chop_refused false"
+   ],
+   "why": "owner: \"there is no wood no trees on this map, thats why in advanced setting on world gen setup you set 300x300 mapo and spring, and then when choosing a map tile u pic on that has mountains(the rock areas on map) in forest area and jungle areas the light green and green, terrain tab on left tells u all this when u highlight via select the tiles\"",
+   "latch": false,
+   "owner_rules": [
+    "new colony world gen: Advanced settings map 300x300, season Spring; pick a landing tile with mountains in forest/jungle (light green/green), read the Terrain tab on the selected tile"
+   ]
+  },
+  {
+   "id": "start-camp-stores",
+   "priority": 3.47,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_crashlanded_done": true,
+    "stockpile_cells": 0
+   },
+   "then": [
+    "game_set cmd stockpile_camp mode food",
+    "game_set cmd stockpile_camp mode nofood",
+    "haul in short batches; the schedule keeps sleep and recreation (no 50-run hauls without a break)",
+    "ladder_set mark start_camp_stores_done true"
+   ],
+   "why": "owner: \"you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax and starting up you facitly small first massive later get ur needs food security and shit settled / you should have a maintaince list of thinge proprigating what all you need to do / make sure u arm up and set everyones setting attack, heal self, schedule, priorities, drugs to no drugs, all of it pause and do it and set control shift carry but becasre full sending them on 50 runs without a break\" | walkthrough-opening-and-camp.md [start] (rimworldwiki Room/Temperature, B, Q, F sources)",
+   "latch": true,
+   "never": [
+    "haul everything across the map -- settle near the landing spot"
+   ],
+   "owner_rules": [
+    "pause, then: equip the charge rifles; every colonist hostility Attack, self-tend on, a schedule with sleep and recreation, work priorities set, drug policy No drugs; queue carry runs with ctrl/shift but in short batches with breaks; a propagating maintenance list (.local/qa/run-list.py) of everything still to do; facility small first, massive later; food security first |"
+   ]
+  },
+  {
+   "id": "start-camp-shelter",
+   "priority": 3.48,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_camp_stores_done": true,
+    "wood": ">={SHELTER_WOOD}",
+    "shelter_fail": {
+     "not": {
+      "ctu": {
+       "mark_shelter_refused": true
+      },
+      "preset": "{TRY_PRESET}"
+     }
+    }
+   },
+   "then": [
+    "game_set cmd shelter w {SHELTER_W} h {SHELTER_H} -- one wood room, door near a corner / mid-side, roof",
+    "refused -> ladder_set mark shelter_refused true (next try w 6 h 8)",
+    "unpause until blueprints == 0",
+    "ladder_set mark start_camp_shelter_done true"
+   ],
+   "why": "owner: \"door on corner and sides\" / owner: \"you retarn u put doors the the extreem corners thats not gonna work\" | walkthrough-opening-and-camp.md [start] (rimworldwiki Room/Temperature, B, Q, F sources)",
+   "latch": true,
+   "never": [
+    "a door on the extreme corner cell",
+    "a massive camp",
+    "blocked paths (keep 2-wide walkways)"
+   ],
+   "owner_rules": [
+    "camp: fridge, workshop and every need tight inside, 2-wide walkways, doors near corners and mid-sides (never the corner cell itself)",
+    "camp: fridge, workshop and every need tight inside, 2-wide walkways, doors near corners and mid-sides (never the corner cell itself)"
+   ]
+  },
+  {
+   "id": "start-camp-shelter-fallback",
+   "priority": 3.481,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_camp_shelter_done": false,
+    "shelter_fail": {
+     "ctu": {
+      "mark_shelter_refused": true
+     },
+     "preset": "{TRY_PRESET}"
+    }
+   },
+   "then": [
+    "game_list_architect_designators Structure, then game_apply_architect_designator wood Wall as a 7x7 ring by the crew, one Door mid-side",
+    "reply_owner: the shelter tool refused three times, with its reply",
+    "room closed and roofed: ladder_set mark start_camp_shelter_done true"
+   ],
+   "why": "owner: \"you retarn u put doors the the extreem corners thats not gonna work\"",
+   "latch": false,
+   "owner_rules": [
+    "camp: fridge, workshop and every need tight inside, 2-wide walkways, doors near corners and mid-sides (never the corner cell itself)"
+   ]
+  },
+  {
+   "id": "start-camp-beds",
+   "priority": 3.49,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_camp_shelter_done": true,
+    "beds": "<{colonists}"
+   },
+   "then": [
+    "game_set cmd beds -- one per pawn inside the shelter before the first night",
+    "game_set cmd set_bed_owner x z owner colonist for any unowned bed",
+    "ladder_set mark start_camp_beds_done true"
+   ],
+   "why": "owner: \"tell reve its one the list Rev character(ask if any requests when u get to making him, as an extra hand will be helpopfull just have to always set up everything for new pawns\" | walkthrough-opening-and-camp.md [start] (rimworldwiki Room/Temperature, B, Q, F sources)",
+   "latch": true,
+   "owner_rules": [
+    "chat RoomsIdleHands: ; owner, 2026-10-09, verbatim: -- QUEUED: make a Rev pawn (Character Editor); when starting, ask RoomsIdleHands in chat for requests; every new pawn gets the full setup at once"
+   ]
+  },
+  {
+   "id": "start-camp-food",
+   "priority": 3.5,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_camp_shelter_done": true,
+    "days_of_food": "<{FOOD_COMFORT_DAYS}"
+   },
+   "then": [
+    "game_set cmd hunt (never a NEVER_HUNT animal)",
+    "game_set cmd crops plant Plant_Rice (potatoes on gravel, corn for storage)",
+    "game_set cmd stove -- campfire/stove inside the camp; then game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET}",
+    "days_of_food < {FOOD_MIN_DAYS}: harvest every berry bush near camp"
+   ],
+   "why": "owner: \"let your people get good on food and set up camp before moving into the base like u said itll tak a while\" / owner: \"and try to get to where everything is stable and food supply is handled production  so that things can settle down and u can start mining out the base, but lots before then\" | walkthrough-opening-and-camp.md [start] (rimworldwiki Room/Temperature, B, Q, F sources)",
+   "latch": false,
+   "never": [
+    "start mining the fortress while days_of_food < {FOOD_COMFORT_DAYS}"
+   ],
+   "owner_rules": [
+    "mining the fortress waits; first a steady food supply (forage, hunt, rice, cooking) and a working camp by the shell; the fortress plan stays drawn |",
+    "the fortress digs only once food supply, production and the camp are stable; until then camp work comes first |"
+   ]
+  },
+  {
+   "id": "start-camp-tight",
+   "priority": 3.51,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_camp_beds_done": true,
+    "stoves": ">0"
+   },
+   "then": [
+    "fridge (roofed food store), workshop (crafting spot / butcher), 1x2 table + stool, torch lamp -- all inside or touching the camp (build tool missing; use game_apply_architect_designator)",
+    "store everything under a roof except steel and stone blocks",
+    "marsh/mud/water inside the camp perimeter -> soil (terraform tool missing)",
+    "ladder_set mark start_camp_tight_done true"
+   ],
+   "why": "owner: \"camp fridege all of it workshop every thing u need in the camp tight and no blocked paths\" / owner: \"use teriform to remove mud and shit like water inside camp perimeter\" | walkthrough-opening-and-camp.md [start] (rimworldwiki Room/Temperature, B, Q, F sources)",
+   "latch": true,
+   "never": [
+    "blocked paths",
+    "grow the camp beyond what three pawns need"
+   ],
+   "owner_rules": [
+    "camp: fridge, workshop and every need tight inside, 2-wide walkways, doors near corners and mid-sides (never the corner cell itself)",
+    "60 of 66 marshy cells inside the wall set to Soil (6 sit under buildings); no open water inside; storage zones built as separate drags, the zone tool merges a new drag"
+   ]
+  },
+  {
+   "id": "start-explore-facility",
+   "priority": 3.52,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "explore_done": false,
+    "mark_start_kind": ">=4",
+    "explore_fail": {
+     "not": {
+      "ctu": {
+       "mark_explore_refused": true
+      },
+      "preset": "{TRY_PRESET}"
+     }
+    }
+   },
+   "then": [
+    "game_set cmd explore -- every pawn through EVERY door; repeat until it says nothing left",
+    "refused -> ladder_set mark explore_refused true (3 strikes: reply_owner)",
+    "game_set cmd rooms -- list the bedrooms and other rooms found",
+    "nothing left: ladder_set mark start_explore_facility_done true"
+   ],
+   "why": "owner: \"exploring is not finished damn it ive said this repeadidily the map is even on screen becsue it never went through EVERY DOOR\" / owner: \"you still have t explored your facility to find the bed rooms and other unexplored rooms\"",
+   "latch": true,
+   "never": [
+    "designate mining on fogged cells"
+   ],
+   "owner_rules": [
+    "Explore through every door until exploring is finished.",
+    "explore the fogged start before designating; a mine order is a seam or a room on cells already read, never half a mountain"
+   ]
+  },
+  {
+   "id": "start-new-pawn",
+   "priority": 3.53,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "pawns_unconfigured": ">0"
+   },
+   "then": [
+    "game_set cmd assign pawn <name>",
+    "pawn_priorities pawn <name>",
+    "empire_pass (arms, self-tend)",
+    "game_set cmd beds, then set_bed_owner -- a bed the same day",
+    "drug policy No drugs and schedule: missing tools"
+   ],
+   "why": "owner: \"tell reve its one the list Rev character(ask if any requests when u get to making him, as an extra hand will be helpopfull just have to always set up everything for new pawns\"",
+   "latch": false,
+   "owner_rules": [
+    "chat RoomsIdleHands: ; owner, 2026-10-09, verbatim: -- QUEUED: make a Rev pawn (Character Editor); when starting, ask RoomsIdleHands in chat for requests; every new pawn gets the full setup at once"
+   ]
+  },
+  {
+   "id": "start-standing-orders",
+   "priority": 3.54,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_camp_stable": false
+   },
+   "then": [
+    "letters first: read every letter (game_state), act, dismiss",
+    "run_list -- the propagating maintenance list; the first FIX is the goal",
+    "check off test TODO items while playing (note append)"
+   ],
+   "why": "owner: \"and your operations manual script or .md obviousliy isnt good becasue it doesnt have everything ive fucking ever told you as you arent even reading messages and clearing them\" / owner: \"make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done\" / owner: \"you are suppose tho be checking off todo items of the tests stuff while playing the full game to do so\" / owner: \"how are we gonna do the fucking tests if u dont play the game?\"",
+   "latch": false,
+   "owner_rules": [
+    "[`PLAYSCRIPT.md`](PLAYSCRIPT.md) now carries every play order verbatim in the act or daily loop it belongs to, and the loop starts with letters: read every one, act, dismiss",
+    "PLAYSCRIPT — the operations manual: a Rimrooms run, start to empire",
+    "PLAYSCRIPT — the operations manual: a Rimrooms run, start to empire",
+    "PLAYSCRIPT — the operations manual: a Rimrooms run, start to empire"
+   ]
+  },
+  {
+   "id": "start-camp-stable",
+   "priority": 3.55,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_camp_tight_done": true,
+    "bill_rows": ">0",
+    "food_held": {
+     "ton": {
+      "days_of_food": ">={FOOD_COMFORT_DAYS}"
+     },
+     "hours": "{CAMP_STABLE_HOURS}"
+    }
+   },
+   "then": [
+    "plan what \"the mountain base, re-sited around the started entrance near the north-most farms\"",
+    "note: queue for the base family -- prison, torture chamber, work camps",
+    "ladder_set mark start_camp_stable true -- hands over to rung-5-the-mountain-base"
+   ],
+   "why": "owner: \"dont go building a massive camp just get telled and start on the mountain base.\" / owner: \"remmeber dont go building a massive camp just get telled and start on the mountain base might need a replan based on starting entrance near or N most farms\" / owner: \"and try to get to where everything is stable and food supply is handled production  so that things can settle down and u can start mining out the base, but lots before then\" / owner: \"expand the base build prisons and more facilities\" / owner: \"dont forget your prison and tourture chanmbers and work camps\"",
+   "latch": true,
+   "never": [
+    "expand the camp after this mark"
+   ],
+   "owner_rules": [
+    "dont go building a massive camp just get telled and start on the mountain base",
+    "the camp stops growing here: it is a staging camp, not a colony. Once food and production are steady the work moves to the mountain base, and the fortress plan is re-sited around the entrance that is already started, near the north-most farms |",
+    "build a prison; capture prisoners; work them with locks letting them into walled work areas; layers of security; cells, torture chamber and work-camp yard",
+    "build a prison; capture prisoners; work them with locks letting them into walled work areas; layers of security; cells, torture chamber and work-camp yard"
+   ]
+  }
+ ],
+ "prompts": {
+  "start-colony-lost": "Colonists 0.\nTOOLS: say (clean) -> new_colony reason \"colony died\".\nNever load a save.\nOWNER: \"colony dies... start another\"",
+  "start-new-colony": "LOOK FIRST: main menu, colony_exists false.\nTOOLS: say -> new_colony reason -> stalled dialog: game_get_ui_layout / game_click_ui_target.\nCrashlanded, Cassandra Classic, never Peaceful. Factions: normal pirates only + normal cannibals + nude tribe.\nAdvanced: 300x300, Spring; tile = mountains in forest/jungle, read the Terrain tab.\nFALLBACK: new_colony refuses -> reply_owner with its reply. Never load a save.\nDONE: ladder_set mark start_kind N.\nOWNER: \"STOP LOADING SAVES!! AND START THE SCENERIOS THROUGH THE NORMAL PATHWAY!\"",
+  "start-kind-unknown": "LOOK FIRST: game_state letters + look.\nPods/wreck = 1, tribe = 2, naked = 3, facility = 4, store = 5, alone = 6.\nTOOL: ladder_set mark start_kind N. Nothing else this turn.\nDONE: start_kind != 0.",
+  "start-crashlanded": "LOOK FIRST: paused? all 3 pawns listed?\nTOOLS in order: game_set unforbid -> game_set assign -> empire_pass -> pawn_priorities x3.\nFALLBACK: unforbid refuses -> game_apply_architect_designator Allow over the pod cells.\nDONE: ladder_set mark start_crashlanded_done true.\nOWNER: \"and a big issue its it never auto unforbid all the starting materials and never copped wood to build starting structures rooms\"",
+  "start-camp-chop": "LOOK FIRST: wood vs {CAMP_WOOD}, designations_cut.\nTOOL: game_set cmd chop count {CAMP_WOOD}; unpause.\nREFUSED: ladder_set mark chop_refused true ({TRY_PRESET} strikes hand over to the fallback).\nDONE: wood >= {CAMP_WOOD} -> mark start_camp_chop_done true.\nOWNER: \"never copped wood to build starting structures rooms\"",
+  "start-camp-chop-fallback": "Chop refused {TRY_PRESET} times.\nTOOLS: game_set explore -> game_get_cells_info -> game_apply_architect_designator Chop wood.\nNo trees at all: reply_owner.\nDONE: ladder_set mark chop_refused false once cuts are queued.\nOWNER: \"there is no wood no trees on this map\"",
+  "start-camp-stores": "LOOK FIRST: stockpile_cells == 0.\nTOOLS: game_set stockpile_camp mode food, then mode nofood.\nHaul in short batches; let them rest.\nDONE: mark start_camp_stores_done true.\nOWNER: \"you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax\"",
+  "start-camp-shelter": "LOOK FIRST: wood >= {SHELTER_WOOD}.\nTOOL: game_set cmd shelter w {SHELTER_W} h {SHELTER_H}; unpause until blueprints 0.\nREFUSED: mark shelter_refused true, try 6x8.\nDONE: mark start_camp_shelter_done true.\nOWNER: \"door on corner and sides\" / \"you retarn u put doors the the extreem corners thats not gonna work\"",
+  "start-camp-shelter-fallback": "Shelter tool refused {TRY_PRESET} times.\nTOOLS: game_list_architect_designators -> game_apply_architect_designator wood Wall ring 7x7, Door mid-side.\nreply_owner with the refusal text.\nDONE: room roofed -> mark start_camp_shelter_done true.\nNever the corner cell for a door.",
+  "start-camp-beds": "LOOK FIRST: beds < colonists.\nTOOLS: game_set beds -> set_bed_owner for any unowned.\nDONE: mark start_camp_beds_done true.\nOWNER: \"just have to always set up everything for new pawns\"",
+  "start-camp-food": "LOOK FIRST: days_of_food, wild_game, berry_bushes.\nTOOLS: game_set hunt -> crops Plant_Rice -> stove -> add_bill CookMealSimple {MEAL_BILL_TARGET}.\nHunt refused / no game: harvest berries.\nDONE: standing order, clears at days_of_food >= {FOOD_COMFORT_DAYS}.\nOWNER: \"let your people get good on food and set up camp before moving into the base like u said itll tak a while\"",
+  "start-camp-tight": "LOOK FIRST: look at the camp; are paths open?\nFridge, workshop, table+stool, torch lamp inside; roof over all but steel/stone.\nMud/water inside: terraform tool missing -- note it.\nDONE: mark start_camp_tight_done true.\nOWNER: \"camp fridege all of it workshop every thing u need in the camp tight and no blocked paths\"",
+  "start-explore-facility": "LOOK FIRST: explore_done false.\nTOOL: game_set explore, repeat until 'nothing left'; then game_set rooms.\nREFUSED {TRY_PRESET}x: reply_owner.\nDONE: mark start_explore_facility_done true.\nOWNER: \"exploring is not finished damn it ive said this repeadidily the map is even on screen becsue it never went through EVERY DOOR\"",
+  "start-new-pawn": "LOOK FIRST: game_state, which pawn is new.\nTOOLS: game_set assign pawn X -> pawn_priorities X -> empire_pass -> beds + set_bed_owner.\nDONE: pawns_unconfigured 0.\nOWNER: \"just have to always set up everything for new pawns\"",
+  "start-standing-orders": "Every start turn: letters first (read, act, dismiss), then run_list; first FIX is the goal.\nNot latched.\nOWNER: \"make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done\"",
+  "start-camp-stable": "LOOK FIRST: food held {CAMP_STABLE_HOURS}h, bill_rows > 0.\nTOOLS: plan the mountain base -> note the prison / torture chamber / work camp queue.\nDONE: mark start_camp_stable true.\nOWNER: \"dont go building a massive camp just get telled and start on the mountain base.\"",
+  "start-tribal": "Tribal: unforbid, assign, hunt with bows, campfire, pemmican.\nResearch: Complex furniture/Stonecutting -> Smithing -> Electricity.\nDONE: mark start_crashlanded_done true (enters the camp chain).",
+  "start-naked": "Naked: berries + pick up everything before night, shelter 3x3, accept wanderers.\nDONE: mark start_crashlanded_done true.",
+  "start-async": "Async: explore the facility first, then power, then gate sections (25 steel + 2 components each).\nDONE: marks gate_designated, gate_sections_done.",
+  "start-store": "Store: secure, count heads, one approach.\nDONE: ladder_set mark store_approach 1|2|3.",
+  "start-lone": "Lone: survive, learn a rule, record a way out. Survival rungs come first every turn."
+ },
+ "sensors_needed": [
+  {
+   "key": "pawns_unconfigured",
+   "how to measure in C# (RimWorld API)": "map.mapPawns.FreeColonistsSpawned.Count(p => p.ownership.OwnedBed == null || p.playerSettings.hostilityResponse != HostilityResponseMode.Attack || p.drugs.CurrentPolicy != NoDrugs)"
+  },
+  {
+   "key": "forbidden_items",
+   "how to measure in C# (RimWorld API)": "map.listerThings.AllThings.Count(t => t.def.EverHaulable && t.IsForbidden(Faction.OfPlayer) && !map.fogGrid.IsFogged(t.Position))"
+  },
+  {
+   "key": "explore_done",
+   "how to measure in C# (RimWorld API)": "now a .local/qa flag in gates.py; in C#: no Building_Door reachable by a colonist that touches a fogged cell (map.fogGrid.IsFogged) -- move into Sensors.cs"
+  },
+  {
+   "key": "camp_marsh_cells",
+   "how to measure in C# (RimWorld API)": "map.areaManager.Home.ActiveCells.Count(c => map.terrainGrid.TerrainAt(c) is Marsh/Mud/water (def.IsWater || defName contains Marsh/Mud))"
+  },
+  {
+   "key": "doors_on_corners",
+   "how to measure in C# (RimWorld API)": "Building_Door count whose cell has wall neighbours on two perpendicular sides and none opposite (a room corner)"
+  }
+ ],
+ "variables_needed": [
+  {
+   "name": "CAMP_WOOD",
+   "value": 300,
+   "rule": "wood wanted for the first camp (the existing chop count 300)"
+  },
+  {
+   "name": "SHELTER_WOOD",
+   "value": 200,
+   "rule": "minimum wood before the shelter cmd: 7x7 ring walls + door"
+  },
+  {
+   "name": "SHELTER_W",
+   "value": 7,
+   "rule": "walkthrough: 7x7 minimum, 9x9 better"
+  },
+  {
+   "name": "SHELTER_H",
+   "value": 7,
+   "rule": "walkthrough: 7x7 minimum"
+  },
+  {
+   "name": "CAMP_STABLE_HOURS",
+   "value": 24,
+   "rule": "days_of_food >= FOOD_COMFORT_DAYS held this long before the camp counts as stable"
+  },
+  {
+   "name": "TRY_PRESET",
+   "value": 3,
+   "rule": "ctu preset for refusals before the fallback rung"
+  }
+ ],
+ "missing_tools": [
+  "new_colony args: scenario, storyteller, faction list (fixed to the company scenario today)",
+  "set_drug_policy (pawn, policy)",
+  "set_schedule (pawn, hours)",
+  "terraform (cells -> Soil)",
+  "shelter material arg (steel when there is no wood)",
+  "build (def, x, z, stuff): table, stool, torch lamp, crafting spot, butcher table, cooler",
+  "set_research (project)",
+  "equip (pawn, weapon) -- empire_pass only arms as a bundle"
+ ],
+ "unplaced_rules": []
+}

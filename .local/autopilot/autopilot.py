@@ -169,6 +169,16 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=()):
                 _lines.append("    %d. %s" % (_i, _step))
             for _n in _gate.get("never", []):
                 _lines.append("    NEVER: %s" % _n)
+        # the top rung's own meta prompt (rung-prompts.json, one per rung): what to look at, the tools in order, the
+        # fallback and the done-mark -- only for the rung that is live (owner 2026-10-13: "the 100s of meta prompts")
+        try:
+            _rp = json.load(open(os.path.join(HERE, "rung-prompts.json"), encoding="utf-8"))
+            _top = next((g for g in _gates if g.get("priority", 99) < 98), None)
+            if _top and _rp.get(_top["id"]):
+                _lines.append("HOW TO DO [%s] NOW:" % _top["id"])
+                _lines.append(_rp[_top["id"]])
+        except (OSError, ValueError):
+            pass
         _keep = ("ticks_moving", "dialog_open", "letters", "meals", "raw_food", "wood", "medicine",
                  "blueprints", "hostiles_on_map", "store_roofed_fraction", "game_foreground")
         _lines.append("MEASURED STATE: " + json.dumps({k: v for k, v in _gstate.items() if k in _keep}))

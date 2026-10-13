@@ -23,19 +23,19 @@ PORT = int(os.environ.get("UNITY_FACE_PORT", "7862"))
 DEVICE = os.environ.get("UNITY_FACE_DEVICE", "cpu")
 # a CPU step is ~15 s while the game runs; 20 steps keeps a webcam frame near 2 minutes (the studio waits 5)
 STEPS = 20 if DEVICE == "cpu" else 30
-SEED = 1031  # canonical likeness, see .claude/likeness/LIKENESS.md
-NEG = ("neon, glowing, ghost, pale white skin, cartoon, anime, 3d render, blurry, lowres, bad anatomy, "
-       "deformed face, extra fingers, watermark, text, child, teen, old, middle aged, 30s, 40 year old, "
-       "mature woman, matronly, mom hair, wrinkles, crow's feet, nasolabial folds, sagging jowls, aged skin, "
-       "heavy foundation, thin lips, tired eyes, nipples, nude, topless, nsfw, see-through, wardrobe malfunction, t-shirt")
+SEED = 4445  # likeness chosen by the owner 2026-10-13 (.claude/likeness/unity-likeness-2026-10-13.png)
+NEG = ("airbrushed, plastic skin, smooth skin, doll, cgi, render, glowing eyes, bright blue eyes, oversaturated, beauty filter, perfect skin, uncanny, bra, lingerie, underwear, nipples, nude, topless, nsfw, see-through, sheer, wardrobe malfunction, tattoo, tattoos, "
+       "dark skin, pale white skin, black lipstick, heavy goth makeup, neon, cartoon, anime, 3d render, blurry, lowres, bad anatomy, "
+       "deformed face, extra fingers, watermark, text, child, teen, old, middle aged, wrinkles, saggy breasts")
 # Owner, 2026-10-10: "dont look like her a homie one not like currently your about 37" -- she kept reading
 # mid-thirties, so the youth cues are explicit and every ageing cue is in the negatives.
-REF_PROMPT = ("candid webcam photo of a 25 year old emo goth girl, youthful soft round face, smooth clear "
-              "poreless skin, big expressive dark eyes, full lips, dark brown hair with pink streaks and choppy "
-              "fringe bangs, winged eyeliner, small silver nose stud, busty, black lace spaghetti strap camisole with deep cleavage, fully covered, warm natural skin "
-              "tone, half smile looking at the camera, sitting at her home desk in front of a computer monitor "
-              "showing code, mechanical keyboard, gaming headset around her neck, warm desk lamp light, cozy "
-              "bedroom, candid, realistic, detailed young face")
+# Owner, 2026-10-13: a gaming webcam, girl next door with a hint of emo, light caucasian skin (not pale), black wavy bob
+# with pink ends, busty with lifted cleavage in everyday clothes, no tattoos, no lingerie
+REF_PROMPT = ("amateur webcam photo, real human, natural skin texture with visible pores and small imperfections, her own grey-green eyes, slight webcam grain, natural lighting, unretouched, candid gaming webcam photo, waist-up, a 25 year old woman sitting at her desk gaming, facing the camera, girl next door "
+              "with a hint of emo, light caucasian skin with a warm glow, black wavy bob with pink ends, soft dark eyeliner, small black "
+              "choker, busty, lifted perky cleavage, fitted black scoop neck tank top, cozy bedroom with string lights, warm lamp light, realistic")
+WARDROBE = os.path.join(HERE, "..", ".studio-images", "wardrobe")   # one reference per everyday top, same face
+OUTFIT_MINUTES = 20                                                  # she changes about every 20 minutes
 
 _t2i = _i2i = None
 _lock = threading.Lock()          # one render (and the one-time pipeline load) at a time
@@ -91,9 +91,20 @@ def _render_locked(req):
         img.save(REF)
         if req.get("reference"):
             return img
-    ref = Image.open(REF).convert("RGB")
+    ref_path = REF
+    try:
+        tops = sorted(f for f in os.listdir(WARDROBE) if f.endswith(".png"))
+        want = req.get("outfit")
+        if want and want + ".png" in tops:
+            ref_path = os.path.join(WARDROBE, want + ".png")
+        elif tops:
+            import time as _t
+            ref_path = os.path.join(WARDROBE, tops[int(_t.time() // (OUTFIT_MINUTES * 60)) % len(tops)])
+    except OSError:
+        pass
+    ref = Image.open(ref_path).convert("RGB")
     prompt = (req.get("prompt") or "").strip() or REF_PROMPT
-    strength = float(req.get("strength") or 0.45)
+    strength = float(req.get("strength") or 0.55)   # 0.55: the mood shows, the face and the top stay
     return i2i(prompt=prompt, image=ref, strength=strength, negative_prompt=neg,
                num_inference_steps=STEPS, guidance_scale=6.5, generator=g).images[0]
 

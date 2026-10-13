@@ -480,6 +480,24 @@ namespace RimPLC
 
             if (home == null) return;
             st["wealth"] = Math.Round(home.wealthWatcher.WealthTotal, 0);
+            // explore_done (2026-10-13 critic: only the bridge reply ever set it): no fog frontier -- a fogged walkable
+            // cell touching seen walkable ground -- within 30 cells of any colonist. Far mountain pockets do not count.
+            bool frontier = false;
+            foreach (Pawn p in home.mapPawns.FreeColonistsSpawned)
+            {
+                foreach (IntVec3 c in GenRadial.RadialCellsAround(p.Position, 30f, true))
+                {
+                    if (!c.InBounds(home) || !home.fogGrid.IsFogged(c) || !c.Walkable(home)) continue;
+                    foreach (IntVec3 d in GenAdj.CardinalDirections)
+                    {
+                        IntVec3 n = c + d;
+                        if (n.InBounds(home) && !home.fogGrid.IsFogged(n) && n.Walkable(home)) { frontier = true; break; }
+                    }
+                    if (frontier) break;
+                }
+                if (frontier) break;
+            }
+            if (home.mapPawns.FreeColonistsSpawnedCount > 0) st["explore_done"] = !frontier;
             int damaged = 0;
             foreach (Building b in home.listerBuildings.allBuildingsColonist)
             {

@@ -1,0 +1,1677 @@
+{
+ "family": "survival",
+ "rungs": [
+  {
+   "id": "combat-0-reset",
+   "priority": 1.5,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "fight over? hostiles_on_map = 0 while the combat chain is still latched",
+   "when": {
+    "mark_combat_paused": true,
+    "hostiles_on_map": 0
+   },
+   "then": [
+    "undraft everyone (game_set_draft false per pawn)",
+    "run time again (game_pause_game pause false)",
+    "ladder_set mark combat_paused false",
+    "ladder_set mark combat_plan 0",
+    "ladder_set mark help_coming false"
+   ],
+   "notice": "Fight over: chain reset, undrafted, time running.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "latch": false
+  },
+  {
+   "id": "combat-0-reassess-worse",
+   "priority": 1.51,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "float switch: we chose to fight but fight_ratio fell under FIGHT_RATIO_MIN",
+   "when": {
+    "mark_combat_plan": 1,
+    "fight_ratio": "<{FIGHT_RATIO_MIN}"
+   },
+   "then": [
+    "pause (game_pause_game pause true)",
+    "ladder_set mark combat_plan 0 -- the odds dropped, the branch rungs pick again"
+   ],
+   "notice": "Odds dropped mid-fight: paused to re-plan.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "latch": false
+  },
+  {
+   "id": "combat-0-reassess-better",
+   "priority": 1.52,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "float switch: holding/kiting/retreating but fight_ratio is back at FIGHT_RATIO_MIN",
+   "when": {
+    "mark_combat_plan": ">1",
+    "fight_ratio": ">={FIGHT_RATIO_MIN}"
+   },
+   "then": [
+    "pause (game_pause_game pause true)",
+    "ladder_set mark combat_plan 0 -- the odds turned, the fight rung takes over"
+   ],
+   "notice": "Odds improved: paused to switch to fighting.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "latch": false
+  },
+  {
+   "id": "combat-1-damage-pause",
+   "priority": 1.54,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "colonist took damage with hostiles on the map",
+   "when": {
+    "colonist_hurt": true,
+    "hostiles_on_map": ">0",
+    "mark_combat_paused": false
+   },
+   "then": [
+    "pause (game_pause_game pause true)",
+    "read fight_ratio = able_shooters / hostiles_on_map off the ladder",
+    "ladder_set mark combat_paused true"
+   ],
+   "notice": "A colonist is hurt and hostiles are here: game paused for a fight check.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "latch": false
+  },
+  {
+   "id": "combat-2-fight",
+   "priority": 1.56,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "can we handle this fight? fight_ratio >= FIGHT_RATIO_MIN -> YES",
+   "when": {
+    "mark_combat_paused": true,
+    "mark_combat_plan": 0,
+    "fight_ratio": ">={FIGHT_RATIO_MIN}"
+   },
+   "then": [
+    "game_set_draft true per able shooter (able_shooters_armed)",
+    "game_click_cell / order_pawn each drafted pawn to an embrasure on the threatened side",
+    "ladder_set mark combat_plan 1",
+    "game_pause_game pause false"
+   ],
+   "notice": "We can take this fight: drafted and fighting.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "latch": false
+  },
+  {
+   "id": "combat-2-help-coming",
+   "priority": 1.57,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "can we handle it? NO -> can help get there soon? YES (mark help_coming)",
+   "when": {
+    "mark_combat_paused": true,
+    "mark_combat_plan": 0,
+    "fight_ratio": "<{FIGHT_RATIO_MIN}",
+    "mark_help_coming": true
+   },
+   "then": [
+    "NO, but help is on the way: draft and hold inside the walls, out of their range",
+    "ladder_set mark combat_plan 2",
+    "unpause and hold until the help lands"
+   ],
+   "notice": "Outmatched but help is coming: holding inside the walls.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "latch": false
+  },
+  {
+   "id": "combat-2-call-help-comms",
+   "priority": 1.58,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "too many (fight_ratio < CALL_HELP_RATIO), a comms console stands",
+   "when": {
+    "mark_combat_paused": true,
+    "mark_combat_plan": 0,
+    "fight_ratio": "<{CALL_HELP_RATIO}",
+    "mark_help_coming": false,
+    "comms_console": true
+   },
+   "then": [
+    "too many: call for help at the comms console (an allied faction's military aid)",
+    "ladder_set mark help_coming true",
+    "ladder_set mark combat_plan 4",
+    "meanwhile retreat inside the walls, then unpause"
+   ],
+   "notice": "Too many hostiles: calling for help, falling back inside.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "note": "UNVERIFIED: which allies answer and the goodwill cost (read the comms menu, never guess)",
+   "latch": false
+  },
+  {
+   "id": "combat-2-call-help-permit",
+   "priority": 1.59,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "too many, no comms console, a title with a permit",
+   "when": {
+    "mark_combat_paused": true,
+    "mark_combat_plan": 0,
+    "fight_ratio": "<{CALL_HELP_RATIO}",
+    "mark_help_coming": false,
+    "mark_title_rank": ">3"
+   },
+   "then": [
+    "too many: call imperial military aid with the title permit",
+    "ladder_set mark help_coming true",
+    "ladder_set mark combat_plan 4",
+    "retreat inside the walls, then unpause"
+   ],
+   "notice": "Too many hostiles: calling imperial aid.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "note": "UNVERIFIED: per-title permit list (same as permit-aid)",
+   "latch": false
+  },
+  {
+   "id": "combat-2-retreat",
+   "priority": 1.6,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "too many, no way to call help",
+   "when": {
+    "mark_combat_paused": true,
+    "mark_combat_plan": 0,
+    "fight_ratio": "<{CALL_HELP_RATIO}",
+    "mark_help_coming": false
+   },
+   "then": [
+    "too many and nobody to call: retreat inside the walls (the mountain base, or through an open gate)",
+    "draft, close the doors behind, shoot from the embrasures only",
+    "ladder_set mark combat_plan 5",
+    "unpause"
+   ],
+   "notice": "Too many hostiles and no help: retreating inside the walls.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "latch": false
+  },
+  {
+   "id": "combat-2-kite",
+   "priority": 1.61,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "can we handle it? NO -> help soon? NO -> not too many (the call-help/retreat rungs above take fight_ratio < CALL_HELP_RATIO first)",
+   "when": {
+    "mark_combat_paused": true,
+    "mark_combat_plan": 0,
+    "fight_ratio": "<{FIGHT_RATIO_MIN}",
+    "mark_help_coming": false
+   },
+   "then": [
+    "NO, and no help soon: keep range -- draft, fall back while shooting, never stand in melee",
+    "ladder_set mark combat_plan 3",
+    "unpause and kite"
+   ],
+   "notice": "Outmatched, no help near: keeping range and kiting.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "latch": false
+  },
+  {
+   "id": "med-1-bleeding-under-fire",
+   "priority": 1.64,
+   "family": "survival",
+   "chain": "medical",
+   "mode": "advise",
+   "check": "pawn bleeding -> enemy on map? YES",
+   "when": {
+    "pawn_bleeding": true,
+    "hostiles_on_map": ">0",
+    "mark_combat_plan": ">0"
+   },
+   "then": [
+    "enemy on the map: draft everyone able and kill the threat first (combat_plan 1), or follow the plan the chain picked",
+    "never carry a bleeding pawn under fire",
+    "the moment the shooting near them stops: field tend where they lie (med-2)"
+   ],
+   "notice": "A colonist is bleeding with hostiles here: threat first, then field care.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"remmebr always field tnde directly brefopre cpature and haul\"",
+   "latch": false
+  },
+  {
+   "id": "combat-3-hold-plan",
+   "priority": 1.66,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "fight in progress, plan latched",
+   "when": {
+    "mark_combat_plan": ">0",
+    "hostiles_on_map": ">0"
+   },
+   "then": [
+    "follow combat_plan: 1 fight, 2 hold for help, 3 kite, 4 help called, 5 retreat",
+    "re-read fight_ratio every scan (the reassess rungs re-plan)"
+   ],
+   "notice": "Fight in progress: holding the chosen plan.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "latch": false
+  },
+  {
+   "id": "fire-in-camp",
+   "priority": 2.0,
+   "family": "survival",
+   "when": {
+    "fire_cells": ">0"
+   },
+   "then": [
+    "game_pause_game pause true",
+    "pawn_priorities each non-downed pawn (Firefighter is already 1 in the owner's grid)",
+    "game_set cmd set_area pawn <each> area '' (unrestricted, so they reach the fire)",
+    "game_apply_architect_designator Home on the cells around the fire (pawns only fight fire inside Home)",
+    "game_pause_game pause false"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / walkthrough walkthrough-base-power-temperature.md: THRESHOLD: items ignite around 235C; vent or extinguish before a room reaches it. [survival] https://rimworldwiki.com/wiki/Temperature",
+   "latch": false,
+   "never": [
+    "draft pawns into a burning room to fight it; fight from the edge"
+   ],
+   "note": "UNVERIFIED: a burning cell lists a thing with defName 'Fire' -- never captured"
+  },
+  {
+   "id": "downed-pawn",
+   "priority": 2.02,
+   "family": "survival",
+   "when": {
+    "downed_count": ">0",
+    "hostiles_on_map": 0
+   },
+   "then": [
+    "game_list_colonists: find the downed pawn and whether they bleed (pawn_bleeding)",
+    "bleeding: order_pawn <doctor> tend <downed> where they lie FIRST (field tend)",
+    "then order_pawn <nearest> rescue <downed> to a Medical bed",
+    "game_set cmd set_bed_owner x z owner colonist on that bed if it reads prisoner",
+    "order_pawn <downed> rest until healed once in the bed (bed rest)"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner: \"remmebr always field tnde directly brefopre cpature and haul\" / owner: \"slect gee and tell him rest till healed in hospital bed\" / owner: \"hospital is prisoner only fix that\" / walkthrough walkthrough-food-and-medicine.md: Never leave a downed colonist outside; rescue them to a medical bed. [survival] D / walkthrough walkthrough-food-and-medicine.md: Tend bleeding wounds at once; 100% blood loss kills. [survival] D",
+   "latch": false,
+   "never": [
+    "leave a downed colonist outside",
+    "carry before the field tend when they bleed"
+   ]
+  },
+  {
+   "id": "med-2-field-tend",
+   "priority": 2.04,
+   "family": "survival",
+   "chain": "medical",
+   "mode": "advise",
+   "check": "pawn bleeding -> enemy on map? NO -> tend now",
+   "when": {
+    "pawn_bleeding": true,
+    "hostiles_on_map": 0,
+    "mark_field_tended": false
+   },
+   "then": [
+    "order_pawn <best doctor> tend <bleeder> where they lie, best medicine in stock",
+    "ladder_set mark field_tended true"
+   ],
+   "notice": "Bleeding colonist: field tending in place.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"remmebr always field tnde directly brefopre cpature and haul\"",
+   "latch": false
+  },
+  {
+   "id": "med-3-carry-to-hospital",
+   "priority": 2.06,
+   "family": "survival",
+   "chain": "medical",
+   "mode": "advise",
+   "check": "field tended -> carry to hospital",
+   "when": {
+    "mark_field_tended": true,
+    "hostiles_on_map": 0
+   },
+   "then": [
+    "order_pawn <nearest> rescue <patient> to a Medical bed",
+    "order_pawn <doctor> tend <patient> again in the bed",
+    "ladder_set mark field_tended false"
+   ],
+   "notice": "Tended in the field: carrying to the hospital bed.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"remmebr always field tnde directly brefopre cpature and haul\"",
+   "latch": false
+  },
+  {
+   "id": "mental-break",
+   "priority": 2.1,
+   "family": "survival",
+   "when": {
+    "mental_break": true
+   },
+   "then": [
+    "game_list_colonists: name the pawn and the break type",
+    "berserk: game_set_draft two pawns, fists only, arrest or beat down -- never shoot",
+    "fire-starter: keep others away, firefighters ready",
+    "say the cause on stream (twitch_chat say, clean)",
+    "after: fix the cause (food, bed, temperature, corpses) from the needs tab"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner: \"maintain ur colonists' needs / u need to make meals sooner than later / cook bill maintained at 50 rather than 10 / meds in hospital\" / owner: \"you are slacking ther should be a order of operation between talking to chat always sayiong hi, keeping pawns needs up and healthy, and chating, and making images and guidesing them through think on everything in gaem\"",
+   "latch": false,
+   "never": [
+    "draft against a berserk pawn with lethal weapons"
+   ],
+   "owner_rules": [
+    "you are slacking ther should be a order of operation between talking to chat always sayiong hi, keeping pawns needs up and healthy, and chating, and making images and guidesing them through think on everything in gaem"
+   ]
+  },
+  {
+   "id": "life-threat",
+   "priority": 2.12,
+   "family": "survival",
+   "when": {
+    "alert_life_threat": true
+   },
+   "then": [
+    "game_list_colonists: which pawn, which hediff",
+    "best medicine (assign medicine Best), best doctor tends now",
+    "severity rising past immunity: glitterworld medicine if any"
+   ],
+   "why": "walkthrough walkthrough-food-and-medicine.md: food_days < 3 -> hunt + harvest + cook rung. [survival] F / walkthrough walkthrough-food-and-medicine.md: Plague: severity grows fast; tend as often as allowed with industrial medicine and bed rest until immune. [survival] G",
+   "latch": false,
+   "never": [
+    "send the doctor to the front line"
+   ]
+  },
+  {
+   "id": "needs-tend",
+   "priority": 2.14,
+   "family": "survival",
+   "when": {
+    "alert_needs_tend": true,
+    "hostiles_on_map": 0
+   },
+   "then": [
+    "order_pawn <best doctor> tend <patient>",
+    "doctor busy elsewhere twice: the next best (ctu below)"
+   ],
+   "why": "owner: \"remmebr always field tnde directly brefopre cpature and haul\" / walkthrough walkthrough-food-and-medicine.md: Never leave a downed colonist outside; rescue them to a medical bed. [survival] D",
+   "latch": false
+  },
+  {
+   "id": "after-the-kill",
+   "priority": 2.16,
+   "family": "survival",
+   "when": {
+    "hostiles_on_map": 0,
+    "kill_over": {
+     "ons": {
+      "hostiles_on_map": 0,
+      "threat_letter": true
+     }
+    }
+   },
+   "then": [
+    "game_set cmd unforbid (the loot and dropped gear)",
+    "everything perishable into the food store / freezer",
+    "roof any open room (areabuildroofexpand)",
+    "game_set cmd shelves",
+    "(raid-cleanup) game_set_draft off for everyone",
+    "(raid-cleanup) capture downed raiders into the prisoner bed (mark_prisoner_bed) after field-tending them",
+    "(raid-cleanup) strip and haul corpses to a dump zone outside the wall or the crematorium (xercaine.fueledcrematorium)",
+    "(raid-cleanup) set repairs: buildings_damaged > 0 hands off to repair-after-raid",
+    "(war-after-kill-storage) the moment the last raider is down, nothing else first:",
+    "(war-after-kill-storage) game_set cmd unforbid (loot, dropped gear)",
+    "(war-after-kill-storage) close and roof every open room (game_set cmd set_area area BuildRoof over open rooms)",
+    "(war-after-kill-storage) game_set cmd shelves ; game_set cmd stockpile_filter per room ; freezer/cooler working",
+    "(war-after-kill-storage) strip enemy weapons/armour into a stockpile; extras go to the supply-weapons rungs",
+    "game_set_draft off for everyone (raid-cleanup)",
+    "ladder_set mark after_kill_done true (others may read it; this rung itself is one-shot on the kill)"
+   ],
+   "never": [
+    "research or start new builds before the stores are inside"
+   ],
+   "why": "owner: \"fix all you open rooms get shit inside before it decays set up stoages shelfs and shit set stockpiles get your freezer/cooler working good make sure shit is done <<<do all this dirrectly after enemy kill\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\" / owner: \"fix all you open rooms get shit inside before it decays set up stoages shelfs and shit set stockpiles get your freezer/cooler working good make sure shit is done <<<do all this dirrectly after enemy kill\" || merged from base-and-fortress:raid-cleanup: owner: \"Prisoner bed exists BEFORE any fight\" || merged from war:war-after-kill-storage: owner, verbatim: \"and fix all you open rooms get shit inside before it decays set up stoages shelfs and shit set stockpiles get your freezer/cooler working good make sure shit is done <<<do all this dirrectly after enemy kill\" / \"you forgot to unforbid everything thats a constant tasks\" / \"starting supplies are forbidden\" / \"come on get to it all your shit is in the open deterating\" ; walkthrough: walkthrough-defence-and-combat.md [war] items 66",
+   "latch": false,
+   "owner_rules": []
+  },
+  {
+   "id": "heat-wave",
+   "priority": 2.2,
+   "family": "survival",
+   "when": {
+    "condition_heatwave": true
+   },
+   "then": [
+    "everyone indoors in roofed, cooled rooms (game_set cmd set_area pawn <each> area Home)",
+    "check every cooler is powered and the freezer still reads below 0C (game_get_cell_info on a freezer cell)",
+    "no power: game_list_architect_designators temperature -> passive cooler (wood) in each roofed living room",
+    "if a gate to the backrooms is open: send the crew through it until it breaks",
+    "watch fire_cells: heat starts fires"
+   ],
+   "why": "owner: \"you need to figure out the tmepature pronblem asap ASAP one heat wave and your dead in 3 minutes\" / walkthrough walkthrough-base-power-temperature.md: Heat wave (1.5-3.5 days, +17C): add coolers/passive coolers, confirm freezer stays < 0C, watch for fires. [survival] https://rimworldwiki.com/wiki/Events",
+   "latch": false,
+   "note": "UNVERIFIED: condition defName HeatWave -> condition_heatwave; 'about 60F' inside the backrooms is not in docs/wiki"
+  },
+  {
+   "id": "cold-snap",
+   "priority": 2.22,
+   "family": "survival",
+   "when": {
+    "condition_coldsnap": true
+   },
+   "then": [
+    "everyone sleeps indoors with heat; campfire (no power) or heater in each bedroom",
+    "game_set cmd add_bill recipe Make_Apparel_Parka count <colonists> (or TribalWear/Tuque)",
+    "game_apply_architect_designator Harvest on every crop before -10C (outdoor_temp)",
+    "pawn_priorities: Growing up for the harvester until done"
+   ],
+   "why": "walkthrough walkthrough-base-power-temperature.md: Cold snap (1.5-3.5 days, -20C): heat bedrooms, dress pawns in parkas/tuques, harvest crops before -10C. [survival] https://rimworldwiki.com/wiki/Events / walkthrough walkthrough-base-power-temperature.md: Put one heater in each living room in cold biomes; add a second when outdoors < -20C. [survival] https://rimworldwiki.com/wiki/Heater / walkthrough walkthrough-food-and-medicine.md: Count a meal as 0.9 nutrition (lavish 1.0); raw food is 0.05 per unit. [survival] F",
+   "latch": false,
+   "note": "UNVERIFIED defName ColdSnap"
+  },
+  {
+   "id": "solar-flare",
+   "priority": 2.24,
+   "family": "survival",
+   "when": {
+    "condition_solarflare": true
+   },
+   "then": [
+    "electrics, heaters, coolers and turrets are off: light a campfire in the coldest lived room, passive cooler in the freezer if hot",
+    "draft-ready: pawn weapons in hand, no fights started",
+    "close freezer doors; cook raw meat if the freezer climbs above 0C"
+   ],
+   "why": "walkthrough walkthrough-base-power-temperature.md: During a solar flare (0.15-0.5 days) electrics, heaters, coolers and turrets stop; keep campfire/passive cooler and pawn weapons ready. [survival] https://rimworldwiki.com/wiki/Events / walkthrough walkthrough-food-and-medicine.md: If power fails and the freezer goes above 0C, cook all raw meat into meals/pemmican at once. [survival] C",
+   "latch": false,
+   "note": "UNVERIFIED defName SolarFlare"
+  },
+  {
+   "id": "toxic-fallout",
+   "priority": 2.26,
+   "family": "survival",
+   "when": {
+    "condition_toxicfallout": true
+   },
+   "then": [
+    "everyone under a roof: game_set cmd set_area pawn <each> area Home (roofed rooms)",
+    "harvest unroofed crops now (game_apply_architect_designator Harvest)",
+    "any pawn at toxic buildup >= 40%: order_pawn rest in bed indoors"
+   ],
+   "why": "walkthrough walkthrough-base-power-temperature.md: Volcanic winter (7.5-40 days, -7C, -30% light, not before day 60): stockpile >= 20 days of food and build a heated, lit greenhouse. [survival] https://rimworldwiki.com/wiki/Events",
+   "latch": false,
+   "note": "toxic buildup per pawn not measured: sensor toxic_buildup_max needed"
+  },
+  {
+   "id": "flashstorm",
+   "priority": 2.28,
+   "family": "survival",
+   "when": {
+    "condition_flashstorm": true
+   },
+   "then": [
+    "keep pawns out of the storm radius (game_set cmd set_area pawn <each> area Home)",
+    "when it ends: firefight every fire_cells"
+   ],
+   "why": "walkthrough walkthrough-food-and-medicine.md: Budget 1.6 nutrition per adult each day: about 2 meals, or 32 raw units / pemmican. [survival] F",
+   "latch": false
+  },
+  {
+   "id": "shelter-night-one",
+   "priority": 4.0,
+   "family": "survival",
+   "when": {
+    "colony_exists": true,
+    "mark_shelter_built": false,
+    "day": "<3",
+    "mark_shelter_set": false
+   },
+   "then": [
+    "game_set cmd unforbid",
+    "game_set cmd chop count 150",
+    "game_set cmd shelter w 7 h 5 (wood room + door + roof beside the crew)",
+    "game_set cmd beds (one per colonist)",
+    "campfire in the middle of the room",
+    "ladder_set mark shelter_built true"
+   ],
+   "why": "owner: \"and try to get to where everything is stable and food supply is handled production so that things can settle down and u can start mining out the base, but lots before then\" / owner: \"remmeber dont go building a massive camp just get telled and start on the mountain base might need a replan based on starting entrance near or N most farms\" / owner: \"okay putting rim up front get to it make sure ur base isnt gonna collapse death\" / walkthrough walkthrough-opening-and-camp.md: Put a campfire in the middle of the room for heat and light (outside if the weather is very hot). [survival] Q / walkthrough walkthrough-opening-and-camp.md: Have every pawn under a roof and in a bed by night 1. [survival] Q / walkthrough walkthrough-opening-and-camp.md: Do not give orders to sleeping pawns; it causes disturbed sleep. [survival] Q / walkthrough walkthrough-opening-and-camp.md: Check moods in the Needs tab on night 1. [survival] Q / walkthrough walkthrough-opening-and-camp.md: THRESH: keep the bedroom near 21 C; without heat expect -4 (slept in the cold). [survival] Q / walkthrough walkthrough-opening-and-camp.md: THRESH: a pawn sleeping without a bed takes -4 mood (slept on the ground); beds needed = colonist count. [survival] B",
+   "latch": true,
+   "never": [
+    "give orders to sleeping pawns",
+    "build a massive camp"
+   ]
+  },
+  {
+   "id": "work-grid-set",
+   "priority": 4.1,
+   "family": "survival",
+   "when": {
+    "colony_exists": true,
+    "mark_work_grid_set": false
+   },
+   "then": [
+    "pawn_priorities for the first pawn (Firefighter..Cooking = 1, then custom)",
+    "copy/paste that row to every other pawn, then tune (farmer Growing 1, best shooter Hunting 1, doctor Doctor 1)",
+    "no blank cells in the work tab",
+    "ladder_set mark work_grid_set true"
+   ],
+   "why": "owner: \"fielkds arent set up yet\" / owner: \"use copy paset to set defalts then change\" / owner: \"wtf i told you to block soeing at the farms at the main base and make new farms of everything u need grow near the camp outer walls, and like i siad no priorities shall be blank in the work tab if possible set them all correct\" / owner: \"you need to work on everything at once pauseing till everything is set and use shift slick to mass complete prioriities not just let the dumb ai get tot it\" / owner: \"you still havent pauses d and set all you pawns up take control of your conlony shit!\" / walkthrough walkthrough-opening-and-camp.md: Count on the starting packaged survival meals as the first-week buffer (about 50 meals, about 8 days for 3). [survival] B / owner: \"you can set one pawn then paste templet to others then a customize them character editor tab bottom right is a go, correct the record\"",
+   "latch": true,
+   "never": [
+    "leave a work cell blank",
+    "give orders to sleeping pawns"
+   ],
+   "owner_rules": [
+    "you can set one pawn then paste templet to others then a customize them character editor tab bottom right is a go, correct the record"
+   ]
+  },
+  {
+   "id": "colony-before-research",
+   "priority": 4.2,
+   "family": "survival",
+   "when": {
+    "research_benches": ">0",
+    "any_urgent": {
+     "any": [
+      {
+       "days_of_food": "<{FOOD_MIN_DAYS}"
+      },
+      {
+       "alert_food_rot": true
+      },
+      {
+       "mark_freezer_sorted": false,
+       "has_power": true
+      }
+     ]
+    },
+    "alert_idle": false
+   },
+   "then": [
+    "pawn_priorities: Research 4 for everyone until food and storage rungs clear",
+    "say what the colony needs instead on stream"
+   ],
+   "why": "owner: \"ARE YOU FUCKING SEEING WHATS SHES DOING SHE JSUT RESEARCHING AT THE DESKS AND NOT DOING ANYTHING THE COLONY NEEDS COME ONE AND WE ARE STILLL PEGGING ALL THE FUCKING PROICESSES I THOUGHT I TOLD YOU TO OPTIMIZE EVERYTHING\" / owner: \"rot is rotting away still havent figured cooler /freezer and vents in rooms so all are cooled u need to understand importance of everything and not get lost a mile away from impant shit that needs fix imediatley\"",
+   "latch": false
+  },
+  {
+   "id": "blight",
+   "family": "survival",
+   "when": {
+    "blight_new": {
+     "ons": {
+      "letter_matches": "blight"
+     }
+    }
+   },
+   "then": [
+    "game_get_cells_info over every growing zone: find the blighted plants",
+    "game_apply_architect_designator PlantsCut on every blighted plant at once (it spreads to neighbours)",
+    "pawn_priorities the best grower: PlantCutting/Growing 1 until it is cut"
+   ],
+   "never": [
+    "leave a blighted plant standing"
+   ],
+   "why": "walkthrough (critic section 7): \"cut blighted plants at once\"",
+   "latch": false,
+   "priority": 4.3
+  },
+  {
+   "id": "starving",
+   "priority": 4.4,
+   "family": "survival",
+   "when": {
+    "alert_starv": true,
+    "hunt_tries": {
+     "not": {
+      "tries": {
+       "ctu": {
+        "mark_starve_tried": true
+       },
+       "preset": 2,
+       "reset": {
+        "alert_starv": false
+       }
+      }
+     }
+    }
+   },
+   "then": [
+    "ladder_set mark starve_tried false (re-arm the counter edge)",
+    "game_set cmd hunt (safe game only, NEVER_HUNT list)",
+    "game_apply_architect_designator Harvest on every berry bush and agave",
+    "no stove: eat raw (STARVE_EAT_RAW); stove: game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET}",
+    "growing_cells = 0: game_set cmd crops plant Plant_Rice on the best soil",
+    "pawn_priorities: Cooking 1, Hunting 2 for the best shooter",
+    "a hunt/harvest/bill refused or no game found: ladder_set mark starve_tried true (counts for starving-no-game)"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner: \"you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!\" / owner: \"YOU PEOPLE WILL DIE!!!\" / walkthrough walkthrough-food-and-medicine.md: Malaria / sleeping sickness: long; bed rest and daily tending; glitterworld only if near death. [survival] K / walkthrough walkthrough-food-and-medicine.md: food_days < 3 -> hunt + harvest + cook rung. [survival] F",
+   "latch": false,
+   "never": [
+    "hunt a NEVER_HUNT animal",
+    "send a hunter without a ranged weapon"
+   ],
+   "note": "UNVERIFIED alert label ('starv' substring); fixed from scratch/alert_labels.json after the first live scans"
+  },
+  {
+   "id": "starving-no-game",
+   "priority": 4.5,
+   "family": "survival",
+   "when": {
+    "alert_starv": true,
+    "starve_retry": {
+     "ctu": {
+      "mark_starve_tried": true
+     },
+     "preset": 2,
+     "reset": {
+      "alert_starv": false
+     }
+    }
+   },
+   "then": [
+    "ladder_set mark starve_tried false (re-arm the counter edge)",
+    "slaughter the least useful colony animal, never a trained mount (game_right_click_cell animal -> Slaughter)",
+    "trade any caravan for packaged survival meals or pemmican",
+    "insect and human meat last; say the mood cost on stream",
+    "slaughter and trade both refused: ladder_set mark starve_tried true and say on stream what is missing"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner: \"you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!\"",
+   "latch": false,
+   "never": [
+    "slaughter a trained mount (MOUNT_DEFS)"
+   ],
+   "note": "UNVERIFIED alert label; berry_bushes counts Plant_Berry (UNVERIFIED defName) and Plant_Strawberry_Wild (captured)"
+  },
+  {
+   "id": "pawn-starving",
+   "priority": 4.6,
+   "family": "survival",
+   "when": {
+    "meals": 0,
+    "raw_food": "<5",
+    "days_of_food": "<{FOOD_PANIC_DAYS}"
+   },
+   "then": [
+    "game_apply_architect_designator Harvest on every berry bush and harvestable food plant near camp",
+    "game_set cmd hunt (never NEVER_HUNT; never boomalope near wood)",
+    "game_set cmd add_bill recipe CookMealSimple count 30 (no skill restriction)",
+    "order_pawn nearest colonist to the closest food job",
+    "no food plants left on the map: say so, keep the hunts full"
+   ],
+   "why": "owner: \"you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!\" / owner: \"you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!\" / owner: \"YOU PEOPLE WILL DIE!!!\" / walkthrough walkthrough-food-and-medicine.md: Count a meal as 0.9 nutrition (lavish 1.0); raw food is 0.05 per unit. [survival] F / walkthrough walkthrough-food-and-medicine.md: If power fails and the freezer goes above 0C, cook all raw meat into meals/pemmican at once. [survival] C",
+   "latch": false,
+   "never": [
+    "mark a boomalope, insect hive or anything that explodes or swarms as a hunt target"
+   ]
+  },
+  {
+   "id": "hunter-weapon",
+   "priority": 4.7,
+   "family": "survival",
+   "when": {
+    "alert_hunterlacksrangedweapon": true
+   },
+   "then": [
+    "equip the best ranged weapon in stock on the hunter (order_pawn <hunter> equip <weapon>)",
+    "no ranged weapon: game_set cmd add_bill recipe Make_Bow_Short count 1 (crafting spot), or turn Hunting off",
+    "(animals-hunter-armed) game_list_colonists -- the pawn with Hunting on and the best Shooting",
+    "(animals-hunter-armed) game_set cmd unforbid (loose guns)",
+    "(animals-hunter-armed) order_pawn <hunter> equip the best loose ranged weapon (bow/rifle) -- read the equipment back",
+    "(animals-hunter-armed) pawn_priorities <hunter> custom {Hunting:2}"
+   ],
+   "why": "owner: \"Missing 0.5x raw food / No hunter has a valid hunting weapon / Plant: Smokeleaf plant\" || merged from animals:animals-hunter-armed: owner: \"Missing 0.5x raw food / No hunter has a valid hunting weapon\" / \"you havent set up your work tab manual priorities, everything from firefighting to cooking should be hieghest 1s and you only put 2s on the teask u want each colonist doing spliting theri work up so u have like on guy cutting and planting and one crafting and constructing and one hunting and everyhting else\" -- walkthrough W Hunting",
+   "latch": false,
+   "note": "alert key from generic class Alert_HunterLacksRangedWeapon (UNVERIFIED class name)",
+   "owner_rules": [],
+   "never": [
+    "never send a melee-only or unarmed pawn to hunt"
+   ]
+  },
+  {
+   "id": "food-low",
+   "priority": 4.8,
+   "family": "survival",
+   "when": {
+    "days_of_food": "<{FOOD_MIN_DAYS}"
+   },
+   "then": [
+    "game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET} (bulk x4 recipe first if the stove has it, single below)",
+    "a second growing zone sized colonists x FIELD_CELLS_PER_PAWN (game_set cmd crops)",
+    "game_set cmd hunt on safe game",
+    "food under 1.6 x colonists x 2 days of nutrition: harvest berries too",
+    "(start-camp-food) game_set cmd hunt (never a NEVER_HUNT animal)",
+    "(start-camp-food) game_set cmd crops plant Plant_Rice (potatoes on gravel, corn for storage)",
+    "(start-camp-food) game_set cmd stove -- campfire/stove inside the camp; then game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET}",
+    "(start-camp-food) days_of_food < {FOOD_MIN_DAYS}: harvest every berry bush near camp"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner: \"maintain ur colonists' needs / u need to make meals sooner than later / cook bill maintained at 50 rather than 10 / meds in hospital\" / owner: \"collecting resources planting crops and setting bills for food / grow resources\" / owner: \"u need to make meals sooner than later\" / owner: \"you can make 4x recipies for food more efficiently always go bigger recipies first then the smaller so every one can learn\" / owner: \"you can make 4x recipies for food more efficiently always go bigger recipies first then the smaller so every one can learn\" / walkthrough walkthrough-food-and-medicine.md: Budget 1.6 nutrition per adult each day: about 2 meals, or 32 raw units / pemmican. [survival] F / walkthrough walkthrough-food-and-medicine.md: Count a meal as 0.9 nutrition (lavish 1.0); raw food is 0.05 per unit. [survival] F / walkthrough walkthrough-food-and-medicine.md: Always cook: a simple meal costs 0.5 raw nutrition and gives 0.9 (180%). [survival] F / walkthrough walkthrough-food-and-medicine.md: Before the first winter, hold count_MealSimple+MealFine >= 10 x colonists (2 meals x 5 days). [survival] F / walkthrough walkthrough-food-and-medicine.md: Food emergency when meals + raw nutrition < 1.6 x colonists x 2 days: hunt and forage berries now. [survival] F / walkthrough walkthrough-food-and-medicine.md: Eat packaged survival meals last: they never spoil, so keep them for caravans and emergencies. [survival] F / walkthrough walkthrough-food-and-medicine.md: Meals rot in about 4 days unfrozen; never cook more than 2 days ahead without a freezer. [survival] F / walkthrough walkthrough-food-and-medicine.md: food_days < 3 -> hunt + harvest + cook rung. [survival] F || merged from start:start-camp-food: owner: \"let your people get good on food and set up camp before moving into the base like u said itll tak a while\" / owner: \"and try to get to where everything is stable and food supply is handled production  so that things can settle down and u can start mining out the base, but lots before then\" | walkthrough-opening-and-camp.md [start] (rimworldwiki Room/Temperature, B, Q, F sources)",
+   "latch": false,
+   "never": [
+    "a bill on Forever; Do until X only",
+    "start mining the fortress while days_of_food < {FOOD_COMFORT_DAYS}"
+   ],
+   "owner_rules": [
+    "mining the fortress waits; first a steady food supply (forage, hunt, rice, cooking) and a working camp by the shell; the fortress plan stays drawn |",
+    "the fortress digs only once food supply, production and the camp are stable; until then camp work comes first |"
+   ]
+  },
+  {
+   "id": "meals-early",
+   "priority": 4.9,
+   "family": "survival",
+   "when": {
+    "colony_exists": true,
+    "stoves": ">0",
+    "mark_meal_bill_set": false
+   },
+   "then": [
+    "game_set cmd add_bill recipe CookMealSimple_Bulk count {MEAL_BILL_TARGET} (if listed), then CookMealSimple count {MEAL_BILL_TARGET}",
+    "game_set cmd add_bill recipe CookMealFine count 10 once meat and vegetables are both stocked",
+    "ladder_set mark meal_bill_set true"
+   ],
+   "why": "owner: \"u need to make meals sooner than later\" / owner: \"maintain ur colonists' needs / u need to make meals sooner than later / cook bill maintained at 50 rather than 10 / meds in hospital\" / owner: \"dont set build forever if anything set 1000 each type\" / owner: \"you might want to do 3x mable blocks not singles\" / owner: \"you can make 4x recipies for food more efficiently always go bigger recipies first then the smaller so every one can learn\" / owner: \"you can make 4x recipies for food more efficiently always go bigger recipies first then the smaller so every one can learn\" / walkthrough walkthrough-food-and-medicine.md: Have herbal medicine from day one; keep at least 5 medicine per colonist. [survival] M / walkthrough walkthrough-food-and-medicine.md: count_MedicineHerbal + count_MedicineIndustrial < 5 x colonists -> grow healroot / craft medicine. [survival] M / walkthrough walkthrough-food-and-medicine.md: any infection/disease hediff -> doctor priority 1, bed rest, tend every 12 h. [survival] I",
+   "latch": true,
+   "never": [
+    "a nutrient paste dispenser early",
+    "cook more than 2 days ahead without a freezer"
+   ]
+  },
+  {
+   "id": "butcher-table",
+   "priority": 5.0,
+   "family": "survival",
+   "when": {
+    "colony_exists": true,
+    "mark_stove_set": true,
+    "mark_butcher_built": false,
+    "count_tablebutcher": "<1"
+   },
+   "then": [
+    "game_list_architect_designators production: the butcher table, beside the stove, inside",
+    "when it stands: game_set cmd add_bill recipe ButcherCorpseFlesh count 20",
+    "ladder_set mark butcher_built true",
+    "(econ-butcher) game_apply_architect_designator TableButcher next to the freezer",
+    "(econ-butcher) game_set cmd add_bill recipe ButcherCorpseFlesh count 0 (forever)"
+   ],
+   "why": "owner: \"how u plan on cutting up them animals?\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\" / walkthrough walkthrough-food-and-medicine.md: Butcher corpses within 2 days (raw meat rots in about 2 days above 0C). [survival] F || merged from economy:econ-butcher: owner: \"get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion\" | walkthrough: walkthrough-food-and-medicine.md [economy] Butcher table next to freezer",
+   "latch": true,
+   "owner_rules": []
+  },
+  {
+   "id": "butcher-fast",
+   "priority": 5.1,
+   "family": "survival",
+   "when": {
+    "corpses": ">0",
+    "mark_butcher_built": true,
+    "corpse_age": {
+     "ton": {
+      "corpses": ">0"
+     },
+     "hours": 24
+    }
+   },
+   "then": [
+    "game_set cmd add_bill recipe ButcherCorpseFlesh count 20 (raise if paused)",
+    "pawn_priorities: Cooking 1 for the cook until the corpses are gone",
+    "(animals-butcher-standing) game_set cmd unforbid (the kill)",
+    "(animals-butcher-standing) game_set cmd add_bill recipe ButcherCorpseFlesh count 20 -- only if the butcher table lacks it (read the bill list first)",
+    "(animals-butcher-standing) game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET} at the stove",
+    "(animals-butcher-standing) game_set cmd stockpile_filter x z (freezer) mode food priority 3 -- raw meat goes cold"
+   ],
+   "why": "walkthrough walkthrough-food-and-medicine.md: Butcher corpses within 2 days (raw meat rots in about 2 days above 0C). [survival] F / walkthrough walkthrough-opening-and-camp.md: THRESH: a pawn sleeping without a bed takes -4 mood (slept on the ground); beds needed = colonist count. [survival] B || merged from animals:animals-butcher-standing: owner: \"how u plan on cutting up them animals?\" / \"u need to make meals sooner than later and get your shellves organized so like i already told you. so wtf are you not making a guide of everything ive told you becasue im not fucking around you are gonna die if u dont take care of them\" / \"cook bill maintained at 50 rather than 10\" / \"your freezer is completely empty\" / \"set amounts higher and higher as your base grows\" / \"make sure u set it right ur clicking the options twice\" -- walkthrough Q (butcher fresh corpses only; rotten corpses cannot be butchered)",
+   "latch": false,
+   "owner_rules": [],
+   "never": [
+    "never butcher a rotten corpse (it cannot be butchered)",
+    "never a bill on Do forever: Do until X, raised as the base grows",
+    "never click an option twice: one click, read it back"
+   ]
+  },
+  {
+   "id": "power-fail-cook-meat",
+   "priority": 5.2,
+   "family": "survival",
+   "when": {
+    "has_power": false,
+    "mark_freezer_sorted": true
+   },
+   "then": [
+    "cook all raw meat now: game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET} and Make_Pemmican",
+    "fix the grid: game_get_cell_info on a generator -- fuel it / repair"
+   ],
+   "why": "walkthrough walkthrough-food-and-medicine.md: Meals rot in about 4 days unfrozen; never cook more than 2 days ahead without a freezer. [survival] F",
+   "latch": false
+  },
+  {
+   "id": "cold",
+   "priority": 5.3,
+   "family": "survival",
+   "when": {
+    "alert_hypotherm": true
+   },
+   "then": [
+    "everyone indoors (game_set cmd set_area pawn <each> area Home)",
+    "no power: campfire mid-room in the barracks; power: heater at 21C",
+    "game_set cmd add_bill recipe Make_Apparel_Parka count <colonists> (or TribalWear)"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner: \"Grid excess: 0 W (0 Wd stored) ... Current power use: Off\" / walkthrough walkthrough-base-power-temperature.md: THRESHOLD: human comfort 16-26C before clothing; hypothermia/heatstroke start 10C past the pawn's comfort range. [survival] https://rimworldwiki.com/wiki/Temperature / walkthrough walkthrough-base-power-temperature.md: Set living-room heaters and coolers to 21C. [survival] https://rimworldwiki.com/wiki/Temperature / walkthrough walkthrough-base-power-temperature.md: Use a passive cooler (holds ~17C, 5 days per wood load) when no power exists. [survival] https://rimworldwiki.com/wiki/Temperature / walkthrough walkthrough-food-and-medicine.md: Tend quality cuts infection chance from 85% (0% quality) to 5% (100% quality); always tend with medicine. [survival] I",
+   "latch": false,
+   "never": [
+    "leave a sick pawn in an unheated hospital"
+   ],
+   "note": "UNVERIFIED alert label ('hypotherm' substring)"
+  },
+  {
+   "id": "heat",
+   "priority": 5.4,
+   "family": "survival",
+   "when": {
+    "alert_heatstroke": true
+   },
+   "then": [
+    "indoors in roofed rooms",
+    "passive coolers (wood, no power) in roofed rooms; powered coolers at 21C",
+    "a backrooms gate open: send the crew through"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / walkthrough walkthrough-base-power-temperature.md: THRESHOLD: items ignite around 235C; vent or extinguish before a room reaches it. [survival] https://rimworldwiki.com/wiki/Temperature",
+   "latch": false,
+   "note": "UNVERIFIED alert label ('heatstroke' substring)"
+  },
+  {
+   "id": "disease",
+   "priority": 5.5,
+   "family": "survival",
+   "when": {
+    "alert_sickness": true
+   },
+   "then": [
+    "order_pawn <sick> rest until healed in a Medical bed",
+    "game_set cmd assign pawn <sick> medicine Best",
+    "pawn_priorities <best doctor> custom {Doctor: 1}",
+    "tend every 12 h until immune; keep the room clean (Cleaning 2 on a pawn)"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner: \"slect gee and tell him rest till healed in hospital bed\" / walkthrough walkthrough-food-and-medicine.md: If an illness's severity is rising toward or past immunity: bed rest, better medicine, best doctor. [survival] I / walkthrough walkthrough-food-and-medicine.md: Plague: severity grows fast; tend as often as allowed with industrial medicine and bed rest until immune. [survival] G / walkthrough walkthrough-food-and-medicine.md: Malaria / sleeping sickness: long; bed rest and daily tending; glitterworld only if near death. [survival] K / walkthrough walkthrough-food-and-medicine.md: Flu: tend daily; herbal medicine and bed rest usually enough. [survival] L / walkthrough walkthrough-food-and-medicine.md: Food poisoning lasts about 1 day and is not lethal; prevent it with cooking skill and a clean kitchen. [survival] R / walkthrough walkthrough-food-and-medicine.md: Gut worms / muscle parasites: chronic; keep tending until healed. [survival] M / walkthrough walkthrough-food-and-medicine.md: Severity above 0.8 means the pawn is near death: best medicine, best doctor, now. [survival] I / walkthrough walkthrough-food-and-medicine.md: food_days < 3 -> hunt + harvest + cook rung. [survival] F / walkthrough walkthrough-food-and-medicine.md: raw meat in an unpowered storage room at >0C for more than 1 day -> butcher and cook now. [survival] F",
+   "latch": false,
+   "note": "infection/disease severity vs immunity not measured: sensor worst_disease_margin needed"
+  },
+  {
+   "id": "warm-clothes",
+   "priority": 5.6,
+   "family": "survival",
+   "when": {
+    "alert_warm_clothes": true
+   },
+   "then": [
+    "game_set cmd add_bill recipe Make_Apparel_Parka count <colonists>",
+    "trade for clothes"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / walkthrough walkthrough-base-power-temperature.md: Cold snap (1.5-3.5 days, -20C): heat bedrooms, dress pawns in parkas/tuques, harvest crops before -10C. [survival] https://rimworldwiki.com/wiki/Events",
+   "latch": false,
+   "note": "UNVERIFIED alert label ('warm' substring)"
+  },
+  {
+   "id": "repair-0-reset",
+   "priority": 5.7,
+   "family": "survival",
+   "chain": "repairs",
+   "mode": "advise",
+   "check": "repairs finished? buildings_damaged = 0",
+   "when": {
+    "buildings_damaged": 0,
+    "mark_repairs_set": true
+   },
+   "then": [
+    "ladder_set mark repairs_set false"
+   ],
+   "notice": "Repairs done.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"okay putting rim up front get to it make sure ur base isnt gonna collapse death\"",
+   "latch": false
+  },
+  {
+   "id": "winter-food-stock",
+   "priority": 5.8,
+   "family": "survival",
+   "when": {
+    "outdoor_temp": "<10",
+    "days_of_food": "<{FOOD_COMFORT_DAYS}"
+   },
+   "then": [
+    "hold meals >= 10 x colonists before winter: raise the meal bill",
+    "harvest all crops before -10C",
+    "a roofed outdoor stockpile below 0C is a free freezer (game_set cmd stockpile_camp mode food)"
+   ],
+   "why": "walkthrough walkthrough-food-and-medicine.md: Food emergency when meals + raw nutrition < 1.6 x colonists x 2 days: hunt and forage berries now. [survival] F / walkthrough walkthrough-food-and-medicine.md: In winter, a roofed outdoor stockpile below 0C works as a free freezer. [survival] C / walkthrough walkthrough-opening-and-camp.md: THRESH: store at least 1000 food before winter. [survival] Q",
+   "latch": false,
+   "note": "no season sensor: outdoor_temp under 10C is the trigger"
+  },
+  {
+   "id": "repair-1-wait",
+   "priority": 5.9,
+   "family": "survival",
+   "chain": "repairs",
+   "mode": "advise",
+   "check": "buildings damaged -> pawns safe? NO",
+   "when": {
+    "buildings_damaged": ">0",
+    "hostiles_on_map": ">0"
+   },
+   "then": [
+    "buildings damaged but pawns are NOT safe: wait, nobody walks out to repair under fire"
+   ],
+   "notice": "Damage noted: repairs wait until the hostiles are gone.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"okay putting rim up front get to it make sure ur base isnt gonna collapse death\"",
+   "latch": false
+  },
+  {
+   "id": "repair-2-set",
+   "priority": 6.0,
+   "family": "survival",
+   "chain": "repairs",
+   "mode": "advise",
+   "check": "buildings damaged -> pawns safe? YES -> set repairs",
+   "when": {
+    "buildings_damaged": ">0",
+    "hostiles_on_map": 0,
+    "mark_repairs_set": false
+   },
+   "then": [
+    "game_apply_architect_designator Home over every damaged building",
+    "pawn_priorities builders custom {Construction: 2}",
+    "ladder_set mark repairs_set true",
+    "(repair-after-raid) game_set cmd set_work_priority pawn <builder> work Construction level 1",
+    "(repair-after-raid) game_set cmd set_area area Home (cover the damaged buildings so repair jobs exist)"
+   ],
+   "notice": "Damaged buildings: repairs set.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / owner: \"okay putting rim up front get to it make sure ur base isnt gonna collapse death\" || merged from base-and-fortress:repair-after-raid: owner: \"no u need to fix the whole wall\" / owner: \"no priorities shall be blank in the work tab if possible\" / owner: \"wtf i told you to block soeing at the farms at the main base and make new farms of everything u need grow near the camp outer walls, and like i siad no priorities shall be blank in the work tab if possible set them all correct\"",
+   "note": "buildings_damaged is an UNVERIFIED heuristic (see sensors)",
+   "latch": false,
+   "owner_rules": []
+  },
+  {
+   "id": "beds-short",
+   "priority": 6.1,
+   "family": "survival",
+   "when": {
+    "beds": "<{BEDS_NEEDED}",
+    "shelter_up": {
+     "any": [
+      {
+       "mark_shelter_built": true
+      },
+      {
+       "mark_shelter_set": true
+      }
+     ]
+    }
+   },
+   "then": [
+    "game_set cmd beds",
+    "game_set cmd set_bed_owner x z owner colonist for each new bed",
+    "(start-camp-beds) game_set cmd beds -- one per pawn inside the shelter before the first night",
+    "(start-camp-beds) game_set cmd set_bed_owner x z owner colonist for any unowned bed"
+   ],
+   "why": "walkthrough walkthrough-opening-and-camp.md: THRESH: a pawn sleeping without a bed takes -4 mood (slept on the ground); beds needed = colonist count. [survival] B || merged from start:start-camp-beds: owner: \"tell reve its one the list Rev character(ask if any requests when u get to making him, as an extra hand will be helpopfull just have to always set up everything for new pawns\" | walkthrough-opening-and-camp.md [start] (rimworldwiki Room/Temperature, B, Q, F sources)",
+   "latch": false,
+   "owner_rules": [
+    "chat RoomsIdleHands: ; owner, 2026-10-09, verbatim: -- QUEUED: make a Rev pawn (Character Editor); when starting, ask RoomsIdleHands in chat for requests; every new pawn gets the full setup at once"
+   ]
+  },
+  {
+   "id": "rot-alert",
+   "priority": 6.2,
+   "family": "survival",
+   "when": {
+    "alert_food_rot": true
+   },
+   "then": [
+    "game_list_alerts: which item rots and where",
+    "haul it into the freezer: game_set cmd stockpile_filter x z mode food priority Important on the freezer",
+    "the shelf it sat on: game_set cmd stockpile_filter x z mode nofood"
+   ],
+   "why": "owner: \"you have food rotting away because you havenet stoorege things on shelveves properly\" / owner: \"you have food rotting away because you havenet stoorege things on shelveves properly\" / owner: \"you got food rooting everywhere becsues you never set ALL storages zones and devices correctly!\" / owner: \"and why is all your products rotting in the non freezer and sotrages all over your base DO YOU KNOW WHEN U SETSOME SOME EHWERRE U HAVE TO DESET IT EVERYWHERE ELSE\" / owner: \"ur componetes are roting\"",
+   "latch": false,
+   "never": [
+    "perishables outside the freezer"
+   ]
+  },
+  {
+   "id": "food-rotting-or-no-cold",
+   "priority": 6.3,
+   "family": "survival",
+   "when": {
+    "store_roofed_fraction": "<1.0",
+    "colony_exists": true
+   },
+   "then": [
+    "a room with no roof is not a room: a cooler in it cools open sky",
+    "game_get_cells_info over the store: which cells are unroofed",
+    "game_apply_architect_designator areabuildroofexpand over the store (roof needs support within 6 cells)",
+    "missing walls: game_apply_architect_designator Wall on the INTERIOR sides only",
+    "then the passive/powered cooler means something",
+    "(freezer-cluster) freezer about 7x7, walls two thick, ONE door with a vestibule to the kitchen, cooler blue in/red out set to -5C (game_execute_gizmo)",
+    "(freezer-cluster) kitchen and dining adjoining it; butcher table beside the freezer, OUTSIDE the kitchen",
+    "(freezer-cluster) game_set cmd stockpile_room room freezer priority Important; game_set cmd stockpile_filter food allow"
+   ],
+   "why": "owner: \"rot is rotting away still havent figured cooler /freezer and vents in rooms\" / \"ur componetes are roting\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\"): an open-air camp store held this at priority 5 over everything, power and research included / owner: \"rot is rotting away still havent figured cooler /freezer and vents in rooms\" / owner: \"ur componetes are roting\" / owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\" / owner: \"rot is rotting away still havent figured cooler /freezer and vents in rooms so all are cooled u need to understand importance of everything and not get lost a mile away from impant shit that needs fix imediatley\" / owner: \"rot is rotting away still havent figured cooler /freezer and vents in rooms so all are cooled u need to understand importance of everything and not get lost a mile away from impant shit that needs fix imediatley\" / walkthrough walkthrough-opening-and-camp.md: THRESH: a room only holds temperature when it is enclosed and more than 75% of its interior is roofed. [survival] B || merged from base-and-fortress:freezer-cluster: owner: \"and place things tight around inner walls like benches and furnatur and in the center if room permits and try to keep pathing short so kitchen next to freezer workshop s next to storage room and always make sure starages for freezer and dry goods properly all configured correctly\" / owner: \"use proper prioritys normal on all places like stockpiles and warhouses and use higher teirs to pull to resource nodes around base  come on ur not silly dont just critical everything use logic chains\" | walkthrough: C/Q: freezer 7x7, -5C; rimworldwiki.com/wiki/Butcher_table; rimworldwiki.com/wiki/Room (cluster)",
+   "latch": false,
+   "never": [
+    "wall out to the camp perimeter just to close a store"
+   ],
+   "owner_rules": []
+  },
+  {
+   "id": "eclipse-battery",
+   "priority": 6.4,
+   "family": "survival",
+   "when": {
+    "condition_eclipse": true,
+    "has_power": true
+   },
+   "then": [
+    "read batteries on the power tab (game_click_cell a battery, read stored Wd)",
+    "under one day of demand: switch off non-vital consumers (lamps in empty rooms) with game_execute_gizmo toggle",
+    "queue a wood-fired generator if wood >= WOOD_RESERVE"
+   ],
+   "why": "walkthrough walkthrough-base-power-temperature.md: During an eclipse (0.75-1.25 days) solar gives 0; keep batteries >= one day of demand. [survival] https://rimworldwiki.com/wiki/Events / owner: \"Grid excess: 0 W (0 Wd stored) ... Current power use: Off\" / owner: \"Grid excess: 2213 W (8400 Wd stored)\" / owner: \"8138 W (8400 Wd stored)\"",
+   "latch": false,
+   "note": "battery stored Wd is not measured: sensor battery_days_stored needed"
+  },
+  {
+   "id": "freezer-sorting",
+   "priority": 6.5,
+   "family": "survival",
+   "when": {
+    "has_power": true,
+    "store_roofed_fraction": ">=1.0",
+    "mark_freezer_sorted": false
+   },
+   "then": [
+    "a cooler in the freezer wall, blue side in, red side out to open sky; one per about 12 cells; set -5C to -10C",
+    "freezer over ~50 cells or hot biome: two coolers, double walls, double door",
+    "game_set cmd stockpile_filter (freezer) mode food priority Important -- food, plant matter, healroot, ambrosia, wort",
+    "game_set cmd stockpile_filter (every other shelf and zone) mode nofood -- set one shelf, copy/paste the rest (game_execute_gizmo Copy/Paste settings)",
+    "medicine shelves only in the hospital room",
+    "a morgue or dissection room is its own cooled room, never inside the freezer",
+    "(econ-freezer-shelves) game_set cmd rooms -> the room holding the cooler is the freezer",
+    "(econ-freezer-shelves) game_set cmd stockpile_room room <freezer> mode food",
+    "(econ-freezer-shelves) game_set cmd stockpile_filter x,z mode nofood on EVERY shelf outside the freezer",
+    "(econ-freezer-shelves) medicine only in the hospital room (stockpile_filter mode medicine: MISSING)",
+    "(econ-freezer-shelves) set one shelf, copy to the rest; shelves one priority above the room stockpile",
+    "filter/room refused twice: game_set cmd stockpile_camp mode food (roofed, beside the stove) and stockpile_filter mode nofood on every other store (econ-freezer-fallback)",
+    "ladder_set mark freezer_sorted true"
+   ],
+   "why": "owner: \"perishables only go in freezers\" / \"all shelves outside the freezer need to be set to not accept freezer goods\" / \"red faces outside blue inside\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\" / owner: \"you need to figure out your freezer storage vs non freezer items u have frezeder with all kinds of non frezeer shit and need more ac at right temp in freezer\" / owner: \"your freezer has holes in the walls!! u never added enough ac units for such a big space\" / owner: \"all plat resource was told keep in freezer\" / owner: \"you did sopmething wrong they took the herba s out of the cooler\" / owner: \"u build a vauilt i think and its not frozen\" / owner: \"you keep sclicking and double clicking the storage zone stuff i think u still have plant matter in non freezer and cooller for morgeus need own room so disssection or isnt frozen\" / owner: \"get your freezer storages set up so that noraml non needing frozen goods arent in the freezer and things like ambrosia, wort, food, healroot are in the freezer\" / owner: \"make sure all shelves outside are set correct too. like medicine only in the room with hospital beds but heal root under mediceine needs to be in freezewr\" / owner: \"you also need to store all plant resources in fridge too come on fix all shelves and storages, your profits are rotting away\" / owner: \"and all shelves outside the freezer need to be set to not accept freezer goods\" / owner: \"i sdee the fucking probeleyou pout the ac units in side ways on the freezer!!!!! they have a red and blue outputs red faces outside blue inside, fix themn\" / owner: \"perishables only go in freezers\" / owner: \"all shelves outside the freezer need to be set to not accept freezer goods\" / owner: \"red faces outside blue inside\" / owner: \"all shelves in and out of the freezer need to be correct\" / owner: \"that goes for ALL perishables\" / owner: \"stop asking which crop i already told you all of them\" / owner: \"(food store) or\" / owner: \"all shelves in and out of the freezer need to be correct\" / owner: \"make sure all shelves outside are set correct too. like medicine only in the room with hospital beds but heal root under mediceine needs to be in freezewr\" / owner: \"and all shelves outside the freezer need to be set to not accept freezer goods\" / owner: \"get your freezer storages set up so that noraml non needing frozen goods arent in the freezer and things like ambrosia, wort, food, healroot are in the freezer\" / owner: \"you also need to store all plant resources in fridge too come on fix all shelves and storages, your profits are rotting away\" / owner: \"and wtf why are you storing plant materials resources in the fucking hallway that needs to be in freezer\" / owner: \"you need to figure out your freezer storage vs non freezer items u have frezeder with all kinds of non frezeer shit and need more ac at right temp in freezer\" / owner: \"prison need ac and heat and vents and stuff, i told you all rooms keep at it and fix the freezer shit is stored wrong need a vault and storage rooms with lots of shelves\" / owner: \"you got food rooting everywhere becsues you never set ALL storages zones and devices correctly! / that goes for ALL perishables\" / owner: \"perishables only go in freezers\" / owner: \"all plat resource was told keep in freezer / you did sopmething wrong they took the herba s out of the cooler / u build a vauilt i think and its not frozen / stop asking which crop i already told you all of them\" / owner: \"you keep sclicking and double clicking the storage zone stuff i think u still have plant matter in non freezer and cooller for morgeus need own room so disssection or isnt frozen\" / owner: \"okay do you know how to explore the rooms of the facility and get outside and start collecting resources planting crops and setting bills for food and then get your freezer storages set up so that noraml non needing frozen goods arent in the freezer and things like ambrosia, wort, food, healroot are in the freezer and start seting up the gate i mena u wrote this mod you should know how to play it top to bottom\" / owner: \"and u have dissection bed in the freezer room\" / owner: \"and u have dissection bed in the freezer room / you cant block the main path with a disection room move it to N\" / owner: \"you cant block the main path with a disection room move it to N\" / owner: \"you may want to make the dissection room somewhere else and make that a path to the rest of the prisons so save the long walk around\" / walkthrough walkthrough-base-power-temperature.md: Set living-room heaters and coolers to 21C. [survival] https://rimworldwiki.com/wiki/Temperature / walkthrough walkthrough-base-power-temperature.md: THRESHOLD: freezer must hold < 0C (spoilage stops at 0C, slows below 10C); target -5C to -10C for margin. [survival] https://rimworldwiki.com/wiki/Temperature || merged from economy:econ-freezer-shelves: owner: \"you still havent started growing cash crops and you still havent figured out you freezer storage as ive already told you how , you have shelfs outside the freezer set to hold freezer goods and good in the freezer not ment to be frozen, i already told you how to set up the shelves and zones, do it\" / owner: \"get your shellves organized so like i already told you\" / owner: \"come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations\" | walkthrough: walkthrough-food-and-medicine.md [economy] Freezer must stay below -1C (target -10C to -5C) || merged from economy:econ-freezer-fallback: owner: \"you still havent started growing cash crops and you still havent figured out you freezer storage as ive already told you how , you have shelfs outside the freezer set to hold freezer goods and good in the freezer not ment to be frozen, i already told you how to set up the shelves and zones, do it\"",
+   "latch": true,
+   "never": [
+    "perishables outside the freezer",
+    "cooler mounted sideways (red side inside)",
+    "a dissection bed in the freezer room",
+    "food on shelves outside the freezer",
+    "non-food in the freezer"
+   ],
+   "owner_rules": []
+  },
+  {
+   "id": "storage-logic",
+   "priority": 6.6,
+   "family": "survival",
+   "when": {
+    "mark_freezer_sorted": true,
+    "mark_storage_logic": false,
+    "stockpile_cells": ">0"
+   },
+   "then": [
+    "stockpiles and warehouses Normal; freezer Important; workstation shelves Preferred -- shelves one tier above their room's stockpile",
+    "game_set cmd stockpile_filter per shelf/zone with the tier above (set one, copy/paste the rest)",
+    "hospital shelves medicine only; stonecutter/sculptor shelves stone blocks only; vault = silver/gold/valuables",
+    "storage rooms full of shelves next to the workshops; kitchen next to the freezer",
+    "dry storage: add shelves on the N side of the existing ones, directly against them, and fill any missing shelf spots",
+    "ladder_set mark storage_logic true"
+   ],
+   "why": "owner: \"you have lots of rooms and shelves organize them all correctly,!!! whats suppose to be on each rooms shelves and freezer shelf. rooms with stockpiles need the shelfs 1 priority highrer than the stockpile\" / owner: \"u can set one and use copy button to paste it to other shelves with paste\" / owner: \"use proper prioritys normal on all places like stockpiles and warhouses and use higher teirs to pull to resource nodes around base come on ur not silly dont just critical everything use logic chains\" / owner: \"full base storage logic rewaork and maintain\" / owner: \"you have lots of rooms and shelves organize them all correctly,!!! whats suppose to be on each rooms shelves and freezer shelf. rooms with stockpiles need the shelfs 1 priority highrer than the stockpile\" / owner: \"prison need ac and heat and vents and stuff, i told you all rooms keep at it and fix the freezer shit is stored wrong need a vault and storage rooms with lots of shelves\" / owner: \"still waiting for you to do everything ive said still need storage rooms and ashit all set to not allow freezer good but allow everything on the foloors\" / owner: \"need more shelves in storages rooms and secure vault figured\" / owner: \"still waiting for you to do everything ive said still need storage rooms and ashit all set to not allow freezer good but allow everything on the foloors / need more shelves in storages rooms and secure vault figured\" / owner: \"okay u need to start fixing the base layourt and storages and adding shelfes to vault and shit building it and more shelves in main storage rooms and set them all correct so only freezer stuff goes in freezer stuff and meds go in hospital and needed bricks go in art and rock workshiop\" / owner: \"okay u need to start fixing the base layourt and storages and adding shelfes to vault and shit building it and more shelves in main storage rooms and set them all correct so only freezer stuff goes in freezer stuff and meds go in hospital and needed bricks go in art and rock workshiop\" / owner: \"and place things tight around inner walls like benches and furnatur and in the center if room permits and try to keep pathing short so kitchen next to freezer workshop s next to storage room and always make sure starages for freezer and dry goods properly all configured correctly\" / walkthrough walkthrough-base-power-temperature.md: Set living-room heaters and coolers to 21C. [survival] https://rimworldwiki.com/wiki/Temperature / owner: \"ur dry storage needs more shleves / add another shelfe N side of existing ones directly / and missing ones\"",
+   "latch": true,
+   "never": [
+    "Critical on everything",
+    "a stockpile laid in a corridor"
+   ],
+   "owner_rules": [
+    "ur dry storage needs more shleves / add another shelfe N side of existing ones directly / and missing ones"
+   ]
+  },
+  {
+   "id": "volcanic-winter",
+   "priority": 6.7,
+   "family": "survival",
+   "when": {
+    "condition_volcanicwinter": true,
+    "days_of_food": "<20"
+   },
+   "then": [
+    "raise MEAL_BILL_TARGET (ladder_set tag MEAL_BILL_TARGET 100)",
+    "hunts on safe game (game_set cmd hunt)",
+    "greenhouse: a roofed, heated room with sun lamps and a growing zone (missing tool: build_room/sun lamp placement)"
+   ],
+   "why": "walkthrough walkthrough-base-power-temperature.md: Flashstorm: keep pawns out of the storm radius, firefight once it ends. [survival] https://rimworldwiki.com/wiki/Events",
+   "latch": false,
+   "note": "UNVERIFIED defName VolcanicWinter"
+  },
+  {
+   "id": "hospital-setup",
+   "priority": 6.8,
+   "family": "survival",
+   "when": {
+    "colony_exists": true,
+    "mark_hospital_set": false,
+    "colonists": ">=3",
+    "research_electricity": true
+   },
+   "then": [
+    "game_set cmd set_bed_owner x z owner colonist on every hospital bed (fix 'For prisoners')",
+    "make each hospital bed Medical (game_click_cell bed -> Medical gizmo via game_execute_gizmo)",
+    "a vitals monitor and IV drip beside every bed (research permitting)",
+    "medicine shelf in the hospital: game_set cmd stockpile_filter x z mode all, medicine only",
+    "hospital in an HVAC cluster (heater + cooler via vents)",
+    "(hospital) 2-4 beds in a floored, lit (50%), clean room near the entrance; mark each Medical (game_execute_gizmo)",
+    "(hospital) sterile tile floor once researched; 16-26C",
+    "(growth-hospital) game_set cmd rooms: pick a room near the entrance and the stores",
+    "(growth-hospital) MISSING set_bed_medical: beds in that room marked Medical (hospital beds once researched)",
+    "(growth-hospital) MISSING stockpile_filter mode medicine: a medicine shelf in the hospital, priority Critical",
+    "(growth-hospital) game_set cmd set_work_priority pawn=<highest Medicine> work Doctor level 1",
+    "(growth-hospital) keep medicine >= {MEDICINE_RESERVE}",
+    "Medical gizmo or medicine filter refused twice: beds in the room nearest the stores, medicine stays in the main store (stockpile_filter mode all), say the medical-bed tool is missing",
+    "ladder_set mark hospital_set true"
+   ],
+   "why": "owner: \"hospital is prisoner only fix that\" / owner: \"vuitals a life support have to be next to beds\" / owner: \"and life support and iv drips and u need ac heat and air vents\" / owner: \"slect gee and tell him rest till healed in hospital bed / hospital is prisoner only fix that\" || merged from base-and-fortress:hospital: owner: \"and u need florring. what ever u want each rrom to be ie hospital sterile tile. beds wood flooring cut down trees mine steel and shit\" / owner: \"dont forget bed furnature and shit and floors leving lem up over time and hospital and everything else\" | walkthrough: H: hospital; rimworldwiki.com/wiki/Room (cleanliness) || merged from growth:growth-hospital: owner: \"meds in hospital\" (docs/PLAYBOOK.md) / \"come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations\" / walkthrough [growth] Hospital room with hospital beds; doctor = highest Medicine; keep >= 10 medicine -- W Hospital_bed || merged from growth:growth-hospital-fallback: owner: \"meds in hospital\" / walkthrough W Hospital_bed",
+   "latch": true,
+   "never": [
+    "5 heaters in one room"
+   ],
+   "owner_rules": []
+  },
+  {
+   "id": "hvac-clusters",
+   "priority": 6.9,
+   "family": "survival",
+   "when": {
+    "research_airconditioning": true,
+    "has_power": true,
+    "mark_hvac_done": false
+   },
+   "then": [
+    "one cooler + one heater per cluster in a hub room; vents carry it to at most 3 neighbour rooms, cluster size by room size (~120 cells)",
+    "every indoor hall and walkway is in some cluster; prison, hospital, workshops, rec room included",
+    "every cooler's hot side opens to unroofed outdoors; big rooms get more than one cooler",
+    "living rooms set to 21C",
+    "an outer-wall one-cell gap is an entrance: it gets a door; only gaps from removed coolers/vents in interior walls get wall",
+    "ladder_set mark hvac_done true"
+   ],
+   "why": "owner: \"based on room size\" / owner: \"you have un conditioned haslls and walkways too that are inside\" / owner: \"hold some places you put walls where doors are to be opn outer wall\" / owner: \"you have acs out put in to interior room and you need more for big rooms\" / owner: \"on north side\" / owner: \"hnot heater in every room and ac on every wall vents vents vents!!!!\" / owner: \"3 rooms per one based on size\" / owner: \"there is so much you havent been doping that ivce been telling you to do? what about a full ac and heater system u have rooms not tempature controlled, and u dont need a sc and heater in ever y room you can use vents so a few share them\" / owner: \"okay u have a fuckign ac on every fucking room wtf are you thinking a ac can cool like 4 rooms, u need vents, and wtf 5 heaters in one rooms hospital wtf?/ ... here are your fucking vents!!!!!! vents connect rooms you fuck with not more that 3 vents to a ac and heater\" / owner: \"there is so much you havent been doping that ivce been telling you to do? what about a full ac and heater system u have rooms not tempature controlled, and u dont need a sc and heater in ever y room you can use vents so a few share them\" / owner: \"okay u have a fuckign ac on every fucking room wtf are you thinking a ac can cool like 4 rooms, u need vents, and wtf 5 heaters in one rooms hospital wtf?/ ... here are your fucking vents!!!!!! vents connect rooms you fuck with not more that 3 vents to a ac and heater / based on room size / you have un conditioned haslls and walkways too that are inside\" / owner: \"hnot heater in every room and ac on every wall vents vents vents!!!! / 3 rooms per one based on size\" / owner: \"and workshops cool\" / owner: \"and life support and iv drips and u need ac heat and air vents\" / owner: \"get your ac and heat solved fort and facility wide and fix main pathing all around\" / owner: \"you still need to figure out storages and frideges you keep forgetting to go back and finish things u need power and ac units and shit just like the last paly through\" / owner: \"you still need to figure out storages and frideges you keep forgetting to go back and finish things u need power and ac units and shit just like the last paly through\" / owner: \"u need farms out side the walls and a entertainment room to keep cool in\" / owner: \"u need farms outside the walls and a entertainment room to keep cool in\" / walkthrough walkthrough-base-power-temperature.md: Set living-room heaters and coolers to 21C. [survival] https://rimworldwiki.com/wiki/Temperature / walkthrough walkthrough-base-power-temperature.md: Use a passive cooler (holds ~17C, 5 days per wood load) when no power exists. [survival] https://rimworldwiki.com/wiki/Temperature",
+   "latch": true,
+   "never": [
+    "a cooler and heater in every room",
+    "more than one heater per room",
+    "a cooler's hot side into an interior room"
+   ]
+  },
+  {
+   "id": "corpses-buried",
+   "priority": 7.0,
+   "family": "survival",
+   "when": {
+    "corpses": ">{CORPSE_LIMIT}",
+    "hostiles_on_map": 0
+   },
+   "then": [
+    "game_set cmd add_bill (grave) or build a grave and Bury human corpses; animal corpses to the butcher",
+    "strip first; tainted clothing goes to a dump"
+   ],
+   "why": "walkthrough walkthrough-opening-and-camp.md: THRESH: a pawn eats 2 simple meals a day; plan 6 meals/day for 3 pawns. [survival] B",
+   "latch": false
+  },
+  {
+   "id": "kitchen-clean",
+   "priority": 7.1,
+   "family": "survival",
+   "when": {
+    "stoves": ">0",
+    "mark_kitchen_floored": false
+   },
+   "then": [
+    "floor the kitchen (game_select_architect_designator a floor + game_drag_cell)",
+    "a cook with skill >= 3 on Cooking 1",
+    "ladder_set mark kitchen_floored true"
+   ],
+   "why": "walkthrough walkthrough-food-and-medicine.md: Gut worms / muscle parasites: chronic; keep tending until healed. [survival] M / walkthrough walkthrough-opening-and-camp.md: THRESH: a room only holds temperature when it is enclosed and more than 75% of its interior is roofed. [survival] B / walkthrough walkthrough-opening-and-camp.md: THRESH: keep the bedroom near 21 C; without heat expect -4 (slept in the cold). [survival] Q",
+   "latch": true
+  },
+  {
+   "id": "storage-audit",
+   "priority": 7.2,
+   "family": "survival",
+   "when": {
+    "mark_storage_logic": true,
+    "audit": {
+     "ton": {
+      "mark_storage_logic": true
+     },
+     "hours": 24
+    },
+    "loose_items_unstored": ">0"
+   },
+   "then": [
+    "standing order: walk every shelf and zone (game_list_zones), not just the one in view",
+    "any freezer good outside the freezer, or non-freezer good inside: fix its filter",
+    "report the count fixed on stream"
+   ],
+   "why": "owner: \"now make sure everything ive evr told you to do is a running check list that is never complete and is always checking all things are done wto keep your empire moveing up\" / owner: \"all shelves in and out of the freezer need to be correct\" / owner: \"you also need to store all plant resources in fridge too come on fix all shelves and storages, your profits are rotting away\" / owner: \"you got food rooting everywhere becsues you never set ALL storages zones and devices correctly! / that goes for ALL perishables\" / owner: \"are you writing this all down and maintinaing it\"",
+   "latch": false
+  },
+  {
+   "id": "no-medicine",
+   "priority": 7.3,
+   "family": "survival",
+   "when": {
+    "medicine": 0
+   },
+   "then": [
+    "healroot_plants > 0: game_apply_architect_designator Harvest on them first",
+    "game_set cmd crops plant Plant_Healroot on a small field (needs research; else wild healroot only)",
+    "trade any caravan for medicine",
+    "Electricity -> comms console -> call a trader",
+    "until then: self-tend ON for everyone (game_click_cell pawn -> Health tab -> self-tend)"
+   ],
+   "why": "owner: \"Low medicine\" standing / \"those medicail red x;s need to be checked for self heal\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\"): no cap: medicine 0 blocked everything above priority 8; latched once self-tend and a healroot route are set / owner: \"those medicail red x;s need to be checked for self heal\" / walkthrough walkthrough-food-and-medicine.md: Tend bleeding wounds at once; 100% blood loss kills. [survival] D",
+   "latch": false,
+   "never": [
+    "fights that can be avoided while medicine is 0"
+   ]
+  },
+  {
+   "id": "medicine-reserve",
+   "priority": 7.4,
+   "family": "survival",
+   "when": {
+    "medicine": "<{MEDICINE_RESERVE}",
+    "medicine_low": {
+     "ton": {
+      "medicine": "<{MEDICINE_RESERVE}"
+     },
+     "hours": 48
+    }
+   },
+   "then": [
+    "game_set cmd crops plant Plant_Healroot on a field sized colonists x 6",
+    "research_medicineproduction done: game_set cmd add_bill recipe MakeMedicineIndustrial count {MEDICINE_RESERVE}",
+    "keep at least 5 per colonist"
+   ],
+   "why": "walkthrough walkthrough-food-and-medicine.md: Tend bleeding wounds at once; 100% blood loss kills. [survival] D / walkthrough walkthrough-food-and-medicine.md: any infection/disease hediff -> doctor priority 1, bed rest, tend every 12 h. [survival] I",
+   "latch": false,
+   "never": [
+    "spend medicine on minor wounds"
+   ]
+  }
+ ],
+ "prompts": {
+  "combat-0-reset": "LIVE: fight over (combat_paused true, hostiles_on_map 0).\n1. game_set_draft false for every pawn.\n2. game_pause_game pause false.\n3. ladder_set mark combat_paused false; ladder_set mark combat_plan 0; ladder_set mark help_coming false.\nFallback: undraft refused -> game_execute_gizmo Draft toggle on the pawn.\nDone = mark combat_paused false. Say it on stream, clean.\nOwner: \"can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help\".",
+  "combat-0-reassess-worse": "LIVE: we chose to fight (combat_plan 1) but fight_ratio fell under FIGHT_RATIO_MIN.\n1. game_pause_game pause true.\n2. ladder_set mark combat_plan 0 -- the branch rungs choose again next scan.\nFallback: pause refused -> say it and still reset combat_plan.\nDone = mark combat_plan 0. Never paused more than one turn.\nOwner: \"can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help\".",
+  "combat-0-reassess-better": "LIVE: holding/kiting/retreating (combat_plan > 1) and fight_ratio is back at FIGHT_RATIO_MIN.\n1. game_pause_game pause true.\n2. ladder_set mark combat_plan 0 so combat-2-fight takes over.\nFallback: pause refused -> say it and still reset combat_plan.\nDone = mark combat_plan 0. Never paused more than one turn.\nOwner: \"can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help\".",
+  "combat-1-damage-pause": "LIVE: float switch -- a colonist is hurt (colonist_hurt) with hostiles on the map.\n1. game_pause_game pause true.\n2. Read fight_ratio (able shooters / hostiles) off the ladder.\n3. ladder_set mark combat_paused true -- the combat-2 rungs pick the plan.\nFallback: pause refused -> still set the mark; say the plan on stream, clean.\nDone = mark combat_paused true.\nOwner: \"float switch for healt bars and colonist has taken damage pausing\".",
+  "combat-2-fight": "LIVE: YES we can take it (fight_ratio >= FIGHT_RATIO_MIN).\n1. game_set_draft true per armed shooter.\n2. order_pawn / game_click_cell each to an embrasure on the threatened side.\n3. ladder_set mark combat_plan 1; game_pause_game pause false.\nFallback: an order refused -> game_right_click_cell the spot for that pawn; never melee with shooters.\nDone = mark combat_plan 1.\nOwner: \"can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help\".",
+  "combat-2-help-coming": "LIVE: outmatched, help is coming (mark help_coming true).\n1. game_set_draft true; order_pawn everyone inside the walls, out of their range.\n2. ladder_set mark combat_plan 2; game_pause_game pause false; hold until help lands.\nFallback: a pawn cannot path inside -> kite with it (keep range).\nDone = mark combat_plan 2.\nOwner: \"can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help\".",
+  "combat-2-call-help-comms": "LIVE: too many (fight_ratio < CALL_HELP_RATIO), a comms console stands.\n1. game_click_cell the console with a pawn -> call an ally's military aid (read the menu, never guess the cost).\n2. ladder_set mark help_coming true; ladder_set mark combat_plan 4.\n3. Fall back inside the walls, unpause.\nFallback: the call menu refuses -> leave help_coming false; combat-2-retreat takes over.\nDone = mark combat_plan 4.\nOwner: \"can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help\".",
+  "combat-2-call-help-permit": "LIVE: too many, no comms answer, a title permit (mark_title_rank > 3).\n1. Select the titled pawn -> game_list_selected_gizmos -> game_execute_gizmo the military-aid permit.\n2. ladder_set mark help_coming true; ladder_set mark combat_plan 4.\n3. Retreat inside the walls, unpause.\nFallback: permit on cooldown/refused -> combat-2-retreat takes over.\nDone = mark combat_plan 4.\nOwner: \"can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help\".",
+  "combat-2-retreat": "LIVE: too many and nobody to call.\n1. game_set_draft true; order_pawn everyone inside the walls (mountain base, or an open gate).\n2. Close the doors; shoot from embrasures only.\n3. ladder_set mark combat_plan 5; game_pause_game pause false.\nFallback: walls breached -> kite (keep range) toward the next wall.\nDone = mark combat_plan 5.\nOwner: \"can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help\".",
+  "combat-2-kite": "LIVE: outmatched, no help soon, not swamped.\n1. game_set_draft true; order_pawn fall back while shooting, never stand in melee.\n2. ladder_set mark combat_plan 3; game_pause_game pause false.\nFallback: cornered -> retreat inside the walls (combat-2-retreat steps).\nDone = mark combat_plan 3.\nOwner: \"can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help\".",
+  "med-1-bleeding-under-fire": "LIVE: a pawn bleeds (pawn_bleeding) with hostiles on the map.\n1. Threat first: follow combat_plan (game_set_draft everyone able, kill the threat).\n2. Never carry a bleeding pawn under fire.\n3. Shooting near them stops -> med-2-field-tend takes over.\nFallback: the bleeder is in the line of fire -> order_pawn them to crawl/hold behind cover.\nDone = hostiles_on_map 0 (no mark).\nOwner: \"ppawn bnleeding is there enemy on map if so daft all kill thing\" / \"remmebr always field tnde directly brefopre cpature and haul\".",
+  "combat-3-hold-plan": "LIVE: fight in progress, plan chosen (combat_plan > 0).\nFollow combat_plan: 1 fight, 2 hold for help, 3 kite, 4 help called, 5 retreat.\nTools: game_set_draft, order_pawn, game_click_cell -- one order per pawn, read it back.\nRe-read fight_ratio every scan; the reassess rungs re-plan.\nFallback: an order refuses -> pause one turn, re-issue, say it on stream.\nDone = hostiles_on_map 0 (combat-0-reset clears the marks).\nOwner: \"can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help\".",
+  "fire-in-camp": "LIVE: fire on the map (fire_cells > 0).\n1. game_pause_game pause true.\n2. pawn_priorities: every pawn not downed, Firefighter stays 1.\n3. game_apply_architect_designator Home over the burning cells + a 3-cell ring (outside Home they ignore fire).\n4. game_set cmd set_area pawn X area '' for anyone fenced out.\n5. game_pause_game pause false.\nFallback: a tool refuses -> say it, re-read game_state, never leave the game paused more than one turn.\nNever draft pawns into a burning room; fight from the edge.\nDone = fire_cells 0 (no mark). Items ignite near 235C.",
+  "downed-pawn": "LIVE: someone is downed and the map is clear.\n1. game_list_colonists -> who is down, bleeding?\n2. Bleeding: order_pawn <doctor> tend <downed> where they lie FIRST.\n3. order_pawn <nearest> rescue <downed> to a Medical bed; order_pawn <downed> rest until healed.\n4. Bed reads For prisoners: game_set cmd set_bed_owner x z owner colonist.\nFallback: order_pawn refuses the tend -> game_right_click_cell on the pawn, pick Tend.\nDone = downed_count 0 (no mark).\nOwner: \"remmebr always field tnde directly brefopre cpature and haul\" / \"hospital is prisoner only fix that\".",
+  "med-2-field-tend": "LIVE: bleeding, map clear, not yet field tended.\n1. order_pawn <best doctor> tend <bleeder> where they lie, best medicine.\n2. ladder_set mark field_tended true.\nFallback: order refused -> game_right_click_cell the pawn -> Tend.\nDone = mark field_tended true; med-3 carries them next.\nOwner: \"save pawns field tend before carry to hospiital\".",
+  "med-3-carry-to-hospital": "LIVE: field tended, map clear.\n1. order_pawn <nearest> rescue <patient> to a Medical bed.\n2. order_pawn <doctor> tend <patient> again in the bed.\n3. ladder_set mark field_tended false.\nFallback: no Medical bed -> any colonist bed (set_bed_owner owner colonist).\nDone = mark field_tended false.\nOwner: \"save pawns field tend before carry to hospiital\".",
+  "mental-break": "LIVE: a mental break (mental_break true).\n1. game_list_colonists -> who, which break.\n2. Berserk: game_set_draft 2 pawns, fists only, down them; no guns.\n3. Fire-starter: firefighters on 1, others away.\n4. Say the cause on stream, clean words.\n5. Fix the root (food, bed, temperature, corpses) -- each has its own rung.\nFallback: draft refused -> game_click_cell the pawn, Draft gizmo via game_execute_gizmo.\nDone = mental_break false (no mark).\nOwner: \"maintain ur colonists' needs\" / \"keeping pawns needs up and healthy\".",
+  "life-threat": "LIVE: a life-threatening hediff (alert_life_threat).\n1. game_list_colonists: which pawn, which hediff.\n2. game_set cmd assign pawn medicine Best; order_pawn <best doctor> tend now.\n3. Severity past immunity: glitterworld medicine if any.\nFallback: doctor busy -> next best doctor; never send the doctor to the front.\nDone = alert_life_threat false (no mark).",
+  "needs-tend": "LIVE: a colonist needs tending, map clear.\n1. order_pawn <best doctor> tend <patient>; bleeding first.\nFallback: doctor busy elsewhere -> the next best doctor.\nDone = alert_needs_tend false (no mark).\nOwner: \"remmebr always field tnde directly brefopre cpature and haul\".",
+  "after-the-kill": "LIVE: the enemy is dead (one-shot as hostiles hit 0).\n1. game_set_draft off; game_set cmd unforbid (loot, dropped gear).\n2. Perishables into the freezer; areabuildroofexpand over open rooms; game_set cmd shelves.\n3. Downed raiders: field tend, then capture to the prisoner bed; corpses to a dump outside.\nFallback: a step refused -> say it, do the rest; nothing new built first.\nDone = ladder_set mark after_kill_done true.\nOwner: \"<<<do all this dirrectly after enemy kill\" / \"you forgot to unforbid everything thats a constant tasks\".",
+  "heat-wave": "LIVE: heat wave (condition_heatwave, +17C for 1.5-3.5 days).\n1. game_set cmd set_area pawn <each> area Home -- roofed, cooled rooms only.\n2. game_get_cell_info a freezer cell: still under 0C? If not, a cooler there first.\n3. No power: passive cooler (wood) in each roofed living room.\n4. A backrooms gate open: send the crew through. Watch fire_cells.\nFallback: build_cooler missing -> game_select_architect_designator + game_click_cell, check rotation.\nDone = condition_heatwave false (no mark).\nOwner: \"you need to figure out the tmepature pronblem asap ASAP one heat wave and your dead in 3 minutes\".",
+  "cold-snap": "LIVE: cold snap (condition_coldsnap, -20C).\n1. Heat bedrooms: heater, or campfire mid-room.\n2. game_set cmd add_bill recipe Make_Apparel_Parka count <colonists> (or Tuque/TribalWear).\n3. game_apply_architect_designator Harvest on every crop before -10C (outdoor_temp).\nFallback: add_bill refuses the recipe -> read the bench's bill menu for the exact defName.\nDone = condition_coldsnap false (no mark).",
+  "solar-flare": "LIVE: solar flare -- every powered thing is off 0.15-0.5 days.\n1. Campfire in the coldest lived room; passive cooler in the freezer if hot.\n2. Weapons in hand, no outings, no fights started.\n3. Freezer above 0C (game_get_cell_info) -> cook raw meat now.\nFallback: no wood for campfire -> game_set cmd chop count 50 first.\nDone = condition_solarflare false (no mark).",
+  "toxic-fallout": "LIVE: toxic fallout.\n1. game_set cmd set_area pawn <each> area Home (roofed rooms).\n2. game_apply_architect_designator Harvest on unroofed crops now.\n3. A pawn at 40% toxic buildup (TOXIC_PULL_IN): order_pawn rest in a bed indoors.\nFallback: area tool refused -> game_set_draft and order_pawn each inside.\nDone = condition_toxicfallout false (no mark).",
+  "flashstorm": "LIVE: flashstorm.\n1. game_set cmd set_area pawn <each> area Home -- away from the storm radius.\n2. When it ends: fire-in-camp takes over any fire_cells.\nFallback: area tool refused -> order_pawn each indoors.\nDone = condition_flashstorm false (no mark).",
+  "shelter-night-one": "LIVE: day < 3, no shelter (setup-4b-shelter has not run).\n1. game_set cmd unforbid; game_set cmd chop count 150.\n2. game_set cmd shelter w 7 h 5; game_set cmd beds (one per colonist); campfire mid-room.\n3. ladder_set mark shelter_built true.\nFallback: shelter refused (no wood) -> chop again; still refused -> sleeping spots under any roof.\nDone = mark shelter_built true; latch mark shelter_night_one_done.\nOwner: \"remmeber dont go building a massive camp\".",
+  "work-grid-set": "LIVE: the work grid is not set.\n1. pawn_priorities first pawn (Firefighter..Cooking 1, then custom).\n2. Copy/paste that row to every other pawn, then tune (farmer, hunter, doctor). No blank cells.\n3. ladder_set mark work_grid_set true.\nFallback: copy/paste refused -> pawn_priorities one call per pawn.\nDone = mark work_grid_set true; latch mark work_grid_set_done.\nOwner: \"use copy paset to set defalts then change\" / \"no priorities shall be blank in the work tab\".",
+  "colony-before-research": "LIVE: research benches exist, nobody idle, while food/rot/freezer is open.\n1. pawn_priorities: Research 4 for everyone until the food and storage rungs clear.\n2. Say on stream what the colony needs instead.\nFallback: priorities refused -> game_set cmd set_work_priority per pawn.\nDone = this rung drops (no urgent need; no mark).\nOwner: \"SHE JSUT RESEARCHING AT THE DESKS AND NOT DOING ANYTHING THE COLONY NEEDS\".",
+  "blight": "LIVE: a blight letter (letter_matches \"blight\") -- one-shot per letter.\n1. game_get_cells_info over each growing zone: find the blighted plants.\n2. game_apply_architect_designator PlantsCut on every blighted plant at once.\n3. pawn_priorities the best grower: Growing 1 until cut.\nFallback: blighted cells unreadable -> cut the whole affected field.\nDone = no blighted plant left (no mark; the ons fires once per letter).\nWalkthrough: \"cut blighted plants at once\".",
+  "starving": "LIVE: colonists are starving (alert_starv), hunt not yet failed twice.\n1. ladder_set mark starve_tried false.\n2. game_set cmd hunt (safe game, never NEVER_HUNT) -> Harvest berries/agave -> add_bill CookMealSimple count {MEAL_BILL_TARGET}.\n3. No field: game_set cmd crops plant Plant_Rice. pawn_priorities Cooking 1, Hunting 2 for the best shooter.\nFallback: anything refused or no game: ladder_set mark starve_tried true (2 times -> starving-no-game).\nDone = alert_starv false (no mark).\nOwner: \"you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!\".",
+  "starving-no-game": "LIVE: starving and the hunt failed twice (ctu on mark starve_tried, preset 2).\n1. ladder_set mark starve_tried false.\n2. game_right_click_cell a spare animal -> Slaughter (never a trained mount).\n3. Trade any caravan for packaged meals/pemmican; insect/human meat last, say the mood hit.\nFallback: both refused -> ladder_set mark starve_tried true, say what is missing on stream.\nDone = alert_starv false (resets the counter).\nOwner: \"YOU PEOPLE WILL DIE!!!\".",
+  "pawn-starving": "LIVE: zero meals, raw food < 5, under FOOD_PANIC_DAYS left.\n1. game_apply_architect_designator Harvest on every food plant near camp.\n2. game_set cmd hunt (never boomalope near wood).\n3. game_set cmd add_bill recipe CookMealSimple count 30; order_pawn the nearest to it.\nFallback: hunt refused (no ranged weapon) -> hunter-weapon rung; nothing on the map -> say so.\nDone = days_of_food >= FOOD_PANIC_DAYS (no mark).\nOwner: \"YOU PEOPLE WILL DIE!!!\".",
+  "hunter-weapon": "LIVE: \"No hunter has a valid hunting weapon\" (alert_hunterlacksrangedweapon).\n1. game_list_colonists: the pawn with Hunting on and the best Shooting.\n2. game_set cmd unforbid; order_pawn <hunter> equip the best loose bow/rifle, read it back.\n3. pawn_priorities <hunter> custom {Hunting:2}.\nFallback: no ranged weapon -> game_set cmd add_bill recipe Make_Bow_Short count 1, or Hunting off.\nDone = the alert clears (no mark). Never send a melee-only pawn to hunt.",
+  "food-low": "LIVE: days_of_food under FOOD_MIN_DAYS.\n1. game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET} (bulk x4 first, single below).\n2. game_set cmd crops a second field (colonists x FIELD_CELLS_PER_PAWN); game_set cmd hunt safe game.\n3. Under FOOD_MIN_DAYS on a new camp: harvest every berry bush near camp; no fortress digging yet.\nFallback: recipe refused -> read the stove's bill menu for the defName.\nDone = days_of_food >= FOOD_MIN_DAYS (no mark).\nOwner: \"cook bill maintained at 50 rather than 10\" / \"let your people get good on food and set up camp before moving into the base\".",
+  "meals-early": "LIVE: a stove stands, the meal bill was never set.\n1. game_set cmd add_bill recipe CookMealSimple_Bulk count {MEAL_BILL_TARGET}, then CookMealSimple below.\n2. Meat + veg stocked: add_bill CookMealFine count 10. Do until X, never Forever.\n3. ladder_set mark meal_bill_set true.\nFallback: recipe name refused -> game_click_cell the stove, read the bill menu.\nDone = mark meal_bill_set true; latch mark meals_early_done.\nOwner: \"u need to make meals sooner than later\" / \"dont set build forever if anything set 1000 each type\".",
+  "butcher-table": "LIVE: stove set (mark_stove_set), no butcher table (count_tablebutcher < 1).\n1. game_apply_architect_designator TableButcher beside the freezer/stove, outside the kitchen.\n2. Built: game_set cmd add_bill recipe ButcherCorpseFlesh count 20.\n3. ladder_set mark butcher_built true.\nFallback: no wood/steel -> setup-chop first; say it.\nDone = mark butcher_built true; latch mark butcher_table_done.\nOwner: \"how u plan on cutting up them animals?\".",
+  "butcher-fast": "LIVE: corpses lying 24 h and a butcher table stands.\n1. game_set cmd unforbid (the kill).\n2. game_set cmd add_bill recipe ButcherCorpseFlesh count 20 if missing (read the bill list first).\n3. pawn_priorities: Cooking 1 for the cook until done; meat to the freezer.\nFallback: corpse rotten -> it cannot be butchered: bury/dump it.\nDone = corpses 0 (no mark).\nOwner: \"make sure u set it right ur clicking the options twice\".",
+  "power-fail-cook-meat": "LIVE: power is down and the freezer was sorted (raw meat warming).\n1. game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET} and Make_Pemmican.\n2. game_get_cell_info a generator: fuel it / repair it.\nFallback: stove unpowered too -> campfire cooking.\nDone = has_power true (no mark).",
+  "cold": "LIVE: hypothermia (alert_hypotherm).\n1. game_set cmd set_area pawn <each> area Home.\n2. No power: campfire mid-room; power: heater at 21C.\n3. game_set cmd add_bill recipe Make_Apparel_Parka count <colonists>.\nFallback: no heater/campfire placeable -> crowd pawns into the warmest roofed room.\nDone = alert_hypotherm false (no mark). Never a sick pawn in an unheated hospital.",
+  "heat": "LIVE: heatstroke (alert_heatstroke).\n1. Pawns into roofed rooms (game_set cmd set_area pawn <each> area Home).\n2. Passive coolers (wood) or powered coolers at 21C.\n3. A backrooms gate open: send the crew through.\nFallback: cooler placement refused -> game_select_architect_designator + game_click_cell.\nDone = alert_heatstroke false (no mark).",
+  "disease": "LIVE: someone is sick (alert_sickness).\n1. order_pawn <sick> rest until healed in a Medical bed.\n2. game_set cmd assign pawn <sick> medicine Best; pawn_priorities <best doctor> {Doctor:1}.\n3. Tend every 12 h until immune; Cleaning 2 on a pawn.\nFallback: no Medical bed -> any bed, still rest until healed.\nDone = alert_sickness false (no mark).\nOwner: \"slect gee and tell him rest till healed in hospital bed\".",
+  "warm-clothes": "LIVE: someone needs warm clothes (alert_warm_clothes).\n1. game_set cmd add_bill recipe Make_Apparel_Parka count <colonists> (or Tuque/TribalWear).\n2. Trade for clothes.\nFallback: no tailor bench -> crafting spot TribalWear.\nDone = alert_warm_clothes false (no mark).",
+  "repair-0-reset": "LIVE: repairs finished (buildings_damaged 0).\n1. ladder_set mark repairs_set false.\nFallback: none needed -- one mark write.\nDone = mark repairs_set false.\nOwner: \"make sure ur base isnt gonna collapse death\".",
+  "winter-food-stock": "LIVE: outdoor_temp under 10C and food under FOOD_COMFORT_DAYS.\n1. Raise the meal bill: meals >= 10 x colonists.\n2. game_apply_architect_designator Harvest all crops before -10C.\n3. A roofed outdoor stockpile below 0C is a free freezer (game_set cmd stockpile_camp mode food).\nFallback: harvest refused -> pawn_priorities Growing 1 on the farmer.\nDone = days_of_food >= FOOD_COMFORT_DAYS (no mark).",
+  "repair-1-wait": "LIVE: buildings damaged, hostiles on the map.\nNobody walks out to repair under fire; wait (no tool call).\nFallback: a wall is breached -> combat rungs decide, not this one.\nDone = hostiles_on_map 0, then repair-2-set (no mark).\nOwner: \"buildings damaged? set repairs if pawns safe\".",
+  "repair-2-set": "LIVE: damaged buildings, map safe.\n1. game_apply_architect_designator Home over every damaged building.\n2. game_set cmd set_work_priority pawn <builder> work Construction level 1; nothing blank.\n3. ladder_set mark repairs_set true.\nFallback: Home refused -> game_set cmd set_area area Home.\nDone = mark repairs_set true (repair-0-reset clears it).\nOwner: \"no u need to fix the whole wall\".",
+  "beds-short": "LIVE: fewer beds than BEDS_NEEDED and a shelter stands.\n1. game_set cmd beds -- one per pawn inside the shelter.\n2. game_set cmd set_bed_owner x z owner colonist for each unowned bed.\nFallback: no wood -> sleeping spots now, beds when chopped.\nDone = beds >= BEDS_NEEDED (no mark).\nOwner: \"just have to always set up everything for new pawns\".",
+  "rot-alert": "LIVE: something is rotting (alert_food_rot).\n1. game_list_alerts: which item, where.\n2. Freezer: game_set cmd stockpile_filter x z mode food priority Important.\n3. The shelf it sat on: game_set cmd stockpile_filter x z mode nofood.\nFallback: filter refused -> haul it by hand (order_pawn haul) into the freezer.\nDone = alert_food_rot false (no mark).\nOwner: \"DO YOU KNOW WHEN U SETSOME SOME EHWERRE U HAVE TO DESET IT EVERYWHERE ELSE\".",
+  "food-rotting-or-no-cold": "LIVE: the food store is not fully roofed (store_roofed_fraction < 1).\n1. game_get_cells_info over the store -> unroofed cells.\n2. game_apply_architect_designator areabuildroofexpand over them; walls on interior sides only.\n3. Then the cooler: freezer ~7x7, one door to the kitchen, blue in / red out, -5C.\nFallback: roof refused (no support within 6 cells) -> a wall/column inside first.\nDone = store_roofed_fraction 1.0 (no mark).\nOwner: \"rot is rotting away still havent figured cooler /freezer and vents in rooms\".",
+  "eclipse-battery": "LIVE: eclipse -- solar gives 0.\n1. game_click_cell a battery: read stored Wd vs use.\n2. Under a day of storage: game_execute_gizmo off on lamps in empty rooms; keep coolers, heaters, freezer on.\n3. wood >= WOOD_RESERVE: queue a wood-fired generator.\nFallback: battery unreadable -> switch off non-vital consumers anyway.\nDone = condition_eclipse false (no mark).\nOwner readout: \"Grid excess: 0 W (0 Wd stored) ... Current power use: Off\".",
+  "freezer-sorting": "LIVE: power and a roofed store, freezer not sorted.\n1. Coolers in the freezer wall: BLUE in, RED out to open sky, one per ~12 cells, -5 to -10C.\n2. game_set cmd stockpile_filter (freezer) mode food priority Important -- food, plants, healroot, ambrosia, wort.\n3. Every other shelf/zone mode nofood: set one, Copy/Paste gizmo to the rest. Medicine only in the hospital.\nFallback: refused twice -> game_set cmd stockpile_camp mode food beside the stove, nofood elsewhere.\nDone = mark freezer_sorted true; latch mark freezer_sorting_done.\nOwner: \"red faces outside blue inside\" / \"perishables only go in freezers\".",
+  "storage-logic": "LIVE: freezer sorted; the rest of storage is not.\n1. Tiers: stockpiles Normal, freezer Important, shelves one tier above their room's floor zone.\n2. game_set cmd stockpile_filter per store; Copy/Paste gizmo for twins.\n3. Dry storage: shelves added on the N side of the existing ones.\nFallback: filter refused -> game_click_cell the shelf, set it in the storage tab.\nDone = mark storage_logic true; latch mark storage_logic_done.\nOwner: \"dont just critical everything use logic chains\" / \"ur dry storage needs more shleves\".",
+  "volcanic-winter": "LIVE: volcanic winter and under 20 days of food.\n1. ladder_set tag MEAL_BILL_TARGET 100; game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET}.\n2. game_set cmd hunt on safe game (never NEVER_HUNT).\n3. A roofed, heated room with sun lamps + growing zone (greenhouse).\nFallback: no sun lamp research -> bank meals and pemmican, trade for food.\nDone = days_of_food >= 20 or condition_volcanicwinter false (no mark).",
+  "hospital-setup": "LIVE: hospital not set up (3+ colonists, electricity).\n1. A room near the entrance and stores; beds owner colonist (set_bed_owner) + Medical (game_execute_gizmo).\n2. Vitals monitor + IV drip beside each bed; floored, lit, 16-26C via vents.\n3. Medicine shelf in the room; pawn_priorities best Medicine on Doctor 1.\nFallback: Medical gizmo refused twice -> beds by the stores, meds in main store, say the tool is missing.\nDone = mark hospital_set true; latch mark hospital_setup_done.\nOwner: \"hospital is prisoner only fix that\" / \"vuitals a life support have to be next to beds\" / \"meds in hospital\".",
+  "hvac-clusters": "LIVE: AC researched, power on, HVAC not laid.\n1. Clusters: hub room heater + cooler, vents to <= 3 neighbours (VENT_MAX_PER_UNIT), halls included, 21C.\n2. Cooler hot side to unroofed outdoors; big rooms get more coolers.\n3. ladder_set mark hvac_done true.\nFallback: build_cooler/build_vent missing -> game_select_architect_designator + game_click_cell, check rotation.\nDone = mark hvac_done true; latch mark hvac_clusters_done.\nOwner: \"a ac can cool like 4 rooms, u need vents\" / \"not more that 3 vents to a ac and heater\".",
+  "corpses-buried": "LIVE: corpses above CORPSE_LIMIT, map clear.\n1. Strip first; build a grave and Bury human corpses.\n2. Animal corpses to the butcher (butcher-fast).\nFallback: no grave -> a dump zone outside the wall.\nDone = corpses <= CORPSE_LIMIT (no mark).",
+  "kitchen-clean": "LIVE: kitchen not floored.\n1. game_select_architect_designator a floor + game_drag_cell over the kitchen.\n2. A cook with skill >= 3 on Cooking 1.\n3. ladder_set mark kitchen_floored true.\nFallback: no floor material -> Cleaning 2 on a pawn until it is.\nDone = mark kitchen_floored true; latch mark kitchen_clean_done.",
+  "storage-audit": "LIVE: daily audit (24 h on) and items lie unstored (loose_items_unstored > 0).\n1. game_list_zones -> each store's filter vs its job.\n2. Freezer goods outside the freezer, junk in it: game_set cmd stockpile_filter fix.\n3. Say on stream how many you fixed.\nFallback: zone list refused -> game_get_cells_info over the stores.\nDone = loose_items_unstored 0 (standing order, no mark).\nOwner: \"a running check list that is never complete\".",
+  "no-medicine": "LIVE: zero medicine.\n1. healroot_plants > 0: game_apply_architect_designator Harvest on them.\n2. game_set cmd crops plant Plant_Healroot (if researched); trade a caravan / comms trader.\n3. Self-tend ON for everyone (game_click_cell pawn -> Health tab).\nFallback: self_tend tool missing -> click the checkbox via game_click_cell.\nDone = medicine > 0 (no mark).\nOwner: \"those medicail red x;s need to be checked for self heal\".",
+  "medicine-reserve": "LIVE: medicine under MEDICINE_RESERVE for 48 h.\n1. game_set cmd crops plant Plant_Healroot (colonists x 6 cells).\n2. research_medicineproduction done: game_set cmd add_bill recipe MakeMedicineIndustrial count {MEDICINE_RESERVE}.\n3. Minor wounds: no medicine.\nFallback: no research -> trade for medicine.\nDone = medicine >= MEDICINE_RESERVE (no mark)."
+ },
+ "sensors_needed": [
+  {
+   "key": "loose_items_unstored",
+   "status": "TO_BUILD (decisions.json)",
+   "read_by": [
+    "storage-audit"
+   ],
+   "csharp": "st[\"loose_items_unstored\"] = (double)home.listerHaulables.ThingsPotentiallyNeedingHauling().Count;  // inventory.md section C, ReadBuild, normal cadence"
+  },
+  {
+   "key": "unconditioned_rooms",
+   "how": "foreach Room r in map.regionGrid.allRooms where !r.PsychologicallyOutdoors && !r.IsDoorway && r.ProperRoom: count rooms with no CompTempControl building in r.ContainedAndAdjacentThings and no Building_Vent in adjacent walls",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  },
+  {
+   "key": "freezer_temp",
+   "how": "the room of the stockpile whose filter allows FoodRaw only (or largest food store): room.Temperature",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  },
+  {
+   "key": "perishables_outside_freezer",
+   "how": "sum over map.listerHaulables/zoneManager stockpiles: things with CompRottable where room.Temperature > 0 and not in the freezer room",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  },
+  {
+   "key": "coolers_misrotated",
+   "how": "foreach Building_Cooler b: IntVec3 cold = b.Position + IntVec3.South.RotatedBy(b.Rotation); hot = b.Position + IntVec3.North.RotatedBy(b.Rotation); misrotated if hot.GetRoom(map) is enclosed (!PsychologicallyOutdoors) or cold.UsesOutdoorTemperature(map)",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  },
+  {
+   "key": "unpowered_consumers",
+   "how": "count CompPowerTrader c on map.listerBuildings.allBuildingsColonist where c.PowerNet == null || !c.PowerOn",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  },
+  {
+   "key": "battery_days_stored",
+   "how": "sum CompPowerBattery.StoredEnergy over nets / (sum of consumers' PowerOutput * -1 * 24 / 1000-equivalent Wd per day)",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  },
+  {
+   "key": "worst_disease_margin",
+   "how": "foreach colonist hediffs with HediffComp_Immunizable: min(immunity - severity); infection_count = count of hediffs with def.makesSickThought or defName Infection",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  },
+  {
+   "key": "toxic_buildup_max",
+   "how": "max over colonists of pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.ToxicBuildup)?.Severity",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  },
+  {
+   "key": "pawns_unroofed_night",
+   "how": "count colonists not in bed whose Position.Roofed(map) is false while GenLocalDate.HourOfDay in 22..6",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  },
+  {
+   "key": "blank_work_cells",
+   "how": "sum over colonists of WorkTypeDefs where !pawn.WorkTypeIsDisabled(w) && pawn.workSettings.GetPriority(w)==0",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  },
+  {
+   "key": "hospital_beds_for_prisoners",
+   "how": "count Building_Bed with Medical==true && ForPrisoners==true",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  },
+  {
+   "key": "kitchen_floored",
+   "how": "room of the first stove: fraction of cells whose TerrainAt has a Cleanliness >= 0 and is a built floor (terrain.layerable/IsFloor)",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  },
+  {
+   "key": "corpse_age_max_hours",
+   "how": "max over Corpse c in map.listerThings ThingRequestGroup.Corpse of c.Age / 2500",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  },
+  {
+   "key": "alert_hunterlacksrangedweapon",
+   "how": "already generic via alert_<class>; verify the class name Alert_HunterLacksRangedWeapon live",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  },
+  {
+   "key": "condition_heatwave / coldsnap / solarflare / eclipse / toxicfallout / volcanicwinter / flashstorm",
+   "how": "already generic condition_<defName lowercased>; verify defNames live",
+   "status": "proposal only: no survival rung reads it (not in decisions.json TO_BUILD)"
+  }
+ ],
+ "variables_needed": [
+  {
+   "name": "FREEZER_TARGET_C",
+   "value": -7,
+   "rule": "freezer setpoint; walkthrough: hold under 0C, -5 to -10 for margin"
+  },
+  {
+   "name": "ROOM_TARGET_C",
+   "value": 21,
+   "rule": "living rooms, hospital, prison"
+  },
+  {
+   "name": "COOLER_CELLS",
+   "value": 12,
+   "rule": "freezer cells per cooler (owner: six coolers for 165 cells was too few)"
+  },
+  {
+   "name": "VENT_MAX_PER_UNIT",
+   "value": 3,
+   "rule": "owner: not more that 3 vents to a ac and heater"
+  },
+  {
+   "name": "CLUSTER_CELLS_MAX",
+   "value": 120,
+   "rule": "rooms served by one hub"
+  },
+  {
+   "name": "MEDICINE_PER_PAWN",
+   "value": 5,
+   "rule": "walkthrough: at least 5 per colonist"
+  },
+  {
+   "name": "WINTER_MEALS_PER_PAWN",
+   "value": 10,
+   "rule": "2 meals x 5 days before winter"
+  },
+  {
+   "name": "TOXIC_PULL_IN",
+   "value": 0.4,
+   "rule": "pull a pawn inside at 40% toxic buildup"
+  }
+ ],
+ "missing_tools": [
+  {
+   "name": "build_cooler",
+   "args": "x,z,rotation (cold side), target_temp",
+   "rungs": [
+    "hvac-clusters",
+    "freezer-sorting",
+    "heat-wave"
+   ]
+  },
+  {
+   "name": "build_heater",
+   "args": "x,z,target_temp",
+   "rungs": [
+    "hvac-clusters",
+    "cold"
+   ]
+  },
+  {
+   "name": "build_vent",
+   "args": "x,z (over-wall)",
+   "rungs": [
+    "hvac-clusters"
+   ]
+  },
+  {
+   "name": "set_thermostat",
+   "args": "x,z,temp",
+   "rungs": [
+    "hvac-clusters",
+    "freezer-sorting",
+    "cold",
+    "heat"
+   ]
+  },
+  {
+   "name": "game_set cmd harvest",
+   "args": "plant defs or 'food' -- designate every berry bush/healroot/agave",
+   "rungs": [
+    "starving",
+    "pawn-starving",
+    "no-medicine",
+    "cold-snap",
+    "toxic-fallout"
+   ]
+  },
+  {
+   "name": "game_set cmd medical_bed",
+   "args": "x,z,on -- toggle Medical",
+   "rungs": [
+    "hospital-setup",
+    "downed-pawn"
+   ]
+  },
+  {
+   "name": "game_set cmd self_tend",
+   "args": "pawn,on",
+   "rungs": [
+    "no-medicine"
+   ]
+  },
+  {
+   "name": "game_set cmd copy_storage",
+   "args": "from x,z to all|room -- Copy/Paste settings across stores",
+   "rungs": [
+    "freezer-sorting",
+    "storage-logic"
+   ]
+  },
+  {
+   "name": "game_set cmd firebreak",
+   "args": "width -- PlantsCut ring around Home",
+   "rungs": [
+    "firebreak"
+   ]
+  },
+  {
+   "name": "game_set cmd terraform_soil",
+   "args": "x,z,w,h",
+   "rungs": [
+    "(field rungs)"
+   ]
+  },
+  {
+   "name": "game_set cmd campfire",
+   "args": "room or x,z",
+   "rungs": [
+    "shelter-night-one",
+    "cold",
+    "solar-flare"
+   ]
+  },
+  {
+   "name": "game_set cmd bury",
+   "args": "-- grave + bury bill",
+   "rungs": [
+    "corpses-buried"
+   ]
+  },
+  {
+   "name": "game_set cmd slaughter",
+   "args": "animal",
+   "rungs": [
+    "starving-no-game"
+   ]
+  }
+ ],
+ "unplaced_rules": [
+  {
+   "quote": "nmake that sotrage room a prison hold toss in a spot and put the storage where the table and chairs are might have to move benches, compelte evertthing ive sdaid",
+   "source": "docs/playbook.rules.json",
+   "reason": "not placed in survival: belongs to base-and-fortress (room layout: storage room -> prison hold); critic section 6 lists it there"
+  },
+  {
+   "quote": "you need to put horse shoes up against wide wall so action area isnt clicked need at minimum one action area unblocked",
+   "source": "docs/playbook.rules.json",
+   "reason": "not placed in survival: belongs to growth / base-and-fortress (rec room layout, horseshoe pin vs interaction cell)"
+  },
+  {
+   "quote": "saw an error, u tried mining an area that was unexplored yet and when u went to mine it it went through door and it explored, then half a fucking mountain was set to mine out so i had to cancle it as pawns would of died trying to mine so much",
+   "source": "docs/playbook.rules.json",
+   "reason": "not placed in survival: belongs to base-and-fortress / setup (mining designations over unexplored rock) -- a mining rule, no survival rung designates mining"
+  },
+  {
+   "quote": "dont forget terriforming for soil plots",
+   "source": "docs/playbook.rules.json",
+   "reason": "not placed in survival: belongs to economy (soil / fields); critic section 6 lists it"
+  },
+  {
+   "quote": "and u can move walls and furnature wher u want it facing direction u want",
+   "source": "docs/PLAYBOOK.md",
+   "reason": "not placed in survival: belongs to base-and-fortress (furniture placement / rotation)"
+  },
+  {
+   "quote": "do whal alfreddo guy said",
+   "source": "docs/PLAYSCRIPT.md",
+   "reason": "not placed in survival: belongs to meta (owner relays a viewer's advice; owner-message rung)"
+  },
+  {
+   "quote": "colony dies... start another",
+   "source": "docs/PLAYSCRIPT.md",
+   "reason": "not placed in survival: belongs to meta:new-colony (decisions chains 'new colony': a colony starts only on the owner's order; meta owns that rule)"
+  },
+  {
+   "quote": "make em comperable to us",
+   "source": "docs/PLAYSCRIPT.md",
+   "reason": "not placed in survival: belongs to growth / setup (pawn creation in the character editor)"
+  },
+  {
+   "quote": "next time that guy wants a character tell him to byte you",
+   "source": "docs/PLAYSCRIPT.md",
+   "reason": "not placed in survival: belongs to chat (viewer requests)"
+  },
+  {
+   "quote": "all of the crops grow them all and make products from them for guests",
+   "source": "docs/PLAYSCRIPT.md",
+   "reason": "not placed in survival: belongs to economy (crops-full-set / guest trade)"
+  },
+  {
+   "quote": "Male, age 14 / Female, age 14 / cancle that contruction / you have to continue halls and shit u cnat just attach rooms to a fucking straightr  other room u need appropriate pathing / dont forget cros paths dont want mile long corridors and need vents and lights and furnature for beds / and u can move walls and furnature wher u want it facing direction u want / think uniformity / Limestone wall (blueprint)",
+   "source": "docs/TEST.md:108",
+   "reason": "not placed in survival: belongs to base-and-fortress (halls, pathing, uniformity) -- critic section 6 'halls 3 wide' group"
+  }
+ ],
+ "notes": [
+  "see base-and-fortress:power-every-consumer (survival:power-every-consumer deleted: duplicate id; its quotes \"you have shit all over your base that doesnt have power\" / \"8138 W (8400 Wd stored)\" belong in that survivor's owner_rules)",
+  "see base-and-fortress:firebreak-ring (survival:firebreak deleted; its done-mark mark_firebreak_cut / latch firebreak_done retire with it)",
+  "absorbed here (pointers in their families): animals:animals-hunter-armed -> hunter-weapon; animals:animals-butcher-standing -> butcher-fast; economy:econ-butcher -> butcher-table; base-and-fortress:hospital, growth:growth-hospital, growth:growth-hospital-fallback -> hospital-setup; base-and-fortress:freezer-cluster -> food-rotting-or-no-cold; economy:econ-freezer-shelves, economy:econ-freezer-fallback -> freezer-sorting; base-and-fortress:raid-cleanup, war:war-after-kill-storage -> after-the-kill; base-and-fortress:repair-after-raid -> repair-2-set; start:start-camp-beds -> beds-short; start:start-camp-food -> food-low",
+  "latched done-marks (latch_name): meals-early -> mark_meals_early_done, butcher-table -> mark_butcher_table_done, freezer-sorting -> mark_freezer_sorting_done, storage-logic -> mark_storage_logic_done, hospital-setup -> mark_hospital_setup_done, shelter-night-one -> mark_shelter_night_one_done, hvac-clusters -> mark_hvac_clusters_done, work-grid-set -> mark_work_grid_set_done, kitchen-clean -> mark_kitchen_clean_done"
+ ]
+}
