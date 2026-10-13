@@ -27,12 +27,12 @@ SEED = 1031  # canonical likeness, see .claude/likeness/LIKENESS.md
 NEG = ("neon, glowing, ghost, pale white skin, cartoon, anime, 3d render, blurry, lowres, bad anatomy, "
        "deformed face, extra fingers, watermark, text, child, teen, old, middle aged, 30s, 40 year old, "
        "mature woman, matronly, mom hair, wrinkles, crow's feet, nasolabial folds, sagging jowls, aged skin, "
-       "heavy foundation, thin lips, tired eyes")
+       "heavy foundation, thin lips, tired eyes, nipples, nude, topless, nsfw, see-through, wardrobe malfunction, t-shirt")
 # Owner, 2026-10-10: "dont look like her a homie one not like currently your about 37" -- she kept reading
 # mid-thirties, so the youth cues are explicit and every ageing cue is in the negatives.
 REF_PROMPT = ("candid webcam photo of a 25 year old emo goth girl, youthful soft round face, smooth clear "
               "poreless skin, big expressive dark eyes, full lips, dark brown hair with pink streaks and choppy "
-              "fringe bangs, winged eyeliner, small silver nose stud, black band t-shirt, warm natural skin "
+              "fringe bangs, winged eyeliner, small silver nose stud, busty, black lace spaghetti strap camisole with deep cleavage, fully covered, warm natural skin "
               "tone, half smile looking at the camera, sitting at her home desk in front of a computer monitor "
               "showing code, mechanical keyboard, gaming headset around her neck, warm desk lamp light, cozy "
               "bedroom, candid, realistic, detailed young face")

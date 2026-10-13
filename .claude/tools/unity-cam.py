@@ -17,9 +17,9 @@ def studio_token():
 
 
 BASE = ("photo of a 25 year old woman, girl next door, natural goth emo style, dark brown hair with subtle pink streaks, "
-        "black band t-shirt, at a home gaming desk, warm desk lamp light, bedroom, candid webcam photo, realistic, ")
+        "busty, black lace spaghetti strap camisole with deep cleavage, fully covered, at a home gaming desk, warm desk lamp light, bedroom, candid webcam photo, realistic, ")
 MOODS = {
-    "chill": "relaxed half smile, smoking a joint, a little smoke, sleepy eyes",
+    "chill": "relaxed half smile, sleepy eyes, chin resting on her hand",
     "hype": "excited wide grin, leaning toward the camera, fist raised",
     "angry": "furious scowl, yelling at the monitor, gripping the headset",
     "focus": "intense focused stare at the screen, typing fast, joint in the ashtray",
