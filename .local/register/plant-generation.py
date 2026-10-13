@@ -98,8 +98,11 @@ PLANTS = [
      + "                    var candidate = new Rot4(index);" + NL
      + "                    if (!WallAttachmentHolds(map, lightDef, cell, candidate)) { continue; }"),
 
+    # Re-aimed after the lighting and walls rewrite: the fallback now also covers a strip fixture
+    # with no floor run long enough, so the condition reads `wallMounted || strip`. The claim is
+    # unchanged -- the fallback room gets the palette's own fixture on open floor.
     ("A ROOM WITH NO WALL GETS THE WALL FIXTURE ON THE FLOOR AGAIN", GEN,
-     "                        roomLightDef = wallMounted ? floorLightDef ?? lightDef : lightDef;",
+     "                        roomLightDef = wallMounted || strip ? floorLightDef ?? lightDef : lightDef;",
      "                        roomLightDef = lightDef;"),
 
     ("the floor-standing fallback is never resolved", GEN,
@@ -192,9 +195,13 @@ PLANTS = [
      "                DressCorridors(map, coordinate, corridorSides, lightDef, floorLightDef, placedLights," + NL
      + "                    reservedProviderCells);" + NL, ""),
 
+    # Re-aimed after the lighting and walls rewrite: `DressCorridors` now lights a hall through
+    # two branches (a strip fixture along the hall, a point lamp by cell coordinate), so disabling
+    # one branch leaves the other lighting it. Both hang off the light def the call hands in, so
+    # the corridor pass is handed no light at all -- no hallway is lit, the fixtures still are.
     ("the hallways stop being lit", GEN,
-     "                if (lightDef != null && index % CorridorLampSpacing == 0)",
-     "                if (false)"),
+     "                DressCorridors(map, coordinate, corridorSides, lightDef, floorLightDef, placedLights,",
+     "                DressCorridors(map, coordinate, corridorSides, null, floorLightDef, placedLights,"),
 
     ("the hallways stop carrying anything the rooms carry", GEN,
      "                if (fixtures.Count == 0 || index % CorridorFixtureSpacing != 0) { continue; }",
