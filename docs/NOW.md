@@ -11,7 +11,7 @@
 
 ---
 
-## LIVE NOW (2026-10-13 ~01:30 UTC): full handoff -- read this first after a compaction
+## LIVE NOW (2026-10-13 ~04:10 UTC): full handoff -- read this first after a compaction
 
 **No pods, no volumes, RunPod spend $0.** Both trainings finished 2026-10-12, were pulled to the USB drive,
 verified (checksums) and deleted with the owner's go (*"last check make sure we are ready, then do it"*).
@@ -30,10 +30,22 @@ verified (checksums) and deleted with the owner's go (*"last check make sure we 
 Gate: `training/voice/VOICE_QUALITY_GATE.json` -- trained_voice_acceptance passes; **local_playback_acceptance** is the last
 deploy check (owner hears her through OBS during the rehearsal).
 
+### RimWorld 1.7 unstable (owner 2026-10-13: "we are temporarilly on a unstable version")
+| Piece | State |
+|---|---|
+| Game | **1.7.4976 rev1043** (Waylith). Exe `RimWorld.exe`, window class `GLFW30`, log now `<LocalLow>/.../Logs/Player.log` with a timestamp prefix on every line |
+| Mods | All **297** active (`ModsConfig.xml`; copy `ModsConfig.full-1.7-2026-10-13.xml`). Rimrooms 1.7 layout staged (old 1.6 copy in `.local/staging-backup/`). Map Preview loads through its 1.6 folder |
+| Bridge | `.local/qa/bridge.py` reads both log formats/locations (Unity, admin, gates, eyes all go through it); `tools/qa/rimbridge_readonly.py` too |
+| Stream | `services.py` finds `RimWorld.exe`; OBS scene `Untitled.json` points game video + audio at the 1.7 window (backup `.pre-rw17`); `obs-setup.py` picks the right one |
+| GO | The switch closes debug/log windows, Unity says the 1.7-beta line over the main menu for 15 s, GO text with "crash landed" -> **Crashlanded** (else the company start), world seed **Earth / Earth2 / Earth(n)** (`.local/qa/_earth_seed.count`, absent = Earth) |
+| New game | Driver: Cassandra Classic / Community builder / reload anytime, pollution 0, 30%, factions = all peaceful + Pirate (only red) + cannibal + nudist tribes, 300x300 Spring. **Map pick** (`MapVariantPicker.cs`): 60 Map Preview seeds per batch, up to 5 batches; qualifies when the main mountain touches east AND west edges and is 30%+ of the map with a nook dug into it; commits + reads back the seed. Live: 60/60 in 10 s, 22 qualified, #2 chosen (48%), owner: *"looks good"* |
+| Build | 1.6 references are gone after the update: built against **Krafs.Rimworld.Ref 1.6.4871** (`docs/BUILDING.md`), DLL copied by hand to repo + game |
+| Prompt | `.local/autopilot/prompt.md` THE GAME VERSION: temporary 1.7 beta, 296 other mods, never touch debug windows |
+
 ### Next, in order
-1. **Cascade all repos** (owner 2026-10-13: *"and cascade all repos correctly"*): Backrooms feature/bug-testing -> develop -> main on GitHub + Forgejo, and RimPLC's own repos. Leave the other AI's uncommitted work out (540 modified `.local/qa` + `.local/register` scripts, Mod 1.7 files, RimPLC 1.7 edits, docs/wiki edits -- ChatGPT/Codex works in parallel; stage only our own files, never `git add -A`, retry on index.lock).
-2. **Rehearsal** (owner: *"use a fresh crash landed scenrio all the world sat up and forest moutain tile pic world settup 300x300 in adv settings ect ect"*): Stream Start, NOT live, fresh Crashlanded world, forest+mountain tile, 300x300 in advanced settings. Never the friends' save. Measure the real GPU with RimWorld + OBS open; owner hears her via OBS -> record local_playback_acceptance in his words.
-3. Later round: more rare-tool examples (53%), voice fixes in TODO (keep best held-out checkpoint, one GPU not two, venvs off the network volume, dry-run on one cheap pod first).
+1. **Owner is starting it now** (owner 2026-10-13: *"okay last checks and im starting up Unity and a game"*): `start.bat`, GO with "fresh crash landed colony, new stream". Watch: OBS shows the game (not black), the map pick line in `Config/RimroomsAutomation/newgame.result`, real GPU with game + OBS + brain, and the owner hears her through OBS -> record **local_playback_acceptance** in his words.
+2. Map pick: confirm on the live map; tune thresholds if the owner wants a different nook size.
+3. Later round: more rare-tool examples (53%), voice fixes in TODO (keep best held-out checkpoint, one GPU not two, venvs off the network volume, dry-run on one cheap pod first). Voice resume: only a step-25,000 full vocoder survives (`models/unity-voice/resume/`); the step-120,000 one was never pulled.
 
 ### Gotchas learned 2026-10-12/13
 - `.local/qa/` holds a file that shadows Python's `inspect`: run Playwright scripts from `%TEMP%`, not `.local/qa`.
@@ -41,6 +53,9 @@ deploy check (owner hears her through OBS during the rehearsal).
 - RunPod S3 is slow and resets big downloads; sync folders by name, skip teacher models (re-downloadable).
 - A voice code change re-keys the run namespace; `VOICE_RESUME_RUN_ID` resumes a finished namespace when only the source digest differs.
 - Python heredocs with Windows paths break on `\u`; use the Write/Edit tools for text with backslashes.
+- Never leave RimWorld running after a test: it holds ~6 GB of GPU and the owner cannot start the stream (owner: *"u left the game open a 6G on gpu i cant run that yet"*).
+- start-scenario must stop at every page after the scenario page; pressing through the tile page beat the map picker once.
+- On 1.7 the scenario page repeats the selected scenario's title beside Back; only the list row may be clicked.
 
 ## The record, 2026-10-12: Unity's own voice + her brain, three pods, waiting on the local voice test
 
