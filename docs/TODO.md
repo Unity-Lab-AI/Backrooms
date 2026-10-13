@@ -316,3 +316,4 @@ Verbatim: *"okay 3 items , and yopu should know chatgpt worked in parallel and u
 - [ ] "mind you we have the new RimPLC that needs its workings and all of that from now on" -- RimPLC work goes to its own repo/remotes from now on.
 - [ ] "we need to swap out all the models in the full start.bat for the stream to be able to do it all loaded"
 - [ ] "start the model stress test to see if we need to do asnything about 16gb max on our gpu"
+- [ ] Owner, 2026-10-13: *"we need the RimPLC to have its wiki page tooo and we may need to build its links afterdeploy into the twitch tream with everything else it has as far as links and image/textrimages ect ect that were made before keeping true to the likeness wehen update for RimPLC"* -- (a) a RimPLC wiki page; (b) after deploy, RimPLC's links built into the Twitch stream alongside everything else's links; (c) image/text images like the ones made before, kept true to the likeness, updated for RimPLC.
