@@ -9,7 +9,8 @@ namespace RimPLC
 {
     /// <summary>
     /// Inventory section D (2026-10-13): pawn setup, trade, caravans, pods, quests, pens, power nets, storage, ideology
-    /// roles/rituals, visitors (Hospitality) and the Empire's stance. Normal cadence, each block guarded on its own; a key that cannot be read
+    /// roles/rituals, visitors (Hospitality), the Empire's stance, toxic
+    /// buildup, the disease race and battery days. Normal cadence, each block guarded on its own; a key that cannot be read
     /// is left out, never a fake 0.
     /// Mod register checked before building (docs/research/mod-register-integration-fields-2026-09-29.csv): Simple
     /// sidearms (sidearms live in the inventory -- the setup check reads both), Wall Orbital Trade Beacon (beacons are
@@ -35,6 +36,13 @@ namespace RimPLC
             Guard(() => Ideology(st, home));
             Guard(() => Visitors(st, home));
             Guard(() => Factions(st));
+            Guard(() => Toxic(st, crew));
+            Guard(() => Disease(st, crew));
+            Guard(() => Batteries(st, home));
+            Guard(() => Kitchen(st, home));
+            Guard(() => Freezer(st, home));
+            Guard(() => Towers(st, home));
+            Guard(() => StoneBlocks(st, home));
         }
 
         private static void Guard(Action a)
@@ -167,6 +175,141 @@ namespace RimPLC
             st["ideo_rituals"] = (double)ideo.PreceptsListForReading.OfType<Precept_Ritual>().Count();
         }
 
+        /// <summary>toxic_buildup_max: the worst colonist's ToxicBuildup severity, 0..1 (HediffDefOf.ToxicBuildup, verified
+        /// decomp). 0 when nobody has any.</summary>
+        private static void Toxic(Dictionary<string, object> st, List<Pawn> crew)
+        {
+            if (crew.Count == 0 || HediffDefOf.ToxicBuildup == null) return;
+            float worst = 0f;
+            foreach (Pawn p in crew)
+            {
+                Hediff h = p.health?.hediffSet?.GetFirstHediffOfDef(HediffDefOf.ToxicBuildup);
+                if (h != null) worst = Math.Max(worst, h.Severity);
+            }
+            st["toxic_buildup_max"] = Math.Round(worst, 3);
+        }
+
+        /// <summary>worst_disease_margin: immunity minus severity of the worst visible immunizable disease a colonist is still
+        /// racing (HediffComp_Immunizable.Immunity / FullyImmune, verified decomp). Below 0 the disease is ahead; 1 when no
+        /// colonist is racing one. Toxic buildup is left out (its own key).</summary>
+        private static void Disease(Dictionary<string, object> st, List<Pawn> crew)
+        {
+            if (crew.Count == 0) return;
+            double margin = 1.0;
+            foreach (Pawn p in crew)
+            {
+                if (p.health?.hediffSet == null) continue;
+                foreach (Hediff h in p.health.hediffSet.hediffs)
+                {
+                    if (!h.Visible || h.def == HediffDefOf.ToxicBuildup || !(h is HediffWithComps hc)) continue;
+                    HediffComp_Immunizable im = hc.TryGetComp<HediffComp_Immunizable>();
+                    if (im == null || im.FullyImmune) continue;
+                    margin = Math.Min(margin, im.Immunity - h.Severity);
+                }
+            }
+            st["worst_disease_margin"] = Math.Round(margin, 3);
+        }
+
+        /// <summary>battery_days_stored: stored energy of the home map's batteries (CompPowerBattery.StoredEnergy, Wd,
+        /// verified decomp) divided by what the powered consumers draw now (W), so days at this load. Left out when
+        /// nothing draws power.</summary>
+        private static void Batteries(Dictionary<string, object> st, Map home)
+        {
+            double stored = 0, draw = 0;
+            foreach (Building b in home.listerBuildings.allBuildingsColonist)
+            {
+                CompPowerBattery bat = b.TryGetComp<CompPowerBattery>();
+                if (bat != null) stored += bat.StoredEnergy;
+                CompPowerTrader pt = b.TryGetComp<CompPowerTrader>();
+                if (pt != null && pt.PowerOn && pt.PowerOutput < 0) draw += -pt.PowerOutput;
+            }
+            if (draw > 0) st["battery_days_stored"] = Math.Round(stored / draw, 2);
+        }
+
+        /// <summary>kitchen_tables_no_bill: built tables the Rimrooms kitchen command would bill, by its own test -- a table
+        /// that can cook CookMealSimple with no meal bill, or one that can do ButcherCorpseFlesh without that bill.
+        /// butcher_tables: built tables that butcher flesh (and cannot cook a simple meal), same test.</summary>
+        private static void Kitchen(Dictionary<string, object> st, Map home)
+        {
+            RecipeDef meal = DefDatabase<RecipeDef>.GetNamedSilentFail("CookMealSimple");
+            RecipeDef butcher = DefDatabase<RecipeDef>.GetNamedSilentFail("ButcherCorpseFlesh");
+            if (meal == null && butcher == null) return;
+            int open = 0, butchers = 0;
+            foreach (Building_WorkTable t in home.listerBuildings.allBuildingsColonist.OfType<Building_WorkTable>())
+            {
+                if (meal != null && t.def.AllRecipes.Contains(meal))
+                {
+                    if (!t.BillStack.Bills.Any(b => b.recipe?.ProducedThingDef != null && b.recipe.ProducedThingDef.IsNutritionGivingIngestible)) open++;
+                }
+                else if (butcher != null && t.def.AllRecipes.Contains(butcher))
+                {
+                    butchers++;
+                    if (!t.BillStack.Bills.Any(b => b.recipe == butcher)) open++;
+                }
+            }
+            st["kitchen_tables_no_bill"] = (double)open;
+            st["butcher_tables"] = (double)butchers;
+        }
+
+        /// <summary>The freezer, by the Rimrooms freezer command's own test: freezer_coolers = built coolers whose cold side
+        /// (the cell north of the cooler, rotated) is an indoor room; freezer_coolers_warm = those set above 0 C (the command
+        /// sets -5 C once built); cooler_planned = cooler blueprints and frames.</summary>
+        private static void Freezer(Dictionary<string, object> st, Map home)
+        {
+            ThingDef cooler = DefDatabase<ThingDef>.GetNamedSilentFail("Cooler");
+            if (cooler == null) return;
+            int cold = 0, warm = 0;
+            foreach (Building b in home.listerBuildings.AllBuildingsColonistOfDef(cooler))
+            {
+                Room r = (b.Position + IntVec3.North.RotatedBy(b.Rotation)).GetRoom(home);
+                if (r == null || r.PsychologicallyOutdoors || r.UsesOutdoorTemperature) continue;
+                cold++;
+                CompTempControl tc = b.TryGetComp<CompTempControl>();
+                if (tc != null && tc.TargetTemperature > 0f) warm++;
+            }
+            st["freezer_coolers"] = (double)cold;
+            st["freezer_coolers_warm"] = (double)warm;
+            int planned = cooler.blueprintDef == null ? 0 : home.listerThings.ThingsOfDef(cooler.blueprintDef).Count;
+            planned += home.listerThings.ThingsInGroup(ThingRequestGroup.BuildingFrame).Count(t => t.def.entityDefToBuild == cooler);
+            st["cooler_planned"] = (double)planned;
+        }
+
+        /// <summary>The perimeter corners the Rimrooms tower command takes, read from the colony's own layout: the corners of
+        /// the Home area's bounding box (corner_&lt;ne|nw|se|sw&gt;_x / _z). tower_&lt;corner&gt; is true when an embrasure
+        /// stands, is framed or is planned within 8 cells of that corner (a tower, or perimeter embrasures already holding
+        /// it). Left out with no Home area.</summary>
+        private static void Towers(Dictionary<string, object> st, Map home)
+        {
+            Area ha = home.areaManager.Home;
+            if (ha == null || ha.TrueCount == 0) return;
+            int minX = int.MaxValue, minZ = int.MaxValue, maxX = int.MinValue, maxZ = int.MinValue;
+            foreach (IntVec3 c in ha.ActiveCells)
+            {
+                minX = Math.Min(minX, c.x); maxX = Math.Max(maxX, c.x);
+                minZ = Math.Min(minZ, c.z); maxZ = Math.Max(maxZ, c.z);
+            }
+            var emb = new List<IntVec3>();
+            foreach (Building b in home.listerBuildings.allBuildingsColonist)
+                if (b.def.defName.Contains("Embrasure")) emb.Add(b.Position);
+            foreach (Thing t in home.listerThings.ThingsInGroup(ThingRequestGroup.Blueprint).Concat(home.listerThings.ThingsInGroup(ThingRequestGroup.BuildingFrame)))
+                if (t.def.entityDefToBuild != null && t.def.entityDefToBuild.defName.Contains("Embrasure")) emb.Add(t.Position);
+            // literal keys, one corner per block, so the checker (tools/rimplc-check.py) can see every key written
+            IntVec3 ne = new IntVec3(maxX, 0, maxZ), nw = new IntVec3(minX, 0, maxZ), se = new IntVec3(maxX, 0, minZ), sw = new IntVec3(minX, 0, minZ);
+            st["corner_ne_x"] = (double)ne.x; st["corner_ne_z"] = (double)ne.z; st["tower_ne"] = emb.Any(e => e.InHorDistOf(ne, 8f));
+            st["corner_nw_x"] = (double)nw.x; st["corner_nw_z"] = (double)nw.z; st["tower_nw"] = emb.Any(e => e.InHorDistOf(nw, 8f));
+            st["corner_se_x"] = (double)se.x; st["corner_se_z"] = (double)se.z; st["tower_se"] = emb.Any(e => e.InHorDistOf(se, 8f));
+            st["corner_sw_x"] = (double)sw.x; st["corner_sw_z"] = (double)sw.z; st["tower_sw"] = emb.Any(e => e.InHorDistOf(sw, 8f));
+        }
+
+        /// <summary>stone_blocks: stone blocks of every kind in storage (ResourceCounter, things in the StoneBlocks category).</summary>
+        private static void StoneBlocks(Dictionary<string, object> st, Map home)
+        {
+            int n = 0;
+            foreach (KeyValuePair<ThingDef, int> kv in home.resourceCounter.AllCountedAmounts)
+                if (kv.Key.thingCategories != null && kv.Key.thingCategories.Contains(ThingCategoryDefOf.StoneBlocks)) n += kv.Value;
+            st["stone_blocks"] = (double)n;
+        }
+
         /// <summary>empire_hostile: the Empire (Royalty) is hostile to the player. FactionManager.OfEmpire (verified, decomp
         /// FactionManager.cs); with no Empire faction in the world the key is left out.</summary>
         private static void Factions(Dictionary<string, object> st)
@@ -176,7 +319,8 @@ namespace RimPLC
         }
 
         /// <summary>Visitors and Hospitality guests. Guest beds by class name: Hospitality's Building_GuestBed
-        /// (UNVERIFIED class name, from the Hospitality source; no Hospitality reference is compiled in).</summary>
+        /// (Hospitality.Building_GuestBed, verified in Hospitality (Continued)'s 1.7 Hospitality.dll; matched by name, so no
+        /// Hospitality reference is compiled in).</summary>
         private static void Visitors(Dictionary<string, object> st, Map home)
         {
             int visitors = 0, guests = 0;

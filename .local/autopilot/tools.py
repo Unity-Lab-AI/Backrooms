@@ -381,7 +381,10 @@ class Toolbox:
                          "MORE: equip (pawn + x,z or def; sidearm true carries it), capture (pawn -- nearest downed enemy to a prisoner bed), "
                          "bill_count (recipe, count -- raise an existing bill's target), zone_create (kind stockpile|growing, x,z,w,h, priority, plant, label), "
                          "roof_area (x,z,w,h, mode roof|noroof|clear), firebreak (w), pen (x,z,w,h -- fence + gate), bury (a grave outside home), "
-                         "ideo_role (role leader|moral guide, pawn), save_game (name; always Unity-*). "
+                         "ideo_role (role leader|moral guide, pawn), save_game (name; always Unity-*), "
+                         "terraform (mode bridge|smooth|remove_floor, x,z,w,h -- bridge over water/marsh; smooth or strip floor; map on screen for smooth/remove_floor). "
+                         "KITCHEN/DEFENCE: freezer (cooler in a small sealed room, -5 C once built), butcher (butcher table near the food store), kitchen (meal / butcher bill on every built table with none), "
+                         "arm (guns on the unarmed, melee sidearms, craft bill for a shortfall), draft (pawn all|names, on true|false), hold (armed colonists to embrasure cells, nearest the threat first), tower (x,z a perimeter corner, size, stuff -- a roofed corner tower, embrasures outward, base door + sally port), power (optional x,z -- one conduit line from each unpowered building to the nearest grid with a generator or battery), hall (x1,z1 to x2,z2, width -- a straight walled, roofed hall). "
                          "map (optional, e.g. Map_0) picks the map; without it the home map is used. The result comes back from the game: read it.",
                          S({"cmd": {"type": "string", "enum": ["explore", "rooms", "stockpile_room", "stockpile_filter",
                                                                "beds", "shelves", "stove", "crops", "hunt", "day_one", "assign",
@@ -390,9 +393,10 @@ class Toolbox:
                                                                "unforbid", "chop", "shelter", "stockpile_camp", "build", "build_room", "deconstruct", "harvest", "tame",
                                                                "slaughter", "allow_area", "self_tend", "schedule", "drug_policy", "research", "bed_medical", "bed_prisoner", "cooler_temp",
                                                                "equip", "capture", "bill_count", "zone_create", "roof_area", "firebreak", "pen", "bury", "ideo_role", "save_game",
-                                                               "stockpile_priority", "stockpile_copy", "crew_setup"]},
+                                                               "stockpile_priority", "stockpile_copy", "crew_setup", "terraform",
+                                                               "freezer", "butcher", "kitchen", "arm", "draft", "hold", "tower", "power", "hall"]},
                             "x": i, "z": i, "plant": s, "allow": b, "pawn": s, "work": s, "level": i,
-                            "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s, "food": s, "medicine": s, "hostility": s, "map": s, "w": i, "h": i, "def": s, "rot": i, "stuff": s, "what": s, "on": b, "hours": s, "assignment": s, "policy": s, "project": s, "celsius": i, "sidearm": b, "kind": s, "label": s, "role": s, "name": s, "zone": s, "from": s, "to": s},
+                            "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s, "food": s, "medicine": s, "hostility": s, "map": s, "w": i, "h": i, "def": s, "rot": i, "stuff": s, "what": s, "on": b, "hours": s, "assignment": s, "policy": s, "project": s, "celsius": i, "sidearm": b, "kind": s, "label": s, "role": s, "name": s, "zone": s, "from": s, "to": s, "size": i, "x1": i, "z1": i, "x2": i, "z2": i, "width": i},
                           ["cmd"]), self.t_game_set),
             "twitch_chat": ("[STREAM] Type into the REAL Twitch chat (not just out loud). action: say | reply (needs "
                             "viewer) | title | category. Every line is filtered clean or refused.",

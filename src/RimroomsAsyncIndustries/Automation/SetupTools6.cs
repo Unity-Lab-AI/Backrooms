@@ -13,6 +13,10 @@ namespace RimroomsAsyncIndustries.Automation
     ///   {"cmd":"stockpile_copy","from":"Food store","to":"Stockpile zone 3"}   filter + priority copied
     ///   {"cmd":"crew_setup","pawn":"Gee" (empty = everyone)}  Attack, self-tend where they can doctor, the "No drugs"
     ///                                                          policy; weapons stay with empire_pass / equip
+    ///   {"cmd":"terraform","mode":"bridge|smooth|remove_floor","x":10,"z":10,"w":5,"h":5}
+    ///       bridge: a Bridge blueprint on every cell of the rectangle that takes one (water, marsh); smooth / remove_floor:
+    ///       Core's own Designator_SmoothSurface / Designator_RemoveFloor, cell by cell, with their own checks. Core has no
+    ///       way to turn mud or water into soil, so "terraform" means: bridge what is wet, smooth or strip what is built on.
     /// Mod register checked: storage mods (Adaptive / LWM / Warehouse / RimFridge) keep vanilla StorageSettings on zones,
     /// so CopyFrom works on their zones too; Simple sidearms is untouched (weapons are not handled here).
     /// </summary>
@@ -66,5 +70,45 @@ namespace RimroomsAsyncIndustries.Automation
             }
             return "ok: " + string.Join("; ", lines) + (noDrugs == null ? " (no 'No drugs' policy found)" : "");
         }
+
+        public static string Terraform(Map map, Dictionary<string, string> a)
+        {
+            a.TryGetValue("mode", out string mode);
+            mode = (mode ?? "bridge").ToLowerInvariant();
+            int x = Num(a, "x", -1), z = Num(a, "z", -1);
+            CellRect r = new CellRect(x, z, Math.Max(1, Math.Min(30, Num(a, "w", 1))), Math.Max(1, Math.Min(30, Num(a, "h", 1)))).ClipInsideMap(map);
+            if (r.Area == 0 || !new IntVec3(x, 0, z).InBounds(map)) return "refused: x,z outside the map";
+            int done = 0, refused = 0;
+            string why = null;
+            if (mode == "bridge")
+            {
+                TerrainDef bridge = TerrainDefOf.Bridge;
+                if (bridge == null) return "refused: no Bridge terrain def";
+                foreach (IntVec3 c in r)
+                {
+                    AcceptanceReport ok = GenConstruct.CanPlaceBlueprintAt(bridge, c, Rot4.North, map, false, null, null, null);
+                    if (ok.Accepted) { GenConstruct.PlaceBlueprintForBuild(bridge, c, map, Rot4.North, Faction.OfPlayer, null); done++; }
+                    else { refused++; why = why ?? ok.Reason; }
+                }
+            }
+            else if (mode == "smooth" || mode == "remove_floor")
+            {
+                // Core designators act on Find.CurrentMap, so the map has to be the one on screen
+                if (Find.CurrentMap != map) return "refused: " + mode + " needs that map on screen (Core designators work on the current map)";
+                Designator d = mode == "smooth" ? (Designator)new Designator_SmoothSurface() : new Designator_RemoveFloor();
+                foreach (IntVec3 c in r)
+                {
+                    AcceptanceReport ok = d.CanDesignateCell(c);
+                    if (ok.Accepted) { d.DesignateSingleCell(c); done++; }
+                    else { refused++; why = why ?? ok.Reason; }
+                }
+            }
+            else return "refused: mode is bridge, smooth or remove_floor";
+            return (done > 0 ? "ok: " : "refused: ") + mode + " on " + done + " cell(s), " + refused + " refused" +
+                   (why != null ? " (first refusal: " + why + ")" : "") + (mode == "bridge" && done > 0 ? " -- needs wood and Construction work on" : "");
+        }
+
+        private static int Num(Dictionary<string, string> a, string k, int dflt) =>
+            a.TryGetValue(k, out string s) && int.TryParse(s, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out int v) ? v : dflt;
     }
 }

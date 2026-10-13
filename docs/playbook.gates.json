@@ -1645,12 +1645,256 @@
       "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
       "type": "int",
       "cadence": "normal",
-      "api": "colonist buildings whose thingClass name contains GuestBed (Hospitality; UNVERIFIED class name)",
+      "api": "colonist buildings whose thingClass name contains GuestBed (Hospitality.Building_GuestBed, verified in Hospitality (Continued) 1.7 Hospitality.dll)",
       "status": "UNVERIFIED",
       "group": "World",
       "label": "Guest beds",
       "severity": "info",
       "tip": "Hospitality guest beds."
+    },
+    "toxic_buildup_max": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "float",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "max over colonists of hediffSet.GetFirstHediffOfDef(HediffDefOf.ToxicBuildup).Severity, 0..1",
+      "group": "Health",
+      "label": "Worst toxic buildup",
+      "severity": "critical",
+      "tip": "The worst colonist's toxic buildup (0-1). At 40% pull that pawn inside to rest under a roof.",
+      "warn": ">=0.4"
+    },
+    "worst_disease_margin": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "float",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "min over colonists of HediffComp_Immunizable.Immunity - Hediff.Severity for visible, not fully immune diseases (toxic buildup left out); 1 when none",
+      "group": "Health",
+      "label": "Disease race margin",
+      "severity": "critical",
+      "tip": "Immunity minus severity of the worst disease a colonist is still fighting. Under 0.1 the disease may win: bed rest, best medicine, tend every 12 h.",
+      "warn": "<0.1"
+    },
+    "battery_days_stored": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "float",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "sum of CompPowerBattery.StoredEnergy (Wd) over the draw of powered consumers now (W); left out when nothing draws",
+      "group": "Power",
+      "label": "Battery days stored",
+      "severity": "warning",
+      "tip": "Stored battery energy divided by what the colony draws now, in days. Under 1 a night or eclipse can black out the base.",
+      "warn": "<1"
+    },
+    "kitchen_tables_no_bill": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "built Building_WorkTable that can cook CookMealSimple with no meal bill, or can do ButcherCorpseFlesh without that bill (the Rimrooms kitchen command's own test)",
+      "group": "Food",
+      "label": "Kitchen tables with no bill",
+      "severity": "warning",
+      "tip": "A built stove with no meal bill or a butcher table with no butcher bill. game_set cmd kitchen.",
+      "warn": ">0"
+    },
+    "butcher_tables": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "built Building_WorkTable that can do ButcherCorpseFlesh and cannot cook CookMealSimple",
+      "group": "Food",
+      "label": "Butcher tables",
+      "severity": "info",
+      "tip": "Built butcher tables. Hunting with none means meat rots on the ground.",
+      "warn": "==0"
+    },
+    "freezer_coolers": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "built Coolers whose cold side (Position + North.RotatedBy(Rotation)) is an indoor room (the Rimrooms freezer command's test)",
+      "group": "Food",
+      "label": "Freezer coolers",
+      "severity": "warning",
+      "tip": "Built coolers chilling an indoor room. None means no freezer: game_set cmd freezer.",
+      "warn": "==0"
+    },
+    "freezer_coolers_warm": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "of freezer_coolers, those with CompTempControl.TargetTemperature above 0 C",
+      "group": "Food",
+      "label": "Freezer coolers not cold",
+      "severity": "warning",
+      "tip": "Freezer coolers set above 0 C. game_set cmd freezer sets -5 C.",
+      "warn": ">0"
+    },
+    "cooler_planned": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "Cooler blueprints plus Cooler frames on the home map",
+      "group": "Food",
+      "label": "Coolers planned",
+      "severity": "info",
+      "tip": "Cooler blueprints or frames waiting for materials and a builder.",
+      "warn": ">0"
+    },
+    "corner_ne_x": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "the north-east corner of the Home area bounding box, x",
+      "group": "Defence",
+      "label": "NE corner x",
+      "severity": "info",
+      "tip": "The north-east corner of the Home area: where game_set cmd tower goes."
+    },
+    "corner_ne_z": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "the north-east corner of the Home area bounding box, z",
+      "group": "Defence",
+      "label": "NE corner z",
+      "severity": "info",
+      "tip": "The north-east corner of the Home area: where game_set cmd tower goes."
+    },
+    "tower_ne": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "bool",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "an embrasure built, framed or planned within 8 cells of the north-east Home-area corner",
+      "group": "Defence",
+      "label": "Tower NE",
+      "severity": "info",
+      "tip": "An embrasure stands or is planned near the north-east corner of the Home area (a tower or the wall's own).",
+      "warn": false
+    },
+    "corner_nw_x": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "the north-west corner of the Home area bounding box, x",
+      "group": "Defence",
+      "label": "NW corner x",
+      "severity": "info",
+      "tip": "The north-west corner of the Home area: where game_set cmd tower goes."
+    },
+    "corner_nw_z": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "the north-west corner of the Home area bounding box, z",
+      "group": "Defence",
+      "label": "NW corner z",
+      "severity": "info",
+      "tip": "The north-west corner of the Home area: where game_set cmd tower goes."
+    },
+    "tower_nw": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "bool",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "an embrasure built, framed or planned within 8 cells of the north-west Home-area corner",
+      "group": "Defence",
+      "label": "Tower NW",
+      "severity": "info",
+      "tip": "An embrasure stands or is planned near the north-west corner of the Home area (a tower or the wall's own).",
+      "warn": false
+    },
+    "corner_se_x": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "the south-east corner of the Home area bounding box, x",
+      "group": "Defence",
+      "label": "SE corner x",
+      "severity": "info",
+      "tip": "The south-east corner of the Home area: where game_set cmd tower goes."
+    },
+    "corner_se_z": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "the south-east corner of the Home area bounding box, z",
+      "group": "Defence",
+      "label": "SE corner z",
+      "severity": "info",
+      "tip": "The south-east corner of the Home area: where game_set cmd tower goes."
+    },
+    "tower_se": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "bool",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "an embrasure built, framed or planned within 8 cells of the south-east Home-area corner",
+      "group": "Defence",
+      "label": "Tower SE",
+      "severity": "info",
+      "tip": "An embrasure stands or is planned near the south-east corner of the Home area (a tower or the wall's own).",
+      "warn": false
+    },
+    "corner_sw_x": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "the south-west corner of the Home area bounding box, x",
+      "group": "Defence",
+      "label": "SW corner x",
+      "severity": "info",
+      "tip": "The south-west corner of the Home area: where game_set cmd tower goes."
+    },
+    "corner_sw_z": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "the south-west corner of the Home area bounding box, z",
+      "group": "Defence",
+      "label": "SW corner z",
+      "severity": "info",
+      "tip": "The south-west corner of the Home area: where game_set cmd tower goes."
+    },
+    "tower_sw": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "bool",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "an embrasure built, framed or planned within 8 cells of the south-west Home-area corner",
+      "group": "Defence",
+      "label": "Tower SW",
+      "severity": "info",
+      "tip": "An embrasure stands or is planned near the south-west corner of the Home area (a tower or the wall's own).",
+      "warn": false
+    },
+    "stone_blocks": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "ResourceCounter amounts of things in ThingCategoryDefOf.StoneBlocks",
+      "group": "Stores",
+      "label": "Stone blocks",
+      "severity": "info",
+      "tip": "Stone blocks of every kind in storage: walls, towers and floors.",
+      "warn": "<50"
     }
   },
   "gates": [
@@ -1872,7 +2116,7 @@
       },
       "then": [
         "game_get_cells_info over the pen: every marsh/mud/sand/water cell",
-        "terraform those cells to Soil (designator name UNVERIFIED: find it in game_list_architect_designators)",
+        "water/marsh cells: game_set cmd terraform mode bridge x z w h; mud cannot become soil in Core, so keep builds and fields off it",
         "refused: smaller drags; report which cells stayed bad",
         "ladder_set mark animals_pen_soil_done true"
       ],
@@ -2764,8 +3008,8 @@
       },
       "then": [
         "cancel every wall/blueprint sitting on water (game_apply_architect_designator Cancel over those cells)",
-        "terraform the water/mud inside the perimeter to soil (Rimrooms/terraform designator via game_select_architect_designator + game_drag_cell)",
-        "farm plots inside the walls on sand/gravel/rock: terraform to soil the same way before sowing",
+        "water/marsh inside the perimeter: game_set cmd terraform mode bridge x z w h (Core has no soil terraform; mud is moved around, not converted)",
+        "farm plots inside the walls on sand/gravel/rock: move them to soil; a smoothed or built floor in the way: game_set cmd terraform mode remove_floor",
         "ladder_set mark terraform_done true"
       ],
       "never": [
@@ -3074,12 +3318,13 @@
       "priority": 16.9,
       "family": "base-and-fortress",
       "when": {
-        "mark_camp_stable": true,
+        "colony_exists": true,
         "has_power": true,
         "unpowered_consumers": ">0"
       },
       "then": [
-        "game_get_cells_info round each unpowered building to find the nearest conduit",
+        "game_set cmd power -- every built consumer on no grid gets one conduit line to the nearest grid with a generator or battery; read the reply",
+        "refused for a building: game_get_cells_info round each unpowered building to find the nearest conduit",
         "game_select_architect_designator PowerConduit (HiddenConduit inside rooms) + game_drag_cell a single run to it; never leave an island or a string that ends in nothing",
         "one grid; read each heater/cooler grid line",
         "re-read unpowered_consumers next pass",
@@ -3892,12 +4137,12 @@
       "id": "config-post-strictness",
       "priority": 12.5,
       "family": "configuration",
-      "disabled": "no setting exists yet: needs a post-strictness option in the Rimrooms mod",
+      "disabled": "the setting exists but nothing reads or sets it from the ladder: the gate's watch posture (Rimrooms CompRimroomsGate.watchPosture, enum GateWatchPosture Mild / Balanced / Strict, default Balanced, saved as rr_gateWatchPosture, changed by the gate's watch-posture gizmo); it needs a gate_watch_posture sensor and a game_set command before this rung can run",
       "when": {
         "comms_console": true
       },
       "then": [
-        "set_post_strictness default (missing tool: strict / default / mild)"
+        "the gate's watch-posture gizmo (game_click_cell the gate, game_list_selected_gizmos, game_execute_gizmo the watch posture) -> Balanced (the owner's default, between Strict and Mild); the eat/safety floor holds in every posture"
       ],
       "never": [
         "let a manning pawn skip eating or safety"
@@ -7513,7 +7758,7 @@
         "game_set cmd beds (one per colonist), then game_set cmd shelves -- enough shelves for the dry store, more directly on the N side of the existing ones",
         "fridge (roofed food store), workshop (crafting spot / butcher), 1x2 table + stool, torch lamp, a campfire in the middle -- all inside or touching the camp (game_set cmd build def Campfire x z, game_set cmd build def TorchLamp x z)",
         "store everything under a roof except steel and stone blocks",
-        "mud/marsh/water inside the camp perimeter -> soil before building on it [missing tool: game_set cmd terraform -> game_apply_architect_designator terrain designator, once per drag]",
+        "water/marsh inside the camp perimeter -> game_set cmd terraform mode bridge x z w h before building on it (Core has no mud/water-to-soil; mud: move the build or floor it)",
         "unpause to build; when beds >= colonists and store_roofed_fraction >= 0.75: ladder_set mark shelter_set true"
       ],
       "never": [
@@ -7579,7 +7824,7 @@
         "growing_cells": "<75"
       },
       "then": [
-        "sand/gravel/rock under a planned field: terraform it to soil first [missing tool: game_set cmd terraform -> game_apply_architect_designator terrain designator]",
+        "sand/gravel/rock under a planned field: Core cannot make soil -- move the field to soil (game_get_cells_info fertility); a built floor there: game_set cmd terraform mode remove_floor x z w h",
         "game_set cmd crops plant Plant_Rice (rich soil, near camp)",
         "more fields: set_zone_plant x z Plant_Potato on one, a strawberry and healroot field when researched",
         "fields_all_default_crop true: game_set cmd set_zone_plant on all but one field to a different crop",
@@ -7635,7 +7880,7 @@
         "unity_say a clean line first: what the build is and that it takes a minute (bulk jobs are announced, never silent; paced, not a million clicks)",
         "the STARTING CAMP comes before the main base: one entrance in use, everything else closed",
         "wood wall ring round the camp (game_select_architect_designator Wall wood, ONE game_drag_cell per side); only the EXTERIOR is wood; doors in every other gap (corners and mid-side)",
-        "water under the line: terraform it to dirt first [missing tool: game_set cmd terraform]",
+        "water under the line: game_set cmd terraform mode bridge x z w h first (a bridge carries the wall)",
         "wood barricades (or sandbags) either side of that entrance, inside, staggered (game_set cmd build def Barricade x z per cell; Sandbags the same way)",
         "game_set cmd set_area area Home over the whole ring so pawns stay inside",
         "a fallback point behind the barricades where all three gather when drafted",
@@ -8153,7 +8398,7 @@
         "hostiles_on_map": 0
       },
       "then": [
-        "undraft everyone (game_set_draft false per pawn)",
+        "game_set cmd draft pawn all on false (game_set_draft false per pawn if refused)",
         "run time again (game_pause_game pause false)",
         "ladder_set mark combat_paused false",
         "ladder_set mark combat_plan 0",
@@ -8634,11 +8879,28 @@
       "then": [
         "everyone under a roof: game_set cmd set_area pawn <each> area Home (roofed rooms)",
         "harvest unroofed crops now (game_apply_architect_designator Harvest)",
-        "any pawn at toxic buildup >= 40%: order_pawn rest in bed indoors"
+        "any pawn at toxic buildup >= 40% (toxic_buildup_max >= {TOXIC_PULL_IN}, toxic-buildup-high): order_pawn rest in bed indoors"
       ],
       "why": "walkthrough walkthrough-base-power-temperature.md: Volcanic winter (7.5-40 days, -7C, -30% light, not before day 60): stockpile >= 20 days of food and build a heated, lit greenhouse. [survival] https://rimworldwiki.com/wiki/Events",
+      "latch": false
+    },
+    {
+      "id": "toxic-buildup-high",
+      "priority": 2.27,
+      "family": "survival",
+      "when": {
+        "toxic_buildup_max": ">={TOXIC_PULL_IN}"
+      },
+      "then": [
+        "the pawn with the most toxic buildup (pawn_check Health): order_pawn rest in a bed indoors, under a roof",
+        "game_set cmd set_area pawn <that pawn> area Home (roofed rooms) until the buildup falls",
+        "condition_toxicfallout or a toxic source nearby: everyone else indoors too (toxic-fallout)"
+      ],
+      "never": [
+        "never send that pawn outdoors while the fallout lasts"
+      ],
       "latch": false,
-      "note": "toxic buildup per pawn not measured: sensor toxic_buildup_max needed"
+      "why": "walkthrough: a pawn at 40% toxic buildup is pulled inside (TOXIC_PULL_IN); toxic_buildup_max measured by RimPLC"
     },
     {
       "id": "flashstorm",
@@ -8908,21 +9170,48 @@
       ]
     },
     {
+      "id": "kitchen-bills",
+      "priority": 4.85,
+      "family": "survival",
+      "when": {
+        "colony_exists": true,
+        "kitchen_tables_no_bill": ">0"
+      },
+      "then": [
+        "game_set cmd kitchen -- every built stove with no meal bill gets simple meal until 30, every built butcher table with no bill gets butcher forever; read the reply",
+        "kitchen_tables_no_bill still above 0: game_set cmd add_bill on that table by hand (recipe CookMealSimple count {MEAL_BILL_TARGET} / ButcherCorpseFlesh)"
+      ],
+      "never": [
+        "never a Forever meal bill (Do until X)"
+      ],
+      "latch": false,
+      "why": "owner playbook batch 2: the kitchen bills go on the moment a stove or butcher table finishes; kitchen_tables_no_bill measured by RimPLC"
+    },
+    {
       "id": "butcher-table",
       "priority": 5.0,
       "family": "survival",
       "when": {
         "colony_exists": true,
-        "mark_stove_set": true,
+        "stoves": ">0",
+        "butcher_tables": 0,
         "mark_butcher_built": false,
-        "count_tablebutcher": "<1"
+        "meat_coming": {
+          "any": [
+            {
+              "corpses": ">0"
+            },
+            {
+              "designations_hunt": ">0"
+            }
+          ]
+        }
       },
       "then": [
-        "game_list_architect_designators production: the butcher table, beside the stove, inside",
-        "when it stands: game_set cmd add_bill recipe ButcherCorpseFlesh count 20",
+        "game_set cmd butcher -- a butcher table blueprint in a roofed room near the food store (or the state of the one already there); read the reply",
+        "unpause so it is built; when butcher_tables >= 1: game_set cmd kitchen (its butcher bill, forever)",
         "ladder_set mark butcher_built true",
-        "(econ-butcher) game_apply_architect_designator TableButcher next to the freezer",
-        "(econ-butcher) game_set cmd add_bill recipe ButcherCorpseFlesh count 0 (forever)"
+        "(econ-butcher) refused: game_apply_architect_designator TableButcher next to the freezer by hand"
       ],
       "why": "owner: \"how u plan on cutting up them animals?\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\" / walkthrough walkthrough-food-and-medicine.md: Butcher corpses within 2 days (raw meat rots in about 2 days above 0C). [survival] F || merged from economy:econ-butcher: owner: \"get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion\" | walkthrough: walkthrough-food-and-medicine.md [economy] Butcher table next to freezer",
       "latch": true
@@ -9021,8 +9310,25 @@
         "tend every 12 h until immune; keep the room clean (Cleaning 2 on a pawn)"
       ],
       "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner: \"slect gee and tell him rest till healed in hospital bed\" / walkthrough walkthrough-food-and-medicine.md: If an illness's severity is rising toward or past immunity: bed rest, better medicine, best doctor. [survival] I / walkthrough walkthrough-food-and-medicine.md: Plague: severity grows fast; tend as often as allowed with industrial medicine and bed rest until immune. [survival] G / walkthrough walkthrough-food-and-medicine.md: Malaria / sleeping sickness: long; bed rest and daily tending; glitterworld only if near death. [survival] K / walkthrough walkthrough-food-and-medicine.md: Flu: tend daily; herbal medicine and bed rest usually enough. [survival] L / walkthrough walkthrough-food-and-medicine.md: Food poisoning lasts about 1 day and is not lethal; prevent it with cooking skill and a clean kitchen. [survival] R / walkthrough walkthrough-food-and-medicine.md: Gut worms / muscle parasites: chronic; keep tending until healed. [survival] M / walkthrough walkthrough-food-and-medicine.md: Severity above 0.8 means the pawn is near death: best medicine, best doctor, now. [survival] I / walkthrough walkthrough-food-and-medicine.md: food_days < 3 -> hunt + harvest + cook rung. [survival] F / walkthrough walkthrough-food-and-medicine.md: raw meat in an unpowered storage room at >0C for more than 1 day -> butcher and cook now. [survival] F",
+      "latch": false
+    },
+    {
+      "id": "disease-losing-race",
+      "priority": 5.45,
+      "family": "survival",
+      "when": {
+        "worst_disease_margin": "<0.1"
+      },
+      "then": [
+        "the colonist whose disease is ahead of their immunity (pawn_check Health): order_pawn rest in a Medical bed now",
+        "game_set cmd assign pawn <sick> medicine Best; the best doctor on Doctor 1 (pawn_priorities custom {Doctor: 1})",
+        "tend every 12 hours until immune; keep the hospital clean (Cleaning 2 on one pawn)"
+      ],
+      "never": [
+        "never let a pawn racing a disease work instead of resting"
+      ],
       "latch": false,
-      "note": "infection/disease severity vs immunity not measured: sensor worst_disease_margin needed"
+      "why": "walkthrough walkthrough-food-and-medicine.md: if an illness's severity is rising toward or past immunity: bed rest, better medicine; worst_disease_margin measured by RimPLC"
     },
     {
       "id": "warm-clothes",
@@ -9190,16 +9496,52 @@
       "family": "survival",
       "when": {
         "condition_eclipse": true,
-        "has_power": true
+        "has_power": true,
+        "battery_days_stored": "<1"
       },
       "then": [
-        "read batteries on the power tab (game_click_cell a battery, read stored Wd)",
+        "battery_days_stored is under one day of demand: read the batteries (game_click_cell a battery, stored Wd) to see which grid",
         "under one day of demand: switch off non-vital consumers (lamps in empty rooms) with game_execute_gizmo toggle",
         "queue a wood-fired generator if wood >= WOOD_RESERVE"
       ],
       "why": "walkthrough walkthrough-base-power-temperature.md: During an eclipse (0.75-1.25 days) solar gives 0; keep batteries >= one day of demand. [survival] https://rimworldwiki.com/wiki/Events / owner: \"Grid excess: 0 W (0 Wd stored) ... Current power use: Off\" / owner: \"Grid excess: 2213 W (8400 Wd stored)\" / owner: \"8138 W (8400 Wd stored)\"",
+      "latch": false
+    },
+    {
+      "id": "freezer-cooler",
+      "priority": 6.45,
+      "family": "survival",
+      "when": {
+        "colony_exists": true,
+        "food_store": true,
+        "freezer_coolers": 0,
+        "cooler_planned": 0
+      },
+      "then": [
+        "game_set cmd freezer -- a cooler blueprint in a wall of a small sealed roofed room near the food store, blue (cold) side in; read the reply",
+        "no power yet: the cooler waits; once built, game_set cmd power wires it (freezer-set-cold)",
+        "once built, freezer-set-cold sets it to -5 C"
+      ],
+      "never": [
+        "never a cooler in a room with no roof (it cools open sky)"
+      ],
       "latch": false,
-      "note": "battery stored Wd is not measured: sensor battery_days_stored needed"
+      "why": "owner playbook batch 2: a freezer once there is a food store; freezer_coolers measured by RimPLC"
+    },
+    {
+      "id": "freezer-set-cold",
+      "priority": 6.46,
+      "family": "survival",
+      "when": {
+        "freezer_coolers_warm": ">0"
+      },
+      "then": [
+        "game_set cmd freezer -- the built cooler goes to -5 C; read the reply",
+        "the reply says NOT POWERED: game_set cmd power x <cooler x> z <cooler z> (the cooler cell from the freezer reply), then game_set cmd freezer again",
+        "freezer_coolers_warm still above 0: open the cooler and set its target to -5 C by hand (game_set cmd cooler_temp x z celsius -5)"
+      ],
+      "latch": false,
+      "why": "owner playbook batch 2: once the freezer cooler is built its target is set to -5 C; freezer_coolers_warm measured by RimPLC"
     },
     {
       "id": "freezer-sorting",
@@ -9461,8 +9803,8 @@
       "then": [
         "pause (game_pause_game pause true) ONLY to give orders",
         "game_set cmd assign hostility Attack (every pawn, never Flee)",
-        "draft every able shooter at once (game_set_draft per pawn); non-violent pawns and the doctor stay indoors (game_set cmd set_area area Home)",
-        "order_pawn each shooter to an embrasure / cover cell on the side between base and enemy, at the edge of gun range with line of sight",
+        "game_set cmd arm, then game_set cmd hold -- every armed colonist drafted and sent to its own cell behind an embrasure (else sandbags / barricades), nearest the threat first; read both replies. Non-violent pawns and the doctor stay indoors (game_set cmd set_area area Home)",
+        "hold refused or a cell missing: order_pawn that shooter to an embrasure / cover cell between base and enemy, at the edge of gun range",
         "focus fire: order_pawn 'Attack' on the nearest melee threat first, then grenadiers/snipers/rocket carriers",
         "melee attackers die at range: shooters fall back firing to the next embrasure so melee never closes",
         "say a line to chat about the fight, unpause (game_pause_game pause false), step with play_slices so the camera frames hostiles and drafted pawns",
@@ -9649,7 +9991,7 @@
         }
       },
       "then": [
-        "undraft everyone (game_set_draft false)",
+        "game_set cmd draft pawn all on false (no hostiles left)",
         "game_pause_game pause false",
         "downed colonists first (survival med chain: tend, rescue)",
         "order_pawn option 'Capture' on downed raiders (prisoner bed first)",
@@ -9772,6 +10114,134 @@
       "why": "owner, verbatim: \"you have holes in you embrasure fortifications\" / \"and a bunch without power so u can t shoot out\" / \"you have holes in you embrasure fortifications / and a bunch without power so u can t shoot out\" / \"you still have holes in you embrasures and wires that arent connected just not connected string of conduit / you need to set dissection bills or do it dirreectly idk\" / \"wtf why u putting walls upganets and replacing embrasures that wont work fix those walls\" / \"come on archeteture archeteture fix your archetecture completely door in correct place no blocked pathing walls complete embrasure fixed and powered , nothing without power need one power gen place not spead all over and not not organized\" / \"3 places with stupid embracers 1x1 in interior walls that do nothing replace with marble when u can\""
     },
     {
+      "id": "tower-ne",
+      "priority": 27.91,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "hostiles_on_map": 0,
+        "tower_ne": false,
+        "stock": {
+          "any": [
+            {
+              "steel": ">=150"
+            },
+            {
+              "stone_blocks": ">=150"
+            }
+          ]
+        }
+      },
+      "then": [
+        "say it on stream first (clean): a tower goes up on the north-east corner",
+        "game_set cmd tower x <corner_ne_x> z <corner_ne_z> size 3 stuff <a stone block def if stone_blocks >= 150, else Steel> -- a roofed tower growing away from the colony, embrasures outward, a door back into the base and a sally port; read the reply",
+        "refused at that corner: one cell inward along the wall and try once more; refused twice: say why on stream and leave it for the player",
+        "ventilation is a separate build (a vent or cooler in its own wall)"
+      ],
+      "never": [
+        "never a tower while hostiles are on the map",
+        "never the Store layout's fixed coordinates: the corner comes from corner_ne_x / corner_ne_z"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): a tower on every corner with its own ventilation, security rooms and embrasure sally port; corners read from the Home area by RimPLC"
+    },
+    {
+      "id": "tower-nw",
+      "priority": 27.92,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "hostiles_on_map": 0,
+        "tower_nw": false,
+        "stock": {
+          "any": [
+            {
+              "steel": ">=150"
+            },
+            {
+              "stone_blocks": ">=150"
+            }
+          ]
+        }
+      },
+      "then": [
+        "say it on stream first (clean): a tower goes up on the north-west corner",
+        "game_set cmd tower x <corner_nw_x> z <corner_nw_z> size 3 stuff <a stone block def if stone_blocks >= 150, else Steel> -- a roofed tower growing away from the colony, embrasures outward, a door back into the base and a sally port; read the reply",
+        "refused at that corner: one cell inward along the wall and try once more; refused twice: say why on stream and leave it for the player",
+        "ventilation is a separate build (a vent or cooler in its own wall)"
+      ],
+      "never": [
+        "never a tower while hostiles are on the map",
+        "never the Store layout's fixed coordinates: the corner comes from corner_nw_x / corner_nw_z"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): a tower on every corner with its own ventilation, security rooms and embrasure sally port; corners read from the Home area by RimPLC"
+    },
+    {
+      "id": "tower-se",
+      "priority": 27.93,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "hostiles_on_map": 0,
+        "tower_se": false,
+        "stock": {
+          "any": [
+            {
+              "steel": ">=150"
+            },
+            {
+              "stone_blocks": ">=150"
+            }
+          ]
+        }
+      },
+      "then": [
+        "say it on stream first (clean): a tower goes up on the south-east corner",
+        "game_set cmd tower x <corner_se_x> z <corner_se_z> size 3 stuff <a stone block def if stone_blocks >= 150, else Steel> -- a roofed tower growing away from the colony, embrasures outward, a door back into the base and a sally port; read the reply",
+        "refused at that corner: one cell inward along the wall and try once more; refused twice: say why on stream and leave it for the player",
+        "ventilation is a separate build (a vent or cooler in its own wall)"
+      ],
+      "never": [
+        "never a tower while hostiles are on the map",
+        "never the Store layout's fixed coordinates: the corner comes from corner_se_x / corner_se_z"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): a tower on every corner with its own ventilation, security rooms and embrasure sally port; corners read from the Home area by RimPLC"
+    },
+    {
+      "id": "tower-sw",
+      "priority": 27.94,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "hostiles_on_map": 0,
+        "tower_sw": false,
+        "stock": {
+          "any": [
+            {
+              "steel": ">=150"
+            },
+            {
+              "stone_blocks": ">=150"
+            }
+          ]
+        }
+      },
+      "then": [
+        "say it on stream first (clean): a tower goes up on the south-west corner",
+        "game_set cmd tower x <corner_sw_x> z <corner_sw_z> size 3 stuff <a stone block def if stone_blocks >= 150, else Steel> -- a roofed tower growing away from the colony, embrasures outward, a door back into the base and a sally port; read the reply",
+        "refused at that corner: one cell inward along the wall and try once more; refused twice: say why on stream and leave it for the player",
+        "ventilation is a separate build (a vent or cooler in its own wall)"
+      ],
+      "never": [
+        "never a tower while hostiles are on the map",
+        "never the Store layout's fixed coordinates: the corner comes from corner_sw_x / corner_sw_z"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): a tower on every corner with its own ventilation, security rooms and embrasure sally port; corners read from the Home area by RimPLC"
+    },
+    {
       "id": "war-bastions-towers",
       "priority": 28.0,
       "family": "war",
@@ -9779,7 +10249,7 @@
         "mark_rung_3_defence_done": true
       },
       "then": [
-        "a tower on every corner with its own ventilation, security rooms and embrasure sally port",
+        "corner towers are the tower-ne / tower-nw / tower-se / tower-sw rungs (game_set cmd tower); here the rest:",
         "half-room bastions projecting OUTWARD every 15-18 cells and both sides of every entrance; rows of 5 embrasures plus flank embrasures",
         "one marble door mid outer face of each tower/bastion",
         "single fortified entrance (killbox) as the only ground path; stone walls elsewhere",
@@ -10017,7 +10487,8 @@
         "loose_weapons": ">0"
       },
       "then": [
-        "empire_pass -- it equips a loose gun on every unarmed colonist, the melee weapon kept as the sidearm",
+        "game_set cmd arm -- every unarmed colonist equips the nearest free gun, every armed one without a melee weapon picks up a sidearm; read the reply",
+        "still unarmed after arm: empire_pass -- it equips a loose gun on every unarmed colonist, the melee weapon kept as the sidearm",
         "read its ARMS line: nobody left unarmed",
         "say it on stream"
       ],
@@ -10036,6 +10507,7 @@
         "loose_weapons": 0
       },
       "then": [
+        "game_set cmd arm -- with no free gun it puts a crafting bill up for the shortfall; read the reply",
         "no gun on the map: a melee weapon or a club from the stockpile first (order_pawn equip)",
         "queue a weapon at the smithy / crafting spot if one exists (game_set cmd add_bill)",
         "buy one from the next trader; loot downed raiders"
@@ -10075,7 +10547,8 @@
         "hostiles_on_map": "==0"
       },
       "then": [
-        "game_list_architect_designators Power: find the grid with machines and no generator or battery",
+        "game_set cmd power -- conduit from the dead grid's buildings to the nearest grid with a generator or battery; read the reply",
+        "refused: game_list_architect_designators Power: find the grid with machines and no generator or battery",
         "build PowerConduit from that grid to the nearest live grid (game_set cmd build def PowerConduit, one line of cells)",
         "read power_nets_dead again: 0"
       ],

@@ -247,7 +247,8 @@ def check(doc, label):
 #   W4  a step / meta prompt naming a game_set command no handler answers (RimroomsAutomationComponent.cs); a
 #       "[missing tool: game_set cmd X ...]" declaration is allowed only while X really has no handler
 #   W5  a step / meta prompt calling a tool missing that a game_set command now answers
-#   W6  the window's known-command list differs from the handlers (MainTabWindow_RimPLC.KnownCmds)
+#   W6  the window's known-command list (MainTabWindow_RimPLC.KnownCmds) or her game_set tool's cmd enum (tools.py)
+#       differs from the handlers
 #   W7  meta prompts: duplicate ids, a prompt with no rung, a rung with no prompt, an empty prompt; priority ties
 #   W8  a sensor's display entry: group (SensorView.GroupOrder), label, tip, severity, and a warn rule of the right form
 #       for its type (a boolean rule on a bool, an operator rule on a number)
@@ -444,6 +445,14 @@ def wiring(doc, label):
     if known != handlers:
         errs.append("W6 window KnownCmds differs from the handlers: only in the window %s, only in the handlers %s"
                     % (sorted(known - handlers), sorted(handlers - known)))
+    tools_py = os.path.join(ROOT, ".local", "autopilot", "tools.py")
+    if os.path.exists(tools_py):
+        tm = re.search(r'"cmd": \{"type": "string", "enum": \[(.*?)\]\}', _read(tools_py), re.S)
+        enum = set(re.findall(r'"([a-z_]+)"', tm.group(1))) if tm else set()
+        internal = {"sensors"}      # the mod's own sensor-file dump, not a command she plays with
+        if enum != handlers - internal:
+            errs.append("W6 her game_set tool's cmd enum (tools.py) differs from the handlers: only in tools.py %s, only in the handlers %s"
+                        % (sorted(enum - handlers), sorted(handlers - internal - enum)))
     # W7
     ids = [g["id"] for g in gates]
     dup = sorted({k for k in top if top.count(k) > 1})

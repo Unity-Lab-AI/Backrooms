@@ -305,7 +305,8 @@ namespace RimPLC
             "shelter", "stockpile_camp", "sensors", "build", "build_room", "deconstruct", "harvest", "tame", "slaughter", "allow_area",
             "self_tend", "schedule", "drug_policy", "research", "bed_medical", "bed_prisoner", "cooler_temp", "equip", "capture",
             "bill_count", "zone_create", "roof_area", "firebreak", "pen", "bury", "ideo_role", "save_game",
-            "stockpile_priority", "stockpile_copy", "crew_setup",
+            "stockpile_priority", "stockpile_copy", "crew_setup", "terraform",
+            "freezer", "butcher", "kitchen", "arm", "draft", "hold", "tower", "power", "hall",
         };
 
         private static readonly System.Text.RegularExpressions.Regex CmdRef = new System.Text.RegularExpressions.Regex(@"game_set cmd ([a-z_]+)");
