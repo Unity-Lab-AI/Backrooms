@@ -17,21 +17,27 @@ import time
 import uuid
 from pathlib import Path
 
-LOG = Path.home() / "AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Player.log"
+DATA = Path.home() / "AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios"
+# RimWorld 1.7 (Waylith) writes Logs/Player.log and prefixes every line with "<date> <time>  INFO [Verse] ";
+# 1.6 wrote Player.log at the top with bare lines. The newest of the two is the running game's.
+def game_log():
+    return max((p for p in (DATA / "Logs" / "Player.log", DATA / "Player.log") if p.exists()),
+               key=lambda p: p.stat().st_mtime, default=DATA / "Logs" / "Player.log")
+PREFIX = r"^(?:\S+ \S+\s+[A-Z]+ \[[^\]]*\] )?"
 PROTOCOL = "gabp/1"
 CLIENT = "RimroomsLiveInspect/1"
 TIMEOUT = 45.0
 
 
 def endpoint():
-    text = LOG.read_text(encoding="utf-8", errors="replace")
+    text = game_log().read_text(encoding="utf-8", errors="replace")
     port = None
     token = None
     for line in text.splitlines():
-        m = re.match(r"^\[RimBridge\] GABP server running standalone on port (\d+)\s*$", line)
+        m = re.match(PREFIX + r"\[RimBridge\] GABP server running standalone on port (\d+)\s*$", line)
         if m:
             port = int(m.group(1))
-        m = re.match(r"^\[RimBridge\] Bridge token:\s*(\S+)\s*$", line)
+        m = re.match(PREFIX + r"\[RimBridge\] Bridge token:\s*(\S+)\s*$", line)
         if m:
             token = m.group(1)
     if port is None or token is None:
