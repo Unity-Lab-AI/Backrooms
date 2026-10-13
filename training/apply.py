@@ -117,7 +117,13 @@ def brain_voice_stamp():
     stamp = os.path.join(d, "unity-brain.gguf.applied")
     try:
         import json
-        good = os.path.exists(stamp) and json.load(open(ev, encoding="utf-8")).get("voice_replaces_today") is True
+        eval_says = json.load(open(ev, encoding="utf-8")).get("voice_replaces_today") is True
+        # The owner can choose the brain for her lines over the eval (brain-voice-owner.json, with the quote). On
+        # 2026-10-13 the 16 GB stress test peaked at 15.9 GB with both language models on the GPU and no game/OBS
+        # running, and the owner chose "Brain writes lines too" over moving the line writer to the CPU.
+        owner = os.path.join(d, "brain-voice-owner.json")
+        owner_says = os.path.exists(owner) and json.load(open(owner, encoding="utf-8")).get("brain_writes_lines") is True
+        good = os.path.exists(stamp) and (eval_says or owner_says)
     except (OSError, ValueError):
         good = False
     if good:
