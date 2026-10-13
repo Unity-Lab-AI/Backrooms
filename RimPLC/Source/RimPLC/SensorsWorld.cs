@@ -45,6 +45,8 @@ namespace RimPLC
             Guard(() => StoneBlocks(st, home));
             Guard(() => ResearchUpgrades(st, home));
             Guard(() => Prisoners(st, home));
+            Guard(() => Traders(st, home));
+            Guard(() => GatePosture(st, home));
         }
 
         private static void Guard(Action a)
@@ -293,14 +295,15 @@ namespace RimPLC
             var emb = new List<IntVec3>();
             foreach (Building b in home.listerBuildings.allBuildingsColonist)
                 if (b.def.defName.Contains("Embrasure")) emb.Add(b.Position);
+            var built = new List<IntVec3>(emb);   // tower_<corner>_built: built embrasures only (security_room needs the tower standing)
             foreach (Thing t in home.listerThings.ThingsInGroup(ThingRequestGroup.Blueprint).Concat(home.listerThings.ThingsInGroup(ThingRequestGroup.BuildingFrame)))
                 if (t.def.entityDefToBuild != null && t.def.entityDefToBuild.defName.Contains("Embrasure")) emb.Add(t.Position);
             // literal keys, one corner per block, so the checker (tools/rimplc-check.py) can see every key written
             IntVec3 ne = new IntVec3(maxX, 0, maxZ), nw = new IntVec3(minX, 0, maxZ), se = new IntVec3(maxX, 0, minZ), sw = new IntVec3(minX, 0, minZ);
-            st["corner_ne_x"] = (double)ne.x; st["corner_ne_z"] = (double)ne.z; st["tower_ne"] = emb.Any(e => e.InHorDistOf(ne, 8f));
-            st["corner_nw_x"] = (double)nw.x; st["corner_nw_z"] = (double)nw.z; st["tower_nw"] = emb.Any(e => e.InHorDistOf(nw, 8f));
-            st["corner_se_x"] = (double)se.x; st["corner_se_z"] = (double)se.z; st["tower_se"] = emb.Any(e => e.InHorDistOf(se, 8f));
-            st["corner_sw_x"] = (double)sw.x; st["corner_sw_z"] = (double)sw.z; st["tower_sw"] = emb.Any(e => e.InHorDistOf(sw, 8f));
+            st["corner_ne_x"] = (double)ne.x; st["corner_ne_z"] = (double)ne.z; st["tower_ne"] = emb.Any(e => e.InHorDistOf(ne, 8f)); st["tower_ne_built"] = built.Any(e => e.InHorDistOf(ne, 8f));
+            st["corner_nw_x"] = (double)nw.x; st["corner_nw_z"] = (double)nw.z; st["tower_nw"] = emb.Any(e => e.InHorDistOf(nw, 8f)); st["tower_nw_built"] = built.Any(e => e.InHorDistOf(nw, 8f));
+            st["corner_se_x"] = (double)se.x; st["corner_se_z"] = (double)se.z; st["tower_se"] = emb.Any(e => e.InHorDistOf(se, 8f)); st["tower_se_built"] = built.Any(e => e.InHorDistOf(se, 8f));
+            st["corner_sw_x"] = (double)sw.x; st["corner_sw_z"] = (double)sw.z; st["tower_sw"] = emb.Any(e => e.InHorDistOf(sw, 8f)); st["tower_sw_built"] = built.Any(e => e.InHorDistOf(sw, 8f));
         }
 
         /// <summary>stone_blocks: stone blocks of every kind in storage (ResourceCounter, things in the StoneBlocks category).</summary>
@@ -352,6 +355,35 @@ namespace RimPLC
             }
             st["prisoners_new"] = (double)names.Count;
             st["prisoners_new_names"] = names.ToList();
+        }
+
+        /// <summary>trader_caravans_on_map: non-hostile pawns on the home map carrying a trader kind (Pawn_TraderTracker.traderKind,
+        /// verified decomp) -- a trader caravan the Rimrooms trade command can deal with.</summary>
+        private static void Traders(Dictionary<string, object> st, Map home)
+        {
+            int n = 0;
+            foreach (Pawn p in home.mapPawns.AllPawnsSpawned)
+                if (p.trader?.traderKind != null && !p.HostileTo(Faction.OfPlayer)) n++;
+            st["trader_caravans_on_map"] = (double)n;
+        }
+
+        /// <summary>gate_watch_posture: the Rimrooms gate's watch posture (0 Mild, 1 Balanced, 2 Strict) read by reflection from
+        /// the comp named CompRimroomsGate (field watchPosture), so RimPLC keeps no Rimrooms reference. Left out with no gate
+        /// (or no Rimrooms).</summary>
+        private static void GatePosture(Dictionary<string, object> st, Map home)
+        {
+            foreach (Thing t in home.listerThings.AllThings)
+            {
+                if (!(t is ThingWithComps tw) || tw.AllComps == null) continue;
+                foreach (ThingComp c in tw.AllComps)
+                {
+                    if (c.GetType().Name != "CompRimroomsGate") continue;
+                    System.Reflection.FieldInfo f = c.GetType().GetField("watchPosture", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+                    if (f == null) return;
+                    st["gate_watch_posture"] = (double)Convert.ToInt32(f.GetValue(c));
+                    return;
+                }
+            }
         }
 
         /// <summary>empire_hostile: the Empire (Royalty) is hostile to the player. FactionManager.OfEmpire (verified, decomp

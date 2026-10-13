@@ -1941,6 +1941,74 @@
       "label": "New prisoner names",
       "severity": "info",
       "tip": "Who the new prisoners are."
+    },
+    "trader_caravans_on_map": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "non-hostile pawns on the home map with Pawn_TraderTracker.traderKind set",
+      "group": "World",
+      "label": "Trader caravans here",
+      "severity": "info",
+      "tip": "A trader caravan is on the map: game_set cmd trade lists what it buys and sells.",
+      "warn": ">0"
+    },
+    "gate_watch_posture": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "CompRimroomsGate.watchPosture by reflection (0 Mild, 1 Balanced, 2 Strict); left out with no gate",
+      "group": "Colony",
+      "label": "Gate watch posture",
+      "severity": "info",
+      "tip": "How long a gate operator stays at the console: 0 Mild, 1 Balanced (the owner's default), 2 Strict. The eat/safety floor holds in every posture.",
+      "warn": "!=1"
+    },
+    "tower_ne_built": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "bool",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "a BUILT embrasure within 8 cells of the north-east Home-area corner (blueprints and frames not counted)",
+      "group": "Defence",
+      "label": "Tower NE built",
+      "severity": "info",
+      "tip": "A built embrasure stands near the north-east corner: its security room can go up."
+    },
+    "tower_nw_built": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "bool",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "a BUILT embrasure within 8 cells of the north-west Home-area corner (blueprints and frames not counted)",
+      "group": "Defence",
+      "label": "Tower NW built",
+      "severity": "info",
+      "tip": "A built embrasure stands near the north-west corner: its security room can go up."
+    },
+    "tower_se_built": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "bool",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "a BUILT embrasure within 8 cells of the south-east Home-area corner (blueprints and frames not counted)",
+      "group": "Defence",
+      "label": "Tower SE built",
+      "severity": "info",
+      "tip": "A built embrasure stands near the south-east corner: its security room can go up."
+    },
+    "tower_sw_built": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "bool",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "a BUILT embrasure within 8 cells of the south-west Home-area corner (blueprints and frames not counted)",
+      "group": "Defence",
+      "label": "Tower SW built",
+      "severity": "info",
+      "tip": "A built embrasure stands near the south-west corner: its security room can go up."
     }
   },
   "gates": [
@@ -3567,7 +3635,7 @@
       "then": [
         "unity_say a clean line first: what the build is and that it takes a minute (bulk jobs are announced, never silent)",
         "mine the cutout: ONE door in (MOUNTAIN_DOORS_IN), never pierce the outer rock",
-        "the door opens into the throne room centred on the SPINE_WIDTH (3) spine running NE; prison wing hall east, guest wing hall west",
+        "the door opens into the throne room centred on the SPINE_WIDTH (3) spine running NE; prison wing hall east, guest wing hall west (game_set cmd hall x1 z1 x2 z2 width 3 for the spine and each wing hall)",
         "labs and tech deeper in; ROCK_CELLS_AROUND_ROOMS (2) of natural rock between every room, neighbour and the outside (room for the room wall without breaking the exposed mountain)",
         "a rock pillar or column every 5-6 tiles in big halls; fields, solar and wind outside under sky",
         "move the natural gate into a sealed laboratory at the back (later)",
@@ -3638,7 +3706,7 @@
         "roofed porches with no walls lose their roof",
         "double doors along the path, never sideways; no wall in front of them",
         "a straight wall north of the altar room edge",
-        "halls 3 wide, never 1; rooms hang off halls with proper pathing; cross halls, no mile-long corridors; uniform rooms; anything can be moved or redone"
+        "halls 3 wide, never 1 (game_set cmd hall x1 z1 x2 z2 width 3 between rooms); rooms hang off halls with proper pathing; cross halls, no mile-long corridors; uniform rooms; anything can be moved or redone"
       ],
       "latch": false,
       "why": "owner: \"holes in building rooms make sure walls are complete on all rooms\" / owner: \"you need to figure out you halls and whats suppose to have roof and not and do everything in back log that you never finished u have rooms with holes in walls and hallways that end nowhere\" / owner: \"and make sure you zone shit in right like roofs so courtyards are unroofed and generators need to be out side\" / owner: \"you have wall in way of 2x doors\""
@@ -4204,12 +4272,11 @@
       "id": "config-post-strictness",
       "priority": 12.5,
       "family": "configuration",
-      "disabled": "the setting exists but nothing reads or sets it from the ladder: the gate's watch posture (Rimrooms CompRimroomsGate.watchPosture, enum GateWatchPosture Mild / Balanced / Strict, default Balanced, saved as rr_gateWatchPosture, changed by the gate's watch-posture gizmo); it needs a gate_watch_posture sensor and a game_set command before this rung can run",
       "when": {
-        "comms_console": true
+        "gate_watch_posture": "!=1"
       },
       "then": [
-        "the gate's watch-posture gizmo (game_click_cell the gate, game_list_selected_gizmos, game_execute_gizmo the watch posture) -> Balanced (the owner's default, between Strict and Mild); the eat/safety floor holds in every posture"
+        "game_set cmd gate_posture posture Balanced -- the owner's default, between Strict and Mild; read the reply (the eat/safety floor holds in every posture)"
       ],
       "never": [
         "let a manning pawn skip eating or safety"
@@ -4263,7 +4330,7 @@
       "then": [
         "read the letter now (game_state letters); letter_matches \"trader\" / \"caravan\"",
         "order_pawn the highest-Social colonist to the trader",
-        "trade_dialog (MISSING): sell joints, beer, clothes, art, junk_weapons, tainted gear; buy steel, components, plasteel, marble blocks, cows, tech that is needed"
+        "game_set cmd trade with caravan (trade-in-reach): sell joints, beer, clothes, art, junk_weapons, tainted gear; buy steel, components, plasteel, marble blocks, cows, tech that is needed"
       ],
       "why": "owner: \"dont ignore you messages / are you reading pop up messages a good tradeer just arrived wtf !!! use the comms console / ive alkready told yuou already read messages always instantly!!!!! your under attrack!!!!\" / owner: \"farming trader.. comeon always trade and look to make silver and money and get things you need\" / owner: \"someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need\" / owner: \"might have to buy from trader marble blocks\" / owner: \"have to trade, make a corral for cows and such, buy cows, get a silver supply like cash\" / owner: \"you need to read message and pop up s shit its like im having to teach you how to play all over again wtf happened to everything ive taught you\" | walkthrough: walkthrough-economy-growth-space.md [economy] Trader = highest Social colonist; sell art/clothes/drugs, buy components/plasteel",
       "latch": false,
@@ -4557,7 +4624,7 @@
         "mark_steel_short_set": false
       },
       "then": [
-        "call_trader (MISSING) from the comms console + trade_dialog (MISSING): buy steel",
+        "a ship in orbit or a caravan on the map: game_set cmd trade ... buy Steel:n (trade-in-reach); calling a trader in is still missing (call_trader)",
         "or company_order (MISSING): Company Procurement steel",
         "ladder_set mark steel_short_set true"
       ],
@@ -4696,7 +4763,7 @@
         "mark_junk_weapons_set": false
       },
       "then": [
-        "call_trader + trade_dialog (MISSING): sell junk_weapons first",
+        "a trader in reach: game_set cmd trade ... sell junk weapons first (trade-in-reach); calling one in is still missing (call_trader)",
         "ladder_set mark junk_weapons_set true"
       ],
       "notice": "Too many spare weapons: selling them.",
@@ -4736,7 +4803,7 @@
       },
       "then": [
         "call_trader (MISSING) via the comms console gizmo; calling costs goodwill",
-        "trade_dialog (MISSING): sell art, drugs, clothes, extra weapons -- never what the colony needs",
+        "game_set cmd trade with ship|caravan: sell art, drugs, clothes, extra weapons -- never what the colony needs",
         "buy components, plasteel, steel, marble blocks",
         "ladder_set mark trade_run_done true"
       ],
@@ -4958,7 +5025,7 @@
       },
       "then": [
         "game_apply_architect_designator: single guest rooms inside the walls with floor, art, lamps -- never a barracks",
-        "set_bed_price (MISSING): a price on every guest bed",
+        "game_set cmd guest_beds: list the guest beds and their fees (the playbook sets no fee, so the mod default stays)",
         "guest facilities: dining, rec, toilet if any",
         "hospitality_sell_zone (MISSING): a sell zone set from the Guests tab, surplus only",
         "door_lock (MISSING): guests reach only the shop/sell zone, never the lab, vault or prison",
@@ -4988,7 +5055,7 @@
       },
       "then": [
         "game_apply_architect_designator: one more single room + bed per missing guest bed",
-        "set_bed_price (MISSING) on it"
+        "game_set cmd guest_beds to read its fee (the mod default stays; the playbook sets none)"
       ],
       "why": "owner: \"Invite {name} to stay (No guest beds) / Guest bed ... Price: $20 / Beds in use: 3/3 / Beds in use: 5/3 / Not enough guest beds x2 / Unwaveringly loyal\" / owner: \"you need to set bed prices and make facilities for guests and use locks so they dont wonder into your vaults only wher u sell stuff and buetify thir rooms and not barracks style rooms\"",
       "latch": false
@@ -10342,6 +10409,78 @@
       "why": "owner (tower command doc): a tower on every corner with its own ventilation, security rooms and embrasure sally port; corners read from the Home area by RimPLC"
     },
     {
+      "id": "security-room-ne",
+      "priority": 27.95,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "hostiles_on_map": 0,
+        "tower_ne_built": true,
+        "mark_security_room_ne": false
+      },
+      "then": [
+        "game_set cmd security_room x <corner_ne_x> z <corner_ne_z> size 3 (stuff as the tower) -- a walled, roofed room off the tower's base door with a door into the base; read the reply",
+        "refused: say why on stream; the tower door must stand first",
+        "ladder_set mark security_room_ne true"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): towers with their own security rooms; runs once the north-east tower stands"
+    },
+    {
+      "id": "security-room-nw",
+      "priority": 27.96,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "hostiles_on_map": 0,
+        "tower_nw_built": true,
+        "mark_security_room_nw": false
+      },
+      "then": [
+        "game_set cmd security_room x <corner_nw_x> z <corner_nw_z> size 3 (stuff as the tower) -- a walled, roofed room off the tower's base door with a door into the base; read the reply",
+        "refused: say why on stream; the tower door must stand first",
+        "ladder_set mark security_room_nw true"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): towers with their own security rooms; runs once the north-west tower stands"
+    },
+    {
+      "id": "security-room-se",
+      "priority": 27.97,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "hostiles_on_map": 0,
+        "tower_se_built": true,
+        "mark_security_room_se": false
+      },
+      "then": [
+        "game_set cmd security_room x <corner_se_x> z <corner_se_z> size 3 (stuff as the tower) -- a walled, roofed room off the tower's base door with a door into the base; read the reply",
+        "refused: say why on stream; the tower door must stand first",
+        "ladder_set mark security_room_se true"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): towers with their own security rooms; runs once the south-east tower stands"
+    },
+    {
+      "id": "security-room-sw",
+      "priority": 27.98,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "hostiles_on_map": 0,
+        "tower_sw_built": true,
+        "mark_security_room_sw": false
+      },
+      "then": [
+        "game_set cmd security_room x <corner_sw_x> z <corner_sw_z> size 3 (stuff as the tower) -- a walled, roofed room off the tower's base door with a door into the base; read the reply",
+        "refused: say why on stream; the tower door must stand first",
+        "ladder_set mark security_room_sw true"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): towers with their own security rooms; runs once the south-west tower stands"
+    },
+    {
       "id": "war-bastions-towers",
       "priority": 28.0,
       "family": "war",
@@ -10690,6 +10829,51 @@
       "why": "inventory D: storage copy / owner: \"kill em,, we have to finishe the RimPLC\""
     },
     {
+      "id": "trade-in-reach",
+      "priority": 20.01,
+      "family": "economy",
+      "when": {
+        "colony_exists": true,
+        "hostiles_on_map": 0,
+        "mark_trade_visit_done": false,
+        "reach": {
+          "any": [
+            {
+              "trader_caravans_on_map": ">0"
+            },
+            {
+              "trade_ships_in_orbit": ">0",
+              "comms_consoles": ">0"
+            }
+          ]
+        }
+      },
+      "then": [
+        "game_set cmd trade -- list first: every ship in orbit and trader caravan on the map, what each buys and sells; read it",
+        "sell what is over {TRADE_KEEP} of each (TRADE_KEEP tag): cash crops (smokeleaf, psychoid, hops, cotton/cloth) and refined goods (joints, beer, psychite tea, clothes, art): game_set cmd trade with ship|caravan sell Def:n,... -- the negotiator walks there first, call trade again once they are there to deal",
+        "buy when low: steel under {STEEL_RESERVE} and components under {COMPONENT_RESERVE}: the same call with buy Steel:n,ComponentIndustrial:n",
+        "never sell spacer tech or anything the colony needs (the command refuses spacer and higher)",
+        "say on stream what was bought and sold, then ladder_set mark trade_visit_done true"
+      ],
+      "latch": false,
+      "why": "owner PLAYBOOK 10: trade with the caravans that walk in and the ships once a beacon stands; sell the cash crops and refined goods, buy what is short"
+    },
+    {
+      "id": "trade-visit-reset",
+      "priority": 20.015,
+      "family": "economy",
+      "when": {
+        "mark_trade_visit_done": true,
+        "trader_caravans_on_map": 0,
+        "trade_ships_in_orbit": 0
+      },
+      "then": [
+        "ladder_set mark trade_visit_done false (the trader left; the next one gets its own visit)"
+      ],
+      "latch": false,
+      "why": "resets the one-visit mark of trade-in-reach"
+    },
+    {
       "id": "trade-ship-orbit",
       "priority": 20.02,
       "family": "economy",
@@ -10700,7 +10884,7 @@
         "hostiles_on_map": "==0"
       },
       "then": [
-        "order the highest-Social colonist to the comms console and call the ship",
+        "trade-in-reach does the deal (game_set cmd trade); this rung only makes sure the highest-Social colonist is the negotiator",
         "sell: joints, beer, clothes, art, junk weapons, tainted gear (only goods near a trade beacon)",
         "buy: steel, components, plasteel, medicine, cows, needed tech",
         "say on stream what was bought and sold"
@@ -10738,6 +10922,22 @@
         "say on stream that the guests get a room"
       ],
       "why": "owner: \"Invite {name} to stay (No guest beds)\" / \"drugs are for hospitality guests\" / owner: \"kill em,, we have to finishe the RimPLC\""
+    },
+    {
+      "id": "guest-bed-fees",
+      "priority": 24.22,
+      "family": "economy",
+      "when": {
+        "colony_exists": true,
+        "guest_beds": ">0"
+      },
+      "then": [
+        "game_set cmd guest_beds -- list the guest beds and their nightly fee; read it",
+        "the playbook gives no fee, so leave the Hospitality default (never game_set cmd guest_beds fee n unless the owner names a fee)",
+        "say the fee on stream once"
+      ],
+      "latch": true,
+      "why": "owner: \"Guest bed ... Price: $20 / Beds in use: 3/3\" (the fee he saw is the mod default; no fee order is given, so it is read, not changed)"
     },
     {
       "id": "pen-animals-loose",
@@ -11277,6 +11477,12 @@
       "EQUIP_RETRY": {
         "value": 3,
         "rule": "ctu preset before crafting/buying weapons"
+      },
+      "TRADE_KEEP": {
+        "value": 50,
+        "rule": "keep this many of each cash crop / refined good before selling the rest",
+        "min": 10,
+        "max": 2000
       }
     }
   },

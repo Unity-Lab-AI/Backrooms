@@ -281,7 +281,8 @@ RETIRED_MISSING = {
     "build_furniture": "build", "tame_animal": "tame", "build_pen": "pen", "queue_research": "research",
     "research_queue": "research", "set_research": "research", "set_bed_medical": "bed_medical",
     "set_cooler_target": "cooler_temp", "campfire": "build", "barricades": "build", "zone_create": "zone_create",
-    "set_prisoner_interaction": "prisoner",
+    "set_prisoner_interaction": "prisoner", "trade_dialog": "trade",
+    "set_bed_price": "guest_beds",
 }
 CMD_REF = re.compile(r"game_set\s+cmd\s*[= ]\s*([a-z_]+)")
 DECLARED = re.compile(r"\[missing tool: game_set cmd ([a-z_]+)")
