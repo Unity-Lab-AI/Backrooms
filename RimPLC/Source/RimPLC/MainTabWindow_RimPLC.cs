@@ -404,29 +404,102 @@ namespace RimPLC
 
         // ------------------------------------------------------------------------------------------- sensors, log
 
+        private bool sensorsWarningsOnly;
+        private readonly HashSet<string> collapsed = new HashSet<string> { "Item counts", "Research done" };
+
+        /// <summary>The input image, organised: a warnings panel (critical first), then every reading by group with a
+        /// plain label, a formatted value and a tooltip that says what it means and when it warns.</summary>
         private void DrawSensors(Rect rect, ScanResult r)
         {
-            List<KeyValuePair<string, object>> rows = r.State.Where(kv => kv.Key != "tags").OrderBy(kv => kv.Key, StringComparer.Ordinal).ToList();
-            var view = new Rect(0f, 0f, rect.width - 16f, rows.Count * 20f);
-            Widgets.BeginScrollView(rect, ref scroll, view);
+            List<SensorView.Reading> all = SensorView.All(r.State);
+            List<SensorView.Reading> warns = all.Where(x => x.Warning && x.Severity != SensorView.Level.Info)
+                                                .OrderByDescending(x => x.Severity).ThenBy(x => x.Label, StringComparer.Ordinal).ToList();
+            Widgets.CheckboxLabeled(new Rect(rect.x, rect.y, 190f, 24f), "Warnings only", ref sensorsWarningsOnly);
             Text.Font = GameFont.Tiny;
-            float y = 0f;
-            JsonObject catalogue = RimPLCMod.Book.Sensors;
-            foreach (var kv in rows)
-            {
-                if (y + 20f >= scroll.y && y <= scroll.y + rect.height)
-                {
-                    Widgets.Label(new Rect(4f, y, 260f, 20f), kv.Key);
-                    string v = Json.Write(kv.Value);
-                    Widgets.Label(new Rect(270f, y, view.width - 270f, 20f), v.Length > 160 ? v.Substring(0, 160) + "..." : v);
-                    JsonObject desc = catalogue.GetObject(kv.Key);
-                    if (desc != null) TooltipHandler.TipRegion(new Rect(4f, y, 260f, 20f), desc.GetString("source") ?? string.Empty);
-                }
+            Widgets.Label(new Rect(rect.x + 200f, rect.y + 4f, rect.width - 200f, 22f),
+                all.Count + " readings, " + warns.Count(x => x.Severity == SensorView.Level.Critical) + " critical, " +
+                warns.Count(x => x.Severity == SensorView.Level.Warning) + " warnings. Hover any row for what it means.");
+            Text.Font = GameFont.Small;
 
-                y += 20f;
+            // the warnings panel: up to a third of the tab
+            float panelH = warns.Count == 0 ? 26f : Mathf.Min(rect.height / 3f, 26f + warns.Count * 22f);
+            var panel = new Rect(rect.x, rect.y + 28f, rect.width, panelH);
+            Widgets.DrawBoxSolid(panel, new Color(0f, 0f, 0f, 0.35f));
+            if (warns.Count == 0)
+            {
+                GUI.color = Green;
+                Widgets.Label(panel.ContractedBy(4f), "No warnings.");
+                GUI.color = Color.white;
+            }
+            else
+            {
+                float wy = panel.y + 2f;
+                foreach (SensorView.Reading w in warns)
+                {
+                    if (wy + 22f > panel.yMax) break;
+                    var row = new Rect(panel.x + 4f, wy, panel.width - 8f, 22f);
+                    Widgets.DrawBoxSolid(new Rect(row.x, row.y + 4f, 14f, 14f), w.Severity == SensorView.Level.Critical ? Red : Amber);
+                    Widgets.Label(new Rect(row.x + 20f, row.y, 240f, 22f), w.Label);
+                    Widgets.Label(new Rect(row.x + 265f, row.y, 90f, 22f), SensorView.Format(w.Value));
+                    Text.Font = GameFont.Tiny;
+                    Widgets.Label(new Rect(row.x + 360f, row.y + 3f, row.width - 360f, 20f), w.Tip);
+                    Text.Font = GameFont.Small;
+                    Widgets.DrawHighlightIfMouseover(row);
+                    TooltipHandler.TipRegion(row, SensorView.Tooltip(w));
+                    wy += 22f;
+                }
             }
 
-            Text.Font = GameFont.Small;
+            // every reading by group
+            var outRect = new Rect(rect.x, panel.yMax + 6f, rect.width, rect.yMax - panel.yMax - 6f);
+            var groups = all.Where(x => !sensorsWarningsOnly || x.Warning)
+                            .GroupBy(x => x.Group)
+                            .OrderBy(g => { int i = Array.IndexOf(SensorView.GroupOrder, g.Key); return i < 0 ? 999 : i; })
+                            .ToList();
+            float total = 0f;
+            foreach (var g in groups) total += 26f + (collapsed.Contains(g.Key) ? 0f : g.Count() * 20f);
+            var view = new Rect(0f, 0f, outRect.width - 16f, total);
+            Widgets.BeginScrollView(outRect, ref scroll, view);
+            float y = 0f;
+            foreach (var g in groups)
+            {
+                bool shut = collapsed.Contains(g.Key);
+                var head = new Rect(0f, y, view.width, 24f);
+                Widgets.DrawBoxSolid(head, new Color(1f, 1f, 1f, 0.08f));
+                int gw = g.Count(x => x.Warning && x.Severity != SensorView.Level.Info);
+                Widgets.Label(new Rect(6f, y + 2f, view.width, 22f), (shut ? "[+] " : "[-] ") + g.Key + "  (" + g.Count() + (gw > 0 ? ", " + gw + " warning" + (gw == 1 ? "" : "s") : "") + ")");
+                if (Widgets.ButtonInvisible(head))
+                {
+                    if (shut) collapsed.Remove(g.Key);
+                    else collapsed.Add(g.Key);
+                }
+
+                y += 26f;
+                if (shut) continue;
+                Text.Font = GameFont.Tiny;
+                foreach (SensorView.Reading x in g.OrderBy(x => x.Label, StringComparer.Ordinal))
+                {
+                    if (y + 20f >= scroll.y && y <= scroll.y + outRect.height)
+                    {
+                        var row = new Rect(0f, y, view.width, 20f);
+                        if (x.Warning && x.Severity != SensorView.Level.Info)
+                            Widgets.DrawBoxSolid(row, x.Severity == SensorView.Level.Critical ? new Color(0.8f, 0.2f, 0.2f, 0.25f) : new Color(0.85f, 0.6f, 0.15f, 0.2f));
+                        Widgets.DrawHighlightIfMouseover(row);
+                        Widgets.Label(new Rect(16f, y, 260f, 20f), x.Label);
+                        string v = SensorView.Format(x.Value);
+                        Widgets.Label(new Rect(280f, y, 220f, 20f), v.Length > 60 ? v.Substring(0, 60) + "..." : v);
+                        GUI.color = Color.gray;
+                        Widgets.Label(new Rect(505f, y, view.width - 505f, 20f), x.Key + (x.Rule != null ? "   warns " + x.Rule : string.Empty));
+                        GUI.color = Color.white;
+                        TooltipHandler.TipRegion(row, SensorView.Tooltip(x));
+                    }
+
+                    y += 20f;
+                }
+
+                Text.Font = GameFont.Small;
+            }
+
             Widgets.EndScrollView();
         }
 

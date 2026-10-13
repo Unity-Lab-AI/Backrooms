@@ -4,638 +4,1284 @@
   "sensors": {
     "ticks_moving": {
       "source": "get_game_info.ticksGame read twice 1.2 s apart",
-      "type": "bool"
+      "type": "bool",
+      "group": "Game",
+      "label": "Time running",
+      "severity": "warning",
+      "tip": "Game time is running. A paused game builds nothing.",
+      "warn": false
     },
     "day": {
       "source": "get_game_info.ticksGame / 60000",
-      "type": "float"
+      "type": "float",
+      "group": "World",
+      "label": "Day",
+      "severity": "info",
+      "tip": "Days since the colony started."
     },
     "quadrum_index": {
       "source": "floor(ticksGame / 900000) % 4",
       "type": "int",
-      "note": "a counter, NOT a season: the season depends on latitude (UNVERIFIED as a season)"
+      "note": "a counter, NOT a season: the season depends on latitude (UNVERIFIED as a season)",
+      "group": "World",
+      "label": "Quadrum",
+      "severity": "info",
+      "tip": "Quadrum counter (not the season)."
     },
     "paused": {
       "source": "state.paused on bridge replies (captured on list_zones)",
-      "type": "bool"
+      "type": "bool",
+      "group": "Game",
+      "label": "Paused",
+      "severity": "info",
+      "tip": "The game is paused."
     },
     "map_count": {
       "source": "get_game_info.mapCount",
-      "type": "int"
+      "type": "int",
+      "group": "Colony",
+      "label": "Maps",
+      "severity": "info",
+      "tip": "Maps loaded."
     },
     "dialog_open": {
       "source": "get_ui_state.nonImmediateDialogWindowOpen",
-      "type": "bool"
+      "type": "bool",
+      "group": "Game",
+      "label": "Dialog open",
+      "severity": "warning",
+      "tip": "A dialog is open and freezes play. Read its buttons and answer it.",
+      "warn": true
     },
     "letters": {
       "source": "list_letters, ids not yet in ladder.json letters_seen",
-      "type": "int"
+      "type": "int",
+      "group": "World",
+      "label": "Unread letters",
+      "severity": "warning",
+      "tip": "Letters not read yet. Read every one.",
+      "warn": ">0"
     },
     "threat_letter": {
       "source": "list_letters letterDef in ThreatBig/ThreatSmall, ageTicks <= 2 days",
       "type": "bool",
-      "note": "def names from decompiled vanilla (LetterDefOf); only PositiveEvent captured live"
+      "note": "def names from decompiled vanilla (LetterDefOf); only PositiveEvent captured live",
+      "group": "Threats",
+      "label": "Threat letter (2 days)",
+      "severity": "warning",
+      "tip": "A raid or threat letter arrived in the last 2 days: prepare before contact, prisoner bed first.",
+      "warn": true
     },
     "quest_letter": {
       "source": "unseen letter, 'quest' in label or 'Quest' in letterDef",
       "type": "bool",
-      "note": "UNVERIFIED def name"
+      "note": "UNVERIFIED def name",
+      "group": "World",
+      "label": "Quest letter",
+      "severity": "info",
+      "tip": "A new quest letter.",
+      "warn": true
     },
     "empire_letter": {
       "source": "unseen letter, 'empire' in relatedFaction",
       "type": "bool",
-      "note": "UNVERIFIED: relatedFaction is the faction's NAME"
+      "note": "UNVERIFIED: relatedFaction is the faction's NAME",
+      "group": "World",
+      "label": "Empire letter",
+      "severity": "info",
+      "tip": "A letter from the Empire.",
+      "warn": true
     },
     "alert_<x>": {
       "source": "list_alerts alerts[].label substring (gates.ALERT_MATCH)",
       "type": "bool",
-      "note": "UNVERIFIED labels: no list_alerts reply captured; labels logged to scratch/alert_labels.json"
+      "note": "UNVERIFIED labels: no list_alerts reply captured; labels logged to scratch/alert_labels.json",
+      "group": "Game",
+      "label": "Alert: <x>",
+      "severity": "info",
+      "tip": "list_alerts alerts[].label substring (gates.ALERT_MATCH)"
     },
     "colonists": {
       "source": "list_colonists, factionIsPlayer and humanlike",
-      "type": "int"
+      "type": "int",
+      "group": "Crew",
+      "label": "Colonists",
+      "severity": "warning",
+      "tip": "Free colonists. Fewer than 3 is a fragile colony: recruit.",
+      "warn": "<3"
     },
     "downed_count": {
       "source": "list_colonists downed",
-      "type": "int"
+      "type": "int",
+      "group": "Health",
+      "label": "Downed colonists",
+      "severity": "critical",
+      "tip": "Colonists lying downed. Rescue and tend them.",
+      "warn": ">0"
     },
     "drafted_count": {
       "source": "list_colonists drafted",
-      "type": "int"
+      "type": "int",
+      "group": "Crew",
+      "label": "Drafted",
+      "severity": "info",
+      "tip": "Colonists currently drafted.",
+      "warn": ">0"
     },
     "mental_break": {
       "source": "list_colonists mentalState not null",
-      "type": "bool"
+      "type": "bool",
+      "group": "Threats",
+      "label": "Mental break",
+      "severity": "critical",
+      "tip": "A colonist is in a mental break.",
+      "warn": true
     },
     "away_maps": {
       "source": "distinct mapId among crew - 1",
-      "type": "int"
+      "type": "int",
+      "group": "Colony",
+      "label": "Colonists away",
+      "severity": "info",
+      "tip": "Maps other than home with colonists on them.",
+      "warn": ">0"
     },
     "colony_animals": {
       "source": "list_colonists animal and factionIsPlayer",
       "type": "int",
-      "note": "UNVERIFIED that the list holds animals: written only when > 0"
+      "note": "UNVERIFIED that the list holds animals: written only when > 0",
+      "group": "Colony",
+      "label": "Tamed animals",
+      "severity": "info",
+      "tip": "Animals owned by the colony."
     },
     "colony_mechs": {
       "source": "list_colonists mechanoid and factionIsPlayer",
       "type": "int",
-      "note": "UNVERIFIED, written only when > 0"
+      "note": "UNVERIFIED, written only when > 0",
+      "group": "Colony",
+      "label": "Colony mechs",
+      "severity": "info",
+      "tip": "Mechanoids owned by the colony."
     },
     "hostile_pawns_listed": {
       "source": "list_colonists factionHostileToPlayer, not dead/downed",
       "type": "int",
-      "note": "field captured; UNVERIFIED that hostiles are listed: written only when > 0"
+      "note": "field captured; UNVERIFIED that hostiles are listed: written only when > 0",
+      "group": "Threats",
+      "label": "Hostile pawns",
+      "severity": "warning",
+      "tip": "Hostile pawns the colonist list shows.",
+      "warn": ">0"
     },
     "home_on_screen": {
       "source": "list_colonists currentMapOnly holds the home map",
-      "type": "bool"
+      "type": "bool",
+      "group": "Game",
+      "label": "Home map shown",
+      "severity": "info",
+      "tip": "The home map is the one on screen.",
+      "warn": false
     },
     "growing_cells": {
       "source": "list_zones Zone_Growing cellCount sum",
-      "type": "int"
+      "type": "int",
+      "group": "Food",
+      "label": "Growing zone cells",
+      "severity": "warning",
+      "tip": "Cells in growing zones.",
+      "warn": "==0"
     },
     "stockpile_cells": {
       "source": "list_zones Zone_Stockpile cellCount sum",
-      "type": "int"
+      "type": "int",
+      "group": "Stores",
+      "label": "Stockpile cells",
+      "severity": "warning",
+      "tip": "Cells in stockpile zones.",
+      "warn": "==0"
     },
     "food_store": {
       "source": "a zone label contains 'food'",
-      "type": "bool"
+      "type": "bool",
+      "group": "Food",
+      "label": "Food store exists",
+      "severity": "warning",
+      "tip": "A stockpile labelled food. Make one (stockpile_room or stockpile_camp).",
+      "warn": false
     },
     "main_store": {
       "source": "a zone label contains 'main'",
-      "type": "bool"
+      "type": "bool",
+      "group": "Stores",
+      "label": "Main store exists",
+      "severity": "info",
+      "tip": "A stockpile labelled main.",
+      "warn": false
     },
     "home_cells": {
       "source": "list_areas Area_Home cellCount (or a swept cell's areas[])",
-      "type": "int"
+      "type": "int",
+      "group": "Rooms",
+      "label": "Home area cells",
+      "severity": "info",
+      "tip": "Cells in the home area.",
+      "warn": "==0"
     },
     "colony_exists": {
       "source": "any crew",
-      "type": "bool"
+      "type": "bool",
+      "group": "Colony",
+      "label": "Colony exists",
+      "severity": "critical",
+      "tip": "There are colonists on a map.",
+      "warn": false
     },
     "explore_done": {
       "source": ".local/qa/_explore_done.flag",
-      "type": "bool"
+      "type": "bool",
+      "group": "Colony",
+      "label": "Exploring done",
+      "severity": "info",
+      "tip": "No unexplored frontier within 30 cells of the crew.",
+      "warn": false
     },
     "game_foreground": {
       "source": "Win32 foreground window",
-      "type": "bool"
+      "type": "bool",
+      "group": "Game",
+      "label": "Game window in front",
+      "severity": "info",
+      "tip": "The game window has focus.",
+      "warn": false
     },
     "meals": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): defName Meal*",
-      "type": "int"
+      "type": "int",
+      "group": "Food",
+      "label": "Meals",
+      "severity": "warning",
+      "tip": "Cooked meals in storage.",
+      "warn": "==0"
     },
     "raw_food": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): defName Raw*",
-      "type": "int"
+      "type": "int",
+      "group": "Food",
+      "label": "Raw food",
+      "severity": "warning",
+      "tip": "Raw meat and vegetables in storage.",
+      "warn": "<20"
     },
     "wood": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): WoodLog",
-      "type": "int"
+      "type": "int",
+      "group": "Stores",
+      "label": "Wood",
+      "severity": "warning",
+      "tip": "Wood logs in storage. Chop trees near the crew.",
+      "warn": "<50"
     },
     "medicine": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): defName contains Medicine",
-      "type": "int"
+      "type": "int",
+      "group": "Health",
+      "label": "Medicine",
+      "severity": "critical",
+      "tip": "Medicine in storage. Zero means tends are weak and infections kill.",
+      "warn": "==0"
     },
     "days_of_food": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): (meals*0.9 + raw*0.05) / (1.6 * crew)",
-      "type": "float"
+      "type": "float",
+      "group": "Food",
+      "label": "Days of food",
+      "severity": "critical",
+      "tip": "Edible nutrition in storage divided by what the crew eats. Under 3 days: hunt, harvest, cook.",
+      "warn": "<3"
     },
     "blueprints": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): blueprintBuildDefs",
-      "type": "int"
+      "type": "int",
+      "group": "Rooms",
+      "label": "Blueprints waiting",
+      "severity": "info",
+      "tip": "Unbuilt blueprints.",
+      "warn": ">30"
     },
     "humanlikes_not_ours": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): pawn label with ', title' not in crew",
-      "type": "int"
+      "type": "int",
+      "group": "Threats",
+      "label": "Outsiders on the map",
+      "severity": "info",
+      "tip": "Visitors, traders or raiders that are not colonists or prisoners.",
+      "warn": ">0"
     },
     "hostiles_on_map": {
       "source": "humanlikes_not_ours while threat_letter, or hostile_pawns_listed",
-      "type": "int"
+      "type": "int",
+      "group": "Threats",
+      "label": "Hostiles on the map",
+      "severity": "critical",
+      "tip": "Active enemies on the home map. Draft, post the crew behind cover, ranged first.",
+      "warn": ">0"
     },
     "has_power": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): a generator or Battery",
-      "type": "bool"
+      "type": "bool",
+      "group": "Power",
+      "label": "Power exists",
+      "severity": "warning",
+      "tip": "A generator or battery is built.",
+      "warn": false
     },
     "defences_built": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): turret, Sandbags, Barricade or Embrasure",
-      "type": "bool"
+      "type": "bool",
+      "group": "Defence",
+      "label": "Any defences",
+      "severity": "warning",
+      "tip": "Sandbags, barricades, embrasures or turrets built.",
+      "warn": false
     },
     "store_roofed_fraction": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): food/main stockpile cells with roofDefName",
-      "type": "float"
+      "type": "float",
+      "group": "Food",
+      "label": "Store under roof",
+      "severity": "warning",
+      "tip": "Share of the store cells that are roofed. Food rots outdoors.",
+      "warn": "<1"
     },
     "unroofed_store_cells": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): food/main stockpile cells without a roof",
-      "type": "int"
+      "type": "int",
+      "group": "Food",
+      "label": "Unroofed store cells",
+      "severity": "warning",
+      "tip": "Store cells without a roof.",
+      "warn": ">0"
     },
     "steel": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): Steel x stackCount",
       "type": "int",
-      "note": "stackCount UNVERIFIED in captures (1 per stack otherwise)"
+      "note": "stackCount UNVERIFIED in captures (1 per stack otherwise)",
+      "group": "Stores",
+      "label": "Steel",
+      "severity": "warning",
+      "tip": "Steel in storage. Mine compacted steel or scrap.",
+      "warn": "<50"
     },
     "components": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): ComponentIndustrial",
       "type": "int",
-      "note": "stackCount UNVERIFIED"
+      "note": "stackCount UNVERIFIED",
+      "group": "Stores",
+      "label": "Components",
+      "severity": "warning",
+      "tip": "Industrial components. Needed for power, turrets, research.",
+      "warn": "<5"
     },
     "adv_components": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): ComponentSpacer",
       "type": "int",
-      "note": "stackCount UNVERIFIED"
+      "note": "stackCount UNVERIFIED",
+      "group": "Stores",
+      "label": "Advanced components",
+      "severity": "info",
+      "tip": "Spacer components.",
+      "warn": "<1"
     },
     "plasteel": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): Plasteel",
       "type": "int",
-      "note": "defName UNVERIFIED in captures"
+      "note": "defName UNVERIFIED in captures",
+      "group": "Stores",
+      "label": "Plasteel",
+      "severity": "info",
+      "tip": "Plasteel.",
+      "warn": "<1"
     },
     "uranium": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): Uranium",
       "type": "int",
-      "note": "defName UNVERIFIED in captures"
+      "note": "defName UNVERIFIED in captures",
+      "group": "Stores",
+      "label": "Uranium",
+      "severity": "info",
+      "tip": "Uranium.",
+      "warn": "<1"
     },
     "gold": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): Gold",
       "type": "int",
-      "note": "defName UNVERIFIED in captures"
+      "note": "defName UNVERIFIED in captures",
+      "group": "Stores",
+      "label": "Gold",
+      "severity": "info",
+      "tip": "Gold. Vault it."
     },
     "silver": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): Silver",
       "type": "int",
-      "note": "defName UNVERIFIED in captures"
+      "note": "defName UNVERIFIED in captures",
+      "group": "Stores",
+      "label": "Silver",
+      "severity": "info",
+      "tip": "Silver for trade. Vault it.",
+      "warn": "<100"
     },
     "chemfuel": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): Chemfuel",
       "type": "int",
-      "note": "defName UNVERIFIED in captures"
+      "note": "defName UNVERIFIED in captures",
+      "group": "Stores",
+      "label": "Chemfuel",
+      "severity": "info",
+      "tip": "Chemfuel for generators.",
+      "warn": "<20"
     },
     "cloth": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): Cloth + Leather_*",
       "type": "int",
-      "note": "Leather_* captured; Cloth UNVERIFIED"
+      "note": "Leather_* captured; Cloth UNVERIFIED",
+      "group": "Stores",
+      "label": "Cloth",
+      "severity": "info",
+      "tip": "Cloth and leather for clothes.",
+      "warn": "<20"
     },
     "berry_bushes": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): Plant_Berry, Plant_Strawberry_Wild",
       "type": "int",
-      "note": "Plant_Strawberry_Wild captured; Plant_Berry UNVERIFIED"
+      "note": "Plant_Strawberry_Wild captured; Plant_Berry UNVERIFIED",
+      "group": "Food",
+      "label": "Berry bushes",
+      "severity": "info",
+      "tip": "Wild berry bushes to harvest.",
+      "warn": ">0"
     },
     "healroot_plants": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): Plant_Healroot, Plant_HealrootWild",
-      "type": "int"
+      "type": "int",
+      "group": "Food",
+      "label": "Healroot plants",
+      "severity": "info",
+      "tip": "Wild healroot to harvest for medicine.",
+      "warn": ">0"
     },
     "wild_game": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): non-human pawn without ', title', not NEVER_HUNT, minus colony_animals",
       "type": "int",
-      "note": "tamed and wild animals look the same in cell data"
+      "note": "tamed and wild animals look the same in cell data",
+      "group": "Food",
+      "label": "Huntable game",
+      "severity": "info",
+      "tip": "Safe animals to hunt on the map.",
+      "warn": "==0"
     },
     "danger_animals_near": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): pawn defName Boomalope/Thrumbo/Elephant/Rhinoceros/Megasloth/Bear_*",
       "type": "int",
-      "note": "defNames UNVERIFIED in captures"
+      "note": "defNames UNVERIFIED in captures",
+      "group": "Threats",
+      "label": "Dangerous animals",
+      "severity": "warning",
+      "tip": "Bears, thrumbos, elephants and the like on the map. Never hunt them with fewer than 3 rifles.",
+      "warn": ">0"
     },
     "mount_candidates": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): pawn defName in MOUNT_DEFS",
       "type": "int",
-      "note": "defNames UNVERIFIED in captures"
+      "note": "defNames UNVERIFIED in captures",
+      "group": "Colony",
+      "label": "Mount animals",
+      "severity": "info",
+      "tip": "Animals that could be mounts."
     },
     "designations_hunt": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): cell designations[].defName Hunt",
       "type": "int",
-      "note": "field shape captured; def name UNVERIFIED"
+      "note": "field shape captured; def name UNVERIFIED",
+      "group": "Production",
+      "label": "Designations: hunt",
+      "severity": "info",
+      "tip": "sweep (get_cells_info over the camp rect, home on screen only): cell designations[].defName Hunt"
     },
     "designations_tame": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): designations Tame",
       "type": "int",
-      "note": "def name UNVERIFIED"
+      "note": "def name UNVERIFIED",
+      "group": "Production",
+      "label": "Designations: tame",
+      "severity": "info",
+      "tip": "sweep (get_cells_info over the camp rect, home on screen only): designations Tame"
     },
     "designations_harvest": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): designations HarvestPlant",
       "type": "int",
-      "note": "def name UNVERIFIED"
+      "note": "def name UNVERIFIED",
+      "group": "Production",
+      "label": "Designations: harvest",
+      "severity": "info",
+      "tip": "sweep (get_cells_info over the camp rect, home on screen only): designations HarvestPlant"
     },
     "designations_mine": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): designations Mine",
       "type": "int",
-      "note": "def name UNVERIFIED"
+      "note": "def name UNVERIFIED",
+      "group": "Production",
+      "label": "Designations: mine",
+      "severity": "info",
+      "tip": "sweep (get_cells_info over the camp rect, home on screen only): designations Mine"
     },
     "designations_cut": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): designations CutPlant",
       "type": "int",
-      "note": "def name UNVERIFIED"
+      "note": "def name UNVERIFIED",
+      "group": "Production",
+      "label": "Designations: cut",
+      "severity": "info",
+      "tip": "sweep (get_cells_info over the camp rect, home on screen only): designations CutPlant"
     },
     "stoves": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): FueledStove, ElectricStove (objects)",
       "type": "int",
-      "note": "ElectricStove captured; FueledStove UNVERIFIED. Objects = touching same-def cells merged"
+      "note": "ElectricStove captured; FueledStove UNVERIFIED. Objects = touching same-def cells merged",
+      "group": "Food",
+      "label": "Stoves",
+      "severity": "warning",
+      "tip": "Stoves built. No stove, no meals.",
+      "warn": "==0"
     },
     "research_benches": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): Building_ResearchBench (objects)",
-      "type": "int"
+      "type": "int",
+      "group": "Research",
+      "label": "Research benches",
+      "severity": "warning",
+      "tip": "Research benches built. Build one by day 3.",
+      "warn": "==0"
     },
     "comms_console": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): CommsConsole",
-      "type": "bool"
+      "type": "bool",
+      "group": "Production",
+      "label": "Comms console",
+      "severity": "info",
+      "tip": "A comms console for traders and factions.",
+      "warn": false
     },
     "turrets": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): defName contains Turret (objects)",
-      "type": "int"
+      "type": "int",
+      "group": "Defence",
+      "label": "Turrets",
+      "severity": "info",
+      "tip": "Turrets built.",
+      "warn": "==0"
     },
     "embrasures": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): defName contains Embrasure (cells)",
-      "type": "int"
+      "type": "int",
+      "group": "Defence",
+      "label": "Embrasures",
+      "severity": "info",
+      "tip": "Embrasures built.",
+      "warn": "<16"
     },
     "beds": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): Building_Bed or Hospitality Building_GuestBed (objects)",
       "type": "int",
-      "note": "touching beds merge into one object"
+      "note": "touching beds merge into one object",
+      "group": "Rooms",
+      "label": "Beds",
+      "severity": "warning",
+      "tip": "Beds built.",
+      "warn": "<3"
     },
     "throne": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): defName contains Throne (built)",
       "type": "bool",
-      "note": "built Throne defName UNVERIFIED (Blueprint_Throne captured)"
+      "note": "built Throne defName UNVERIFIED (Blueprint_Throne captured)",
+      "group": "Production",
+      "label": "Throne room",
+      "severity": "info",
+      "tip": "A throne is built."
     },
     "pod_launchers": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): PodLauncher",
       "type": "int",
-      "note": "defName UNVERIFIED in captures"
+      "note": "defName UNVERIFIED in captures",
+      "group": "Production",
+      "label": "Pod launchers",
+      "severity": "info",
+      "tip": "Transport pod launchers."
     },
     "transport_pods": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): TransportPod",
       "type": "int",
-      "note": "defName UNVERIFIED in captures"
+      "note": "defName UNVERIFIED in captures",
+      "group": "Production",
+      "label": "Transport pods",
+      "severity": "info",
+      "tip": "Transport pods."
     },
     "grav_parts": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): defName contains Grav",
       "type": "int",
-      "note": "UNVERIFIED: Odyssey / VE Gravship defNames"
+      "note": "UNVERIFIED: Odyssey / VE Gravship defNames",
+      "group": "Production",
+      "label": "Grav parts",
+      "severity": "info",
+      "tip": "Gravship parts."
     },
     "ship_parts": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): defName starts Ship_",
       "type": "int",
-      "note": "UNVERIFIED"
+      "note": "UNVERIFIED",
+      "group": "Research",
+      "label": "Ship parts",
+      "severity": "info",
+      "tip": "Ship parts built."
     },
     "power_generators": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): defName contains Generator, WindTurbine, GeothermalGenerator (objects)",
-      "type": "int"
+      "type": "int",
+      "group": "Power",
+      "label": "Generators",
+      "severity": "info",
+      "tip": "Power generators built.",
+      "warn": "==0"
     },
     "fire_cells": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): thing defName Fire",
       "type": "int",
-      "note": "UNVERIFIED: never captured"
+      "note": "UNVERIFIED: never captured",
+      "group": "Threats",
+      "label": "Fire",
+      "severity": "critical",
+      "tip": "Cells on fire on the home map. Firefight now.",
+      "warn": ">0"
     },
     "corpses": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): className contains Corpse",
       "type": "int",
-      "note": "UNVERIFIED: never captured"
+      "note": "UNVERIFIED: never captured",
+      "group": "Stores",
+      "label": "Corpses",
+      "severity": "warning",
+      "tip": "Corpses on the map. Bury, butcher or burn.",
+      "warn": ">0"
     },
     "wall_gaps": {
       "source": "NOT MEASURED",
       "type": "int",
-      "note": "UNVERIFIED heuristic; perimeter-hole stays disabled until it agrees with a screenshot three times"
+      "note": "UNVERIFIED heuristic; perimeter-hole stays disabled until it agrees with a screenshot three times",
+      "group": "Defence",
+      "label": "Gaps in the ring",
+      "severity": "warning",
+      "tip": "Open walkable cells on the home area's edge. Close the ring.",
+      "warn": ">0"
     },
     "able_shooters": {
       "source": "list_colonists: crew not downed, not dead, no mentalState",
       "type": "int",
-      "note": "UNVERIFIED that each can shoot: incapable-of-violence and unarmed pawns are not readable"
+      "note": "UNVERIFIED that each can shoot: incapable-of-violence and unarmed pawns are not readable",
+      "group": "Crew",
+      "label": "Able to fight",
+      "severity": "warning",
+      "tip": "Colonists not downed, dead or in a mental break.",
+      "warn": "==0"
     },
     "fight_ratio": {
       "source": "able_shooters / hostiles_on_map, written only while hostiles_on_map > 0",
       "type": "float",
-      "note": "inherits hostiles_on_map (home on screen only); pawn health is not readable from the bridge"
+      "note": "inherits hostiles_on_map (home on screen only); pawn health is not readable from the bridge",
+      "group": "Threats",
+      "label": "Shooters per enemy",
+      "severity": "warning",
+      "tip": "Armed, able colonists divided by hostiles. Under 1 means fall back to a defended spot.",
+      "warn": "<1"
     },
     "colonist_hurt": {
       "source": "downed_count > 0, alert_needs_tend, pawn_bleeding, or mark colonist_hurt",
       "type": "bool",
-      "note": "no pawn health read exists on the bridge (a pawn's cell hitPoints is -1, captured); alert labels UNVERIFIED"
+      "note": "no pawn health read exists on the bridge (a pawn's cell hitPoints is -1, captured); alert labels UNVERIFIED",
+      "group": "Health",
+      "label": "Someone is hurt",
+      "severity": "warning",
+      "tip": "A colonist has injuries.",
+      "warn": true
     },
     "pawn_bleeding": {
       "source": "alert_bleeding or alert_life_threat (list_alerts), or mark pawn_bleeding (set after pawn_check Health)",
       "type": "bool",
-      "note": "UNVERIFIED alert labels ('bleed', 'life-threatening'); written only when alerts were read or the mark exists"
+      "note": "UNVERIFIED alert labels ('bleed', 'life-threatening'); written only when alerts were read or the mark exists",
+      "group": "Health",
+      "label": "Someone is bleeding",
+      "severity": "critical",
+      "tip": "A colonist is bleeding. Tend now, before they bleed out.",
+      "warn": true
     },
     "loose_weapons": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): defName Gun_* / MeleeWeapon_* / Bow_* lying in cells",
       "type": "int",
-      "note": "Gun_ captured (Gun_ChargeRifle); MeleeWeapon_ and Bow_ UNVERIFIED; equipped weapons are not in cells"
+      "note": "Gun_ captured (Gun_ChargeRifle); MeleeWeapon_ and Bow_ UNVERIFIED; equipped weapons are not in cells",
+      "group": "Stores",
+      "label": "Weapons on the ground",
+      "severity": "info",
+      "tip": "Weapons lying on the map. Equip them (empire_pass).",
+      "warn": ">0"
     },
     "junk_weapons": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): loose weapon whose label quality is awful or poor",
       "type": "int",
-      "note": "label format '(<color>normal</color>)' captured; the words awful/poor UNVERIFIED"
+      "note": "label format '(<color>normal</color>)' captured; the words awful/poor UNVERIFIED",
+      "group": "Stores",
+      "label": "Junk weapons",
+      "severity": "info",
+      "tip": "Awful or poor weapons on the ground: smelt or sell.",
+      "warn": ">0"
     },
     "buildings_damaged": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): building cells below the best hitPoints of the same def+stuff (groups of 3+ cells)",
       "type": "int",
-      "note": "UNVERIFIED heuristic: the reply has no maxHitPoints and no captured sweep shows damage; an evenly damaged group reads healthy"
+      "note": "UNVERIFIED heuristic: the reply has no maxHitPoints and no captured sweep shows damage; an evenly damaged group reads healthy",
+      "group": "Rooms",
+      "label": "Damaged buildings",
+      "severity": "warning",
+      "tip": "Buildings below full health. Repair.",
+      "warn": ">0"
     },
     "bill_rows": {
       "source": "every bill on every colony workbench (RimPLC Sensors.ReadNormal)",
-      "type": "int"
+      "type": "int",
+      "group": "Production",
+      "label": "Bills on benches",
+      "severity": "warning",
+      "tip": "Every bill on every workbench. Zero means nothing is being made.",
+      "warn": "==0"
     },
     "grid_matches_plan": {
       "source": "every colonist: Firefighter..Cooking at 1 and no doable work type left at 0",
-      "type": "bool"
+      "type": "bool",
+      "group": "Crew",
+      "label": "Work grid as planned",
+      "severity": "warning",
+      "tip": "Firefight to Cook at 1 for everyone, nothing they can do left at 0.",
+      "warn": false
     },
     "fields_all_default_crop": {
       "source": "more than one growing zone and all of them grow the same plant",
-      "type": "bool"
+      "type": "bool",
+      "group": "Food",
+      "label": "Every field the same crop",
+      "severity": "warning",
+      "tip": "More than one field, all growing the same plant. Owner wants rice, corn, potatoes, healroot, cotton, smokeleaf, psychoid, hops.",
+      "warn": true
     },
     "ship_research_done": {
       "source": "research ShipBasics finished",
-      "type": "bool"
+      "type": "bool",
+      "group": "Research",
+      "label": "Ship research done",
+      "severity": "info",
+      "tip": "Ship basics researched."
     },
     "game_conditions": {
       "source": "active map + world game conditions by defName (any mod); also condition_<defname> true",
-      "type": "labels"
+      "type": "labels",
+      "group": "World",
+      "label": "Active events",
+      "severity": "info",
+      "tip": "Active map and world conditions (any mod)."
     },
     "forbidden_items": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Stores",
+      "label": "Forbidden items",
+      "severity": "warning",
+      "tip": "Forbidden items in the camp. Owner: unforbid the starting materials.",
+      "warn": ">0"
     },
     "unpowered_consumers": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Power",
+      "label": "Unconnected consumers",
+      "severity": "warning",
+      "tip": "Powered buildings on no power net: lay conduit.",
+      "warn": ">0"
     },
     "unpowered_embrasures": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Power",
+      "label": "Unpowered embrasures",
+      "severity": "warning",
+      "tip": "Powered embrasures switched off or without power.",
+      "warn": ">0"
     },
     "power_margin_pct": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "float",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Power",
+      "label": "Power margin %",
+      "severity": "warning",
+      "tip": "Power made as a percent of power used. Under 110 means brownouts are close.",
+      "warn": "<110"
     },
     "embrasure_gaps": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "bool",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Defence",
+      "label": "Gaps by embrasures",
+      "severity": "warning",
+      "tip": "Ring gaps next to an embrasure.",
+      "warn": ">0"
     },
     "unarmed_colonists": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Crew",
+      "label": "Unarmed colonists",
+      "severity": "critical",
+      "tip": "Colonists able to fight but holding no weapon. Owner: an unarmed pawn is top priority. Run empire_pass.",
+      "warn": ">0"
     },
     "pawns_without_sidearm": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Crew",
+      "label": "No melee sidearm",
+      "severity": "warning",
+      "tip": "Fighters with no melee weapon carried. Rifle primary, baton or knife as sidearm.",
+      "warn": ">0"
     },
     "flee_hostility_count": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Crew",
+      "label": "Set to flee",
+      "severity": "warning",
+      "tip": "Colonists whose hostility response is not Attack. Owner: attack, not flee.",
+      "warn": ">0"
     },
     "colonists_without_bedroom": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Crew",
+      "label": "No bedroom",
+      "severity": "warning",
+      "tip": "Colonists without their own bed in a room.",
+      "warn": ">0"
     },
     "pawns_sharing_bedroom": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Crew",
+      "label": "Sharing a bedroom",
+      "severity": "info",
+      "tip": "Colonists sleeping in a barracks.",
+      "warn": ">0"
     },
     "colonists_without_armor": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Crew",
+      "label": "No armour",
+      "severity": "info",
+      "tip": "Colonists with little sharp armour. Flak or plate once production allows.",
+      "warn": ">0"
     },
     "children": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Crew",
+      "label": "Children",
+      "severity": "info",
+      "tip": "Children in the colony: cribs, toys, schooling.",
+      "warn": ">0"
     },
     "lovers_unmarried": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Crew",
+      "label": "Unmarried couples",
+      "severity": "info",
+      "tip": "Lover couples not married yet.",
+      "warn": ">0"
     },
     "best_plants_skill": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Crew",
+      "label": "Best plants skill",
+      "severity": "info",
+      "tip": "The best grower's Plants skill. Low skill fails harvests.",
+      "warn": "<6"
     },
     "researchers_only_research": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Crew",
+      "label": "Research-only pawns",
+      "severity": "warning",
+      "tip": "Colonists doing nothing but research. Colony work comes first.",
+      "warn": ">0"
     },
     "pawns_unconfigured": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
       "status": "not-measured",
-      "note": "absent (never a fake 0) until the set exists; setup-9-new-pawn uses grid_matches_plan meanwhile"
+      "note": "absent (never a fake 0) until the set exists; setup-9-new-pawn uses grid_matches_plan meanwhile",
+      "group": "Crew",
+      "label": "Not set up",
+      "severity": "warning",
+      "tip": "Colonists whose work grid and Assign settings were never set.",
+      "warn": ">0"
     },
     "prisoners": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Crew",
+      "label": "Prisoners",
+      "severity": "info",
+      "tip": "Prisoners: set Recruit and a warden.",
+      "warn": ">0"
     },
     "simple_benches": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Research",
+      "label": "Simple research benches",
+      "severity": "info",
+      "tip": "Simple research benches."
     },
     "hitech_benches": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Research",
+      "label": "Hi-tech benches",
+      "severity": "info",
+      "tip": "Hi-tech research benches."
     },
     "multi_analyzers": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Research",
+      "label": "Multi-analyzers",
+      "severity": "info",
+      "tip": "Multi-analyzers built."
     },
     "torch_lamps": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Rooms",
+      "label": "Torch lamps",
+      "severity": "info",
+      "tip": "Torch lamps built.",
+      "warn": "==0"
     },
     "monolith": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
       "status": "not-measured",
-      "note": "also adds monolith_level; anomaly-monolith reads it instead of mark_monolith_advanced"
+      "note": "also adds monolith_level; anomaly-monolith reads it instead of mark_monolith_advanced",
+      "group": "Colony",
+      "label": "Void monolith",
+      "severity": "info",
+      "tip": "The Anomaly monolith is on the map."
     },
     "empire_hostile": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "bool",
       "status": "not-measured",
-      "note": "replaces the never-set mark_empire_hostile"
+      "note": "replaces the never-set mark_empire_hostile",
+      "group": "Threats",
+      "label": "Empire hostile",
+      "severity": "warning",
+      "tip": "The Empire faction is hostile.",
+      "warn": true
     },
     "rooms_out_of_temp": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Rooms",
+      "label": "Rooms too hot or cold",
+      "severity": "warning",
+      "tip": "Rooms under 10C or over 35C. Heaters, coolers, vents.",
+      "warn": ">0"
     },
     "room_wall_holes": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Rooms",
+      "label": "Rooms with roof holes",
+      "severity": "warning",
+      "tip": "Rooms with open roof cells: they are not rooms for temperature.",
+      "warn": ">0"
     },
     "unfloored_room_cells": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Rooms",
+      "label": "Unfloored room cells",
+      "severity": "info",
+      "tip": "Room cells on bare or natural floor. Floors lift beauty and cleanliness.",
+      "warn": ">0"
     },
     "lab_lit": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "bool",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Rooms",
+      "label": "Research benches lit",
+      "severity": "warning",
+      "tip": "Every research bench has light. Dark research is slow.",
+      "warn": false
     },
     "loose_items_unstored": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Stores",
+      "label": "Loose items",
+      "severity": "warning",
+      "tip": "Items lying outside storage. Haul them in.",
+      "warn": ">20"
     },
     "camp_water_cells": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Rooms",
+      "label": "Marsh or water in the camp",
+      "severity": "info",
+      "tip": "Marsh, mud or water inside the home area. Owner: terraform or move.",
+      "warn": ">0"
     },
     "blueprints_against_rock": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Rooms",
+      "label": "Wall plans against rock",
+      "severity": "warning",
+      "tip": "Wall blueprints next to unmined rock. Mine first.",
+      "warn": ">0"
     },
     "hud_visible": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs fast cadence (ReadFast)",
       "type": "bool",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Game",
+      "label": "HUD visible",
+      "severity": "info",
+      "tip": "The game's interface is visible.",
+      "warn": false
     },
     "window_fullscreen": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs fast cadence (ReadFast)",
       "type": "bool",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Game",
+      "label": "Fullscreen",
+      "severity": "info",
+      "tip": "The game window is fullscreen."
     },
     "camera_on_colonist": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs fast cadence (ReadFast)",
       "type": "bool",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Game",
+      "label": "Camera on the crew",
+      "severity": "info",
+      "tip": "The camera shows at least one colonist.",
+      "warn": false
     },
     "owner_input_active": {
       "source": "gates.py: Win32 GetLastInputInfo age < {OWNER_SETTLE_S}, excluding Unity's own injected input",
       "type": "bool",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Stream",
+      "label": "Owner at the controls",
+      "severity": "info",
+      "tip": "The owner used the keyboard or mouse in the last minute. Never fight his input.",
+      "warn": true
     },
     "owner_unread": {
       "source": "gates.py: admin-channel messages with id > last replied id (tools.read_owner)",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Stream",
+      "label": "Owner message unread",
+      "severity": "critical",
+      "tip": "An owner message has not been answered.",
+      "warn": true
     },
     "chat_unanswered": {
       "source": "gates.py: chat lines from tools.read_chat with no reply_chat since",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Stream",
+      "label": "Chat unanswered",
+      "severity": "critical",
+      "tip": "Viewer messages she has not answered. Owner: never ignore chat.",
+      "warn": ">0"
     },
     "chat_asks_mod": {
       "source": "gates.py: an unanswered chat line matches mod|repo|workshop|download",
       "type": "bool",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Stream",
+      "label": "Chat asks for the mod",
+      "severity": "warning",
+      "tip": "A viewer asked where to get the mod. Give the link.",
+      "warn": true
     },
     "new_joiners": {
       "source": "gates.py: Twitch first-message names not greeted this stream",
       "type": "int",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Crew",
+      "label": "New joiners",
+      "severity": "info",
+      "tip": "Twitch viewers who joined and were not greeted yet (stream).",
+      "warn": ">0"
     },
     "seconds_since_spoken": {
       "source": "gates.py: now - time of the last unity-speak line",
       "type": "float",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Stream",
+      "label": "Seconds since she spoke",
+      "severity": "warning",
+      "tip": "Dead air on stream. Say something, ask chat something.",
+      "warn": ">45"
     },
     "voice_playing": {
       "source": "gates.py: current voice wav still inside its duration",
       "type": "bool",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Stream",
+      "label": "Voice playing",
+      "severity": "info",
+      "tip": "Her voice is speaking a line right now."
     },
     "seconds_since_webcam": {
       "source": "gates.py: now - mtime of the newest webcam/snap frame",
       "type": "float",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Stream",
+      "label": "Seconds since webcam",
+      "severity": "warning",
+      "tip": "Her webcam picture is stale. Owner: update it every couple of minutes.",
+      "warn": ">180"
     },
     "seconds_since_tool": {
       "source": "gates.py: now - last tools.dispatch call",
       "type": "float",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Stream",
+      "label": "Seconds since she acted",
+      "severity": "warning",
+      "tip": "Her player has not acted in a while.",
+      "warn": ">180"
     },
     "prompt_version_changed": {
       "source": "gates.py: hash(prompt.md + playbook.gates.json) differs from the previous scan",
       "type": "bool",
-      "status": "not-measured"
+      "status": "not-measured",
+      "group": "Stream",
+      "label": "Her prompt changed",
+      "severity": "info",
+      "tip": "Her prompt or ladder file changed since the last scan.",
+      "warn": true
     },
     "able_shooters_armed": {
       "source": "RimPLC Sensors.cs: colonists able to shoot who carry a ranged weapon",
       "type": "int",
-      "status": "verified"
+      "status": "verified",
+      "group": "Crew",
+      "label": "Able and armed",
+      "severity": "critical",
+      "tip": "Colonists able to fight AND holding a weapon.",
+      "warn": "==0"
     },
     "needs_tend_count": {
       "source": "RimPLC Sensors.cs: colonists needing tending",
       "type": "int",
-      "status": "verified"
+      "status": "verified",
+      "group": "Health",
+      "label": "Need tending",
+      "severity": "warning",
+      "tip": "Colonists with an untended injury or illness.",
+      "warn": ">0"
     },
     "hostile_threat": {
       "source": "RimPLC Sensors.cs: GenHostility.AnyHostileActiveThreatToPlayer(home)",
       "type": "bool",
-      "status": "verified"
+      "status": "verified",
+      "group": "Threats",
+      "label": "Hostile threat active",
+      "severity": "critical",
+      "tip": "The game says an active threat is on the map right now.",
+      "warn": true
     },
     "outdoor_temp": {
       "source": "RimPLC Sensors.cs: home.mapTemperature.OutdoorTemp",
       "type": "float",
-      "status": "verified"
+      "status": "verified",
+      "group": "World",
+      "label": "Outdoor temperature",
+      "severity": "info",
+      "tip": "Outdoor temperature in C."
     },
     "lowest_mood": {
       "source": "RimPLC Sensors.cs: lowest colonist mood 0-1",
       "type": "float",
-      "status": "verified"
+      "status": "verified",
+      "group": "Health",
+      "label": "Lowest mood",
+      "severity": "warning",
+      "tip": "The unhappiest colonist's mood (0-1). Under 0.35 risks a mental break: recreation, food, comfort.",
+      "warn": "<0.35"
     },
     "title_seniority": {
       "source": "RimPLC Sensors.cs: highest Empire title seniority (Royalty)",
       "type": "int",
-      "status": "verified"
+      "status": "verified",
+      "group": "Colony",
+      "label": "Royal title",
+      "severity": "info",
+      "tip": "The highest royal title held."
     },
     "monolith_level": {
       "source": "RimPLC: Find.Anomaly.Level (decisions.json monolith entry)",
@@ -643,42 +1289,81 @@
       "status": "not-measured",
       "requires": [
         "Anomaly"
-      ]
+      ],
+      "group": "Colony",
+      "label": "Monolith level",
+      "severity": "info",
+      "tip": "The Anomaly monolith's level."
     },
     "condition_heatwave": {
       "source": "RimPLC Sensors.cs: condition_<defname lower>, true while the GameCondition is active",
       "type": "bool",
-      "status": "verified"
+      "status": "verified",
+      "group": "World",
+      "label": "Event: heatwave",
+      "severity": "warning",
+      "tip": "A map condition is active: heatwave.",
+      "warn": true
     },
     "condition_coldsnap": {
       "source": "RimPLC Sensors.cs: condition_<defname lower>, true while the GameCondition is active",
       "type": "bool",
-      "status": "verified"
+      "status": "verified",
+      "group": "World",
+      "label": "Event: coldsnap",
+      "severity": "warning",
+      "tip": "A map condition is active: coldsnap.",
+      "warn": true
     },
     "condition_solarflare": {
       "source": "RimPLC Sensors.cs: condition_<defname lower>, true while the GameCondition is active",
       "type": "bool",
-      "status": "verified"
+      "status": "verified",
+      "group": "World",
+      "label": "Event: solarflare",
+      "severity": "warning",
+      "tip": "A map condition is active: solarflare.",
+      "warn": true
     },
     "condition_toxicfallout": {
       "source": "RimPLC Sensors.cs: condition_<defname lower>, true while the GameCondition is active",
       "type": "bool",
-      "status": "verified"
+      "status": "verified",
+      "group": "World",
+      "label": "Event: toxicfallout",
+      "severity": "warning",
+      "tip": "A map condition is active: toxicfallout.",
+      "warn": true
     },
     "condition_flashstorm": {
       "source": "RimPLC Sensors.cs: condition_<defname lower>, true while the GameCondition is active",
       "type": "bool",
-      "status": "verified"
+      "status": "verified",
+      "group": "World",
+      "label": "Event: flashstorm",
+      "severity": "warning",
+      "tip": "A map condition is active: flashstorm.",
+      "warn": true
     },
     "condition_eclipse": {
       "source": "RimPLC Sensors.cs: condition_<defname lower>, true while the GameCondition is active",
       "type": "bool",
-      "status": "verified"
+      "status": "verified",
+      "group": "World",
+      "label": "Event: eclipse",
+      "severity": "warning",
+      "tip": "A map condition is active: eclipse.",
+      "warn": true
     },
     "condition_volcanicwinter": {
       "source": "RimPLC Sensors.cs: condition_<defname lower>, true while the GameCondition is active",
       "type": "bool",
-      "status": "verified"
+      "status": "verified",
+      "group": "World",
+      "label": "Event: volcanicwinter",
+      "severity": "warning",
+      "tip": "A map condition is active: volcanicwinter.",
+      "warn": true
     }
   },
   "gates": [
@@ -9034,6 +9719,44 @@
         "light the engines with the colony undefended"
       ],
       "family": "space"
+    },
+    {
+      "id": "unarmed-pawn",
+      "priority": 2.6,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "unarmed_colonists": ">0",
+        "loose_weapons": ">0"
+      },
+      "then": [
+        "empire_pass -- it equips a loose gun on every unarmed colonist, the melee weapon kept as the sidearm",
+        "read its ARMS line: nobody left unarmed",
+        "say it on stream"
+      ],
+      "never": [
+        "explore, build or research while a colonist is unarmed and a gun is lying on the map"
+      ],
+      "why": "owner: \"once again u arnt armed!!! wtf!!!!\" / \"pawn with out a wepaon is a very high rankeing need to fix\""
+    },
+    {
+      "id": "unarmed-no-gun",
+      "priority": 2.65,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "unarmed_colonists": ">0",
+        "loose_weapons": 0
+      },
+      "then": [
+        "no gun on the map: a melee weapon or a club from the stockpile first (order_pawn equip)",
+        "queue a weapon at the smithy / crafting spot if one exists (game_set cmd add_bill)",
+        "buy one from the next trader; loot downed raiders"
+      ],
+      "never": [
+        "send an unarmed colonist to hunt or to fight"
+      ],
+      "why": "owner: \"once again u arnt armed!!! wtf!!!!\" / \"pawn with out a wepaon is a very high rankeing need to fix\""
     }
   ],
   "tags": {
