@@ -307,3 +307,12 @@ un2-slowed-3.3wps) The phase-vocoder time-stretch smeared every clip. Fixed: aud
 - [ ] Voice pod shape: on 2x H100 the acoustic model finishes in ~80 min (20k steps) and GPU 0 then idles while the vocoder runs ~5 h more on GPU 1 (owner 2026-10-12: *"only one of the voice train gpus is training? one shows 0% util"*). Next run: one H100 for training (both stages share it) or split the vocoder across both GPUs; about $4/h of the 2x pod is idle after the acoustic stage.
 
 - [ ] Owner on the FINAL trained voice samples (2026-10-12 23:02 UTC render, D:oice-lab\pod-resultsoice-2026-10-12inal-samples): *"smaples are perfect"* -- record as the trained_voice_acceptance receipt (bound to the published model hash) once the pull reports VERIFIED, then swap her live voice to the own model.
+
+### Owner, 2026-10-13 00:40 UTC (after both pods finished and were deleted)
+Verbatim: *"okay 3 items , and yopu should know chatgpt worked in parallel and updated the preview image madfe RimPLC remotes on both github and forgejo and we will need to gitignor all the models and run files that we dont need to puch to remotes and mind you we have the new RimPLC that needs its workings and all of that from now on and we need to swap out all the models in the full start.bat for the stream to be able to do it all loaded and start the model stress test to see if we need to do asnything about 16gb max on our gpu"*
+- [~] "okay 3 items" -- the three remaining items: (1) owner voice acceptance receipt ("smaples are perfect") bound to the published model hash, (2) swap her live voice and brain to the new models, (3) cascade feature -> develop -> main.
+- [ ] "chatgpt worked in parallel and updated the preview image madfe RimPLC remotes on both github and forgejo" -- account for the parallel work (new preview image, RimPLC's own GitHub + Forgejo remotes) before any commit/cascade.
+- [ ] "we will need to gitignor all the models and run files that we dont need to puch to remotes"
+- [ ] "mind you we have the new RimPLC that needs its workings and all of that from now on" -- RimPLC work goes to its own repo/remotes from now on.
+- [ ] "we need to swap out all the models in the full start.bat for the stream to be able to do it all loaded"
+- [ ] "start the model stress test to see if we need to do asnything about 16gb max on our gpu"

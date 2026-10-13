@@ -1,0 +1,138 @@
+{
+ "schema_version": 1,
+ "schema": "unity-trained-voice-acceptance-v1",
+ "check_id": "trained_voice_acceptance",
+ "scope": "deployment",
+ "recorded_at": "2026-10-12T23:10:00Z",
+ "accepted_by": "owner",
+ "decision": "accepted",
+ "owner_quote": "smaples are perfect",
+ "approved_source_digest": "5103180e58caa4b3fd24557c2215facc8860ae8cc52785535fe29e417207e4e7",
+ "approved_dataset_id": "85b62deba8a2cb7b750795a051f9b1c3b4b02449564d02d75dfd62baf1d77a50",
+ "run_id": "f8bb6cd3b5101b1643c8dc265cfcfc76b7210c9172e712c368112b8180b3725b",
+ "published_model": {
+  "identity": {
+   "schema": "unity-voice-checkpoint-v2",
+   "feature_id": "5ff1fbb11f55dcac2970628853b6faf8fe60103d39094dc3fa01650be04a401f",
+   "dataset_id": "85b62deba8a2cb7b750795a051f9b1c3b4b02449564d02d75dfd62baf1d77a50",
+   "voice_id": "unity-a2-low-warm-alto-v1",
+   "frontend_id": "cd389683adf047f70032d660851a0f6f7e7b7a98b719bc2bb0d6ecaf85e29bac",
+   "vocab_id": "dd11bafb2bd051b988d8f84261acb32953d6050fcfc500281bb8851e5be0e41f",
+   "stats_id": "11c6150803fd932c1e1286d0f1e8faf876e4291cb68e87c132031a66ae1b322e",
+   "support_id": "ae48012e75e8f7c135aae5d9e83556e0ba2117e4cdb2a1dd3b7a32d14834540e",
+   "acoustic_config": {
+    "n_mels": 80,
+    "d": 256,
+    "enc": 4,
+    "dec": 4,
+    "conditioning": "emotion-act-intensity-pace-v2",
+    "voicing": true
+   },
+   "vocoder_config": {
+    "n_mels": 80,
+    "ch": 512,
+    "rates": [
+     8,
+     8,
+     2,
+     2
+    ],
+    "kernels": [
+     16,
+     16,
+     4,
+     4
+    ],
+    "rk": [
+     3,
+     7,
+     11
+    ],
+    "rd": [
+     [
+      1,
+      3,
+      5
+     ],
+     [
+      1,
+      3,
+      5
+     ],
+     [
+      1,
+      3,
+      5
+     ]
+    ]
+   },
+   "emotions": [
+    "neutral",
+    "warm",
+    "happy",
+    "amused",
+    "excited",
+    "sad",
+    "concerned",
+    "frustrated",
+    "surprised"
+   ],
+   "speech_acts": [
+    "statement",
+    "yes_no_question",
+    "wh_question",
+    "exclamation",
+    "instruction",
+    "reassurance",
+    "aside"
+   ]
+  },
+  "files": {
+   "acoustic.pt": "9fe8a7220b12745215d56ad7f433ec6bac57a0dce8beea0e7f1dcf7c82421ac4",
+   "vocoder.pt": "bbfcd8c261168be103f55eeb23ff3862db49883d6db2b25409f76e83c659b5a4",
+   "voice-meta.json": "20bf5d9ad522c34f0ebb97036d103c20e8fc7e8d7441fc41bd25a85cbf92bd0d"
+  },
+  "publication_json_sha256": "d7ea0355030475d685bba20a31abad0882b3138afc9b47b90be77256622f5d3b"
+ },
+ "heard_samples": {
+  "000.wav": "7eb17a258d2118bcab65059da446eca3580c10e7e76472fb1d9558ee465e0057",
+  "001.wav": "388d4cdbb0adfd6ee17b1bf1e36f67c7f9e7a3369de9afb3dafbbc6d3da1ae1e",
+  "002.wav": "76e735465665811450053a4de4b3751de87dc3be976fd4a9b4339765a0adf19b",
+  "003.wav": "845b32743dae1a87f8e89d1075312125dcd9d49df6d377f80069141f58181eea",
+  "004.wav": "9cfde01794b4296df00aec23f60ecf75cde8a0280b29f3e60222c4d208d7337c",
+  "005.wav": "976fe731961fe306c59766f4a06a42e3f0e74ee77bd00a6afeab03342d83d186",
+  "006.wav": "06efcae89508fe5c5853d19a8e7c373fda768bc5aeb5296d3106de77e8f26959",
+  "008.wav": "1563f943ccfb4f418836bab978aaadda84bc0317d97c5338c75d33fa4510eae4",
+  "009.wav": "566b465be1b76b48941becaa772d0d7d5b587e6cb2c775db5d9bd5a657662365",
+  "010.wav": "e66ae59566c578307604786ab58656ef715786b5a1c7f7011f74d2587f279789",
+  "011.wav": "b6a38da0caaf1941e96eecdf5bb8681ab32cf6009285bfc13f1cc087ac6faf2d",
+  "012.wav": "a9ec026299fa0e1bd5679a0506b284073859d34b5ee77794384bea5cd9017522",
+  "013.wav": "4bf6f23a2f22085a9501239fb4c21cc2814bc6df38caa402b1af398c6c004d7a",
+  "015.wav": "a765e4b11bcfe57d14a54fb56c9ee7066e311b406e4a696118ee66cbf8e0177a",
+  "016.wav": "d1999d13b2586cda2d1f039147868d8a6b8e30aba9f26b2ca61a8ab403ee0005",
+  "017.wav": "7c3703d7b27069cb129f8a85fcdd6dabaa168aad57a4c8fe1fb82ef56526d100",
+  "018.wav": "93af7a6daecad6b5085bf3ca2b92bc7afb439632717a95545014e74abcb1c84b",
+  "019.wav": "bc2bfe386529dc6a324722eb8470a5f72f78e9494dbdd9a01f43b5626776c3aa",
+  "020.wav": "cca08253f6ae39beaa987c2f3d41e9dcf0962d16b6e8897e6634f4c790091f3b",
+  "021.wav": "8046de9a9c4c848d39b4d728f10dedfc8fb5796bc9b9ed0c916e140dccdebc30",
+  "022.wav": "d03beff7ee1320f36c1f5a694823a83784ec389e0ec11f741afb14a35967b4d0",
+  "024.wav": "27ba67d9737bb9bf1ff040458cb8804dd1e4f19337034e37298e47776d34d74a",
+  "025.wav": "c546fe7c8c19378547958076b87124eb7675cc15319a90db1b9b93376f42f83d",
+  "027.wav": "1e3abf1bed0f44f8330a025c1f2b545a4b4461327a6e95b1797ad1c171a3ae54",
+  "028.wav": "14d38c231dd410c4272bcc9ca4dc2f690dfa22a373328344f6138d12fecc4688",
+  "029.wav": "72cf3ebe36f77a4dd3d363efa7d3ca0879582d9e03f1db39d4800644d6416dfd",
+  "030.wav": "a37118a847bc5fb7578072761282696f93580f30160938283646642e8e4b80e9",
+  "031.wav": "786a724c3dcc23091f1c7ffc8c1c7a413b2c910b6d9e25e7754115aededa0b8a",
+  "032.wav": "474f3c41b3b9fb31710225421cf0a3ab15e0f724f43541b12dbd870df4ac4409",
+  "033.wav": "660dda9e2532559e03382a9d9bec1681f0812bf0cd7aa5c84b061195212671bc",
+  "034.wav": "c67cbf2b4aa837d7c233d8bbb825889b7802f8e2e0fb68295465b8b9394600ce",
+  "036.wav": "a2bdd2ec65fff2304a4edc11d0f2ab6c7e8d81714d250124b3846b7512d86f4e",
+  "037.wav": "928ddfcc0ce4461bcc800b4edff2ea2b4b8ae4fd59fdd3413ed27dac94c0efc5"
+ },
+ "evidence": [
+  "D:/voice-lab/pod-results/voice-2026-10-12/final-samples (33 wavs rendered 2026-10-12T23:02:15Z by the published model)",
+  "D:/voice-lab/pod-results/voice-2026-10-12/out/models/<run_id>/SHA256SUMS (verified OK 2026-10-13)",
+  "docs/TODO.md owner row 2026-10-12: 'smaples are perfect'"
+ ],
+ "notes": "Pace for live use is the student length_scale 1.2 approved earlier (owner: 'ismaples sound good'); laughter and end-wobble were checked on the progress sets per the owner's first-sample notes."
+}

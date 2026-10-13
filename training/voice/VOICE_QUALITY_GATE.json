@@ -58,10 +58,10 @@
    "reason": "Owner go 2026-10-12: 'Go fastest, voice cap $70'"
   },
   "trained_voice_acceptance": {
-   "accepted": false,
-   "receipt": null,
-   "receipt_sha256": null,
-   "reason": "Deployment only: the final acoustic/vocoder/frontend pair needs an identity-bound owner listening acceptance. No trained final voice is currently approved."
+   "accepted": true,
+   "receipt": "training/voice/receipts/trained-voice-acceptance-2026-10-12.json",
+   "receipt_sha256": "67c449681bb766919cbb0b6346714b826a3ba8e629ec05819dc8984b75fba765",
+   "reason": "Owner 2026-10-12 on the final rendered samples: 'smaples are perfect'. Bound to source digest, dataset id and the published model file hashes."
   },
   "local_playback_acceptance": {
    "accepted": false,
