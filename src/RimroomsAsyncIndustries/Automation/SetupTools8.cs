@@ -15,6 +15,7 @@ namespace RimroomsAsyncIndustries.Automation
     ///                                          if guns run out, a crafting bill for the shortfall goes on a table that can
     ///   {"cmd":"draft","pawn":"all|Gee","on":"true|false"}   draft or release a group in one call
     ///   {"cmd":"tower","x":"..","z":"..","size":"3"}  a roofed corner tower with embrasures outward, a base door and a sally port
+    ///   {"cmd":"security_room","x":"..","z":".."}   the room off a tower for guns and medicine
     ///   {"cmd":"hold"}                         draft every armed colonist and send each to its own cell behind an embrasure
     ///                                          (else sandbags / barricades), the ones nearest the threat first
     /// </summary>
@@ -193,6 +194,67 @@ namespace RimroomsAsyncIndustries.Automation
                    homeDoor.z + ", sally port " + sally.x + "," + sally.z + "), " + kept + " kept, " + blocked + " blocked; roof marked" +
                    (embrasure == null ? " -- no Embrasure def, walls only" : "") +
                    " -- its own ventilation is a separate build: freezer-style cooler or a vent in a tower wall";
+        }
+
+        /// <summary>
+        /// PLAYBOOK 9: "added rooms for security stuff" off each tower (armory, guard room, med kit). Same corner as the
+        /// tower; the room (w x h inside, default 4 x 3) sits on the colony side of the tower's base door so the door opens
+        /// into it, walls and a door back into the base, roof marked:
+        ///   {"cmd":"security_room","x":"120","z":"136","size":"3","w":"4","h":"3","stuff":"BlocksGranite"}
+        /// </summary>
+        public static string SecurityRoom(Map map, Dictionary<string, string> a)
+        {
+            int Int(string k, int d) => a.TryGetValue(k, out string s) && int.TryParse(s, out int v) ? v : d;
+            IntVec3 corner = new IntVec3(Int("x", -1), 0, Int("z", -1));
+            if (!corner.InBounds(map)) return "refused: x,z (the tower's perimeter corner) outside the map";
+            int size = Math.Max(2, Math.Min(6, Int("size", 3)));
+            int w = Math.Max(2, Math.Min(8, Int("w", 4))), h = Math.Max(2, Math.Min(8, Int("h", 3)));
+            a.TryGetValue("stuff", out string sn);
+            ThingDef stuff = DefDatabase<ThingDef>.GetNamedSilentFail(sn ?? "") ?? ThingDefOf.WoodLog;
+
+            // The tower's geometry, exactly as Tower derives it.
+            List<IntVec3> homeCells = map.areaManager.Home.ActiveCells.ToList();
+            IntVec3 centre = homeCells.Count > 0
+                ? new IntVec3((int)homeCells.Average(c => c.x), 0, (int)homeCells.Average(c => c.z))
+                : (map.mapPawns.FreeColonistsSpawned.FirstOrDefault()?.Position ?? map.Center);
+            int sx = corner.x >= centre.x ? 1 : -1, sz = corner.z >= centre.z ? 1 : -1;
+            int x0 = sx > 0 ? corner.x : corner.x - size + 1, z0 = sz > 0 ? corner.z : corner.z - size + 1;
+            int x1 = x0 + size - 1, z1 = z0 + size - 1;
+            int inZ = sz > 0 ? z0 - 1 : z1 + 1;                         // the tower's inward wall line, holding its base door
+            int doorX = (x0 + x1) / 2;
+
+            // The room's interior: centred on the tower's base door, beyond the tower wall toward the colony.
+            int rx0 = doorX - w / 2, rx1 = rx0 + w - 1;
+            int rz0 = sz > 0 ? inZ - h : inZ + 1, rz1 = rz0 + h - 1;
+            IntVec3 baseDoor = new IntVec3((rx0 + rx1) / 2, 0, sz > 0 ? rz0 - 1 : rz1 + 1);   // the far side, into the base
+
+            int walls = 0, doors = 0, kept = 0, blocked = 0;
+            for (int x = rx0 - 1; x <= rx1 + 1; x++)
+                for (int z = rz0 - 1; z <= rz1 + 1; z++)
+                {
+                    bool ring = x == rx0 - 1 || x == rx1 + 1 || z == rz0 - 1 || z == rz1 + 1;
+                    if (!ring) continue;
+                    IntVec3 c = new IntVec3(x, 0, z);
+                    if (!c.InBounds(map)) { blocked++; continue; }
+                    Building ed = c.GetEdifice(map);
+                    // the tower's own wall and door are shared, never doubled
+                    if (ed != null && (ed.def.passability == Traversability.Impassable || ed is Building_Door)) { kept++; continue; }
+                    if (c.GetThingList(map).Any(t => t.def.IsBlueprint || t.def.IsFrame)) { kept++; continue; }
+                    ThingDef def = c == baseDoor ? ThingDefOf.Door : ThingDefOf.Wall;
+                    if (!GenConstruct.CanPlaceBlueprintAt(def, c, Rot4.North, map, false, null, null, stuff).Accepted) { blocked++; continue; }
+                    GenConstruct.PlaceBlueprintForBuild(def, c, map, Rot4.North, Faction.OfPlayer, stuff);
+                    if (def == ThingDefOf.Door) doors++; else walls++;
+                }
+            for (int x = rx0; x <= rx1; x++)
+                for (int z = rz0; z <= rz1; z++)
+                {
+                    IntVec3 c = new IntVec3(x, 0, z);
+                    if (c.InBounds(map)) map.areaManager.BuildRoof[c] = true;
+                }
+            return (walls + doors == 0 && kept == 0 ? "refused: " : "ok: ") + "security room " + w + "x" + h + " at " + rx0 + "," + rz0 +
+                   "-" + rx1 + "," + rz1 + " off the tower at " + corner.x + "," + corner.z + ": " + walls + " walls, " + doors +
+                   " door (into the base at " + baseDoor.x + "," + baseDoor.z + "), " + kept + " shared/kept, " + blocked + " blocked; roof marked" +
+                   " -- stock it: a shelf of guns and medicine (stockpile_room) and a bed for the guard";
         }
 
         // ---------------------------------------------------------------- hold

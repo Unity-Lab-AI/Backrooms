@@ -327,6 +327,7 @@ namespace RimroomsAsyncIndustries.Automation
                 case "draft": return SetupTools8.Draft(map, a);
                 case "hold": return SetupTools8.Hold(map);
                 case "tower": return SetupTools8.Tower(map, a);
+                case "security_room": return SetupTools8.SecurityRoom(map, a);
                 case "power": return SetupTools9.Power(map, a);
                 case "hall": return SetupTools9.Hall(map, a);
                 case "research_next": return SetupTools10.ResearchNext();
