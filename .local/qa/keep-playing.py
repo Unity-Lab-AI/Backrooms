@@ -69,6 +69,26 @@ def _bridge_up():
     except BaseException:
         return False
 
+def clear_debug_windows():
+    """RimWorld 1.7 is on Steam's unstable branch (owner 2026-10-13: "we are temporarilly on a unstable version"):
+    with ~300 mods it opens its debug log at startup, on top of the main menu. Close every debug/log window
+    over the bridge (an API call, not a click) so the main menu shows clean on stream. Returns what it closed."""
+    closed = []
+    try:
+        import re as _r
+        _s, _b = gates._session()
+        for _ in range(8):
+            blob = json.dumps(gates.bridge.exchange(_s, _b, "tools/call", {"name": "rimworld/get_ui_state", "arguments": {}}), default=str)
+            debug = [t.split(".")[-1] for t in _r.findall(r'"type":\s*"([^"]+)"', blob)
+                     if _r.search(r"EditWindow|Debug|Dialog_DevPalette|ImGui", t.split(".")[-1])]
+            if not debug:
+                break
+            gates.bridge.exchange(_s, _b, "tools/call", {"name": "rimworld/close_window", "arguments": {"windowType": debug[0]}})
+            closed.append(debug[0]); time.sleep(0.8)
+    except Exception as e:
+        print(stamp(), "debug windows not checked:", str(e)[:120], flush=True)
+    return closed
+
 def game_up():
     if not u: return False
     g = u.FindWindowW(None, "RimWorld by Ludeon Studios")
@@ -240,7 +260,7 @@ while True:
             try: os.remove(GO)
             except OSError: pass
             # never read the owner's directive aloud -- it is an order to her, not a line for the stream
-            say("fact: the game is loading about two hundred mods" if os.path.exists(RESUME) else "fact: a new stream is starting and the game is loading about two hundred mods")
+            say("fact: the game is loading nearly three hundred mods on RimWorld 1.7, the unstable beta" if os.path.exists(RESUME) else "fact: a new stream is starting and the game is loading nearly three hundred mods on RimWorld 1.7, the unstable beta")
             # a NEW stream each start (owner: "make sure it starts a new stream"): fresh title, then OBS live
             try:
                 if os.path.exists(RESUME): raise RuntimeError("resume keeps the current stream title")
@@ -286,6 +306,12 @@ while True:
                     try: os.remove(os.path.join(HERE, f_))
                     except OSError: pass
             scen = (open(req, encoding="utf-8").read().strip().split(chr(10))[0] or "Async Industries")
+            # 1.7 unstable opens its debug log over the main menu: close it, then let the menu show on stream
+            shut = clear_debug_windows()
+            if shut:
+                print(stamp(), "closed debug windows before the main menu:", ", ".join(shut), flush=True)
+            say("fact: we are on RimWorld 1.7, the unstable beta, running the Rimrooms mod and nearly three hundred other mods; this is the main menu")
+            time.sleep(15)
             print(stamp(), "new colony requested (%s) and the window is up -- starting it" % scen, flush=True)
             say("fact: starting a brand new colony; food comes first")
             # Owner: "wtf it didnt do the fucking map set up with faction adv settings pollution seed name none of

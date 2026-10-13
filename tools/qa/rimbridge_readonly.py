@@ -31,14 +31,17 @@ MAX_EVENTS_PER_RESPONSE = 20
 MAX_COLLECTION_ITEMS = 512  # Includes every entry in the 296-entry QA profile.
 MAX_SANITIZED_NODES = 50000
 
+# RimWorld 1.7 prefixes each log line with "<date> <time>  INFO [Verse] " and writes Logs/Player.log;
+# 1.6 lines are bare. Pass --log the current game's file.
+LINE_PREFIX = r"^(?:\S+ \S+\s+[A-Z]+ \[[^\]]*\] )?"
 STANDALONE_RE = re.compile(
-    r"^\[RimBridge\] GABP server running standalone on port (\d+)\s*$"
+    LINE_PREFIX + r"\[RimBridge\] GABP server running standalone on port (\d+)\s*$"
 )
 GABS_RE = re.compile(
-    r"^\[RimBridge\] GABP server connected to GABS on port (\d+)\s*$"
+    LINE_PREFIX + r"\[RimBridge\] GABP server connected to GABS on port (\d+)\s*$"
 )
-FAILED_RE = re.compile(r"^\[RimBridge\] Failed to start server:")
-TOKEN_RE = re.compile(r"^\[RimBridge\] Bridge token:\s*(\S+)\s*$")
+FAILED_RE = re.compile(LINE_PREFIX + r"\[RimBridge\] Failed to start server:")
+TOKEN_RE = re.compile(LINE_PREFIX + r"\[RimBridge\] Bridge token:\s*(\S+)\s*$")
 BEARER_RE = re.compile(r"(?i)\b(bearer\s+)[A-Za-z0-9._~+/-]+=*")
 BRIDGE_TOKEN_LINE_RE = re.compile(
     r"(?im)(\[RimBridge\]\s+Bridge token:\s*)\S+"
