@@ -14,7 +14,13 @@ PANELS = [("site", "Mod site & wiki", "rimrooms async industries", LINK),
           ("modlist", "Mod list", "every mod in the pack", LINK),
           ("source", "Source code", "github repo", LINK),
           ("bugs", "Report a bug", "github issues", LINK),
-          ("workshop", "Steam collection", "the whole mod pack", LINK)]
+          ("workshop", "Steam collection", "the whole mod pack", LINK),
+          # RimPLC, the separate colony-logic mod (owner 2026-10-13: its links on the stream "with all the image like
+          # text and chain emoji things for the mods and wiki links")
+          ("rimplc-wiki", "RimPLC wiki", "colony logic mod", LINK),
+          ("rimplc-github", "RimPLC on GitHub", "rimplc source code", LINK),
+          ("rimplc-forgejo", "RimPLC on Forgejo", "our lab's git server", LINK),
+          ("rimplc-bugs", "RimPLC bugs", "report a rimplc issue", LINK)]
 for key, title, caption, glyph in PANELS:
     im = Image.new("RGB", (W, H), BG); d = ImageDraw.Draw(im)
     for y in range(0, H, 3): d.line([(0, y), (W, y)], fill=(16, 11, 19))

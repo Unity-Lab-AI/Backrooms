@@ -1,5 +1,7 @@
 # Twitch channel write-ups — Unity Plays RimWorld
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
 **Applied to the live channel 2026-10-08** (owner: *"the uirls dont work"* -- bare URLs are not links in Twitch Markdown; every URL is now written `[text](url)`, and every picture panel carries its *Image links to*). Paste-ready text for the channel's **About** page (twitch.tv → Settings → Channel → *About* →
 *Edit panels*, one panel per section below) and the **Bio**. Twitch has no API for panels, so these
 are pasted by hand. Limits: panel title 45 characters, panel description 1,000 characters (Markdown
@@ -14,6 +16,9 @@ Links (checked 2026-10-08, all answer 200):
 | Mod site / wiki | https://g-fourteen.github.io/Rimrooms-AsyncIndustries/ |
 | Source repo | https://github.com/Unity-Lab-AI/Backrooms |
 | Bug reports | https://github.com/Unity-Lab-AI/Backrooms/issues |
+| RimPLC wiki | https://g-fourteen.github.io/Rimrooms-AsyncIndustries/rimplc.html |
+| RimPLC source | https://github.com/G-Fourteen/RimPLC (and https://git.unityailab.com/GFourteen/RimPLC) |
+| RimPLC bug reports | https://github.com/G-Fourteen/RimPLC/issues |
 | Steam Workshop collection | https://steamcommunity.com/sharedfiles/filedetails/?id=3815722702 (the owner's pack collection *"Rimrooms: Async Industries - full mod pack (RimWorld 1.6)"*, 288 items, made 2026-10-08; owner 2026-10-08: *"and the rwmods is the mod collection"* · *"on steam"* · *"its mine"* · *"the first one i made"*) |
 
 ---
@@ -32,6 +37,14 @@ it). Images are 320x110 in the overlay's style, rendered by [`twitch-panels/rend
 | ![](twitch-panels/panel-source.png) `panel-source.png` | https://github.com/Unity-Lab-AI/Backrooms |
 | ![](twitch-panels/panel-bugs.png) `panel-bugs.png` | https://github.com/Unity-Lab-AI/Backrooms/issues |
 | ![](twitch-panels/panel-workshop.png) `panel-workshop.png` | https://steamcommunity.com/sharedfiles/filedetails/?id=3815722702 |
+| ![](twitch-panels/panel-rimplc-wiki.png) `panel-rimplc-wiki.png` | https://g-fourteen.github.io/Rimrooms-AsyncIndustries/rimplc.html |
+| ![](twitch-panels/panel-rimplc-github.png) `panel-rimplc-github.png` | https://github.com/G-Fourteen/RimPLC |
+| ![](twitch-panels/panel-rimplc-forgejo.png) `panel-rimplc-forgejo.png` | https://git.unityailab.com/GFourteen/RimPLC |
+| ![](twitch-panels/panel-rimplc-bugs.png) `panel-rimplc-bugs.png` | https://github.com/G-Fourteen/RimPLC/issues |
+
+RimPLC rows added 2026-10-13 (owner: *"do the twitch setup for the RimPLC mod and its links and such for the infor
+in twitch streams and stuff with all the image like text and chain emoji things for the mods and wiki links"* ·
+*"im not really trusting the model to do that just yet"*). All four URLs answered 200 on 2026-10-13.
 
 The text panels below stay as the long-form write-ups.
 
@@ -40,7 +53,7 @@ The text panels below stay as the long-form write-ups.
 ## Bio (300)
 
 ```
-Unity plays RimWorld with Rimrooms: Async Industries, a Backrooms mod pack built by our lab. Goth city building, company contracts, and a gate into the Backrooms. Chat votes on what we build next. Mod, wiki and source in the panels below.
+Unity plays RimWorld with our lab's mods: Rimrooms Async Industries (company contracts and a gate into the Backrooms) and RimPLC (live colony logic). Chat votes on what we build next. Mods, wikis and source in the panels below.
 ```
 
 ## Panel 1 — Title: `About the stream`
@@ -56,7 +69,7 @@ Stream rules: be kind, keep it clean, no spoilers for other streams, no links yo
 ## Panel 2 — Title: `The mod: Rimrooms Async Industries`
 
 ```
-**Rimrooms: Async Industries** is a RimWorld 1.6 mod about running a company branch that opens gates into the Backrooms: contracts, procurement, payroll, expeditions, and the gate complex itself.
+**Rimrooms: Async Industries** is a RimWorld mod, being prepared for 1.7 while retaining 1.6, about running a company branch that opens gates into the Backrooms: contracts, procurement, payroll, expeditions, and the gate complex itself.
 
 - **[Mod site and wiki](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/)**
 - **[Install guide](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/install.html)**
@@ -70,7 +83,8 @@ Stream rules: be kind, keep it clean, no spoilers for other streams, no links yo
 ## Panel 3 — Title: `Mod list and Workshop`
 
 ```
-The pack runs on a curated list of community mods, every one checked for compatibility.
+The pack uses a curated community-mod list played on RimWorld 1.6. The new 1.7 unstable target
+and each mod's 1.7 compatibility still need their own checks.
 
 - **[Full mod list](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/mods-list.html)**
 - **[How the mods fit together](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/mods.html)**
@@ -94,7 +108,22 @@ The whole project is open: code, art, docs.
 Found a bug on stream? Say it in chat and Unity logs it.
 ```
 
-## Panel 5 — Title: `The overlay`
+## Panel 5 — Title: `RimPLC: colony logic mod`
+
+```
+**RimPLC** is our separate colony-logic mod: it reads the colony live, checks your rules and shows what to do next in an in-game ladder window. Unity uses it on stream to keep the colony alive.
+
+- **Live sensors**: health, mood, food, materials, threats, research, temperature, alerts and buildings
+- **Editable rules**: comparisons, OR, NOT, timers, counters and one-shots, saved with the colony
+- **Advice first**: it tells you what to do; it never takes over your pawns
+- No Harmony, no required mods, works with any mod list
+
+- **[RimPLC wiki](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/rimplc.html)**
+- **[Source on GitHub](https://github.com/G-Fourteen/RimPLC)** · [Forgejo](https://git.unityailab.com/GFourteen/RimPLC)
+- **[Report a RimPLC bug](https://github.com/G-Fourteen/RimPLC/issues)**
+```
+
+## Panel 6 — Title: `The overlay`
 
 ```
 **Game** (big frame): the colony, live.
