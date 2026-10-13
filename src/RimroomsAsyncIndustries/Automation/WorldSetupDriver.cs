@@ -98,7 +98,7 @@ namespace RimroomsAsyncIndustries.Automation
                 if (!File.Exists(RequestPath) || Find.WindowStack == null || LongEventHandler.AnyEventNowOrWaiting) { return; }
                 // a fresh request starts a fresh run: nothing is handled yet and no crew is loaded
                 DateTime stamp = File.GetLastWriteTimeUtc(RequestPath);
-                if (stamp != requestStamp) { requestStamp = stamp; handled.Clear(); refusals.Clear(); crewLoaded = false; }
+                if (stamp != requestStamp) { requestStamp = stamp; handled.Clear(); refusals.Clear(); crewLoaded = false; MapVariantPicker.Reset(); }
                 // the ideology page can sit UNDER the others (it opens right after the scenario page); it is
                 // handled first wherever it is, then the topmost unhandled page
                 var open = Find.WindowStack.Windows.Where(w => (w is Page || w is Dialog_NamePlayerFactionAndSettlement)
@@ -112,7 +112,11 @@ namespace RimroomsAsyncIndustries.Automation
                 {
                     case Page_SelectStoryteller p: done = Storyteller(p); break;
                     case Page_CreateWorldParams p: done = WorldParams(p, req); break;
-                    case Page_SelectStartingSite p: done = Site(p); break;
+                    case Page_SelectStartingSite p:
+                        // the map variant is chosen over several seconds (Map Preview renders each one); poll until it is
+                        if (!MapVariantPicker.Ready(p)) { return; }
+                        done = Site(p);
+                        break;
                     case Dialog_NamePlayerFactionAndSettlement d: Names(d, req); return;
                     case Page p when p.GetType().Name == "Page_RimroomsCompanySetup": done = Company(p, req); break;
                     case Page_ChooseIdeoPreset p:
@@ -236,8 +240,8 @@ namespace RimroomsAsyncIndustries.Automation
         {
             Find.GameInitData.mapSize = MapSize;
             Find.GameInitData.startingSeason = Season.Spring;
-            PlanetTile tile = PickTile(new[] { "TemperateForest", "TropicalRainforest" }, Hilliness.Mountainous);
-            if (!tile.Valid) { tile = PickTile(new[] { "TemperateForest", "TropicalRainforest" }, Hilliness.LargeHills); }
+            PlanetTile tile = MapVariantPicker.ChosenTile;
+            if (!tile.Valid) { tile = ChooseTile(); }
             if (!tile.Valid) { Report("site: refused -- no forest or jungle tile with mountains or large hills"); return false; }
             Find.GameInitData.startingTile = tile;
             Find.WorldInterface.SelectedTile = tile;
@@ -342,6 +346,15 @@ namespace RimroomsAsyncIndustries.Automation
             Report("crew: preset '" + preset + "' loaded -> start");
             return true;
         }
+
+        internal static PlanetTile ChooseTile()
+        {
+            PlanetTile tile = PickTile(new[] { "TemperateForest", "TropicalRainforest" }, Hilliness.Mountainous);
+            if (!tile.Valid) { tile = PickTile(new[] { "TemperateForest", "TropicalRainforest" }, Hilliness.LargeHills); }
+            return tile;
+        }
+
+        internal static void Note(string line) => Report(line);
 
         private static PlanetTile PickTile(string[] biomes, Hilliness wanted)
         {
