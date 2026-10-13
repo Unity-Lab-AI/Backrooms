@@ -352,7 +352,13 @@ while True:
                     got = _pick(what, fallback)
                     if got: return got
                 return fallback
-            seed = pick("a one word seed for a new RimWorld planet", "nightshade").replace(" ", "").lower()
+            # owner 2026-10-13: "make sure it uses seed Earth or Earth2... Earth (n)" -- Earth, Earth2, Earth3...: one
+            # higher for every new world, counted in .local/qa/_earth_seed.count
+            counter = os.path.join(HERE, "_earth_seed.count")
+            try: n = int(open(counter).read().strip()) + 1
+            except (OSError, ValueError): n = 1
+            open(counter, "w").write(str(n))
+            seed = "Earth" if n == 1 else "Earth%d" % n
             faction = pick("a name for your colony's faction", "Pink Static")
             settlement = pick("a name for your first settlement, a mountain hideout", "Hollow Spire")
             auto = os.path.join(os.path.expandvars(r"%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Config"), "RimroomsAutomation")

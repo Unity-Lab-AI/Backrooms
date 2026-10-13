@@ -230,6 +230,7 @@ outputs/**/*.zip
 # One-off local scratch and backups
 .local/voice-lab/stream-script-originals/
 .local/qa/_*.sh
+.local/qa/_earth_seed.count
 # models/: each folder is a complete, usable model -- weights + only the code/config to run it + a README.
 # The weights stay local; the rest is tracked. How each was built lives in training/ (owner 2026-10-13: "the whole
 # point of the model folder to hold tohe complete fucking model and nothing eles but a readme jsut what they need

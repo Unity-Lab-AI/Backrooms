@@ -123,6 +123,9 @@ def elements(session):
     return found
 
 
+SELECTED = "(already selected)"
+
+
 def row_button(found, name):
     """The actionable button belonging to the row labelled `name`, or None.
 
@@ -131,11 +134,18 @@ def row_button(found, name):
     list reads on screen and does not depend on a fixed offset.
     """
     lowered = name.strip().lower()
-    for index, (_target, kind, label, _actionable) in enumerate(found):
-        if kind == "label" and label.strip().lower() == lowered:
-            for target, _k, _l, actionable in found[index + 1:index + 6]:
-                if actionable:
-                    return target
+    nav = {"back", "next", "scenario editor", "open steam workshop"}
+    matches = [i for i, (_t, kind, label, _a) in enumerate(found)
+               if kind == "label" and label.strip().lower() == lowered]
+    # RimWorld 1.7: the selected scenario's title is drawn again in the right panel, just before Back. Only the
+    # FIRST match is the list row; the first live run on 1.7 clicked Back off the second one.
+    for index in matches[:1]:
+        for target, _k, label, actionable in found[index + 1:index + 6]:
+            if actionable and (label or "").strip().lower() not in nav:
+                return target
+    # no row button: when the right panel already shows this scenario it is selected -- nothing to click
+    if len(matches) > 1:
+        return SELECTED
     return None
 
 
@@ -259,8 +269,9 @@ def main(argv=None):
                 return 1
 
             print("start-scenario: selecting %r via %s" % (args.scenario, button))
-            session.call("rimworld/click_ui_target", {"targetId": button, "timeoutMs": 15000})
-            time.sleep(2.0)
+            if button != SELECTED:
+                session.call("rimworld/click_ui_target", {"targetId": button, "timeoutMs": 15000})
+                time.sleep(2.0)
 
         # **`press_accept` does not advance these pages.** It reported *"Dispatched semantic
         # 'accept' input ... UI state did not change"*, because a new-game page's Next is an
