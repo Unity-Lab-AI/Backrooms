@@ -9,6 +9,12 @@ summary: "RimWorld 1.6 is retained; 1.7 unstable is the new target. Installation
 
 **1.7 is on RimWorld's unstable branch.** The [official announcement](https://store.steampowered.com/news/app/294100/view/672882362547178633) introduces the Waylith engine; the normal stable branch remains 1.6. Rimrooms is being prepared for 1.7 and retains 1.6. No 1.7 gameplay or full-profile compatibility result has been recorded.
 
+What Ludeon says about 1.7 (still the unstable beta as of 2026-10-13):
+- Saves move both ways: a 1.6 save loads in 1.7, and a 1.7 save loads back in 1.6.
+- 2-4x better performance is reported, but PCs more than 10 years old may not run it.
+- A mod marked "potentially unsupported" in 1.7 may only be flagged for its version number.
+- Report 1.7 game bugs on the official RimWorld development Discord; report Rimrooms bugs to us.
+
 | | |
 |---|---|
 | **RimWorld** | 1.6 retained; 1.7 unstable / Waylith is the new target |
