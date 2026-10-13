@@ -44,7 +44,7 @@ it). Images are 320x110 in the overlay's style, rendered by [`twitch-panels/rend
 
 RimPLC rows added 2026-10-13 (owner: *"do the twitch setup for the RimPLC mod and its links and such for the infor
 in twitch streams and stuff with all the image like text and chain emoji things for the mods and wiki links"* ·
-*"im not really trusting the model to do that just yet"*). All four URLs answered 200 on 2026-10-13.
+*"im not really trusting the model to do that just yet"*). All four URLs answered 200 on 2026-10-13. **Applied to the live channel 2026-10-13** through the stream's Twitch window (Playwright over CDP :9333): the four RimPLC link panels, the RimPLC panel, the new bio, and the social link *Report a bug* replaced by *RimPLC mod & wiki* (owner's choice; Twitch caps social links at 5).
 
 The text panels below stay as the long-form write-ups.
 
