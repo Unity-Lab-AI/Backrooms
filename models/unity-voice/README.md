@@ -14,6 +14,7 @@ inputs; recorded laughter and breath events are supported.
 
 **Accepted:** owner on the final samples, 2026-10-12: *"smaples are perfect"* --
 `training/voice/receipts/trained-voice-acceptance-2026-10-12.json` binds that to these exact file hashes.
-Live pace: `UNITY_VOICE_LENGTH_SCALE` 1.2 (the default).
+Live pace: `UNITY_VOICE_LENGTH_SCALE` **1.0** (set by `stream/services.py`). The 1.2 stretch was for the too-fast
+local test voice; on this voice the owner heard it as "1/5th too slow" (2026-10-13).
 
 **To use:** `python training/voice/infer.py models/unity-voice "text" out.wav --emotion amused --intensity .35`

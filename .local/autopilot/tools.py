@@ -500,7 +500,7 @@ class Toolbox:
                              stderr=subprocess.DEVNULL, shell=False)
         # Owner: "but she still has to laugh when it comes through". Chat and overlay get the clean line; the voice
         # gets the tagged line (same words, already passed the stream filter) once her own voice is live
-        # (UNITY_OWN_VOICE=1), so the laugh is heard, never read. Today's Piper cannot laugh, so it gets the clean line.
+        # (UNITY_OWN_VOICE=1), so the laugh is heard, never read. (Piper is retired; her own voice is the only voice.)
         voice_line = self.voice_text if os.environ.get("UNITY_OWN_VOICE") == "1" else clean
         # her own voice takes the delivery the brain chose (the same trained emotions/acts as the tool enums)
         speak_env = dict(os.environ, UNITY_SPEAK_EMOTION=emotion or "", UNITY_SPEAK_ACT=act or "")

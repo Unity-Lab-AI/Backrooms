@@ -305,7 +305,10 @@ def announce(line):
 
 def start(only=None):
     found = running()
-    env = dict(os.environ, PYTHONUNBUFFERED="1", STUDIO_PERSIST="1", UNITY_OWN_VOICE="1")
+    env = dict(os.environ, PYTHONUNBUFFERED="1", STUDIO_PERSIST="1", UNITY_OWN_VOICE="1",
+               # her pod-trained voice speaks at natural pace; the old 1.2 stretch was for the too-fast local test voice
+               # (owner 2026-10-13: "what just playewd was 1/5th too slow")
+               UNITY_VOICE_LENGTH_SCALE=os.environ.get("UNITY_VOICE_LENGTH_SCALE", "1.0"))
     be = brain_env()
     env.update(be)
     if os.environ.get("TWITCH_CHANNEL") is None: env["TWITCH_CHANNEL"] = "unityplaysrimworld"

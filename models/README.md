@@ -30,11 +30,11 @@ copy them back from there and run `python training/apply.py`.
 | Model | Its job on stream | Made by | File | Loaded as | GPU memory | Status |
 |---|---|---|---|---|---|---|
 | **unity-brain** | Plays the game (RimBridge tools, RimPLC), answers chat, reads screenshots, decides what to say | Us, 2026-10-12: LoRA on Qwen3.5-9B, 8,481 rows | `unity-brain/unity-brain.gguf` (5.3 GB) | Ollama `unity-brain` on :11434 | ~5.3 GB + context | **Live**, replaced the 10-10 brain |
-| **unity-voice** | Her actual speaking voice: turns a line into audio with emotion, laughs included | Us, 2026-10-12: trained from scratch on 4,845 clips | `unity-voice/acoustic.pt` + `vocoder.pt` (165 MB) | `training/voice/serve.py` on :5123 | ~0.5 GB | **Accepted** ("smaples are perfect"); going live now |
+| **unity-voice** | Her actual speaking voice: turns a line into audio with emotion, laughs included | Us, 2026-10-12: trained from scratch on 4,845 clips | `unity-voice/acoustic.pt` + `vocoder.pt` (165 MB) | `training/voice/serve.py` on :5123 | ~0.5 GB | **Live** 2026-10-13: the `voice` service in `stream/services.py`, every spoken line, natural pace (length scale 1.0) |
 | **unity-local** | Rewrites each line in her own words and personality before she speaks | Us, 2026-10-10: LoRA on Qwen3-8B | `training/models/unity-voice.Q4_K_M.gguf` (5.0 GB) | Ollama `unity-local` on :11435 | ~5 GB | **Rollback only** (not loaded): the brain writes her lines now to fit 16 GB |
 | **realistic-vision v5.1** | Draws her webcam pictures, always img2img from her locked likeness | Third party (Stable Diffusion 1.5 fine-tune) | `~\Desktop\Unity 3D Equational Model\Unity 18+\models\realistic-vision-v51.safetensors` | `.claude/tools/unity-face-sd.py` | ≤ ~4 GB while drawing; system RAM otherwise | **Live** |
 | unity-player | The old game player before the brain | Us, 2026-10-10: LoRA on Qwen3.6-35B | `training/models/unity-player.Q4_K_M.gguf` (21.7 GB) | Ollama `unity-player` | ran on the CPU | **Retired**, kept for rollback |
-| Piper hfc_female | The old voice before her own | Third party (Piper TTS) | `...\Unity 18+\models\piper\en_US-hfc_female-medium.onnx` | `.claude/tools/unity-speak.py` | CPU | **Fallback** only, used if her own voice server is down |
+| Piper hfc_female | The old voice before her own | Third party (Piper TTS) | `...\Unity 18+\models\piper\en_US-hfc_female-medium.onnx` | `.claude/tools/unity-speak.py` | CPU | **Retired** 2026-10-13: no fallback voice (owner: fallbacks are against the laws) |
 
 The base models Ollama keeps for these (`qwen3.5:9b`, `qwen3:8b`, `qwen3.6:35b`, `dolphin3:8b`) are pulled from the
 Ollama registry by `stream/services.py`. They are not stored here.
