@@ -2,7 +2,8 @@
 
 Owner, 2026-10-13: "the prep for the vocie repase multipass run" (and: never start training without his "start").
 
-  pass 1  prosody   local_prosody_retrain.py to --steps (resumes its own work checkpoint; step 3917 exists)
+  pass 0  feats     features of the expressive dataset (training/voice/expressive_rerender.py output), CPU, one time
+  pass 1  prosody   local_prosody_retrain.py from the LIVE acoustic model to --steps on the expressive data (resumable)
   pass 2  gta       ground-truth-aligned mels from the NEW acoustic model (train_acoustic.export_mels), bound by hash
                     to a copy of that model inside the vocoder folder
   pass 3  vocoder   train_vocoder.py --gta, warm-started from the LIVE vocoder's weights (it was saved weights-only;
@@ -29,7 +30,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 LIVE = HERE.parent.parent / "models" / "unity-voice"
-PASSES = ["prosody", "gta", "vocoder", "ab", "package"]
+PASSES = ["feats", "prosody", "gta", "vocoder", "ab", "package"]
 
 
 def log(out, msg):
@@ -68,30 +69,32 @@ def check(args, out):
     from dataset_contract import load_dataset, load_features, pair_identity
     problems = []
     feats, dataset = Path(args.feats), Path(args.dataset)
-    for p in (feats / "features-manifest.json", LIVE / "acoustic.pt", LIVE / "vocoder.pt", LIVE / "voice-meta.json",
-              out / "work" / "acoustic-work.pt", out / "model" / "acoustic.pt"):
+    for p in (dataset / "metadata.jsonl", LIVE / "acoustic.pt", LIVE / "vocoder.pt", LIVE / "voice-meta.json"):
         log(out, ("ok   " if p.exists() else "MISSING ") + str(p))
         if not p.exists():
             problems.append("missing " + str(p))
-    manifest = load_features(str(feats), verify_files=False)
+    if problems:
+        return False
     rows, identity = load_dataset(str(dataset), verify_audio=False)
-    if identity != manifest["dataset"]:
-        problems.append("dataset folder is not the one the features were prepared from")
     live_meta = json.loads((LIVE / "voice-meta.json").read_text(encoding="utf-8"))
-    if manifest["vocab"] != live_meta["vocab"]:
-        problems.append("feature vocabulary differs from the live voice")
+    if identity["voice_id"] != live_meta["identity"]["voice_id"]:
+        problems.append("dataset is another voice than the live one")
     voc = torch.load(LIVE / "vocoder.pt", map_location="cpu", weights_only=True)
-    text_side = ("feature_id", "frontend_id")   # a re-prepared text frontend; the vocoder never sees text
-    vi, fi = voc.get("identity") or {}, pair_identity(manifest)
-    if {k: v for k, v in vi.items() if k not in text_side} != {k: v for k, v in fi.items() if k not in text_side}:
-        problems.append("live vocoder belongs to another dataset/audio pair")
-    elif vi != fi:
-        log(out, "note: live vocoder was made with the pod's text frontend; the warm start records both identities")
-    new = torch.load(out / "model" / "acoustic.pt", map_location="cpu", weights_only=True)
-    if new.get("identity") != pair_identity(manifest):
-        problems.append("retrained acoustic identity differs from the features")
-    log(out, "prosody pass at step %d of %d; live vocoder step %d (%s); %d dataset rows" % (
-        new.get("step", 0), args.steps, voc.get("step", 0), voc.get("input_mode"), len(rows)))
+    if (feats / "features-manifest.json").exists():
+        manifest = load_features(str(feats), verify_files=False)
+        if identity != manifest["dataset"]:
+            problems.append("features were prepared from another dataset folder (delete %s to re-prepare)" % feats)
+        if manifest["vocab"] != live_meta["vocab"]:
+            problems.append("feature vocabulary differs from the live voice")
+        same = ("feature_id", "frontend_id", "dataset_id")   # the vocoder never sees text; v2 re-performs the rows
+        vi, fi = voc.get("identity") or {}, pair_identity(manifest)
+        if {k: v for k, v in vi.items() if k not in same} != {k: v for k, v in fi.items() if k not in same}:
+            problems.append("live vocoder belongs to another voice/audio pair")
+    else:
+        log(out, "features not prepared yet: the feats pass makes them (CPU, ~40 min)")
+    log(out, "prosody pass at step %d of %d; live vocoder step %d (%s); %d dataset rows (%d re-performed)" % (
+        acoustic_step(out), args.steps, voc.get("step", 0), voc.get("input_mode"), len(rows),
+        sum(r["source_id"].startswith("cosy3-a2-expressive") for r in rows)))
     if torch.cuda.is_available():
         free, total = torch.cuda.mem_get_info()
         log(out, "GPU %s: %.1f GB free of %.1f GB" % (torch.cuda.get_device_name(0), free / 1e9, total / 1e9))
@@ -107,6 +110,12 @@ def check(args, out):
         log(out, "PROBLEM: " + p)
     log(out, "CHECK " + ("PASSED -- ready for the owner's start" if not problems else "FAILED"))
     return not problems
+
+
+def pass_feats(args, out):
+    if (Path(args.feats) / "features-manifest.json").exists():
+        log(out, "feats: prepared"); return
+    run(out, [sys.executable, HERE / "prep.py", args.dataset, args.feats])
 
 
 def pass_prosody(args, out):
@@ -218,15 +227,15 @@ def pass_package(args, out):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default=r"D:\voice-lab\local-retrain-2026-10-13")
-    ap.add_argument("--feats", default=r"D:\voice-lab\local-retrain-2026-10-13\feats")
-    ap.add_argument("--dataset", default=r"D:\voice-lab\pod-results\voice-2026-10-12\gen\dataset")
+    ap.add_argument("--out", default=r"D:\voice-lab\unity-voice-v2-2026-10-13")
+    ap.add_argument("--feats", default=r"D:\voice-lab\unity-voice-v2-2026-10-13\feats")
+    ap.add_argument("--dataset", default=r"D:\voice-lab\dataset-v2-expressive-2026-10-13")
     ap.add_argument("--steps", type=int, default=30000, help="prosody pass total steps")
     ap.add_argument("--frames", type=int, default=24000)
     ap.add_argument("--vocoder-steps", type=int, default=20000, help="joint GTA polish steps after the warm-up")
     ap.add_argument("--d-warmup", type=int, default=2000)
     ap.add_argument("--vocoder-batch", type=int, default=16)
-    ap.add_argument("--from", dest="start", choices=PASSES, default="prosody")
+    ap.add_argument("--from", dest="start", choices=PASSES, default="feats")
     ap.add_argument("--check", action="store_true", help="verify inputs only; trains nothing")
     args = ap.parse_args()
     out = Path(args.out)

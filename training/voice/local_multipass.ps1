@@ -6,10 +6,10 @@
 # service first (the check refuses with less than 8 GB of GPU memory free).
 param(
     [switch]$Check,
-    [string]$From = "prosody",
+    [string]$From = "feats",
     [int]$Steps = 30000,
     [int]$VocoderSteps = 20000,
-    [string]$Out = "D:\voice-lab\local-retrain-2026-10-13"
+    [string]$Out = "D:\voice-lab\unity-voice-v2-2026-10-13"
 )
 $ErrorActionPreference = "Stop"
 $Repo = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)

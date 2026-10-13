@@ -168,8 +168,11 @@ def main():
     live_meta = json.loads((LIVE / "voice-meta.json").read_text(encoding="utf-8"))
     if manifest["vocab"] != live_meta["vocab"]:
         raise SystemExit("Re-prepared vocabulary differs from the live voice; refusing to fine-tune across vocabularies")
+    if manifest["dataset"]["voice_id"] != live_meta["identity"]["voice_id"]:
+        raise SystemExit("Feature dataset is another voice; fine-tuning only ever continues the live voice")
     if manifest["dataset"]["dataset_id"] != live_meta["identity"]["dataset_id"]:
-        raise SystemExit("Feature dataset is not the live voice's dataset")
+        # unity-voice-v2: the same A2 voice, its emotional rows re-performed (training/voice/expressive_rerender.py)
+        print("note: fine-tuning on a new dataset of the same voice (%s)" % manifest["dataset"]["dataset_id"][:12], flush=True)
     train = [x for x in items if x["split"] == "train"]
     held = [x for x in items if x["split"] == "heldout"]
     model = UnityVoice(len(manifest["vocab"]), **ACOUSTIC_CONFIG).to(dev)
