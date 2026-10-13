@@ -151,10 +151,26 @@ namespace RimroomsAsyncIndustries.UI
                 if (light == QuestLight.Green) { nextKey = "RR_Ledger_PaperworkNextSend"; }
                 else if (light == QuestLight.Amber) { nextKey = "RR_Ledger_PaperworkNextBook"; }
                 else if (next == null) { nextKey = "RR_Ledger_PaperworkNextWaiting"; }
+                // A colony with no desk is told to build one: "assign somebody" to a desk that does
+                // not exist sent a player looking for an order no colonist could offer.
+                else if (!HasRecordsDesk()) { nextKey = "RR_Ledger_PaperworkNextBuildDesk"; }
                 else { nextKey = "RR_Ledger_PaperworkNextWrite"; }
                 listing.Label(nextKey.Translate(next == null ? "" : next.label));
                 listing.Gap(4f);
             }
+        }
+
+        /// <summary>Whether any loaded map holds a built records desk, the only place a write-up is done.</summary>
+        private static bool HasRecordsDesk()
+        {
+            ThingDef desk = DefDatabase<ThingDef>.GetNamedSilentFail("RR_RecordsDesk");
+            if (desk == null) { return false; }
+            List<Map> maps = Find.Maps;
+            for (int index = 0; index < maps.Count; index++)
+            {
+                if (maps[index].listerThings.ThingsOfDef(desk).Count > 0) { return true; }
+            }
+            return false;
         }
 
         /// <summary>One word for the light, so the row stays one line.</summary>
