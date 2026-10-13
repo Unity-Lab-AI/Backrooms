@@ -10,6 +10,7 @@ namespace RimroomsAsyncIndustries.Automation
     ///   {"cmd":"power"}            every building that needs power and is on no grid gets one conduit line, the shortest
     ///                              buildable path to the nearest grid that holds a generator or a battery
     ///   {"cmd":"power","x":"..","z":".."}   just the building at that cell
+    ///   {"cmd":"hall","x1":"..","z1":"..","x2":"..","z2":"..","width":"3"}   a straight walled, roofed hall
     /// Existing conduits and powered buildings on the path are reused, so a second call adds nothing.
     /// </summary>
     internal static class SetupTools9
@@ -69,6 +70,54 @@ namespace RimroomsAsyncIndustries.Automation
                 report.Add(b.LabelShort + " at " + b.Position.x + "," + b.Position.z + ": " + here + " conduit");
             }
             return (laid == 0 ? "refused: " : "ok: ") + string.Join("; ", report);
+        }
+
+        /// <summary>
+        /// PLAYBOOK "3-wide halls": a straight hall between two cells, walls down both sides and roof marked over it; the
+        /// ends stay open into whatever they meet (a door is a separate build). One straight run per call:
+        ///   {"cmd":"hall","x1":"..","z1":"..","x2":"..","z2":"..","width":"3","stuff":"BlocksGranite"}
+        /// x1,z1 -> x2,z2 must share an x or a z (the hall's centre line).
+        /// </summary>
+        public static string Hall(Map map, Dictionary<string, string> a)
+        {
+            int Int(string k, int d) => a.TryGetValue(k, out string s) && int.TryParse(s, out int v) ? v : d;
+            IntVec3 p1 = new IntVec3(Int("x1", -1), 0, Int("z1", -1)), p2 = new IntVec3(Int("x2", -1), 0, Int("z2", -1));
+            if (!p1.InBounds(map) || !p2.InBounds(map)) return "refused: x1,z1 and x2,z2 must be on the map";
+            if (p1.x != p2.x && p1.z != p2.z) return "refused: a hall runs straight -- x1,z1 and x2,z2 must share an x or a z";
+            int width = System.Math.Max(1, System.Math.Min(5, Int("width", 3)));
+            a.TryGetValue("stuff", out string sn);
+            ThingDef stuff = DefDatabase<ThingDef>.GetNamedSilentFail(sn ?? "") ?? ThingDefOf.WoodLog;
+
+            bool alongX = p1.z == p2.z;                          // the hall runs east-west
+            int lo = alongX ? System.Math.Min(p1.x, p2.x) : System.Math.Min(p1.z, p2.z);
+            int hi = alongX ? System.Math.Max(p1.x, p2.x) : System.Math.Max(p1.z, p2.z);
+            int centre = alongX ? p1.z : p1.x;
+            int half = width / 2, sideA = centre - half - 1, sideB = centre - half + width;   // wall lines either side
+
+            int walls = 0, kept = 0, blocked = 0, roofed = 0;
+            void Wall(IntVec3 c)
+            {
+                if (!c.InBounds(map)) { blocked++; return; }
+                Building ed = c.GetEdifice(map);
+                if (ed != null && (ed.def.passability == Traversability.Impassable || ed is Building_Door)) { kept++; return; }
+                if (!GenConstruct.CanPlaceBlueprintAt(ThingDefOf.Wall, c, Rot4.North, map, false, null, null, stuff).Accepted) { blocked++; return; }
+                GenConstruct.PlaceBlueprintForBuild(ThingDefOf.Wall, c, map, Rot4.North, Faction.OfPlayer, stuff);
+                walls++;
+            }
+            for (int i = lo; i <= hi; i++)
+            {
+                Wall(alongX ? new IntVec3(i, 0, sideA) : new IntVec3(sideA, 0, i));
+                Wall(alongX ? new IntVec3(i, 0, sideB) : new IntVec3(sideB, 0, i));
+                for (int w = sideA + 1; w < sideB; w++)
+                {
+                    IntVec3 c = alongX ? new IntVec3(i, 0, w) : new IntVec3(w, 0, i);
+                    if (c.InBounds(map) && !map.areaManager.BuildRoof[c]) { map.areaManager.BuildRoof[c] = true; roofed++; }
+                }
+            }
+            return (walls == 0 && kept == 0 ? "refused: " : "ok: ") + width + "-wide hall " + (alongX ? "east-west" : "north-south") +
+                   " from " + lo + " to " + hi + " on " + (alongX ? "z " : "x ") + centre + ": " + walls + " wall blueprints, " + kept +
+                   " existing kept, " + blocked + " blocked, " + roofed + " cells roofed -- the ends stay open into what they meet; " +
+                   "build a door there with build def Door if a room needs closing";
         }
 
         /// <summary>
