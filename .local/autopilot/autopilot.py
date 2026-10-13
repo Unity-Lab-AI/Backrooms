@@ -150,7 +150,7 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=()):
     if with_orders and os.path.exists(OWNER_ORDERS):
         txt = open(OWNER_ORDERS, encoding="utf-8", errors="replace").read().strip()
         if txt:
-            parts.append("OWNER ORDERS (from the owner, binding, the only orders beyond the system prompt):\n" + (txt[:5000] + chr(10) + "[...]" + chr(10) + txt[-3500:] if len(txt) > 8500 else txt))   # standing procedures (head) + latest live orders (tail); all 13k chars timed the CPU model out
+            parts.append("OWNER ORDERS (from the owner, binding, the only orders beyond the system prompt):\n" + (txt[:1500] + chr(10) + "[...]" + chr(10) + txt[-2500:] if len(txt) > 4000 else txt))   # the standing rules now live in the situation modules   # standing procedures (head) + latest live orders (tail); all 13k chars timed the CPU model out
     # The playbook is a decision table, not prose: gates.py measures the colony and returns the ONE chain
     # that fires plus the always-gate, so the model looks the answer up instead of re-reasoning a wall.
     # Owner, 2026-10-10: "a actual logical guided logaica gates system of porcess chains and actions".
@@ -265,7 +265,38 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=()):
 
 
 CONVO = []          # one running conversation (append-only), so Ollama reuses everything already read
-CONVO_TOKEN_CAP = 56000   # a bigger window costs only RAM; every reset costs a 2-minute cold read
+# Her context is pinned at 32768 tokens (the stream: a different num_ctx reloads the brain). A conversation past that
+# is cut from the FRONT by Ollama -- the system prompt and the brief went first, and she "forgot 90%" mid-play
+# (owner 2026-10-13). The cap leaves room for the tool list and her answer.
+CONVO_TOKEN_CAP = int(os.environ.get("AUTOPILOT_CONVO_CAP", "18000"))
+MODULES = os.path.join(HERE, "modules")
+_FAMILY = [None]
+
+
+def situation(fallback="setup"):
+    """The top live rung's family -> the prompt module for it (tools/build-prompt-modules.py). Owner, 2026-10-13:
+    "can we have differnt plc wearning and information load differnt system prompts like meta prompts as needed so
+    its not eating a massive file and forgettting 90^ of it while doing the wrong choice?" """
+    try:
+        import importlib.util as _il
+        _gs = _il.spec_from_file_location("gates", os.path.join(HERE, "gates.py"))
+        _g = _il.module_from_spec(_gs); _gs.loader.exec_module(_g)
+        hits, _st = _g.decide()
+        fam = next((h.get("family") for h in hits if h.get("family") and h.get("priority", 99) < 98), None) or fallback
+    except Exception:
+        fam = fallback
+    try:
+        fam = json.load(open(os.path.join(MODULES, "aliases.json"), encoding="utf-8")).get(fam, fam)
+    except (OSError, ValueError):
+        pass
+    return fam if os.path.exists(os.path.join(MODULES, fam + ".md")) else fallback
+
+
+def system_for(system, fam):
+    try:
+        return system + chr(10) + chr(10) + open(os.path.join(MODULES, fam + ".md"), encoding="utf-8").read()
+    except OSError:
+        return system
 
 def _est_tokens(msgs):
     return sum(len(str(m.get("content", ""))) for m in msgs) // 4
@@ -326,8 +357,12 @@ def turn(toolbox, st, args, system, specs):
     if up and globals().get("_WAS_DOWN"):
         CONVO = []; log("game is back -- conversation reset")
     _WAS_DOWN = not up
-    if not CONVO or _est_tokens(CONVO) > CONVO_TOKEN_CAP:
-        CONVO = [{"role": "system", "content": system},
+    fam = situation()
+    if CONVO and fam != _FAMILY[0]:
+        log("situation changed %s -> %s: fresh conversation with that module" % (_FAMILY[0], fam))
+    if not CONVO or _est_tokens(CONVO) > CONVO_TOKEN_CAP or fam != _FAMILY[0]:
+        _FAMILY[0] = fam
+        CONVO = [{"role": "system", "content": system_for(system, fam)},
                  {"role": "user", "content": brief(toolbox, st, joins, msgs, runlist, owner_msgs=owner_msgs)}]
         _ORDERS_SEEN[0] = len(_orders_text())   # the full brief carried every order up to now
         log("fresh conversation (full brief)")
