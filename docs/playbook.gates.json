@@ -886,12 +886,14 @@
         "food_store": false
       },
       "then": [
+        "CRASHLANDED / open-ground start: if rooms lists only fogged rooms or free floor 0 everywhere, there is NO room to use -- the camp is OUTDOORS where the crew stands (read list_colonists for their x,z) and everything goes within about 15 cells of them",
+        "open-ground camp: a stockpile ZONE about 6x6 on open soil beside the crew (zone add stockpile designator), then a small wood-walled room (about 5x7, one door) for beds, built first, then game_set cmd beds",
         "game_set cmd rooms first; pick the room with the MOST free explored floor (free floor 0 means walls -- never that room)",
         "game_set cmd stockpile_room mode food on that room, then mode nofood on the next best room",
         "a room refuses ONCE: never retry it. No walled room with free floor: a plain stockpile ZONE on open floor right beside the crew, this turn",
         "game_set cmd beds; game_set cmd shelves"
       ],
-      "why": "owner: \"explore the hidden rooms and get outside her walls\" / \"she is letting time pass and hasnt set a priority or shelf or schedula\" / \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner 2026-10-13: \"you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses\" -- 2026-10-13 she retried all-wall room 79 three times and said storage over and over without placing one / owner 2026-10-13: \"look at that shit she is setting fucking rooms to build deep inside the moutain with no ryhme or reason\" -- six different designators on one 7x7 block at 285,250 in five seconds each",
+      "why": "owner: \"explore the hidden rooms and get outside her walls\" / \"she is letting time pass and hasnt set a priority or shelf or schedula\" / \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner 2026-10-13: \"you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses\" -- 2026-10-13 she retried all-wall room 79 three times and said storage over and over without placing one / owner 2026-10-13: \"look at that shit she is setting fucking rooms to build deep inside the moutain with no ryhme or reason\" -- six different designators on one 7x7 block at 285,250 in five seconds each / 2026-10-13 on Crashlanded: rooms answered only room 79 (199 cells, 100% fogged, free floor 0) while the crew stood at 109,80 -- she designated at 285,250, two hundred cells away inside the mountain",
       "never": [
         "stockpile on fogged cells",
         "retry a room that refused",
