@@ -368,14 +368,21 @@ class Toolbox:
                          "hunt, day_one, assign (the Assign tab: pawn or empty for all, food Fine, medicine Best, hostility Attack). "
                          "OPEN-GROUND CAMP (Crashlanded, no rooms): unforbid (every starting item), chop (count = wood wanted, nearest trees to the crew), "
                          "shelter (w,h inside size; a wood room + door + roof beside the crew), stockpile_camp (mode food|nofood; a 6x6 store beside the crew). "
+                         "BUILD AND MANAGE: build (def, x, z, rot 0-3, stuff -- any architect thing, e.g. TorchLamp, Sandbags, Barricade, Cooler, "
+                         "SimpleResearchBench, Battery; read refused/ok), build_room (x,z inside corner, w, h, stuff -- walls+door+roof), deconstruct "
+                         "(def or x,z), harvest (what food|medicine|all -- wild plants), tame (def), slaughter (def, count; never milkers or bonded), "
+                         "allow_area (x,z,w,h -- unforbid a rect), self_tend (pawn or all, on), schedule (pawn or all, hours 0-23, assignment Anything|Work|Sleep|Joy), "
+                         "drug_policy (pawn or all, policy -- colonists 'No drugs'), research (project defName or label), bed_medical / bed_prisoner (x,z,on), "
+                         "cooler_temp (x,z,celsius -- freezer -5). "
                          "map (optional, e.g. Map_0) picks the map; without it the home map is used. The result comes back from the game: read it.",
                          S({"cmd": {"type": "string", "enum": ["explore", "rooms", "stockpile_room", "stockpile_filter",
                                                                "beds", "shelves", "stove", "crops", "hunt", "day_one", "assign",
                                                                "set_zone_plant", "set_zone_sowing", "set_work_priority",
                                                                "set_bed_owner", "add_bill", "set_area",
-                                                               "unforbid", "chop", "shelter", "stockpile_camp"]},
+                                                               "unforbid", "chop", "shelter", "stockpile_camp", "build", "build_room", "deconstruct", "harvest", "tame",
+                                                               "slaughter", "allow_area", "self_tend", "schedule", "drug_policy", "research", "bed_medical", "bed_prisoner", "cooler_temp"]},
                             "x": i, "z": i, "plant": s, "allow": b, "pawn": s, "work": s, "level": i,
-                            "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s, "food": s, "medicine": s, "hostility": s, "map": s, "w": i, "h": i},
+                            "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s, "food": s, "medicine": s, "hostility": s, "map": s, "w": i, "h": i, "def": s, "rot": i, "stuff": s, "what": s, "on": b, "hours": s, "assignment": s, "policy": s, "project": s, "celsius": i},
                           ["cmd"]), self.t_game_set),
             "twitch_chat": ("[STREAM] Type into the REAL Twitch chat (not just out loud). action: say | reply (needs "
                             "viewer) | title | category. Every line is filtered clean or refused.",
@@ -756,7 +763,7 @@ class Toolbox:
         payload = {"cmd": cmd}
         for k, v in kw.items():
             if v is None or v == "": continue
-            if k in ("pawn", "work", "owner", "area", "plant", "recipe", "room", "mode", "priority", "food", "medicine", "hostility", "map") and not re.fullmatch(r"[A-Za-z0-9_ .-]{1,60}", str(v)):
+            if k in ("pawn", "work", "owner", "area", "plant", "recipe", "room", "mode", "priority", "food", "medicine", "hostility", "map", "def", "stuff", "what", "hours", "assignment", "policy", "project") and not re.fullmatch(r"[A-Za-z0-9_ .-]{1,60}", str(v)):
                 raise GuardError("bad value for " + k)
             payload[k] = v
         if cmd == "set_work_priority" and not (0 <= int(payload.get("level", -1)) <= 4):
