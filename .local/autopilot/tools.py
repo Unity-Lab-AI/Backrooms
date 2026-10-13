@@ -328,7 +328,10 @@ class Toolbox:
                      "stream what you are planning, the game is paused, and your NEXT turn thinks deeply. Never for "
                      "ordinary moves.", S({"what": s}, ["what"]), self.t_plan),
             "webcam": ("[STREAM] Re-render Unity's webcam with a mood and a short clean caption (raids, deaths, wins, "
-                       "chat moments).", S({"mood": {"type": "string", "enum": list(MOODS)}, "caption": s},
+                       "chat moments). Optional scene: a few words of what you are doing, holding or wearing right now -- "
+                       "your own idea or where chat took the talk (e.g. 'eating pizza', 'wrapped in a blanket', "
+                       "'holding a soda, feet up', 'cozy sweater').",
+                       S({"mood": {"type": "string", "enum": list(MOODS)}, "caption": s, "scene": s},
                                            ["mood", "caption"]), self.t_webcam),
             "snap": ("[STREAM] Post an annotated screenshot of a map rect to the webcam panel with up to 3 circled "
                      "marks. Moves the camera to the rect.",
@@ -821,7 +824,7 @@ class Toolbox:
         self.think_next = True
         return "paused and announced; your next turn thinks deeply -- plan it, then unpause when the plan is set"
 
-    def t_webcam(self, mood, caption):
+    def t_webcam(self, mood, caption, scene=""):
         if mood not in MOODS:
             mood = "focus"
         cap = guards.clean_for_stream(caption, max_len=90)
@@ -830,9 +833,10 @@ class Toolbox:
         if self.dry:
             log("DRY-RUN would webcam", mood, cap)
             return "dry-run: not executed"
-        subprocess.Popen([PY, SCRIPTS["cam"], mood, cap], cwd=ROOT, stdout=subprocess.DEVNULL,
+        scn = guards.clean_for_stream(scene or "", max_len=80) or ""
+        subprocess.Popen([PY, SCRIPTS["cam"], mood, cap, scn], cwd=ROOT, stdout=subprocess.DEVNULL,
                          stderr=subprocess.DEVNULL, shell=False)
-        return "webcam rendering: %s / %s" % (mood, cap)
+        return "webcam rendering: %s / %s%s" % (mood, cap, (" / " + scn) if scn else "")
 
     def t_snap(self, x, z, w, h, caption, marks=None):
         cap = guards.clean_for_stream(caption, max_len=90)

@@ -21,9 +21,10 @@
 |---|---|
 | Generator | **The original SD1.5 image gen only** (`.claude/tools/unity-face-sd.py`, Realistic Vision): every frame is img2img over ONE reference picture, strength 0.7. **Never SDXL, never inpaint/cut-out compositing** (owner: *"its fucked just cookie cutting images together"*). `unity-face-sdxl.py` is in the repo but unused |
 | Reference (her room, side view) | `.claude/.studio-images/unity-reference.png` = `.claude/likeness/unity-scene-home4.png` (owner: *"home $ is a yes"*): side view at her desk in a cozy girl's room, hips/stomach/knees in frame |
-| **Room locked** | Owner: *"so the room is just going to change every time??? i already pioced the room"* -- at strength 0.7 the room was redrawn every frame. Fix in `unity-face-sd.py` (`her_zone()`): each frame is painted whole, then the picked room's own pixels are restored outside her zone (her + chair from the reference, widened ~70 px, feathered ~28 px) -- only she moves. **Built and compiled; the proof sheet (`home-live.png`) was still rendering at handoff -- check it shows one identical room** |
+| **Room locked** | Each frame is painted whole; outside her zone the picked room's own pixels come back. Her zone = her + chair in the reference **plus her cut out of the new frame** (owner: *"the gilr is like half there half gohosted"* -- fixed), so she is solid wherever she moves. Owner: *"the home-live images whhere perfect"* |
 | Girl | the girl in `.claude/.studio-images/cam-1791666443672.png` (`likeness/unity-likeness-original-cam.png`): long dark hair with pink-purple streaks, blunt bangs, choker, **bright pink cat-ear headset, no hats**. Light identity touch only (IP-Adapter Plus Face SD1.5, scale 0.3) -- her face is NOT locked: head, gaze, expression move |
-| Every frame | prompt built by `compose()`: outfit FIRST (CLIP reads 77 tokens) -- bikini/triangle/string/halter/crop tops, cozy sweater/open hoodie, deep cleavage, bare shoulders/stomach, a skirt half the time, random outfit every 10-20 min -- then the mood, a random dynamic action, gaze (her PC ~75%, camera ~25%) and props/moments picked from **the line she just said** (soda, coffee, snacks, controller, blanket, stretching, victory, facepalm...) |
+| Every frame | `compose()`: gaze FIRST (owner: *"she has differnt gaze focal points mainly to her off screen screen"* -- side profile to her screen off frame left ~65%, a camera glance ~15%, phone/food/keyboard/eyes closed/thinking the rest; non-camera frames block eye contact and use a lighter face touch), then the outfit -- the full range (owner: *"the rull randge of clothing from blanket to sweater to eating pizza all of it"*): bikini/string/halter tops, sweater, cardigan, hoodies, flannel, tank, sports bra, pajama cami, mesh crop, blanket; pajama shorts/joggers; skirts half the time; slim (owner: *"just dont use chunkey"*) -- then props from her line, a random dynamic action, the mood. Strength 0.75 (0.82 off camera). Proofs: `home-range-4.png` (owner: *"okay those all work"*) |
+| **Her own scene** | Owner: *"lets leve the option for the text model to add mixes to all the genraation as she sees fit or as viewers talk to her and naturally lead to topics that can appear in images"* -- the `webcam` tool has an optional `scene` (what she is doing/holding/wearing); it flows `tools.py` -> `unity-cam.py` -> `persona-studio.cjs` -> the face service and replaces the random action; prompt.md rule 4 tells her to use it and to let chat topics show up |
 | Wiring | `unity-cam.py` sends the mood; `persona-studio.cjs` now forwards her line as `caption` to the face service |
 | Proof | `.claude/.studio-images/home-live.png` (8 live-path frames) |
 
@@ -37,7 +38,7 @@
 - 24 new mod commands (`build`, `build_room`, `equip`, `capture`, `zone_create`, `schedule`, `research`, ...), Crashlanded camp commands, situation prompt modules, 18k conversation cap.
 
 ### Next, in order
-1. Check the room-locked `home-live.png` (one identical room, only she changes); then owner review; tune what he flags in `unity-face-sd.py`.
+1. Webcam done and owner-approved; watch her first live frames (does she use `scene`?).
 2. Voice: owner's prep, then the retrain only on his explicit "start".
 3. Start: Steam, `start.bat`, GO "fresh crash landed colony, new stream" (Earth3); watch her opening, RimPLC alerts, her webcam.
 

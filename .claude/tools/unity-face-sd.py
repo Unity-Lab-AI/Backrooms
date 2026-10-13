@@ -26,7 +26,7 @@ STEPS = 20 if DEVICE == "cpu" else 30
 SEED = 1031  # the owner's cam image is the reference (.claude/likeness/unity-likeness-original-cam.png), 2026-10-13
 NEG = ("airbrushed, plastic skin, smooth skin, doll, cgi, render, glowing eyes, bright blue eyes, oversaturated, beauty filter, perfect skin, uncanny, nipples, nude, topless, nsfw, see-through, sheer, wardrobe malfunction, tattoo, tattoos, "
        "t-shirt, sleeves, covered chest, high neckline, hat, beret, cap, beanie, black headset, black headphones, dark skin, pale white skin, black lipstick, heavy goth makeup, neon, cartoon, anime, 3d render, blurry, lowres, bad anatomy, "
-       "deformed face, extra fingers, watermark, text, child, teen, old, middle aged, wrinkles, saggy breasts")
+       "deformed face, extra fingers, watermark, text, child, teen, old, middle aged, wrinkles, saggy breasts, chubby, chunky, fat, plump, thick arms, wide face, round face")
 # Owner, 2026-10-10: "dont look like her a homie one not like currently your about 37" -- she kept reading
 # mid-thirties, so the youth cues are explicit and every ageing cue is in the negatives.
 # Owner, 2026-10-13: a gaming webcam, girl next door with a hint of emo, light caucasian skin (not pale), black wavy bob
@@ -35,7 +35,7 @@ NEG = ("airbrushed, plastic skin, smooth skin, doll, cgi, render, glowing eyes, 
 # cutting images together"): the whole frame painted over that one reference, everything else is words in the prompt
 REF_PROMPT = ("amateur webcam photo of a 25 year old girl next door with a hint of emo at her desk, long straight dark hair with "
               "pink-purple streaks and blunt bangs, a bright pink cat-ear gaming headset with pink cat ears, no hat, black choker, light skin, "
-              "busty, realistic")
+              "slim waist, busty, realistic")
 OUTFITS = {   # owner: bikini-style tops, string straps "ARE A GO", cozy at times; skirts half the time (seen when she stands)
     "triangle": "a tiny black triangle top, deep cleavage", "string-triangle": "a tiny black string triangle top, thin string straps, deep cleavage",
     "string-halter": "a tiny black string halter top, plunging neckline, deep cleavage", "spaghetti-cami": "a tiny white spaghetti strap crop cami, deep cleavage",
@@ -43,12 +43,22 @@ OUTFITS = {   # owner: bikini-style tops, string straps "ARE A GO", cozy at time
     "cutout-halter": "a black keyhole cut-out halter crop top, deep cleavage", "tie-front": "a white tie-front crop top knotted under the bust, deep cleavage",
     "off-shoulder": "a loose black off-shoulder sweater pulled low, deep cleavage", "open-hoodie": "an open grey hoodie over a tiny black bandeau top, deep cleavage",
     "corset": "a black push-up corset top, deep cleavage",
+    # owner 2026-10-13: "the rull randge of clothing from blanket to sweater to eating pizza all of it"
+    "knit-sweater": "an oversized cream knit sweater slipping off one shoulder, low v neckline, deep cleavage",
+    "cardigan": "a cropped pink cardigan half unbuttoned over a black lace bralette, deep cleavage",
+    "zip-hoodie": "a black zip hoodie unzipped low over nothing but a bralette, deep cleavage",
+    "sports-bra": "a black sports bra, bare stomach, deep cleavage", "tank": "a tight white ribbed tank top, low scoop neck, deep cleavage",
+    "graphic-crop": "a cropped band tank top cut low at the sides, side boob, deep cleavage",
+    "flannel": "an open red flannel shirt over a black bandeau top, deep cleavage", "pajama-cami": "a pink satin pajama cami, deep cleavage",
+    "mesh-crop": "a black mesh long sleeve crop top over a black bra top, deep cleavage",
+    "blanket": "a fuzzy blanket wrapped around her bare shoulders over a tiny black bandeau top, deep cleavage",
 }
 BOTTOMS = {"plaid-skirt": "a red plaid pleated mini skirt", "black-skirt": "a black pleated mini skirt", "denim-skirt": "a denim mini skirt",
            "tennis-skirt": "a white tennis skirt", "slip-skirt": "a black satin slip skirt",
-           "shorts": "frayed denim short shorts", "jeans": "low-rise ripped jeans", "bike-shorts": "black bike shorts"}
+           "shorts": "frayed denim short shorts", "pj-shorts": "pink pajama shorts", "joggers": "grey low-rise joggers", "jeans": "low-rise ripped jeans", "bike-shorts": "black bike shorts"}
 SKIRTS = [k for k in BOTTOMS if k.endswith("skirt")]
-GAZE_PC, GAZE_CAM = "looking at her computer monitor, focused on her screen, head turned to her screen", "glancing at the camera"
+# owner 2026-10-13: "NOT look at the viewer and look off to the left of the images where her screen would be thats off screen to the left"
+GAZE_PC = "side profile, head turned left, looking left at her screen off frame"
 PROPS = {   # owner: "the images can have details the tesxt model speaks of ie drinking a sods pop , she has a soda pop"
     r"(soda|pop|coke|can of)": "holding a can of soda", r"(coffee|latte)": "holding a mug of coffee", r"tea": "holding a mug of tea",
     r"(snack|chips|crisps)": "eating chips from a bag", r"(pizza)": "eating a slice of pizza", r"(candy|gummy|chocolate)": "eating candy",
@@ -100,7 +110,15 @@ def face_image():
 ACTIONS = ["leaning in to type on her keyboard", "stretching her arms above her head", "spinning in her gaming chair",
            "one hand on her headset", "sipping from a can of soda", "leaning back with her feet up on the chair",
            "hugging one knee up on the chair", "laughing with her head thrown back", "chin resting in her hand",
-           "pointing at her monitor", "twirling a strand of hair", "leaning on the desk with both elbows"]
+           "pointing at her monitor", "twirling a strand of hair", "leaning on the desk with both elbows",
+           "playing with a game controller", "sitting cross-legged in her chair",
+           "turned sideways in the chair with legs over the armrest", "standing beside her desk leaning over the keyboard",
+           "biting her lip, concentrating", "hands over her mouth in shock", "yawning with one arm up",
+           "eating a slice of pizza", "wrapped up in a blanket with only her hands out typing", "fixing her hair behind her headset"]
+# owner: "she has differnt gaze focal points mainly to her off screen screen"
+GAZE_CAM = "glancing at the camera"
+GAZE_MORE = ["looking down at her phone", "looking down at the food in her hand", "looking up at the ceiling, thinking", "eyes closed, laughing", "looking down at her keyboard"]
+NOT_CAM = ", looking at viewer, looking at camera, eye contact, facing camera"
 
 
 def compose(req):
@@ -108,18 +126,31 @@ def compose(req):
     she is holding (from the line she just said) + who she is. Mood first: CLIP reads only 77 tokens."""
     import random, re as _re
     asked = (req.get("prompt") or "").strip()
-    top = current_outfit(sorted(OUTFITS))
+    top = req.get("outfit") if req.get("outfit") in OUTFITS else current_outfit(sorted(OUTFITS))
     rnd = random.Random(top + str(int(time.time() // 600)))        # the bottom changes with the outfit: a skirt half the time
     bottom = BOTTOMS[rnd.choice(SKIRTS if rnd.random() < 0.5 else [k for k in BOTTOMS if k not in SKIRTS])]
+    if req.get("bottom") in BOTTOMS:
+        bottom = BOTTOMS[req["bottom"]]
     outfit = OUTFITS[top]
-    gaze = GAZE_CAM if random.random() < 0.25 else GAZE_PC          # her PC most of the time, the camera now and then
+    r = random.random()   # her PC most of the time, the camera now and then, sometimes her phone, food or nowhere
+    gaze = req.get("gaze") or (GAZE_PC if r < 0.65 else GAZE_CAM if r < 0.8 else random.choice(GAZE_MORE))
+    req["_not_cam"] = gaze != GAZE_CAM
     said = (req.get("caption") or req.get("said") or "").lower()
     props = [v for k, v in PROPS.items() if _re.search(k, said)][:1]
     action = req.get("action") or random.choice(ACTIONS)
+    # owner: "the option for the text model to add mixes to all the genraation as she sees fit or as viewers talk to her"
+    # -- her own scene words (what she is doing / holding / wearing) win over the random action and the caption props
+    scene = (req.get("scene") or "").strip()[:120]
+    if scene:
+        action, props = scene, []
     # CLIP reads 77 tokens: the clothes and skin FIRST (owner: "not nearly enough skin and shoulders and her clevage was all
     # covered up"), then the moment (mood, action, gaze, props), then who she is
-    return ", ".join([x for x in ["wearing " + outfit + " and " + bottom, "bright pink cat-ear headset",
-                                  "bare shoulders, bare stomach, deep cleavage showing", asked, action, gaze] + props + [REF_PROMPT] if x])
+    # cozy layers (blanket, sweater, hoodie, flannel, cardigan) must stay visible: no forced bare shoulders on those; the
+    # action and anything in her hands come right after the clothes so CLIP reads them before the 77-token cut
+    cozy = any(w in outfit for w in ("blanket", "sweater", "hoodie", "flannel", "cardigan", "mesh"))
+    skin = "deep cleavage showing" if cozy else "bare shoulders, bare stomach, deep cleavage showing"
+    return ", ".join([x for x in [gaze, "wearing " + outfit + " and " + bottom] + props + [action, asked, "bright pink cat-ear headset",
+                                  skin, REF_PROMPT] if x])
 
 
 def pipes():
@@ -182,12 +213,38 @@ def _render_locked(req):
             return img
     ref = Image.open(REF).convert("RGB")
     prompt = compose(req)
-    strength = float(req.get("strength") or 0.7)   # room for a new pose and outfit; the scene and her face hold   # 0.55: the mood shows, the face and the top stay
+    # owner: "the dynamic meta prompts determine the image" -- the prompt decides where she looks: off the camera, the
+    # straight-on face reference is turned down and she may move further from the reference pose
+    away = bool(req.get("_not_cam"))
+    if away and not req.get("negative_prompt"):
+        neg = neg + NOT_CAM   # only the camera-glance frames may look at the viewer
+    i2i.set_ip_adapter_scale(FACE_SCALE * (0.5 if away else 1.0))
+    strength = float(req.get("strength") or (0.82 if away else 0.75))   # room for a new pose and outfit; the scene and her face hold   # 0.55: the mood shows, the face and the top stay
     out = i2i(prompt=prompt, image=ref, strength=strength, negative_prompt=neg, ip_adapter_image=face_image(),
               num_inference_steps=STEPS, guidance_scale=6.5, generator=g).images[0]
     # her room never changes (owner, 2026-10-13: "so the room is just going to change every time??? i already pioced the
     # room"): outside her zone the picked room's own pixels come back, blended softly, so only she moves
-    return Image.composite(out, ref, her_zone(ref))
+    # owner: "the gilr is like half there half gohosted" -- she moved outside the reference's zone and the old room was
+    # pasted over her; so she is also cut out of THIS frame and kept wherever she is now
+    from PIL import ImageChops, ImageFilter
+    zone = her_zone(ref)
+    try:
+        from rembg import remove, new_session
+        now = remove(out, session=_seg(), only_mask=True).point(lambda v: 255 if v > 30 else 0)
+        zone = ImageChops.lighter(zone, now.filter(ImageFilter.MaxFilter(31)).filter(ImageFilter.GaussianBlur(12)))
+    except Exception:
+        pass
+    return Image.composite(out, ref, zone)
+
+
+_session = []
+
+
+def _seg():
+    if not _session:
+        from rembg import new_session
+        _session.append(new_session("isnet-general-use"))
+    return _session[0]
 
 
 _zone = {}
