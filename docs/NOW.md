@@ -11,14 +11,14 @@
 
 ---
 
-## LIVE NOW (2026-10-12, updated 17:15 UTC): two pods running -- read this first after a compaction
+## LIVE NOW (2026-10-12, updated 00:31 UTC 10-13): two pods running -- read this first after a compaction
 
 Owner go: *"Go fastest, voice cap $70"*, then *"well we are gonna have to double that cap"*.
 
 | Pod | Id | Shape | $/h | Cap | State at 15:07 |
 |---|---|---|---|---|---|
-| Voice (records, then trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | 7.98 | $140 | **TRAINING since 17:14** on 4,845 kept clips (of 5,000; source `a00bb610`, manifest `d2a726d7`): acoustic on GPU 0, vocoder on GPU 1. Fixes on the way: merge rename on the volume (`e89843fc`), `num2words` (`82ec54ee`), click/typer pins (`a00bb610`). Progress samples every 30 min; ~7-8 h |
-| Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | 3.99 | $50 | **TRAINING since 17:09** on `4932071` (`BRAIN_BS=8`, screenshots now really in the batches): past step 8 (both old OOM kills), ~19 s/step, 1,062 steps -> done ~22:45, then GGUF + per-skill eval |
+| Voice (records, then trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | stopped 23:43 | $140 | **DONE 23:02.** Trained voice (acoustic 20k + vocoder 120k) published; final samples: owner *"smaples are perfect"*. Pulled to `D:oice-lab\pod-resultsoice-2026-10-12\` (model SHA256SUMS OK; teacher models/venvs/ckpts deliberately not pulled). Pod + volume `nk8oyfxwc7` await owner OK to delete |
+| Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | stopped 23:43 | $50 | **DONE 23:27.** 1,062 steps, train loss 0.397; picked IQ4_XS `unity-brain.gguf` (sha 2fe30716..., verified on D:). Eval: life 100%, play 96%, plc 92%, rare-tools set 53%, overall tool 82%; voice-line pass 0.897 < today's 0.984 so today's line model stays. Pod + volume `3sjem6lb5j` await owner OK to delete |
 
 **How to check** (no SSH key is set on these pods):
 - Brain: `https://rm6sdrmiv4dgtp-8000.proxy.runpod.net/` -> `status.txt`, `run.log.txt` (step line: grep `/1062`), `gpu-util.csv` (fields: time, gpu, util %, MiB used, MiB total). 19 GB used + 0 % = setup, not training.
@@ -114,3 +114,33 @@ Owner: *"why would i make them if they are only therei while its rented"*, *"mak
 - Mod: the game copy, `Mod/`, the build manifest and both mod remotes (`51540ff`) all match the working 0.13.0-dev.
 - RimBridgeServer must be re-enabled in RimSort before she can play on stream.
 - Monitoring: a 20-min cron check-in runs in this session (session-only, expires in 7 days).
+
+## RimWorld 1.7 package work — 2026-10-12
+
+The owner requested Rimrooms and RimPLC game-version target 1.7, the unchanged-style preview label RIMWORLD 1.7, all supporting docs/wiki, and a standalone RimPLC repository at https://git.unityailab.com/GFourteen/RimPLC with a possible GitHub mirror. Read [the migration record](implementation/RIMWORLD_1_7_MIGRATION.md) and its evidence folder for this bounded task.
+
+Both packages now map game 1.6/1.7 to their existing shared content; the own mod releases stay Rimrooms 0.13.0-dev and RimPLC 0.1.0. Local compile/reference evidence still uses installed RimWorld 1.6.4871; 1.7 runtime is not verified. The game Mods/profile/session is not switched or staged by this task. Earlier claims above that the repository/package/game copy all match describe the pre-migration checkpoint.
+
+The preview edit is saved in Mod/Rimrooms - Async Industries/About/Preview.png, with prior image/prompt under outputs/preview-touchup-2026-10-12. Rimrooms, RimPLC core and its optional bridge each compiled against 1.6 with zero warnings/errors. The 200-file Rimrooms ZIP is refreshed, and the clean complete local public package/wiki is outputs/rimrooms-1.7-distribution-2026-10-12-v2 (288 files). The wiki renderer produced 17 pages; current docs and old evidence are version-separated. Rimrooms' existing remote/site was not published by this task.
+
+The standalone RimPLC export excludes voice/brain training, the work ledger and provider assemblies. After automatic approval review initially rejected conditional public creation, the owner explicitly approved: "Yes — create public GitHub and publish to both". GitHub https://github.com/G-Fourteen/RimPLC was created, and both it and https://git.unityailab.com/GFourteen/RimPLC now hold main at bcfb3b713235a885927984efdcb53a09a9b725e6, read back in tool output. The standalone export contains 33 reviewed files with code, core/optional-companion DLLs, guide, schemas and license. The completed bounded milestone is archived in FINALIZED.md; actual 1.7 runtime remains unverified. Working-source changes from this task remain available here for the lead to integrate; no parent branch was checked out or source cascade run during the model jobs.
+
+This mod task does not change the active voice/brain sources, training manifests, models, pod launch/stop controls or current job monitoring. Preserve the live training continuation above.
+
+## RimPLC branding artwork — 2026-10-12
+
+Owner request: "and we need some proper RimPLC images mad for it not menu and load screens tho".
+Two original images are complete: `RimPLC/About/Preview.png` (1672×941, RIMWORLD 1.7, no development version) and `RimPLC/About/RimPLC_Badge.png` (1254×1254, true RGBA transparency). The badge is branding, not a newly wired game control. Exact prompts, source masters and hash/alpha observations are under `assets/source/rimplc/`; read its README for the bounded delivery record.
+
+The RimPLC package manifests/export allowlist include both files. Workspace/standalone READMEs and the public wiki guide show/link the artwork. The refreshed standalone export has 35 files, with the existing source snapshot unchanged. The artwork checkpoint is staged for publication to the two approved RimPLC `main` repositories; the subsequent remote read-back in tool output is the publication receipt. The parent source branch/cascade, game Mods/profile, Rimrooms menu/load art, current training/voice/brain files and pods are untouched by this task. RimWorld 1.7 runtime remains unverified.
+
+## Current content-folder correction — 2026-10-12
+
+Owner: "might need to fix that all around the backrooms folder" / "i doont want my 1.7 saying 1.6".
+Read [CONTENT_FOLDER_1_7_LAYOUT.md](implementation/CONTENT_FOLDER_1_7_LAYOUT.md) before the earlier October 12 migration section: its shared physical `1.6/` decision is superseded. Current folders are `Mod/Rimrooms - Async Industries/1.7/` and `RimPLC/1.7/`; both game-version loaders select that single folder. Current scripts, build destinations, package lists/manifests and docs/wiki use `1.7/`. Dated source/build/play observations and explicitly retained backups remain historical.
+
+All 196 Rimrooms and three RimPLC moved content files retain identical bytes. All three projects compiled with zero warnings/errors; the game references are still installed 1.6.4871, with 1.7 runtime acceptance pending. The 200-file Rimrooms ZIP and both local distribution exports are refreshed: Rimrooms 288 files, RimPLC 35. Old RimPLC export/receipt were preserved in `.local/export/RimPLC-before-1-7-2026-10-12*`; existing Git history was retained in the new default export.
+
+The bounded standalone distribution checkpoints are prepared for the approved remote publication; subsequent tool read-backs are the receipt. Parent source changes remain here for the lead to integrate: no parent branch checkout/cascade, game staging/profile/save/session change, training/model edit or pod action occurs in this layout task. Preserve the live training continuation above.
+
+The prepared standalone layout commits are RimPLC `3d1bd3d18ade24fac55886b6f10b70815ce3b758` and Rimrooms `29f33ec10450728783934cf71b7860abd37dbc06`. Git's staged-file bytes match all 35/288 reviewed export files respectively; no `1.6/` content folder remains in either index. Existing CRLF payload bytes are preserved; whitespace inspection uses Git's `cr-at-eol` recognition alongside its normal whitespace checks. The subsequent push/read-back output owns the remote receipt.
