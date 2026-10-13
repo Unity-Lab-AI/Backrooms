@@ -139,14 +139,20 @@ def main():
             if not line or ":" in line[:14]:
                 continue
             plain = line.replace("[laughter]", " ")
-            words = normalize_transcript(plain).split()
+            try:
+                words = normalize_transcript(plain).split()
+            except ValueError:            # stage directions / other markup the voice does not take
+                rejected["phoneme"] += 1; continue
             if not 4 <= len(words) <= 24 or not re.search(r"[.!?]$", line):
                 rejected["length"] += 1; continue
             if guards.clean_for_stream(plain, max_len=400) != re.sub(r"\s+", " ", plain).strip() or BANNED.search(plain):
                 rejected["dirty"] += 1; continue
             if GAME.search(plain):
                 rejected["game"] += 1; continue
-            norm = normalize_transcript(line)
+            try:
+                norm = normalize_transcript(line)
+            except ValueError:
+                rejected["phoneme"] += 1; continue
             if norm in seen_norm:
                 rejected["dup"] += 1; continue
             grams = ngrams(words)
