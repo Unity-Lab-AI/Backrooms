@@ -237,6 +237,7 @@ outputs/**/*.zip
 # to use it not what it took to build and build secrets").
 models/**
 !models/*/
+!models/**/
 !models/**/README.md
 !models/**/*.py
 !models/**/*.json
