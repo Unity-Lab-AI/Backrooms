@@ -187,7 +187,7 @@ namespace RimPLC
             if (selected != null)
             {
                 RungEval ev = r.Rungs.FirstOrDefault(e => e.Rung.Id == selected);
-                if (ev != null) DrawDetail(new Rect(rect.x, rect.yMax - detailH + 4f, rect.width, detailH - 4f), ev);
+                if (ev != null) DrawDetail(new Rect(rect.x, rect.yMax - detailH + 4f, rect.width, detailH - 4f), ev, r);
             }
         }
 
@@ -297,7 +297,19 @@ namespace RimPLC
             }
         }
 
-        private static void DrawDetail(Rect rect, RungEval ev)
+        // every game_set command the Rimrooms reader answers (2026-10-13); a step naming another one is flagged
+        private static readonly HashSet<string> KnownCmds = new HashSet<string>
+        {
+            "explore", "rooms", "stockpile_room", "stockpile_filter", "beds", "shelves", "stove", "crops", "hunt", "day_one", "assign",
+            "set_zone_plant", "set_zone_sowing", "set_work_priority", "set_bed_owner", "add_bill", "set_area", "unforbid", "chop",
+            "shelter", "stockpile_camp", "sensors", "build", "build_room", "deconstruct", "harvest", "tame", "slaughter", "allow_area",
+            "self_tend", "schedule", "drug_policy", "research", "bed_medical", "bed_prisoner", "cooler_temp", "equip", "capture",
+            "bill_count", "zone_create", "roof_area", "firebreak", "pen", "bury", "ideo_role", "save_game",
+        };
+
+        private static readonly System.Text.RegularExpressions.Regex CmdRef = new System.Text.RegularExpressions.Regex(@"game_set cmd ([a-z_]+)");
+
+        private static void DrawDetail(Rect rect, RungEval ev, ScanResult scan)
         {
             Widgets.DrawBoxSolid(rect, new Color(0f, 0f, 0f, 0.3f));
             Rung r = ev.Rung;
@@ -306,7 +318,27 @@ namespace RimPLC
                       (r.Family != null ? ", " + r.Family : string.Empty) + ")" + (ev.Off != null ? "  OFF: " + ev.Off : string.Empty));
             if (r.Check != null) lines.Add("check: " + r.Check);
             if (r.Notice != null) lines.Add("notice: " + r.Notice);
-            for (int i = 0; i < ev.Then.Count; i++) lines.Add((i + 1) + ". " + ev.Then[i]);
+            // timers, counters, one-shots: their live memory (E1)
+            foreach (var kv in scan.Memory.Where(m => m.Key.StartsWith(r.Id + "/", StringComparison.Ordinal)))
+            {
+                Instr m = kv.Value;
+                string at = kv.Key.Substring(r.Id.Length + 1);
+                string v = "count " + m.Count + (m.Start.HasValue ? ", held " + ((scan.Tick - m.Start.Value) / 2500f).ToString("0.0", CultureInfo.InvariantCulture) + " h" : string.Empty) +
+                           ", input " + (m.Prev ? "on" : "off");
+                lines.Add("memory " + at + ": " + v);
+            }
+
+            // unresolved reasons (E3)
+            foreach (string u in scan.Unresolved.Where(u => u.StartsWith(r.Id, StringComparison.Ordinal))) lines.Add("<color=#ff6666>UNRESOLVED: " + u + "</color>");
+            for (int i = 0; i < ev.Then.Count; i++)
+            {
+                string step = (i + 1) + ". " + ev.Then[i];
+                // a step that names a command nothing answers (E6)
+                foreach (System.Text.RegularExpressions.Match mt in CmdRef.Matches(ev.Then[i]))
+                    if (!KnownCmds.Contains(mt.Groups[1].Value)) step += "  <color=#ffaa33>[MISSING TOOL: " + mt.Groups[1].Value + "]</color>";
+                lines.Add(step);
+            }
+
             foreach (string n in r.Never) lines.Add("NEVER: " + n);
             Text.Font = GameFont.Tiny;
             Widgets.Label(rect.ContractedBy(4f), string.Join("\n", lines.ToArray()));
@@ -386,6 +418,11 @@ namespace RimPLC
 
             var outRect = new Rect(rect.x, rect.y + RowH + 6f, rect.width, rect.height - RowH - 6f);
             List<KeyValuePair<string, object>> marks = plc.Marks.OrderBy(kv => kv.Key, StringComparer.Ordinal).ToList();
+            // every mark a rung reads, even before it is first set (E5): shown as unset with its default false
+            var set = new HashSet<string>(marks.Select(kv => kv.Key));
+            foreach (string k in plc.Last?.Rungs.SelectMany(e => e.Contacts.Select(c => c.Key)).Where(k => k.StartsWith("mark_", StringComparison.Ordinal))
+                                     .Select(k => k.Substring(5)).Distinct().OrderBy(k => k, StringComparer.Ordinal) ?? Enumerable.Empty<string>())
+                if (!set.Contains(k)) marks.Add(new KeyValuePair<string, object>(k, null));
             var view = new Rect(0f, 0f, outRect.width - 16f, marks.Count * RowH);
             Widgets.BeginScrollView(outRect, ref scroll, view);
             float y = 0f;
@@ -394,7 +431,7 @@ namespace RimPLC
                 var row = new Rect(0f, y, view.width, RowH);
                 Widgets.DrawHighlightIfMouseover(row);
                 Widgets.Label(new Rect(4f, y, 300f, RowH), "mark_" + kv.Key);
-                Widgets.Label(new Rect(310f, y, 120f, RowH), Json.Write(kv.Value));
+                Widgets.Label(new Rect(310f, y, 120f, RowH), kv.Value == null ? "unset (false)" : Json.Write(kv.Value));
                 string key = "mark:" + kv.Key;
                 if (!buffers.ContainsKey(key)) buffers[key] = Json.Write(kv.Value);
                 buffers[key] = Widgets.TextField(new Rect(435f, y + 1f, 90f, RowH - 2f), buffers[key]);
