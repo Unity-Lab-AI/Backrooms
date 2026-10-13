@@ -1452,13 +1452,16 @@
     "silver": ">{TRADE_SILVER_MIN}"
    },
    "then": [
-    "call an orbital trader",
+    "comms console + orbital trade beacon only for SHIP traders; prefer caravans and visiting traders",
     "sell surplus: art, drugs, extra weapons",
     "buy components and plasteel"
    ],
    "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
    "latch": true,
    "note": "reset the latch (ladder_set mark trade_run_done false) to trade again",
+   "never": [
+    "rely on the orbital trader (owner: \"not orbital trader that one sucks\")"
+   ],
    "source": "book",
    "mode": "advise"
   },
@@ -2960,6 +2963,204 @@
    "family": "growth",
    "source": "book",
    "mode": "advise"
+  },
+  {
+   "id": "arms-out-first",
+   "priority": 3.3,
+   "family": "setup",
+   "when": {
+    "colony_exists": true,
+    "mark_arms_set": false
+   },
+   "then": [
+    "empire_pass",
+    "read its ARMS line: nobody unarmed",
+    "game_set cmd assign hostility Attack",
+    "ladder_set mark arms_set true"
+   ],
+   "never": [
+    "explore or build before everyone is armed"
+   ],
+   "why": "owner: \"once again u arnt armed!!! wtf!!!!\" / \"put your weapons-out rung FIRST (priority above every setup rung)\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "prisoner-bed-before-fight",
+   "priority": 2.25,
+   "family": "base-and-fortress",
+   "when": {
+    "threat_letter": true,
+    "hostiles_on_map": 0,
+    "mark_prisoner_bed": false
+   },
+   "then": [
+    "game_set cmd beds",
+    "game_set cmd set_bed_owner x z owner prisoner (one bed)",
+    "ladder_set mark prisoner_bed true"
+   ],
+   "never": [
+    "draft before contact"
+   ],
+   "why": "owner: \"Prisoner bed exists BEFORE any fight\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "after-the-kill",
+   "priority": 2.36,
+   "family": "survival",
+   "when": {
+    "hostiles_on_map": 0,
+    "threat_letter": true,
+    "mark_after_kill_done": false
+   },
+   "then": [
+    "game_set cmd unforbid (the loot and dropped gear)",
+    "everything perishable into the food store / freezer",
+    "roof any open room (areabuildroofexpand)",
+    "game_set cmd shelves",
+    "ladder_set mark after_kill_done true"
+   ],
+   "never": [
+    "research or start new builds before the stores are inside"
+   ],
+   "why": "owner: \"fix all you open rooms get shit inside before it decays set up stoages shelfs and shit set stockpiles get your freezer/cooler working good make sure shit is done <<<do all this dirrectly after enemy kill\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "crops-full-set",
+   "priority": 22.1,
+   "family": "economy",
+   "when": {
+    "growing_cells": ">0",
+    "days_of_food": ">{FOOD_COMFORT_DAYS}",
+    "mark_crops_full": false
+   },
+   "then": [
+    "game_set cmd crops plant for each of: Plant_Corn, Plant_Healroot, Plant_Cotton, Plant_Smokeleaf, Plant_Psychoid, Plant_Hops (one zone each)",
+    "ladder_set mark crops_full true"
+   ],
+   "never": [
+    "two zones of the same drug crop"
+   ],
+   "why": "owner: \"need berrys potatos corn and healroot minimum plus cotton smoke leaf psycoid and hops so lots to sell and production\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "freezer-sorting",
+   "priority": 5.5,
+   "family": "survival",
+   "when": {
+    "has_power": true,
+    "store_roofed_fraction": ">=1.0",
+    "mark_freezer_sorted": false
+   },
+   "then": [
+    "a cooler in the freezer wall, blue side in, one per about 12 cells; target below -1C with margin",
+    "game_set cmd stockpile_filter (freezer) mode food priority Preferred",
+    "game_set cmd stockpile_filter (every other store) mode nofood",
+    "medicine only in the hospital store",
+    "ladder_set mark freezer_sorted true"
+   ],
+   "never": [
+    "perishables outside the freezer"
+   ],
+   "why": "owner: \"perishables only go in freezers\" / \"all shelves outside the freezer need to be set to not accept freezer goods\" / \"red faces outside blue inside\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "butcher-table",
+   "priority": 4.2,
+   "family": "survival",
+   "when": {
+    "colony_exists": true,
+    "mark_stove_set": true,
+    "mark_butcher_built": false
+   },
+   "then": [
+    "game_list_architect_designators production: the butcher table, beside the stove, inside",
+    "when it stands: game_set cmd add_bill recipe ButcherCorpseFlesh count 20",
+    "ladder_set mark butcher_built true"
+   ],
+   "never": [],
+   "why": "owner: \"how u plan on cutting up them animals?\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "research-bench",
+   "priority": 19.45,
+   "family": "research",
+   "when": {
+    "research_benches": 0,
+    "days_of_food": ">{FOOD_MIN_DAYS}"
+   },
+   "then": [
+    "game_list_architect_designators production: simple research bench, inside a roofed room",
+    "pawn_priorities custom Research 2 for the best intellectual"
+   ],
+   "never": [],
+   "why": "owner: \"research what u need to unlock better things u can produce\" (walkthroughs: a bench by day 2-3) / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "leader-moral-guide",
+   "priority": 3.535,
+   "family": "setup",
+   "when": {
+    "mark_assign_set": true,
+    "mark_ideo_roles_set": false
+   },
+   "then": [
+    "game_open_main_tab Ideoligion; assign a leader and a moral guide (game_get_ui_layout, then click the listed targets)",
+    "ladder_set mark ideo_roles_set true"
+   ],
+   "never": [],
+   "why": "owner: \"now u have a leader u need a morasl guide and they ahave abilities u want to always use\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "vault",
+   "priority": 23.3,
+   "family": "economy",
+   "when": {
+    "silver": ">{TRADE_SILVER_MIN}",
+    "mark_vault_set": false
+   },
+   "then": [
+    "a walled, roofed room with one door",
+    "a stockpile in it for silver, gold, gems and ivory only",
+    "ladder_set mark vault_set true"
+   ],
+   "never": [],
+   "why": "owner: \"build a vault ... cash silver gold high valuable gemms irvory in vaults\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "guest-wing",
+   "priority": 30,
+   "family": "economy",
+   "when": {
+    "mark_mountain_base_done": true,
+    "mark_guests_set": false
+   },
+   "then": [
+    "guest beds and a sales area inside the walls, away from the labs",
+    "ladder_set mark guests_set true"
+   ],
+   "never": [
+    "guests walking through the laboratory"
+   ],
+   "why": "owner: \"build prison build guest questers\" / \"you dont want visitors walking through you labratory\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\"",
+   "source": "book",
+   "mode": "advise"
   }
  ],
  "tags": {
@@ -3022,9 +3223,9 @@
     "max": 60.0
    },
    "MEAL_BILL_TARGET": {
-    "value": 30,
-    "rule": "10 per colonist",
-    "min": 10,
+    "value": 50,
+    "rule": "owner: \"cook bill maintained at 50 rather than 10\"",
+    "min": 50,
     "max": 300
    },
    "WOOD_RESERVE": {

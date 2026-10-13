@@ -165,6 +165,8 @@ class Toolbox:
     # stay registered (a call to them still works) but are not offered in the prompt.
     CORE = {"ladder", "ladder_set", "pawn_priorities", "new_colony", "game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "reply_owner", "plan", "webcam", "snap",
             "twitch_chat", "note", "read_doc", "run_list", "empire_pass", "play_slices",
+            # the dialog rung and the prompt's HOW TO WORK need these; they were never sent to her (2026-10-13 audit)
+            "game_get_ui_layout", "game_click_ui_target", "game_open_main_tab", "game_list_main_tabs", "game_close_main_tab", "game_click_cell",
             "game_apply_architect_designator", "game_select_architect_designator", "game_list_architect_designators",
             "game_list_architect_categories", "game_set_zone_target", "game_list_zones", "game_list_areas",
             "game_get_cell_info", "game_get_cells_info", "game_select_pawn", "game_set_draft", "game_execute_gizmo",
