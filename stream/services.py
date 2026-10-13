@@ -71,10 +71,11 @@ ONE_SHOTS = [[PYW, os.path.join(ROOT, ".claude/tools/unity-overlay.py")]]
 # Owner, 2026-10-10: "wtf actually it should of already started did you start everything up correctly with
 # the start .bat and .sh? form a dead state?" -- a dead state means the GAME too. It is started if missing,
 # and it is never stopped by the switch: a run in progress is the owner's, not ours.
+# RimWorld 1.7 (Waylith, Steam's unstable branch) ships RimWorld.exe; 1.6 shipped RimWorldWin64.exe.
+RW_DIR = r"C:/Program Files (x86)/Steam/steamapps/common/Rimworld"
+RW_IMAGE = "RimWorld" if os.path.exists(os.path.join(RW_DIR, "RimWorld.exe")) else "RimWorldWin64"
 START_ONLY = [
-    ("rimworld", "RimWorldWin64",
-     [r"C:/Program Files (x86)/Steam/steamapps/common/Rimworld/RimWorldWin64.exe"],
-     r"C:/Program Files (x86)/Steam/steamapps/common/Rimworld"),
+    ("rimworld", RW_IMAGE + ".exe", [os.path.join(RW_DIR, RW_IMAGE + ".exe")], RW_DIR),
 ]
 
 # Not python or node, so they are matched and started by their own executables.
@@ -102,7 +103,7 @@ EXTRAS = [
 # Killed by name on stop. The model runner and the game are here because neither is a child in the
 # command-line table: Ollama spawns llama-server itself, and the game is its own process. Owner, 2026-10-10:
 # "stop.bat properly kills everything becasue you didnt have that working".
-KILL_BY_NAME = ["llama-server", "ollama", "ollama app", "obs64", "RimWorldWin64"]
+KILL_BY_NAME = ["llama-server", "ollama", "ollama app", "obs64", RW_IMAGE]
 
 # NEVER killed, no matter what matches: the owner's own browsers. Owner, 2026-10-10: "you dont fuck with my
 # browsers you shit put them back". Only the Twitch window this switch itself started may be closed, and it
@@ -273,7 +274,7 @@ def running():
             if frag in cmd:
                 found.setdefault(frag, []).append(int(pid))
     # the extras are not python or node: ask for them by image name
-    out2 = _ps_lines("obs64|chrome|chromium|RimWorldWin64")
+    out2 = _ps_lines("obs64|chrome|chromium|^" + RW_IMAGE + r"\.exe$")
     for line in out2.splitlines():
         if "	" not in line: continue
         pid, cmd = line.split("	", 1); cmd = cmd.replace("\\", "/")
@@ -415,12 +416,12 @@ def graceful_close():
         print("rimworld    save skipped (%s)" % str(e)[:40])
     if WINDOWS:
         subprocess.run(["powershell", "-NoProfile", "-Command",
-                        "Get-Process obs64,RimWorldWin64 -ErrorAction SilentlyContinue | ForEach-Object { "
+                        "Get-Process obs64,%s -ErrorAction SilentlyContinue | ForEach-Object { " % RW_IMAGE +
                         "$null = $_.CloseMainWindow() }"], capture_output=True, text=True)
     t0 = time.time()
-    while time.time() - t0 < GRACE_S and (_alive("obs64") or _alive("RimWorldWin64")):
+    while time.time() - t0 < GRACE_S and (_alive("obs64") or _alive(RW_IMAGE)):
         time.sleep(1)
-    left = [n for n in ("obs64", "RimWorldWin64") if _alive(n)]
+    left = [n for n in ("obs64", RW_IMAGE) if _alive(n)]
     print("closed gracefully" if not left else "still up after %ds, falling back to the name sweep: %s"
           % (GRACE_S, " ".join(left)))
 

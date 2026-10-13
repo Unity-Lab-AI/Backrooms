@@ -14,7 +14,11 @@ import obsws_python as obs
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 LIKENESS = os.path.join(ROOT, ".claude", "likeness", "unity-likeness-square.png")
-RIM_WIN = "RimWorld by Ludeon Studios:UnityWndClass:RimWorldWin64.exe"
+# OBS window id "title:class:exe". RimWorld 1.7 (Waylith, unstable branch) is a GLFW window from RimWorld.exe;
+# 1.6 was a Unity window from RimWorldWin64.exe.
+_RW = "C:/Program Files (x86)/Steam/steamapps/common/RimWorld/RimWorld.exe"
+RIM_WIN = ("RimWorld by Ludeon Studios:GLFW30:RimWorld.exe" if os.path.exists(_RW)
+           else "RimWorld by Ludeon Studios:UnityWndClass:RimWorldWin64.exe")
 
 
 def env():

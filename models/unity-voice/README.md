@@ -52,14 +52,57 @@ curl -X POST localhost:5123/say -d "{\"text\": \"Hello chat.\", \"emotion\": \"h
 curl localhost:5123/health
 ```
 
-## Options
+## The designators: how a line says how to say it
 
-- **emotion:** `neutral`, `warm`, `happy`, `amused`, `excited`, `sad`, `concerned`, `frustrated`, `surprised`
-- **intensity:** 0 to 1 (default 0.35; 0 for neutral)
-- **speech act** (optional, guessed from punctuation otherwise): `statement`, `yes_no_question`, `wh_question`,
-  `exclamation`, `instruction`, `reassurance`, `aside`
-- **laughter / breath:** put `[laughter]` or `[breath]` in the text
-- **pace:** `UNITY_VOICE_LENGTH_SCALE` environment variable; 1.0 is her natural pace, higher is slower
+Every line is text plus up to three labels. These are exactly what she was trained on, read from
+`voice-meta.json` (`delivery_support`, `event_support`). Anything else is refused with the reason, never faked.
 
-A delivery she was never trained on (an unknown emotion, or an intensity outside what she recorded for that
-emotion) is refused with the reason instead of being faked.
+**Emotion** (`emotion`, default `neutral`): one of nine.
+
+| Emotion | Trained intensity | Laughter allowed |
+|---|---|---|
+| `neutral` | 0 only | no |
+| `warm` | 0.35 | yes |
+| `happy` | 0.35 | yes |
+| `amused` | 0.35 | yes |
+| `excited` | 0.35 | yes |
+| `surprised` | 0.35 | yes |
+| `frustrated` | 0.35 | yes |
+| `sad` | 0.35 | no |
+| `concerned` | 0.35 | no |
+
+**Intensity** (`intensity`): leave it out. She was recorded at one strength per emotion (0.35, or 0 for
+neutral); any other number is refused.
+
+**Speech act** (`speech_act` on the server / `--speech-act`): how the sentence is delivered. Every emotion has all
+seven. Leave it out and it is guessed from the punctuation (`?` -> a question, `!` -> exclamation, else statement).
+
+| Speech act | Use it for |
+|---|---|
+| `statement` | a plain sentence |
+| `yes_no_question` | "Did the raid start?" |
+| `wh_question` | "Where did Scar go?" (who/what/where/when/why/how) |
+| `exclamation` | "That actually worked!" |
+| `instruction` | telling someone to do something |
+| `reassurance` | "It's fine, we've got this." |
+| `aside` | a quieter side comment |
+
+**Events in the text:** `[laughter]` anywhere in the line is a real recorded laugh (394 training clips), allowed
+with the six emotions marked above. `[breath]` is understood but had no training clips, so it is refused.
+Stage directions like `(laughs)` or `(sighs)`, and the characters `[ ] < > { } ` * ` outside those two markers,
+are refused: take them out of the text before sending it.
+
+**Pace:** she speaks at her natural pace. `UNITY_VOICE_LENGTH_SCALE` (environment) stretches every sound: 1.0 is
+natural, 1.1 a little slower, 0.9 a little faster.
+
+**Long lines:** split at sentence ends automatically; one request can be up to 120 seconds of speech.
+
+### Examples
+
+```
+python unity_voice.py "Did you see that?" a.wav --emotion surprised --speech-act yes_no_question
+python unity_voice.py "[laughter] okay that was actually great." b.wav --emotion amused
+curl -X POST localhost:5123/say -d "{\"text\": \"Stay inside, it is raining fire.\", \"emotion\": \"concerned\", \"speech_act\": \"instruction\"}" -o c.wav
+```
+
+A refused request on the server is HTTP 422 with `{"error": "..."}` saying exactly what was not trained.
