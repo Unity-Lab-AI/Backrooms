@@ -273,7 +273,10 @@ while True:
             subprocess.run([sys.executable, SERVICES_PY, "golive"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
             subprocess.run([sys.executable, SERVICES_PY, "game"], cwd=ROOT, capture_output=True, text=True, timeout=120, **NOWIN)
             if not os.path.exists(RESUME):          # a resume loads the saved colony instead of making a new one
-                open(os.path.join(HERE, "_new_colony.request"), "w", encoding="utf-8").write("Async Industries")
+                # the owner's GO text picks the scenario: "crash landed" -> Crashlanded, else the company start
+                scen_go = "Crashlanded" if "crash" in want.lower().replace(" ", "") else "Async Industries"
+                print(stamp(), "scenario from GO:", scen_go, flush=True)
+                open(os.path.join(HERE, "_new_colony.request"), "w", encoding="utf-8").write(scen_go)
         # owner: "brb massive update to my systems game is save so we will be right back at it" -- a restart that
         # resumes: .local/qa/_resume.request holds the save name; once the game answers, that save is loaded
         if os.path.exists(RESUME) and _bridge_up():
