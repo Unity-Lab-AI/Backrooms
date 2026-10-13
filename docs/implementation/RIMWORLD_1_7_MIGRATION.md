@@ -31,6 +31,12 @@ The requested `1.7` is the RimWorld target. No separate new release number was s
 - RimWorld 1.7 uses Ludeon's Waylith engine and is available through Steam's unstable branch. The normal Steam branch remains 1.6 at this announcement.
 - Ludeon expects most existing mods to work without code changes. Its guidance is to test a mod before publishing it as compatible; changing a version label alone is not runtime evidence.
 - New C# features are available to modders; adopting a new compiler/runtime is optional, not a requirement inferred for these packages.
+- Saves cross-load: a 1.6 save loads in 1.7 and a 1.7 save loads back in 1.6.
+- Ludeon reports 2-4x better performance (varies by machine); PCs more than 10 years old may not run 1.7.
+- Mods may show "potentially unsupported" only because the version number changed; Ludeon asks modders to publish 1.7-compatible versions.
+- 1.7 bug reports go to the official RimWorld development Discord.
+
+Re-checked 2026-10-13 on the [RimWorld Steam community hub](https://steamcommunity.com/app/294100/) (owner: *"update 1.7 info"*): 1.7 is still the unstable beta branch; the main branch is still 1.6.
 
 Local installed target at inspection: **RimWorld 1.6.4871 rev590**, Steam build **23969874**. Core assembly SHA256: `5CF1B5BE399D5B1C9C56CA72C9D35B4ECF307FEACF5859D04AC5A1AA5926356A`. No 1.7 references, startup, saved-game observation or full-profile compatibility result was obtained in this task. The installation/profile is not switched to unstable by these package edits.
 
