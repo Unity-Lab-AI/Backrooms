@@ -13,7 +13,7 @@ T_NEW = (u'PANE = SRC + "/UI/OperationsFacilities.cs"\n'
          u'BONDSVC = SRC + "/Economy/BondService.cs"\n'
          u'HANDLING = SRC + "/Economy/BondHandling.cs"\n'
          u'TREASURY = SRC + "/Company/BondTreasury.cs"\n'
-         u'BONDTEXT = ("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/'
+         u'BONDTEXT = ("Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/'
          u'RR_Bonds.xml")\n'
          u'BONDS_PROOF = ".local/register/proof-bonds.py"')
 

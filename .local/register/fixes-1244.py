@@ -27,13 +27,13 @@ import os
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-BUTTON = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+BUTTON = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                       "MainButtonDefs", "RR_MainButtons.xml")
-SCENARIOS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+SCENARIOS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                          "ScenarioDefs", "RR_Scenarios.xml")
-STARTS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+STARTS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                       "RimroomsStartDefs", "RR_Starts.xml")
-KEYS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages", "English",
+KEYS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages", "English",
                     "Keyed", "RR_StartupSetup.xml")
 PLAYING = os.path.join(REPO, "docs", "PLAYING.md")
 

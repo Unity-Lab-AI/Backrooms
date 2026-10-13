@@ -2,6 +2,8 @@
 
 This file is the operating guide for anyone preparing, designing, implementing, or documenting the complete RimWorld mod. It points to the detailed project contracts; it does not replace them. Use saved project documents and evidence rather than reconstructing requirements from chat history.
 
+**Current game target, owner direction 2026-10-12:** prepare Rimrooms and the separate RimPLC mod for RimWorld **1.7 unstable / Waylith**, retain **1.6**, and use the shared physical `1.7/` payload. The earlier `1.6/` package-directory name was replaced on the same date; both game versions map to `1.7/`, while dated evidence retains its original paths. Read [the migration record](docs/implementation/RIMWORLD_1_7_MIGRATION.md) before changing loader metadata, preview labels, API pins or documentation. The installed baseline is still 1.6.4871; a supported-version declaration or a preview badge does not establish 1.7 gameplay or profile compatibility. Keep dated 1.6 research, hashes, names and play results intact. The Rimrooms release remains `0.13.0-dev`; game compatibility and mod release versions are separate.
+
 ## Project state and next gate
 
 > **Read [docs/DECISIONS_CURRENT.md](docs/DECISIONS_CURRENT.md) first.** Several rules below were written before later owner decisions and are kept as history, each marked *Superseded on <date>* where it stands: original content (2026-10-06), no hard dependencies (2026-10-03), the local player may launch and play (2026-10-06), anyone on your map and colony prisoners may cross an open gate (2026-10-06), version 0.13.0-dev, and one lowercase `main`/`develop`/`feature/*` branch standard with no separate mod repository (2026-10-10).
@@ -80,7 +82,7 @@ Backrooms/
   Mod/Rimrooms - Async Industries/             sole copyable/loadable RimWorld mod root
     About/
     LoadFolders.xml
-    1.6/                                       Defs, Assemblies, Languages, Patches, Textures, Sounds
+    1.7/                                       Defs, Assemblies, Languages, Patches, Textures, Sounds
 ```
 
 **Order of operations when work is finished: STAGE, then write `docs/NOW.md`, then commit and cascade.** Owner direction, 2026-10-01, verbatim: *"and dont forget to stage , now.md , then cascade"*, *"thats the definiative order of operation(remember it and document)"*. Stage first so play can begin immediately; NOW.md second so the handoff quotes a hash verified in the game folder rather than an intended one; cascade last so the published commit contains the handoff. The read-back of all ten refs is the only receipt. *(The ten-ref count is superseded on 2026-10-10 by the lowercase `main`/`develop`/`feature/*` standard; read back the refs the current cascade actually touches.)*

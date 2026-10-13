@@ -12,7 +12,7 @@ import io
 import glob
 import os
 
-KEYED = os.path.join("Mod", "Rimrooms - Async Industries", "1.6", "Languages", "English", "Keyed")
+KEYED = os.path.join("Mod", "Rimrooms - Async Industries", "1.7", "Languages", "English", "Keyed")
 
 REPLACEMENTS = [
     # key, old text, new text

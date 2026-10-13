@@ -37,7 +37,7 @@ import sys
 NL = chr(10)
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UI = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "UI")
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages",
                      "English", "Keyed")
 
 # The ceiling this panel must not get worse than, recorded the day it was first measured.

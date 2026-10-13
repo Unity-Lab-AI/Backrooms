@@ -1,0 +1,8 @@
+  RimPLC -> C:\Users\gfour\Desktop\Backrooms\RimPLC\1.6\Assemblies\RimPLC.dll
+  RimPLC.BridgeTools -> C:\Users\gfour\Desktop\Backrooms\RimPLC\BridgeTools\RimPLC.BridgeTools.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:21.26

@@ -1,11 +1,15 @@
 # AI build handoff and document map
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
+**Current content and dependency rules:** original gameplay art, audio, items and benches may ship where a role needs them; reuse stays the default and provider files are never copied. No mod or expansion is a hard dependency. See [current owner decisions](DECISIONS_CURRENT.md) and [content policy](CONTENT_REUSE_POLICY.md).
+
 **Gate traversal and pacing rule (2026-09-28):** inhabitants and monstrosities stay in the Backrooms; nothing but our own pawns crosses a gate on its own; an open gate is never an objective, lure, spawn target, raid route or attack trigger; everything else returns only carried through by our pawns, including people and monstrosities genuinely downed, dead or imprisoned; pressure escalates gradually from saved causes, bounded per opening and per coordinate, with quiet stretches required. Gate, machine door and portal are one thing, and every start can eventually run several gates. See [the rule](CONNECTED_COLONY_PORTALS.md#who-may-cross-and-the-pacing-of-what-waits-on-the-other-side).
 
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
 
-**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+**Historical content rule (2026-09-28), superseded in part on 2026-10-06:** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
 **Project:** Rimrooms - Async Industries  
@@ -19,7 +23,9 @@ For a short player-facing summary of the intended mod, see the [Rimrooms overvie
 
 ## Required reading order
 
-**Latest stopping point:** [0.4.1 connected-colony checkpoint](implementation/CONNECTED_COLONY_CHECKPOINT.md) records the owner's usage-conservation pause, included source and exact resume sequence. Start there when the owner resumes work.
+**Current entry point:** read [the 1.7 migration record](implementation/RIMWORLD_1_7_MIGRATION.md), [DECISIONS_CURRENT.md](DECISIONS_CURRENT.md) and [NOW.md](NOW.md) first. The 0.2/0.3/0.4 entry points below remain historical evidence, not the current package version or a 1.7 API audit.
+
+**Historical stopping point (0.4.1):** [0.4.1 connected-colony checkpoint](implementation/CONNECTED_COLONY_CHECKPOINT.md) records the owner's usage-conservation pause, included source and exact resume sequence. Start there when the owner resumes work.
 
 **Workflow ledger (2026-09-28 onward):** the checkpoint's resume sequence is queued as minor tasks in [`TODO.md`](TODO.md) under the connected-colony major in [`ROADMAP.md`](ROADMAP.md), with the first step decomposed in [`DECOMPOSED.md`](DECOMPOSED.md). Read [`HOWTO.md`](HOWTO.md) for how that ledger relates to this reading order; [`NOW.md`](NOW.md) holds the task currently in motion and [`FINALIZED.md`](FINALIZED.md) the archive of closed work.
 

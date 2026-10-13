@@ -9,7 +9,7 @@ import io
 import os
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-KEYED = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6', 'Languages', 'English', 'Keyed')
+KEYED = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7', 'Languages', 'English', 'Keyed')
 
 INVESTIGATION = [
     ('RR_UI_InterviewPrompt',

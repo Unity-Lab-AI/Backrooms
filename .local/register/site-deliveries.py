@@ -128,7 +128,7 @@ u"""            // A site's map can be unloaded while the headquarters' cannot, 
 print('procurement widened to registered sites, and the redirect bug fixed')
 
 # ------------------------------------------------------------------ strings
-p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6', 'Languages', 'English',
+p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7', 'Languages', 'English',
                  'Keyed', 'RR_Procurement.xml')
 s = io.open(p, encoding='utf-8-sig').read()
 for key in ('RR_Proc_DestinationNotOnTheBooks', 'RR_Proc_ReceivingMapUnavailable'):

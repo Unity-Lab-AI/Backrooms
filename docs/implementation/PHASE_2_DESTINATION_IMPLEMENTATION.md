@@ -1,5 +1,7 @@
 # Phase 2: destination generation implementation
 
+> **Navigation update — 2026-10-12:** package links below follow the current `1.7/` location. Recorded checkpoint paths, game versions, hashes and observations remain historical.
+
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
@@ -23,9 +25,9 @@ Exact source: profile row **4**, package **`Ludeon.RimWorld`**, local `Assembly-
 | [GenStep_BackroomsDestination.cs](../../src/RimroomsAsyncIndustries/Generation/GenStep_BackroomsDestination.cs) | Place shells, corridors, native doors, fixtures, contents and fog roots; verify placed routes and clue access. |
 | [RoomContentBuilder.cs](../../src/RimroomsAsyncIndustries/Generation/RoomContentBuilder.cs) | Arrange native furniture/floor accents and one actual salvage object in optional storage. |
 | [RoomContentMapComponent.cs](../../src/RimroomsAsyncIndustries/Generation/RoomContentMapComponent.cs) | Save clue IDs, actual landmarks and observation flags; draw visible-landmark labels/tooltips. |
-| [RR_BackroomsSites.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/WorldObjectDefs/RR_BackroomsSites.xml) | Register the saved custom owner/generator and `validLaunchTarget=false`. |
+| [RR_BackroomsSites.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Defs/WorldObjectDefs/RR_BackroomsSites.xml) | Register the saved custom owner/generator and `validLaunchTarget=false`. |
 
-Related lead-owned package files are [generation registration](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/MapGeneratorDefs/RR_BackroomsGeneration.xml), [fixture Defs](historical-content/0.2.0/1.6/Defs/ThingDefs_Buildings/RR_BackroomsFixtures.xml), and [English text](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Languages/English/Keyed/RR_Generation.xml).
+Related lead-owned package files are [generation registration](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Defs/MapGeneratorDefs/RR_BackroomsGeneration.xml), [fixture Defs](historical-content/0.2.0/1.6/Defs/ThingDefs_Buildings/RR_BackroomsFixtures.xml), and [English text](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Languages/English/Keyed/RR_Generation.xml).
 
 The expedition caller preflights crew, cargo, capacity and gate readiness before `DestinationService.EnsureSite(campaign, coordinate, out map, out entry)`. Generation never transfers crew/items. Investigation owns the physical route recording at `OfficeEvidenceCell`; this generator does not mint it. `RoomContentMapComponent.Clues` exposes `Id`, `RoomIndex`, `Landmark`, `Salvage`, `Observed`, `Label` and `Description`. UI pickup uses the actual observed salvage Thing and the normal capacity/reservation/pickup job, never a remote inventory copy. The lead reports Atlas clue listings and expedition salvage pickup are wired to this API.
 

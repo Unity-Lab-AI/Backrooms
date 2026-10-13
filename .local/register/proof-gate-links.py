@@ -17,7 +17,7 @@ import xml.etree.ElementTree as ET
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 GAME = r"C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Data"
-ROLES = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+ROLES = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                      "RimroomsGateEquipmentDefs", "RR_GateEquipment.xml")
 
 failures = []
@@ -215,7 +215,7 @@ network = _read(_SRC, "Portals", "RimroomsPortalNetwork.cs")
 crossing = _read(_SRC, "Portals", "PortalCrossingService.cs")
 comp = _read(_SRC, "Portals", "CompRimroomsEmergence.cs")
 warning = _read(_SRC, "Portals", "PortalDoorWarning.cs")
-portal_keyed = io.open(_os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6",
+portal_keyed = io.open(_os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7",
                                      "Languages", "English", "Keyed", "RR_Portals.xml"),
                        encoding="utf-8-sig", errors="replace").read()
 
@@ -307,9 +307,9 @@ def _code(text):
 
 
 def _read_mod(*parts):
-    return io.open(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", *parts),
+    return io.open(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", *parts),
                    encoding="utf-8-sig").read()
-doorpatch = io.open(_os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Patches",
+doorpatch = io.open(_os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Patches",
                                   "RR_NativeGateProviders.xml"),
                     encoding="utf-8-sig", errors="replace").read()
 

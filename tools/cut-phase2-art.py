@@ -66,7 +66,7 @@ from PIL import Image, ImageChops
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCE = os.path.join(REPO, "assets", "source", "phase2")
 JOURNAL_SOURCE = os.path.join(REPO, "assets", "source", "journal")
-TEXTURES = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Textures")
+TEXTURES = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Textures")
 
 # RimWorld draws about this many pixels per tile. Everything below is a multiple of it.
 PIXELS_PER_TILE = 128
@@ -259,7 +259,7 @@ def referenced_texture_paths():
     texture and the next cut ships it; nothing else reaches the package. One derivation, and it
     maintains itself.
     """
-    defs_root = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs")
+    defs_root = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs")
     found = set()
     for folder, _subdirs, files in os.walk(defs_root):
         for name in files:
@@ -284,7 +284,7 @@ def referenced_texture_paths():
 
 def directional_texture_paths():
     """Texture stems whose shipped graphicData explicitly selects Graphic_Multi."""
-    defs_root = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs")
+    defs_root = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs")
     found = set()
     for folder, _subdirs, files in os.walk(defs_root):
         for name in files:
@@ -418,7 +418,7 @@ def main():
                 ready.append(name)
         for rel, image in produced:
             destination = os.path.join(TEXTURES, rel.replace("/", os.sep))
-            print("        -> 1.6/Textures/%s" % rel)
+            print("        -> 1.7/Textures/%s" % rel)
             if apply_changes:
                 folder_path = os.path.dirname(destination)
                 if not os.path.isdir(folder_path):

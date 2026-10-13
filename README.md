@@ -1,13 +1,16 @@
 ﻿# Rimrooms — Async Industries
 
-**A RimWorld 1.6 campaign. You run a branch office of a company that does contract work in the
+**A RimWorld campaign, being prepared for 1.7 while retaining 1.6. You run a branch office of a company that does contract work in the
 Backrooms.**
 
 Ordinary colony play is untouched. What this adds is an employer, a machine that opens a way into
 somewhere else, and paperwork about both.
 
-**Current development version: 0.13.0-dev.** No balance, performance or compatibility result is
-claimed.
+**Current development version: 0.13.0-dev.** RimWorld 1.7 is the new game target, not the mod's
+release number. [Ludeon's announcement](https://store.steampowered.com/news/app/294100/view/672882362547178633)
+places 1.7 and its Waylith engine on the unstable branch; stable play remains on 1.6.
+[Migration status](docs/implementation/RIMWORLD_1_7_MIGRATION.md): the shared physical `1.7/` package
+content is shared by both versions. No 1.7 runtime or full-profile compatibility result is claimed.
 
 ---
 
@@ -40,7 +43,7 @@ claimed.
 
 ## Requirements
 
-**RimWorld 1.6, and nothing else.** No other mod and no expansion: this build declares no
+**RimWorld 1.6 or the 1.7 unstable candidate, and nothing else.** No other mod and no expansion: this build declares no
 dependencies at all, so your mod manager will not ask you for anything. The five expansions are
 each optional, and content that uses one simply is not there without it. A 294-mod load-order list
 ships as sorting advice, which is not the same thing as a requirement.
@@ -56,7 +59,8 @@ See **[Install](docs/wiki/install.md)**.
 ./tools/stage-mod.ps1      # copy the package to your local mods folder
 ```
 
-Needs the .NET SDK and a local RimWorld 1.6 install. The build treats warnings as errors and is
+Needs the .NET SDK and a local, owned RimWorld install. The inspected compiler baseline is 1.6;
+qualifying 1.7 needs its own reviewed references and runtime results. The build treats warnings as errors and is
 **deterministic** — two clean rebuilds produce an identical assembly hash.
 
 Details in **[BUILDING.md](docs/BUILDING.md)**.

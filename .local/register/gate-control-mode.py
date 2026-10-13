@@ -45,7 +45,7 @@ REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 CONSOLE = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Gate",
                        "CompRimroomsGateConsole.cs")
 SPINUP = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Gate", "GateSpinUp.cs")
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages", "English",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages", "English",
                      "Keyed", "RR_Gate.xml")
 
 # ------------------------------------------------------------- state and the switch

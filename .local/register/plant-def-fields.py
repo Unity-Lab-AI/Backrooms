@@ -16,9 +16,9 @@ import sys
 import time
 
 CHECK = "tools/check-def-fields.py"
-ARCH = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsRoomArchetypeDefs/RR_RoomArchetypes.xml"
-INHAB = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsInhabitantDefs/RR_Inhabitants.xml"
-GIVERS = "Mod/Rimrooms - Async Industries/1.6/Defs/WorkGiverDefs/RR_ConnectedWork.xml"
+ARCH = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsRoomArchetypeDefs/RR_RoomArchetypes.xml"
+INHAB = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsInhabitantDefs/RR_Inhabitants.xml"
+GIVERS = "Mod/Rimrooms - Async Industries/1.7/Defs/WorkGiverDefs/RR_ConnectedWork.xml"
 
 # (label, path, old, new, expected exit)
 

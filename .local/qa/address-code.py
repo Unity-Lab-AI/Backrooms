@@ -17,7 +17,7 @@ NL = chr(10)
 RECORDS = "src/RimroomsAsyncIndustries/Company/CampaignRecords.cs"
 PORTALS = "src/RimroomsAsyncIndustries/UI/OperationsPortalNetwork.cs"
 RECOVERY = "src/RimroomsAsyncIndustries/UI/OperationsEvidenceRecovery.cs"
-KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Portals.xml"
+KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Portals.xml"
 
 ADDRESS_PROPERTY = '''
         /// <summary>

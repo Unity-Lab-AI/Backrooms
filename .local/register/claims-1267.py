@@ -19,7 +19,7 @@ CLAIMS = u'''def _rr_read(*parts):
 services = _rr_read("src", "RimroomsAsyncIndustries", "Company", "CampaignServices.cs")
 component = _rr_read("src", "RimroomsAsyncIndustries", "Company", "RimroomsCampaignComponent.cs")
 gatecomp = _rr_read("src", "RimroomsAsyncIndustries", "Gate", "CompRimroomsGate.cs")
-starts_xml = _rr_read("Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+starts_xml = _rr_read("Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                       "RimroomsStartDefs", "RR_Starts.xml")
 
 # ------------------------------- the corporate start disabled itself on turn one
@@ -130,7 +130,7 @@ if suite.count(P_ANCHOR) != 1:
     raise SystemExit(1)
 suite = suite.replace(P_ANCHOR, P_NEW, 1)
 
-T_ANCHOR = u'STARTS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsStartDefs/RR_Starts.xml"'
+T_ANCHOR = u'STARTS = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsStartDefs/RR_Starts.xml"'
 if suite.count(T_ANCHOR) != 1:
     print("TARGET ANCHOR PROBLEM: %d -- check the suite's own name for the starts file"
           % suite.count(T_ANCHOR))

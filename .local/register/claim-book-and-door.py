@@ -45,7 +45,7 @@ _route = io.open(os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Investiga
 _required = re.search(r"RecordBooksRequired\\s*=\\s*(\\d+)", _cargo)
 _carrier = re.search(r'GetNamedSilentFail\\("([A-Za-z_]+)"\\)', _route)
 _starts_xml = io.open(os.path.join(
-    REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs", "RimroomsStartDefs",
+    REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs", "RimroomsStartDefs",
     "RR_Starts.xml"), encoding="utf-8-sig").read()
 _lab = re.search(r"<scenarioId>async_industries</scenarioId>.*?(?=<RimroomsStartDef>|$)",
                  _starts_xml, re.S)

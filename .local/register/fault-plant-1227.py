@@ -9,9 +9,9 @@ REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 PROOF = os.path.join('.local', 'register', 'proof-gate-approach.py')
 
 WORKER = os.path.join('src', 'RimroomsAsyncIndustries', 'Portals', 'PlaceWorker_GateApproach.cs')
-PATCH = os.path.join('Mod', 'Rimrooms - Async Industries', '1.6', 'Patches',
+PATCH = os.path.join('Mod', 'Rimrooms - Async Industries', '1.7', 'Patches',
                      'RR_GateApproachPlacement.xml')
-KEYS = os.path.join('Mod', 'Rimrooms - Async Industries', '1.6', 'Languages', 'English', 'Keyed',
+KEYS = os.path.join('Mod', 'Rimrooms - Async Industries', '1.7', 'Languages', 'English', 'Keyed',
                     'RR_Portals.xml')
 
 FAULTS = [

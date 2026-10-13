@@ -1,5 +1,7 @@
 # Existing research bench laboratory binding
 
+> **Navigation update — 2026-10-12:** package links below follow the current `1.7/` location. Recorded checkpoint paths, game versions, hashes and observations remain historical.
+
 **Task started and source implemented 2026-09-28; lead integration/build pending.** RR-EVD/RR-FAC/RR-UI under [Phase 3 build continuation](PHASE_3_BUILD_RECORD.md), the [content-reuse policy](../CONTENT_REUSE_POLICY.md), [evidence/research actions](../OPERATIONS_ACTION_CONTRACTS.md), [saved ownership](../CAMPAIGN_STATE_DICTIONARY.md) and [first playable](../FIRST_PLAYABLE_CONTRACT.md). Core inventory row **4**, package **Ludeon.RimWorld**, is the only provider in scope.
 
 ## Task and ownership
@@ -35,7 +37,7 @@ foreach ($type in 'Verse.ModContentPack','RimWorld.WorkGiver_Scanner','Verse.Boo
 | [LaboratoryUtility.cs](../../src/RimroomsAsyncIndustries/Investigation/LaboratoryUtility.cs) | Jobs accept only the ready designated bench and a living, free, capable, present player researcher |
 | [WorkGiver_CompanyLaboratory.cs](../../src/RimroomsAsyncIndustries/Investigation/WorkGiver_CompanyLaboratory.cs) | Only the designated bench is offered to company job search; existing evidence and project work remain the work source |
 | [OperationsLaboratoryBinding.cs](../../src/RimroomsAsyncIndustries/UI/OperationsLaboratoryBinding.cs) | Paginated existing-bench choices, live readiness, designation, clear, and native camera/selection inspection |
-| [RR_LaboratoryBinding.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Languages/English/Keyed/RR_LaboratoryBinding.xml) | Player-facing setup, readiness, recovery, provider identity and native-research explanations |
+| [RR_LaboratoryBinding.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Languages/English/Keyed/RR_LaboratoryBinding.xml) | Player-facing setup, readiness, recovery, provider identity and native-research explanations |
 
 Lead UI hook: call **`DrawLaboratoryBinding(Listing_Standard listing, RimroomsCampaignComponent campaign)`** from the Operations Investigation pane or Facilities. It is a private method on the existing partial Operations class. Add the keyed XML to the package allowlist. The scenario should provide/build an ordinary native research bench; **do not call designation automatically**. The new component has no scenario initializer, tick, spawn, grant or load-time selection effect.
 

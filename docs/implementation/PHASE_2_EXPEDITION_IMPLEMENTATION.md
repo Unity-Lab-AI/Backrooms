@@ -1,5 +1,7 @@
 # Phase 2: expedition dispatch, return and physical cargo
 
+> **Navigation update — 2026-10-12:** package links below follow the current `1.7/` location. Recorded checkpoint paths, game versions, hashes and observations remain historical.
+
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
@@ -22,8 +24,8 @@
 | [RimroomsExpeditionComponent.cs](../../src/RimroomsAsyncIndustries/Expedition/RimroomsExpeditionComponent.cs) | Branch-local saved controller, guarded dispatch/reopen/recall/relief actions, anchor checks, identity-preserving transfer and failure recovery. |
 | [ExpeditionClosure.cs](../../src/RimroomsAsyncIndustries/Expedition/ExpeditionClosure.cs) | Explicit operation closure, historical crew recovery, observed cargo declarations and additive expedition-schema migration. |
 | [JobDriver_ExpeditionApproach.cs](../../src/RimroomsAsyncIndustries/Expedition/JobDriver_ExpeditionApproach.cs) | Real native path/reservation jobs to the gate or saved return anchor; a carrying route for downed crew or remains. |
-| [RR_ExpeditionJobs.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/JobDefs/RR_ExpeditionJobs.xml) | `RR_ApproachGate`, `RR_ReturnThroughGate`, `RR_CarryToReturnAnchor`; all preserve a carried thing during job cleanup and do not drop it before starting. |
-| [RR_Expedition.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Languages/English/Keyed/RR_Expedition.xml) | Readiness, loadout, return, emergency, casualty, recovery and cargo-report text. Native report strings remain translatable JobDef fields. |
+| [RR_ExpeditionJobs.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Defs/JobDefs/RR_ExpeditionJobs.xml) | `RR_ApproachGate`, `RR_ReturnThroughGate`, `RR_CarryToReturnAnchor`; all preserve a carried thing during job cleanup and do not drop it before starting. |
+| [RR_Expedition.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Languages/English/Keyed/RR_Expedition.xml) | Readiness, loadout, return, emergency, casualty, recovery and cargo-report text. Native report strings remain translatable JobDef fields. |
 
 ## API for the lead's Operations and evidence flows
 

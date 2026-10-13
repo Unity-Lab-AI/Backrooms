@@ -26,7 +26,7 @@ print("-" * 78)
 budget = read(os.path.join(SRC, "Portals", "OpenMapBudget.cs"))
 frontier = read(os.path.join(SRC, "Portals", "NaturalFrontierService.cs"))
 startdef = read(os.path.join(SRC, "Scenario", "RimroomsStartDef.cs"))
-keyed = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages",
+keyed = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages",
                           "English", "Keyed", "RR_Portals.xml"))
 parent = read(os.path.join(SRC, "Generation", "RimroomsDestinationMapParent.cs"))
 

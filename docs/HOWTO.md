@@ -1,5 +1,7 @@
 ﻿# HOWTO — Working on Rimrooms with the Claude Code workflow
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
 This is the practical guide for anyone (human or build agent) opening this repository under the `.claude/` workflow. It explains how the two documentation layers fit together, what the daily ceremony is, how to build and stage the mod, and how work gets published. It does not replace the project contracts; it tells you where they are and in what order they win.
 
 ## 1. Two documentation layers, one project
@@ -92,7 +94,7 @@ From the repository root in PowerShell (details and failure modes in [`BUILDING.
 ./tools/stage-mod.ps1 -UpdateExisting   # after inspecting an existing install; backs it up first
 ```
 
-Requirements: .NET SDK 9.0.308 (via `global.json`), a locally installed RimWorld 1.6 whose Core DLL hash matches the pin, PowerShell. The build treats warnings as errors and refuses a changed Core pin. Output goes to `artifacts/build/` (manifests) and `Mod/Rimrooms - Async Industries/1.6/Assemblies/` (the DLL, gitignored). Package contents are governed by `tools/package-files.json`.
+Requirements: .NET SDK 9.0.308 (via `global.json`), a locally installed RimWorld whose Core DLL hash matches the reviewed pin (currently the retained 1.6 baseline; 1.7 qualification is pending), PowerShell. The build treats warnings as errors and refuses a changed Core pin. Output goes to `artifacts/build/` (manifests) and `Mod/Rimrooms - Async Industries/1.7/Assemblies/` (the DLL, gitignored). Package contents are governed by `tools/package-files.json`.
 
 ## 7. Publishing a milestone
 

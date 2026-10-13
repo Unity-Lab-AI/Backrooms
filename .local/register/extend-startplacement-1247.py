@@ -14,7 +14,7 @@ text = io.open(PROOF, encoding="utf-8").read()
 READ_ANCHOR = u'starts_xml = read(STARTS)'
 READ_NEW = u'''starts_xml = read(STARTS)
 arrival = strip_cs(read(os.path.join(SRC, "Scenario", "ScenPart_RimroomsArrival.cs")))
-scenarios_xml = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+scenarios_xml = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                                   "ScenarioDefs", "RR_Scenarios.xml"))'''
 
 TAIL_ANCHOR = u'''print("")

@@ -24,8 +24,8 @@ WINDOW = SRC + "/UI/MainTabWindow_Operations.cs"
 SERVICES = SRC + "/Company/CampaignServices.cs"
 COMPONENT = SRC + "/Company/RimroomsCampaignComponent.cs"
 ORIGIN = SRC + "/Economy/CompRimroomsOddOrigin.cs"
-KEYS = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_CrewPlanner.xml"
-SUPPLY_KEYS = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_OddSupply.xml"
+KEYS = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_CrewPlanner.xml"
+SUPPLY_KEYS = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_OddSupply.xml"
 PROOF = ".local/register/proof-planner-and-missions.py"
 
 

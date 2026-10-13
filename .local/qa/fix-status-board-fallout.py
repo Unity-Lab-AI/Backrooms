@@ -13,8 +13,8 @@ import sys
 
 NL = chr(10)
 
-GATE_KEYS = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Gate.xml"
-PORTAL_KEYS = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Portals.xml"
+GATE_KEYS = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Gate.xml"
+PORTAL_KEYS = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Portals.xml"
 HELP_PROOF = ".local/register/proof-playing-and-help.py"
 STARTS_PROOF = ".local/register/proof-starts.py"
 PLANT = ".local/register/plant-startplacement.py"

@@ -32,7 +32,7 @@ Research tier 2: seven `RimroomsProjectDef`, one per branch, each requiring its 
 
 ### Files touched
 
-`Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsProjectDefs/RR_CompanyProjects.xml`, `src/RimroomsAsyncIndustries/Gate/CompRimroomsGate.cs`, `src/RimroomsAsyncIndustries/Gate/NativeGateBinding.cs`, `src/RimroomsAsyncIndustries/Gate/GateSpinUp.cs`, `src/RimroomsAsyncIndustries/Portals/PortalTraversalPolicy.cs`, `src/RimroomsAsyncIndustries/Procurement/RimroomsProcurementComponent.cs`, `src/RimroomsAsyncIndustries/Personnel/RimroomsPersonnelComponent.cs`, `docs/implementation/RESEARCH_TIER2_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj.
+`Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsProjectDefs/RR_CompanyProjects.xml`, `src/RimroomsAsyncIndustries/Gate/CompRimroomsGate.cs`, `src/RimroomsAsyncIndustries/Gate/NativeGateBinding.cs`, `src/RimroomsAsyncIndustries/Gate/GateSpinUp.cs`, `src/RimroomsAsyncIndustries/Portals/PortalTraversalPolicy.cs`, `src/RimroomsAsyncIndustries/Procurement/RimroomsProcurementComponent.cs`, `src/RimroomsAsyncIndustries/Personnel/RimroomsPersonnelComponent.cs`, `docs/implementation/RESEARCH_TIER2_IMPLEMENTATION.md`, `CHANGELOG.md`, `README.md`, `docs/TODO.md`, `docs/NOW.md`, `About.xml`, the csproj.
 
 ### Closure notes
 

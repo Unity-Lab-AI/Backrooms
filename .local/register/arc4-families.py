@@ -17,7 +17,7 @@ import io
 import os
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-MOD = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6')
+MOD = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7')
 DEFS = os.path.join(MOD, 'Defs', 'RimroomsRequestDefs', 'RR_Requests.xml')
 KEYED = os.path.join(MOD, 'Languages', 'English', 'Keyed', 'RR_Requests.xml')
 

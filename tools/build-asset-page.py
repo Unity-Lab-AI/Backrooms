@@ -36,7 +36,7 @@ import wave
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries")
-PACKAGE = os.path.join(MOD, "1.6")
+PACKAGE = os.path.join(MOD, "1.7")
 SOURCE = os.path.join(REPO, "assets", "source")
 SRC = os.path.join(REPO, "src")
 TARGET = os.path.join(REPO, "docs", "wiki", "assets.md")
@@ -56,12 +56,12 @@ ROTATIONS = ("_north", "_east", "_south", "_west")
 # one of them. One table of sixty-nine gets it on the whole gallery, and the `Kind` column below
 # does the grouping's job without costing the full list.
 GROUPS = [
-    ("Main menu backgrounds", "1.6/Textures/UI/"),
-    ("Buildings", "1.6/Textures/Things/Building/"),
-    ("Items", "1.6/Textures/Things/Item/"),
-    ("Creatures", "1.6/Textures/Things/Pawn/"),
-    ("Floors", "1.6/Textures/Terrain/"),
-    ("Sound cues", "1.6/Sounds/"),
+    ("Main menu backgrounds", "1.7/Textures/UI/"),
+    ("Buildings", "1.7/Textures/Things/Building/"),
+    ("Items", "1.7/Textures/Things/Item/"),
+    ("Creatures", "1.7/Textures/Things/Pawn/"),
+    ("Floors", "1.7/Textures/Terrain/"),
+    ("Sound cues", "1.7/Sounds/"),
 ]
 
 # Where the gallery's pictures live, **relative to the page that references them**, with no leading
@@ -272,9 +272,9 @@ def kind_of(entry):
     relative = entry["relative"]
     if entry["sound"]:
         return "Sound cue"
-    if relative.startswith("1.6/Textures/UI/Menu/"):
+    if relative.startswith("1.7/Textures/UI/Menu/"):
         return "Menu background"
-    if relative.startswith("1.6/Textures/UI/"):
+    if relative.startswith("1.7/Textures/UI/"):
         return "Interface icon"
     # **AN ICON THAT LIVES AMONG THE BUILDINGS, AND THE FOLDER WOULD HAVE LIED ABOUT IT.**
     # `RR_MachineGate` sits under `Things/Building/` because it once was a buildable and the path
@@ -283,11 +283,11 @@ def kind_of(entry):
     # menu. The same path is special-cased in `named_by` for the same reason.
     if relative.endswith("/RR_MachineGate.png"):
         return "Interface icon"
-    if relative.startswith("1.6/Textures/Terrain/"):
+    if relative.startswith("1.7/Textures/Terrain/"):
         return "Floor"
-    if relative.startswith("1.6/Textures/Things/Item/"):
+    if relative.startswith("1.7/Textures/Things/Item/"):
         return "Item"
-    if relative.startswith("1.6/Textures/Things/Pawn/"):
+    if relative.startswith("1.7/Textures/Things/Pawn/"):
         return "Creature"
     if "/Gates/RR_GateFrame_" in relative:
         return "Gate frame"
@@ -295,7 +295,7 @@ def kind_of(entry):
     # nothing here can mistake `_south` for a frame number.
     if re.match(r"^.*_\d{2}$", entry["stem"]):
         return "Animation frame"
-    if relative.startswith("1.6/Textures/Things/Building/"):
+    if relative.startswith("1.7/Textures/Things/Building/"):
         return "Building"
     return "Other"
 

@@ -38,7 +38,7 @@ network = _read(_SRC, "Portals", "RimroomsPortalNetwork.cs")
 crossing = _read(_SRC, "Portals", "PortalCrossingService.cs")
 comp = _read(_SRC, "Portals", "CompRimroomsEmergence.cs")
 warning = _read(_SRC, "Portals", "PortalDoorWarning.cs")
-portal_keyed = io.open(_os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6",
+portal_keyed = io.open(_os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7",
                                      "Languages", "English", "Keyed", "RR_Portals.xml"),
                        encoding="utf-8-sig", errors="replace").read()
 

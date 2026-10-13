@@ -26,7 +26,7 @@ import xml.etree.ElementTree as ET
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 GAME = r"C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Data"
-MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6")
+MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7")
 SRC = os.path.join(REPO, "src")
 
 failures = []

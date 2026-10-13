@@ -37,7 +37,7 @@ try {
     & dotnet build $solution --configuration $Configuration --no-restore "-p:RimWorldPath=$RimWorldPath" --verbosity minimal
     if ($LASTEXITCODE -ne 0) { throw 'Compilation failed. The previous packaged DLL has not been replaced.' }
     $builtDll = Join-Path $repoRoot "src/RimroomsAsyncIndustries/bin/$Configuration/net472/RimroomsAsyncIndustries.dll"
-    $assemblyDirectory = Join-Path $package '1.6/Assemblies'
+    $assemblyDirectory = Join-Path $package '1.7/Assemblies'
     $null = New-Item -ItemType Directory -Path $assemblyDirectory -Force
     Copy-Item -LiteralPath $builtDll -Destination (Join-Path $assemblyDirectory 'RimroomsAsyncIndustries.dll') -Force
     Copy-Item -LiteralPath (Join-Path $repoRoot 'LICENSE') -Destination (Join-Path $package 'About/License.txt') -Force

@@ -748,7 +748,7 @@ print("-" * 78)
 # RoofCollapseCellsFinder.ProcessRoofHolderDespawned. It DEFAULTS TO TRUE and Core sets it false
 # on none of its three roofs, so RoofRockThick collapses like anything else -- dropping
 # CollapsedRocks and crushing what stands beneath.
-roofs = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+roofs = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                           "RoofDefs", "RR_Roofs.xml"))
 containment = read(os.path.join(SRC, "Generation", "BackroomsContainment.cs"))
 
@@ -767,9 +767,9 @@ check("it is still overhead mountain in every way Core measures",
 
 check("CORE'S OWN ROOF IS NOT PATCHED, BECAUSE THIS IS ONLY FOR THE BACKROOMS",
       not any("RoofRockThick" in read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries",
-                                                   "1.6", "Patches", name))
+                                                   "1.7", "Patches", name))
               for name in os.listdir(os.path.join(REPO, "Mod", "Rimrooms - Async Industries",
-                                                  "1.6", "Patches"))
+                                                  "1.7", "Patches"))
               if name.endswith(".xml")),
       "-- owner direction, verbatim: *\"tgis is only for backrooms\"*. Patching RoofRockThick "
       "would stop mountains collapsing in every colony, for this player and for every other mod "
@@ -969,7 +969,7 @@ print("-" * 78)
 budget = read(os.path.join(SRC, "Portals", "OpenMapBudget.cs"))
 frontier = read(os.path.join(SRC, "Portals", "NaturalFrontierService.cs"))
 startdef = read(os.path.join(SRC, "Scenario", "RimroomsStartDef.cs"))
-keyed = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages",
+keyed = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages",
                           "English", "Keyed", "RR_Portals.xml"))
 parent = read(os.path.join(SRC, "Generation", "RimroomsDestinationMapParent.cs"))
 
@@ -1620,7 +1620,7 @@ check("the theme list is append-only, and says so where somebody would break it"
 
 # ---------------------------------------------------------------- the kinds themselves
 archetype_xml = read(os.path.join(
-    "Mod", "Rimrooms - Async Industries", "1.6", "Defs", "RimroomsRoomArchetypeDefs",
+    "Mod", "Rimrooms - Async Industries", "1.7", "Defs", "RimroomsRoomArchetypeDefs",
     "RR_RoomArchetypes.xml"))
 archetype_count = archetype_xml.count(
     "<RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>")

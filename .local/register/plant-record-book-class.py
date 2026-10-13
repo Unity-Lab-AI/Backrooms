@@ -21,9 +21,9 @@ import time
 
 BOOK = "src/RimroomsAsyncIndustries/Investigation/RimroomsRecordBook.cs"
 COMP = "src/RimroomsAsyncIndustries/Investigation/CompRouteEvidence.cs"
-PATCH = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_ExistingEvidenceBook.xml"
+PATCH = "Mod/Rimrooms - Async Industries/1.7/Patches/RR_ExistingEvidenceBook.xml"
 BINDING = "src/RimroomsAsyncIndustries/Investigation/RecordBookClassBinding.cs"
-KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Investigation.xml"
+KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Investigation.xml"
 HQ = "src/RimroomsAsyncIndustries/Scenario/GenStep_Headquarters.cs"
 ARRIVAL = "src/RimroomsAsyncIndustries/Scenario/ScenPart_RimroomsArrival.cs"
 DELIVERY = "src/RimroomsAsyncIndustries/Company/RecordBookDelivery.cs"

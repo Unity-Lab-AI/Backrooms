@@ -15,7 +15,7 @@ import io
 import sys
 
 NL = chr(10)
-PATH = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Generation.xml"
+PATH = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Generation.xml"
 
 BR = "\\n\\n"
 

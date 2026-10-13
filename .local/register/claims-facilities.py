@@ -50,7 +50,7 @@ def _read(*parts):
 
 
 facility_source = _read("src", "RimroomsAsyncIndustries", "Generation", "FacilityPlanner.cs")
-archetype_source = _read("Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+archetype_source = _read("Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                          "RimroomsRoomArchetypeDefs", "RR_RoomArchetypes.xml")
 
 _failures = []

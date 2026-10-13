@@ -1,6 +1,10 @@
 # Rimrooms - Async Industries: source and document register
 
-**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
+**Current content and dependency rules:** original gameplay art, audio, items and benches may ship where a role needs them; reuse stays the default and provider files are never copied. No mod or expansion is a hard dependency. See [current owner decisions](DECISIONS_CURRENT.md) and [content policy](CONTENT_REUSE_POLICY.md).
+
+**Historical content rule (2026-09-28), superseded in part on 2026-10-06:** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
 This file is the navigation index for the research and design materials a future implementation agent must consult. Read it alongside [`AGENTS.md`](../AGENTS.md) and [`AI_BUILD_HANDOFF.md`](AI_BUILD_HANDOFF.md). Source observations, design interpretations, and unverified runtime behavior must stay clearly distinguished.
@@ -10,6 +14,8 @@ This file is the navigation index for the research and design materials a future
 **Implementation process:** [Regression containment and completion tracking](REGRESSION_CONTAINMENT.md) is the mandatory rule for preserving already implemented behavior and checking off source/build increments without overstating runtime acceptance.
 
 ## Project source-of-truth documents
+
+**Current game-version route:** [RimWorld 1.7 migration](implementation/RIMWORLD_1_7_MIGRATION.md) and [Ludeon's official Waylith / 1.7 unstable announcement](https://store.steampowered.com/news/app/294100/view/672882362547178633). The announcement describes the new engine and asks mod authors to test compatibility; it does not verify this mod, RimPLC or the dated optional-mod profile. Retain the historical 1.6 source register and inspect any changed APIs against a separately identified 1.7 install.
 
 **Connected-colony implementation:** [owner contract](CONNECTED_COLONY_PORTALS.md), [task and ownership](implementation/CONNECTED_COLONY_IMPLEMENTATION_TASK.md), [native Core job/carry APIs](implementation/CONNECTED_WORK_CORE_API.md), [state migration](implementation/CONNECTED_PORTAL_STATE_MIGRATION.md), [profile boundaries](implementation/CONNECTED_WORK_PROFILE_BOUNDARIES.md) and [network source](implementation/CONNECTED_NETWORK_IMPLEMENTATION.md). These are source/design records, not gameplay acceptance.
 

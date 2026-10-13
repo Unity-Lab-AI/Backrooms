@@ -24,7 +24,7 @@ import io
 import sys
 
 NL = chr(10)
-KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/"
+KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/"
 EXPEDITIONS = KEYED + "RR_OperationsExpeditions.xml"
 FIELD = KEYED + "RR_FieldAndThreats.xml"
 

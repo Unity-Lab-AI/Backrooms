@@ -3,7 +3,7 @@
 import io
 import os
 
-MOD = os.path.join('Mod', 'Rimrooms - Async Industries', '1.6')
+MOD = os.path.join('Mod', 'Rimrooms - Async Industries', '1.7')
 KEYED = os.path.join(MOD, 'Languages', 'English', 'Keyed')
 
 # Surfaces, per Core's own measured practice:

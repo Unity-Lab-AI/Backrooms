@@ -45,10 +45,10 @@ NL = chr(10)
 
 EVENTDEF = "src/RimroomsAsyncIndustries/Threats/RimroomsAnomalyEventDef.cs"
 SERVICE = "src/RimroomsAsyncIndustries/Threats/AnomalyEventService.cs"
-DEFS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsAnomalyEventDefs/RR_AnomalyEvents.xml"
-KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_AnomalyEvents.xml"
+DEFS = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsAnomalyEventDefs/RR_AnomalyEvents.xml"
+KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_AnomalyEvents.xml"
 GENERATION_KEYED = \
-    "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Generation.xml"
+    "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Generation.xml"
 
 EDITS = [
     # ------------------------------------------------------------- the effect

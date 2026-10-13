@@ -20,10 +20,10 @@ import subprocess
 import sys
 import time
 
-RECIPES = "Mod/Rimrooms - Async Industries/1.6/Defs/RecipeDefs/RR_GateRecipes.xml"
-EQUIPMENT = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsGateEquipmentDefs/RR_GateEquipment.xml"
-STEPS = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_GateSteps.xml"
-GATE_KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Gate.xml"
+RECIPES = "Mod/Rimrooms - Async Industries/1.7/Defs/RecipeDefs/RR_GateRecipes.xml"
+EQUIPMENT = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsGateEquipmentDefs/RR_GateEquipment.xml"
+STEPS = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_GateSteps.xml"
+GATE_KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Gate.xml"
 SHARES = "src/RimroomsAsyncIndustries/Gate/GateAssemblyShares.cs"
 GATE = "src/RimroomsAsyncIndustries/Gate/CompRimroomsGate.cs"
 CONSOLE = "src/RimroomsAsyncIndustries/Gate/CompRimroomsGateConsole.cs"

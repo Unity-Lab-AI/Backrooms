@@ -197,6 +197,10 @@ FORBIDDEN_REFERENCES = (
     "GFourteen/Backrooms",
     "Unity-Lab-AI/backrooms",
 )
+# The owner explicitly supplied this separate public mod repository on 2026-10-12.
+# Its shared hostname does not make it the private working repository. Only this
+# exact root URL is exempted; other paths/hosts and all Backrooms references remain refused.
+APPROVED_PUBLIC_REPOSITORY_URLS = ("https://git.unityailab.com/GFourteen/RimPLC",)
 TEXT_SUFFIXES = (".md", ".html", ".htm", ".txt", ".xml", ".json", ".yml", ".css", ".js")
 
 
@@ -329,13 +333,16 @@ def write_readme(problems):
         "",
         "> **Development build.** Gameplay acceptance is pending; this is not a finished campaign",
         "> release, and nothing here is a balance, performance or compatibility report.",
+        "> RimWorld 1.7 is an unstable / Waylith target; 1.6 is retained. Earlier source, build and",
+        "> play observations used 1.6. No 1.7 runtime or full-profile acceptance is recorded.",
         "",
     ] + body + [
         "",
         "## Install",
         "",
         "Download or clone this repository into RimWorld's `Mods` folder, so that `About/` and",
-        "`1.6/` sit directly inside it. Enable it in the mod list. The folder's name does not",
+        "`1.7/` sit directly inside it. Both 1.6 and 1.7 load that shared content folder; do not",
+        "rename it to match the game version. Enable it in the mod list. The folder's name does not",
         "matter: the game identifies a mod by the `packageId` in `About/About.xml`, which is",
         "`%s`." % value("packageId"),
         "",
@@ -472,8 +479,12 @@ def audit(problems):
                 if marker in text:
                     problems.append("LEDGER TEXT IN THE EXPORT: %s contains %r" % (rel, marker))
                     break
+            reference_text = text
+            for approved_url in APPROVED_PUBLIC_REPOSITORY_URLS:
+                reference_text = re.sub(re.escape(approved_url) + r"(?=[\s\"'<>)]|$)",
+                                        "[approved public mod repository]", reference_text)
             for marker in FORBIDDEN_REFERENCES:
-                if marker.lower() in text.lower():
+                if marker.lower() in reference_text.lower():
                     problems.append("A BUILD REPOSITORY IS REFERENCED IN THE EXPORT: %s names "
                                     "%r -- owner: nothing should reference the build repos "
                                     "anywhere" % (rel, marker))
@@ -489,12 +500,11 @@ def audit(problems):
 def check_images_resolve(problems):
     """Every `<img src>` in the published site must name a file that is actually in the export.
 
-    **This is the one failure mode the art work could have had, and it is silent.** The banners
-    reference the slides where the *mod* puts them -- `../1.6/Textures/UI/Menu/...` -- precisely so
-    that twenty-one megabytes are not duplicated into the site directory. The cost of that choice
-    is that the link crosses from the site into the package, so a renamed texture, a manifest that
-    stops carrying the menu art, or a change to `SITE_DIRECTORY` would publish **pages full of
-    broken images with every instrument still green.**
+    The site carries its own copies under `assets/art/`; the package keeps the original slides
+    under `1.7/Textures/UI/Menu/`. References that climb from the site into the package are
+    rejected, because Pages serves only the site directory. A renamed texture, a manifest that
+    stops carrying the menu art, or a change to `SITE_DIRECTORY` must fail this audit before
+    publishing pages with missing images.
 
     Resolved against the assembled tree on disk rather than against the mapping that generated it,
     for the same reason the rest of this audit walks the tree: the point is to catch the difference

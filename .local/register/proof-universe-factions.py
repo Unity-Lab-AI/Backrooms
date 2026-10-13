@@ -35,7 +35,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6")
+MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7")
 GAME = r"C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Data"
 FACTIONS = os.path.join(MOD, "Defs", "FactionDefs", "RR_UniverseFactions.xml")
 
@@ -190,7 +190,7 @@ check("no start grants spacer-tier content, so the 1990s framing holds",
 # ------------------------------------------------------------------ the package knows about it
 allow = io.open(os.path.join(REPO, "tools", "package-files.json"), encoding="utf-8").read()
 check("the faction file is on the package allowlist",
-      "1.6/Defs/FactionDefs/RR_UniverseFactions.xml" in allow,
+      "1.7/Defs/FactionDefs/RR_UniverseFactions.xml" in allow,
       "-- it would ship unauthorised, which check-package-integrity.py already refuses")
 
 print("")

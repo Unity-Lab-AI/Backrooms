@@ -1,12 +1,14 @@
 ﻿# Rimrooms - Async Industries: pre-production and complete implementation backlog
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
 **Latest owner requirement — connected colony portals (2026-09-28):** [CONNECTED_COLONY_PORTALS.md](CONNECTED_COLONY_PORTALS.md) governs travel, work, materials, portal lifetime, coordinate persistence and procedural inhabitants. Open portals unify local-branch labor and physical job/material access across both sides; ordinary crossing must not require expedition dispatch. Natural portals remain permanently open. Existing dispatch-only descriptions below are superseded where they conflict. The current source does not yet implement this unified work network.
 
 
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
-**Purpose:** this is the master checklist from the current design folder to a releasable, polished RimWorld 1.6 mod. It includes work before code starts, the file/package work, every interconnected game system, all 294 local profile entries, RimWorld Together, all five DLCs, the two selected gravship chapters, verification, and release maintenance.
+**Purpose:** this is the master checklist from the current design folder to a releasable, polished RimWorld mod, now targeting 1.7 unstable while retaining 1.6. It includes work before code starts, the file/package work, every interconnected game system, all 294 local profile entries, RimWorld Together, all five DLCs, the two selected gravship chapters, verification, and release maintenance.
 
 **Current state:** the active objective is every item in this full backlog. The [0.3.0-dev company wave](implementation/PHASE_3_BUILD_RECORD.md) adds hiring, procurement, facility observations, native-bench/book/audio reuse and the menu slideshow; that record owns its exact build result. Gate 0 documentation/source preparation is complete. The following 0.2.0 compilation/staging statement is historical evidence, not the current package identity. The [0.2.0 development slice](implementation/PHASE_2_BUILD_RECORD.md) has source and package content for the company scenario, gate/expedition/evidence loop, furnished saved AI-01, bounded layout selection/fallback, crew/cargo recovery, durable analysis reports, Gate Telemetry, Operations actions, original interior/equipment/encounter art and optional quiet cues with user audio settings. The integrated 0.2.0 package compiled with zero warnings/errors and its 61 installed files match the saved staging manifest; read the build record for exact receipts. Source completion and compilation do not close Gate 2: owner-launched gameplay, save/recovery, presentation and performance acceptance remain open, as do the Phase 3+ campaign and optional integrations. No optional integration or in-game Rimrooms acceptance result exists yet. The 294 rows are the full-profile research/test target; solo requires Core, co-op adds the RWT/Harmony stack, and other profile mods remain optional. The [Gate 0 decision sheet](GATE_0_DECISIONS.md) records D1–D9 and the supplemental family-level threat scope. The displayed title is exactly **Rimrooms - Async Industries**; author/publisher metadata is `Operator`. The [feature traceability map](FEATURE_TRACEABILITY.md) ties gameplay systems to design, lore, mod-profile rows, presentation, implementation surfaces, and acceptance evidence. Feature-specific runtime compatibility and API prototypes remain later implementation/acceptance work, not Gate 0 blockers. Start from the [source register](SOURCE_REGISTER.md), then use the [design plan](MOD_INTEGRATION_PLAN.md), [technical architecture](TECHNICAL_ARCHITECTURE.md), [game brief](GAME_DESIGN.md), [scenario contract](SCENARIOS.md), [research index](RESEARCH.md), [294-row register](../outputs/rimrooms-async-industries-register-2026-09-27/Rimrooms_Async_Industries_294_Mod_Integration_Register.html), and [direct-linked video index](research/kane-pixels-video-index.csv).
 
@@ -221,14 +223,14 @@ Backrooms/
     Rimrooms - Async Industries/  only loadable and copyable mod folder
       About/                      About.xml, Preview.png, required mod metadata
       LoadFolders.xml             Core and conditional DLC folders
-      1.6/Assemblies/             built RimroomsAsyncIndustries.dll only
-      1.6/Defs/                   scenario, building, item, pawn, work, research, quest, room defs
-      1.6/Languages/English/Keyed/
-      1.6/Patches/                narrow, package-guarded compatibility patches
-      1.6/Textures/  1.6/Sounds/  approved menu presentation; no new gameplay assets
+      1.7/Assemblies/             built RimroomsAsyncIndustries.dll only
+      1.7/Defs/                   scenario, building, item, pawn, work, research, quest, room defs
+      1.7/Languages/English/Keyed/
+      1.7/Patches/                narrow, package-guarded compatibility patches
+      1.7/Textures/  1.7/Sounds/  approved menu presentation; no new gameplay assets
 ```
 
-Confirm final folder conventions against RimWorld 1.6's loader. Keep tests, save fixtures, screenshots, logs, and release documentation outside the copyable package. The first product target is the existing 294-entry list plus Rimrooms (295), sorted by RimSort; the RimBridgeServer test overlay is additional and must be counted separately. The owner launches through RimSort; see the [RimSort package/launch plan](research/RIMSORT_PACKAGE_AND_LAUNCH_PLAN.md) and [RimBridgeServer harness](research/RIMBRIDGE_TEST_HARNESS.md).
+Confirm final folder conventions against both RimWorld 1.6 and 1.7's loaders, using the shared `1.7/` payload. A metadata mapping is not 1.7 runtime acceptance. Keep tests, save fixtures, screenshots, logs, and release documentation outside the copyable package. The first product target is the existing 294-entry list plus Rimrooms (295), sorted by RimSort; the RimBridgeServer test overlay is additional and must be counted separately. The owner launches through RimSort; see the [RimSort package/launch plan](research/RIMSORT_PACKAGE_AND_LAUNCH_PLAN.md) and [RimBridgeServer harness](research/RIMBRIDGE_TEST_HARNESS.md).
 
 ## Phase 2 — code architecture and safe vertical slice
 
@@ -398,7 +400,7 @@ Source checkpoint: the [0.3.0-dev wave](implementation/PHASE_3_BUILD_RECORD.md) 
 - [ ] Replace the historical custom gameplay items, benches, terrain, sprites and audio with source-verified existing Core/profile content and saved role bindings; preserve the gate, field gear, evidence, threat and discovery functions. Follow `CONTENT_REUSE_POLICY.md` and the existing-content replacement map.
 - [x] Source/art: two original painted menu images, the controller/settings, quiet crossfade and dynamic title/version are present; see [menu implementation](implementation/PHASE_5_MENU_IMPLEMENTATION.md) and [art record](implementation/PHASE_5_MENU_ART_V2.md). In-game presentation checks remain in the full tasks below.
 - [ ] Create and integrate the approved original RimWorld-style Backrooms main-menu slideshow, preserving provenance, native fallback, supported crops and truthful feature coverage. Show the exact mod title and loaded version beside native top-left version information; use dynamic UI text, not baked image version labels.
-- [ ] Integrate the slideshow through the verified 1.6 menu surface without redistributing vanilla/DLC art; keep a disable/fallback route and test it alongside the profile's menu-changing mods.
+- [ ] Qualify the existing slideshow separately on the retained 1.6 menu surface and the 1.7 unstable / Waylith menu surface without redistributing vanilla/DLC art; keep a disable/fallback route and test it alongside the profile's menu-changing mods.
 - [ ] Review every slideshow image with the actual menu overlay across supported aspect ratios, resolutions, and UI scales; check text contrast, crop safety, quiet transitions, reduced-motion behavior, and no-audio use.
 - [ ] Review text length, font scale, combat readability, motion sensitivity, audio levels, UI overlap at supported screen sizes, and translations.
 - [ ] Verify no UI panel conceals urgent health, fire, power, missing crew, gate recall, containment, or contract priorities.
@@ -476,3 +478,9 @@ flowchart LR
 Gate 0 documentation/source criteria pass, repository foundations exist and the Phase 2 first-expedition source is implemented in development. The integrated 0.2.0 compiler/package/staging receipts are saved. Complete the owner's RimSort acceptance sequence before promoting Gate 2; compilation does not establish gameplay acceptance. No RimBridgeServer Rimrooms test or runtime compatibility clearance is recorded. Hiring/training, procurement/shipments, generated contract families, broader research, outposts, alternate starts, town cases, containment, optional integrations/co-op, menu slideshow, balance and release work remain in Phases 3–6. RimSort continues to own the profile and launch; RimBridgeServer is only a post-launch QA overlay.
 
 Current integration batch: [scenario/provider checkpoint](implementation/PHASE_3_SCENARIO_PROVIDER_BUILD.md), with source/build evidence and remaining acceptance limits recorded separately.
+
+## 2026-10-12 — current physical content folders
+
+Owner: "might need to fix that all around the backrooms folder" / "i doont want my 1.7 saying 1.6".
+
+- [x] **Source/build/package/document integrity:** rename current Rimrooms and RimPLC content folders to `1.7/`; update loader mappings, build paths, allowlists/manifests, operational scripts, current docs/wiki, archived navigation, exports and the copyable ZIP while preserving payload bytes. Evidence: [CONTENT_FOLDER_1_7_LAYOUT.md](implementation/CONTENT_FOLDER_1_7_LAYOUT.md). This does not close 1.7 runtime/profile acceptance.

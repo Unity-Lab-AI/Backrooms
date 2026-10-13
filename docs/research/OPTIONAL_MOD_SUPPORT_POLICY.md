@@ -1,5 +1,7 @@
 # Optional mod support policy
 
+> **Current game target — 2026-10-12:** RimWorld **1.7 unstable / Waylith**, retaining **1.6** and the shared `1.6/` content folder. [The migration record](../implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target. Historical 1.6 source/build/play results stay unchanged; a version declaration is not 1.7 runtime or profile acceptance.
+
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
@@ -26,7 +28,7 @@ Every profile row receives one evidence-backed disposition:
 
 ## Maintenance and release policy
 
-- Keep a supported-version matrix for RimWorld 1.6, each DLC combination actually verified, Harmony, RWT client/server builds, the exact full-profile order, and any adapter-specific mods.
+- Keep separate supported-version matrix entries for RimWorld 1.6 and 1.7 unstable, each DLC combination actually verified; historical 1.6 results do not close the 1.7 cases. Include Harmony, RWT client/server builds, the exact full-profile order, and any adapter-specific mods.
 - Treat each optional integration as opt-in. Missing mods must leave Core behavior intact; present mods must not trigger patches unless their package IDs are positively detected.
 - Do not vendor or redistribute third-party code, textures, XML, audio, or other assets. Link to the upstream mod and record its author/license/version in the research register.
 - Re-review a mod when its package ID, supported RimWorld version, declared dependency, relevant Def/API, or tested load order changes. Re-run only the affected isolation tests and the complete release smoke suite; update evidence before changing the compatibility claim.

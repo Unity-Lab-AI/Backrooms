@@ -1,5 +1,7 @@
 # Declared relationship gap audit
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.6/` content folder. [The migration record](../implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. This document's dated 1.6 source, profile and play observations remain unchanged; 1.7 runtime/profile acceptance is pending.
+
 **Snapshot:** 2026-09-27 local profile inventory. **Scope:** reconcile every selected-profile directed Requires, LoadAfter, LoadBefore, and IncompatibleWith declaration against its originating mod review and the priority interaction map. The relationship CSVs remain unchanged; this audit does not establish compatibility.
 
 ## Finding

@@ -3,7 +3,7 @@ import glob, io, os, re
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 
-MOD = 'Mod/Rimrooms - Async Industries/1.6'
+MOD = 'Mod/Rimrooms - Async Industries/1.7'
 
 # Def types RimWorld shows an info card or tooltip for, where a description is player-facing.
 WANT_DESCRIPTION = {

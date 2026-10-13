@@ -1,15 +1,17 @@
 ---
 title: Install
-summary: "You need RimWorld 1.6 and nothing else. How to install it and how to tell it worked."
+summary: "RimWorld 1.6 is retained; 1.7 unstable is the new target. Installation and what has been verified."
 ---
 
 # Install
 
 ## Requirements
 
+**1.7 is on RimWorld's unstable branch.** The [official announcement](https://store.steampowered.com/news/app/294100/view/672882362547178633) introduces the Waylith engine; the normal stable branch remains 1.6. Rimrooms is being prepared for 1.7 and retains 1.6. No 1.7 gameplay or full-profile compatibility result has been recorded.
+
 | | |
 |---|---|
-| **RimWorld** | 1.6 — the only requirement |
+| **RimWorld** | 1.6 retained; 1.7 unstable / Waylith is the new target |
 | **Expansions** | Royalty, Ideology, Biotech, Anomaly, Odyssey — every one **optional** |
 | **Other mods** | All optional |
 | **Harmony** | Not used and not needed |
@@ -88,7 +90,8 @@ That folder is also RimSort's **Local mods** location, so a manual install is pi
 refresh and can then be sorted like any other mod.
 
 A correct install has `About/About.xml` directly inside the mod folder — not nested one level
-deeper. The folder's name does not matter; the game identifies a mod by the `packageId` inside
+deeper. Both game versions load the same `1.7/` content folder through `LoadFolders.xml`; leave
+that folder name unchanged on either version. The outer mod folder's name does not matter; the game identifies a mod by the `packageId` inside
 that file.
 
 ---

@@ -13,7 +13,7 @@ import sys
 
 NL = chr(10)
 PATH = "docs/research/provenance-register.csv"
-SLIDES = "Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu"
+SLIDES = "Mod/Rimrooms - Async Industries/1.7/Textures/UI/Menu"
 
 NEW = [
     ("RR_Menu_PanicJunction", "No Way Back"),
@@ -65,7 +65,7 @@ for name, title in NEW:
         "Original generated project art; no blanket MIT or third-party asset license claim",
         RECORD,
         "Preserve project provenance; no copied provider assets",
-        "../../Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/" + name + ".png",
+        "../../Mod/Rimrooms - Async Industries/1.7/Textures/UI/Menu/" + name + ".png",
         "Included in the shipped development package; staged and published 0.12.84-dev",
         NOTES,
     ])
@@ -88,7 +88,7 @@ for name, label in RETRO:
     row[2] = label
     row[5] = "../../outputs/menu-art-2026-09-29/prompts-and-provenance.json"
     row[10] = "../../LICENSE; ../../outputs/menu-art-2026-09-29/prompts-and-provenance.json"
-    row[12] = "../../Mod/Rimrooms - Async Industries/1.6/Textures/UI/Menu/" + name + ".png"
+    row[12] = "../../Mod/Rimrooms - Async Industries/1.7/Textures/UI/Menu/" + name + ".png"
     row[13] = "Included in the shipped development package"
     row[14] = RETRO_NOTES
     body.append(row)

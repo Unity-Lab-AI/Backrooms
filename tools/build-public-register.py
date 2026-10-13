@@ -98,7 +98,7 @@ TRACE_MEANING = {
 #
 # Everything else is Optional, which is the truth: this mod is built to need nothing, and the page
 # says so above the table. A short Recommended list that is true beats a long one that is not.
-PATCH_ROOT = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Patches")
+PATCH_ROOT = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Patches")
 
 
 def patched_mod_names():
@@ -281,6 +281,11 @@ def page(entries):
                "one is for, and what changes if you leave it out." % mods)
     out.append("")
     out.append("The base game is listed too, for context. It is not counted in that %d." % mods)
+    out.append("")
+    out.append("**Game-version boundary:** the October 2026 play observations below used RimWorld "
+               "1.6. RimWorld 1.7 unstable / Waylith is the new target, and its compatibility "
+               "with this profile has not been verified. Third-party names and recorded "
+               "versions remain exactly as observed.")
     out.append("")
     out.append("**This whole page is the recommended list.** Every mod on it was part of the "
                "profile Rimrooms was built in. The tag says what each one *adds*, not whether to "

@@ -31,7 +31,7 @@ QUEUE = "docs/TODO.md"
 # [x] row to the archive, so a closure marker is planted against the archive now.
 ARCHIVE = "docs/FINALIZED.md"
 PLANNER = "src/RimroomsAsyncIndustries/Expedition/CrewPlanner.cs"
-PATCH = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_GlowPodMarker.xml"
+PATCH = "Mod/Rimrooms - Async Industries/1.7/Patches/RR_GlowPodMarker.xml"
 ABOUT = "Mod/Rimrooms - Async Industries/About/About.xml"
 PROOF = ".local/register/proof-housekeeping.py"
 

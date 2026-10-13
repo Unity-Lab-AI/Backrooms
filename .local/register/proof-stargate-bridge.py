@@ -34,7 +34,7 @@ REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries")
 BRIDGE = os.path.join(SRC, "Portals", "StargateBridge.cs")
 EMERGENCE = os.path.join(SRC, "Portals", "CompRimroomsEmergence.cs")
-MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6")
+MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7")
 THEIRS = (r"C:\Program Files (x86)\Steam\steamapps\workshop\content"
           r"\294100\2831698056\Source\Stargates")
 

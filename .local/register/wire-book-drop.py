@@ -20,7 +20,7 @@ REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries")
 SERVICES = os.path.join(SRC, "Company", "CampaignServices.cs")
 COMPONENT = os.path.join(SRC, "Company", "RimroomsCampaignComponent.cs")
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages",
                      "English", "Keyed", "RR_Requests.xml")
 
 EDITS = []

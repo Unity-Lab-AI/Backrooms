@@ -1,5 +1,7 @@
 # Phase 2: Async Industries start implementation
 
+> **Navigation update — 2026-10-12:** package links below follow the current `1.7/` location. Recorded checkpoint paths, game versions, hashes and observations remain historical.
+
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
@@ -21,11 +23,11 @@
 | [ScenPart_RimroomsStart.cs](../../src/RimroomsAsyncIndustries/Scenario/ScenPart_RimroomsStart.cs) | Final roster validation, fixed HQ generator selection, role work preferences, registration after arrival, ordinary eligible faction neutrality, visible startup messages and registration-only recovery API. Includes the native pawn-page subclass. |
 | [HeadquartersSetupComponent.cs](../../src/RimroomsAsyncIndustries/Scenario/HeadquartersSetupComponent.cs) | Map-owned physical setup receipt, retained partial-failure state, original staff references, registration receipt and placement records. |
 | [GenStep_Headquarters.cs](../../src/RimroomsAsyncIndustries/Scenario/GenStep_Headquarters.cs) | HQ terrain and original facility layout; owned native buildings, doors/roof/home area, effective-limit stock splitting, starter power and native arrival roots. |
-| [RR_Scenarios.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/ScenarioDefs/RR_Scenarios.xml) | Selectable `RR_AsyncIndustries`, native five-kind configuration, no extra pocket possessions, one Standing arrival, `RR_Headquarters` and two owned GenSteps. |
-| [RR_ScenarioParts.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/ScenPartDefs/RR_ScenarioParts.xml) | Fixed company-start and staff-page registration; these parts cannot be randomly added to ordinary scenarios. |
-| [RR_Staff.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/PawnKindDefs/RR_Staff.xml) | Five original staff kinds using Core pawn generation, apparel and work/skill constraints. |
-| [RR_Starts.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/RimroomsStartDefs/RR_Starts.xml) | `RR_AsyncIndustriesStart`: the complete initial facility arrangement, quantities, role floors and financial values. |
-| [RR_Scenario.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Languages/English/Keyed/RR_Scenario.xml) | Welcome, validation, setup-failure and recovery text. Scenario and kind labels/descriptions are ordinary translatable Def fields. |
+| [RR_Scenarios.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Defs/ScenarioDefs/RR_Scenarios.xml) | Selectable `RR_AsyncIndustries`, native five-kind configuration, no extra pocket possessions, one Standing arrival, `RR_Headquarters` and two owned GenSteps. |
+| [RR_ScenarioParts.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Defs/ScenPartDefs/RR_ScenarioParts.xml) | Fixed company-start and staff-page registration; these parts cannot be randomly added to ordinary scenarios. |
+| [RR_Staff.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Defs/PawnKindDefs/RR_Staff.xml) | Five original staff kinds using Core pawn generation, apparel and work/skill constraints. |
+| [RR_Starts.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Defs/RimroomsStartDefs/RR_Starts.xml) | `RR_AsyncIndustriesStart`: the complete initial facility arrangement, quantities, role floors and financial values. |
+| [RR_Scenario.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Languages/English/Keyed/RR_Scenario.xml) | Welcome, validation, setup-failure and recovery text. Scenario and kind labels/descriptions are ordinary translatable Def fields. |
 
 All source, layout, text and configuration in this increment are original. Native ThingDef/PawnKindDef base references use the installed game's behavior. No third-party code, binary, texture or dialogue was added by this assignment.
 

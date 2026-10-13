@@ -52,7 +52,7 @@ io.open(p, 'w', encoding='utf-8-sig', newline='').write(s)
 print('hint keys are now literals')
 
 # Rename the strings to match.
-p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6', 'Languages', 'English',
+p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7', 'Languages', 'English',
                  'Keyed', 'RR_Scenario.xml')
 s = io.open(p, encoding='utf-8-sig').read()
 for old, new in [('RR_Hint_contact', 'RR_Hint_Contact'), ('RR_Hint_surface', 'RR_Hint_Surface'),

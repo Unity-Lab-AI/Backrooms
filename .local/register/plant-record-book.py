@@ -38,7 +38,7 @@ SITE = SRC + "/Threats/FirstSliceSiteComponent.cs"
 REQUEST = SRC + "/Company/RequestLine.cs"
 CARGO = SRC + "/Expedition/ExpeditionCargo.cs"
 COMP = SRC + "/Investigation/CompRouteEvidence.cs"
-MOD = "Mod/Rimrooms - Async Industries/1.6"
+MOD = "Mod/Rimrooms - Async Industries/1.7"
 # **`RR_FieldEquipment.xml` IS GONE AS OF 0.13.0-dev** and both of the defs it held moved. The
 # recorder is a building in `RR_FieldKit.xml`; the route recording became the company journal in
 # `RR_CompanyJournal.xml`, which also resolved a duplicate defName that file had been shipping.

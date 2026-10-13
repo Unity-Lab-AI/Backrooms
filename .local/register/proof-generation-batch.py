@@ -63,7 +63,7 @@ content = strip_cs_comments(read(os.path.join(SRC, "Generation", "RoomContentBui
 BARE_FIXTURE = chr(10) + " " * 28 + "Place(map, room, coordinate,"
 genstep = strip_cs_comments(read(os.path.join(SRC, "Generation",
                                               "GenStep_BackroomsDestination.cs")))
-archetypes = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6",
+archetypes = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7",
                               "Defs", "RimroomsRoomArchetypeDefs",
                               "RR_RoomArchetypes.xml"))
 # The canteen's own block, so a claim about its depth cannot be satisfied by some

@@ -103,7 +103,7 @@ print("-" * 78)
 # a portal to the back rooms.. wtf!!! ... ive said stargate mod repeaditly is how the gates work
 # but with normal does"*.
 gatecomp = _read(_SRC, "Portals", "CompRimroomsEmergence.cs")
-doorpatch = io.open(_os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Patches",
+doorpatch = io.open(_os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Patches",
                                   "RR_NativeGateProviders.xml"),
                     encoding="utf-8-sig", errors="replace").read()
 

@@ -58,6 +58,7 @@ import json
 import os
 import re
 import sys
+import xml.etree.ElementTree as ET
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries")
@@ -118,19 +119,31 @@ else:
     versions = re.findall(r"<li>([^<]+)</li>", "".join(
         re.findall(r"<supportedVersions>(.*?)</supportedVersions>", text, re.S)))
     versions = [v.strip() for v in versions if v.strip()]
-    if versions != ["1.6"]:
-        fail("supportedVersions is %r; the mod targets official RimWorld 1.6 alone (row 1290)"
+    if versions != ["1.6", "1.7"]:
+        fail("supportedVersions is %r; the declared official game targets are 1.6 and 1.7"
              % versions)
     else:
-        notes.append("supportedVersions is 1.6 alone")
+        notes.append("supportedVersions declares 1.6 and 1.7; declarations are not runtime results")
 
 folders = os.path.join(MOD, "LoadFolders.xml")
 if not os.path.isfile(folders):
     fail("LoadFolders.xml is missing")
-elif not re.search(r'<v1\.6>', read(folders)):
-    fail("LoadFolders.xml does not map v1.6")
 else:
-    notes.append("LoadFolders.xml maps v1.6")
+    try:
+        folder_root = ET.parse(folders).getroot()
+    except (ET.ParseError, OSError) as error:
+        fail("LoadFolders.xml could not be parsed: %s" % error)
+    else:
+        expected_tags = ["v1.6", "v1.7"]
+        if folder_root.tag != "loadFolders" or [node.tag for node in folder_root] != expected_tags:
+            fail("LoadFolders.xml must declare exactly v1.6 and v1.7 in a loadFolders root")
+        else:
+            for node in folder_root:
+                selected = [(item.text or "").strip() for item in node]
+                if any(item.tag != "li" for item in node) or selected != ["1.7"]:
+                    fail("LoadFolders.xml %s must select the shared 1.7 content folder" % node.tag)
+                else:
+                    notes.append("LoadFolders.xml maps %s to shared 1.7 content" % node.tag)
 
 # --------------------------------------------------------------------------- #
 # 2. No destructive patch operation on a Core or DLC def
@@ -208,7 +221,7 @@ for path in package_xml():
         if not value:
             continue
         for extension in (".png", ".jpg"):
-            candidate = ("1.6/Textures/" + value + extension).lower()
+            candidate = ("1.7/Textures/" + value + extension).lower()
             if candidate in shipped_lower and "/RR_" not in value and not value.startswith("RR_"):
                 copied.append(value)
 if copied:

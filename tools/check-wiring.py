@@ -42,7 +42,7 @@ import re
 import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6")
+MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7")
 SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries")
 
 # Def types RimWorld resolves itself, so our code never has to name or enumerate them. Kept short

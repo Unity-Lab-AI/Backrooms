@@ -1,6 +1,6 @@
 import io, glob, os, re
 
-M = 'Mod/Rimrooms - Async Industries/1.6/'
+M = 'Mod/Rimrooms - Async Industries/1.7/'
 
 # --- the last "the machine" leaks ------------------------------------------
 LEAKS = [

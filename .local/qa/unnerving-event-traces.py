@@ -25,8 +25,8 @@ import re
 import sys
 
 NL = chr(10)
-DEFS_DIR = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsAnomalyEventDefs"
-KEYED_DIR = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed"
+DEFS_DIR = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsAnomalyEventDefs"
+KEYED_DIR = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed"
 
 # event defName -> trace key fragment
 TRACES = {

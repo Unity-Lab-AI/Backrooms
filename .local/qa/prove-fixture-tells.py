@@ -256,16 +256,16 @@ NEW_PLANTS = '''    # ========================================= the object half:
 '''
 
 PLANT_CONST = (
-    'GENERATION_KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/'
+    'GENERATION_KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/'
     'Keyed/RR_Generation.xml"' + NL
     + '# The object half of the same register. Added 2026-10-05 with the fixture tells.' + NL
     + 'TELL_DEF = "src/RimroomsAsyncIndustries/Generation/RimroomsFixtureTellDef.cs"' + NL
     + 'TELL_COMP = "src/RimroomsAsyncIndustries/Generation/CompRimroomsFixtureTell.cs"' + NL
     + 'TELL_SERVICE = "src/RimroomsAsyncIndustries/Generation/FixtureTellService.cs"' + NL
     + 'BUILDER = "src/RimroomsAsyncIndustries/Generation/RoomContentBuilder.cs"' + NL
-    + 'TELL_DEFS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsFixtureTellDefs/'
+    + 'TELL_DEFS = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsFixtureTellDefs/'
     'RR_FixtureTells.xml"' + NL
-    + 'TELL_KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/'
+    + 'TELL_KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/'
     'RR_FixtureTells.xml"'
 )
 
@@ -286,7 +286,7 @@ text = io.open(PLANTS, encoding="utf-8").read()
 if "AN OBJECT TELL LOSES ITS TEXT" in text:
     print("the fixture plants are already present")
 else:
-    old = ('GENERATION_KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/'
+    old = ('GENERATION_KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/'
            'Keyed/RR_Generation.xml"')
     if text.count(old) != 1:
         print("PLANT CONSTANT NOT UNIQUE (%d)" % text.count(old))

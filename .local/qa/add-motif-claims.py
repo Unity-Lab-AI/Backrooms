@@ -107,7 +107,7 @@ check("the theme list is append-only, and says so where somebody would break it"
 
 # ---------------------------------------------------------------- the kinds themselves
 archetype_xml = read(os.path.join(
-    "Mod", "Rimrooms - Async Industries", "1.6", "Defs", "RimroomsRoomArchetypeDefs",
+    "Mod", "Rimrooms - Async Industries", "1.7", "Defs", "RimroomsRoomArchetypeDefs",
     "RR_RoomArchetypes.xml"))
 archetype_count = archetype_xml.count(
     "<RimroomsAsyncIndustries.Generation.RimroomsRoomArchetypeDef>")

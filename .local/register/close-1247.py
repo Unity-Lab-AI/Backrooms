@@ -34,7 +34,7 @@ correctly in local with other mods and then ill start rimsort"*
 **Files touched:** `src/RimroomsAsyncIndustries/Scenario/GenStep_Headquarters.cs`,
 `src/RimroomsAsyncIndustries/Scenario/HeadquartersLayout.cs`,
 `src/RimroomsAsyncIndustries/Scenario/ScenPart_RimroomsArrival.cs`,
-`Mod/Rimrooms - Async Industries/1.6/Defs/ScenarioDefs/RR_Scenarios.xml`,
+`Mod/Rimrooms - Async Industries/1.7/Defs/ScenarioDefs/RR_Scenarios.xml`,
 `Mod/Rimrooms - Async Industries/About/About.xml`,
 `src/RimroomsAsyncIndustries/RimroomsAsyncIndustries.csproj`, `README.md`,
 `docs/implementation/BURN_INTO_PLACE_IMPLEMENTATION.md`, `docs/TODO.md`, `docs/NOW.md`.

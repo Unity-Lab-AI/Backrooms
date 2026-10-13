@@ -1,5 +1,7 @@
 # Phase 3 procurement implementation record
 
+> **Navigation update — 2026-10-12:** package links below follow the current `1.7/` location. Recorded checkpoint paths, game versions, hashes and observations remain historical.
+
 **Scope:** the first local headquarters purchasing and physical receiving flow. This is a branch-local supplier order system, not shared RimTogether inventory or a finished company-wide economy.
 
 **Verification status:** implementation source and Def/keyed content are present. The integrated source build and in-game acceptance have not been run by this work item; the parent is compiling the combined 0.3.0-dev package. Treat all interaction and save behavior as unverified until the owner-led profile run is recorded in the Phase 3 build record.
@@ -32,8 +34,8 @@ On supplier arrival, the service checks the current HQ stockpile filter, availab
 - [ProcurementRecords.cs](../../src/RimroomsAsyncIndustries/Procurement/ProcurementRecords.cs) — saveable quote/order/receipt/route records and stable status values.
 - [RimroomsProcurementCatalogDef.cs](../../src/RimroomsAsyncIndustries/Procurement/RimroomsProcurementCatalogDef.cs) — policy catalog Def referencing existing items only.
 - [OperationsProcurement.cs](../../src/RimroomsAsyncIndustries/UI/OperationsProcurement.cs) — quote, selection, acceptance, retry, redirect, cancellation, paged history, and receipt inspection controls. The Operations tab route itself was wired by the parent.
-- [RR_ProcurementCatalog.xml](<../../Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsProcurementCatalogDefs/RR_ProcurementCatalog.xml>) — provisional prices/timing for Core Silver, Steel, Industrial Components, WoodLog, Cloth, MedicineIndustrial, and MealSurvivalPack.
-- [RR_Procurement.xml](<../../Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Procurement.xml>) — UI, ledger, receipt, retry, and refusal text.
+- [RR_ProcurementCatalog.xml](<../../Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsProcurementCatalogDefs/RR_ProcurementCatalog.xml>) — provisional prices/timing for Core Silver, Steel, Industrial Components, WoodLog, Cloth, MedicineIndustrial, and MealSurvivalPack.
+- [RR_Procurement.xml](<../../Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Procurement.xml>) — UI, ledger, receipt, retry, and refusal text.
 
 The APIs were checked against the pinned local Core source review in [PHASE_3_PROCUREMENT_TASK.md](PHASE_3_PROCUREMENT_TASK.md), including `ThingMaker.MakeThing`, live `ThingDef.stackLimit`, `ThingOwner.TryDrop`, `StoreUtility.TryFindBestBetterStoreCellFor`/`IsGoodStoreCell`, `StorageSettings.AllowedToAccept`, `SlotGroup.CellsList`, and Core Scribe ownership. The review describes source signatures; it does not establish in-game placement, active OgreStack values, save/load behavior, or native hauling results.
 

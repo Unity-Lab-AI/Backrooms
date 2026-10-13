@@ -10,7 +10,7 @@ import io
 import sys
 
 NL = chr(10)
-PATH = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsRoomArchetypeDefs/RR_RoomArchetypes.xml"
+PATH = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsRoomArchetypeDefs/RR_RoomArchetypes.xml"
 
 # Which of the eight themes each shipped archetype belongs to.
 TAGS = {

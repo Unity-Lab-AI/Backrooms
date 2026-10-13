@@ -34,7 +34,7 @@ import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries")
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages",
                      "English", "Keyed", "RR_Portals.xml")
 
 failures = []
@@ -61,7 +61,7 @@ opening = no_comments(read(SRC, "Gate", "PortalGateOpening.cs"))
 travel = no_comments(read(SRC, "Portals", "PortalTravelService.cs"))
 comp = no_comments(read(SRC, "Gate", "CompRimroomsGate.cs"))
 keyed = read(KEYED)
-gate_keys = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6",
+gate_keys = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7",
                               "Languages", "English", "Keyed", "RR_Gate.xml"))
 
 print("")
@@ -300,7 +300,7 @@ for key in ("RR_NativeGate_DesignatedNeedsCircuit", "RR_NativeGate_IsRunExtensio
 # leaves; nothing tunes WHETHER.
 posture = no_comments(read(SRC, "Gate", "GateWatchPosture.cs"))
 driver = no_comments(read(SRC, "Gate", "JobDriver_RimroomsGate.cs"))
-jobs = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+jobs = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                          "JobDefs", "RR_GateJobs.xml"))
 enum_body = posture.split("public enum GateWatchPosture")[1].split("}")[0]
 

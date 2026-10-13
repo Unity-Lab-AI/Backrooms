@@ -1,5 +1,7 @@
 # Phase 3 personnel implementation
 
+> **Navigation update — 2026-10-12:** package links below follow the current `1.7/` location. Recorded checkpoint paths, game versions, hashes and observations remain historical.
+
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
@@ -21,8 +23,8 @@ No builds, tests, game launch, profile change, staging or Git operation is perfo
 | [HiringServices.cs](../../src/RimroomsAsyncIndustries/Personnel/HiringServices.cs) | Once-only ledger receipts, same-pawn clear HQ edge arrival, native recruitment, registration, retry and guarded refund |
 | [PersonnelServices.cs](../../src/RimroomsAsyncIndustries/Company/PersonnelServices.cs) | Existing campaign partial: employee registration and role changes; existing ledger/payroll stay authoritative |
 | [OperationsPersonnel.cs](../../src/RimroomsAsyncIndustries/UI/OperationsPersonnel.cs) | Actionable board, staff needs/bed status, role choice, native Assign link, scrollable native-profile dossier and quote confirmation |
-| [RR_HiringPolicies.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/RimroomsPersonnelDefs/RR_HiringPolicies.xml) | Core `Colonist` candidate kind; default three offers, seven days, $100,000 onboarding and $5,000/day |
-| [RR_Personnel.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Languages/English/Keyed/RR_Personnel.xml) | English commands, conditions, native-profile descriptions, quote/recovery text and ledger reasons |
+| [RR_HiringPolicies.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Defs/RimroomsPersonnelDefs/RR_HiringPolicies.xml) | Core `Colonist` candidate kind; default three offers, seven days, $100,000 onboarding and $5,000/day |
+| [RR_Personnel.xml](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Languages/English/Keyed/RR_Personnel.xml) | English commands, conditions, native-profile descriptions, quote/recovery text and ledger reasons |
 
 Lead hook: call **`DrawPersonnel(Listing_Standard listing, RimroomsCampaignComponent campaign)`** from the existing Operations Personnel case. It is a private method on that same partial class. The lead adds the two package XML files to the allowlist and compiles after integration; no existing campaign source file was edited here.
 

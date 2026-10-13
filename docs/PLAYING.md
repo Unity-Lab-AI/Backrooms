@@ -1,5 +1,7 @@
 # Playing Rimrooms — Async Industries
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. This document's dated 1.6 source, profile and play observations remain unchanged; 1.7 runtime/profile acceptance is pending.
+
 > **The player documentation is the [wiki](wiki/index.md).** Start there — it is shorter, it is
 > organised for reading, and it is what the published site serves.
 >
@@ -256,7 +258,8 @@ There is no synchronised research either.
 
 It is not a balance document, it is not a compatibility report, and it is not a play report.
 
-The mod is developed against RimWorld 1.6 and **declares no dependencies at all** — not one mod and
+The inspected development baseline is RimWorld 1.6; the new target is 1.7 unstable / Waylith,
+with 1.6 retained. No 1.7 runtime result is recorded. The mod **declares no dependencies at all** — not one mod and
 not one expansion. All five expansions are optional, and expansion content is marked as needing its
 expansion, so without it that content is simply absent. A 294-entry load-order list ships as sorting
 advice, which is a different thing from a requirement: own none of those mods and this still runs.

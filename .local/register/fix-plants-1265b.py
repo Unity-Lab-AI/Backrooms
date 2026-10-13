@@ -89,7 +89,7 @@ if text.count(ANCHOR) != 1 or text.count(BINDING_ANCHOR) != 1:
 # The archetype defs, and the canteen's own block, bound beside the other file reads.
 index = text.index(BINDING_ANCHOR)
 line_end = text.index(u"\n", text.index(u"\n", index) + 1) + 1
-binding = (u'archetypes = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6",\n'
+binding = (u'archetypes = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7",\n'
            u'                              "Defs", "RimroomsRoomArchetypeDefs",\n'
            u'                              "RR_RoomArchetypes.xml"))\n'
            u'# The canteen\'s own block, so a claim about its depth cannot be satisfied by some\n'

@@ -16,7 +16,7 @@ import re
 
 NL = chr(10)
 SRC = "src/RimroomsAsyncIndustries"
-DEFS = "Mod/Rimrooms - Async Industries/1.6/Defs"
+DEFS = "Mod/Rimrooms - Async Industries/1.7/Defs"
 
 
 def read_all(root, suffix):

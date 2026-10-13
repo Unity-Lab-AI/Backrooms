@@ -44,7 +44,7 @@ import re
 import xml.etree.ElementTree as ET
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-STARTS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+STARTS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                       "RimroomsStartDefs", "RR_Starts.xml")
 CORE = os.environ.get("RIMWORLD_PATH",
                       r"C:\Program Files (x86)\Steam\steamapps\common\Rimworld")

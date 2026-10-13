@@ -44,8 +44,8 @@ import re
 import sys
 
 NL = chr(10)
-DEFS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsInhabitantDefs/RR_Inhabitants.xml"
-KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Inhabitants.xml"
+DEFS = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsInhabitantDefs/RR_Inhabitants.xml"
+KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Inhabitants.xml"
 
 # (family defName, its tellKey)
 TELLS = [

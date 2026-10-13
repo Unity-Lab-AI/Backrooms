@@ -86,7 +86,7 @@ patch(P + 'PortalTravelService.cs', [
 ])
 
 # Keyed strings.
-p = 'Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Portals.xml'
+p = 'Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Portals.xml'
 s = io.open(p, encoding='utf-8-sig').read()
 add = (u'  <RR_PortalTraversal_TooLargeForGate>Too large for this gate. Widen the opening: a one-cell '
        u'doorway passes people and working animals, a two-cell doorway passes pack animals like '

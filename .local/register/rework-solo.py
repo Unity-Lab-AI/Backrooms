@@ -6,7 +6,7 @@ import shutil
 import xml.etree.ElementTree as ET
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-MOD = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6')
+MOD = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7')
 
 
 def sub(path, old, new, enc='utf-8-sig'):

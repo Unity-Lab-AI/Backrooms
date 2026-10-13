@@ -49,7 +49,7 @@ import re
 import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PACKAGE = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6")
+PACKAGE = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7")
 ARCHIVE = os.path.join(REPO, "docs", "implementation", "historical-content")
 VOCABULARY = os.path.join(REPO, "tools", "retired-vocabulary.json")
 

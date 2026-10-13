@@ -1,14 +1,20 @@
 # Building Rimrooms - Async Industries
 
-**Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
+**Current content and dependency rules:** original gameplay art, audio, items and benches may ship where a role needs them; reuse stays the default and provider files are never copied. No mod or expansion is a hard dependency. See [current owner decisions](DECISIONS_CURRENT.md) and [content policy](CONTENT_REUSE_POLICY.md).
+
+**Historical content rule (2026-09-28), superseded in part on 2026-10-06:** [Repurpose existing game/mod content](CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
-**Current development version:** private `0.4.1-dev`. See the [connected-colony checkpoint](implementation/CONNECTED_COLONY_CHECKPOINT.md) for current source/build evidence and resume instructions. The installed package remains the prior staged 0.4.0 build; see the [native-provider build record](implementation/PHASE_3_NATIVE_PROVIDER_BUILD.md) for that evidence, and the [0.3.0 company record](implementation/PHASE_3_BUILD_RECORD.md) for the preceding baseline. Gameplay acceptance, remaining content replacements and the complete campaign remain in the [master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md).
+**Current development version:** `0.13.0-dev`, read from `About.xml`; RimWorld 1.7 is the game target, not the mod release number. The following 0.4.x build and staging paragraph is historical.
+
+**Historical development checkpoint:** private `0.4.1-dev`. See the [connected-colony checkpoint](implementation/CONNECTED_COLONY_CHECKPOINT.md) for current source/build evidence and resume instructions. The installed package remains the prior staged 0.4.0 build; see the [native-provider build record](implementation/PHASE_3_NATIVE_PROVIDER_BUILD.md) for that evidence, and the [0.3.0 company record](implementation/PHASE_3_BUILD_RECORD.md) for the preceding baseline. Gameplay acceptance, remaining content replacements and the complete campaign remain in the [master TODO](PREPRODUCTION_AND_IMPLEMENTATION_TODO.md).
 
 ## Requirements and references
 
 - Windows PowerShell and .NET SDK **9.0.308**, selected by [global.json](../global.json). A later patch in this SDK feature band is allowed by the resolver; record the actual SDK on each build.
-- A locally installed, owned RimWorld 1.6. The script uses `-RimWorldPath`, then `RIMWORLD_PATH`, then the current instance's game folder in RimSort settings. It never loads or starts the game.
+- A locally installed, owned RimWorld. The current inspected compiler baseline remains **1.6.4871**. The **1.7 unstable / Waylith** target needs separately reviewed reference hashes and API/runtime evidence before a 1.7 build is qualified. The script uses `-RimWorldPath`, then `RIMWORLD_PATH`, then the current instance's game folder in RimSort settings. It never loads or starts the game.
 - [The project](../src/RimroomsAsyncIndustries/RimroomsAsyncIndustries.csproj) uses C# 7.3, deterministic Release/Debug builds, .NET Framework **4.7.2**, and treats compiler warnings as errors. `net472` is our selected compiler baseline; Core has no `TargetFrameworkAttribute`, so it is not a claim about an official runtime target. Runtime acceptance is still required.
 - Restore uses the exact `Microsoft.NETFramework.ReferenceAssemblies.net472` **1.0.3** package and the committed [lock file](../src/RimroomsAsyncIndustries/packages.lock.json). [NuGet.Config](../NuGet.Config) selects nuget.org. Caches and CLI state stay in ignored `.local/`; internet access is needed on the first restore.
 - References resolve under `<game>/RimWorldWin64_Data/Managed`: `Assembly-CSharp.dll`, `UnityEngine.CoreModule.dll`, `UnityEngine.IMGUIModule.dll`, `UnityEngine.TextRenderingModule.dll`. They have `Private=false` and never enter the mod package. The manifest also records installed `mscorlib.dll` as runtime context; compilation uses the reference package's framework assemblies.
@@ -32,6 +38,8 @@ Normal builds restore in locked mode, compile, then package the reviewed allowli
 | --- | --- |
 | `src/RimroomsAsyncIndustries/bin/<configuration>/net472/` | Local compiler output and debug symbols; ignored |
 | `Mod/Rimrooms - Async Industries/` | Sole copyable mod directory; built DLL is ignored by Git |
+| `Mod/Rimrooms - Async Industries/1.7/Assemblies/` | Current Rimrooms DLL destination; both declared game versions load this one payload |
+| `RimPLC/1.7/Assemblies/` | Separate RimPLC core DLL destination; optional companion remains in `RimPLC/BridgeTools/` |
 | `artifacts/build/package-manifest.json` | Exact approved package files, size and SHA-256 |
 | `artifacts/build/reference-manifest.json` | Compiler configuration and locally used reference identities |
 
