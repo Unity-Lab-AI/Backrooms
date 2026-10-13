@@ -80,8 +80,10 @@ def save_state(st):
 def ollama_chat(model, messages, tool_specs, opts):
     body = {"model": model, "messages": messages, "tools": tool_specs, "stream": False,
             "keep_alive": opts["keep_alive"],
-            "options": {"num_ctx": opts["num_ctx"], "temperature": 0.5, "top_p": 0.9, "use_mlock": True,   # owner: lots of RAM -- keep it locked in, never paged
-                        "num_thread": int(os.environ.get("AUTOPILOT_THREADS", "6")),
+            # no use_mlock / num_thread: they are load-time options, and a request that differs from the loaded brain makes
+            # Ollama load a second copy -- on the 16 GB card that load failed and every play turn hung (2026-10-13: the
+            # filler voice talked about storage over and over while nothing played)
+            "options": {"num_ctx": opts["num_ctx"], "temperature": 0.5, "top_p": 0.9,
                         # a turn with no cap ran past nine minutes on CPU (live, 10-10); a step is one short line + a tool call
                         "num_predict": int(os.environ.get("AUTOPILOT_MAX_TOKENS", "1200"))}}   # 8 = physical cores; 14 made turns slower (threads stall on each other when the game takes a core)
     if opts.get("num_gpu") is not None:
