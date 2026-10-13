@@ -33,7 +33,7 @@ import xml.etree.ElementTree as ET
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(REPO, "tools", "register-played.json")
-GAME = os.environ.get("RIMWORLD_PATH") or r"C:\Program Files (x86)\Steam\steamapps\common\Rimworld"
+GAME = os.environ.get("RIMWORLD_PATH") or r"C:\Program Files (x86)\Steam\steamapps\common\RimWorld"
 WORKSHOP = os.path.join(os.path.dirname(os.path.dirname(GAME)), "workshop", "content", "294100")
 USERDATA = os.path.join(os.environ.get("USERPROFILE", ""), "AppData", "LocalLow", "Ludeon Studios",
                         "RimWorld by Ludeon Studios")

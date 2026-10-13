@@ -72,7 +72,9 @@ ONE_SHOTS = [[PYW, os.path.join(ROOT, ".claude/tools/unity-overlay.py")]]
 # the start .bat and .sh? form a dead state?" -- a dead state means the GAME too. It is started if missing,
 # and it is never stopped by the switch: a run in progress is the owner's, not ours.
 # RimWorld 1.7 (Waylith, Steam's unstable branch) ships RimWorld.exe; 1.6 shipped RimWorldWin64.exe.
-RW_DIR = r"C:/Program Files (x86)/Steam/steamapps/common/Rimworld"
+# the folder's real casing: 1.7 (Waylith) launched from "...\common\Rimworld" failed to find hundreds of Core textures
+# (red X pawns and items, 2026-10-13); launched from "...\common\RimWorld" it loaded clean
+RW_DIR = r"C:/Program Files (x86)/Steam/steamapps/common/RimWorld"
 RW_IMAGE = "RimWorld" if os.path.exists(os.path.join(RW_DIR, "RimWorld.exe")) else "RimWorldWin64"
 START_ONLY = [
     ("rimworld", RW_IMAGE + ".exe", [os.path.join(RW_DIR, RW_IMAGE + ".exe")], RW_DIR),
@@ -123,7 +125,10 @@ if os.path.exists(os.path.join(BRAIN_DIR, "unity-brain.gguf")):
     MODELS.append("qwen3.5:9b")
 # Ollama on a 16 GB card shared with RimWorld, OBS and the Twitch window: flash attention and an 8-bit KV cache
 # roughly halve the context's VRAM with no audible change in her lines. Takes effect when Ollama next starts.
-OLLAMA_ENV = {"OLLAMA_FLASH_ATTENTION": "1", "OLLAMA_KV_CACHE_TYPE": "q8_0"}
+# two slots (owner 2026-10-13: "she needs to talk ... every like 30s -1m"): her short spoken lines no longer wait
+# behind a long play turn on the one shared brain; costs one more 32K KV cache (~1 GB), paid for by the webcam
+# picture model moving to the CPU
+OLLAMA_ENV = {"OLLAMA_FLASH_ATTENTION": "1", "OLLAMA_KV_CACHE_TYPE": "q8_0", "OLLAMA_NUM_PARALLEL": "2"}
 
 
 def brain_env():
