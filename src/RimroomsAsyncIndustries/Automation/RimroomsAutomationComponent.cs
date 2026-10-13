@@ -306,6 +306,16 @@ namespace RimroomsAsyncIndustries.Automation
                 case "bed_medical": return SetupTools4.BedUse(map, a, false);
                 case "bed_prisoner": return SetupTools4.BedUse(map, a, true);
                 case "cooler_temp": return SetupTools4.CoolerTemp(map, a);
+                case "equip": return SetupTools5.Equip(map, a);
+                case "capture": return SetupTools5.Capture(map, a);
+                case "bill_count": return SetupTools5.BillCount(map, a);
+                case "zone_create": return SetupTools5.ZoneCreate(map, a);
+                case "roof_area": return SetupTools5.RoofArea(map, a);
+                case "firebreak": return SetupTools5.Firebreak(map, a);
+                case "pen": return SetupTools5.Pen(map, a);
+                case "bury": return SetupTools5.Bury(map, a);
+                case "ideo_role": return SetupTools5.IdeoRole(map, a);
+                case "save_game": return SetupTools5.SaveGame(a);
                 case "chop": return SetupTools3.Chop(map, a);
                 case "shelter": return SetupTools3.Shelter(map, a);
                 case "stockpile_camp": return SetupTools3.StockpileCamp(map, a);

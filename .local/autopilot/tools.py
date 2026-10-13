@@ -374,15 +374,20 @@ class Toolbox:
                          "allow_area (x,z,w,h -- unforbid a rect), self_tend (pawn or all, on), schedule (pawn or all, hours 0-23, assignment Anything|Work|Sleep|Joy), "
                          "drug_policy (pawn or all, policy -- colonists 'No drugs'), research (project defName or label), bed_medical / bed_prisoner (x,z,on), "
                          "cooler_temp (x,z,celsius -- freezer -5). "
+                         "MORE: equip (pawn + x,z or def; sidearm true carries it), capture (pawn -- nearest downed enemy to a prisoner bed), "
+                         "bill_count (recipe, count -- raise an existing bill's target), zone_create (kind stockpile|growing, x,z,w,h, priority, plant, label), "
+                         "roof_area (x,z,w,h, mode roof|noroof|clear), firebreak (w), pen (x,z,w,h -- fence + gate), bury (a grave outside home), "
+                         "ideo_role (role leader|moral guide, pawn), save_game (name; always Unity-*). "
                          "map (optional, e.g. Map_0) picks the map; without it the home map is used. The result comes back from the game: read it.",
                          S({"cmd": {"type": "string", "enum": ["explore", "rooms", "stockpile_room", "stockpile_filter",
                                                                "beds", "shelves", "stove", "crops", "hunt", "day_one", "assign",
                                                                "set_zone_plant", "set_zone_sowing", "set_work_priority",
                                                                "set_bed_owner", "add_bill", "set_area",
                                                                "unforbid", "chop", "shelter", "stockpile_camp", "build", "build_room", "deconstruct", "harvest", "tame",
-                                                               "slaughter", "allow_area", "self_tend", "schedule", "drug_policy", "research", "bed_medical", "bed_prisoner", "cooler_temp"]},
+                                                               "slaughter", "allow_area", "self_tend", "schedule", "drug_policy", "research", "bed_medical", "bed_prisoner", "cooler_temp",
+                                                               "equip", "capture", "bill_count", "zone_create", "roof_area", "firebreak", "pen", "bury", "ideo_role", "save_game"]},
                             "x": i, "z": i, "plant": s, "allow": b, "pawn": s, "work": s, "level": i,
-                            "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s, "food": s, "medicine": s, "hostility": s, "map": s, "w": i, "h": i, "def": s, "rot": i, "stuff": s, "what": s, "on": b, "hours": s, "assignment": s, "policy": s, "project": s, "celsius": i},
+                            "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s, "food": s, "medicine": s, "hostility": s, "map": s, "w": i, "h": i, "def": s, "rot": i, "stuff": s, "what": s, "on": b, "hours": s, "assignment": s, "policy": s, "project": s, "celsius": i, "sidearm": b, "kind": s, "label": s, "role": s, "name": s},
                           ["cmd"]), self.t_game_set),
             "twitch_chat": ("[STREAM] Type into the REAL Twitch chat (not just out loud). action: say | reply (needs "
                             "viewer) | title | category. Every line is filtered clean or refused.",
@@ -763,7 +768,7 @@ class Toolbox:
         payload = {"cmd": cmd}
         for k, v in kw.items():
             if v is None or v == "": continue
-            if k in ("pawn", "work", "owner", "area", "plant", "recipe", "room", "mode", "priority", "food", "medicine", "hostility", "map", "def", "stuff", "what", "hours", "assignment", "policy", "project") and not re.fullmatch(r"[A-Za-z0-9_ .-]{1,60}", str(v)):
+            if k in ("pawn", "work", "owner", "area", "plant", "recipe", "room", "mode", "priority", "food", "medicine", "hostility", "map", "def", "stuff", "what", "hours", "assignment", "policy", "project", "kind", "label", "role", "name") and not re.fullmatch(r"[A-Za-z0-9_ .-]{1,60}", str(v)):
                 raise GuardError("bad value for " + k)
             payload[k] = v
         if cmd == "set_work_priority" and not (0 <= int(payload.get("level", -1)) <= 4):
