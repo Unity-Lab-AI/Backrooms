@@ -35,7 +35,26 @@ REF_PROMPT = ("amateur webcam photo, real human, natural skin texture with visib
               "with a hint of emo, light caucasian skin with a warm glow, black wavy bob with pink ends, soft dark eyeliner, small black "
               "choker, busty, lifted perky cleavage, fitted black scoop neck tank top, cozy bedroom with string lights, warm lamp light, realistic")
 WARDROBE = os.path.join(HERE, "..", ".studio-images", "wardrobe")   # one reference per everyday top, same face
-OUTFIT_MINUTES = 20                                                  # she changes about every 20 minutes
+OUTFIT_STATE = os.path.join(WARDROBE, "_current.json")
+
+
+def current_outfit(tops):
+    """A random top held for a random 10-20 minutes, then a different one (owner, 2026-10-13: "random outfits evry 10
+    minutes-20 it changes" -> "Yes, random 10-20 min"). The choice survives a restart of this service."""
+    import random, time as _t
+    try:
+        st = json.load(open(OUTFIT_STATE, encoding="utf-8"))
+    except (OSError, ValueError):
+        st = {}
+    if st.get("top") in tops and _t.time() < st.get("until", 0):
+        return st["top"]
+    pick = random.choice([t for t in tops if t != st.get("top")] or tops)
+    st = {"top": pick, "until": _t.time() + random.randint(600, 1200)}
+    try:
+        json.dump(st, open(OUTFIT_STATE, "w", encoding="utf-8"))
+    except OSError:
+        pass
+    return pick
 
 _t2i = _i2i = None
 _lock = threading.Lock()          # one render (and the one-time pipeline load) at a time
@@ -98,8 +117,7 @@ def _render_locked(req):
         if want and want + ".png" in tops:
             ref_path = os.path.join(WARDROBE, want + ".png")
         elif tops:
-            import time as _t
-            ref_path = os.path.join(WARDROBE, tops[int(_t.time() // (OUTFIT_MINUTES * 60)) % len(tops)])
+            ref_path = os.path.join(WARDROBE, current_outfit(tops))
     except OSError:
         pass
     ref = Image.open(ref_path).convert("RGB")
