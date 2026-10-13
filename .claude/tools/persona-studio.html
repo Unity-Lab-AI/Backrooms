@@ -99,6 +99,7 @@
       <span id="chipName">Unity</span>
       <span class="ptag" id="chipTag"></span>
     </span>
+    <button id="muteBtn" title="Mute Unity's voice on this PC only -- the stream still hears her through OBS">MUTE</button>
     <button id="clearBtn">CLEAR</button>
   </div>
 
@@ -353,7 +354,13 @@ window.addEventListener("pagehide", () => {
 <script>
 // Unity's voice: play each new line. In OBS's browser source this is the stream's voice track.
 (function(){ let last=-1; const q=[]; let busy=false;
-  function next(){ if(busy||!q.length) return; busy=true; const a=new Audio(q.shift());
+  // owner 2026-10-13: "i need a mute option on the admin Unity plays rimworld thing" -- this page is only the
+  // owner's local copy of her voice (the stream gets it from OBS); muting here never touches the stream
+  const mb=document.getElementById('muteBtn'); let muted=localStorage.getItem('unityMuted')==='1';
+  function paint(){ if(mb){ mb.textContent=muted?'UNMUTE':'MUTE'; mb.style.background=muted?'#7a1f3d':''; } }
+  if(mb) mb.onclick=()=>{ muted=!muted; localStorage.setItem('unityMuted',muted?'1':'0'); paint(); };
+  paint();
+  function next(){ if(busy||!q.length) return; busy=true; const a=new Audio(q.shift()); a.muted=muted;
     a.onended=a.onerror=()=>{busy=false; next();}; a.play().catch(()=>{busy=false; next();}); }
   async function voice(){ try{ const r=await fetch('/api/voice'); const j=await r.json();
     if(last<0){ last=j.ts||0; return; }
