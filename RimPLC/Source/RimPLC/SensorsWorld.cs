@@ -9,7 +9,7 @@ namespace RimPLC
 {
     /// <summary>
     /// Inventory section D (2026-10-13): pawn setup, trade, caravans, pods, quests, pens, power nets, storage, ideology
-    /// roles/rituals and visitors (Hospitality). Normal cadence, each block guarded on its own; a key that cannot be read
+    /// roles/rituals, visitors (Hospitality) and the Empire's stance. Normal cadence, each block guarded on its own; a key that cannot be read
     /// is left out, never a fake 0.
     /// Mod register checked before building (docs/research/mod-register-integration-fields-2026-09-29.csv): Simple
     /// sidearms (sidearms live in the inventory -- the setup check reads both), Wall Orbital Trade Beacon (beacons are
@@ -34,6 +34,7 @@ namespace RimPLC
             Guard(() => Storage(st, home));
             Guard(() => Ideology(st, home));
             Guard(() => Visitors(st, home));
+            Guard(() => Factions(st));
         }
 
         private static void Guard(Action a)
@@ -164,6 +165,14 @@ namespace RimPLC
             st["ideo_leader_assigned"] = roles.Any(r => r.def.leaderRole && r.ChosenPawnSingle() != null);
             st["ritual_spots"] = (double)Math.Max(0, Count(home, "RitualSpot"));
             st["ideo_rituals"] = (double)ideo.PreceptsListForReading.OfType<Precept_Ritual>().Count();
+        }
+
+        /// <summary>empire_hostile: the Empire (Royalty) is hostile to the player. FactionManager.OfEmpire (verified, decomp
+        /// FactionManager.cs); with no Empire faction in the world the key is left out.</summary>
+        private static void Factions(Dictionary<string, object> st)
+        {
+            Faction empire = Find.FactionManager?.OfEmpire;
+            if (empire != null) st["empire_hostile"] = empire.HostileTo(Faction.OfPlayer);
         }
 
         /// <summary>Visitors and Hospitality guests. Guest beds by class name: Hospitality's Building_GuestBed

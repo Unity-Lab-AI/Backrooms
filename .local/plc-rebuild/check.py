@@ -1,9 +1,23 @@
-"""Merge-round checker for playbook.candidate.json + prompts.candidate.json. Prints one section per check."""
+"""Merge-round checker. Prints one section per check, then CLEAN or REMAINING n.
+
+    python .local/plc-rebuild/check.py               # the LIVE files: docs/playbook.gates.json + .local/autopilot/rung-prompts.json
+    python .local/plc-rebuild/check.py --candidate   # the merge round's playbook.candidate.json + prompts.candidate.json
+
+On the live files section 1 also runs the wiring pass of tools/rimplc-check.py (inputs with no writer, game_set
+commands with no handler, stale missing-tool claims, sensor display entries, sensors never read, type mismatches).
+"""
 import collections, json, os, re, subprocess, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
-doc = json.load(open(os.path.join(HERE, "playbook.candidate.json"), encoding="utf-8"))
-prompts = json.load(open(os.path.join(HERE, "prompts.candidate.json"), encoding="utf-8"))
+CANDIDATE = "--candidate" in sys.argv
+BOOK = os.path.join(HERE, "playbook.candidate.json") if CANDIDATE else os.path.join(ROOT, "docs", "playbook.gates.json")
+PROMPTS = os.path.join(HERE, "prompts.candidate.json") if CANDIDATE else os.path.join(ROOT, ".local", "autopilot", "rung-prompts.json")
+doc = json.load(open(BOOK, encoding="utf-8"))
+top_keys = []
+def _hook(kv):
+    top_keys.append([k for k, _ in kv]); return dict(kv)
+prompts = json.load(open(PROMPTS, encoding="utf-8"), object_pairs_hook=_hook)
+prompt_ids = top_keys[-1] if top_keys else []
 gates = doc["gates"]
 GENERIC = ("count_", "alert_", "research_", "condition_")
 NESTED = ("any", "not", "ton", "tof", "ctu", "ons")
@@ -24,10 +38,11 @@ def leaves(w):
             yield k, v
 
 results = collections.OrderedDict()
-r = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "rimplc-check.py"), os.path.join(HERE, "playbook.candidate.json")],
+r = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "rimplc-check.py"), BOOK],
                    capture_output=True, text=True, cwd=ROOT)
 out = (r.stdout + r.stderr).strip().splitlines()
-results["1 rimplc-check"] = [] if out and out[-1].strip() == "-> valid" else out
+results["1 rimplc-check" + ("" if CANDIDATE else " + wiring")] = [] if r.returncode == 0 else \
+    [l for l in out if not l.startswith("  note")]
 
 ids = collections.Counter(g["id"] for g in gates)
 results["2 duplicate ids"] = ["%s x%d" % (k, n) for k, n in ids.items() if n > 1]
@@ -57,11 +72,14 @@ for g in gates:
 results["5 unknown when keys"] = bad
 results["6 mixed-case generic keys"] = mixed
 results["7 rungs without a prompt"] = [g["id"] for g in gates if not str(prompts.get(g["id"], "")).strip()]
+results["8 prompts without a rung"] = sorted(k for k in prompts if k not in ids)
+results["9 duplicate prompt ids"] = sorted({k for k in prompt_ids if prompt_ids.count(k) > 1})
 
 fails = 0
 for name, items in results.items():
     print("== %s: %d" % (name, len(items)))
     for i in items: print("   " + i)
     fails += len(items)
-print("rungs %d, prompts %d, sensors %d, tags %d" % (len(gates), len(prompts), len(sensors), len(tags)))
+print("%s: rungs %d, prompts %d, sensors %d, tags %d" % ("candidate" if CANDIDATE else "live", len(gates), len(prompts), len(sensors), len(tags)))
 print("CLEAN" if fails == 0 else "REMAINING %d" % fails)
+sys.exit(0 if fails == 0 else 1)

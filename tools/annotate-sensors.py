@@ -144,7 +144,7 @@ T = {
     "seconds_since_webcam": ("Stream", "Seconds since webcam", ">180", W, "Her webcam picture is stale. Owner: update it every couple of minutes."),
     "seconds_since_tool": ("Stream", "Seconds since she acted", ">180", W, "Her player has not acted in a while."),
     "owner_input_active": ("Stream", "Owner at the controls", True, I, "The owner used the keyboard or mouse in the last minute. Never fight his input."),
-    "owner_unread": ("Stream", "Owner message unread", True, C, "An owner message has not been answered."),
+    "owner_unread": ("Stream", "Owner messages unread", ">0", C, "Private owner messages in the last hour that no reply_owner has answered."),
     "prompt_version_changed": ("Stream", "Her prompt changed", True, I, "Her prompt or ladder file changed since the last scan."),
     # ---- game
     "paused": ("Game", "Paused", None, I, "The game is paused."),

@@ -907,6 +907,14 @@ def host_inputs():
             unanswered += 1
             if re.search(r"(mod|repo|workshop|download|github|link)", m.group(2), re.I): mod += 1
     out.update(chat_unanswered=unanswered, new_joiners=joins, chat_asks_mod=mod > 0)
+    # owner_unread: private owner lines (studio inbox rows without the "[twitch]" prefix, tools.read_owner) that no
+    # outbox row answers (reply_owner writes replyTo = the owner's msg id), newer than the newest answered one and at
+    # most an hour old, so a fresh start does not dig up old private messages (autopilot.gather_owner does the same)
+    replied = {r.get("replyTo") for r in outbox if r.get("replyTo") is not None}
+    mine = [r for r in inbox if (r.get("text") or "") and not str(r.get("text")).startswith("[twitch]")]
+    last = max((r.get("id", 0) for r in mine if r.get("id") in replied), default=0)
+    out["owner_unread"] = sum(1 for r in mine if r.get("id", 0) > last and r.get("id") not in replied
+                              and now - r.get("ts", 0) / 1000.0 <= 3600)
     try:
         imgs = [os.path.join(claude, ".studio-images", f) for f in os.listdir(os.path.join(claude, ".studio-images"))]
         out["seconds_since_webcam"] = round(now - max(os.path.getmtime(f) for f in imgs), 1)

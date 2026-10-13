@@ -93,6 +93,13 @@ namespace RimPLC
             // UNVERIFIED in the decomp (UnityEngine, not Assembly-CSharp): Application.isFocused
             st["game_foreground"] = Application.isFocused;
             st["home_on_screen"] = home != null && Find.CurrentMap == home;
+            // the HUD is hidden while screenshot mode (F11) is on: Find.ScreenshotModeHandler (verified, decomp Find.cs / UIRoot.cs)
+            try
+            {
+                ScreenshotModeHandler shot = Find.ScreenshotModeHandler;
+                if (shot != null) st["hud_visible"] = !shot.Active;
+            }
+            catch (Exception) { }
 
             List<Pawn> crew = PawnsFinder.AllMaps_FreeColonistsSpawned;
             int downed = 0, drafted = 0, able = 0, armed = 0, bleeding = 0, tend = 0, sick = 0;

@@ -850,7 +850,7 @@
     },
     "embrasure_gaps": {
       "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
-      "type": "bool",
+      "type": "int",
       "status": "verified",
       "group": "Defence",
       "label": "Gaps by embrasures",
@@ -994,36 +994,36 @@
       "cadence": "normal"
     },
     "simple_benches": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence), colonist buildings of the def",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Research",
       "label": "Simple research benches",
       "severity": "info",
       "tip": "Simple research benches."
     },
     "hitech_benches": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence), colonist buildings of the def",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Research",
       "label": "Hi-tech benches",
       "severity": "info",
       "tip": "Hi-tech research benches."
     },
     "multi_analyzers": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence), colonist buildings of the def",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Research",
       "label": "Multi-analyzers",
       "severity": "info",
       "tip": "Multi-analyzers built."
     },
     "torch_lamps": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence), colonist buildings of the def",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Rooms",
       "label": "Torch lamps",
       "severity": "info",
@@ -1032,7 +1032,7 @@
     },
     "monolith": {
       "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
-      "type": "int",
+      "type": "bool",
       "status": "verified",
       "note": "also adds monolith_level; anomaly-monolith reads it instead of mark_monolith_advanced",
       "group": "Colony",
@@ -1042,10 +1042,10 @@
       "cadence": "normal"
     },
     "empire_hostile": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence), Find.FactionManager.OfEmpire.HostileTo(player); left out with no Empire faction",
       "type": "bool",
-      "status": "not-measured",
-      "note": "replaces the never-set mark_empire_hostile",
+      "status": "verified",
+      "note": "replaces the never-set mark_empire_hostile; FactionManager.OfEmpire verified (decomp)",
       "group": "Threats",
       "label": "Empire hostile",
       "severity": "warning",
@@ -1130,9 +1130,9 @@
       "cadence": "normal"
     },
     "hud_visible": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs fast cadence (ReadFast)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs fast cadence (ReadFast): !Find.ScreenshotModeHandler.Active (F11 hides the HUD)",
       "type": "bool",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Game",
       "label": "HUD visible",
       "severity": "info",
@@ -1171,14 +1171,14 @@
       "warn": true
     },
     "owner_unread": {
-      "source": "gates.py: admin-channel messages with id > last replied id (tools.read_owner)",
+      "source": "host input: gates.host_inputs() -- private studio-inbox lines (no [twitch] prefix) that no outbox replyTo answers, newer than the newest answered one, at most an hour old; pushed with rimplc/set_host",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Stream",
-      "label": "Owner message unread",
+      "label": "Owner messages unread",
       "severity": "critical",
-      "tip": "An owner message has not been answered.",
-      "warn": true
+      "tip": "Private owner messages in the last hour that no reply_owner has answered.",
+      "warn": ">0"
     },
     "chat_unanswered": {
       "source": "host input: gates.host_inputs() pushed with rimplc/set_host before every ladder read (dropped after 120 s)",
@@ -2323,7 +2323,7 @@
       "when": {
         "mark_got_out": true,
         "mark_company_contact": false,
-        "comms_console": ">0"
+        "comms_console": true
       },
       "then": [
         "game_open_main_tab Operations; game_get_ui_layout",
@@ -2345,7 +2345,7 @@
           "ton": {
             "days_of_food": ">{FOOD_COMFORT_DAYS}",
             "has_power": true,
-            "defences_built": ">0",
+            "defences_built": true,
             "alert_low_medicine": false
           },
           "hours": 72
@@ -3159,7 +3159,7 @@
       "then": [
         "a cooler/heater in the wall of each room outside 10-35C, hot side to unroofed outdoors, COOLERS_PER_ROOM for big rooms",
         "vents (not open doors) to share temperature between halls and rooms",
-        "freezer: cooler in the freezer wall, blue side in (rotate with Q x2), set to FREEZER_TARGET_C (MISSING set_cooler_target: open the cooler and click the temperature arrows)",
+        "freezer: cooler in the freezer wall, blue side in (rotate with Q x2), set to FREEZER_TARGET_C (game_set cmd cooler_temp x z celsius <FREEZER_TARGET_C>; refused: open the cooler and click the temperature arrows)",
         "coolers on a narrow room (morgue freezer) go on the side that faces outdoors so they push heat outside"
       ],
       "latch": false,
@@ -3727,7 +3727,7 @@
         "game_set cmd assign (pawn empty = all, food Fine, medicine Best, hostility Attack)",
         "read the result: every pawn listed with hostility Attack",
         "food restriction Fine must block raw food and human meat: game_open_main_tab Assign, game_get_ui_layout, Manage food restrictions -> Fine, untick raw food and human meat, read back (set_food_restriction missing tool)",
-        "self-tend ON for every pawn (set_self_tend missing tool): select each pawn, game_get_ui_layout Health tab, tick Self-tend, read back"
+        "self-tend ON for every pawn: game_set cmd self_tend on true (no pawn = all), read the reply back; refused: select each pawn, game_get_ui_layout Health tab, tick Self-tend"
       ],
       "never": [
         "assign hard drugs",
@@ -3745,7 +3745,7 @@
         "mark_config_assign_tab_done": true
       },
       "then": [
-        "set_schedule all pawns Anything 24h (missing tool)",
+        "game_set cmd schedule assignment Anything hours 0-23 (no pawn = all), read the reply back",
         "until it exists: game_open_main_tab Schedule, game_get_ui_layout, game_click_ui_target the Anything brush, game_drag_cell / game_click_ui_target across each pawn's 24 hours, read back",
         "game_close_main_tab"
       ],
@@ -3764,7 +3764,7 @@
         "mark_config_schedule_anything_done": true
       },
       "then": [
-        "set_drug_policy all colonists 'No hard drugs' (missing tool; social drugs are for hospitality guests)",
+        "game_set cmd drug_policy policy 'No hard drugs' (no pawn = all colonists; social drugs are for hospitality guests), read the reply back",
         "until it exists: game_open_main_tab Assign, game_get_ui_layout, game_click_ui_target each pawn's drug column, pick the no-hard-drugs policy, read back"
       ],
       "never": [
@@ -3894,7 +3894,7 @@
       "family": "configuration",
       "disabled": "no setting exists yet: needs a post-strictness option in the Rimrooms mod",
       "when": {
-        "comms_console": ">0"
+        "comms_console": true
       },
       "then": [
         "set_post_strictness default (missing tool: strict / default / mild)"
@@ -3919,7 +3919,7 @@
         }
       },
       "then": [
-        "set_bill_count missing: game_jump_camera_to_cell the stove, select it, open Bills via game_get_ui_layout, set the meal bill's Do until to {MEAL_BILL_TARGET} (the tag grows with the colony), read back",
+        "game_set cmd bill_count recipe CookMealSimple count {MEAL_BILL_TARGET} (the tag grows with the colony), read the reply back; refused: game_jump_camera_to_cell the stove, select it, open Bills via game_get_ui_layout, set the meal bill's Do until by hand",
         "never add a second meal bill"
       ],
       "never": [
@@ -3971,7 +3971,7 @@
         "mark_dump_zone_set": false
       },
       "then": [
-        "zone_create (MISSING) / game_apply_architect_designator Stockpile zone: 6x6 OUTSIDE the walls/camp, away from doors",
+        "game_set cmd zone_create kind stockpile x z w 6 h 6 (refused: game_apply_architect_designator Stockpile zone): 6x6 OUTSIDE the walls/camp, away from doors",
         "game_set cmd stockpile_filter x,z mode all priority Low (dump filter = corpses + chunks: MISSING mode)",
         "ladder_set mark dump_zone_set true"
       ],
@@ -4592,7 +4592,7 @@
       "then": [
         "game_set cmd add_bill recipe Make_Beer / Make_SmokeleafJoint / Make_PsychiteTea count {GUEST_DRUG_STOCK}",
         "game_set cmd stockpile_filter on a guest-wing shelf (drugs mode: MISSING)",
-        "colonist drug policy stays No drugs (set_drug_policy: MISSING to verify)",
+        "colonist drug policy stays No drugs (game_set cmd drug_policy policy 'No drugs' if a colonist reads otherwise)",
         "ladder_set mark guest_drugs_set true"
       ],
       "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner 2026-10-13: \"drugs are for hospitality guests\" / owner: \"all of the crops grow them all and make products from them for guests\" / owner: \"what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process\"",
@@ -4691,7 +4691,7 @@
         "mark_fields_outside_set": false
       },
       "then": [
-        "zone_create (MISSING) / game_apply_architect_designator growing zones: eight plots outside the wall on fertile ground near a gate",
+        "game_set cmd zone_create kind growing x z w h plant <crop> per plot (refused: game_apply_architect_designator growing zones): eight plots outside the wall on fertile ground near a gate",
         "game_set cmd set_zone_plant per plot: berries, potatoes, corn, healroot, cotton, smokeleaf, psychoid, hops",
         "harvest the field inside the walls, then delete it",
         "ladder_set mark fields_outside_set true"
@@ -5218,10 +5218,10 @@
       },
       "then": [
         "game_state: find the downed colonist and the best doctor (highest Medicine, not downed)",
-        "MISSING set_self_tend: turn the patient's self-tend OFF so a doctor tends him, not himself",
+        "game_set cmd self_tend pawn <patient> on false: turn the patient's self-tend OFF so a doctor tends him, not himself",
         "order_pawn pawn=<doctor> at the patient's x z, option Rescue (carries him to a medical bed)",
         "order_pawn pawn=<doctor> on the patient, option Tend (best medicine in stock)",
-        "MISSING set_self_tend: turn the patient's self-tend back ON after the tend",
+        "game_set cmd self_tend pawn <patient> on true: turn the patient's self-tend back ON after the tend",
         "say who was saved (clean line)",
         "still downed after the order: the rung stays live; say it on stream and check again next pass (rescue and tend inside the same day)"
       ],
@@ -5264,7 +5264,7 @@
       "then": [
         "pawn_check the lowest-mood colonist: Needs tab, read which need is lowest (food, rest, joy, comfort, beauty, outdoors, temperature)",
         "food: game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET}; rest: game_set cmd beds; temperature: the cold/heat rungs",
-        "joy: MISSING build_furniture (horseshoes pin first, then chess/billiards/TV)",
+        "joy: game_set cmd build def <def> x z (horseshoes pin first, then chess/billiards/TV)",
         "lowest_mood below 0.2 (20%): no new orders for that pawn, game_set cmd set_area pawn=<pawn> area Home",
         "say the cause on stream (clean)"
       ],
@@ -5395,8 +5395,8 @@
         "mark_mountain_base_done": true
       },
       "then": [
-        "MISSING build_furniture: a table + chairs in a dining room >= 30 tiles",
-        "recreation: horseshoes pin first, then chess/billiards/TV, at least 2 types (MISSING build_furniture)",
+        "game_set cmd build def <table / chair> x z: a table + chairs in a dining room >= 30 tiles",
+        "recreation: horseshoes pin first, then chess/billiards/TV, at least 2 types (game_set cmd build def <def> x z)",
         "floors, lights, art there; game_set cmd set_work_priority work Cleaning level 2 on the low-skill pawns",
         "ladder_set mark growth_dining_and_rec_done true"
       ],
@@ -5413,7 +5413,7 @@
       },
       "then": [
         "fill every ideology role (game_open_main_tab Ideoligion; an empty-role alert like Pujari means a role is open)",
-        "MISSING build_furniture: ideology statues / altar, a party room, landing pads",
+        "game_set cmd build def <def> x z: ideology statues / altar, a party room, landing pads",
         "throne room: royalty family's throne-room rung",
         "ladder_set mark growth_ideology_content_done true"
       ],
@@ -5517,7 +5517,7 @@
       },
       "then": [
         "game_open_main_tab tab=Ideoligion; game_take_screenshot to read the specialist role slots (Leader and Moral guide are setup:leader-moral-guide)",
-        "MISSING_TOOL set_ideo_role role=<specialist> pawn=<best adult in that skill> (fallback: game_click_ui_target on the slot, game_execute_context_menu_option <pawn>)",
+        "game_set cmd ideo_role role=<specialist> pawn=<best adult in that skill> (fallback: game_click_ui_target on the slot, game_execute_context_menu_option <pawn>)",
         "on a refusal: ladder_set mark ideo_roles_refused true (the counter counts it), then ladder_set mark ideo_roles_refused false",
         "ladder_set mark ideo_specialists_set true"
       ],
@@ -5589,7 +5589,7 @@
         "if mark_altar_room_done is true (royalty:altar-room built it): skip the build steps, go to the last step",
         "game_open_main_tab Ideoligion; read the required buildings (altar, ideogram, statues)",
         "game_set cmd rooms; take the room LEFT of the throne room for the altar room; keep a 2-wide walkway on its left",
-        "MISSING_TOOL place_building def=<altar from the Ideoligion tab> centre-north of that room (fallback: game_select_architect_designator + game_click_cell)",
+        "game_set cmd build def=<altar from the Ideoligion tab> x z centre-north of that room (fallback: game_select_architect_designator + game_click_cell)",
         "place the ideoligion statues/ideograms as symmetric pairs",
         "ladder_set mark ideo_altar_built true"
       ],
@@ -5610,7 +5610,7 @@
         "research_basicmechtech": true
       },
       "then": [
-        "MISSING_TOOL place_building def=MechGestator and def=MechRecharger inside the wall (fallback: game_select_architect_designator + game_click_cell), conduit to the grid",
+        "game_set cmd build def=MechGestator and def=MechRecharger inside the wall (fallback: game_select_architect_designator + game_click_cell), conduit to the grid",
         "lifters and constructors first, then war mechs",
         "watch bandwidth; never gestate past it"
       ],
@@ -5627,7 +5627,7 @@
         "count_geneextractor": "<1"
       },
       "then": [
-        "MISSING_TOOL place_building def=GeneExtractor and def=GeneAssembler on power (fallback: game_select_architect_designator + game_click_cell)",
+        "game_set cmd build def=GeneExtractor and def=GeneAssembler on power (fallback: game_select_architect_designator + game_click_cell)",
         "bank useful genes read from the gene list; never invent gene names"
       ],
       "latch": true,
@@ -5667,7 +5667,7 @@
       },
       "then": [
         "game_set cmd rooms (an unused hall-sized room inside the wall)",
-        "MISSING_TOOL place_building tables, chairs, horseshoes pin / chess table; ideology statues at the corners (fallback: game_select_architect_designator + game_click_cell)",
+        "game_set cmd build def=<table / chair / horseshoes pin / chess table> x z; ideology statues at the corners (fallback: game_select_architect_designator + game_click_cell)",
         "horseshoes pin against a wide wall, at least one action area left unblocked",
         "ladder_set mark ideo_party_room true"
       ],
@@ -5687,7 +5687,7 @@
         "hostiles_on_map": 0
       },
       "then": [
-        "containment platforms (zoarak.anomalyplat) before advancing: MISSING_TOOL place_building (fallback: game_select_architect_designator + game_click_cell)",
+        "containment platforms (zoarak.anomalyplat) before advancing: game_set cmd build def=<platform def> x z (fallback: game_select_architect_designator + game_click_cell)",
         "study entities in holding",
         "advance the monolith only now (defences_built, turrets >= 2): game_click_cell on the monolith, game_list_selected_gizmos, game_execute_gizmo advance",
         "refused: read the reason, fix it, never repeat the click"
@@ -5695,7 +5695,7 @@
       "never": [
         "advancing the monolith while a defence rung is live"
       ],
-      "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" | monolith_advanced mark deleted per decisions.json; monolith_level (TO_BUILD) rises after the advance so the rung stops",
+      "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" | monolith_advanced mark deleted per decisions.json; monolith_level (measured, Find.Anomaly.Level) rises after the advance so the rung stops",
       "family": "ideology-biotech-anomaly"
     },
     {
@@ -5727,8 +5727,8 @@
         "mark_milk_pen_built": false
       },
       "then": [
-        "MISSING_TOOL tame_animal kind=Cow|Goat|Yak (fallback: game_right_click_cell on the animal + Tame; designations_tame rises)",
-        "MISSING_TOOL build_pen fence ring in the field beside the wall, NO roof; terraform/soil the pen floor if it is bare",
+        "game_set cmd tame def=Cow|Goat|Yak (fallback: game_right_click_cell on the animal + Tame; designations_tame rises)",
+        "game_set cmd pen x z w h: a fence ring in the field beside the wall, NO roof; terraform/soil the pen floor if it is bare",
         "pawn_priorities pawn=<best handler> custom {\"Handling\": 1}",
         "ladder_set mark milk_pen_built true"
       ],
@@ -5747,7 +5747,7 @@
         "mark_child_care_ready": false
       },
       "then": [
-        "MISSING_TOOL place_building def=Crib beside the mother's bed, one per baby (fallback: game_select_architect_designator Crib + game_click_cell)",
+        "game_set cmd build def=Crib beside the mother's bed, one per baby (fallback: game_select_architect_designator Crib + game_click_cell)",
         "toy box / toys in the room",
         "game_set cmd add_bill recipe=<baby food> count=10 when count_milk < 10",
         "ladder_set mark child_care_ready true"
@@ -6201,7 +6201,7 @@
         "hostiles_on_map": 0
       },
       "then": [
-        "game_set cmd=unforbid (every starting item, pod drop, raid loot)",
+        "game_set cmd unforbid (every starting item, pod drop, raid loot)",
         "game_state: forbidden_items now 0 at home"
       ],
       "never": [
@@ -6430,7 +6430,7 @@
       "then": [
         "game_state: read colonists and wood; game_set cmd rooms to list rooms",
         "pick an enclosed roofed room (or the kitchen) -- never outdoors",
-        "place a SimpleResearchBench there (needs the missing 'build' tool; today: Architect -> Production via the bridge)",
+        "place a SimpleResearchBench there (game_set cmd build def SimpleResearchBench x z; refused: Architect -> Production via the bridge)",
         "game_set cmd set_work_priority pawn=<best Intellectual> work=Research level=1",
         "placement refused (no blueprint appears): ladder_set mark research_bench_tried true, then ladder_set mark research_bench_tried false",
         "when research_benches>0: ladder_set mark research_bench_done true"
@@ -6555,7 +6555,7 @@
       },
       "then": [
         "open Research, TYPE 'Penoxycyline' in the search box, queue it (Drug production first)",
-        "MISSING_TOOL queue_research project=Penoxycyline (fallback: game_open_main_tab Research, game_click_ui_target Penoxycyline)"
+        "game_set cmd research project=PenoxycylineProduction (fallback: game_open_main_tab Research, game_click_ui_target Penoxycyline)"
       ],
       "latch": false,
       "why": "owner: \"you also might want to research antibiotics and assign everyones drug scheldule manage to take peneacycline every 5 days once you build it at drug lab after researching antibiotics in game\" / owner: \"and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on\""
@@ -6571,8 +6571,8 @@
         "mark_hitech_bench_done": false
       },
       "then": [
-        "build a HiTechResearchBench in the lab beside the simple bench (missing 'build' tool), conduit to the grid",
-        "once built: remove every SimpleResearchBench (missing 'deconstruct' tool)",
+        "build a HiTechResearchBench in the lab beside the simple bench (game_set cmd build def HiTechResearchBench x z), conduit to the grid",
+        "once built: remove every SimpleResearchBench (game_set cmd deconstruct def SimpleResearchBench)",
         "when count_hitechresearchbench>0: ladder_set mark hitech_bench_done true"
       ],
       "latch": true,
@@ -6590,7 +6590,7 @@
         "mark_research_multi_analyzer_done": false
       },
       "then": [
-        "build a MultiAnalyzer touching the hi-tech bench's facility range, powered (missing 'build' tool)",
+        "build a MultiAnalyzer touching the hi-tech bench's facility range, powered (game_set cmd build def MultiAnalyzer x z)",
         "short on plasteel/components: order through Procurement (economy rungs)",
         "when count_multianalyzer>0: ladder_set mark research_multi_analyzer_done true"
       ],
@@ -6625,7 +6625,7 @@
         "count_penoxycyline": "<6"
       },
       "then": [
-        "MISSING_TOOL place_building def=DrugLab inside the wall (fallback: game_select_architect_designator DrugLab + game_click_cell)",
+        "game_set cmd build def=DrugLab inside the wall (fallback: game_select_architect_designator DrugLab + game_click_cell)",
         "game_set cmd add_bill recipe=Make_Penoxycyline count=6 (one bill; PENOXY_STOCK)",
         "drug policy (penoxycyline every 5 days for every colonist) is set by configuration:config-antibiotics -- not here"
       ],
@@ -6641,7 +6641,7 @@
         "count_simpleresearchbench": ">0"
       },
       "then": [
-        "remove every remaining SimpleResearchBench (missing 'deconstruct' tool)",
+        "remove every remaining SimpleResearchBench (game_set cmd deconstruct def SimpleResearchBench)",
         "one more hi-tech bench per extra researcher",
         "build any research-speed facility researched (any mod, e.g. computing racks) beside the benches"
       ],
@@ -6662,7 +6662,7 @@
         }
       },
       "then": [
-        "electric stove replaces the fueled stove; electric tailor bench replaces the hand tailor; machining/fabrication replace the crafting spot -- each as researched (missing 'build' + 'deconstruct')",
+        "electric stove replaces the fueled stove; electric tailor bench replaces the hand tailor; machining/fabrication replace the crafting spot -- each as researched (game_set cmd build def <new> x z, then game_set cmd deconstruct def <old>)",
         "the battery room is packed with batteries as steel allows (order steel via Procurement)"
       ],
       "latch": false,
@@ -6753,7 +6753,7 @@
       ],
       "latch": false,
       "why": "walkthrough: walkthrough-defence-and-combat.md [war]: imperial raids bring cataphracts and psycasters; shields stop ranged fire",
-      "note": "EMP vs imperial shields UNVERIFIED for 1.7; empire_hostile is TO_BUILD (amber until built); the rung stops by itself when hostiles_on_map is 0",
+      "note": "EMP vs imperial shields UNVERIFIED for 1.7; empire_hostile is measured (SensorsWorld, FactionManager.OfEmpire); the rung stops by itself when hostiles_on_map is 0",
       "family": "royalty"
     },
     {
@@ -7276,8 +7276,8 @@
       "then": [
         "game_set cmd assign (all pawns): food Fine (not Lavish), medicine Best, hostility Attack",
         "self-tend on for everyone (empire_pass does it; read the line back)",
-        "schedule: Anything at all hours for every pawn, sleep and recreation kept (no 50 carry runs without a break) [missing tool: game_set cmd schedule -> game_open_main_tab Schedule, game_get_ui_layout, click once each]",
-        "drug policy: No drugs for colonists except Penicillin every 5 days, carry 2 [missing tool: game_set cmd drug_policy -> game_open_main_tab Assign, game_get_ui_layout, click once each]",
+        "schedule: game_set cmd schedule assignment Anything hours 6-21 (no pawn = all; the sleep hours stay as they are, so no 50 carry runs without a break); read the reply back",
+        "drug policy: game_set cmd drug_policy policy 'No drugs' (no pawn = all); the Penicillin every 5 days, carry 2 line is edited in the Assign tab (game_open_main_tab Assign, game_get_ui_layout, click once each)",
         "then ladder_set mark assign_set true -- only now may time run"
       ],
       "never": [
@@ -7511,7 +7511,7 @@
         "game_set cmd shelter w 7 h 7 (wood room + door + roof beside the crew; 9x9 if wood allows); doors mid-side or near a corner, never the corner cell",
         "shelter refused: ladder_set mark shelter_tried true, then ladder_set mark shelter_tried false; next try w 6 h 8 (2 refusals -> setup-4b-shelter-fallback)",
         "game_set cmd beds (one per colonist), then game_set cmd shelves -- enough shelves for the dry store, more directly on the N side of the existing ones",
-        "fridge (roofed food store), workshop (crafting spot / butcher), 1x2 table + stool, torch lamp, a campfire in the middle -- all inside or touching the camp (game_apply_architect_designator Campfire / TorchLamp) [missing tool: game_set cmd campfire/torch]",
+        "fridge (roofed food store), workshop (crafting spot / butcher), 1x2 table + stool, torch lamp, a campfire in the middle -- all inside or touching the camp (game_set cmd build def Campfire x z, game_set cmd build def TorchLamp x z)",
         "store everything under a roof except steel and stone blocks",
         "mud/marsh/water inside the camp perimeter -> soil before building on it [missing tool: game_set cmd terraform -> game_apply_architect_designator terrain designator, once per drag]",
         "unpause to build; when beds >= colonists and store_roofed_fraction >= 0.75: ladder_set mark shelter_set true"
@@ -7636,13 +7636,13 @@
         "the STARTING CAMP comes before the main base: one entrance in use, everything else closed",
         "wood wall ring round the camp (game_select_architect_designator Wall wood, ONE game_drag_cell per side); only the EXTERIOR is wood; doors in every other gap (corners and mid-side)",
         "water under the line: terraform it to dirt first [missing tool: game_set cmd terraform]",
-        "wood barricades (or sandbags) either side of that entrance, inside, staggered (game_apply_architect_designator Barricade)  [missing tool: game_set cmd barricades]",
+        "wood barricades (or sandbags) either side of that entrance, inside, staggered (game_set cmd build def Barricade x z per cell; Sandbags the same way)",
         "game_set cmd set_area area Home over the whole ring so pawns stay inside",
         "a fallback point behind the barricades where all three gather when drafted",
         "everyone armed: rifle primary, melee sidearm (empire_pass if anyone is not)",
         "a mini-turret covering the entrance once steel and components allow",
         "a drag or designator refused: ladder_set mark camp_wall_tried true, then ladder_set mark camp_wall_tried false (3 -> setup-7-camp-defence-fallback)",
-        "when defences_built >= 2: ladder_set mark camp_defence true; the full embrasure wall and killbox are rung-3-defence, after power"
+        "when defences_built is true (barricades either side of the entrance stand): ladder_set mark camp_defence true; the full embrasure wall and killbox are rung-3-defence, after power"
       ],
       "never": [
         "start the main base or the mountain cutout before the camp is defended",
@@ -7743,7 +7743,7 @@
       },
       "then": [
         "if research_current already shows MicroelectronicsBasics: do nothing this scan",
-        "MISSING TOOL research_queue: queue MicroelectronicsBasics (fallback: game_open_main_tab Research, game_take_screenshot, game_click_ui_target the project)",
+        "game_set cmd research project MicroelectronicsBasics (fallback: game_open_main_tab Research, game_take_screenshot, game_click_ui_target the project)",
         "pawn_priorities: best Intellectual pawn Research=1"
       ],
       "why": "owner: \"you have to research microelelectronics to get trade beacons otherwise you have to wait for someone to show up to base\" (not latched: the rung goes dark when research_microelectronicsbasics turns true, so a refused queue click is retried)"
@@ -7990,7 +7990,7 @@
         "game_set cmd assign",
         "game_set cmd hunt (recurve/short bows only, never NEVER_HUNT)",
         "game_set cmd stove (campfire); add_bill pemmican once a cooking spot exists",
-        "research Complex furniture or Stonecutting -> Smithing -> Electricity (set_research missing)",
+        "research Complex furniture or Stonecutting -> Smithing -> Electricity (game_set cmd research project <defName>)",
         "ladder_set mark start_opening_done true"
       ],
       "why": "owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
@@ -8008,7 +8008,7 @@
       },
       "then": [
         "harvest berries and pick up everything before night (game_set cmd unforbid)",
-        "crafting spot, club, knife (build tool missing)",
+        "crafting spot (game_set cmd build def CraftingSpot x z), then club and knife as bills on it",
         "game_set cmd shelter w 3 h 3",
         "accept every wanderer/refugee offer (letters)",
         "ladder_set mark start_opening_done true"
@@ -9270,7 +9270,7 @@
       "then": [
         "raise MEAL_BILL_TARGET (ladder_set tag MEAL_BILL_TARGET 100)",
         "hunts on safe game (game_set cmd hunt)",
-        "greenhouse: a roofed, heated room with sun lamps and a growing zone (missing tool: build_room/sun lamp placement)"
+        "greenhouse: a roofed, heated room with sun lamps and a growing zone (game_set cmd build_room, then game_set cmd build def SunLamp x z)"
       ],
       "why": "walkthrough walkthrough-base-power-temperature.md: Flashstorm: keep pawns out of the storm radius, firefight once it ends. [survival] https://rimworldwiki.com/wiki/Events",
       "latch": false,
@@ -9295,11 +9295,11 @@
         "(hospital) 2-4 beds in a floored, lit (50%), clean room near the entrance; mark each Medical (game_execute_gizmo)",
         "(hospital) sterile tile floor once researched; 16-26C",
         "(growth-hospital) game_set cmd rooms: pick a room near the entrance and the stores",
-        "(growth-hospital) MISSING set_bed_medical: beds in that room marked Medical (hospital beds once researched)",
+        "(growth-hospital) game_set cmd bed_medical x z on each bed: beds in that room marked Medical (hospital beds once researched)",
         "(growth-hospital) MISSING stockpile_filter mode medicine: a medicine shelf in the hospital, priority Critical",
         "(growth-hospital) game_set cmd set_work_priority pawn=<highest Medicine> work Doctor level 1",
         "(growth-hospital) keep medicine >= {MEDICINE_RESERVE}",
-        "Medical gizmo or medicine filter refused twice: beds in the room nearest the stores, medicine stays in the main store (stockpile_filter mode all), say the medical-bed tool is missing",
+        "Medical gizmo or medicine filter refused twice: beds in the room nearest the stores, medicine stays in the main store (stockpile_filter mode all), say on stream which step refused",
         "ladder_set mark hospital_set true"
       ],
       "why": "owner: \"hospital is prisoner only fix that\" / owner: \"vuitals a life support have to be next to beds\" / owner: \"and life support and iv drips and u need ac heat and air vents\" / owner: \"slect gee and tell him rest till healed in hospital bed / hospital is prisoner only fix that\" || merged from base-and-fortress:hospital: owner: \"and u need florring. what ever u want each rrom to be ie hospital sterile tile. beds wood flooring cut down trees mine steel and shit\" / owner: \"dont forget bed furnature and shit and floors leving lem up over time and hospital and everything else\" | walkthrough: H: hospital; rimworldwiki.com/wiki/Room (cleanliness) || merged from growth:growth-hospital: owner: \"meds in hospital\" (docs/PLAYBOOK.md) / \"come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations\" / walkthrough [growth] Hospital room with hospital beds; doctor = highest Medicine; keep >= 10 medicine -- W Hospital_bed || merged from growth:growth-hospital-fallback: owner: \"meds in hospital\" / walkthrough W Hospital_bed",
@@ -9728,7 +9728,7 @@
       },
       "then": [
         "game_set cmd assign hostility Attack (all pawns; new pawns spawn on Flee)",
-        "self-tend on for every colonist (missing tool: self-tend toggle)",
+        "self-tend on for every colonist (game_set cmd self_tend on true)",
         "pawn_priorities: Firefight..Cook = 1 for everyone, specialty 2, rest 3, nothing blank -- one cell then read back"
       ],
       "never": [
