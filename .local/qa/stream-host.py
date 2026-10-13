@@ -117,7 +117,9 @@ def fresh(fact):
                   "crew), never your own name in the third person. ONE spoken line, at most 20 words, about "
                   "this and nothing else: \"%s\". Say it IN YOUR OWN WORDS -- react to it, never repeat it back. Invent NO events, "
                   "names or numbers that are not in that fact, and NEVER say you did, built, set up or powered anything unless the fact says it is done. No swearing, nothing degrading. Don't reuse "
-                  "these recent lines: %s. Reply with the line only."
+                  "these recent lines: %s. Start your reply with how you FEEL saying it, in brackets, one of [neutral] [warm] [happy] "
+                  "[amused] [excited] [sad] [concerned] [frustrated] [surprised], then the line. Put [laughter] in the line "
+                  "wherever you actually laugh. Reply with the bracket and the line only."
                   % (fact, " | ".join(hist[-8:])))
         try:
             # the same system/user split her voice shell was trained on (training/build_voice.py): persona and
@@ -138,6 +140,11 @@ def fresh(fact):
             # the player model shares Ollama and can hold it for a while; say why, then let the next pass retry
             print("voice model did not answer:", str(_e)[:80], flush=True); break
         line = line.replace('"', "").strip()
+        # her own emotion choice leads the reply (owner, 2026-10-13: "u need the working model to have like properl
+        # emotional tool calls not edit her fucking outputs") -- taken as she wrote it, never guessed from the words
+        _m = re.match(r"\s*\[(neutral|warm|happy|amused|excited|sad|concerned|frustrated|surprised)\]\s*", line, re.I)
+        LAST_EMOTION[0] = _m.group(1).lower() if _m else ""
+        if _m: line = line[_m.end():]
         # no announcer openers (owner: no corporate scripted showman lines): "Hey guys,", "Alright, listen up,"
         line = re.sub(r"^\W*(?:(?:hey|hi|yo|ok(?:ay)?|alright|so|oh|well)\W+)*(?:(?:guys|everyone|everybody|chat|"
                       r"y'all|folks|listen up|team|crew)\b\W*)+", "", line, flags=re.I).strip()
@@ -198,9 +205,14 @@ def fresh(fact):
         json.dump((hist + [line])[-30:], open(sb.HIST, "w", encoding="utf-8")); return line
     return None
 
+LAST_EMOTION = [""]
+
+
 def speak(line):
     if not line: return
-    subprocess.run([sys.executable, SAY, "--raw", line], env=dict(os.environ, UNITY_NO_GLANCE="1"))
+    env = dict(os.environ, UNITY_NO_GLANCE="1")
+    if LAST_EMOTION[0]: env["UNITY_SPEAK_EMOTION"] = LAST_EMOTION[0]   # her choice from fresh(), passed as-is
+    subprocess.run([sys.executable, SAY, "--raw", line], env=env)
 
 def last_spoken():
     try:

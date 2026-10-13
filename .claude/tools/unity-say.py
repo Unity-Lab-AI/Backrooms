@@ -88,9 +88,7 @@ def main():
         subprocess.Popen([sys.executable, os.path.join(HERE, "unity-glance.py"), text],
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     speak = [sys.executable, os.path.join(HERE, "unity-speak.py")] + ([] if wait else ["--bg"]) + [text]
-    env = dict(os.environ)
-    if not env.get("UNITY_SPEAK_EMOTION"):
-        env["UNITY_SPEAK_EMOTION"], env["UNITY_SPEAK_ACT"] = feeling(text)
+    env = dict(os.environ)   # the emotion is the model's own choice (UNITY_SPEAK_EMOTION from the caller), never guessed here
     shown = re.sub(r"\s+", " ", text.replace("[laughter]", " ")).strip()   # the tag is for her voice, never the chat
     subprocess.run(speak, env=dict(env, UNITY_SPEAK_CHAT=shown, UNITY_SPEAK_REPLY_TO=""))
 
