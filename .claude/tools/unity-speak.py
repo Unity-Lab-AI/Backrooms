@@ -105,8 +105,62 @@ def wav_seconds(path):
         return 0.0
 
 
+class _OneVoice:
+    """One line plays at a time across EVERY speaker (her turns, the host voice, the switch). Owner, 2026-10-13: "she is
+    talking all over herself not letting the tts finish". The audio is made in parallel; playing waits its turn on a
+    lock file and holds it until the line has finished. A holder that dies releases it with its process."""
+    PATH = os.path.join(tempfile.gettempdir(), "unity-voice-playing.lock")
+
+    def __enter__(self):
+        import msvcrt
+        self.f = open(self.PATH, "a+b")
+        deadline = time.time() + 180
+        while True:
+            try:
+                self.f.seek(0); msvcrt.locking(self.f.fileno(), msvcrt.LK_NBLCK, 1); return self
+            except OSError:
+                if time.time() > deadline: return self      # never hang a speaker forever
+                time.sleep(0.2)
+
+    def __exit__(self, *a):
+        import msvcrt
+        try: self.f.seek(0); msvcrt.locking(self.f.fileno(), msvcrt.LK_UNLCK, 1)
+        except OSError: pass
+        self.f.close()
+
+
+def post_chat():
+    """The chat/overlay row for this line, written the moment it starts playing -- not when it was written (owner,
+    2026-10-13: "she is still sending like 3-4 messages at once"). Callers hand the shown text and reply id over in
+    UNITY_SPEAK_CHAT / UNITY_SPEAK_REPLY_TO; without them nothing is posted (a caller that posts itself)."""
+    shown = os.environ.get("UNITY_SPEAK_CHAT", "").strip()
+    if not shown:
+        return
+    import json
+    box = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".studio-outbox.jsonl")   # .claude/.studio-outbox.jsonl
+    last = 0
+    if os.path.exists(box):
+        for line in open(box, encoding="utf-8"):
+            try: last = max(last, int(json.loads(line).get("id", 0)))
+            except Exception: pass
+    reply = os.environ.get("UNITY_SPEAK_REPLY_TO", "")
+    with open(box, "a", encoding="utf-8") as f:
+        f.write(json.dumps({"id": last + 1, "replyTo": int(reply) if reply.isdigit() else None,
+                            "ts": int(time.time() * 1000), "persona": "unity", "text": shown}) + "\n")
+
+
 def speak(text, out):
     synth(text, out)
+    if os.name != "nt":
+        post_chat()
+        return _play(out)
+    with _OneVoice():
+        post_chat()
+        _play(out)
+        time.sleep(0.4)          # a breath between lines
+
+
+def _play(out):
     # The stream hears the voice through OBS's "Unity voice" media source, which plays this file:
     # OBS decodes it itself (the browser-source audio route crackled to static on stream).
     try:

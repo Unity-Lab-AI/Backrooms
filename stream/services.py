@@ -95,6 +95,9 @@ EXTRAS = [
     ("twitchui", "twitch-profile", [os.path.expandvars(r"%LOCALAPPDATA%/ms-playwright/chromium-1223/chrome-win64/chrome.exe"),
                                     "--user-data-dir=" + os.path.join(ROOT, ".local/twitch-profile"),
                                     "--remote-debugging-port=9333", "--no-first-run",
+                                    # the stream's own Twitch page plays the broadcast back; muted so the owner hears
+                                    # her once (owner 2026-10-13: "im hearing two feeds")
+                                    "--mute-audio",
                                     # Owner, 2026-10-10: a Twitch picture-in-picture prompt interrupted them and they
                                     # denied it blind. Nothing here should ever ask the owner for a permission.
                                     "--disable-features=AutoPictureInPicture,AutoPictureInPictureVideoHeuristics",
@@ -125,10 +128,9 @@ if os.path.exists(os.path.join(BRAIN_DIR, "unity-brain.gguf")):
     MODELS.append("qwen3.5:9b")
 # Ollama on a 16 GB card shared with RimWorld, OBS and the Twitch window: flash attention and an 8-bit KV cache
 # roughly halve the context's VRAM with no audible change in her lines. Takes effect when Ollama next starts.
-# two slots (owner 2026-10-13: "she needs to talk ... every like 30s -1m"): her short spoken lines no longer wait
-# behind a long play turn on the one shared brain; costs one more 32K KV cache (~1 GB), paid for by the webcam
-# picture model moving to the CPU
-OLLAMA_ENV = {"OLLAMA_FLASH_ATTENTION": "1", "OLLAMA_KV_CACHE_TYPE": "q8_0", "OLLAMA_NUM_PARALLEL": "2"}
+# one slot: Ollama reports "model architecture does not currently support parallel requests" for qwen35, so
+# OLLAMA_NUM_PARALLEL=2 did nothing (2026-10-13). Her turns stay fast only while the game leaves the GPU room.
+OLLAMA_ENV = {"OLLAMA_FLASH_ATTENTION": "1", "OLLAMA_KV_CACHE_TYPE": "q8_0"}
 
 
 def brain_env():
