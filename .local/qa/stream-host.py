@@ -345,6 +345,8 @@ while True:
                 continue                  # her own chat lines come back through the bridge; never answer herself
             if who.lower() not in OWNER:
                 SEEN.add(who)             # everyone who has talked or joined this stream, for the catch-up
+            if who.lower() in OWNER and text == "(joined the stream)":
+                continue                  # a join is not an order (it was landing in owner-orders.txt as one)
             if who.lower() in OWNER:
                 # the owner typing in Twitch chat is a GAME order for her (owner, 2026-10-10: "i told her to explor
                 # the hidden rroms and get outside her walls but she didnt do it" -- it had only been chat). Her
