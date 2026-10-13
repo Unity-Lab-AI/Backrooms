@@ -118,7 +118,12 @@ namespace RimroomsAsyncIndustries.Automation
         /// </summary>
         private static string DigIntoSealedRooms(Map map)
         {
-            var sealedRooms = IndoorRooms(map).Where(r => FoggedShare(map, r) > 0.8f).ToList();
+            // only rooms near the crew: on an open-ground start the far mountain pockets are not "exploring", and
+            // digging across the map into them is the late mountain-base job (2026-10-13: she dug into room 79,
+            // two hundred cells from the crash site)
+            List<IntVec3> crew = map.mapPawns.FreeColonistsSpawned.Select(p => p.Position).ToList();
+            var sealedRooms = IndoorRooms(map).Where(r => FoggedShare(map, r) > 0.8f &&
+                                                          crew.Any(c => c.DistanceTo(Centre(r)) <= 40f)).ToList();
             if (sealedRooms.Count == 0) return null;
             var notes = new List<string>();
             foreach (Room room in sealedRooms.Take(3))

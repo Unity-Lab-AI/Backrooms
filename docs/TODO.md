@@ -337,3 +337,13 @@ Verbatim: *"okay 3 items , and yopu should know chatgpt worked in parallel and u
 - [~] Owner, 2026-10-13: *"and can we easily turn down her speed back to 1.0 i think it was speed up to 1.2 and 1.2 is .2 too fast so it needs a corrective reversion in some easiy weay , NOW"* -- models/unity-voice/pace.txt (read before every line, no restart): set to 1.2 = 20% slower than natural.
 - [~] Owner, 2026-10-13: *"shes mentioned storage like 10 times and hasnt placed a storage yet, are you seeing this,, this is the shit you are to be monitoring for"* -- her play loop was hung (requests stuck in Ollama after a failed reload; extra load-time options use_mlock/num_thread removed); the storage lines were the filler voice reading colony state. Ollama does not run qwen35 requests in parallel (NUM_PARALLEL reverted). Root: the game starves the GPU -- a 14K-token turn took 127 s. Needs a frame-rate cap (NVIDIA Max Frame Rate 30 for RimWorld.exe).
 - [ ] Owner, 2026-10-13: *"once u fix it we should probably start over fresh from start.bat with new stream and all of that"*
+
+### Owner, 2026-10-13 ~00:05 local -- Unity's PLC and code in totality, 3 pawns to empire to space
+
+Verbatim: *"okay what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?"* -> chose *"Everything now, restart the game"*. Plus: *"and a big issue its it never auto unforbid all the starting materials and never copped wood to build starting structures rooms"*. Plus: *"and you do know what and how a real PLC works right? its not just yes no questions there are relays contactors signalling sensors or all variations and type and controls circuits and settings and variable and a way to read it all"*.
+
+- [~] "never auto unforbid all the starting materials" -- a mod command that unforbids every starting item, run on day one
+- [~] "never copped wood to build starting structures rooms" -- chop trees near the crew automatically when wood is short of the camp's needs
+- [~] Crashlanded opening: an outdoor food store the ladder counts, a shelter command (wood room + door + roof by the crew), explore that does not dig into the mountain on an open-ground start, the start kind recorded
+- [~] Ladder: attempt counters (ctu) on rungs that can fail; meat counts as food; defence and no-medicine rungs latch; the mountain-base and ship chain wired to marks that are set; research ahead of the never-ending rungs; a recruit rung past 3 pawns; non-humanlike threats counted
+- [~] Player: refuse the 3rd identical tool call in a turn

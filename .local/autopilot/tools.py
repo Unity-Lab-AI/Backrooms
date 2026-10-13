@@ -364,13 +364,16 @@ class Toolbox:
                          "explored rooms), stockpile_room (room id, mode food|nofood -- a stockpile filling that room), "
                          "stockpile_filter (x,z,mode food|nofood|all, priority), beds, shelves, stove, crops (plant), "
                          "hunt, day_one, assign (the Assign tab: pawn or empty for all, food Fine, medicine Best, hostility Attack). "
+                         "OPEN-GROUND CAMP (Crashlanded, no rooms): unforbid (every starting item), chop (count = wood wanted, nearest trees to the crew), "
+                         "shelter (w,h inside size; a wood room + door + roof beside the crew), stockpile_camp (mode food|nofood; a 6x6 store beside the crew). "
                          "map (optional, e.g. Map_0) picks the map; without it the home map is used. The result comes back from the game: read it.",
                          S({"cmd": {"type": "string", "enum": ["explore", "rooms", "stockpile_room", "stockpile_filter",
                                                                "beds", "shelves", "stove", "crops", "hunt", "day_one", "assign",
                                                                "set_zone_plant", "set_zone_sowing", "set_work_priority",
-                                                               "set_bed_owner", "add_bill", "set_area"]},
+                                                               "set_bed_owner", "add_bill", "set_area",
+                                                               "unforbid", "chop", "shelter", "stockpile_camp"]},
                             "x": i, "z": i, "plant": s, "allow": b, "pawn": s, "work": s, "level": i,
-                            "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s, "food": s, "medicine": s, "hostility": s, "map": s},
+                            "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s, "food": s, "medicine": s, "hostility": s, "map": s, "w": i, "h": i},
                           ["cmd"]), self.t_game_set),
             "twitch_chat": ("[STREAM] Type into the REAL Twitch chat (not just out loud). action: say | reply (needs "
                             "viewer) | title | category. Every line is filtered clean or refused.",

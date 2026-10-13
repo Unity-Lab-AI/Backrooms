@@ -339,6 +339,7 @@ def turn(toolbox, st, args, system, specs):
     opts = {"num_ctx": args.num_ctx, "num_gpu": args.num_gpu, "think": True if deep else args.think,
             "keep_alive": "5m" if args.dry_run else -1, "timeout": args.timeout}
     final = ""
+    seen_calls = {}     # (tool, args) -> times called this turn: a counter with a preset of 2 (2026-10-13 audit)
     for step in range(args.max_steps):
         t0 = time.time()
         msg = ollama_chat(args.model, messages, specs, opts)
@@ -353,7 +354,14 @@ def turn(toolbox, st, args, system, specs):
             fn = c.get("function", {})
             name, a = fn.get("name", ""), fn.get("arguments") or {}
             log("TOOL", name, json.dumps(a, ensure_ascii=False)[:300])
-            result = toolbox.dispatch(name, a)
+            key = name + json.dumps(a, sort_keys=True, ensure_ascii=False)
+            seen_calls[key] = seen_calls.get(key, 0) + 1
+            if seen_calls[key] > 2 and name not in ("play_slices", "say", "reply_chat", "reply_owner", "game_state"):
+                # live 2026-10-13: the same lookup five times, the same refused room three times, in one turn
+                result = ("REFUSED: you already made this exact call twice this turn and it did not get you there. "
+                          "Do something DIFFERENT: the rung's fallback, another target, or note it for the owner and move on.")
+            else:
+                result = toolbox.dispatch(name, a)
             messages.append({"role": "tool", "tool_name": name, "content": str(result)[:6000]})
             # owner: train her on RimWorld (a LoRA). Every step is kept with the state she saw, the call and the
             # game's answer; the good ones get picked out later as training examples.

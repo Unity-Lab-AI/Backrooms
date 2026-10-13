@@ -71,6 +71,7 @@ RESOURCES = {"Steel": "steel", "ComponentIndustrial": "components", "ComponentSp
              "Plasteel": "plasteel", "Uranium": "uranium", "Gold": "gold", "Silver": "silver",
              "Chemfuel": "chemfuel", "Cloth": "cloth"}
 NEVER_HUNT_DEFS = ("Boomalope", "Thrumbo", "Elephant", "Rhinoceros", "Megasloth")   # plus Bear_*
+INSECT_DEFS = ("Megascarab", "Spelopede", "Megaspider")                                   # infestation hive insects
 MOUNT_DEFS_DEFAULT = ("Elephant", "Horse", "Dromedary", "Muffalo", "Thrumbo")
 # designation defName -> key. The field shape {defName, targetCell, targetThingDefName} is captured; these vanilla
 # DesignationDef names are UNVERIFIED (only Deconstruct and SkilledBuilder3 have been seen).
@@ -254,6 +255,9 @@ def derive(raw, lf=None):
         st["mark_" + k] = v if isinstance(v, (int, float)) and not isinstance(v, bool) else bool(v)
     for k in ("pawns_set", "assign_set", "beds_set", "stove_set", "bill_set"):
         st.setdefault("mark_" + k, False)
+    if not st.get("mark_start_kind"):          # nothing ever set it (2026-10-13 audit): the GO writes the scenario it chose
+        try: st["mark_start_kind"] = int(open(os.path.join(QA, "_start_kind"), encoding="utf-8").read().strip() or 0)
+        except (OSError, ValueError): pass
     _chain_inputs(st, crew, raw.get("colonists") is not None)
     return st
 
@@ -280,7 +284,7 @@ def _chain_inputs(st, crew, crew_read):
 
 
 def _sweep(st, cells, ours, crew):
-    meals = raw_food = wood = med = bp = foes = roofed = total = defence = 0
+    meals = raw_food = wood = med = bp = foes = beasts = roofed = total = defence = 0
     res = {k: 0 for k in set(RESOURCES.values())}
     berry = healroot = wild = danger = mounts = fire = corpses = embr = weapons = junk = 0; battery = False
     bhp = {}          # (defName, stuff) -> [hitPoints per cell], for the damaged-building float switch
@@ -298,7 +302,7 @@ def _sweep(st, cells, ours, crew):
             for k, test in BUILDING_KEYS.items():
                 if test(d, cl): bcells[k].add((d, xy))
             if d.startswith("Meal"): meals += n
-            elif d.startswith("Raw"): raw_food += n
+            elif d.startswith(("Raw", "Meat_")): raw_food += n       # meat is food too (2026-10-13 audit: a hunting start read as starving)
             elif d == "WoodLog": wood += n
             elif "Medicine" in d: med += n
             elif d in RESOURCES: res[RESOURCES[d]] += n
@@ -312,6 +316,8 @@ def _sweep(st, cells, ours, crew):
                 nm = lab.split("<")[0].strip()
                 if "," in lab:            # humanlikes carry ", <title>" in their label (captured)
                     if nm and nm not in ours: foes += 1
+                elif d.startswith("Mech_") or d in INSECT_DEFS or "manhunter" in lab.lower():
+                    beasts += 1       # mechs, insects and manhunters are hostile with or without a letter
                 elif d != "Human":
                     if d in NEVER_HUNT_DEFS or d.startswith("Bear_"): danger += 1
                     else: wild += 1
@@ -353,7 +359,7 @@ def _sweep(st, cells, ours, crew):
         st["unroofed_store_cells"] = total - roofed
     # hostiles: the crowd counts as hostile only while a recent threat letter vouches for it, or the colonist list
     # itself names hostile pawns
-    st["hostiles_on_map"] = max(foes if st.get("threat_letter") else 0, st.get("hostile_pawns_listed", 0))
+    st["hostiles_on_map"] = max(foes if st.get("threat_letter") else 0, st.get("hostile_pawns_listed", 0)) + beasts
     # wall_gaps is not measured: the perimeter rung stays disabled rather than fed a fixed 0
 
 

@@ -520,7 +520,8 @@
    "id": "food-rotting-or-no-cold",
    "priority": 5,
    "when": {
-    "store_roofed_fraction": "<1.0"
+    "store_roofed_fraction": "<1.0",
+    "has_power": true
    },
    "then": [
     "a room with no roof is not a room: a cooler in it cools open sky",
@@ -528,7 +529,7 @@
     "mark the roof area (areabuildroofexpand) -- a roof needs support within 6 cells",
     "then the passive cooler means something; a powered cooler waits on Electricity"
    ],
-   "why": "owner: \"rot is rotting away still havent figured cooler /freezer and vents in rooms\" / \"ur componetes are roting\"",
+   "why": "owner: \"rot is rotting away still havent figured cooler /freezer and vents in rooms\" / \"ur componetes are roting\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\"): an open-air camp store held this at priority 5 over everything, power and research included",
    "family": "survival",
    "source": "book",
    "mode": "advise"
@@ -583,8 +584,9 @@
     "route 3: Electricity -> comms console -> call a trader (research first)",
     "until then: self-tend ON for everyone, and no fights that can be avoided"
    ],
-   "why": "owner: \"Low medicine\" standing / \"those medicail red x;s need to be checked for self heal\"",
+   "why": "owner: \"Low medicine\" standing / \"those medicail red x;s need to be checked for self heal\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\"): no cap: medicine 0 blocked everything above priority 8; latched once self-tend and a healroot route are set",
    "family": "survival",
+   "latch": true,
    "source": "book",
    "mode": "advise"
   },
@@ -801,8 +803,8 @@
    "priority": 23,
    "when": {
     "days_of_food": ">{FOOD_COMFORT_DAYS}",
-    "mark_production_running": true,
-    "mark_mountain_base_done": false
+    "mark_mountain_base_done": false,
+    "mark_rung_4_production_done": true
    },
    "then": [
     "mine the mountain cutout: ONE door in, never pierce the outer rock",
@@ -812,7 +814,7 @@
     "move the natural gate into a sealed laboratory at the back",
     "ladder_set mark mountain_base_done true when the base is sealed and fed"
    ],
-   "why": "owner: \"plan on putting you bas inside that natural cut out ... never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spine\"",
+   "why": "owner: \"plan on putting you bas inside that natural cut out ... never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spine\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\"): waited on mark_production_running which nothing sets; rung-4 latches rung_4_production_done",
    "family": "base-and-fortress",
    "source": "book",
    "mode": "advise"
@@ -971,9 +973,10 @@
    },
    "then": [
     "Assign tab: food policy Fine for everyone (not Lavish), medical care best, hostility Attack; schedule Anything; drugs Social",
+    "empire_pass: a loose gun on every colonist as the primary, the melee weapon kept as the sidearm, self-tend on for everyone; read its ARMS line back, nobody left unarmed",
     "then ladder_set mark assign_set true"
    ],
-   "why": "owner: \"explore the hidden rooms and get outside her walls\" / \"she is letting time pass and hasnt set a priority or shelf or schedula\" / \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\"",
+   "why": "owner: \"explore the hidden rooms and get outside her walls\" / \"she is letting time pass and hasnt set a priority or shelf or schedula\" / \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner 2026-10-13: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\" -- the setup chain had no arms step, so the guns sat on the floor",
    "never": [
     "unpause before this"
    ],
@@ -990,13 +993,20 @@
     "food_store": false
    },
    "then": [
-    "game_set cmd stockpile_room mode food",
-    "game_set cmd stockpile_room mode nofood",
+    "no usable explored room (Crashlanded): game_set cmd stockpile_camp mode food, then mode nofood, and game_set cmd shelter -- not stockpile_room",
+    "game_set cmd rooms first; pick the room with the MOST free explored floor (free floor 0 means walls -- never that room)",
+    "game_set cmd stockpile_room mode food on that room, then mode nofood on the next best room",
+    "a room refuses ONCE: never retry it. No walled room with free floor: a plain stockpile ZONE on open floor right beside the crew, this turn",
     "game_set cmd beds; game_set cmd shelves"
    ],
-   "why": "owner: \"explore the hidden rooms and get outside her walls\" / \"she is letting time pass and hasnt set a priority or shelf or schedula\" / \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\"",
+   "why": "owner: \"explore the hidden rooms and get outside her walls\" / \"she is letting time pass and hasnt set a priority or shelf or schedula\" / \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner 2026-10-13: \"you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses\" -- 2026-10-13 she retried all-wall room 79 three times and said storage over and over without placing one / owner 2026-10-13: \"look at that shit she is setting fucking rooms to build deep inside the moutain with no ryhme or reason\" -- six different designators on one 7x7 block at 285,250 in five seconds each / 2026-10-13 on Crashlanded: rooms answered only room 79 (199 cells, 100% fogged, free floor 0) while the crew stood at 109,80 -- she designated at 285,250, two hundred cells away inside the mountain",
    "never": [
-    "stockpile on fogged cells"
+    "stockpile on fogged cells",
+    "retry a room that refused",
+    "stockpile a room with free floor 0",
+    "talk about storage again before a stockpile is placed",
+    "designate or build anything inside the mountain rock before rung-5 -- the starting camp is where the crew already is, by the entrance",
+    "try designators by trial and error: one designator for one purpose; the same thought twice means stop and read"
    ],
    "family": "setup",
    "source": "book",
@@ -1051,11 +1061,13 @@
     "mark_start_kind": 1
    },
    "then": [
-    "run the setup-1..6 chain unchanged",
-    "haul the scattered pod cargo into the stockpile first",
-    "set research_<project> marks as projects finish"
+    "game_set cmd unforbid -- every starting item (owner: \"it never auto unforbid all the starting materials\")",
+    "game_set cmd chop count 300 -- wood for the camp (owner: \"never copped wood to build starting structures rooms\")",
+    "game_set cmd stockpile_camp mode food, then stockpile_camp mode nofood -- outdoor stores beside the crew",
+    "game_set cmd shelter (inside 7x5: wood walls, a door, roof) -- the camp's first room; beds and the stove go INSIDE it once it stands",
+    "then the setup chain (pawns, assign, beds, stove) against that shelter -- never a fogged mountain room"
    ],
-   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\"): the start had no rooms, so every room tool refused; these commands build the camp on open ground",
    "latch": true,
    "source": "book",
    "mode": "advise"
@@ -1367,14 +1379,15 @@
    "family": "base-and-fortress",
    "when": {
     "defences_built": true,
-    "embrasures": "<{EMBRASURE_TARGET}"
+    "embrasures": "<{EMBRASURE_TARGET}",
+    "mark_rung_3_defence_done": true
    },
    "then": [
     "close the ring with embrasures matching the wall already built",
     "killbox: KILLBOX_GAPS gap, turrets behind embrasures, a sandbag lane",
     "firebreak FIREBREAK_WIDTH wide"
    ],
-   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\"): fired at 19.6/20.5 forever ahead of power (20) and rung-3 (21); now only after rung-3 has built the wall",
    "source": "book",
    "mode": "advise"
   },
@@ -1407,7 +1420,8 @@
     "expand the main stockpile",
     "shelves from the storage mods (adaptive.storage.framework, asf.deepstorage)"
    ],
-   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\"): never latched and starved research; now done once per stage",
+   "latch": true,
    "source": "book",
    "mode": "advise"
   },
@@ -1458,7 +1472,8 @@
    "then": [
     "fabrication bench bill (after Fabrication research), or mine compacted machinery, or deep drill"
    ],
-   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\"): never latched and starved research; now done once per stage",
+   "latch": true,
    "source": "book",
    "mode": "advise"
   },
@@ -1480,7 +1495,7 @@
   },
   {
    "id": "research-next",
-   "priority": 30,
+   "priority": 19.5,
    "family": "research",
    "when": {
     "research_benches": ">0",
@@ -1491,7 +1506,7 @@
     "queue the first project in RESEARCH_ORDER whose research_<x> mark is false",
     "when it finishes: ladder_set mark research_<x> true"
    ],
-   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\"): sat at 30 behind rungs that never latch; now at 19.5, ahead of power, still on the need-research alert (a bare timer would fire forever and starve everything above it)",
    "note": "UNVERIFIED alert label ('research' substring)",
    "source": "book",
    "mode": "advise"
@@ -1926,14 +1941,14 @@
    "priority": 64,
    "family": "space",
    "when": {
-    "ship_parts": ">0"
+    "mark_research_ship_basics": true
    },
    "then": [
     "vanilla ship: hull, engines, reactor, cryptosleep inside the mountain",
     "the launch draws a raid: the defence rung has to hold first",
     "every colonist in a pod before the countdown"
    ],
-   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\"): waited on ship_parts > 0 and nothing ever built the first part",
    "latch": true,
    "note": "UNVERIFIED: vanilla ship defNames start with 'Ship_'",
    "source": "book",
@@ -2636,14 +2651,15 @@
    "when": {
     "defences_built": true,
     "embrasures": "<{EMBRASURE_TARGET}",
-    "mark_defense_secure": false
+    "mark_defense_secure": false,
+    "mark_rung_3_defence_done": true
    },
    "then": [
     "defenses secure? NO -- build list: embrasures short by EMBRASURE_TARGET - embrasures",
     "close the ring with the same embrasure def the wall already uses"
    ],
    "notice": "Defense check: embrasures below target, build list made.",
-   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\" / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\"): fired at 19.6/20.5 forever ahead of power (20) and rung-3 (21); now only after rung-3 has built the wall",
    "source": "book"
   },
   {
@@ -2896,6 +2912,54 @@
    "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
    "note": "UNVERIFIED: the smelt-weapon recipe name in this mod set",
    "source": "book"
+  },
+  {
+   "id": "setup-7-camp-defence",
+   "priority": 3.57,
+   "when": {
+    "colony_exists": true,
+    "mark_stove_set": true,
+    "mark_camp_defence": false
+   },
+   "then": [
+    "the STARTING CAMP comes before the main base: one entrance in use, everything else closed",
+    "wood barricades (or sandbags) either side of that entrance, inside, staggered so a pawn can shoot from behind them",
+    "a fallback point behind the barricades where all three gather when drafted",
+    "everyone armed: rifle primary, melee sidearm (empire_pass if anyone is not)",
+    "a mini-turret covering the entrance once steel and components allow",
+    "then ladder_set mark camp_defence true; the full embrasure wall and killbox are rung-3-defence, after power"
+   ],
+   "why": "owner 2026-10-13: \"you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses\" -- PLAYBOOK 00 step 8 (store start 2026-10-08: wood barricades either side of the south door first; a mini-turret once steel and components cover it). The ladder had no defence before power, so the camp sat open.",
+   "never": [
+    "start the main base or the mountain cutout before the camp is defended",
+    "leave the entrance with no cover",
+    "designate or build anything inside the mountain rock before rung-5 -- the starting camp is where the crew already is, by the entrance",
+    "try designators by trial and error: one designator for one purpose; the same thought twice means stop and read"
+   ],
+   "family": "setup",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "recruit-past-three",
+   "priority": 19.8,
+   "when": {
+    "colonists": "<6"
+   },
+   "then": [
+    "a joiner, refugee or wanderer letter: ACCEPT (more hands is the empire)",
+    "a downed raider: rescue to a prisoner bed, interaction Recruit, Warden work on for the best social pawn",
+    "a transport pod crash with a survivor: rescue and recruit",
+    "trade for a slave or a prisoner when a caravan offers one and silver allows"
+   ],
+   "why": "2026-10-13 audit: nothing grew the colony past 3 pawns, while tame-mounts, ideo-roles and war-prep all need colonists > 3 / 2026-10-13 audit (owner: \"what else is fucked thats not gonna get her to work right with the plc and her code in totality that conflicts with emnmpire surviving space colony advancement from 3 pawns?\")",
+   "never": [
+    "execute or release a recruitable prisoner",
+    "refuse a wanderer joiner"
+   ],
+   "family": "growth",
+   "source": "book",
+   "mode": "advise"
   }
  ],
  "tags": {

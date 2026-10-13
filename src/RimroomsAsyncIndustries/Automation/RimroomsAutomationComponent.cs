@@ -285,6 +285,10 @@ namespace RimroomsAsyncIndustries.Automation
                 case "crops": return SetupTools2.Crops(map, a);
                 case "hunt": return SetupTools2.Hunt(map);
                 case "assign": return Assign(map, a);
+                case "unforbid": return SetupTools3.Unforbid(map);
+                case "chop": return SetupTools3.Chop(map, a);
+                case "shelter": return SetupTools3.Shelter(map, a);
+                case "stockpile_camp": return SetupTools3.StockpileCamp(map, a);
                 default: return "refused: unknown cmd " + cmd;
             }
         }
@@ -374,7 +378,8 @@ namespace RimroomsAsyncIndustries.Automation
             }
 
             return "ok: " + crew.Count + " colonists -- work 1s Firefighter..Cooking, rest by skill, none blank; schedule Anything; drugs '" +
-                   (policy?.label ?? "none") + "'; hostility Attack; arming: " + (notes.Count > 0 ? string.Join("; ", notes) : "everyone already armed");
+                   (policy?.label ?? "none") + "'; hostility Attack; arming: " + (notes.Count > 0 ? string.Join("; ", notes) : "everyone already armed") +
+                   "; " + SetupTools3.Unforbid(map);
         }
 
         /// <summary>
