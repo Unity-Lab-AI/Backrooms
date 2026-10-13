@@ -71,10 +71,19 @@ def check(args, out):
     from dataset_contract import load_dataset, load_features, pair_identity
     problems = []
     feats, dataset = Path(args.feats), Path(args.dataset)
-    for p in (dataset / "metadata.jsonl", LIVE / "acoustic.pt", LIVE / "vocoder.pt", LIVE / "voice-meta.json"):
+    for p in (LIVE / "acoustic.pt", LIVE / "vocoder.pt", LIVE / "voice-meta.json"):
         log(out, ("ok   " if p.exists() else "MISSING ") + str(p))
         if not p.exists():
             problems.append("missing " + str(p))
+    if not (dataset / "metadata.jsonl").exists():
+        # the screened dataset is built by the screen pass from the re-rendered + off-game sets; check those instead
+        rendered = Path(r"D:\voice-lab\dataset-v2-expressive-2026-10-13")
+        for p in (rendered / "rerender-report.json", rendered / "metadata.jsonl"):
+            log(out, ("ok   " if p.exists() else "MISSING ") + str(p))
+            if not p.exists():
+                problems.append("missing " + str(p))
+        log(out, "screened dataset not built yet: the offgame + screen passes build it")
+        dataset = rendered
     if problems:
         return False
     rows, identity = load_dataset(str(dataset), verify_audio=False)
