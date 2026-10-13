@@ -25,6 +25,91 @@ namespace RimroomsAsyncIndustries.Automation
         private static readonly string[] Upgrades =
             { "HiTechResearchBench", "MultiAnalyzer", "OrbitalTradeBeacon", "CommsConsole", "DrugLab" };
 
+        // ---------------------------------------------------------------- prisoners
+
+        // The plain-language names the model uses, to Core/DLC interaction modes. Execution, hemogen farming and
+        // bloodfeeding are deliberately absent: the stream is clean, and those are owner decisions, not ladder steps.
+        private static readonly Dictionary<string, string> PrisonerModes = new Dictionary<string, string>
+        {
+            { "recruit", "AttemptRecruit" }, { "chat", "ReduceResistance" }, { "enslave", "Enslave" },
+            { "convert", "Convert" }, { "release", "Release" }, { "maintain", "MaintainOnly" },
+            { "interrogate", "Interrogate" }, { "reducewill", "ReduceWill" }
+        };
+
+        /// <summary>{"cmd":"prisoner","mode":"recruit|chat|enslave|convert|release|maintain","pawn":"all|name"}</summary>
+        public static string Prisoner(Map map, Dictionary<string, string> a)
+        {
+            a.TryGetValue("mode", out string mode);
+            mode = (mode ?? "recruit").Trim().ToLowerInvariant();
+            if (!PrisonerModes.TryGetValue(mode, out string defName))
+                return "refused: mode is one of " + string.Join(", ", PrisonerModes.Keys);
+            PrisonerInteractionModeDef def = DefDatabase<PrisonerInteractionModeDef>.GetNamedSilentFail(defName);
+            if (def == null) return "refused: " + defName + " is not in this game (its DLC is not loaded)";
+            a.TryGetValue("pawn", out string who);
+            List<Pawn> prisoners = map.mapPawns.PrisonersOfColonySpawned
+                .Where(p => string.IsNullOrEmpty(who) || who == "all" || p.LabelShort.Equals(who, System.StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            if (prisoners.Count == 0) return "ok: no prisoner" + (string.IsNullOrEmpty(who) || who == "all" ? "" : " named " + who);
+            var set = new List<string>();
+            foreach (Pawn p in prisoners)
+            {
+                if (p.guest == null || p.guest.ExclusiveInteractionMode == def) continue;
+                p.guest.SetExclusiveInteraction(def);
+                set.Add(p.LabelShort);
+            }
+            return set.Count == 0 ? "ok: already " + def.label : "ok: " + string.Join(", ", set) + " -> " + def.label;
+        }
+
+        // ---------------------------------------------------------------- generator + battery
+
+        /// <summary>
+        /// {"cmd":"generator","kind":"wood|solar|chemfuel"} a generator and one battery touching it, on open ground just
+        /// outside the colony; then `power` joins the buildings to it.
+        /// </summary>
+        public static string Generator(Map map, Dictionary<string, string> a)
+        {
+            a.TryGetValue("kind", out string kind);
+            kind = (kind ?? "wood").ToLowerInvariant();
+            string defName = kind == "solar" ? "SolarGenerator" : kind == "chemfuel" ? "ChemfuelPoweredGenerator" : "WoodFiredGenerator";
+            ThingDef gen = DefDatabase<ThingDef>.GetNamedSilentFail(defName), battery = DefDatabase<ThingDef>.GetNamedSilentFail("Battery");
+            if (gen == null || battery == null) return "refused: no " + defName + " or Battery def";
+            if (!gen.IsResearchFinished) return "refused: " + gen.label + " is not researched yet (research_next)";
+            bool batteryOk = battery.IsResearchFinished;
+
+            List<IntVec3> home = map.areaManager.Home.ActiveCells.ToList();
+            IntVec3 centre = home.Count > 0 ? new IntVec3((int)home.Average(c => c.x), 0, (int)home.Average(c => c.z))
+                : (map.mapPawns.FreeColonistsSpawned.FirstOrDefault()?.Position ?? map.Center);
+            ThingDef genStuff = gen.MadeFromStuff ? GenStuff.DefaultStuffFor(gen) : null;
+            foreach (IntVec3 c in GenRadial.RadialCellsAround(centre, 30f, false))
+            {
+                if (c.DistanceTo(centre) < 6f || !c.InBounds(map) || map.fogGrid.IsFogged(c)) continue;
+                if (gen == DefDatabase<ThingDef>.GetNamedSilentFail("SolarGenerator") && c.Roofed(map)) continue;
+                if (!GenConstruct.CanPlaceBlueprintAt(gen, c, Rot4.North, map, false, null, null, genStuff).Accepted) continue;
+                CellRect footprint = GenAdj.OccupiedRect(c, Rot4.North, gen.size);
+                if (footprint.Cells.Any(x => map.fogGrid.IsFogged(x) || (defName == "SolarGenerator" && x.Roofed(map)))) continue;
+                IntVec3 batteryCell = IntVec3.Invalid;
+                if (batteryOk)
+                {
+                    // a battery cell on the footprint's edge, so the two touch and share a net
+                    foreach (IntVec3 e in footprint.ExpandedBy(1).EdgeCells)
+                    {
+                        if (GenConstruct.CanPlaceBlueprintAt(battery, e, Rot4.North, map, false, null, null, null).Accepted &&
+                            !GenAdj.OccupiedRect(e, Rot4.North, battery.size).Overlaps(footprint))
+                        { batteryCell = e; break; }
+                    }
+                    if (!batteryCell.IsValid) continue;
+                }
+                GenConstruct.PlaceBlueprintForBuild(gen, c, map, Rot4.North, Faction.OfPlayer, genStuff);
+                if (batteryCell.IsValid) GenConstruct.PlaceBlueprintForBuild(battery, batteryCell, map, Rot4.North, Faction.OfPlayer, null);
+                return "ok: " + gen.label + " blueprint at " + c.x + "," + c.z +
+                       (batteryCell.IsValid ? ", battery at " + batteryCell.x + "," + batteryCell.z : " (batteries not researched yet)") +
+                       " -- once built, run power to join every building to it" + (defName == "WoodFiredGenerator" ? "; it burns wood, keep a log stockpile" : "");
+            }
+            return "refused: no open " + (defName == "SolarGenerator" ? "unroofed " : "") + "ground for a " + gen.label + " within 30 cells of the colony";
+        }
+
+        // ---------------------------------------------------------------- research
+
         public static string ResearchNext()
         {
             ResearchManager rm = Find.ResearchManager;
