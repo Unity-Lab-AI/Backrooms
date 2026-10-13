@@ -3,7 +3,7 @@
     RimPLC core assembly. Settings copied from src/RimroomsAsyncIndustries (net472, C# 7.3, deterministic, warnings
     as errors, game references read-only with Private=false, no Harmony, no other dependency).
 
-    OUTPUT STAYS INSIDE THIS MOD FOLDER: RimPLC/1.6/Assemblies/RimPLC.dll. Nothing here builds into, copies into or
+    OUTPUT STAYS INSIDE THIS MOD FOLDER: RimPLC/1.7/Assemblies/RimPLC.dll. Nothing here builds into, copies into or
     deploys to a RimWorld Mods folder or the game install. Staging is the owner's step (docs/BUILDING.md).
   -->
   <PropertyGroup>
@@ -26,7 +26,7 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <DebugType>portable</DebugType>
     <AutomaticallyUseReferenceAssemblyPackages>false</AutomaticallyUseReferenceAssemblyPackages>
-    <OutputPath>$(MSBuildProjectDirectory)/../../1.6/Assemblies/</OutputPath>
+    <OutputPath>$(MSBuildProjectDirectory)/../../1.7/Assemblies/</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
@@ -55,6 +55,6 @@
     </Reference>
   </ItemGroup>
   <Target Name="RequireLocalGameReferences" BeforeTargets="ResolveAssemblyReferences">
-    <Error Condition="!Exists('$(RimWorldManagedPath)/Assembly-CSharp.dll')" Text="RimWorld 1.6 managed references are missing from $(RimWorldManagedPath). Set RimWorldPath or RIMWORLD_PATH. Do not download or commit game binaries." />
+    <Error Condition="!Exists('$(RimWorldManagedPath)/Assembly-CSharp.dll')" Text="Reviewed RimWorld managed references are missing from $(RimWorldManagedPath). Set RimWorldPath or RIMWORLD_PATH and see README.md for the build target. Do not download or commit game binaries." />
   </Target>
 </Project>

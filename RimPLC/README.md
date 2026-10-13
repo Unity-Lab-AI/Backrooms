@@ -1,6 +1,15 @@
 # RimPLC
 
-A standalone RimWorld 1.6 mod: the colony's whole "if this, then this" logic laid out as a PLC ladder and scanned in game. Package id `Operator.RimPLC`. No dependencies, no Harmony.
+![RimPLC — colony logic and control](About/Preview.png)
+
+A standalone RimWorld mod, being prepared for 1.7 unstable / Waylith while retaining 1.6: the colony's whole "if this, then this" logic laid out as a PLC ladder and scanned in game. Package id `Operator.RimPLC`. No dependencies, no Harmony.
+
+**Game compatibility:** `supportedVersions` includes 1.6 and 1.7, with both loading the existing
+`1.7/` payload. The inspected compiler/API baseline and recorded play observations are 1.6;
+1.7 runtime compatibility is unverified. See [the migration record](../docs/implementation/RIMWORLD_1_7_MIGRATION.md)
+and [Ludeon's announcement](https://store.steampowered.com/news/app/294100/view/672882362547178633).
+
+Source repository: [RimPLC on Forgejo](https://git.unityailab.com/GFourteen/RimPLC).
 
 Design: `docs/RIMPLC_DESIGN.md`. Frozen shapes: `docs/rimplc/schema/`. Book preset: `Presets/LadderV2.json` (made from `docs/playbook.gates.json`).
 
@@ -24,9 +33,11 @@ Design: `docs/RIMPLC_DESIGN.md`. Frozen shapes: `docs/rimplc/schema/`. Book pres
 ```
 RimPLC/
   About/About.xml                      Operator.RimPLC, no dependencies
+  About/Preview.png                    mod-manager preview, RimWorld 1.7 label
+  About/RimPLC_Badge.png               transparent branding badge
   LoadFolders.xml
-  1.6/Assemblies/RimPLC.dll            build output (in this folder only)
-  1.6/Defs/MainButtonDefs/             the RimPLC tab
+  1.7/Assemblies/RimPLC.dll            build output (in this folder only)
+  1.7/Defs/MainButtonDefs/             the RimPLC tab
   Languages/English/Keyed/
   Presets/LadderV2.json                the book (tools/rimplc-check.py --emit)
   BridgeTools/RimPLC.BridgeTools.dll   companion build output
@@ -38,7 +49,7 @@ RimPLC/
 
 ```
 python tools/rimplc-check.py --emit                      # validate the playbook, write Presets/LadderV2.json
-dotnet build -c Release RimPLC/Source/RimPLC              # -> RimPLC/1.6/Assemblies/RimPLC.dll
+dotnet build -c Release RimPLC/Source/RimPLC              # -> RimPLC/1.7/Assemblies/RimPLC.dll
 dotnet build -c Release RimPLC/Source/RimPLC.BridgeTools  # -> RimPLC/BridgeTools/RimPLC.BridgeTools.dll
 ```
 
@@ -62,3 +73,15 @@ One JSON object per line in `inbox.jsonl`; the result lands in `outbox.jsonl` wi
 ```
 
 Owner-only edits (a constant, switching a book rung off) need `"owner": true`, which only the owner's CLI side sets, never chat.
+
+## Standalone repositories
+
+The reviewed standalone project is published separately at https://git.unityailab.com/GFourteen/RimPLC and https://github.com/G-Fourteen/RimPLC. The working source remains here. `tools/export-rimplc-repo.py` generates its own README, user guide and schemas with standalone paths; never copy this workspace guide unchanged into that distribution. Both packages target RimWorld 1.7 with the retained 1.6 baseline; a 1.7 running-session result is still pending.
+
+## Artwork
+
+The mod preview and [transparent badge](About/RimPLC_Badge.png) are original charcoal,
+cream and brass RimPLC branding. The preview carries the game target rather than a development
+release number. The badge is available for documentation; there is no custom in-game icon consumer.
+Masters and exact generation prompts are recorded in `assets/source/rimplc/provenance.json`
+at the workspace root. No main-menu or loading-screen art is added.
