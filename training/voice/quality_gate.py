@@ -72,7 +72,21 @@ def owner_quote(receipt):
         raise ValueError("owner_quote must contain the actual recorded owner decision, not a placeholder")
 
 
+GENERATED = "generated-on-pod"
+
+
 def bind_run_identity(receipt):
+    # On-pod generation: the dataset does not exist when the owner says go. The paid authorization then binds the
+    # source exactly and leaves the dataset to corpus_acceptance (generated-on-pod), which binds VOICE_DATASET_ID to
+    # the screened corpus made from the approved script. Only the owner's training authorization may use this mode.
+    if receipt.get("mode") == GENERATED and receipt.get("check_id") == "owner_training_authorization":
+        if receipt.get("approved_dataset_id") != GENERATED:
+            raise ValueError("a generated-on-pod authorization must set approved_dataset_id to " + GENERATED)
+        expected = sha_identity(receipt.get("approved_source_digest"), "approved_source_digest")
+        if expected != sha_identity(os.environ.get("VOICE_DIGEST"), "VOICE_DIGEST"):
+            raise ValueError("approved_source_digest differs from the explicit VOICE_DIGEST")
+        sha_identity(os.environ.get("VOICE_DATASET_ID"), "VOICE_DATASET_ID")
+        return
     for field, environment in (("approved_source_digest", "VOICE_DIGEST"), ("approved_dataset_id", "VOICE_DATASET_ID")):
         expected = sha_identity(receipt.get(field), field)
         actual = sha_identity(os.environ.get(environment), environment)
@@ -154,7 +168,12 @@ def bind_training_configuration(receipt):
     if not isinstance(volume, str) or re.fullmatch(r"[A-Za-z0-9_-]{1,128}", volume) is None or approved["VOICE_VOLUME_ID"] != volume:
         raise ValueError("VOICE_VOLUME_ID must match the concrete approved provider volume")
     volume_receipt = sha_identity(os.environ.get("VOICE_VOLUME_RECEIPT_SHA256"), "VOICE_VOLUME_RECEIPT_SHA256")
-    if sha_identity(approved["VOICE_VOLUME_RECEIPT_SHA256"], "approved volume receipt") != volume_receipt:
+    if receipt.get("mode") == GENERATED:
+        # the pod writes and verifies its own volume receipt after mounting (start_template.sh); the volume id itself
+        # is bound above
+        if approved["VOICE_VOLUME_RECEIPT_SHA256"] != GENERATED:
+            raise ValueError("a generated-on-pod authorization must set VOICE_VOLUME_RECEIPT_SHA256 to " + GENERATED)
+    elif sha_identity(approved["VOICE_VOLUME_RECEIPT_SHA256"], "approved volume receipt") != volume_receipt:
         raise ValueError("volume verification receipt differs from the approved configuration")
     keep = number(os.environ.get("KEEP_HOURS") or "1", "KEEP_HOURS", nonnegative=True)
     if number(approved["KEEP_HOURS"], "approved KEEP_HOURS", nonnegative=True, receipt=True) != keep:

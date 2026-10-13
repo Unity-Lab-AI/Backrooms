@@ -35,6 +35,7 @@ STALE = re.compile(r"(once it stands|^after the kill\b|we just landed and i am a
                    r"we just landed and i am reading every door)", re.I)
 VOICE_HOLDOUT = 20      # 1 in 20 (~5%) voice lines held out
 TOOLS_HOLDOUT = 33      # 1 in 33 (~3%) play episodes held out
+SET_HOLDOUT = 20        # 1 in 20 (~5%) of each newer set (PLC, tools, fortress, life) held out and scored per kind
 
 
 def h(s):
@@ -354,8 +355,27 @@ def main():
     def clean_of_secret(rows):
         return [r for r in rows if not any(w in json.dumps(r, ensure_ascii=False).lower() for w in secret)]
     life = jl(os.path.join(ROOT, "training", "brain-life", "life.jsonl"))
+    # fortress (the owner's Oct 10 build), plc (using the RimPLC ladder), tools-coverage (every tool in real play): below
+    # Owner, 2026-10-12: "are we sure we are ready to train ... properly scalled ... or multi pass". To know whether
+    # a pass worked (and whether a second is worth paying for), every newer set keeps ~5% back as a scored test.
+    # Grouped by the first assistant line, so an episode and its coordinate-shifted copies land on the same side.
+    def split(rows, tag):
+        keep, held = [], []
+        for r in rows:
+            first = next((m.get("content") or "" for m in r["messages"] if m["role"] == "assistant"), "")
+            calls = any(m.get("tool_calls") for m in r["messages"])
+            (held if calls and h(tag + first) % SET_HOLDOUT == 0 else keep).append(r)
+        for r in held:
+            r.setdefault("eval_kind", tag if r.get("kind") == "play" else r.get("kind"))
+        return keep, held
+    fort, held_fort = [], []
+    for name, tag in (("fortress/fortress.jsonl", "fortress"), ("plc/plc.jsonl", "plc"), ("tools-coverage/tools.jsonl", "tools")):
+        k, hh = split(jl(os.path.join(ROOT, "training", *name.split("/"))), tag)
+        fort += k; held_fort += hh
+    life, held_life = split(life, "life")
+    held_tools = held_tools + held_fort + held_life
     filled = add_delivery(plays + hl + wu + im + sc + held_tools)
-    train = clean_of_secret(plays + know + voice + hl + wu + im + sc + life)
+    train = clean_of_secret(plays + know + voice + hl + wu + im + sc + life + fort)
     held_voice, held_tools = clean_of_secret(held_voice), clean_of_secret(held_tools)
     rnd.shuffle(train)
     def dump(name, rows):

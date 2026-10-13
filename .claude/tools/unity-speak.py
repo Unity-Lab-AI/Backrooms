@@ -1,27 +1,34 @@
-"""Unity's voice: Piper en_US-hfc_female-medium, the same model the Unity 3D project uses.
+"""Unity's voice: her own trained voice (models/unity-voice), served by training/voice/serve.py on :5123.
 
     python .claude/tools/unity-speak.py "text to say"          # speak and wait
     python .claude/tools/unity-speak.py --bg "text to say"     # speak, return at once
 
-Model path: UNITY_VOICE_MODEL env var, else the Unity 3D project's copy on the desktop.
-Writes a temp WAV and hands it to the stream studio (POST /api/voice): the overlay page plays it,
-which is how the voice reaches Twitch (OBS browser source audio). If the studio is down it plays
-locally with winsound instead.
+Delivery comes from UNITY_SPEAK_EMOTION / UNITY_SPEAK_ACT (set by the autopilot from the brain's say/reply_chat call).
+There is no fallback voice (owner 2026-10-13: fallbacks are against the laws; Piper is retired): if her voice
+server is down or refuses the line, this exits non-zero with the reason on stderr and the caller logs it.
+Writes a temp WAV and hands it to OBS's "Unity voice" media source and the stream studio (POST /api/voice).
 """
 import os, sys, time, wave, tempfile, subprocess
 
-MODEL = os.environ.get("UNITY_VOICE_MODEL") or os.path.expanduser(
-    r"~\Desktop\Unity 3D Equational Model\Unity 18+\models\piper\en_US-hfc_female-medium.onnx")
+VOICE_URL = os.environ.get("UNITY_VOICE_TTS_URL", "http://127.0.0.1:5123")
 
 
 def synth(text, out):
-    from piper import PiperVoice
-    voice = PiperVoice.load(MODEL)
-    with wave.open(out, "wb") as wav:
-        if hasattr(voice, "synthesize_wav"):
-            voice.synthesize_wav(text, wav)
-        else:
-            voice.synthesize(text, wav)
+    import json, urllib.request, urllib.error
+    body = {"text": text}
+    if os.environ.get("UNITY_SPEAK_EMOTION"):
+        body["emotion"] = os.environ["UNITY_SPEAK_EMOTION"]
+    if os.environ.get("UNITY_SPEAK_ACT"):
+        body["speech_act"] = os.environ["UNITY_SPEAK_ACT"]
+    req = urllib.request.Request(VOICE_URL + "/say", json.dumps(body).encode(), {"Content-Type": "application/json"})
+    try:
+        wav = urllib.request.urlopen(req, timeout=60).read()
+    except urllib.error.HTTPError as e:
+        raise SystemExit("her voice refused the line: %s" % e.read().decode(errors="replace")[:300])
+    except OSError as e:
+        raise SystemExit("her voice server is not reachable at %s (%s)" % (VOICE_URL, e))
+    with open(out, "wb") as f:
+        f.write(wav)
 
 
 LOCK = os.path.join(tempfile.gettempdir(), "unity-voice.lock")

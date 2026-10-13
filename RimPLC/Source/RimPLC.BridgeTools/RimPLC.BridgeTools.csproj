@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    RimPLC's RimBridgeServer companion (rimplc/* tools). Referenced read-only: RimPLC.dll (this repo) and
+    RimBridgeServer.Sdk.dll from the installed RimBridgeServer mod (Private=false, never copied).
+
+    OUTPUT STAYS INSIDE THIS MOD FOLDER: RimPLC/BridgeTools/RimPLC.BridgeTools.dll. The README's paired layout puts it
+    at <RimWorld>/BridgeTools/RimPLC/ when the owner stages; nothing here deploys.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>RimPLC.BridgeTools</AssemblyName>
+    <RootNamespace>RimPLC.BridgeTools</RootNamespace>
+    <Version>0.1.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <Authors>Operator</Authors>
+    <Company>Operator</Company>
+    <Product>RimPLC</Product>
+    <Deterministic>true</Deterministic>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>portable</DebugType>
+    <AutomaticallyUseReferenceAssemblyPackages>false</AutomaticallyUseReferenceAssemblyPackages>
+    <OutputPath>$(MSBuildProjectDirectory)/../../BridgeTools/</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <RimWorldPath Condition="'$(RimWorldPath)' == ''">$(RIMWORLD_PATH)</RimWorldPath>
+    <RimWorldPath Condition="'$(RimWorldPath)' == ''">C:/Program Files (x86)/Steam/steamapps/common/RimWorld</RimWorldPath>
+    <RimWorldManagedPath>$(RimWorldPath)/RimWorldWin64_Data/Managed</RimWorldManagedPath>
+    <RimBridgeSdkPath Condition="'$(RimBridgeSdkPath)' == ''">$(RimWorldPath)/Mods/RimBridgeServer/1.6/Assemblies/RimBridgeServer.Sdk.dll</RimBridgeSdkPath>
+    <PathMap>$(MSBuildProjectDirectory)=/RimPLC/Source/RimPLC.BridgeTools</PathMap>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" PrivateAssets="all" />
+    <ProjectReference Include="../RimPLC/RimPLC.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+    <Reference Include="RimBridgeServer.Sdk">
+      <HintPath>$(RimBridgeSdkPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RimWorldManagedPath)/Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <Target Name="RequireBridgeSdk" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(RimBridgeSdkPath)')" Text="RimBridgeServer.Sdk.dll not found at $(RimBridgeSdkPath). Set RimBridgeSdkPath." />
+  </Target>
+</Project>

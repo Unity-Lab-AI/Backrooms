@@ -90,8 +90,12 @@ def eval_voice():
 
 def eval_tools():
     steps = ok = name_ok = 0
+    per = {}                                   # per held-out set (play, plc, tools, fortress, life_*): steps, same, valid
     for l in open(os.path.join(D, "eval_tools.jsonl"), encoding="utf-8"):
-        msgs = json.loads(l)["messages"]
+        row = json.loads(l)
+        msgs = row["messages"]
+        kind = row.get("eval_kind") or row.get("kind") or "play"
+        pk = per.setdefault(kind, [0, 0, 0])
         seen = 0
         for i, m in enumerate(msgs):
             if m["role"] != "assistant" or not m.get("tool_calls") or m.get("weight") == 0:
@@ -101,7 +105,7 @@ def eval_tools():
                 break
             want = m["tool_calls"][0]["function"]["name"]
             got = chat(to_openai(msgs[:i]), 7, tools=TOOLS, max_tokens=400, temperature=0.2).get("tool_calls") or []
-            steps += 1
+            steps += 1; pk[0] += 1
             if got:
                 fn = got[0].get("function", {})
                 try:
@@ -109,10 +113,12 @@ def eval_tools():
                 except Exception:
                     args = None
                 if fn.get("name") == want:
-                    name_ok += 1
+                    name_ok += 1; pk[1] += 1
                     if isinstance(args, dict) and not check_player.validate(args, SCHEMA[want]):
-                        ok += 1
-    return {"steps": steps, "same_tool": name_ok / max(1, steps), "valid_same_tool": ok / max(1, steps)}
+                        ok += 1; pk[2] += 1
+    return {"steps": steps, "same_tool": name_ok / max(1, steps), "valid_same_tool": ok / max(1, steps),
+            "per_set": {k: {"steps": v[0], "same_tool": round(v[1] / max(1, v[0]), 3),
+                            "valid_same_tool": round(v[2] / max(1, v[0]), 3)} for k, v in sorted(per.items())}}
 
 
 def main():

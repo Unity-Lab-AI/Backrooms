@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rimplc.local/schema/rung.schema.json",
+  "title": "RimPLC rung (frozen v1, P2 additions: nested instructions)",
+  "description": "One rung of the ladder: when (an AND of conditions) -> then (ordered advice steps). Same meaning as a gate in docs/playbook.gates.json read by .local/autopilot/gates.py. Lower priority is scanned first. A missing key fails its condition (unmeasured is not false). An unresolved bound fails and is reported in unresolved_conditions.",
+  "type": "object",
+  "required": ["id", "priority", "when", "then"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$", "description": "Unique. Rungs added through the AI API are prefixed unity-, rungs made in the in-game editor player-. A unity-/player- rung with the id of a book rung replaces it."},
+    "priority": {"type": "number", "description": "Lower runs first. Rungs from GRACE_FROM_PRIORITY up to 99 (except id always) wait until day > START_GRACE_DAYS."},
+    "when": {"$ref": "#/$defs/when"},
+    "then": {"type": "array", "items": {"type": "string"}, "description": "Advice steps, shown to the player and handed to the AI as the live rung. Rungs added through the API are capped at 8 lines of 300 characters."},
+    "why": {"type": "string"},
+    "never": {"type": "array", "items": {"type": "string"}},
+    "note": {"type": "string"},
+    "family": {"type": "string"},
+    "chain": {"enum": ["combat", "medical", "repairs", "defense", "supply"], "description": "Control-chain membership (training/ladder-v2/DESIGN.md 6.1)."},
+    "check": {"type": "string", "description": "The question this rung answers (chain rungs)."},
+    "notice": {"type": "string", "description": "One line for a human. RimPLC posts it as a game message on the rung's rising edge (book and player rungs only)."},
+    "latch": {"type": "boolean", "description": "Done-latch: mark_<id>_done false is added to when and 'ladder_set mark <id>_done true' to then."},
+    "disabled": {"type": "string", "description": "Present = the rung never fires. The value is the reason."},
+    "mode": {"enum": ["advise", "auto", "off"], "default": "advise", "description": "advise never runs coils; auto runs coils on the rising edge; off equals disabled. Rungs added through the AI API are forced to advise."},
+    "source": {"enum": ["book", "player", "unity"], "default": "book"},
+    "requires": {"type": "array", "items": {"type": "string", "pattern": "^(Royalty|Ideology|Biotech|Anomaly|Odyssey|mod:[A-Za-z0-9_.-]+)$"}, "description": "A rung whose requirement is not active is shown as not applicable and never scanned."},
+    "coils": {"type": "array", "items": {"$ref": "#/$defs/coil"}}
+  },
+  "$defs": {
+    "when": {
+      "type": "object",
+      "description": "AND of conditions. Key = a sensor, mark_<name>, alert_<x>, count_<thingdef> (RimPLC, on demand), research_<def>, a tag name, letter_matches, or the label of a nested instruction.",
+      "propertyNames": {"pattern": "^([a-z][a-z0-9_]*|[A-Z][A-Z0-9_]*)$"},
+      "properties": {
+        "letter_matches": {"type": "string", "description": "Case-insensitive substring of any letter label in the stack."}
+      },
+      "additionalProperties": {"$ref": "#/$defs/condition"}
+    },
+    "condition": {
+      "description": "bool: truthiness equals. number: numeric equality (a bool value never equals a number). A string starting with < > != <= >=: comparison against a number, a {TAG}, or another measured key or tag name. Any other string: exact text equality. An object: a nested instruction (the key is then only its label and the name of its memory).",
+      "anyOf": [{"type": ["boolean", "number", "string"]}, {"$ref": "#/$defs/instruction"}]
+    },
+    "instruction": {
+      "description": "Exactly one of any / not / ton / tof / ctu / ons (P2; same rules in RimPLC Engine.cs and gates.py). Timers count game ticks (a game hour is 2500). Timer/counter memory moves once per committed scan. An unmeasured input stays unmeasured through not, so a missing key never fires.",
+      "oneOf": [
+        {"type": "object", "required": ["any"], "additionalProperties": false, "properties": {"any": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/when"}, "description": "OR of AND-branches."}}},
+        {"type": "object", "required": ["not"], "additionalProperties": false, "properties": {"not": {"$ref": "#/$defs/when"}}},
+        {"type": "object", "required": ["ton"], "additionalProperties": false, "properties": {"ton": {"$ref": "#/$defs/when"}, "ticks": {"type": "integer", "minimum": 1}, "hours": {"type": "number", "exclusiveMinimum": 0}}, "description": "On-delay: true once the input has held this long. Give ticks or hours.", "oneOf": [{"required": ["ticks"]}, {"required": ["hours"]}]},
+        {"type": "object", "required": ["tof"], "additionalProperties": false, "properties": {"tof": {"$ref": "#/$defs/when"}, "ticks": {"type": "integer", "minimum": 1}, "hours": {"type": "number", "exclusiveMinimum": 0}}, "description": "Off-delay: stays true this long after the input stops holding. Give ticks or hours.", "oneOf": [{"required": ["ticks"]}, {"required": ["hours"]}]},
+        {"type": "object", "required": ["ctu", "preset"], "additionalProperties": false, "properties": {"ctu": {"$ref": "#/$defs/when"}, "preset": {"type": "integer", "minimum": 1}, "reset": {"$ref": "#/$defs/when"}}, "description": "Up-counter: counts rising edges of the input; true at preset or more; reset (true) zeroes it."},
+        {"type": "object", "required": ["ons"], "additionalProperties": false, "properties": {"ons": {"$ref": "#/$defs/when"}}, "description": "One-shot: true on the one scan the input turns true."}
+      ]
+    },
+    "coil": {
+      "type": "object",
+      "required": ["do"],
+      "additionalProperties": false,
+      "description": "Executable output. P1 runs message, set_mark and set_tag only (no game state changes), and only on auto rungs. The rest are reserved for P3.",
+      "properties": {
+        "do": {"enum": ["message", "set_mark", "set_tag", "letter", "set_work_priority", "add_bill", "set_bill_count", "set_zone_plant", "set_zone_sowing", "set_area", "set_schedule", "set_medical_care", "set_hostility_response", "draft", "undraft", "designate", "forbid", "unforbid", "set_research", "pause", "set_speed"]},
+        "type": {"enum": ["OTE", "OTL", "OTU", "pulse"], "default": "OTE"},
+        "text": {"type": "string"},
+        "name": {"type": "string"},
+        "value": {"type": ["boolean", "number", "string"]}
+      }
+    }
+  }
+}

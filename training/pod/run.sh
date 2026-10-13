@@ -15,14 +15,15 @@ have() { [ -f "$W/state/$1" ]; }
 INPUTS=$( (cd $W && find data/brain pod -type f -print0 | sort -z | xargs -0 sha256sum) | sha256sum | cut -d' ' -f1)
 if [ "$(cat $W/state/inputs 2>/dev/null)" != "$INPUTS" ]; then
   echo "=== inputs changed ($INPUTS): clearing training markers and outputs"
-  rm -f $W/state/preflight $W/state/train $W/state/gguf-* $W/state/eval $W/state/ALL
+  rm -f $W/state/preflight $W/state/brain-bs $W/state/train $W/state/gguf-* $W/state/eval $W/state/ALL
   rm -rf $W/ckpt $W/out/brain-merged $W/out/brain-lora $W/out/*.gguf
   rm -f $W/gguf/unity-*.gguf* $W/gguf/brain-eval.json $W/gguf/quant.txt
   echo "$INPUTS" > $W/state/inputs
 fi
 cp $W/state/inputs $W/gguf/inputs.sha256
 
-if ! have setup; then
+# The marker lives on the volume but packages live on the container disk, which a restart wipes: check both.
+if ! have setup || ! python -c "import unsloth, causal_conv1d" 2>/dev/null; then
   pip install -q --upgrade pip
   pip install -q "unsloth" "unsloth_zoo" datasets hf_transfer pillow
   pip install -q "transformers>=5"
@@ -30,21 +31,54 @@ if ! have setup; then
   pip uninstall -y -q torchaudio || true
   # fast kernels for the linear-attention layers; without them every step falls back to slow PyTorch
   pip install -q flash-linear-attention ninja || true
+  # causal-conv1d is compiled against torch's CUDA. The image's nvcc is 12.4 while unsloth brings torch built for 13.x
+  # (first launch 2026-10-12: "detected CUDA version 12.4 mismatches ... 13.0", 70 s/step on the slow fallback), so
+  # install the matching CUDA toolkit pieces from NVIDIA's apt repo and build with them.
+  TCU=$(python -c "import torch; print(torch.version.cuda or '')")
+  if [ -n "$TCU" ] && ! nvcc --version 2>/dev/null | grep -q "release $TCU"; then
+    V=${TCU/./-}
+    if ! apt-cache policy 2>/dev/null | grep -q developer.download.nvidia.com; then
+      U=$(. /etc/os-release; echo "ubuntu${VERSION_ID/./}")
+      wget -q "https://developer.download.nvidia.com/compute/cuda/repos/$U/x86_64/cuda-keyring_1.1-1_all.deb" -O /tmp/ck.deb         && dpkg -i /tmp/ck.deb >/dev/null || echo "could not add the NVIDIA CUDA apt repo"
+    fi
+    (apt-get update -qq && apt-get install -y -qq cuda-nvcc-$V cuda-cudart-dev-$V cuda-cccl-$V cuda-libraries-dev-$V >/dev/null)       && export CUDA_HOME=/usr/local/cuda-$TCU PATH=/usr/local/cuda-$TCU/bin:$PATH || echo "could not install CUDA $TCU build tools"
+  fi
   MAX_JOBS=16 pip install -q causal-conv1d --no-build-isolation || true
   python -c "import fla, causal_conv1d; print('fast kernels ok')" || echo "fast kernels missing (slower, still correct)"
-  rm -rf $W/llama.cpp
-  git clone -q --depth 1 ${LLAMA_CPP_REF:+-b "$LLAMA_CPP_REF"} https://github.com/ggml-org/llama.cpp $W/llama.cpp
+  # CUDA build: the quantizer, the imatrix and the server the eval talks to (sm_90 = H100/H200). The RunPod PyTorch
+  # image ships no cmake (first launch 2026-10-12 failed here), so it comes from pip. The binaries live on the volume
+  # and survive a restart, so a finished build is kept; a rebuild compiles on the fast container disk (compiling on
+  # the network volume took 25+ min on 2026-10-12) and only the finished tree is copied to the volume.
+  if [ ! -x $W/llama.cpp/build/bin/llama-server ] || [ ! -x $W/llama.cpp/build/bin/llama-quantize ] || [ ! -x $W/llama.cpp/build/bin/llama-imatrix ]; then
+    rm -rf $W/llama.cpp /root/llama.cpp
+    git clone -q --depth 1 ${LLAMA_CPP_REF:+-b "$LLAMA_CPP_REF"} https://github.com/ggml-org/llama.cpp /root/llama.cpp
+    command -v cmake >/dev/null 2>&1 || pip install -q cmake
+    cmake -S /root/llama.cpp -B /root/llama.cpp/build -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCH:-90}" -DLLAMA_CURL=OFF -DBUILD_SHARED_LIBS=OFF >/dev/null
+    cmake --build /root/llama.cpp/build --target llama-quantize llama-imatrix llama-server -j"$(nproc)" >/dev/null
+    cp -a /root/llama.cpp $W/llama.cpp
+  fi
   pip install -q -e $W/llama.cpp/gguf-py sentencepiece
-  # CUDA build: the quantizer, the imatrix and the server the eval talks to (sm_90 = H100/H200)
-  cmake -S $W/llama.cpp -B $W/llama.cpp/build -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCH:-90}" -DLLAMA_CURL=OFF >/dev/null
-  cmake --build $W/llama.cpp/build --target llama-quantize llama-imatrix llama-server -j"$(nproc)" >/dev/null
   done_ setup
 fi
 # what this run was actually built with, next to the model, so a result can be traced and repeated
 { echo "llama.cpp $(cd $W/llama.cpp && git rev-parse HEAD)"; pip freeze 2>/dev/null; } > $W/gguf/versions.txt
 export HF_HUB_ENABLE_HF_TRANSFER=1
 
-if ! have preflight; then python $W/pod/train.py --preflight; rm -rf $W/ckpt/preflight; done_ preflight; fi
+# Fill the GPU: the largest per-step batch (8, 4, then 2; gradient accumulation makes up 16) that runs 2 steps on the
+# longest rows without running out of memory. BRAIN_BS set at pod create skips the search. The pick is kept in
+# state/brain-bs so a resumed run trains with the batch its checkpoints were made with.
+if ! have preflight; then
+  rm -f $W/state/brain-bs
+  for bs in ${BRAIN_BS:-8 4 2}; do
+    echo "=== preflight with BRAIN_BS=$bs"
+    if BRAIN_BS=$bs python $W/pod/train.py --preflight; then echo "$bs" > $W/state/brain-bs; break; fi
+    rm -rf $W/ckpt/preflight
+  done
+  [ -f $W/state/brain-bs ] || { echo "preflight failed at every batch size"; exit 1; }
+  rm -rf $W/ckpt/preflight; done_ preflight
+fi
+export BRAIN_BS=$(cat $W/state/brain-bs 2>/dev/null || echo 2)
+cp $W/state/brain-bs $W/gguf/brain-bs.txt 2>/dev/null || true
 if ! have train; then python $W/pod/train.py; done_ train; fi
 # the base download is not needed once merged
 rm -rf "${HF_HOME:-$HOME/.cache/huggingface}/hub/models--Qwen--Qwen3.5-9B"

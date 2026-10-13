@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- Our own button only; no patch of Core's tab bar. Order 95 sits after Factions (90) and before Menu (500). -->
+  <MainButtonDef>
+    <defName>RimPLC_Ladder</defName>
+    <label>RimPLC</label>
+    <description>The colony ladder: every rung live, its contacts, tags and marks.</description>
+    <tabWindowClass>RimPLC.MainTabWindow_RimPLC</tabWindowClass>
+    <order>95</order>
+  </MainButtonDef>
+</Defs>

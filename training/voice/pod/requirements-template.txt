@@ -10,7 +10,10 @@ llvmlite==0.50.0
 soundfile==0.13.1
 pyworld==0.3.5
 misaki==0.9.4
+num2words==0.5.14
 espeakng-loader==0.2.4
 phonemizer-fork==3.3.2
 spacy==3.8.7
+click==8.5.0
+typer==0.16.0
 en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl

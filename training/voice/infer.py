@@ -7,7 +7,7 @@ These are learned spoken styles and recorded event tokens, not fabricated acting
 is not an accepted stream voice; deployment is governed by the separate quality gate.
 Explicit [laughter]/[breath] require recorded TRAIN event support in this exact pair.
 """
-import argparse
+import argparse, os
 import importlib.metadata
 import json
 import math
@@ -113,6 +113,11 @@ def supports_delivery(rows, chosen):
             and support["pace_min"] <= chosen["pace"] <= support["pace_max"])
 
 
+# The teacher clips run ~4.0 words/s; the owner chose ~3.3 ("Slow to about 3.3 w/s (Recommended)"). Slowing the audio
+# itself smeared it ("they all sound like two recording just offset"), so the student stretches its own phoneme
+# durations instead: 1.2 x. A list so the CLI flag can set it.
+LENGTH_SCALE = [float(os.environ.get("UNITY_VOICE_LENGTH_SCALE", "1.2"))]
+
 class Voice:
     def __init__(self, ckpt, dev=None):
         self.dev = dev or ("cuda" if torch.cuda.is_available() else "cpu")
@@ -175,7 +180,7 @@ class Voice:
                      "speech_act": torch.tensor([SPEECH_ACTS.index(chosen["speech_act"])], device=self.dev, dtype=torch.long),
                      "intensity": torch.tensor([chosen["intensity"]], device=self.dev, dtype=torch.float32),
                      "pace": torch.tensor([chosen["pace"]], device=self.dev, dtype=torch.float32)}
-        mel = self.am.infer(ids, condition)
+        mel = self.am.infer(ids, condition, LENGTH_SCALE[0])
         wav = self.voc(mel).squeeze().float().cpu().numpy()
         if (wav.ndim != 1 or len(wav) != mel.size(2) * FEATURES["hop"] or not len(wav)
                 or not np.isfinite(wav).all() or np.max(np.abs(wav)) > 1.0):
@@ -224,10 +229,13 @@ def main():
     parser.add_argument("--emotion", default="neutral", choices=EMOTIONS)
     parser.add_argument("--intensity", type=float)
     parser.add_argument("--pace", type=float, default=1.0)
+    parser.add_argument("--length-scale", type=float, help="stretch predicted durations (default UNITY_VOICE_LENGTH_SCALE or 1.2)")
     parser.add_argument("--speech-act", choices=SPEECH_ACTS)
     parser.add_argument("--pause-after", action="append", default=[], help="Unique literal phrase=seconds; mechanical pause, 0.05..2 seconds")
     parser.add_argument("--focus", action="append", help="Unsupported: requires performed word-level supervision; fails explicitly")
     args = parser.parse_args()
+    if args.length_scale is not None:
+        LENGTH_SCALE[0] = args.length_scale
     destination = Path(args.out)
     if destination.exists():
         raise ValueError("Output already exists; preserve it and choose a new sample path")

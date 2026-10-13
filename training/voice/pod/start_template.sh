@@ -34,6 +34,27 @@ say "start_template: container up"
 
 # RunPod's own startup (sshd, env export) keeps working for the owner's SSH access.
 if [ -x /start.sh ]; then /start.sh > "$W/runpod-start.log" 2>&1 & fi
+# GPU utilisation for the whole pod life (owner: "make sure we are peggin these GPUS pod when we do it"): every 30 s
+# one row per GPU into out/gpu-util.csv, and out/gpu-util-summary.json (mean/min util %, per GPU and overall, plus
+# the mean over busy samples >= 5%) rewritten each time, so it is current whenever pull_results_s3.ps1 runs.
+( while true; do
+    nvidia-smi --query-gpu=timestamp,index,utilization.gpu,memory.used,memory.total --format=csv,noheader,nounits \
+        >> "$W/out/gpu-util.csv" 2>/dev/null
+    python3 - "$W/out/gpu-util.csv" "$W/out/gpu-util-summary.json" <<'PY' 2>/dev/null
+import json, sys
+rows = [l.split(", ") for l in open(sys.argv[1]) if l.count(",") >= 4]
+util = {}
+for r in rows:
+    try: util.setdefault(r[1].strip(), []).append(float(r[2]))
+    except ValueError: pass
+s = lambda xs: {"samples": len(xs), "mean_util_pct": round(sum(xs) / len(xs), 1), "min_util_pct": min(xs),
+                "busy_mean_util_pct": round(sum(x for x in xs if x >= 5) / max(1, sum(x >= 5 for x in xs)), 1)} if xs else {}
+every = [x for xs in util.values() for x in xs]
+json.dump({"interval_s": 30, "first": rows[0][0] if rows else None, "last": rows[-1][0] if rows else None,
+           "overall": s(every), "per_gpu": {k: s(v) for k, v in util.items()}}, open(sys.argv[2], "w"), indent=1)
+PY
+    sleep 30
+  done ) &
 # Make the provider identity visible to SSH sessions too (the custom-image path lost it there).
 env | grep -E '^RUNPOD_' | sed 's/^/export /' > /etc/rp_environment 2>/dev/null || true
 
@@ -71,10 +92,12 @@ mountpoint -q "$W" || stop_self "$W is not a mount; attach the network volume $V
 if [ "$GEN" = "1" ]; then
   # On-pod generation: the source is a pinned commit (never a moving branch), checked against the approved digest.
   [[ "$VOICE_SOURCE_COMMIT" =~ ^[0-9a-f]{40}$ ]] || stop_self "VOICE_SOURCE_COMMIT must be a full 40-hex commit"
-  ROOTSRC="$W/src-$VOICE_SOURCE_COMMIT"
+  # Each pod clones onto its OWN container disk: the clip and training pods start together on one shared volume,
+  # and a shared clone folder broke both clones on the first launch (2026-10-12). Only the needed blobs are fetched.
+  ROOTSRC="/root/src-$VOICE_SOURCE_COMMIT"
   if [ ! -d "$ROOTSRC/.git" ]; then
     rm -rf "$ROOTSRC.tmp"
-    git clone -q "${VOICE_SOURCE_REPO:-https://github.com/Unity-Lab-AI/Backrooms.git}" "$ROOTSRC.tmp"       && (cd "$ROOTSRC.tmp" && git checkout -q "$VOICE_SOURCE_COMMIT") && mv "$ROOTSRC.tmp" "$ROOTSRC"       || stop_self "could not clone commit $VOICE_SOURCE_COMMIT"
+    git clone -q --filter=blob:none --no-checkout "${VOICE_SOURCE_REPO:-https://github.com/Unity-Lab-AI/Backrooms.git}" "$ROOTSRC.tmp"       && (cd "$ROOTSRC.tmp" && git checkout -q "$VOICE_SOURCE_COMMIT") && mv "$ROOTSRC.tmp" "$ROOTSRC"       || stop_self "could not clone commit $VOICE_SOURCE_COMMIT"
   fi
   GOT=$(cd "$ROOTSRC" && python3 training/voice/manifest.py --check) || stop_self "manifest check failed in the cloned source"
   [ "$GOT" = "$VOICE_DIGEST" ] || stop_self "cloned source digest $GOT is not the approved $VOICE_DIGEST"
@@ -156,7 +179,7 @@ fi
 
 if [ "$GEN" = "1" ] && [ "$ROLE" = "train" ]; then
   # 5a. Training pod: the clips come from the clip pod through the shared volume.
-  WAIT=$(python3 -c "import os; print(int(float(os.environ.get('VOICE_WAIT_HOURS', '1')) * 3600))")
+  WAIT=$(python3 -c "import os; print(int(float(os.environ.get('VOICE_WAIT_HOURS', '4.5')) * 3600))")
   say "waiting for the clip pod (gen/READY, up to ${WAIT}s)"
   until [ -f "$W/gen/READY" ]; do
     [ "$SECONDS" -lt "$WAIT" ] || stop_self "no gen/READY from the clip pod within ${WAIT}s"

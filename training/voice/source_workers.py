@@ -26,8 +26,18 @@ PACKAGES = {
 }
 
 
+def _version(name):
+    # On the Linux pod Cosy runs the CUDA build, which registers as onnxruntime-gpu; the recorded key stays "onnxruntime".
+    try:
+        return importlib.metadata.version(name)
+    except importlib.metadata.PackageNotFoundError:
+        if name == "onnxruntime":
+            return importlib.metadata.version("onnxruntime-gpu")
+        raise
+
+
 def environment_descriptor(teacher):
-    versions = {name: importlib.metadata.version(name) for name in PACKAGES[teacher]}
+    versions = {name: _version(name) for name in PACKAGES[teacher]}
     if teacher == "qwen" and (versions["qwen-tts"] != "0.1.1" or versions["transformers"] != "4.57.3"):
         raise ValueError("Qwen worker requires the reviewed qwen-tts0.1.1 / Transformers4.57.3 environment")
     if teacher == "cosy" and (versions["torch"] != "2.7.1+cu118" or versions["transformers"] != "4.51.3"):
@@ -115,7 +125,7 @@ def render(teacher, recipe, model_dir, code_dir):
             raise ValueError("Cosy worker requires its pinned local code directory")
         sys.path[:0] = [str(code_dir.resolve()), str(code_dir.resolve() / "third_party/Matcha-TTS")]
         cache = ROOT / ".local/voice-lab/models/cosy-runtime-cache"
-        cache.mkdir(exist_ok=True)
+        cache.mkdir(parents=True, exist_ok=True)
         os.environ["HF_HOME"] = str(cache / "huggingface")
         os.environ["MODELSCOPE_CACHE"] = str(cache / "modelscope")
         os.environ["MPLCONFIGDIR"] = str(cache / "matplotlib")

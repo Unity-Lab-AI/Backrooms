@@ -259,8 +259,12 @@ class UnityVoice(nn.Module):
                     d_hat=d_hat, v_hat=v_hat, v_tgt=v_tgt, text_real=text_real)
 
     @torch.no_grad()
-    def infer(self, phon, condition):
-        """Text-only synthesis with recorded-delivery conditioning; no arbitrary sine-wave emotion."""
+    def infer(self, phon, condition, length_scale=1.0):
+        """Text-only synthesis with recorded-delivery conditioning; no arbitrary sine-wave emotion.
+        length_scale stretches every predicted phoneme duration (1.2 = 20% slower). Owner, 2026-10-12, on clips slowed
+        by audio time-stretching: "they all sound like two recording just offset" -- so pace is set here instead."""
+        if not 0.5 <= float(length_scale) <= 2.0:
+            raise ValueError("length_scale must be within 0.5-2.0")
         if (phon.ndim != 2 or phon.size(0) != 1 or phon.dtype != torch.long or not 0 < phon.size(1) <= MAX_PHONEMES
                 or (phon <= 0).any().item() or (phon >= self.emb.num_embeddings).any().item()):
             raise ValueError("Expected one nonempty bounded phoneme utterance")
@@ -273,7 +277,7 @@ class UnityVoice(nn.Module):
             raise ValueError("Model predicts nonfinite prosody; refuse audio")
         if (logd > math.log(MAX_PHONE_FRAMES + 1)).any().item():
             raise ValueError("Model predicts an excessive phoneme duration; checkpoint needs review")
-        d = torch.exp(logd) - 1
+        d = (torch.exp(logd) - 1) * float(length_scale)
         dur = torch.clamp(torch.round(d), min=1, max=MAX_PHONE_FRAMES).long()[None]
         if dur.sum().item() > MAX_FRAMES:
             raise ValueError("Predicted utterance is too long; split at a sentence boundary")

@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rimplc.local/schema/tools.schema.json",
+  "title": "RimPLC AI API shapes (frozen v1)",
+  "description": "Arguments and results of the RimBridgeServer companion tools (RimPLC.BridgeTools.dll, names rimplc/*) and of the command-file fallback (<RimWorld config folder>/RimPLC/inbox.jsonl -> outbox.jsonl, same names without the rimplc/ prefix as cmd). The brain keeps calling ladder / ladder_set (owner decision 2); tools.py maps ladder -> read_ladder and ladder_set mark|tag|add_rung|remove_rung -> set_mark|set_tag|upsert_rung|remove_rung (and the letters she looked at -> letters_seen) through gates.rimplc(), keeping the ladder tool's result text, and falls back to the Python engine when RimPLC does not answer. Every result carries ok (bool); a refusal is ok=false with refused: <reason>.",
+  "$defs": {
+    "refusal": {
+      "type": "object",
+      "required": ["ok", "refused"],
+      "properties": {"ok": {"const": false}, "refused": {"type": "string"}}
+    },
+    "live_rung": {
+      "type": "object",
+      "required": ["id", "priority", "matched", "then"],
+      "properties": {
+        "id": {"type": "string"},
+        "priority": {"type": "number"},
+        "matched": {"type": "object", "description": "The measured value behind each condition key (or the tag value, or the string unmeasured)."},
+        "then": {"type": "array", "items": {"type": "string"}},
+        "notice": {"type": "string"},
+        "chain": {"type": "string"},
+        "check": {"type": "string"}
+      }
+    },
+
+    "read_ladder.args": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "top": {"type": "integer", "minimum": 1, "maximum": 50, "default": 4},
+        "all": {"type": "boolean", "default": false, "description": "true = every live rung instead of the first top."}
+      }
+    },
+    "read_ladder.result": {
+      "type": "object",
+      "description": "Keeps the field names of today's ladder tool (tools.py t_ladder): live_rungs, tags, my_marks, my_rungs, unknown_keys. New fields are additions only.",
+      "required": ["ok", "live_rungs", "tags", "my_marks", "my_rungs", "unknown_keys"],
+      "properties": {
+        "ok": {"const": true},
+        "live_rungs": {"type": "array", "items": {"$ref": "#/$defs/live_rung"}},
+        "tags": {"type": "object"},
+        "my_marks": {"type": "object", "additionalProperties": {"type": ["boolean", "number"]}},
+        "my_rungs": {"type": "array", "items": {"type": "string"}},
+        "unknown_keys": {"type": "array", "items": {"type": "string"}},
+        "unresolved_conditions": {"type": "array", "items": {"type": "string"}},
+        "disabled_rungs": {"type": "object", "additionalProperties": {"type": "string"}},
+        "not_applicable": {"type": "array", "items": {"type": "string"}},
+        "scan_tick": {"type": "integer"},
+        "scan_ms": {"type": "number"},
+        "paused": {"type": "boolean"}
+      }
+    },
+
+    "read_state.args": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {"keys": {"type": "array", "items": {"type": "string"}, "description": "Optional filter. Absent keys are omitted, never zero-filled."}}
+    },
+    "read_state.result": {
+      "type": "object",
+      "required": ["ok", "state"],
+      "properties": {"ok": {"const": true}, "state": {"type": "object"}, "scan_tick": {"type": "integer"}}
+    },
+
+    "set_tag.args": {
+      "type": "object",
+      "required": ["name", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {"type": "string", "pattern": "^[A-Z0-9_]{1,40}$"},
+        "value": {"type": ["number", "string", "null"], "description": "null clears the override."},
+        "owner": {"type": "boolean", "default": false, "description": "Set only by the owner's CLI side, never from chat. Needed to change a constant."}
+      }
+    },
+    "set_mark.args": {
+      "type": "object",
+      "required": ["name", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {"type": "string", "pattern": "^[a-z0-9_]{1,40}$"},
+        "value": {"type": ["boolean", "number", "string", "null"], "description": "Numbers stay numbers ('3' -> 3); true/yes/done/on -> true; anything else false; null clears."}
+      }
+    },
+    "upsert_rung.args": {
+      "type": "object",
+      "required": ["rung"],
+      "additionalProperties": false,
+      "properties": {
+        "rung": {"description": "A rung object (rung.schema.json) or its JSON text. The id is forced to the unity- prefix, then is capped at 8 lines of 300 characters, mode is forced to advise."}
+      }
+    },
+    "remove_rung.args": {
+      "type": "object",
+      "required": ["id"],
+      "additionalProperties": false,
+      "properties": {"id": {"type": "string"}}
+    },
+    "enable_rung.args": {
+      "type": "object",
+      "required": ["id", "enabled"],
+      "additionalProperties": false,
+      "properties": {"id": {"type": "string"}, "enabled": {"type": "boolean"}, "owner": {"type": "boolean", "default": false, "description": "Disabling a book rung needs the owner."}}
+    },
+    "letters_seen.args": {"type": "object", "additionalProperties": false, "properties": {}},
+    "export.args": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {"name": {"type": "string", "pattern": "^[A-Za-z0-9_-]{0,60}$", "description": "File name in <config>/RimPLC/exports/ (default ladder-<tick>)."}}
+    },
+    "export.result": {
+      "type": "object",
+      "required": ["ok"],
+      "properties": {"ok": {"type": "boolean"}, "result": {"type": "string"}, "path": {"type": "string"}, "ladder": {"$ref": "ladder.schema.json"}}
+    },
+    "import.args": {
+      "type": "object",
+      "required": ["json"],
+      "additionalProperties": false,
+      "properties": {
+        "json": {"description": "A ladder (ladder.schema.json) as an object (command file) or JSON text (bridge). 'ladder' is accepted as a synonym in the command file."},
+        "dry_run": {"type": "boolean", "default": true, "description": "true: return the diff only. false: apply it."},
+        "owner": {"type": "boolean", "default": false, "description": "Needed for switched_off book rungs, auto modes and constants in rimplc_state."}
+      }
+    },
+    "import.result": {
+      "type": "object",
+      "required": ["ok"],
+      "properties": {"ok": {"type": "boolean"}, "result": {"type": "string"}, "diff": {"type": "array", "items": {"type": "string", "description": "'+ ' new, '~ ' changed, '= ' unchanged, '! ' refused, '- ' note, then the text."}}, "applied": {"type": "boolean"}, "refused": {"type": "string"}}
+    },
+    "edit.result": {
+      "type": "object",
+      "required": ["ok"],
+      "properties": {"ok": {"type": "boolean"}, "result": {"type": "string"}, "refused": {"type": "string"}, "note": {"type": "string"}}
+    },
+
+    "inbox.line": {
+      "type": "object",
+      "required": ["cmd"],
+      "description": "One line of inbox.jsonl. cmd is a tool name without the rimplc/ prefix; the other fields are that tool's args. id is echoed on the result line.",
+      "properties": {
+        "cmd": {"enum": ["read_ladder", "read_state", "set_tag", "set_mark", "upsert_rung", "remove_rung", "enable_rung", "letters_seen", "export", "import"]},
+        "id": {"type": "string"}
+      }
+    },
+    "outbox.line": {
+      "type": "object",
+      "required": ["cmd", "result"],
+      "properties": {"id": {"type": "string"}, "cmd": {"type": "string"}, "result": {"type": "object"}}
+    }
+  },
+  "tools": {
+    "rimplc/read_ladder": {"args": "#/$defs/read_ladder.args", "result": "#/$defs/read_ladder.result"},
+    "rimplc/read_state": {"args": "#/$defs/read_state.args", "result": "#/$defs/read_state.result"},
+    "rimplc/set_tag": {"args": "#/$defs/set_tag.args", "result": "#/$defs/edit.result"},
+    "rimplc/set_mark": {"args": "#/$defs/set_mark.args", "result": "#/$defs/edit.result"},
+    "rimplc/upsert_rung": {"args": "#/$defs/upsert_rung.args", "result": "#/$defs/edit.result"},
+    "rimplc/remove_rung": {"args": "#/$defs/remove_rung.args", "result": "#/$defs/edit.result"},
+    "rimplc/enable_rung": {"args": "#/$defs/enable_rung.args", "result": "#/$defs/edit.result"},
+    "rimplc/letters_seen": {"args": "#/$defs/letters_seen.args", "result": "#/$defs/edit.result"},
+    "rimplc/export": {"args": "#/$defs/export.args", "result": "#/$defs/export.result"},
+    "rimplc/import": {"args": "#/$defs/import.args", "result": "#/$defs/import.result"}
+  }
+}

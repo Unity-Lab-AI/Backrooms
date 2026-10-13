@@ -29,4 +29,10 @@ def publish_directory(source, destination):
     rename.restype = ctypes.c_int
     if rename(-100, os.fsencode(source), -100, os.fsencode(destination), 1) != 0:
         code = ctypes.get_errno()
-        raise OSError(code, os.strerror(code), str(destination))
+        # The RunPod network volume answers RENAME_NOREPLACE with EINVAL (2026-10-12 merge of 5,000 clips). There a
+        # plain rename is used once the destination is confirmed absent; only this pod's own job writes it.
+        if code not in (errno.EINVAL, errno.ENOSYS, errno.ENOTSUP):
+            raise OSError(code, os.strerror(code), str(destination))
+        if os.path.lexists(destination):
+            raise FileExistsError(errno.EEXIST, os.strerror(errno.EEXIST), str(destination))
+        os.rename(source, destination)
