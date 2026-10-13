@@ -11,14 +11,14 @@
 
 ---
 
-## LIVE NOW (2026-10-12, updated 00:31 UTC 10-13): two pods running -- read this first after a compaction
+## LIVE NOW (updated 00:36 UTC 10-13): NO pods, NO volumes -- both runs done, results on D: -- read this first after a compaction
 
 Owner go: *"Go fastest, voice cap $70"*, then *"well we are gonna have to double that cap"*.
 
 | Pod | Id | Shape | $/h | Cap | State at 15:07 |
 |---|---|---|---|---|---|
-| Voice (records, then trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | stopped 23:43 | $140 | **DONE 23:02.** Trained voice (acoustic 20k + vocoder 120k) published; final samples: owner *"smaples are perfect"*. Pulled to `D:oice-lab\pod-resultsoice-2026-10-12\` (model SHA256SUMS OK; teacher models/venvs/ckpts deliberately not pulled). Pod + volume `nk8oyfxwc7` await owner OK to delete |
-| Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | stopped 23:43 | $50 | **DONE 23:27.** 1,062 steps, train loss 0.397; picked IQ4_XS `unity-brain.gguf` (sha 2fe30716..., verified on D:). Eval: life 100%, play 96%, plc 92%, rare-tools set 53%, overall tool 82%; voice-line pass 0.897 < today's 0.984 so today's line model stays. Pod + volume `3sjem6lb5j` await owner OK to delete |
+| Voice (records, then trains) | `ksw41pgbted5ro` | 2x H100, US-CA-2 | stopped 23:43 | $140 | **DONE 23:02.** Trained voice (acoustic 20k + vocoder 120k) published; final samples: owner *"smaples are perfect"*. Pulled to `D:oice-lab\pod-resultsoice-2026-10-12\` (model SHA256SUMS OK; teacher models/venvs/ckpts deliberately not pulled). Pod and volume `nk8oyfxwc7` DELETED 00:35 10-13 (owner: *"last check make sure we are ready, then do it"*; final check passed) |
+| Brain LoRA | `rm6sdrmiv4dgtp` | 1x H100, US-MO-1 | stopped 23:43 | $50 | **DONE 23:27.** 1,062 steps, train loss 0.397; picked IQ4_XS `unity-brain.gguf` (sha 2fe30716..., verified on D:). Eval: life 100%, play 96%, plc 92%, rare-tools set 53%, overall tool 82%; voice-line pass 0.897 < today's 0.984 so today's line model stays. Pod and volume `3sjem6lb5j` DELETED 00:35 10-13 (same owner go) |
 
 **How to check** (no SSH key is set on these pods):
 - Brain: `https://rm6sdrmiv4dgtp-8000.proxy.runpod.net/` -> `status.txt`, `run.log.txt` (step line: grep `/1062`), `gpu-util.csv` (fields: time, gpu, util %, MiB used, MiB total). 19 GB used + 0 % = setup, not training.
