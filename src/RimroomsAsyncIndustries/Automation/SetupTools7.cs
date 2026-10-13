@@ -11,6 +11,7 @@ namespace RimroomsAsyncIndustries.Automation
     /// kitchen bills that go on when a stove or butcher table finishes. Each returns a read-back the model can check.
     ///   {"cmd":"freezer"}   a small sealed roofed room near the food store, a cooler in its wall with the blue (cold) side
     ///                       facing in; once the cooler is built and powered, its target goes to -5 C
+    ///   {"cmd":"room_cooler","x":"..","z":"..","celsius":"21"}   a room's own cooler (a tower's ventilation)
     ///   {"cmd":"butcher"}   a butcher table blueprint in a roofed room near the food store, or the state of the one there is
     ///   {"cmd":"kitchen"}   every BUILT stove with no meal bill gets "simple meal until 30", every BUILT butcher table with no
     ///                       bill gets "butcher forever" -- the auto-attach the ladder fires when a kitchen table completes
@@ -46,11 +47,12 @@ namespace RimroomsAsyncIndustries.Automation
             ThingDef cooler = DefDatabase<ThingDef>.GetNamedSilentFail("Cooler");
             if (cooler == null) return "refused: no Cooler def";
 
-            // A cooler already chilling a room is the freezer: report it, and set it cold once it has power.
+            // A cooler already chilling a FREEZER-SHAPED room is the freezer: report it, and set it cold once it has power.
+            // Only that shape -- a cooler in a bedroom or a tower is somebody's comfort, never something to drop to -5 C.
             foreach (Building b in Built(map, "Cooler"))
             {
                 Room cold = (b.Position + IntVec3.North.RotatedBy(b.Rotation)).GetRoom(map);
-                if (cold == null || cold.PsychologicallyOutdoors || cold.UsesOutdoorTemperature) continue;
+                if (!FreezerShaped(map, cold)) continue;
                 CompTempControl temp = b.TryGetComp<CompTempControl>();
                 CompPowerTrader power = b.TryGetComp<CompPowerTrader>();
                 if (temp != null) temp.TargetTemperature = FreezerCelsius;
@@ -74,37 +76,91 @@ namespace RimroomsAsyncIndustries.Automation
                 if (!c.InBounds(map) || map.fogGrid.IsFogged(c)) continue;
                 Room r = c.GetRoom(map);
                 if (r == null || !seen.Add(r)) continue;
-                if (r.PsychologicallyOutdoors || r.UsesOutdoorTemperature || r.OpenRoofCount > 0) continue;
-                if (r.CellCount < 4 || r.CellCount > FreezerMaxCells) continue;
-                if (r.ContainedBeds.Any()) continue;
-                rooms.Add(r);
+                if (FreezerShaped(map, r)) rooms.Add(r);
             }
             foreach (Room r in rooms)
             {
-                // A wall a cooler may replace (isPlaceOverableWall) on the room's edge with room inside on one side and anything not in the room on the other,
-                // so the hot side vents out. Rotation puts the cold (North-relative) face toward the room.
-                foreach (IntVec3 inside in r.BorderCells)
-                {
-                    Building wall = inside.GetEdifice(map);
-                    if (wall == null || wall.def.building == null || !wall.def.building.isPlaceOverableWall) continue;
-                    foreach (IntVec3 d in GenAdj.CardinalDirections)
-                    {
-                        IntVec3 coldCell = inside + d, hotCell = inside - d;
-                        if (!coldCell.InBounds(map) || !hotCell.InBounds(map)) continue;
-                        if (coldCell.GetRoom(map) != r || hotCell.GetRoom(map) == r) continue;
-                        if (hotCell.Impassable(map)) continue;
-                        Rot4 rot = Rot4.FromIntVec3(d);
-                        if (!GenConstruct.CanPlaceBlueprintAt(cooler, inside, rot, map, false, null, null, null).Accepted) continue;
-                        GenConstruct.PlaceBlueprintForBuild(cooler, inside, map, rot, Faction.OfPlayer, null);
-                        return "ok: freezer cooler blueprint in the wall at " + inside.x + "," + inside.z + " (blue side into the " +
-                               r.CellCount + "-cell room, hot side out) -- it needs power: conduit to a generator or battery; " +
-                               "when built run freezer again to set -5 C, and stockpile_room food there";
-                    }
-                }
+                IntVec3 at = PlaceCooler(map, r, cooler);
+                if (at.IsValid)
+                    return "ok: freezer cooler blueprint in the wall at " + at.x + "," + at.z + " (blue side into the " +
+                           r.CellCount + "-cell room, hot side out) -- it needs power: conduit to a generator or battery; " +
+                           "when built run freezer again to set -5 C, and stockpile_room food there";
             }
             return rooms.Count == 0
                 ? "refused: no small sealed roofed room without beds within 30 cells of the food store -- build_room one first (w 5 h 5)"
                 : "refused: " + rooms.Count + " candidate room(s) but no wall cell with open air behind it for the hot side";
+        }
+
+        /// <summary>A freezer's room: enclosed, fully roofed, 4-60 cells, no beds, and no embrasure in its walls (a tower).</summary>
+        private static bool FreezerShaped(Map map, Room r)
+        {
+            if (r == null || r.PsychologicallyOutdoors || r.UsesOutdoorTemperature || r.OpenRoofCount > 0) return false;
+            if (r.CellCount < 4 || r.CellCount > FreezerMaxCells || r.ContainedBeds.Any()) return false;
+            foreach (IntVec3 c in r.BorderCells)
+            {
+                Building e = c.InBounds(map) ? c.GetEdifice(map) : null;
+                if (e != null && e.def.defName.IndexOf("Embrasure", StringComparison.OrdinalIgnoreCase) >= 0) return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// A cooler blueprint over a wall of this room that a cooler may replace (isPlaceOverableWall), cold (North-relative)
+        /// face into the room and hot face onto open ground outside it. Returns the cell, or Invalid if no wall qualifies.
+        /// </summary>
+        private static IntVec3 PlaceCooler(Map map, Room r, ThingDef cooler)
+        {
+            foreach (IntVec3 inside in r.BorderCells)
+            {
+                Building wall = inside.InBounds(map) ? inside.GetEdifice(map) : null;
+                if (wall == null || wall.def.building == null || !wall.def.building.isPlaceOverableWall) continue;
+                foreach (IntVec3 d in GenAdj.CardinalDirections)
+                {
+                    IntVec3 coldCell = inside + d, hotCell = inside - d;
+                    if (!coldCell.InBounds(map) || !hotCell.InBounds(map)) continue;
+                    if (coldCell.GetRoom(map) != r || hotCell.GetRoom(map) == r || hotCell.Impassable(map)) continue;
+                    Rot4 rot = Rot4.FromIntVec3(d);
+                    if (!GenConstruct.CanPlaceBlueprintAt(cooler, inside, rot, map, false, null, null, null).Accepted) continue;
+                    GenConstruct.PlaceBlueprintForBuild(cooler, inside, map, rot, Faction.OfPlayer, null);
+                    return inside;
+                }
+            }
+            return IntVec3.Invalid;
+        }
+
+        /// <summary>
+        /// A room's own ventilation (PLAYBOOK 9: each tower "on its own separate ventilation"). x,z is any cell inside it:
+        ///   {"cmd":"room_cooler","x":"..","z":"..","celsius":"21"}
+        /// A cooler already serving the room gets the target; otherwise a cooler blueprint goes in one of its walls.
+        /// </summary>
+        public static string RoomCooler(Map map, Dictionary<string, string> a)
+        {
+            ThingDef cooler = DefDatabase<ThingDef>.GetNamedSilentFail("Cooler");
+            if (cooler == null) return "refused: no Cooler def";
+            int x = a.TryGetValue("x", out string xs) && int.TryParse(xs, out int xv) ? xv : -1;
+            int z = a.TryGetValue("z", out string zs) && int.TryParse(zs, out int zv) ? zv : -1;
+            float celsius = 21f;
+            if (a.TryGetValue("celsius", out string cs)) float.TryParse(cs, System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out celsius);
+            IntVec3 at = new IntVec3(x, 0, z);
+            if (!at.InBounds(map)) return "refused: x,z must be a cell inside the room";
+            Room r = at.GetRoom(map);
+            if (r == null || r.PsychologicallyOutdoors || r.UsesOutdoorTemperature)
+                return "refused: " + x + "," + z + " is not inside an enclosed room";
+            foreach (Building b in Built(map, "Cooler"))
+            {
+                if ((b.Position + IntVec3.North.RotatedBy(b.Rotation)).GetRoom(map) != r) continue;
+                CompTempControl temp = b.TryGetComp<CompTempControl>();
+                if (temp != null) temp.TargetTemperature = celsius;
+                CompPowerTrader power = b.TryGetComp<CompPowerTrader>();
+                return "ok: the room's cooler at " + b.Position.x + "," + b.Position.z + " now targets " + celsius.ToString("0") + " C" +
+                       (power == null || power.PowerOn ? "" : " -- NOT POWERED: run power");
+            }
+            IntVec3 placed = PlaceCooler(map, r, cooler);
+            return placed.IsValid
+                ? "ok: cooler blueprint at " + placed.x + "," + placed.z + " for the " + r.CellCount +
+                  "-cell room -- when built, run power, then room_cooler again to set " + celsius.ToString("0") + " C"
+                : "refused: no wall of that room has open ground behind it for the hot side";
         }
 
         // ---------------------------------------------------------------- butcher table

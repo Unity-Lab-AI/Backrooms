@@ -321,6 +321,7 @@ namespace RimroomsAsyncIndustries.Automation
                 case "crew_setup": return SetupTools6.CrewSetup(map, a);
                 case "terraform": return SetupTools6.Terraform(map, a);
                 case "freezer": return SetupTools7.Freezer(map);
+                case "room_cooler": return SetupTools7.RoomCooler(map, a);
                 case "butcher": return SetupTools7.Butcher(map);
                 case "kitchen": return SetupTools7.Kitchen(map);
                 case "arm": return SetupTools8.Arm(map);
