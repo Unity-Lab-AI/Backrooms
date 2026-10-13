@@ -22,6 +22,9 @@ What it checks
 3. **Format arguments line up**: a key whose text contains ``{0}`` should be translated
    with at least one argument somewhere in the source, and a key translated with
    arguments should have a ``{0}``. This is the specific mismatch the duplicate caused.
+4. **No orphaned keys**: every declared key is named by source, by a def, or by a runtime
+   prefix. A welcome letter was once declared and never sent while a different, untrue one
+   went to every start; an orphan is usually the true text that lost its call site.
 
 Keys assembled at runtime from a variable (``"RR_Role_" + role``) cannot be resolved
 statically and are listed under PREFIXES, which is deliberately explicit: a new
@@ -59,6 +62,20 @@ PREFIXES = (
     # the score is derived rather than stored, so every member is reachable.
     "RR_UI_Confidence_",
 )
+
+# Keys that were already orphaned when the orphan rule (4) was written: declared, and named by
+# no source file, no def and no runtime prefix. Not a dynamic family -- each one is dead text a
+# player can never read, and each is to be either wired to the place it describes or deleted.
+# The list may only shrink: a key that stops being an orphan fails the check until it is taken
+# off, so this cannot quietly become a place new orphans are parked.
+KNOWN_ORPHANS = frozenset((
+    "RR_Bond_Flavour", "RR_Event_PursuerAdvance", "RR_Event_PursuerInjury",
+    "RR_Evidence_PreviousObjectMissing", "RR_GateLink_Add", "RR_GateLink_Unlink",
+    "RR_Gate_OpeningPowerUnstable", "RR_Gate_ReserveReadout", "RR_Operations_Branch",
+    "RR_Operations_Foundation", "RR_Operations_Scenario", "RR_Procurement_NoOpenQuotes",
+    "RR_Procurement_QuantityLimit", "RR_Start_RosterCapability", "RR_Start_RosterCount",
+    "RR_UI_MissingPawn", "RR_UI_NoMachine",
+))
 
 # Literals that name a Def rather than a keyed string are not listed here. They are read
 # out of the mod's own Defs at run time, for the same reason the DLC gating check reads the
@@ -98,6 +115,17 @@ def declared_def_names():
             if node.text:
                 names.add(node.text.strip())
     return names
+
+
+def def_xml_text():
+    """Every non-Keyed XML file the mod ships, where a def may name a keyed string."""
+    parts = []
+    for path in glob.glob(os.path.join(MOD, "**", "*.xml"), recursive=True):
+        if os.sep + "Keyed" + os.sep in path:
+            continue
+        with open(path, encoding="utf-8-sig", errors="replace") as handle:
+            parts.append(handle.read())
+    return "\n".join(parts)
 
 
 def source_text():
@@ -188,6 +216,21 @@ def main():
             failures.append("%s is translated with arguments but its text has no {0}: %r"
                             % (key, text.strip()[:70]))
 
+    # 4. orphaned keys: declared and named by nothing
+    xml = def_xml_text()
+    named = set(re.findall(r'(RR_[A-Za-z0-9_]+)', source)) | set(re.findall(r'(RR_[A-Za-z0-9_]+)', xml))
+    orphans = set()
+    for key in strings:
+        if key in named or any(key.startswith(prefix) for prefix in PREFIXES):
+            continue
+        orphans.add(key)
+    for key in sorted(orphans - KNOWN_ORPHANS):
+        failures.append("%s is declared but no source or def names it (orphaned string): %r"
+                        % (key, strings[key][0][1].strip()[:70]))
+    for key in sorted(KNOWN_ORPHANS - orphans):
+        failures.append("%s is in KNOWN_ORPHANS but is no longer an orphan; remove it from the list"
+                        % key)
+
     if failures:
         for failure in failures:
             sys.stderr.write("keyed-strings: %s\n" % failure)
@@ -200,6 +243,7 @@ def main():
     print("  internal identifiers : %d (toil names, audio cues, capabilities)" % len(internal))
     print("  literal references   : %d, all resolve" % len(referenced))
     print("  argument mismatches  : 0")
+    print("  orphaned keys        : 0 new (%d pre-existing, listed)" % len(KNOWN_ORPHANS))
     return 0
 
 
