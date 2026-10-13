@@ -11,7 +11,7 @@
 
 ---
 
-## LIVE NOW (2026-10-13 ~04:10 UTC): full handoff -- read this first after a compaction
+## LIVE NOW (2026-10-13 ~04:55 UTC): full handoff -- read this first after a compaction
 
 **No pods, no volumes, RunPod spend $0.** Both trainings finished 2026-10-12, were pulled to the USB drive,
 verified (checksums) and deleted with the owner's go (*"last check make sure we are ready, then do it"*).
@@ -42,10 +42,33 @@ deploy check (owner hears her through OBS during the rehearsal).
 | Build | 1.6 references are gone after the update: built against **Krafs.Rimworld.Ref 1.6.4871** (`docs/BUILDING.md`), DLL copied by hand to repo + game |
 | Prompt | `.local/autopilot/prompt.md` THE GAME VERSION: temporary 1.7 beta, 296 other mods, never touch debug windows |
 
+### First live run on 1.7, 2026-10-13 (~22:15-22:52 local) -- what broke and what is fixed
+Owner stopped it (*"okay shut it all down she had major bugs in the game need fresh start and new streeam"*), then
+updated the GPU driver with everything loaded and is **restarting the PC**. Everything was shut down cleanly first;
+the 1-minute monitor cron is cancelled (session-only, gone with the session anyway).
+
+| Problem seen live | Cause | Fix (committed) |
+|---|---|---|
+| Red X pawns/items | stream launched RimWorld from `common\Rimworld` (lowercase w); 1.7 then missed 485 Core textures | `services.py` RW_DIR uses the real casing `common\RimWorld` (+3 tools). Launched that way: 0 missing |
+| She barely talked; brain HTTP 500s | webcam SD on the GPU + game + OBS overflowed 16 GB; every brain call timed out | webcam model on the **CPU** (`unity-face-sd.py`, ~2 min a frame, 20 steps); `UNITY_FACE_DEVICE=cuda` puts it back |
+| Talked about storage 10x, never built it | play loop hung: her requests carried `use_mlock`/`num_thread` (load-time options) -> Ollama tried a 2nd copy, load failed, turns hung; the talk was the filler voice | options removed from `autopilot.py` |
+| Turns 60-260 s | the 1.7 game renders flat out and starves the GPU (a 14K-token turn took 127 s; idle it is ~6 s) | **owner set NVIDIA Max Frame Rate 30 for RimWorld.exe** (persists) |
+| NUM_PARALLEL=2 | Ollama: "model architecture does not currently support parallel requests" (qwen35) | reverted |
+| Talking over herself / 3-4 chat rows at once | every speaker posted chat when its line was READY | one voice lock + chat row posted by `unity-speak.py` when the line starts playing (rows landed 8-26 s apart) |
+| Two feeds heard | the stream Twitch window played the broadcast back | that window launches `--mute-audio`; **MUTE** button in the studio window header (local only) |
+| Too fast | -- | `models/unity-voice/pace.txt` read before every line: **1.2** (1.0 natural, higher slower) |
+
+Not fixed / still open: the host voice's stream filter rejects many lines ("nothing the model wrote passed");
+RimPLC Twitch panels are live (owner's paste just stopped short). Map pick worked live (Earth2: #1, 39% E-W + nook).
+
 ### Next, in order
-1. **Owner is starting it now** (owner 2026-10-13: *"okay last checks and im starting up Unity and a game"*): `start.bat`, GO with "fresh crash landed colony, new stream". Watch: OBS shows the game (not black), the map pick line in `Config/RimroomsAutomation/newgame.result`, real GPU with game + OBS + brain, and the owner hears her through OBS -> record **local_playback_acceptance** in his words.
-2. Map pick: confirm on the live map; tune thresholds if the owner wants a different nook size.
-3. Later round: more rare-tool examples (53%), voice fixes in TODO (keep best held-out checkpoint, one GPU not two, venvs off the network volume, dry-run on one cheap pod first). Voice resume: only a step-25,000 full vocoder survives (`models/unity-voice/resume/`); the step-120,000 one was never pulled.
+1. **After the PC restart** (owner 2026-10-13: *"it telling me to restart my PC.. so write now.md and be done"*):
+   check the NVIDIA frame cap survived the driver update (Manage 3D settings -> RimWorld.exe -> Max Frame Rate 30).
+2. `start.bat`, GO with "fresh crash landed colony, new stream" -> world seed **Earth3**. Start the 1-minute monitor
+   again: play stall >3 min, repeated talk with no matching TOOL, silence >30 s, chat bursts, Ollama 500/499 or >60 s,
+   DOWN services, "No textures found", GPU >15.5 GB / >95 %.
+3. Owner hears her through OBS -> record **local_playback_acceptance** in his words.
+4. Later: tighten the host filter; more rare-tool examples (53%); voice resume (only a step-25,000 full vocoder survives).
 
 ### Gotchas learned 2026-10-12/13
 - `.local/qa/` holds a file that shadows Python's `inspect`: run Playwright scripts from `%TEMP%`, not `.local/qa`.
@@ -56,6 +79,9 @@ deploy check (owner hears her through OBS during the rehearsal).
 - Never leave RimWorld running after a test: it holds ~6 GB of GPU and the owner cannot start the stream (owner: *"u left the game open a 6G on gpu i cant run that yet"*).
 - start-scenario must stop at every page after the scenario page; pressing through the tile page beat the map picker once.
 - On 1.7 the scenario page repeats the selected scenario's title beside Back; only the list row may be clicked.
+- Never ask Ollama for load-time options (use_mlock, num_thread...) that differ from the loaded brain: it loads a second copy, fails on 16 GB, and the caller hangs.
+- Ollama's live log is `.local/qa/_svc_ollama.log` (not %LOCALAPPDATA%/Ollama/server.log) once the stream starts it.
+- 1.7 writes the game log to `<LocalLow>/.../Logs/Player.log`; line 8 shows the launch path (check the casing).
 
 ## The record, 2026-10-12: Unity's own voice + her brain, three pods, waiting on the local voice test
 
