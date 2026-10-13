@@ -12,7 +12,7 @@ CONTACT = os.path.join('src', 'RimroomsAsyncIndustries', 'Company', 'CorporateCo
 GIZMO = os.path.join('src', 'RimroomsAsyncIndustries', 'Company', 'CorporateContactGizmo.cs')
 CONSOLE = os.path.join('src', 'RimroomsAsyncIndustries', 'Gate', 'CompRimroomsGateConsole.cs')
 LINE = os.path.join('src', 'RimroomsAsyncIndustries', 'Company', 'RequestLine.cs')
-STARTS = os.path.join('Mod', 'Rimrooms - Async Industries', '1.6', 'Defs', 'RimroomsStartDefs',
+STARTS = os.path.join('Mod', 'Rimrooms - Async Industries', '1.7', 'Defs', 'RimroomsStartDefs',
                       'RR_Starts.xml')
 
 FAULTS = [

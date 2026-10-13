@@ -32,7 +32,7 @@ workbook = os.path.join(root, "outputs", "rimrooms-async-industries-register-202
                         "Rimrooms_Async_Industries_294_Mod_Integration_Register.xlsx")
 document = os.path.join(root, "outputs", "rimrooms-async-industries-register-2026-09-27",
                         "Rimrooms_Async_Industries_294_Mod_Integration_Register.html")
-assembly = os.path.join(root, "Mod", "Rimrooms - Async Industries", "1.6", "Assemblies",
+assembly = os.path.join(root, "Mod", "Rimrooms - Async Industries", "1.7", "Assemblies",
                         "RimroomsAsyncIndustries.dll")
 
 sources = []

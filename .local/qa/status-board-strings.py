@@ -12,7 +12,7 @@ import re
 import sys
 
 NL = chr(10)
-KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_GateSteps.xml"
+KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_GateSteps.xml"
 SOURCE = "src/RimroomsAsyncIndustries/UI/OperationsGateSteps.cs"
 
 ADD = [

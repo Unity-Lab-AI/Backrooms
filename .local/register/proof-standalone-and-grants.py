@@ -33,7 +33,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries")
-MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6")
+MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7")
 TOOLS = os.path.join(REPO, "tools")
 
 failures = []

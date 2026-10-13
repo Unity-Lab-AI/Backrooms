@@ -1,5 +1,7 @@
 ﻿# SKILL_TREE
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
 Capability inventory for Rimrooms - Async Industries, covering **every system the finished mod contains**, not only what exists in source.
 
 > **This page's per-row statuses were last swept at 0.6.4-dev and the build is 0.12.79-dev.** Rows below reading **Design** may well be built; the connected-work layer alone went from one family to **31** after that sweep. Treat a `Design` marker here as *unverified*, not as *absent*, and **check the row against the code before building for it** — nine rows in one session turned out to be already built, already true, or answered by Core. A "skill" is a thing the mod can do or must be able to do before release. Every entry carries a status so nobody mistakes compiled source for a working game:
@@ -359,7 +361,7 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 
 **Implementation Notes:** two opening paths coexist (`BeginOpening` for expeditions, `BeginPortalOpening` for portal sessions) sharing one physical timer/energy owner. Native `DoorPreDraw` rotation was handled so drawing cannot retarget an approach cell. Never write `PowerOutput` on the threshold trader; a shared power net reserves nothing.
 
-**Files Involved:** `src/RimroomsAsyncIndustries/Gate/CompRimroomsGate.cs`, `NativeGateBinding.cs`, `PortalGateOpening.cs`, `CompRimroomsGateConsole.cs`; `Mod/.../1.6/Patches/RR_NativeGateProviders.xml`; records `docs/implementation/PHASE_3_NATIVE_GATE_IMPLEMENTATION.md`, `PHASE_3_NATIVE_GATE_UI.md`, `NATIVE_GATE_MIGRATION_IMPACT.md`.
+**Files Involved:** `src/RimroomsAsyncIndustries/Gate/CompRimroomsGate.cs`, `NativeGateBinding.cs`, `PortalGateOpening.cs`, `CompRimroomsGateConsole.cs`; `Mod/.../1.7/Patches/RR_NativeGateProviders.xml`; records `docs/implementation/PHASE_3_NATIVE_GATE_IMPLEMENTATION.md`, `PHASE_3_NATIVE_GATE_UI.md`, `NATIVE_GATE_MIGRATION_IMPACT.md`.
 
 ### Finite seeded destination (content version 4)
 
@@ -376,7 +378,7 @@ Parallel branches that do not depend on the portal chain: existing-content repla
 
 **Implementation Notes:** no visited map is ever rebuilt or retargeted; failed-site recovery readdresses a pristine initial survey (`:fallback:1`, AI-01R) instead of regenerating. Legacy-anchor sites need the explicit repair route resume step 2 calls for.
 
-**Files Involved:** `src/RimroomsAsyncIndustries/Generation/*`; `Mod/.../1.6/Defs/MapGeneratorDefs/RR_BackroomsGeneration.xml`, `WorldObjectDefs/RR_BackroomsSites.xml`; records `docs/implementation/PHASE_3_ROOM_PROVIDER_REUSE.md`, `PHASE_2_GENERATION_RECOVERY.md`.
+**Files Involved:** `src/RimroomsAsyncIndustries/Generation/*`; `Mod/.../1.7/Defs/MapGeneratorDefs/RR_BackroomsGeneration.xml`, `WorldObjectDefs/RR_BackroomsSites.xml`; records `docs/implementation/PHASE_3_ROOM_PROVIDER_REUSE.md`, `PHASE_2_GENERATION_RECOVERY.md`.
 
 ### Cross-map work adapters (the owner's "one colony")
 

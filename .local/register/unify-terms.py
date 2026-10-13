@@ -11,8 +11,8 @@ be churn with real save and DefInjected risk for no reader benefit. Only display
 """
 import glob, io, os, re
 
-ROOTS = ['Mod/Rimrooms - Async Industries/1.6/Languages',
-         'Mod/Rimrooms - Async Industries/1.6/Defs']
+ROOTS = ['Mod/Rimrooms - Async Industries/1.7/Languages',
+         'Mod/Rimrooms - Async Industries/1.7/Defs']
 
 # Ordered: longer phrases first so a general rule cannot eat a specific one.
 GLOBAL = [

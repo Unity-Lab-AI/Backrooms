@@ -51,7 +51,7 @@ EDITS = [
      "        /// rule, and nothing needs the number: the absence IS the rule.)"),
 
     # ====================================================== the keyed claims
-    ("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Expedition.xml",
+    ("Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Expedition.xml",
      "  <RR_Exp_InvalidCrew>Select one to three distinct, available employed staff at headquarters. They must be alive, mobile, controllable, and able to carry their gear.</RR_Exp_InvalidCrew>",
      "  <!-- \"one to three\" became \"at least one\" on owner direction 2026-10-06: \"pawns can cross gate"
      + NL +
@@ -63,7 +63,7 @@ EDITS = [
      + NL +
      "  <RR_Exp_InvalidCrew>Select at least one distinct, available employed staff member at headquarters. They must be alive, mobile, controllable, and able to carry their gear. There is no upper limit on how many go.</RR_Exp_InvalidCrew>"),
 
-    ("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Company.xml",
+    ("Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Company.xml",
      "  <RR_UI_ContractTerms>Survey the route, record the distortion, recover the record book and analyse it at headquarters. The optional bonus requires all three crew to return with route, distortion and entity observations. Combat is optional; a recoverable injury does not cancel the bonus.</RR_UI_ContractTerms>",
      "  <!-- \"all three crew\" became \"everybody who went\", which is what the rule always was: the"
      + NL +
@@ -73,7 +73,7 @@ EDITS = [
      + NL +
      "  <RR_UI_ContractTerms>Survey the route, record the distortion, recover the record book and analyse it at headquarters. The optional bonus requires everybody who went to come back with route, distortion and entity observations. Combat is optional; a recoverable injury does not cancel the bonus.</RR_UI_ContractTerms>"),
 
-    ("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_FieldAndThreats.xml",
+    ("Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_FieldAndThreats.xml",
      "A clear entity observation and all three original crew returning qualify for the bonus.",
      "A clear entity observation and every original crew member returning qualify for the bonus."),
 

@@ -14,13 +14,13 @@ COMP = SRC + "/Portals/CompRimroomsEmergence.cs"
 AURA = SRC + "/Portals/GateAura.cs"
 CONSOLE = SRC + "/Gate/CompRimroomsGateConsole.cs"
 SPINUP = SRC + "/Gate/GateSpinUp.cs"
-RECIPE = ("Mod/Rimrooms - Async Industries/1.6/Defs/RecipeDefs/RR_GateRecipes.xml")
+RECIPE = ("Mod/Rimrooms - Async Industries/1.7/Defs/RecipeDefs/RR_GateRecipes.xml")
 FRONTIER = SRC + "/Portals/NaturalFrontierService.cs"
 GUARANTEE = SRC + "/Portals/GuaranteedFrontiers.cs"
 SERVICES = SRC + "/Company/CampaignServices.cs"
 WARNING = SRC + "/Portals/PortalDoorWarning.cs"
-KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Portals.xml"
-DOORPATCH = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_NativeGateProviders.xml"
+KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Portals.xml"
+DOORPATCH = "Mod/Rimrooms - Async Industries/1.7/Patches/RR_NativeGateProviders.xml"
 PROOF = ".local/register/proof-gate-links.py"
 # The equipment-link record. Added 0.12.89-dev when the role a link fills stopped being derived
 # from the def and started being the one the player chose.

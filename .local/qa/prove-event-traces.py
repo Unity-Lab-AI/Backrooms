@@ -142,12 +142,12 @@ NEW_PLANTS = '''    # ================================================= the same
 PLANT_CONSTS = (
     'PROOF = ".local/register/proof-unnerving-register.py"' + NL
     + "# The event half of the same register. Added 2026-10-04 with the traces themselves." + NL
-    + 'EVENTS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsAnomalyEventDefs/RR_AnomalyEvents.xml"'
+    + 'EVENTS = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsAnomalyEventDefs/RR_AnomalyEvents.xml"'
     + NL
     + 'EVENTDEF = "src/RimroomsAsyncIndustries/Threats/RimroomsAnomalyEventDef.cs"' + NL
     + 'EVENT_SERVICE = "src/RimroomsAsyncIndustries/Threats/AnomalyEventService.cs"' + NL
     + 'CONTENT = "src/RimroomsAsyncIndustries/Generation/RoomContentMapComponent.cs"' + NL
-    + 'GENERATION_KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Generation.xml"'
+    + 'GENERATION_KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Generation.xml"'
 )
 
 problems = 0

@@ -29,7 +29,7 @@ def sub(path, old, new, enc='utf-8-sig'):
 
 
 # ------------------------------------------------------------------ the real crashes
-p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6', 'Defs',
+p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7', 'Defs',
                  'RimroomsStartDefs', 'RR_Starts.xml')
 sub(p,
     u'      <li><thing>WoodFiredGenerator</thing><cell>(36, 0, 22)</cell><fuelFraction>0.5</fuelFraction></li>\n'

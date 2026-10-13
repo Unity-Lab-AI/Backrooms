@@ -25,7 +25,7 @@ ART = SRC + "/Presentation/RimroomsSlideArt.cs"
 BACKGROUND = SRC + "/Presentation/RimroomsMenuBackground.cs"
 NOTICE = SRC + "/Presentation/RimroomsGenerationNotice.cs"
 PANE = SRC + "/UI/OperationsPortalNetwork.cs"
-KEYS = ("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed"
+KEYS = ("Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed"
         "/RR_Generation.xml")
 
 # (label, path, old, new)

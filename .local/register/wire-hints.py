@@ -27,7 +27,7 @@ sub(os.path.join(REPO, 'src', 'RimroomsAsyncIndustries', 'Company', 'CampaignSer
 print('hints wired into save and tick')
 
 # ------------------------------------------------------------------ the hints themselves
-p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6', 'Languages', 'English',
+p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7', 'Languages', 'English',
                  'Keyed', 'RR_Scenario.xml')
 s = io.open(p, encoding='utf-8-sig').read()
 keys = ['RR_Hint_contact', 'RR_Hint_surface', 'RR_Hint_comms', 'RR_Hint_doorsRunOut',

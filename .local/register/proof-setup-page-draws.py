@@ -44,7 +44,7 @@ SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries")
 PAGE = os.path.join(SRC, "Scenario", "Page_RimroomsCompanySetup.cs")
 COMPONENT = os.path.join(SRC, "Scenario", "RimroomsStartupComponent.cs")
 SETTINGS = os.path.join(SRC, "Core", "RimroomsMod.cs")
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages", "English",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages", "English",
                      "Keyed", "RR_StartupSetup.xml")
 
 failures = []

@@ -24,9 +24,9 @@ import time
 SRC = "src/RimroomsAsyncIndustries"
 WINDOW = SRC + "/UI/MainTabWindow_Operations.cs"
 HELP = SRC + "/UI/OperationsHelp.cs"
-BUTTON = "Mod/Rimrooms - Async Industries/1.6/Defs/MainButtonDefs/RR_MainButtons.xml"
-HELP_KEYS = ("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Help.xml")
-PATCH = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_GlowPodMarker.xml"
+BUTTON = "Mod/Rimrooms - Async Industries/1.7/Defs/MainButtonDefs/RR_MainButtons.xml"
+HELP_KEYS = ("Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Help.xml")
+PATCH = "Mod/Rimrooms - Async Industries/1.7/Patches/RR_GlowPodMarker.xml"
 DOC = "docs/PLAYING.md"
 # **The reader-facing rules live on the wiki now.** `PLAYING.md` is the long-form
 # working version behind it and is no longer held to the vocabulary rule, the wall rule
@@ -101,7 +101,7 @@ PLANTS = [
      "// nothing", PROOF),
 
     ("a colony control loses its keyed label",
-     "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Operations.xml",
+     "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Operations.xml",
      "<RR_Operations_OpenArchitect>Open Architect</RR_Operations_OpenArchitect>\n  ", "", PROOF),
 
     ("a native tab is opened around Core's worker", WINDOW,

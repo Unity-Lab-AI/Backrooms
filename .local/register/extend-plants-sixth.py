@@ -56,7 +56,7 @@ print("conduit plants added")
 P2 = os.path.join(REG, "plant-gate-links-carry.py")
 t2 = io.open(P2, encoding="utf-8").read()
 PATHS = 'PROOF = ".local/register/proof-gate-links.py"'
-PATHS_NEW = ('DOORPATCH = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_NativeGateProviders.xml"\n'
+PATHS_NEW = ('DOORPATCH = "Mod/Rimrooms - Async Industries/1.7/Patches/RR_NativeGateProviders.xml"\n'
              'PROOF = ".local/register/proof-gate-links.py"')
 A2 = "]\n\n\ndef write_verified"
 NEW2 = '''    # ------------------------------------------ 0.12.53-dev: a gate looks like a gate

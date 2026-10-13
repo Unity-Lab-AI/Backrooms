@@ -13,7 +13,7 @@ DEBRIEF = SRC + "/Company/StaffDebrief.cs"
 EXP = SRC + "/Expedition/RimroomsExpeditionComponent.cs"
 PANE = SRC + "/UI/OperationsFacilities.cs"
 CAMPAIGN = SRC + "/Company/RimroomsCampaignComponent.cs"
-XML = "Mod/Rimrooms - Async Industries/1.6/Defs/WorkGiverDefs/RR_ConnectedWork.xml"
+XML = "Mod/Rimrooms - Async Industries/1.7/Defs/WorkGiverDefs/RR_ConnectedWork.xml"
 
 
 # **THE RESTORE DOES NOT SURVIVE THE PROCESS BEING KILLED.** `finally` handles an exception; it

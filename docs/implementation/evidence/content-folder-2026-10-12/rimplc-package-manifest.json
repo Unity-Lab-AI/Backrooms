@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-10-12T18:20:49.076504+00:00",
+  "packageId": "Operator.RimPLC",
+  "modVersion": "0.1.0",
+  "supportedVersions": [
+    "1.6",
+    "1.7"
+  ],
+  "compiled_game_baseline": "1.6.4871 rev590",
+  "runtime17_verified": false,
+  "game_launched": false,
+  "files": [
+    {
+      "path": "1.7/Assemblies/RimPLC.dll",
+      "bytes": 130048,
+      "sha256": "89f2a33c56fc8cacca033a482a24bc5118b0f464aa3f7fd5ac928eeda8563666"
+    },
+    {
+      "path": "1.7/Defs/MainButtonDefs/RimPLC_MainButtons.xml",
+      "bytes": 455,
+      "sha256": "34a98f51f6c72555dc85c35ec35c241a319f0b2ff0e648fa0ae17447cf6d3813"
+    },
+    {
+      "path": "About/About.xml",
+      "bytes": 2120,
+      "sha256": "0542cf9e53599c81eddb4e700a3af6d6cea3dcdadba365b1c3d2273909fea14e"
+    },
+    {
+      "path": "About/Preview.png",
+      "bytes": 2115761,
+      "sha256": "e33254ec8fc5317addfc987652759619dfaa3315706b2e3a370e01363a092715"
+    },
+    {
+      "path": "About/RimPLC_Badge.png",
+      "bytes": 1152998,
+      "sha256": "1230a800a2c0d8058e296af5109890f005d1ae401655711fb4bd466eba53ffd4"
+    },
+    {
+      "path": "BridgeTools/RimPLC.BridgeTools.dll",
+      "bytes": 10752,
+      "sha256": "eb2482acc98ea8e89aab4973c873143d75a6aed489cf44c180067f4a272750bc"
+    },
+    {
+      "path": "Languages/English/Keyed/RimPLC.xml",
+      "bytes": 317,
+      "sha256": "4e00314384b8eb3dfe845fdf5e0625ec83c0f9bfb622c428a4da952fe2373854"
+    },
+    {
+      "path": "LoadFolders.xml",
+      "bytes": 331,
+      "sha256": "812dd8becb1cb016c0cbe6d5219e96e58636863bdf980e5f81ef64019a1ea41f"
+    },
+    {
+      "path": "Presets/LadderV2.json",
+      "bytes": 150828,
+      "sha256": "20f96231f12aea1f3e699a8402af717f2331546e98067b7674fa5f719a9dcae8"
+    }
+  ],
+  "artwork_updated_at": "2026-10-12T18:45:59.114798+00:00",
+  "content_folder": "1.7",
+  "layout_updated_at": "2026-10-12T19:08:25.853280+00:00"
+}

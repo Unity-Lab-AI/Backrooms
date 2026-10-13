@@ -17,9 +17,9 @@ import time
 BINDING = "src/RimroomsAsyncIndustries/Gate/NativeGateBinding.cs"
 OPENING = "src/RimroomsAsyncIndustries/Gate/PortalGateOpening.cs"
 TRAVEL = "src/RimroomsAsyncIndustries/Portals/PortalTravelService.cs"
-KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Portals.xml"
+KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Portals.xml"
 GATE = "src/RimroomsAsyncIndustries/Gate/CompRimroomsGate.cs"
-GATEKEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Gate.xml"
+GATEKEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Gate.xml"
 
 PROOF = ".local/register/proof-gate-circuit.py"
 DRIVER = "src/RimroomsAsyncIndustries/Gate/JobDriver_RimroomsGate.cs"

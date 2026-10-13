@@ -1,5 +1,7 @@
 # Phase 2 Def and Core Source Review
 
+> **Navigation update — 2026-10-12:** package links below follow the current `1.7/` location. Recorded checkpoint paths, game versions, hashes and observations remain historical.
+
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
@@ -11,11 +13,11 @@ This was a static XML/source review. It did not compile the mod, load Defs in Ri
 
 ### Corrected during this review: gate damage-override enum
 
-The first read of [`RR_GateJobs.xml`](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/JobDefs/RR_GateJobs.xml) found `true` in `checkOverrideOnDamage` for both `RR_CalibrateGate` and `RR_OperateGate`. Core declares `Verse.JobDef.checkOverrideOnDamage` as `CheckJobOverrideOnDamageMode`, whose accepted values are `Never`, `OnlyIfInstigatorNotJobTarget`, and `Always` (`.local/inspection-work/Verse.JobDef.decompiled.cs:18`; `.local/inspection-work/Verse.CheckJobOverrideOnDamageMode.decompiled.cs:3-8`). The shared file now uses `Always` at lines 10 and 19. That is a valid native value; this Def-loading blocker is closed. C# compilation alone would not have exposed the former XML enum mismatch.
+The first read of [`RR_GateJobs.xml`](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Defs/JobDefs/RR_GateJobs.xml) found `true` in `checkOverrideOnDamage` for both `RR_CalibrateGate` and `RR_OperateGate`. Core declares `Verse.JobDef.checkOverrideOnDamage` as `CheckJobOverrideOnDamageMode`, whose accepted values are `Never`, `OnlyIfInstigatorNotJobTarget`, and `Always` (`.local/inspection-work/Verse.JobDef.decompiled.cs:18`; `.local/inspection-work/Verse.CheckJobOverrideOnDamageMode.decompiled.cs:3-8`). The shared file now uses `Always` at lines 10 and 19. That is a valid native value; this Def-loading blocker is closed. C# compilation alone would not have exposed the former XML enum mismatch.
 
 ### Corrected after review: disable native launch targeting for Backrooms sites
 
-[`RR_BackroomsSites.xml`](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/WorldObjectDefs/RR_BackroomsSites.xml#L3) defines the machine-linked map site and already disables caravan map incidents, but it does not set `validLaunchTarget`. In the pinned Core assembly, `RimWorld.WorldObjectDef.validLaunchTarget` defaults to `true` (`.local/inspection-work/RimWorld.WorldObjectDef.decompiled.cs:31`); Core's travelling transport objects explicitly set it to `false` (`Core/Defs/WorldObjectDefs/WorldObjects.xml:135,237`). For the documented machine-only access path, set `<validLaunchTarget>false</validLaunchTarget>` on `RR_BackroomsSite`. This is an integration/behavior omission, not a Def-load error. It has been reported to the lead; no package file was changed in this review.
+[`RR_BackroomsSites.xml`](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Defs/WorldObjectDefs/RR_BackroomsSites.xml#L3) defines the machine-linked map site and already disables caravan map incidents, but it does not set `validLaunchTarget`. In the pinned Core assembly, `RimWorld.WorldObjectDef.validLaunchTarget` defaults to `true` (`.local/inspection-work/RimWorld.WorldObjectDef.decompiled.cs:31`); Core's travelling transport objects explicitly set it to `false` (`Core/Defs/WorldObjectDefs/WorldObjects.xml:135,237`). For the documented machine-only access path, set `<validLaunchTarget>false</validLaunchTarget>` on `RR_BackroomsSite`. This is an integration/behavior omission, not a Def-load error. It has been reported to the lead; no package file was changed in this review.
 
 ## Checks completed
 

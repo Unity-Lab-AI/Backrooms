@@ -10,7 +10,7 @@ import wave
 ROOT = Path(__file__).resolve().parents[2]
 RATE = 48000
 MASTER = ROOT / 'assets/source/phase2/audio'
-PACKAGE = ROOT / 'Mod/Rimrooms - Async Industries/1.6/Sounds/Rimrooms'
+PACKAGE = ROOT / 'Mod/Rimrooms - Async Industries/1.7/Sounds/Rimrooms'
 
 
 def render(name, duration, synth, seed):

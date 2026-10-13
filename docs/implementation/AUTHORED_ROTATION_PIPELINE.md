@@ -1,5 +1,7 @@
 # Authored rotation and journal artwork pipeline
 
+> **Navigation update — 2026-10-12:** package links below follow the current `1.7/` location. Recorded checkpoint paths, game versions, hashes and observations remain historical.
+
 ## Task and scope
 
 Owner requests, verbatim:
@@ -47,7 +49,7 @@ Seven original masters exist under [assets/source/journal](../../assets/source/j
 - `RR_CompanyJournal_Open_north.png`, `_east.png`, `_south.png` for reading.
 - `RR_CompanyJournal_Vertical_north.png`, `_east.png`, `_south.png` for upright presentation.
 
-Each is converted to a 128-pixel package texture under `1.6/Textures/Things/Item/Rimrooms/Journal/`. The [journal Def](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Defs/ThingDefs_Items/RR_CompanyJournal.xml) uses matching closed, open and vertical paths; the latter two are `Graphic_Multi`. The previous cassette texture is retained in [the cassette archive](historical-content/journal-cassette-2026-10-06/RR_RouteRecording.png), and its original source master remains preserved.
+Each is converted to a 128-pixel package texture under `1.6/Textures/Things/Item/Rimrooms/Journal/`. The [journal Def](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Defs/ThingDefs_Items/RR_CompanyJournal.xml) uses matching closed, open and vertical paths; the latter two are `Graphic_Multi`. The previous cassette texture is retained in [the cassette archive](historical-content/journal-cassette-2026-10-06/RR_RouteRecording.png), and its original source master remains preserved.
 
 `RR_RouteRecording`, `BookBase`, `RimroomsRecordBook`, `CompBook`, quality, native hauling, the evidence component and all saved keys remain intact. The recipe and description now identify a paper journal. [CompRouteEvidence.cs](../../src/RimroomsAsyncIndustries/Investigation/CompRouteEvidence.cs) checks the existing central `RimroomsMod.PackageId`, matching `About.xml`, instead of the obsolete package literal. This restores recognition of the company's own current Def while retaining the native textbook fallback and historical-carrier recovery shape. It does not add a retired-package metadata alias or establish old-save compatibility.
 

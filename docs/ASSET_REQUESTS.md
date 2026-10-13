@@ -1,5 +1,7 @@
 # Asset requests — audio, gate animation, and the aura
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
 Written 2026-10-06. **This is a brief for whoever authors the next assets**, with the engine
 constraints that decide what is usable and the code facts that decide what is needed.
 
@@ -178,8 +180,8 @@ The [TODO note to Claude](FINALIZED.md#active-portal-artwork-and-code-handoff-20
 
 | Kind | Masters | Shipped to |
 |---|---|---|
-| Audio | `assets/source/audio/` | `1.6/Sounds/Rimrooms/` |
-| Animation frames | `assets/source/phase2/` | `1.6/Textures/Things/Building/Rimrooms/Gates/` |
+| Audio | `assets/source/audio/` | `1.7/Sounds/Rimrooms/` |
+| Animation frames | `assets/source/phase2/` | `1.7/Textures/Things/Building/Rimrooms/Gates/` |
 
 Every shipped asset must be added to `tools/package-files.json`, and every one must have a master —
 a build check refuses an asset that has neither.

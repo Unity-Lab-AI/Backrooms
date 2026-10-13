@@ -10,7 +10,7 @@ import sys
 
 from PIL import Image, ImageDraw
 
-ROOT = "Mod/Rimrooms - Async Industries/1.6/Textures"
+ROOT = "Mod/Rimrooms - Async Industries/1.7/Textures"
 SCALE = 4
 OUT = "artifacts/phase2-cut-sheet.png"
 COLS = 4

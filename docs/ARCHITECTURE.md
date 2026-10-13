@@ -1,6 +1,8 @@
 # ARCHITECTURE
 
-> Rimrooms - Async Industries — a RimWorld 1.6 company-management campaign about operating a facility that opens, investigates and profits from unstable spaces beyond a machine gate.
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
+> Rimrooms - Async Industries — a RimWorld company-management campaign being prepared for 1.7, with 1.6 retained about operating a facility that opens, investigates and profits from unstable spaces beyond a machine gate.
 > Gee, Red, Sponge, Alfreddo
 
 ### Credits
@@ -40,7 +42,7 @@ This is the current, bounded artwork addition under the October 6 content-policy
 | --- | --- |
 | Six equipment objects | Gate console, utility generator, analysis bench, field recorder, evidence case and survey tag use rotatable `Graphic_Multi`. Twelve original north/back and east/side masters supplement the preserved front masters; eighteen north/east/south package views are derived, with west mirrored by RimWorld. The analysis bench retains its 2x1 footprint and turns to 1x2. [The Phase 2 cutter](../tools/cut-phase2-art.py) requires authored frames before writing active directional graphics; draft views do not ship while a consumer remains `Graphic_Single`. Existing component, power, storage and facility bindings are retained. |
 | Paper field journal | [Seven source views and provenance](../assets/source/journal/) produce closed ground/icon, three open and three upright package views. `RR_RouteRecording` retains its Def identity, `BookBase`/`RimroomsRecordBook`, `CompBook`, evidence component and saved keys; open/upright graphics use `Graphic_Multi`. Recognition of the company carrier uses the central package identity. The prior cassette package texture is archived outside the mod. |
-| Gate world frames | [Twelve source views and provenance](../assets/source/gates/) supply north/east/south trims for the existing 1x1, 1x2, 1x3 and 2x3 apertures, with west mirrored from east. [The gate cutter](../tools/cut-gate-frames.py) preflights all views and runtime consumers, enforces transparent aperture centers and exports footprint-shaped textures under `1.6/Textures/Things/Building/Rimrooms/Gates/`. These decorate actual doors and bound door runs; no new door Def is introduced. |
+| Gate world frames | [Twelve source views and provenance](../assets/source/gates/) supply north/east/south trims for the existing 1x1, 1x2, 1x3 and 2x3 apertures, with west mirrored from east. [The gate cutter](../tools/cut-gate-frames.py) preflights all views and runtime consumers, enforces transparent aperture centers and exports footprint-shaped textures under `1.7/Textures/Things/Building/Rimrooms/Gates/`. These decorate actual doors and bound door runs; no new door Def is introduced. |
 
 [GateWorldFrames.cs](../src/RimroomsAsyncIndustries/Gate/GateWorldFrames.cs) adds cosmetic `CompRimroomsGate.PostDraw` rendering. It uses the designation's saved orientation rather than a native door's render-mutated rotation, centers the frame over the complete occupied rectangle and hides it if any occupied cell is fogged. Cached materials reject absent or wrong-aspect textures; unsupported/mismatched footprints retain the native door presentation. Transparent openings preserve native leaves and animation. Collision, permissions, power, crossings, arrival/return cells and route ownership stay with their existing systems.
 
@@ -51,11 +53,11 @@ This is the current, bounded artwork addition under the October 6 content-policy
 | Layer | Technology |
 |-------|------------|
 | **Language** | C# 7.3 (`LangVersion` pinned), XML (RimWorld Defs, Patches, Keyed/DefInjected language), PowerShell 5+ (build/stage), Python 3 (research + QA read-only tools) |
-| **Framework** | RimWorld 1.6 Core API (`Verse`, `RimWorld` namespaces) via `Assembly-CSharp.dll`; Unity `CoreModule`, `IMGUIModule`, `TextRenderingModule` |
+| **Framework** | RimWorld Core API (inspected 1.6 baseline; 1.7 qualification pending) (`Verse`, `RimWorld` namespaces) via `Assembly-CSharp.dll`; Unity `CoreModule`, `IMGUIModule`, `TextRenderingModule` |
 | **Build Tool** | `dotnet build` (SDK 9.0.308 via `global.json`) targeting `net472`, deterministic, `TreatWarningsAsErrors`, `PathMap` normalized; wrapped by `tools/build.ps1` |
 | **Package Manager** | NuGet with locked restore (`packages.lock.json`); sole package `Microsoft.NETFramework.ReferenceAssemblies.net472 1.0.3`; caches in ignored `.local/` |
 | **Linting** | Compiler warnings-as-errors; `.editorconfig` (four spaces, block namespaces, explicit braces); `BuildCommon.ps1` package allowlist + XML well-formedness check |
-| **Mod loader** | RimWorld `LoadFolders.xml` single `1.6/` folder; `About.xml` packageId `Rimrooms.AsyncIndustries`, author `Operator`, `loadAfter: Ludeon.RimWorld` |
+| **Mod loader** | RimWorld `LoadFolders.xml` maps 1.6 and 1.7 to the shared `1.7/` folder; `About.xml` packageId `Rimrooms.AsyncIndustries`, author `Operator`, `loadAfter: Ludeon.RimWorld` |
 | **Declared requirements** | *Superseded on 2026-10-03: none; all `loadAfter` only.* Historical: The five expansions and the collection loaded alongside them, declared in `About.xml` since 2026-10-01 and mirrored in `loadAfter`. **None is referenced by the assembly** — the requirement is metadata, the integration is by-name lookup. Read the count from `About.xml`. Attach-only QA tooling is excluded by name |
 | **Co-op peers, still not integrated** | RimWorld Together + Harmony: declared like the rest, referenced by nothing, with no adapter written |
 
@@ -91,7 +93,7 @@ Backrooms/
 └── Mod/Rimrooms - Async Industries/   the ONLY loadable/copyable package root
     ├── About/About.xml · Preview.png · License.txt
     ├── LoadFolders.xml
-    └── 1.6/
+    └── 1.7/
         ├── Assemblies/RimroomsAsyncIndustries.dll   (built, gitignored)
         ├── Defs/                  27 XML files (see Package Contents)
         ├── Patches/               2 guarded PatchOperations
@@ -119,8 +121,8 @@ Backrooms/
 | `.../ConnectedWork/` | **Cross-map work:** `RimroomsConnectedWorkComponent` (saved work intents, each owning its own bounded expiring planning lease; bounded maintenance sweep), `ConnectedWorkIntent`, `ConnectedRouteService` (retained bounded route cursors, where budget-limited means pending and never "no route"), `ConnectedWorkAdapter` + registry (candidate half against an explicit `Map`, definitive native half only on arrival), `ConnectedWorkScan` (the rotating-window scan rules every family shares), `Adapters/ConnectedHaulingAdapter` (storage hauling both directions including remains, two candidate sources, cell and container destinations), `Adapters/ConnectedCasualtyAdapter` with `JobDriver_ConnectedTakeToBed` (our own downed people carried home to a bed via Core's own rescue precondition and bed handoff), `Adapters/ConnectedConstructionAdapter` with `JobDriver_ConnectedDeliverToSite` (real material carried into a real frame or blueprint through Core's own container and construct toils), `WorkGiver_ConnectedWork` with a plan/continue pair per family, and the `JobDriver_ConnectedFetch` / `JobDriver_ConnectedDeliver` segment drivers. **Travel-to-work (0.5.5-dev)** is a parallel shape on the same component for work done at the far site with nothing carried: `ConnectedDeploymentIntent` (a *sibling* record, deliberately not a phase on `ConnectedWorkIntent`, whose integrity check requires a source object), `ConnectedDeploymentProvider` + registry, `Providers/ConstructionFinishingProvider` (splits Core's own `GenConstruct.CanConstruct` by what each rule reads), `WorkGiver_ConnectedDeployment` with its own plan/continue pair, and `ConnectedCrossing` — the single shared implementation of stepping through a gate, now used by both shapes. A deployment issues **no job on arrival**: Core's own local giver does the work |
 | `.../Presentation/` | `[StaticConstructorOnStartup]` menu bootstrap, title-screen controller, crossfading Backrooms background slideshow (`UI_BackgroundMain` subclass), cosmetic portal aura |
 | `.../UI/` | `MainTabWindow_Operations` split into eleven partial files by tab (the eleventh is the portal network pane) (company, personnel, procurement, facilities, dispatch/expedition/manifest/machine, evidence, evidence recovery, native gate binding, laboratory binding); four dialogs. Pure sink: reads services, surfaces `CompanyActionResult` |
-| `Mod/.../1.6/Defs/` | Scenario, starts, gate/fixture/equipment/site things, jobs, work givers, recipes, project, catalog, hiring policy, facility categories, terrain, map generators, world object, main button |
-| `Mod/.../1.6/Patches/` | Adds dormant `CompProperties_RimroomsGate{Console}` to Core `Door`/`Autodoor`/`CommsConsole`/`TableMachining`; adds `CompProperties_RouteEvidence` to Core `TextBook` |
+| `Mod/.../1.7/Defs/` | Scenario, starts, gate/fixture/equipment/site things, jobs, work givers, recipes, project, catalog, hiring policy, facility categories, terrain, map generators, world object, main button |
+| `Mod/.../1.7/Patches/` | Adds dormant `CompProperties_RimroomsGate{Console}` to Core `Door`/`Autodoor`/`CommsConsole`/`TableMachining`; adds `CompProperties_RouteEvidence` to Core `TextBook` |
 | `tools/` | Build/stage/preview scripts; read-only research and QA tools that never launch the game |
 | `docs/implementation/evidence/` | Six dated evidence folders (phase1-foundation, phase2-first-expedition, phase3-company, phase3-scenario-provider, phase3-native-providers, connected-colony), each with `build-output.txt` + manifests |
 
@@ -316,9 +318,9 @@ Portals → Company, Gate, Generation               (near-leaf; only Gate reache
 |-------------|---------|----------|
 | `RimroomsMod : Mod` | Loads settings, resolves version from `AssemblyInformationalVersion`, logs the development-package banner | `src/RimroomsAsyncIndustries/Core/RimroomsMod.cs` |
 | `RimroomsMenuBootstrap` `[StaticConstructorOnStartup]` | Creates the title-screen controller for the Backrooms slideshow | `src/RimroomsAsyncIndustries/Presentation/RimroomsMenuController.cs` |
-| `MainButtonDef RR_Operations` | Opens `MainTabWindow_Operations` (order 95, valid without map) | `Mod/.../1.6/Defs/MainButtonDefs/RR_MainButtons.xml` |
-| `ScenarioDef RR_AsyncIndustries` | The only implemented start; `ScenPart_RimroomsStart` + `ScenPart_RimroomsArrival` | `Mod/.../1.6/Defs/ScenarioDefs/RR_Scenarios.xml` |
-| `MapGeneratorDef RR_Headquarters` / `RR_BackroomsGeneration` | HQ terrain/facility GenSteps; destination GenStep | `Mod/.../1.6/Defs/ScenarioDefs/RR_Scenarios.xml`, `MapGeneratorDefs/RR_BackroomsGeneration.xml` |
+| `MainButtonDef RR_Operations` | Opens `MainTabWindow_Operations` (order 95, valid without map) | `Mod/.../1.7/Defs/MainButtonDefs/RR_MainButtons.xml` |
+| `ScenarioDef RR_AsyncIndustries` | The only implemented start; `ScenPart_RimroomsStart` + `ScenPart_RimroomsArrival` | `Mod/.../1.7/Defs/ScenarioDefs/RR_Scenarios.xml` |
+| `MapGeneratorDef RR_Headquarters` / `RR_BackroomsGeneration` | HQ terrain/facility GenSteps; destination GenStep | `Mod/.../1.7/Defs/ScenarioDefs/RR_Scenarios.xml`, `MapGeneratorDefs/RR_BackroomsGeneration.xml` |
 | Automatic `GameComponent` discovery | Campaign, Expedition, Personnel, Procurement, Laboratory, EvidenceCreation, Startup, PortalNetwork, PortalCrossingService | each component class |
 | `tools/build.ps1` | Restore (locked) → compile → package allowlist validation → manifests | `tools/build.ps1` |
 | `tools/stage-mod.ps1` | Copy only the package root to RimSort's Local Mods; hash-verify; back up existing | `tools/stage-mod.ps1` |
@@ -326,6 +328,8 @@ Portals → Company, Gate, Generation               (near-leaf; only Gate reache
 ---
 
 ## Configuration Files
+
+**Historical configuration snapshot:** the following table records the 0.4.1-dev checkpoint. Its 71-file count, release and original `1.6/` path are not the current package. Current `LoadFolders.xml` maps game 1.6 and 1.7 to one physical `1.7/` folder; consult [BUILDING.md](BUILDING.md) and [the migration record](implementation/RIMWORLD_1_7_MIGRATION.md) for current paths.
 
 | File | Purpose |
 |------|---------|

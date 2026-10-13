@@ -81,7 +81,7 @@ else:
     text = text.replace(old_paths, old_paths + NL
                         + 'NOTICE = SRC + "/Presentation/RimroomsGenerationNotice.cs"' + NL
                         + 'PANE = SRC + "/UI/OperationsPortalNetwork.cs"' + NL
-                        + 'KEYS = ("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed"' + NL
+                        + 'KEYS = ("Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed"' + NL
                         + '        "/RR_Generation.xml")')
 
 at = text.rfind(NL + "]" + NL)

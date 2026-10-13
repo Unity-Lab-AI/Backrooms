@@ -142,6 +142,6 @@ header = """<?xml version="1.0" encoding="utf-8"?>
 
 """
 
-io.open('Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsRoomArchetypeDefs/RR_RoomArchetypes.xml',
+io.open('Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsRoomArchetypeDefs/RR_RoomArchetypes.xml',
         'w', encoding='utf-8', newline='').write(header + "\n\n".join(blocks) + "\n\n</Defs>\n")
 print("archetypes written:", len(A))

@@ -119,7 +119,7 @@ def _retired_defs():
     archived = _declared_def_names(
         os.path.join(REPO, "docs", "implementation", "historical-content"))
     live = _declared_def_names(
-        os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs"))
+        os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs"))
     candidates = set(HISTORICAL_FLOOR) | set(n for n in archived if n.startswith("RR_"))
     return tuple(sorted(candidates - live))
 

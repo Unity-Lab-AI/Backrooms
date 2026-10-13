@@ -7,11 +7,11 @@ summary: "Nothing is required but RimWorld. What the load-order profile actually
 
 ## What is required
 
-**RimWorld 1.6, and nothing else.** No other mod. No expansion.
+**RimWorld, and nothing else.** 1.6 is retained; 1.7 unstable / Waylith is the new target. No other mod. No expansion.
 
 | | |
 |---|---|
-| **RimWorld 1.6** | The only requirement |
+| **RimWorld 1.6 / 1.7 unstable** | The game is the only requirement; 1.7 compatibility is unverified |
 | **The five expansions** | Royalty, Ideology, Biotech, Anomaly, Odyssey — every one **optional** |
 | **Other mods** | All optional |
 
@@ -71,13 +71,13 @@ required to launch.
 
 ## What has been played
 
-**The whole list has been played with Rimrooms.** Every mod on the [mod list](mods-list.md) was
+**The whole list has been played with Rimrooms on RimWorld 1.6.** Every mod on the [mod list](mods-list.md) was
 loaded and active through the October 2026 play sessions -- three scenarios started, gates built,
 surveys run through the Backrooms and back -- and each row there says what the game's own log
 recorded against it. One mod has a logged error on that page; the rest have none.
 
-What that is not is a promise about other versions of those mods, or about a list arranged
-differently. If you hit a conflict, report it.
+Those are historical 1.6 observations. They are not 1.7 compatibility results or a promise about
+other versions of those mods, or about a list arranged differently. If you hit a conflict, report it.
 
 See [Links](links.md) for where to report one.
 
@@ -89,5 +89,5 @@ Run whatever list you like. Nothing is declared as a requirement, so no manager 
 the mod is written so that missing content degrades rather than crashes.
 
 A reduced list is untested rather than unsupported. The full list is the one Rimrooms has been
-played on: every mod on it was loaded and active through the October 2026 play sessions, and the
+played on under 1.6: every mod on it was loaded and active through the October 2026 play sessions, and the
 [mod list](mods-list.md) says, mod by mod, whether the game log ever named it in an error.

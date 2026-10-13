@@ -17,7 +17,7 @@ import sys
 NL = chr(10)
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
-STARTS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+STARTS = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                       "RimroomsStartDefs", "RR_Starts.xml")
 DEF_NAME = "RR_AsyncIndustriesStart"
 PLAN = os.path.join(HERE, "facility-apply-%s.json" % DEF_NAME)

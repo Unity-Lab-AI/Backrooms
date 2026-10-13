@@ -76,7 +76,7 @@ text = text.replace(
 
 
 def _read_mod(*parts):
-    return _io.open(_os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", *parts),
+    return _io.open(_os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", *parts),
                     encoding="utf-8-sig").read()''', 1)
 text = text.replace(ANCHOR, CLAIMS, 1)
 io.open(PROOF, "w", encoding="utf-8", newline="").write(text)
@@ -122,6 +122,6 @@ suite = suite.replace(
     T_ANCHOR,
     T_ANCHOR
     + u'\nCONSOLE = SRC + "/Gate/CompRimroomsGateConsole.cs"'
-    + u'\nRECIPE = ("Mod/Rimrooms - Async Industries/1.6/Defs/RecipeDefs/RR_GateRecipes.xml")', 1)
+    + u'\nRECIPE = ("Mod/Rimrooms - Async Industries/1.7/Defs/RecipeDefs/RR_GateRecipes.xml")', 1)
 io.open(SUITE, "w", encoding="utf-8", newline="").write(suite)
 print("five plants added")

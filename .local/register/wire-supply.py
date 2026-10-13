@@ -102,7 +102,7 @@ u"""            // A keyed reason rather than one blanket refusal: "the circuit 
 print('opening supply gate wired')
 
 # ------------------------------------------------------------------ keyed strings
-p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6', 'Languages', 'English',
+p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7', 'Languages', 'English',
                  'Keyed', 'RR_Gate.xml')
 s = io.open(p, encoding='utf-8-sig').read()
 for key in ('RR_Gate_SupplyTooLow', 'RR_Gate_HeadroomTooLow'):

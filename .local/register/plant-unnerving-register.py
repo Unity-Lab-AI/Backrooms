@@ -22,24 +22,24 @@ import time
 DEF = "src/RimroomsAsyncIndustries/Threats/RimroomsInhabitantDef.cs"
 COMP = "src/RimroomsAsyncIndustries/Threats/CompRimroomsSurvivor.cs"
 SERVICE = "src/RimroomsAsyncIndustries/Threats/InhabitantService.cs"
-FAMILIES = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsInhabitantDefs/RR_Inhabitants.xml"
-KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Inhabitants.xml"
-PROVIDERS = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_NativeGateProviders.xml"
+FAMILIES = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsInhabitantDefs/RR_Inhabitants.xml"
+KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Inhabitants.xml"
+PROVIDERS = "Mod/Rimrooms - Async Industries/1.7/Patches/RR_NativeGateProviders.xml"
 PROOF = ".local/register/proof-unnerving-register.py"
 # The event half of the same register. Added 2026-10-04 with the traces themselves.
-EVENTS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsAnomalyEventDefs/RR_AnomalyEvents.xml"
+EVENTS = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsAnomalyEventDefs/RR_AnomalyEvents.xml"
 EVENTDEF = "src/RimroomsAsyncIndustries/Threats/RimroomsAnomalyEventDef.cs"
 EVENT_SERVICE = "src/RimroomsAsyncIndustries/Threats/AnomalyEventService.cs"
 CONTENT = "src/RimroomsAsyncIndustries/Generation/RoomContentMapComponent.cs"
 REGISTER = "src/RimroomsAsyncIndustries/Company/LostPawnRegister.cs"
-GENERATION_KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Generation.xml"
+GENERATION_KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Generation.xml"
 # The object half of the same register. Added 2026-10-05 with the fixture tells.
 TELL_DEF = "src/RimroomsAsyncIndustries/Generation/RimroomsFixtureTellDef.cs"
 TELL_COMP = "src/RimroomsAsyncIndustries/Generation/CompRimroomsFixtureTell.cs"
 TELL_SERVICE = "src/RimroomsAsyncIndustries/Generation/FixtureTellService.cs"
 BUILDER = "src/RimroomsAsyncIndustries/Generation/RoomContentBuilder.cs"
-TELL_DEFS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsFixtureTellDefs/RR_FixtureTells.xml"
-TELL_KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_FixtureTells.xml"
+TELL_DEFS = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsFixtureTellDefs/RR_FixtureTells.xml"
+TELL_KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_FixtureTells.xml"
 CHR_NL = chr(10)
 
 PLANTS = [

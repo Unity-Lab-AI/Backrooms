@@ -43,7 +43,7 @@ import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CHECK = os.path.join(REPO, "tools", "check-package-integrity.py")
-PATCH = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Patches",
+PATCH = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Patches",
                      "RR_NativeGateProviders.xml")
 
 failures = []

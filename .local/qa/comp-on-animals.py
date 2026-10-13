@@ -35,7 +35,7 @@ import io
 import sys
 
 NL = chr(10)
-PATH = "Mod/Rimrooms - Async Industries/1.6/Patches/RR_NativeGateProviders.xml"
+PATH = "Mod/Rimrooms - Async Industries/1.7/Patches/RR_NativeGateProviders.xml"
 
 ANCHOR = (
     '      <li Class="PatchOperationAdd">' + NL

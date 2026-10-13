@@ -1,6 +1,6 @@
 import io, json, codecs
 
-M = 'Mod/Rimrooms - Async Industries/1.6/'
+M = 'Mod/Rimrooms - Async Industries/1.7/'
 
 # --- allowlist ------------------------------------------------------------
 p = 'tools/package-files.json'
@@ -15,19 +15,19 @@ if key is None:
 assert key, 'could not find the file list in package-files.json'
 
 removed = [
-    '1.6/Defs/ThingDefs_Buildings/RR_GateBuildings.xml',
-    '1.6/Defs/ThingDefs_Buildings/RR_BackroomsFixtures.xml',
-    '1.6/Defs/ThingDefs_Buildings/RR_InvestigationBuildings.xml',
-    '1.6/Defs/TerrainDefs/RR_LiminalFloors.xml',
-    '1.6/Languages/English/DefInjected/ThingDef/RR_GateBuildings.xml',
-    '1.6/Languages/English/DefInjected/TerrainDef/RR_LiminalFloors.xml',
-    '1.6/Textures/Buildings/Gate/RR_EmergencyCutoff.png',
-    '1.6/Textures/Buildings/Gate/RR_GateConsole.png',
-    '1.6/Textures/Buildings/Gate/RR_MachineGate.png',
-    '1.6/Textures/Buildings/Gate/RR_UtilityGenerator.png',
-    '1.6/Textures/Buildings/Lab/RR_FieldAnalysisBench.png',
-    '1.6/Textures/Buildings/Rooms/RR_SiteFluorescent.png',
-    '1.6/Textures/Terrain/RR_FadedInstitutionalCarpet.png',
+    '1.7/Defs/ThingDefs_Buildings/RR_GateBuildings.xml',
+    '1.7/Defs/ThingDefs_Buildings/RR_BackroomsFixtures.xml',
+    '1.7/Defs/ThingDefs_Buildings/RR_InvestigationBuildings.xml',
+    '1.7/Defs/TerrainDefs/RR_LiminalFloors.xml',
+    '1.7/Languages/English/DefInjected/ThingDef/RR_GateBuildings.xml',
+    '1.7/Languages/English/DefInjected/TerrainDef/RR_LiminalFloors.xml',
+    '1.7/Textures/Buildings/Gate/RR_EmergencyCutoff.png',
+    '1.7/Textures/Buildings/Gate/RR_GateConsole.png',
+    '1.7/Textures/Buildings/Gate/RR_MachineGate.png',
+    '1.7/Textures/Buildings/Gate/RR_UtilityGenerator.png',
+    '1.7/Textures/Buildings/Lab/RR_FieldAnalysisBench.png',
+    '1.7/Textures/Buildings/Rooms/RR_SiteFluorescent.png',
+    '1.7/Textures/Terrain/RR_FadedInstitutionalCarpet.png',
 ]
 before = len(data[key])
 for entry in removed:

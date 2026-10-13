@@ -50,6 +50,6 @@
   </ItemGroup>
   <Target Name="RequireLocalGameReferences" BeforeTargets="ResolveAssemblyReferences">
     <Error Condition="'$(RimWorldPath)' == ''" Text="Set RimWorldPath or RIMWORLD_PATH to the installed RimWorld directory. See docs/BUILDING.md." />
-    <Error Condition="!Exists('$(RimWorldManagedPath)/Assembly-CSharp.dll')" Text="RimWorld 1.6 managed references are missing from $(RimWorldManagedPath). Do not download or commit game binaries." />
+    <Error Condition="!Exists('$(RimWorldManagedPath)/Assembly-CSharp.dll')" Text="Reviewed RimWorld managed references are missing from $(RimWorldManagedPath). See docs/BUILDING.md for the pinned build target. Do not download or commit game binaries." />
   </Target>
 </Project>

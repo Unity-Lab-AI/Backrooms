@@ -28,7 +28,7 @@ import struct
 import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6")
+MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7")
 SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries")
 SLIDES = os.path.join(MOD, "Textures", "UI", "Menu")
 
@@ -126,7 +126,7 @@ check("every file in the slide folder carries the prefix",
 
 allow = io.open(os.path.join(REPO, "tools", "package-files.json"), encoding="utf-8").read()
 unlisted = [n for n in names
-            if '"1.6/Textures/%s/%s"' % (folder, n) not in allow.replace("\\", "/")]
+            if '"1.7/Textures/%s/%s"' % (folder, n) not in allow.replace("\\", "/")]
 check("every slide is on the package allowlist",
       not unlisted,
       "-- %s: would not ship, and check-package-integrity.py refuses the build"
@@ -220,7 +220,7 @@ notice_source = io.open(os.path.join(SRC, "Presentation", "RimroomsGenerationNot
 pane_source = io.open(os.path.join(SRC, "UI", "OperationsPortalNetwork.cs"),
                       encoding="utf-8-sig").read()
 generation_keys = io.open(os.path.join(
-    "Mod", "Rimrooms - Async Industries", "1.6", "Languages", "English", "Keyed",
+    "Mod", "Rimrooms - Async Industries", "1.7", "Languages", "English", "Keyed",
     "RR_Generation.xml"), encoding="utf-8-sig").read()
 
 check("THE NOTICE IS DRAWN BEFORE THE FREEZE, and the work moves into a long event",

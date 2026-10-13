@@ -25,7 +25,7 @@ LINES = [
 '# leaves; nothing tunes WHETHER.',
 'posture = no_comments(read(SRC, "Gate", "GateWatchPosture.cs"))',
 'driver = no_comments(read(SRC, "Gate", "JobDriver_RimroomsGate.cs"))',
-'jobs = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",',
+'jobs = read(os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",',
 '                         "JobDefs", "RR_GateJobs.xml"))',
 'enum_body = posture.split("public enum GateWatchPosture")[1].split("}")[0]',
 '',

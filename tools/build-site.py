@@ -132,7 +132,7 @@ SECTIONS = [
 # image is marked decorative so a screen reader skips it instead of reading out a filename.
 # Where the art lives in the package, and where the site serves its own copy from. The second is
 # site-relative with no leading `..`, which is the whole point.
-BANNER_SOURCE_DIRECTORY = "1.6/Textures/UI/Menu"
+BANNER_SOURCE_DIRECTORY = "1.7/Textures/UI/Menu"
 PREVIEW_SOURCE = "About/Preview.png"
 SITE_ART_DIRECTORY = "assets/art"
 PREVIEW_IMAGE = "assets/art/Preview.png"

@@ -1,5 +1,7 @@
 # Phase 2 first-survey generation recovery
 
+> **Navigation update — 2026-10-12:** package links below follow the current `1.7/` location. Recorded checkpoint paths, game versions, hashes and observations remain historical.
+
 **Current content rule (owner, 2026-09-28):** [Repurpose existing game/mod content](../CONTENT_REUSE_POLICY.md). Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
 
 
@@ -41,7 +43,7 @@ The exact allowlisted failure keys and required Def names are maintained in `Fai
 
 ## Player feedback keys
 
-The corresponding English keyed entries are in [`RR_Generation.xml`](../../Mod/Rimrooms%20-%20Async%20Industries/1.6/Languages/English/Keyed/RR_Generation.xml):
+The corresponding English keyed entries are in [`RR_Generation.xml`](../../Mod/Rimrooms%20-%20Async%20Industries/1.7/Languages/English/Keyed/RR_Generation.xml):
 
 - `RR_Generation_ReaddressContentRestore` — package/source diagnosis required; replacement cannot repair this record; site retained.
 - `RR_Generation_ReaddressFailureNotEligible` — not an eligible initial failed survey.

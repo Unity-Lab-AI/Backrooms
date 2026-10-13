@@ -62,7 +62,7 @@ sub(p, u'                case 10: DrawProcurement(listing, campaign); break;',
 print('sites pane added')
 
 # ------------------------------------------------------------------ the strings
-p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6', 'Languages', 'English',
+p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7', 'Languages', 'English',
                  'Keyed', 'RR_Operations.xml')
 s = io.open(p, encoding='utf-8-sig').read()
 block = u"""  <RR_UI_Sites>Sites</RR_UI_Sites>

@@ -138,5 +138,9 @@ have no such protection until they earn it.
 
 ## Reporting a problem
 
+**If you are on 1.7 unstable, say so.** Include the exact build and branch; the retained 1.6 play
+observations do not establish 1.7 compatibility. Check that every optional mod supports the game
+version you actually launched, and keep original saves before trying another engine version.
+
 Include your RimWorld version, your mod list, and the exact text of the message. See
 [Links](links.md).

@@ -36,7 +36,7 @@ import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(REPO, "src", "RimroomsAsyncIndustries")
-MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6")
+MOD = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7")
 RECIPES = os.path.join(MOD, "Defs", "RecipeDefs", "RR_GateRecipes.xml")
 EQUIPMENT = os.path.join(MOD, "Defs", "RimroomsGateEquipmentDefs", "RR_GateEquipment.xml")
 STEPS_KEYED = os.path.join(MOD, "Languages", "English", "Keyed", "RR_GateSteps.xml")

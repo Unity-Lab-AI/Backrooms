@@ -15,7 +15,7 @@ import os
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 UI = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "UI", "OperationsCrewPlanner.cs")
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages",
                      "English", "Keyed", "RR_CrewPlanner.xml")
 
 OLD = u"""                listing.Label(candidate.Ready

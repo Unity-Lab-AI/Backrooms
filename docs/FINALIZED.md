@@ -19270,3 +19270,39 @@ Two `[~]` rows closed and moved out of `docs/TODO.md`; the monitoring row stays 
 - [x] **"fyi be aware chatgpt used agents so i dont always trust their work never seeing the code stack before let alone all of it."** -- Treated accordingly: every claim in its handoff was checked against code or live state; where it held, the review says so, and where it did not (laughter checks, emotion contrast, pod self-stop, upload path, CRLF receipt) the finding is recorded.
 - [x] **"it opened docker and did some stuff too."** -- Checked: Docker Desktop 4.42.0. It quarantined only the transient `run/dockerInference` directory (`%LOCALAPPDATA%/Docker/run.quarantined-20261011-A2-prep`, backup kept), built local image `unity-a2-prep:20261011-v2` (10.1 GB unpacked; 3.4 GB tar `.local/voice-lab/pod-build-artifacts-2026-10-11-v2/unity-a2-environment.docker.tar`, gitignored, never committed), started no container and published nothing. No reset, prune or reinstall.
 - [x] **"when ur done push it to cascades and make sure the mod remote and mod stages are all correct.. some of them might be out datted.. but last working mod was one in the mod location for rimworld that one works in multiplayer"** -- audited 2026-10-11, read-only on the game folder (*"fyi we have a open game using the mod and should NOT change it unless told to"*). Game copy (0.13.0-dev, 200 files) == build manifest (0 hash mismatches) == committed `Mod/` (0 diffs). Stale and fixed: the GitHub mod repo (old DLL + 3 keyed files) re-exported from the working build as 51540ff; `Mod/Rimrooms - Async Industries.zip` (4 old files) replaced with the verified copy. Desktop friends zip already matched (0 of 200 differ). Forgejo stays held.
+
+## Completed — RimWorld 1.7 package/docs preparation and standalone RimPLC publication (2026-10-12)
+
+Owner, verbatim: *"the preview image for the mod i need to read this and set the mod version to 1.7 for our mod and remake the mod preview image exactly as it is just change the 1.6 to a 1.6 and then fix the mod to use 1.7 as per: https://store.steampowered.com/news/app/294100/view/672882362547178633"*; preview clarification: *"Yes — change it to 1.7"*; *"need all docs and wiki updated too"*; *"rimroom rimPLC and all support documents and may need to add a github rim PLC and add it to it and here is the git to use for Rim PLC: https://git.unityailab.com/GFourteen/RimPLC"*. After the reviewed export and the automatic approval rejection were explained: *"Yes — create public GitHub and publish to both"*.
+
+- [x] Both About.xml files declare 1.6/1.7 and both loader versions select the existing shared payload. Own releases remain Rimrooms 0.13.0-dev / RimPLC 0.1.0. No new save fields, Def IDs, assets other than the requested preview edit, hard dependencies, compiler framework or fabricated 1.7 assembly pin.
+- [x] Original-style Preview.png now reads RIMWORLD 1.7; backup/prompt/delivered copy saved under outputs/preview-touchup-2026-10-12. No development-build line added. SHA256 2a9fff02da22c4a08feae8d1813fd58e3c2779d59df533a666d2213b46024a5e.
+- [x] Current docs, support matrices, agent guides and wiki updated; old source/play/hash observations remain 1.6 historical facts. New RimPLC guide and exact public repository links added. Navigation, gallery, 17 wiki HTML pages and readable views regenerated.
+- [x] Rimrooms, RimPLC and optional RimPLC bridge compiled against installed 1.6.4871 with zero warnings/errors. Rimrooms DLL unchanged at AF7BB486CA3BF71FFCC49586BCAD54428F754E87C85209FB7517F20C8B0FA129; 200-file manifest refreshed. Copyable ZIP rebuilt and all 200 members verified. No game/profile/Mods staging or runtime test performed.
+- [x] Complete local Rimrooms public package/wiki regenerated cleanly into outputs/rimrooms-1.7-distribution-2026-10-12-v2: 288 files, all package hashes and published local links/images verified by the production exporter. The first export refusal is retained; the narrow exact public RimPLC URL exemption preserves private build-repository exclusions.
+- [x] RimPLC standalone exporter implemented and actually produced 33 reviewed files: seven package/companion files, 16 original source/project files, six schemas, license, README, user guide and ignore rules. Provider/game binaries, caches, credentials, training and the parent work ledger excluded. Source snapshot fa88a3ff5b3d0b5e43aee9e0efce060eb3de9d50d8007deac61c697d699e1ef1.
+- [x] Created public https://github.com/G-Fourteen/RimPLC after explicit authorization. Published the standalone export to it and https://git.unityailab.com/GFourteen/RimPLC; both main refs read back at bcfb3b713235a885927984efdcb53a09a9b725e6 in tool output. No force push, parent branch checkout, training change or unrelated publication.
+
+Evidence: docs/implementation/RIMWORLD_1_7_MIGRATION.md and docs/implementation/evidence/rimworld17-2026-10-12/. Actual 1.7 compile/reference/runtime/full-profile/co-op/save validation remains open; this closes package/document/export preparation and the specifically authorized RimPLC publication only. Rimrooms' updated local public export is not claimed deployed to its existing remote/site. Voice/brain continuation remains intact in NOW.md.
+
+## 2026-10-12 — RimPLC branding artwork
+
+Owner: "and we need some proper RimPLC images mad for it not menu and load screens tho"
+
+- [x] Original mod preview with RimPLC title, RimWorld 1.7 label and Operator credit, without a development build number.
+- [x] Matching transparent circuit/ladder badge; branded documentation asset, no game icon consumer claimed.
+- [x] Masters/prompts/hashes recorded in `assets/source/rimplc/`, package files in `RimPLC/About/`.
+- [x] Explicit export allowlist/manifests and README/wiki image references updated; local standalone export contains 35 files.
+
+Evidence: `assets/source/rimplc/README.md`, `provenance.json`, `delivery.json`; source snapshot `fa88a3ff5b3d0b5e43aee9e0efce060eb3de9d50d8007deac61c697d699e1ef1` is unchanged. Visual/file-format review only; no gameplay test, code/Def/DLL change, menu/loading art, game staging/launch, or model/pod work. Publication is the bounded approved RimPLC checkpoint; actual remote refs are read back in tool output, not inferred from this record.
+
+## 2026-10-12 — current 1.7 content-folder layout
+
+Owner: "might need to fix that all around the backrooms folder" / "i doont want my 1.7 saying 1.6".
+
+- [x] Renamed both current mod content folders to `1.7/` and changed both retained game-version loader mappings.
+- [x] Updated current build/export/asset/proof paths and package manifests/lists, with unchanged DLL/asset hashes.
+- [x] Updated current docs/wiki and repaired archived href navigation without relabelling historical evidence.
+- [x] Refreshed both local standalone exports, 17 rendered wiki pages, readable docs and the 200-file ZIP; kept original RimPLC history and a full pre-layout export/receipt backup.
+
+Evidence: `docs/implementation/CONTENT_FOLDER_1_7_LAYOUT.md` and `evidence/content-folder-2026-10-12/`. Three successful compiles used the installed 1.6 references. Source/build/package integrity only; no gameplay acceptance, game launch/stage/profile edits, parent branch checkout/publication, model changes or pod operations. Subsequent standalone repository read-backs in tool output prove publication.

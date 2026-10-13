@@ -1,5 +1,7 @@
 # Development roadmap
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
 **Current content rule (owner, 2026-10-06):** [Reuse first, and ship original content where a role needs it](CONTENT_REUSE_POLICY.md). The mod ships its own art, audio, items, benches and terrain again. **Reuse remains the default**, an original def is justified by a role nothing fills rather than by wanting to attach a texture, and **another package's assets are never copied**. The gate stays a designation on a real Core door, because that binding is what the 294-mod profile integrates against.
 
 **Superseded content rule (owner, 2026-09-28), kept because every retirement record cites it:** Repurpose existing game/mod content. Earlier instructions to create gameplay items, benches, sprites, textures or audio are superseded. Historical implementation facts remain evidence of the older build, not permission to ship those custom objects/assets. Original RimWorld-style Backrooms main-menu images are the approved visual exception; gameplay content must use existing providers.
@@ -164,7 +166,7 @@ The Furniture & Knickknack Store breach and Lone Survivor starts are planned sce
 
 - Expand threat catalog, countermeasures, deeper research branches, long-duration openings, multi-team operations, advanced transport, and endgame phenomena.
 - Add remaining original narratives, art, sounds, translations, accessibility options, settings, tutorials, and Workshop packaging.
-- Maintain a published compatibility table for RimWorld 1.6 builds, DLC combinations, RimWorld Together versions, and explicitly supported optional mods.
+- Maintain a published compatibility table separating RimWorld 1.6 and 1.7 unstable builds, DLC combinations, RimWorld Together versions, and explicitly supported optional mods.
 
 **Exit condition:** release notes, credits, licensing records, installation guidance, save/migration policy, and compatibility statements match what was actually verified.
 

@@ -26,7 +26,7 @@ import os
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OPENING = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Gate", "PortalGateOpening.cs")
 TRAVEL = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Portals", "PortalTravelService.cs")
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages",
                      "English", "Keyed", "RR_Portals.xml")
 
 OLD = u"""        public bool HasUsablePortalWindow(string connectionId, string openingId)

@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-12",
+  "images": [
+    {
+      "path": "About/Preview.png",
+      "bytes": 2115761,
+      "sha256": "e33254ec8fc5317addfc987652759619dfaa3315706b2e3a370e01363a092715",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "alpha_extrema": null,
+      "corners": [
+        [
+          15,
+          15,
+          11
+        ],
+        [
+          44,
+          34,
+          27
+        ],
+        [
+          11,
+          12,
+          11
+        ],
+        [
+          14,
+          16,
+          14
+        ]
+      ]
+    },
+    {
+      "path": "About/RimPLC_Badge.png",
+      "bytes": 1152998,
+      "sha256": "1230a800a2c0d8058e296af5109890f005d1ae401655711fb4bd466eba53ffd4",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corners": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  ],
+  "game_launched": false,
+  "game_ui_changed": false,
+  "menu_loading_art_added": false
+}

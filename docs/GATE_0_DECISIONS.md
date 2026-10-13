@@ -1,5 +1,7 @@
 ﻿# Rimrooms - Async Industries: Gate 0 decisions
 
+> **Current game target — 2026-10-12:** prepare for **RimWorld 1.7 unstable / Waylith**, retaining **1.6**. Both loader versions use the shared `1.6/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target and remaining checks. Earlier 1.6 source, build and play observations remain historical; no 1.7 runtime or full-profile acceptance is recorded.
+
 > **This file is the authority on owner decisions, and decisions change.** Read the
 > [decision log](#decision-log) rather than a remembered answer: **D1 changed 2026-09-29** (public
 > Workshop is the first distribution target) and **D3 and D4 changed 2026-10-01** (the five
@@ -22,7 +24,7 @@
 These are treated as project direction from the conversation. A change must be recorded here and propagated to the canonical design documents.
 
 - **Title:** Rimrooms - Async Industries.
-- **Game/build target:** RimWorld 1.6.
+- **Game/build target:** RimWorld 1.7 unstable / Waylith, with 1.6 retained, by owner direction 2026-10-12. Both loader versions use the shared `1.6/` payload; historical 1.6 inspection and play receipts are not 1.7 acceptance. See [the migration record](implementation/RIMWORLD_1_7_MIGRATION.md).
 - **Core premise:** begin from a small facility with limited resources; hire and train staff; build, power, calibrate, secure, and operate the machine gate; investigate, extract, study, contain, trade, sell, and expand.
 - **Scenario set:** Async Industries facility first; Furniture & Knickknack Store breach and Lone Survivor as distinct selectable starts using shared campaign and coordinate systems. Later starts can include outposts, town distortions, and company crises.
 - **Mod profile:** the dated 294-entry local server profile is the required research and integration target. All 294 rows now have accepted source-fact reviews; that is not a runtime compatibility certificate.

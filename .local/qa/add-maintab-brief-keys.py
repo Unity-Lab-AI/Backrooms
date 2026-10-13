@@ -19,7 +19,7 @@ import io
 import sys
 
 NL = chr(10)
-KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/"
+KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/"
 
 # (file, the key whose line we insert AFTER, the new line)
 ADDITIONS = [

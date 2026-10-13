@@ -1,6 +1,6 @@
 import io
 
-p = 'Mod/Rimrooms - Async Industries/1.6/Patches/RR_NativeGateProviders.xml'
+p = 'Mod/Rimrooms - Async Industries/1.7/Patches/RR_NativeGateProviders.xml'
 s = io.open(p, encoding='utf-8-sig').read()
 
 block = u"""      <!-- Owner direction 2026-09-29: "ther are 1x1 1x2 and 1x3 and 2x3 gate doors that
@@ -75,7 +75,7 @@ io.open(p, 'w', encoding='utf-8-sig', newline='').write(s)
 print('patch file updated')
 
 # Keyed string for the size readout.
-p = 'Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Gate.xml'
+p = 'Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Gate.xml'
 s = io.open(p, encoding='utf-8-sig').read()
 key = u'  <RR_Gate_FootprintReadout>Opening {0} wide, {1} cell(s) of machine ({2}).</RR_Gate_FootprintReadout>\n'
 assert 'RR_Gate_FootprintReadout' not in s

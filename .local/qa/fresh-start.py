@@ -16,7 +16,7 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 QA = HERE
 DLL = os.path.join(ROOT, "src", "RimroomsAsyncIndustries", "bin", "Release", "net472", "RimroomsAsyncIndustries.dll")
 STEAM_DLL = r"C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Rimrooms - Async Industries\1.6\Assemblies\RimroomsAsyncIndustries.dll"
-REPO_DLL = os.path.join(ROOT, "Mod", "Rimrooms - Async Industries", "1.6", "Assemblies", "RimroomsAsyncIndustries.dll")
+REPO_DLL = os.path.join(ROOT, "Mod", "Rimrooms - Async Industries", "1.7", "Assemblies", "RimroomsAsyncIndustries.dll")
 
 
 def md5(p):

@@ -13,7 +13,7 @@ PATHS_NEW = ('BUDGET = SRC + "/Portals/OpenMapBudget.cs"\n'
              'FRONTIER = SRC + "/Portals/NaturalFrontierService.cs"\n'
              'STARTDEF = SRC + "/Scenario/RimroomsStartDef.cs"\n'
              'PARENT = SRC + "/Generation/RimroomsDestinationMapParent.cs"\n'
-             'KEYED = "Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Portals.xml"\n'
+             'KEYED = "Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Portals.xml"\n'
              'PROOF = ".local/register/proof-coordinate-layout.py"')
 
 ANCHOR = "]\n\n\ndef write_verified"

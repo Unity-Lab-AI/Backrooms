@@ -1,5 +1,7 @@
 # Phase 3 native gate binding UI
 
+> **Navigation update — 2026-10-12:** package links below follow the current `1.7/` location. Recorded checkpoint paths, game versions, hashes and observations remain historical.
+
 **Status:** Source handoff for integrated compilation. This task did not build the package or launch RimWorld; UI behavior, save migration, and runtime power interactions remain unverified.
 
 ## Player route and scope
@@ -20,7 +22,7 @@ If a native energy debit is unresolved, the UI displays its operation ID and req
 
 - [OperationsGateBinding.cs](../../src/RimroomsAsyncIndustries/UI/OperationsGateBinding.cs) implements explicit gate and role selectors, binding/clearing, inspection links, and energy-debit review.
 - [OperationsExpeditions.cs](../../src/RimroomsAsyncIndustries/UI/OperationsExpeditions.cs) wires the Machine and Dispatch panes to explicit selection and the saved expedition gate.
-- [RR_NativeGate.xml](<../../Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_NativeGate.xml>) contains user-facing setup, refusal, power, portal-state, debit-review, and settings text.
+- [RR_NativeGate.xml](<../../Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_NativeGate.xml>) contains user-facing setup, refusal, power, portal-state, debit-review, and settings text.
 - [NativeGateBinding.cs](../../src/RimroomsAsyncIndustries/Gate/NativeGateBinding.cs) owns the called gate/link/energy APIs; this UI change does not alter that service.
 - [NATIVE_GATE_MIGRATION_IMPACT.md](NATIVE_GATE_MIGRATION_IMPACT.md) preserves the source-backed integration limits and save boundary.
 

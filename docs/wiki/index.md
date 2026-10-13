@@ -14,7 +14,9 @@ way into somewhere else, and paperwork about both.
 mine it, farm it, build a prison or a workshop in it, sell out of it. See
 [what a coordinate is for](backrooms.md#a-coordinate-is-a-map-you-can-use).
 
-> **Development build.** Nothing here is a balance, performance or compatibility report.
+> **Development build.** RimWorld 1.7 unstable / Waylith is the new target, with 1.6 retained.
+> Existing play observations used 1.6; 1.7 compatibility is unverified. See [Install](install.md).
+> Nothing here is a balance, performance or compatibility report.
 
 ---
 
@@ -55,6 +57,7 @@ have a crew testify, redirect to related work, or complete a research project.
 | **[Multiplayer](multiplayer.md)** | What exists and what does not |
 | **[Troubleshooting](troubleshooting.md)** | When something refuses |
 | **[Links](links.md)** | Workshop, collection, source |
+| **[RimPLC](rimplc.md)** | The separate colony logic mod |
 | **[Credits](credits.md)** | |
 
 ---

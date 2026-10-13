@@ -2,6 +2,16 @@
 
 This is the procedure that works. It was written after doing it, not before. Follow it literally; every deviation the previous agents made (assuming an `origin` remote, lowercase branch names, creating local tracking branches and then a "receipt" file, trying to use the browser session for Git transport, using the other host's CLI against Forgejo) is a way it has failed before.
 
+> ## CURRENT DISTRIBUTION RECORD — 2026-10-12
+>
+> Read [current decisions](DECISIONS_CURRENT.md) and [the 1.7 migration record](implementation/RIMWORLD_1_7_MIGRATION.md) before using older commands below. The existing Rimrooms public export remains `.local/export/Rimrooms-AsyncIndustries`, generated from the successful package manifest and current wiki. The owner additionally supplied `https://git.unityailab.com/GFourteen/RimPLC` for the standalone RimPLC project. Its local export is `.local/export/RimPLC`, generated with `python tools/export-rimplc-repo.py` after both core/optional-companion build hashes are captured. Source and distribution copies have distinct histories; never checkout the running workspace to publish an export.
+>
+> `tools/export-public-repo.py` records the owner's October 12 Forgejo hold lift and has no held remote. The October 6 hold and October 10 no-separate-export assumption below are historical. This does not create blanket publication permission: inspect the latest owner direction, actual remote refs and concrete contents first. The lowercase source-branch standard, no-force rule and read-back requirement still govern authorized source publication.
+>
+> The supplied Forgejo RimPLC repository was empty at initial inspection. GitHub `G-Fourteen/RimPLC` was absent and automatic approval review initially rejected creating it publicly from conditional wording. After the concrete export was reviewed, the owner answered **"Yes — create public GitHub and publish to both"**. The public GitHub repository was then created and confirmed. `python tools/export-rimplc-repo.py --github-url https://github.com/G-Fourteen/RimPLC` regenerates the confirmed mirror link. Publication of this standalone export uses `main` on the two exact RimPLC remotes and requires matching final read-backs; this is separate from the working source repository's branch cascade.
+>
+> Both packages now declare 1.7 using shared `1.7/` content (renamed from `1.6/` on October 12), but current compile and historical gameplay evidence is 1.6. Do not publish a tag or Workshop statement claiming verified 1.7 compatibility until actual 1.7 results exist. A local development export can state this boundary accurately.
+
 > ## SUPERSEDED IN PART ON 2026-10-10 — READ BEFORE ANY STEP BELOW
 >
 > **Branches:** the GitHub default branch is lowercase **`main`**. The stale capitalised `Main` was archived as **`archive/Main-do-not-use`** and `Develop` as **`archive/Develop-do-not-use`** on 2026-10-10 (owner: *"make it one only maybe archive the other with do not use"*). The cascade is `feature/*` → `develop` → `main` through pull requests. Every `Prep` / `Develop` / `Main` instruction below is superseded on 2026-10-10 by that standard and is kept as history; **never recreate a capitalised twin.**

@@ -164,7 +164,7 @@ sub("src/RimroomsAsyncIndustries/ConnectedWork/WorkGiver_ConnectedDeployment.cs"
     u"    public sealed class WorkGiver_ConnectedBasicWorker : WorkGiver_ConnectedDeployment")
 
 # ------------------------------------------------------------------ the two defs
-sub("Mod/Rimrooms - Async Industries/1.6/Defs/WorkGiverDefs/RR_ConnectedWork.xml",
+sub("Mod/Rimrooms - Async Industries/1.7/Defs/WorkGiverDefs/RR_ConnectedWork.xml",
     u"  <!-- BasicWorker: flick a switch, open a container, eject fuel on the far side.",
     u"""  <!-- RoofWork: put a roof up or take one down on the far side, driven by the player's own
        BuildRoof and NoRoof areas. Continue sits at 101, one above Core's BuildRoofs (100) and
@@ -203,12 +203,12 @@ sub("Mod/Rimrooms - Async Industries/1.6/Defs/WorkGiverDefs/RR_ConnectedWork.xml
   <!-- BasicWorker: flick a switch, open a container, eject fuel on the far side.""")
 
 # ------------------------------------------------------------------ strings and settings row
-sub("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_ConnectedWork.xml",
+sub("Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_ConnectedWork.xml",
     u"  <RR_ConnectedWork_BasicWorkerLabel>",
     u"  <RR_ConnectedWork_RoofWorkLabel>working a roof through a gate</RR_ConnectedWork_RoofWorkLabel>\n"
     u"  <RR_ConnectedWork_BasicWorkerLabel>")
 
-sub("Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Audio.xml",
+sub("Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Audio.xml",
     u"  <RR_Settings_FamilyPainting>Travelling to paint</RR_Settings_FamilyPainting>",
     u"  <RR_Settings_FamilyPainting>Travelling to paint</RR_Settings_FamilyPainting>\n"
     u"  <RR_Settings_FamilyRoofWork>Travelling to work a roof</RR_Settings_FamilyRoofWork>")

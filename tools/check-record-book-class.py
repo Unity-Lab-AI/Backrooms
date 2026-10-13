@@ -49,11 +49,11 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 CLASS_FILE = os.path.join("src", "RimroomsAsyncIndustries", "Investigation", "RimroomsRecordBook.cs")
 COMP_FILE = os.path.join("src", "RimroomsAsyncIndustries", "Investigation", "CompRouteEvidence.cs")
-PATCH_FILE = os.path.join("Mod", "Rimrooms - Async Industries", "1.6", "Patches",
+PATCH_FILE = os.path.join("Mod", "Rimrooms - Async Industries", "1.7", "Patches",
                           "RR_ExistingEvidenceBook.xml")
 BINDING_FILE = os.path.join("src", "RimroomsAsyncIndustries", "Investigation",
                             "RecordBookClassBinding.cs")
-KEYED_FILE = os.path.join("Mod", "Rimrooms - Async Industries", "1.6", "Languages", "English",
+KEYED_FILE = os.path.join("Mod", "Rimrooms - Async Industries", "1.7", "Languages", "English",
                           "Keyed", "RR_Investigation.xml")
 
 CLASS_NAME = "RimroomsAsyncIndustries.Investigation.RimroomsRecordBook"

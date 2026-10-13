@@ -47,6 +47,13 @@ Include your RimWorld version, your mod list, and the exact text of any message.
 
 ---
 
+## RimPLC
+
+[RimPLC](rimplc.md) is the separate colony logic mod: sensors, editable rules and an in-game
+ladder window. Rimrooms does not require it. The project is available on
+[Forgejo](https://git.unityailab.com/GFourteen/RimPLC) and
+[GitHub](https://github.com/G-Fourteen/RimPLC).
+
 ## Also by Unity AI Lab
 
 | | |

@@ -8,7 +8,7 @@ def insert(path, block):
     io.open(path, 'w', encoding='utf-8-sig', newline='').write(s)
     print('updated ' + path)
 
-base = 'Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/'
+base = 'Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/'
 
 history = u"""
   <RR_GateHistory_Dial>Dial {0}</RR_GateHistory_Dial>

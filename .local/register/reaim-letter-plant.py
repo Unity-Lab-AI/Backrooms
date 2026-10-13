@@ -19,7 +19,7 @@ import os
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SUITE = os.path.join(REPO, ".local", "register", "plant-clearsquad.py")
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages",
                      "English", "Keyed", "RR_Requests.xml")
 
 OLD = (u'    ("the letter stops telling the player what it cost them", KEYED,\n'

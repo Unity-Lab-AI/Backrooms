@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-12",
+  "results": [
+    {
+      "path": "Mod/Rimrooms - Async Industries/1.7",
+      "files": 196,
+      "all_original_bytes_preserved": true
+    },
+    {
+      "path": "RimPLC/1.7",
+      "files": 3,
+      "all_original_bytes_preserved": true
+    },
+    {
+      "zip": "Mod/Rimrooms - Async Industries.zip",
+      "files": 200,
+      "sha256": "df3a7ae47011688f3eb2d58915d0c0e02093bee28291ddd743b12164481a9d82",
+      "content_folder": "1.7"
+    }
+  ],
+  "compiled_game_baseline": "1.6.4871 rev590",
+  "game_launched": false,
+  "runtime_17_verified": false
+}

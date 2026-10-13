@@ -12,7 +12,7 @@ import os
 import re
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-KEYED_DIR = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages",
+KEYED_DIR = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages",
                          "English", "Keyed")
 TARGET = os.path.join(KEYED_DIR, "RR_Investigation.xml")
 

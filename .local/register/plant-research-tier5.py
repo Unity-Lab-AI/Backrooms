@@ -29,7 +29,7 @@ import subprocess
 import sys
 import time
 
-PROJECTS = "Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsProjectDefs/RR_CompanyProjects.xml"
+PROJECTS = "Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsProjectDefs/RR_CompanyProjects.xml"
 SERVICING = "src/RimroomsAsyncIndustries/Gate/NativeGateServicing.cs"
 TELLS = "src/RimroomsAsyncIndustries/Generation/FixtureTellService.cs"
 EXITS = "src/RimroomsAsyncIndustries/Portals/WorldExit.cs"

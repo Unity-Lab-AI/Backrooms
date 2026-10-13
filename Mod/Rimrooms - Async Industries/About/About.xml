@@ -6,6 +6,7 @@
   <modVersion>0.13.0-dev</modVersion>
   <supportedVersions>
     <li>1.6</li>
+    <li>1.7</li>
   </supportedVersions>
   <!-- Owner direction, 2026-10-03: "rework mod to not need any depeancie mods", and
        "we hope to have the mod as a complete stand alone". This file declared 293 hard
@@ -342,6 +343,8 @@ Anything carried out of a coordinate is marked odd and never stacks with the ord
 Your colonists work across a gate the way they work anywhere: hauling, construction, bills, research, medical, cooking, cleaning, mining, hunting, farming, animals and the rest. Every kind of work in the game is either answered or deliberately left local for a stated reason.
 
 --- REQUIREMENTS ---
+
+RimWorld 1.6 and 1.7 use the same content in this package. The 1.7 declaration is a development target; Rimrooms has not yet been verified in a running 1.7 session.
 
 This mod needs nothing but RimWorld itself. It declares no dependencies: not one mod, and not one expansion. Royalty, Ideology, Biotech, Anomaly and Odyssey are each optional, and the parts that use them simply are not there when they are not installed.
 

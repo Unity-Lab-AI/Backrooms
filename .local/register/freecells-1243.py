@@ -19,7 +19,7 @@ import re
 import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-PATH = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Defs",
+PATH = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Defs",
                     "RimroomsStartDefs", "RR_Starts.xml")
 
 text = io.open(PATH, encoding="utf-8").read()

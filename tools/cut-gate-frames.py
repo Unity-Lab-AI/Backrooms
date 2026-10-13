@@ -11,7 +11,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "assets/source/gates"
-DESTINATION = ROOT / "Mod/Rimrooms - Async Industries/1.6/Textures/Things/Building/Rimrooms/Gates"
+DESTINATION = ROOT / "Mod/Rimrooms - Async Industries/1.7/Textures/Things/Building/Rimrooms/Gates"
 CONSUMER = ROOT / "src/RimroomsAsyncIndustries/Gate/GateWorldFrames.cs"
 FOOTPRINTS = ((1, 1), (1, 2), (1, 3), (2, 3))
 FACINGS = ("north", "east", "south")

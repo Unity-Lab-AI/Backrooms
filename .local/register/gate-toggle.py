@@ -35,7 +35,7 @@ import os
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 GATE = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "Gate", "CompRimroomsGate.cs")
 BINDING = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "UI", "OperationsGateBinding.cs")
-KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.6", "Languages", "English",
+KEYED = os.path.join(REPO, "Mod", "Rimrooms - Async Industries", "1.7", "Languages", "English",
                      "Keyed", "RR_Gate.xml")
 
 # ------------------------------------------- the scans become reachable, and sole-candidate

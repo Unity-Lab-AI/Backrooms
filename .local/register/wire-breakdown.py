@@ -27,7 +27,7 @@ u"""            // The breakdown, found by the live-effects sweep: `EmergencyRet
             if (NativeBindingFailureKey != null) { powerText += "\\n" + NativeBindingFailureKey.Translate(); }""")
 print('breakdown wired into the gate readout')
 
-p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.6', 'Languages', 'English',
+p = os.path.join(REPO, 'Mod', 'Rimrooms - Async Industries', '1.7', 'Languages', 'English',
                  'Keyed', 'RR_NativeGate.xml')
 s = io.open(p, encoding='utf-8-sig').read()
 assert 'RR_NativeGate_ReserveBreakdown' not in s

@@ -1,5 +1,7 @@
 # Compliance: RimWorld and Steam terms, and official versions only
 
+> **Current game target — 2026-10-12:** RimWorld **1.7 unstable / Waylith**, retaining **1.6** and the shared `1.7/` content folder. [The migration record](implementation/RIMWORLD_1_7_MIGRATION.md) owns the current target. Historical 1.6 source/build/play results stay unchanged; a version declaration is not 1.7 runtime or profile acceptance.
+
 **Binding owner requirement, 2026-09-28, verbatim:**
 
 > make sure we are foillowing all rimworld and steam TOS and requirments when it comes to issues similar and the issue of factions and pawn heduffs and the like this mod has to be working with official versions
@@ -30,7 +32,7 @@ Exit 0 passed, 1 failed, **2 skipped** — and two is not a pass. Three rules ar
 
 | Requirement | Status | How it was checked |
 |---|---|---|
-| Targets official RimWorld only | **Pass** — `supportedVersions` is `1.6` alone; `LoadFolders.xml` maps `v1.6` → `1.6` | `About/About.xml`, `LoadFolders.xml` |
+| Targets official RimWorld only | **Current target:** official 1.6 and 1.7 unstable, both mapped to the shared `1.7` payload; 1.7 runtime acceptance pending. **Historical metadata pass, before the October 12 migration:** `supportedVersions` was `1.6` alone; `LoadFolders.xml` mapped `v1.6` → `1.6` | `About/About.xml`, `LoadFolders.xml`; [migration record](implementation/RIMWORLD_1_7_MIGRATION.md) |
 | No required third-party mod | **Pass** — zero `modDependencies` as of 0.12.86-dev. `loadAfter` carries **294** entries, which is an ordering preference and not a requirement: a mod manager sorts by it and never demands it | `About.xml`: 0 matches for `modDependencies` / `incompatibleWith`; 294 `loadAfter` entries, of which 293 were hard dependencies until the stand-alone direction |
 | No game or DLC asset redistributed | **Pass** — every non-XML file in the **89**-entry package is ours: **6** original `RR_Menu_*` images, `About/Preview.png`, `About/License.txt` and our own compiled assembly. The **14 historical gameplay PNGs this row used to enumerate were deleted at 0.12.22-dev**, replaced by paths read out of Core's own defs | `check-compliance.py`, from `tools/package-files.json` rather than a directory walk |
 | No Core texture copied in under a new name | **Pass** — no `texPath` anywhere points at a non-`RR_` path | grep of every package XML for `texPath` excluding `RR_`: 0 results |

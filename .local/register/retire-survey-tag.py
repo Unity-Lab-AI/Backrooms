@@ -4,7 +4,7 @@ import io
 import os
 import re
 
-MOD = os.path.join('Mod', 'Rimrooms - Async Industries', '1.6')
+MOD = os.path.join('Mod', 'Rimrooms - Async Industries', '1.7')
 ARCHIVE = os.path.join('docs', 'implementation', 'historical-content', '0.10.7-dev')
 
 def read(path):

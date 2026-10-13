@@ -19,12 +19,12 @@ What it checks
 --------------
 1. **Package metadata.** `About.xml` parses; `packageId` matches the allowlist; the
    declared `modVersion` matches the csproj `<Version>`; the description does not quote
-   a *different* version; `supportedVersions` is non-empty and every entry has a real
-   load folder; no attribution strings anywhere in the package.
+   a *different* version; `supportedVersions` is non-empty and every entry selects real
+   content folders through `LoadFolders.xml`; no attribution strings anywhere in the package.
 2. **Allowlist against disk, both directions.** Every allowlisted file exists, and every
    game-loadable file on disk is allowlisted. A def that is present but unlisted ships
    by accident; a listed file that is missing breaks the staging script.
-3. **Load-folder structure.** Every loadable file sits under a declared version folder in
+3. **Load-folder structure.** Every loadable file sits under a mapped content folder in
    a directory RimWorld actually reads. A `Defs/` folder one level too high loads nothing
    and reports nothing.
 4. **Our own def references resolve.** Every `RR_` token referenced from a def must be a
@@ -349,9 +349,78 @@ def check_metadata(problems, allowlist, versions):
 
     if not versions:
         fail(problems, "About.xml declares no supportedVersions")
+    if len(versions) != len(set(versions)):
+        fail(problems, "About.xml contains duplicate supportedVersions")
     for version in versions:
-        if not os.path.isdir(os.path.join(MOD, version)):
-            fail(problems, "supportedVersions lists %r with no matching load folder" % version)
+        if not re.fullmatch(r"\d+\.\d+", version):
+            fail(problems, "supportedVersions contains an invalid game version: %r" % version)
+
+
+def resolve_load_folders(problems, versions):
+    """Resolve explicit game-version mappings to the content folders actually selected.
+
+    Both supported game versions select the shared 1.7 content folder. Requiring a separate
+    folder named after each game version rejects that valid layout and duplicates content.
+    This package uses top-level content folders; paths outside the package, conditional
+    mappings and implicit fallbacks are not accepted as evidence that its files load.
+    """
+    path = os.path.join(MOD, "LoadFolders.xml")
+    if not os.path.isfile(path):
+        fail(problems, "LoadFolders.xml is missing")
+        return {}
+    root = parse(path, problems)
+    if root is None:
+        return {}
+    if root.tag != "loadFolders":
+        fail(problems, "LoadFolders.xml root must be loadFolders")
+        return {}
+
+    declared = set("v" + version for version in versions)
+    mapping = {}
+    package_real = os.path.realpath(MOD)
+    for node in root:
+        if node.tag not in declared:
+            fail(problems, "LoadFolders.xml maps an undeclared game version: %s" % node.tag)
+            continue
+        if node.attrib:
+            fail(problems, "LoadFolders.xml %s must be an unconditional version mapping" % node.tag)
+            continue
+        version = node.tag[1:]
+        if version in mapping:
+            fail(problems, "LoadFolders.xml maps %s more than once" % node.tag)
+            continue
+        mapping[version] = []
+        for item in node:
+            folder = (item.text or "").strip()
+            if item.tag != "li" or list(item) or item.attrib:
+                fail(problems, "LoadFolders.xml %s must contain unconditional li folder entries"
+                     % node.tag)
+                continue
+            if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", folder):
+                fail(problems, "LoadFolders.xml %s selects an invalid top-level folder: %r"
+                     % (node.tag, folder))
+                continue
+            if folder in mapping[version]:
+                fail(problems, "LoadFolders.xml %s selects %r more than once"
+                     % (node.tag, folder))
+                continue
+            selected = os.path.join(MOD, folder)
+            try:
+                inside = os.path.commonpath([package_real, os.path.realpath(selected)]) == package_real
+            except ValueError:
+                inside = False
+            if not inside or not os.path.isdir(selected):
+                fail(problems, "LoadFolders.xml %s selects %r, which is not a real content folder "
+                               "inside this package" % (node.tag, folder))
+                continue
+            mapping[version].append(folder)
+        if not mapping[version]:
+            fail(problems, "LoadFolders.xml %s selects no valid content folder" % node.tag)
+    for version in versions:
+        if version not in mapping:
+            fail(problems, "supportedVersions lists %r with no explicit LoadFolders.xml mapping"
+                 % version)
+    return mapping
 
 
 def check_no_attribution(problems):
@@ -371,8 +440,9 @@ def check_no_attribution(problems):
 # 2 + 3. Allowlist against disk, and load-folder structure
 # --------------------------------------------------------------------------- #
 
-def check_files(problems, allowlist, versions):
+def check_files(problems, allowlist, load_folders):
     listed = set(allowlist.get("files", []))
+    selected_folders = set(folder for folders in load_folders.values() for folder in folders)
 
     for entry in sorted(listed):
         if not os.path.isfile(os.path.join(MOD, entry.replace("/", os.sep))):
@@ -397,8 +467,8 @@ def check_files(problems, allowlist, versions):
         if entry in ROOT_FILES:
             continue
         head = entry.split("/")[0]
-        if head not in versions:
-            fail(problems, "file sits outside every declared version folder: %s" % entry)
+        if head not in selected_folders:
+            fail(problems, "file sits outside every mapped content folder: %s" % entry)
             continue
         parts = entry.split("/")
         if len(parts) < 3 or parts[1] not in LOADABLE_DIRS:
@@ -1066,8 +1136,9 @@ def main(argv=None):
     declared = collect_declared(problems)
 
     check_metadata(problems, allowlist, versions)
+    load_folders = resolve_load_folders(problems, versions)
     check_no_attribution(problems)
-    check_files(problems, allowlist, versions)
+    check_files(problems, allowlist, load_folders)
     check_comment_dashes(problems)
     keyed = collect_keyed(problems)
     check_def_references(problems, declared, keyed)
@@ -1082,6 +1153,9 @@ def main(argv=None):
     print("  defs declared:      %d" % len(declared))
     print("  package files:      %d" % len(allowlist.get("files", [])))
     print("  supported versions: %s" % (", ".join(versions) or "none"))
+    for version in sorted(load_folders):
+        print("  load folders %s:   %s" % (version, ", ".join(load_folders[version]) or "none"))
+    notes.append("game-version declarations and load mappings do not establish runtime compatibility")
     print("  game defs indexed:  %s" % ("%d" % len(game_defs) if game_defs else "skipped"))
     _heaps = index_game_type_names()
     print("  game name heap:     %s" % ("%d bytes" % len(_heaps) if _heaps else "skipped"))

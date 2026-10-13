@@ -1,6 +1,6 @@
 import io, re
 
-M = 'Mod/Rimrooms - Async Industries/1.6/'
+M = 'Mod/Rimrooms - Async Industries/1.7/'
 
 def cut(path, start_marker, encoding='utf-8-sig'):
     """Remove the whole <ThingDef>/<RecipeDef> block containing the marker."""

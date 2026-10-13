@@ -3,7 +3,7 @@ import io
 NL = '&#10;'  # RimWorld renders a real newline; the entity keeps the XML on one tidy line.
 
 FIXES = [
- ('Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_Scenario.xml',
+ ('Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_Scenario.xml',
   'Your Async Industries branch is operational. The gate is still incomplete. Use Operations '
   'to review your staff, materials, branch account, and first survey. Your company allocation '
   'is an account balance; receiving contains your physical supplies. Finish the gate, assign a '
@@ -17,7 +17,7 @@ FIXES = [
   'before you dispatch a crew.' + NL + NL +
   'Native Work, Research, Architect and pawn controls all remain available.'),
 
- ('Mod/Rimrooms - Async Industries/1.6/Languages/English/Keyed/RR_StartupSetup.xml',
+ ('Mod/Rimrooms - Async Industries/1.7/Languages/English/Keyed/RR_StartupSetup.xml',
   'Your selected people have arrived and the branch allocation is recorded. Native starting '
   'supplies are near the arrival point; equipped and carried items remain with their owners. '
   'The fixed facility is separate from those supplies. Review Operations, assign a capable '

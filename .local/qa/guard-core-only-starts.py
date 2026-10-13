@@ -66,15 +66,15 @@ RULE = '''
 # RimWorld is the perfect check and cannot run here, because only the owner launches. The
 # imperfect check that catches the real case is worth more than the perfect one nobody can run.
 shipped_defs = set()
-for folder, _subdirs, files in os.walk(os.path.join(MOD, "1.6", "Defs")):
+for folder, _subdirs, files in os.walk(os.path.join(MOD, "1.7", "Defs")):
     for name in files:
         if name.lower().endswith(".xml"):
             shipped_defs.update(re.findall(
                 r"<defName>([^<]+)</defName>", read(os.path.join(folder, name))))
 
 START_FILES = [
-    os.path.join(MOD, "1.6", "Defs", "RimroomsStartDefs", "RR_Starts.xml"),
-    os.path.join(MOD, "1.6", "Defs", "ScenarioDefs", "RR_Scenarios.xml"),
+    os.path.join(MOD, "1.7", "Defs", "RimroomsStartDefs", "RR_Starts.xml"),
+    os.path.join(MOD, "1.7", "Defs", "ScenarioDefs", "RR_Scenarios.xml"),
 ]
 MOD_PREFIX = re.compile(r"^[A-Z]{2,5}_[A-Za-z0-9_]+$")
 # Element names that hold a def name, and the list wrappers whose `<li>` values are def names.

@@ -90,6 +90,6 @@ header = """<?xml version="1.0" encoding="utf-8"?>
 
 """
 
-io.open('Mod/Rimrooms - Async Industries/1.6/Defs/RimroomsInhabitantDefs/RR_Inhabitants.xml',
+io.open('Mod/Rimrooms - Async Industries/1.7/Defs/RimroomsInhabitantDefs/RR_Inhabitants.xml',
         'w', encoding='utf-8', newline='').write(header + "\n\n".join(block(d) for d in I) + "\n\n</Defs>\n")
 print("inhabitant families:", len(I))
