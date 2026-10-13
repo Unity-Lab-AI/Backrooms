@@ -58,6 +58,9 @@ namespace RimPLC
         /// <summary>Colonists whose setup was once complete (load ids); read by SensorsWorld for pawns_unconfigured.</summary>
         public HashSet<string> ConfiguredPawns = new HashSet<string>();
         private List<string> configuredSaved = new List<string>();
+        /// <summary>Prisoners already seen with a stance of their own (load ids); read by SensorsWorld for prisoners_new.</summary>
+        public HashSet<string> PrisonersSeen = new HashSet<string>();
+        private List<string> prisonersSeenSaved = new List<string>();
 
         public ScanResult Last;
         public bool OverBudget;
@@ -502,6 +505,9 @@ namespace RimPLC
             if (Scribe.mode == LoadSaveMode.Saving) configuredSaved = ConfiguredPawns.ToList();
             Scribe_Collections.Look(ref configuredSaved, "configuredPawns", LookMode.Value);
             if (Scribe.mode == LoadSaveMode.PostLoadInit) ConfiguredPawns = new HashSet<string>(configuredSaved ?? new List<string>());
+            if (Scribe.mode == LoadSaveMode.Saving) prisonersSeenSaved = PrisonersSeen.ToList();
+            Scribe_Collections.Look(ref prisonersSeenSaved, "prisonersSeen", LookMode.Value);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit) PrisonersSeen = new HashSet<string>(prisonersSeenSaved ?? new List<string>());
             if (Scribe.mode == LoadSaveMode.PostLoadInit) Unpack();
         }
 

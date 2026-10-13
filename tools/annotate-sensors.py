@@ -179,6 +179,8 @@ T = {
     "corner_sw_z": ("Defence", "SW corner z", None, I, "The south-west corner of the Home area: where game_set cmd tower goes."),
     "research_upgrades_unbuilt": ("Research", "Upgrades not built", ">0", W, "Researched buildings (hi-tech bench, multi-analyzer, trade beacon, comms console, drug lab) not built yet. Build each the moment it is researched."),
     "research_upgrades_missing": ("Research", "Upgrades to build", None, I, "The researched buildings not built yet, by def name."),
+    "prisoners_new": ("Crew", "New prisoners", ">0", W, "Prisoners with no stance yet (still on Maintain only and never seen with another). game_set cmd prisoner mode recruit pawn <name>."),
+    "prisoners_new_names": ("Crew", "New prisoner names", None, I, "Who the new prisoners are."),
     "pawns_unconfigured": ("Crew", "Not set up", '>0', C, "Colonists never fully set up: gun + melee sidearm, Attack, self-tend, a job, the No drugs policy. Owner: an unarmed or unset pawn is top priority. game_set cmd crew_setup, then empire_pass."),
     "trade_ships_in_orbit": ("World", "Trade ships in orbit", '>0', I, "Orbital traders passing. Call them from the comms console; goods land on the trade beacons."),
     "trade_beacons": ("World", "Trade beacons", None, I, "Orbital trade beacons. Only goods in their range can be sold to ships."),

@@ -44,6 +44,7 @@ namespace RimPLC
             Guard(() => Towers(st, home));
             Guard(() => StoneBlocks(st, home));
             Guard(() => ResearchUpgrades(st, home));
+            Guard(() => Prisoners(st, home));
         }
 
         private static void Guard(Action a)
@@ -329,6 +330,28 @@ namespace RimPLC
             }
             st["research_upgrades_unbuilt"] = (double)missing.Count;
             st["research_upgrades_missing"] = missing.ToList();
+        }
+
+        /// <summary>prisoners_new / prisoners_new_names: prisoners of the colony on the home map still on the default
+        /// interaction (PrisonerInteractionModeDefOf.MaintainOnly, Pawn_GuestTracker's initial value, verified decomp) that
+        /// RimPLC has never seen with a stance of their own. A prisoner whose mode is set to anything else is remembered in
+        /// the save (RimPLCGameComponent.PrisonersSeen), so a stance the player or the playbook sets later -- maintain
+        /// included -- is never counted again.</summary>
+        private static void Prisoners(Dictionary<string, object> st, Map home)
+        {
+            RimPLCGameComponent comp = RimPLCGameComponent.Get();
+            if (comp == null || PrisonerInteractionModeDefOf.MaintainOnly == null) return;
+            var names = new List<object>();
+            foreach (Pawn p in home.mapPawns.PrisonersOfColonySpawned)
+            {
+                if (p.guest == null) continue;
+                string id = p.GetUniqueLoadID();
+                if (comp.PrisonersSeen.Contains(id)) continue;
+                if (p.guest.ExclusiveInteractionMode != PrisonerInteractionModeDefOf.MaintainOnly) { comp.PrisonersSeen.Add(id); continue; }
+                names.Add(p.LabelShort);
+            }
+            st["prisoners_new"] = (double)names.Count;
+            st["prisoners_new_names"] = names.ToList();
         }
 
         /// <summary>empire_hostile: the Empire (Royalty) is hostile to the player. FactionManager.OfEmpire (verified, decomp

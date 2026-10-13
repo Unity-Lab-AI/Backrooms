@@ -688,6 +688,11 @@ Everything "still open after the review" above that can be settled without a liv
   - `research-pick-next` (12.9, new) runs `research_next` whenever `research_queue_empty` is true, which is both "none chosen" and "the last one finished", since `GetProject()` is empty in both cases. `research-idle` stays as the by-hand fallback.
   - New sensors `research_upgrades_unbuilt` / `research_upgrades_missing` apply the command's own upgrade list and test: researched and neither built nor planned on the home map.
   - `research-build-upgrades` (14.15, new) builds each name in that list (`build def <name>`, then `power`).
-  - The ladder is now 402 rungs and 188 sensors.
+  - The ladder was then 402 rungs and 188 sensors.
+- **Generator and prisoners (`generator`, `prisoner`):**
+  - `power-no-grid` (15.9, new) fires on no grid at all (`has_power` false, Electricity researched, no hostiles). It runs `generator kind wood` (solar when researched and wood is short), then `power`.
+  - `prisoner-new-recruit` (3.55, new) runs `prisoner mode recruit pawn <name>` for each name in the new sensor `prisoners_new_names`. `prisoners_new` counts prisoners still on the initial Maintain-only mode that RimPLC has never seen with a stance of their own. A prisoner seen with any other mode is remembered in the save (`RimPLCGameComponent.PrisonersSeen`, `prisonersSeen`), so a stance the playbook or the player sets (enslave, convert, or maintain later) is kept, and the rung never uses `pawn all`.
+  - `growth-prisoner-keep` and `recruit-past-three` now name the `prisoner` command where they said `set_prisoner_interaction` was missing (that name is in the checker's retired list).
+  - The ladder is now 404 rungs and 190 sensors. Both commands are in the window list and her `game_set` enum.
 
 **Still open:** none of this has run in a live game. `config-post-strictness` waits on the gate-posture sensor and command.

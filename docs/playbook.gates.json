@@ -1918,6 +1918,29 @@
       "label": "Upgrades to build",
       "severity": "info",
       "tip": "The researched buildings not built yet, by def name."
+    },
+    "prisoners_new": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "prisoners of the colony still on PrisonerInteractionModeDefOf.MaintainOnly (the initial mode) that RimPLC never saw with a stance of their own (RimPLCGameComponent.PrisonersSeen, saved)",
+      "group": "Crew",
+      "label": "New prisoners",
+      "severity": "warning",
+      "tip": "Prisoners with no stance yet (still on Maintain only and never seen with another). game_set cmd prisoner mode recruit pawn <name>.",
+      "warn": ">0"
+    },
+    "prisoners_new_names": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "labels",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "the names behind prisoners_new",
+      "group": "Crew",
+      "label": "New prisoner names",
+      "severity": "info",
+      "tip": "Who the new prisoners are."
     }
   },
   "gates": [
@@ -3150,6 +3173,27 @@
       "mode": "advise",
       "chain": "defense",
       "why": "owner: \"now make sure everything ive evr told you to do is a running check list that is never complete and is always checking all things are done wto keep your empire moveing up\""
+    },
+    {
+      "id": "power-no-grid",
+      "priority": 15.9,
+      "family": "base-and-fortress",
+      "when": {
+        "colony_exists": true,
+        "has_power": false,
+        "research_electricity": true,
+        "hostiles_on_map": 0
+      },
+      "then": [
+        "game_set cmd generator kind wood (solar when research_solarpanels and the wood is short) -- a generator with a battery touching it on open ground outside the colony; read the reply",
+        "game_set cmd power -- every unpowered building gets its conduit line to that grid; read the reply",
+        "generator refused (not researched / no room): research-pick-next and the generator-yard steps of rung-2-power-and-cold"
+      ],
+      "never": [
+        "never a generator inside a lived-in room (heat)"
+      ],
+      "latch": false,
+      "why": "owner: \"you got shit without power need conduit, ive told you this already!!!!\"; no grid at all: generator first, then the conduit"
     },
     {
       "id": "rung-2-power-and-cold",
@@ -5588,7 +5632,7 @@
       },
       "then": [
         "a joiner, refugee or wanderer letter: ACCEPT (more hands is the empire) unless pursuers outnumber the colony (fight_ratio < 1)",
-        "a downed raider: order_pawn Capture to the prisoner bed; Warden on the best Social pawn (game_set cmd set_work_priority work Warden level 1); interaction Reduce resistance then Recruit (MISSING set_prisoner_interaction)",
+        "a downed raider: order_pawn Capture to the prisoner bed; Warden on the best Social pawn (game_set cmd set_work_priority work Warden level 1); game_set cmd prisoner mode recruit pawn <name> (resistance first, then recruit)",
         "a transport pod crash with a survivor: rescue and recruit",
         "trade for a slave or a prisoner when a caravan offers one and silver >= {TRADE_SILVER_MIN}",
         "prefer recruits who fill Construction, Mining, Cooking, Medicine gaps; skip addicts and chronic illness; no pyromaniac or incapable-of-violence as a fighter",
@@ -5611,7 +5655,7 @@
       },
       "then": [
         "game_set cmd set_work_priority pawn=<highest Social> work Warden level 1",
-        "MISSING set_prisoner_interaction: Reduce resistance, then Recruit once resistance is 0",
+        "game_set cmd prisoner mode recruit pawn <name> (Recruit lowers resistance first, then recruits); a stance already set (enslave, convert, maintain) stays",
         "prisoner mood > 35%: a bed (game_set cmd set_bed_owner owner prisoner), food, 15-24C in the prison room",
         "recruited -> setup:setup-9-new-pawn; unrecruitable -> works contained inside the walls, doors locked to the work areas"
       ],
@@ -10572,6 +10616,22 @@
         "send an unarmed colonist to hunt or to fight"
       ],
       "why": "owner: \"once again u arnt armed!!! wtf!!!!\" / \"pawn with out a wepaon is a very high rankeing need to fix\""
+    },
+    {
+      "id": "prisoner-new-recruit",
+      "priority": 3.55,
+      "family": "growth",
+      "when": {
+        "colony_exists": true,
+        "prisoners_new": ">0"
+      },
+      "then": [
+        "for each name in prisoners_new_names: game_set cmd prisoner mode recruit pawn <name> (never pawn all: a stance already set stays); read the reply",
+        "a warden: game_set cmd set_work_priority pawn=<highest Social> work Warden level 1",
+        "a prisoner bed, food and 15-24 C in the prison room (growth-prisoner-keep keeps them)"
+      ],
+      "latch": false,
+      "why": "owner: \"capture prisoners and rule the world\"; a new prisoner goes on Recruit at once, any stance already set is kept"
     },
     {
       "id": "crew-not-set-up",
