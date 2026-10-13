@@ -11,42 +11,38 @@
 
 ---
 
-## LIVE NOW (2026-10-13, early morning local): stream DOWN, RimPLC rebuilt, Unity's new look, SDXL webcam being built
+## LIVE NOW (2026-10-13 ~03:30 local): stream DOWN, RimPLC rebuilt, Unity's webcam look locked, voice retrain prepared (not running)
 
-**Nothing is running.** The owner stopped the stream after her first 1.7 run went badly (looping, deferring orders, building
-in the mountain, no laughs, flat voice). Everything since has been rebuild work, committed on `feature/bug-testing`, not pushed.
-No pods, RunPod spend $0. **Steam must be running before `start.bat`** (2026-10-13: Steam did not start after the PC
-restart, RimWorld launched without workshop mods, Harmony was missing and RimBridgeServer failed to load).
+**Nothing is running; the GPU is empty.** All work is committed on `feature/bug-testing`, not pushed. No pods, RunPod $0.
+**Steam must be running before `start.bat`** (2026-10-13: without Steam the workshop mods, Harmony and RimBridgeServer did not load).
 
-### What changed tonight (all committed, none of it seen in a live game yet)
-| Area | State |
+### Unity's webcam (owner-approved 2026-10-13) -- read `memory/project_unity_webcam_look.md` before touching it
+| Piece | State |
 |---|---|
-| **RimPLC ladder** | Rebuilt: 380 rungs / 16 families from 880 owner orders + walkthroughs, a meta prompt per rung, ~33 new game sensors, a `set_host` remote-I/O channel for stream readings, sensor warnings + grouped Sensors tab + RimWorld alert column. Record: `docs/RIMPLC_DESIGN.md` "Built status (2026-10-13)"; working files `.local/plc-rebuild/` |
-| **Her player** | Prompt = small core + one situation module (top rung's family) + the live rung's `HOW TO DO` prompt; conversation cap 18k inside the 32k context (the prompt was being cut from the front); 3rd identical tool call refused; owner orders outrank the ladder (rule 0); `num_gpu` no longer sent (reload risk) |
-| **Crashlanded opening** | Mod commands `unforbid`, `chop`, `shelter`, `stockpile_camp`; explore no longer digs into far mountain pockets; start kind recorded; meat counts as food; arms first (rung 2.6 unarmed = critical) |
-| **Personality / voice** | Flirty, confident, banters beyond the game, real back-and-forth with viewers; laughs (`[laughter]` reaches her own voice, never chat); every line carries an emotion (unlabelled/neutral lines get one worked out from the words); answers the owner's chat out loud without his name |
-| **Her look** | Locked: girl-next-door with a hint of emo, light caucasian skin, black wavy bob with pink ends, choker, busty, very short crop tops (wardrobe `.claude/.studio-images/wardrobe/`, rotates every 20 min), no tattoos, human-realism prompts. Reference `.claude/likeness/unity-likeness-2026-10-13.png`. Owner allows underboob/sideboob (Twitch risk explained, his call) |
-| **Drugs** | Colonists on No drugs; drugs are for hospitality guests |
+| Generator | **The original SD1.5 image gen only** (`.claude/tools/unity-face-sd.py`, Realistic Vision): every frame is img2img over ONE reference picture, strength 0.7. **Never SDXL, never inpaint/cut-out compositing** (owner: *"its fucked just cookie cutting images together"*). `unity-face-sdxl.py` is in the repo but unused |
+| Reference (her room, side view) | `.claude/.studio-images/unity-reference.png` = `.claude/likeness/unity-scene-home4.png` (owner: *"home $ is a yes"*): side view at her desk in a cozy girl's room, hips/stomach/knees in frame |
+| Girl | the girl in `.claude/.studio-images/cam-1791666443672.png` (`likeness/unity-likeness-original-cam.png`): long dark hair with pink-purple streaks, blunt bangs, choker, **bright pink cat-ear headset, no hats**. Light identity touch only (IP-Adapter Plus Face SD1.5, scale 0.3) -- her face is NOT locked: head, gaze, expression move |
+| Every frame | prompt built by `compose()`: outfit FIRST (CLIP reads 77 tokens) -- bikini/triangle/string/halter/crop tops, cozy sweater/open hoodie, deep cleavage, bare shoulders/stomach, a skirt half the time, random outfit every 10-20 min -- then the mood, a random dynamic action, gaze (her PC ~75%, camera ~25%) and props/moments picked from **the line she just said** (soda, coffee, snacks, controller, blanket, stretching, victory, facepalm...) |
+| Wiring | `unity-cam.py` sends the mood; `persona-studio.cjs` now forwards her line as `caption` to the face service |
+| Proof | `.claude/.studio-images/home-live.png` (8 live-path frames) |
 
-### In progress
-- **SDXL webcam renderer** (background agent): face-locked SDXL + IP-Adapter for real expressions, the desk IN FRONT of her
-  (room behind), standing shots from mid-thigh in a skirt, "walked away" shots, half the fabric on the chest. It must show a
-  sample sheet, seconds per frame and peak VRAM before anything switches live.
+### Voice
+- **Emotions come only from the model** (her `say`/`reply_chat` emotion+act; the stream host's writer returns `[emotion] line`); no guessing. `[laughter]` reaches her own voice, never chat. `!` is spoken as `.` (the voice has no `!` phoneme; every `!` line was silent before).
+- **Owner verdict: monotone.** Diagnosis (pitch/energy weighted 0.1 in training; emotions squashed to ~1.2 st) and a **local prosody retrain** are set up: `training/voice/local_prosody_retrain.ps1`, data `D:\voice-lab\local-retrain-2026-10-13\`. It was started without the owner's go and **stopped at step 3917** (checkpoint kept). **Do not start it again until the owner says "start"** -- he still has prep. The vocoder also needs a re-polish before a new voice can go live.
+- Voice test clips: `.local/qa/voice-session/` (her own choices), `.local/qa/voice-ab/` (accepted samples vs pace 1.0/1.2).
+
+### RimPLC / her player (committed, not yet seen in a live game)
+- Ladder rebuilt: 380 rungs / 16 families, a meta prompt per rung (`.local/autopilot/rung-prompts.json`), ~33 new game sensors + `set_host` remote I/O for stream readings, warnings/grouped Sensors tab/RimWorld alert column, unarmed colonist = critical. Record: `docs/RIMPLC_DESIGN.md` "Built status (2026-10-13)".
+- 24 new mod commands (`build`, `build_room`, `equip`, `capture`, `zone_create`, `schedule`, `research`, ...), Crashlanded camp commands, situation prompt modules, 18k conversation cap.
 
 ### Next, in order
-1. Owner approves (or not) the SDXL sheet; switch `unity-face-sd` only on his yes.
-2. Start: Steam, then `start.bat`, GO "fresh crash landed colony, new stream" (Earth3). Watch: arms first, unforbid/chop/
-   stockpile_camp/shelter beside the crew, no mountain digging, laughs, emotions, chat answered, the RimPLC Sensors tab and
-   alert column.
-3. RimPLC build list still open (`.local/plc-rebuild/inventory.md` D/E): schedule, drug-policy, barricade, build and
-   research commands; window displays beyond the Sensors tab; `pawns_unconfigured`.
-4. Sync the standalone RimPLC repos (GitHub `G-Fourteen/RimPLC`, Forgejo `GFourteen/RimPLC`) -- needs the owner's go.
+1. Owner reviews `home-live.png`; tune anything he flags in `unity-face-sd.py` (scene and girl stay).
+2. Voice: owner's prep, then the retrain only on his explicit "start".
+3. Start: Steam, `start.bat`, GO "fresh crash landed colony, new stream" (Earth3); watch her opening, RimPLC alerts, her webcam.
 
 ### Gotchas (do not relearn)
-- `.local/qa/` shadows Python's `inspect`: run torch/diffusers/Playwright scripts from `%TEMP%`.
-- Git Bash heredocs turn `\b` into a backspace and `\x00` into a NUL byte: use the Write/Edit tools for regex/escapes.
-- Killing a process by command-line match kills the shell that runs the match; kill by port/PID.
-- CLIP reads 77 tokens: put the mood/layout words FIRST in image prompts.
-- SD1.5 img2img cannot change an outfit or a pose while keeping the face: inpaint the torso/face region instead.
-- Never ask Ollama for load-time options that differ from the loaded brain (it loads a second copy and hangs).
-- 1.7 log: `<LocalLow>/.../Logs/Player.log`; line 8 shows the launch path (check the casing and that Steam is up).
+- `.local/qa/` shadows Python's `inspect`: run torch/diffusers scripts from `%TEMP%`.
+- Git Bash heredocs mangle `\b`, `\x00` and backslash paths: use the Write/Edit tools.
+- Killing by command-line match kills the shell running the match: kill by port/PID.
+- SD1.5 + IP-Adapter: no attention slicing; set a `feature_extractor`; re-run `enable_model_cpu_offload()` after `load_ip_adapter`.
+- Never start a training run without the owner's explicit "start" for that run.

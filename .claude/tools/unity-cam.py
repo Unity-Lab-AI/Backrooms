@@ -16,8 +16,7 @@ def studio_token():
         return ""
 
 
-BASE = ("amateur webcam photo, real human, natural skin texture with visible pores and small imperfections, her own grey-green eyes, slight webcam grain, natural lighting, unretouched, candid gaming webcam photo, waist-up, a 25 year old woman at her desk gaming, girl next door with a hint of emo, light caucasian "
-        "skin with a warm glow, black wavy bob with pink ends, small black choker, busty, lifted cleavage, cozy bedroom, string lights, realistic, ")
+BASE = ""   # who she is, her outfit, gaze and props are added by unity-face-sd.compose() -- the caller sends the mood only
 MOODS = {
     "chill": "relaxed half smile, sleepy eyes, chin resting on her hand",
     "hype": "excited wide grin, leaning toward the camera, fist raised",

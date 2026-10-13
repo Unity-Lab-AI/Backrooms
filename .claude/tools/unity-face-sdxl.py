@@ -24,7 +24,7 @@ import base64, io, json, os, re, threading, time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-LIKENESS = os.path.join(HERE, "..", "likeness", "unity-likeness-2026-10-13-girl6.png")   # owner picked girl 6, 2026-10-13
+LIKENESS = os.path.join(HERE, "..", "likeness", "unity-likeness-original-cam.png")   # owner 2026-10-13: "i want the girl from the cam image i gave you"
 PORT = int(os.environ.get("UNITY_FACE_PORT", "7862"))
 MODEL = os.environ.get("UNITY_SDXL_MODEL", "SG161222/RealVisXL_V5.0")
 OFFLOAD = os.environ.get("UNITY_SDXL_OFFLOAD", "group")
@@ -57,7 +57,15 @@ BOTTOMS = {   # owner 2026-10-13: "More outfits"
     "denim-shorts": "frayed denim short shorts",
     "ripped-jeans": "low-rise ripped black jeans",
     "bike-shorts": "black bike shorts",
+    # owner 2026-10-13: "and skirts 50% of time all styles"
+    "tennis-skirt": "white pleated tennis skirt",
+    "pencil-skirt": "black fitted pencil skirt",
+    "slip-skirt": "black satin slip skirt",
+    "wrap-skirt": "floral wrap mini skirt",
+    "cord-skirt": "brown corduroy mini skirt",
+    "flowy-skirt": "long flowy black boho skirt",
 }
+SKIRTS = [b for b in BOTTOMS if b.endswith("skirt")]
 OUTFIT_STATE = os.path.join(HERE, "..", ".studio-images", "wardrobe", "_sdxl_current.json")
 
 
@@ -74,7 +82,8 @@ def current_outfit(req):
     if st.get("top") in TOPS and st.get("bottom") in BOTTOMS and time.time() < st.get("until", 0):
         return st["top"], st["bottom"]
     top = random.choice([t for t in TOPS if t != st.get("top")])
-    bottom = random.choice([b for b in BOTTOMS if b != st.get("bottom")])
+    pool = SKIRTS if random.random() < 0.5 else [b for b in BOTTOMS if b not in SKIRTS]   # a skirt half the time
+    bottom = random.choice([b for b in pool if b != st.get("bottom")] or pool)
     try:
         json.dump({"top": top, "bottom": bottom, "until": time.time() + random.randint(600, 1200)}, open(OUTFIT_STATE, "w", encoding="utf-8"))
     except OSError:
@@ -83,17 +92,19 @@ def current_outfit(req):
 LAYOUTS = {   # owner 2026-10-13: "desk is not to be waist high but instead knee high"
     # owner 2026-10-13: "the desk worked purfect before" (the original week's framing: at her desk, desk and keyboard in front)
     # and "no one looks dirrectly at their webcamera they look at their monitor slighty off angle"
-    "seated": "slightly high three-quarter angle, seen from the side of her monitor, she sits in her gaming chair turned a little toward the camera, her whole upper body and lap visible, twitch streamer at her desk, she looks slightly off to the side at her monitor, not at the camera, "
-              "webcam on the monitor top, waist-up, her forearms on the desk, a keyboard and mouse on the desk in the "
-              "foreground at the bottom of the frame, a gaming chair behind her, behind her a bed, posters and string lights",
-    "standing": "twitch streamer, she just stood up from her gaming chair, low webcam view from a knee-high desk, she stands right behind the low wooden desk, the desk edge at her knees "
+    # owner 2026-10-13: "just make it a side view of the deask and chair with her turned towards webcam not a pink room just
+    # normal shit a chick has come on now girl next door" -- one fixed ordinary room, described the same way every frame
+    "seated": "side view of her desk and gaming chair, she sits sideways at the desk and has turned in her chair toward the webcam, "
+              "seen from head to knees, ROOM",
+    "standing": "side view of her desk, she just stood up beside her gaming chair, ROOM, low webcam view from a knee-high desk, she stands right behind the low wooden desk, the desk edge at her knees "
                 "in the foreground, full thighs and skirt visible, knees up, behind her a bed, posters and string lights",
-    "blanket": "twitch streamer, cozy webcam view from her desk, she is curled up in her black gaming chair snuggled in a big fuzzy blanket wrapped around "
+    "blanket": "side view of her desk, she is curled up in her gaming chair turned toward the webcam snuggled in a big fuzzy blanket wrapped around "
                "her shoulders, knees pulled up, warm and sleepy-cute, behind her a bed, posters and string lights",
     "away": "very wide shot from a low desk across the room, she is a small full-body figure far away at the back of her bedroom, "
             "{action}, the room fills most of the frame, bed, posters, string lights",
 }
-BED = "on the bed, kneeling on the bed, lying on the bed, sitting on the bed, legs spread, "
+BED = "on the bed, kneeling on the bed, lying on the bed, sitting on the bed, legs spread, legs apart, crotch, thighs spread, shorts riding up, "
+ROOM = "her ordinary bedroom: a white desk with a monitor, keyboard and a small lamp, plain light beige walls, a bed with a grey duvet behind her, two small framed prints, a window with sheer white curtains, soft daylight"
 LAYOUT_NEG = {"seated": BED + "desk at waist height, standing, arms raised, ",
               "standing": BED + "sitting, desk at waist height, long skirt, ",
               "blanket": BED + "standing, no blanket, ",
@@ -119,12 +130,12 @@ MOODS = {
     "focus": "intense focused stare, lip bitten, narrowed eyes",
     "smug": "smug smirk, one eyebrow raised, arms crossed",
 }
-LOOK = ("eyes looking off to the side at her monitor, not looking at the camera, 25yo woman, girl next door, hint of emo, light caucasian skin, warm glow, dark messy wavy bob with bangs, "
+LOOK = ("eyes looking off to the side at her monitor, not looking at the camera, 25yo woman, girl next door, hint of emo, light caucasian skin, warm glow, long straight dark hair with pink-purple streaks and blunt bangs, sleek pink cat-ear gaming headset, no hat, "
         " small black choker, busty, lifted perky cleavage, bare midriff")
 PHOTO = "amateur webcam photo, real skin, pores, grey-green eyes, grain, unretouched"
 NEG = ("nipples, nude, topless, nsfw, see-through, sheer, tattoo, tattoos, dark skin, tan skin, pale skin, "
        "airbrushed, plastic skin, smooth skin, doll, cgi, 3d render, cartoon, anime, painting, beauty filter, glowing eyes, "
-       "blue eyes, blonde, looking at the camera, eye contact, desk behind her, "
+       "hat, beret, cap, beanie, blue eyes, blonde, pink walls, pink room, neon, rgb lights, fairy lights, cutout, collage, desk behind her, "
        "deformed, bad anatomy, extra fingers, extra limbs, blurry, lowres, watermark, text, child, old, wrinkles")
 
 _pipe = None
@@ -205,7 +216,7 @@ def build_prompt(req):
     if layout not in LAYOUTS:
         layout = "seated"
     seed = int(req.get("seed") or SEED)
-    lay = LAYOUTS[layout].replace("{action}", req.get("action") or AWAY_ACTIONS[seed % len(AWAY_ACTIONS)])
+    lay = LAYOUTS[layout].replace("ROOM", ROOM).replace("{action}", req.get("action") or AWAY_ACTIONS[seed % len(AWAY_ACTIONS)])
     if layout in ("seated", "blanket"):
         lay = (req.get("pose") or POSES[(seed * 7 + int(time.time() // 60)) % len(POSES)]) + ", " + lay
     top, bottom = current_outfit(req)
