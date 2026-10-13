@@ -191,7 +191,7 @@ def fresh(fact):
         if attempt < 2 and any(_n(t) in _n(low) and any(_n(t) in _n(h) for h in hist[-10:]) for t in THEMES + ("scar and me", "three of", "gee scar")): continue
         # what the crew is actually doing may come back, just not in the last few lines (a ten-line ban on these
         # silenced her: research and farming ARE the colony right now)
-        ACTS = ("guest bed", "growing zone", "table", "reading", "manual", "research")
+        ACTS = ("guest bed", "growing zone", "table", "reading", "manual", "research", "storage", "stockpile")
         if attempt < 2 and any(t in low and any(t in h.lower() for h in hist[-5:]) for t in ACTS): continue  # five lines, not three: "research" came back four lines running
         if any(difflib.SequenceMatcher(None, low, h.lower()).ratio() > 0.6 for h in hist[-30:]): continue
         line = scrub(line)
@@ -256,8 +256,14 @@ def state_facts():
                 zl = [z.get("label") for z in call("rimworld/list_zones").get("zones", []) if z.get("label")]
             except BaseException:
                 zl = []
-            facts.append(("we have %s set up now" % ", ".join(zl[:4])) if zl else
-                         "I have not set up storage yet, that is next")
+            # live 2026-10-13: with her player stalled this was nearly the only fact, and she said "storage" ten
+            # times without placing one. "No storage yet" is news once, not again while it is in the last ten lines.
+            try: recent = " ".join(json.load(open(sb.HIST, encoding="utf-8"))[-10:]).lower()
+            except Exception: recent = ""
+            if zl:
+                facts.append("we have %s set up now" % ", ".join(zl[:4]))
+            elif not re.search(r"storage|stockpile", recent):
+                facts.append("I have not set up storage yet, that is next")
         lets = [l.get("label") for l in call("rimworld/list_letters").get("letters", []) if l.get("label")]
         # a waiting letter is news ONCE, not a topic every 20 s (live: "authorization" six lines running)
         global _told_letters
