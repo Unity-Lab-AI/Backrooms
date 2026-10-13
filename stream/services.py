@@ -60,6 +60,8 @@ SERVICES = [
     ("followcrew",  ".local/qa/follow-crew.py",         [PYW, os.path.join(QA if "QA" in globals() else HERE, "follow-crew.py")]),
     # ("cursorjobs",  ".local/qa/cursor-jobs.py",         [PYW, os.path.join(QA, "cursor-jobs.py")]),
     ("keepgoing",   ".local/qa/keep-playing.py",        [PYW, "-u", os.path.join(QA if "QA" in globals() else HERE, "keep-playing.py")]),
+    # her own voice (models/unity-voice) served once on :5123; unity-speak.py posts every line to it, no fallback
+    ("voice",       "training/voice/serve.py",          [PYW, "-u", os.path.join(ROOT, "training/voice/serve.py")]),
     ("autopilot",   ".local/autopilot/autopilot.py",    [PYW, "-u", os.path.join(ROOT, ".local/autopilot/autopilot.py"), "--num-gpu", os.environ.get("AUTOPILOT_NUM_GPU", "0")]),
     ("admin",       "stream/admin.py",                  [PYW, "-u", os.path.join(HERE, "admin.py")]),
 ]
@@ -303,7 +305,7 @@ def announce(line):
 
 def start(only=None):
     found = running()
-    env = dict(os.environ, PYTHONUNBUFFERED="1", STUDIO_PERSIST="1")
+    env = dict(os.environ, PYTHONUNBUFFERED="1", STUDIO_PERSIST="1", UNITY_OWN_VOICE="1")
     be = brain_env()
     env.update(be)
     if os.environ.get("TWITCH_CHANNEL") is None: env["TWITCH_CHANNEL"] = "unityplaysrimworld"

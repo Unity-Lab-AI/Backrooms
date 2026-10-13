@@ -474,7 +474,7 @@ class Toolbox:
         return run_script("empire", ["--dry"] if report_only else [], timeout=300)
 
     # -- stream output: every path goes through guards.clean_for_stream -----------------------------------------
-    def _speak(self, text, reply_to=None):
+    def _speak(self, text, reply_to=None, emotion=None, act=None):
         # Voice tags ([laughter], [breath], [sigh]) are instructions for Unity's own voice model, never words for
         # Twitch chat or the overlay. Owner: "its better not print [laughter} in the chat of twitch". They are cut
         # from everything shown; voice_text keeps them for the new voice (today's Piper would read them out loud,
@@ -502,14 +502,18 @@ class Toolbox:
         # gets the tagged line (same words, already passed the stream filter) once her own voice is live
         # (UNITY_OWN_VOICE=1), so the laugh is heard, never read. Today's Piper cannot laugh, so it gets the clean line.
         voice_line = self.voice_text if os.environ.get("UNITY_OWN_VOICE") == "1" else clean
+        # her own voice takes the delivery the brain chose (the same trained emotions/acts as the tool enums)
+        speak_env = dict(os.environ, UNITY_SPEAK_EMOTION=emotion or "", UNITY_SPEAK_ACT=act or "")
         # Owner: "she need training on how not to over respond. waiting for vocie to play out becasue the last
         # stream at time see was speaking over herself sending messages before the last finished". Speaking BLOCKS:
         # the tool returns only after the line has finished playing (unity-speak holds its turn for the whole
         # line), so her next line can never start or show in chat before this one is done.
         started = time.time()
         try:
-            subprocess.run([PY, SCRIPTS["speak"], voice_line], cwd=ROOT, stdout=subprocess.DEVNULL,
-                           stderr=subprocess.DEVNULL, shell=False, timeout=120)
+            r = subprocess.run([PY, SCRIPTS["speak"], voice_line], cwd=ROOT, stdout=subprocess.DEVNULL,
+                               stderr=subprocess.PIPE, text=True, shell=False, timeout=120, env=speak_env)
+            if r.returncode != 0:
+                log("SPEAK FAILED (no fallback voice):", (r.stderr or "").strip()[-200:])
         except subprocess.TimeoutExpired:
             log("SPEAK timed out after 120 s:", clean[:80])
         self.last_speech = time.time()
@@ -529,14 +533,14 @@ class Toolbox:
         return "sent privately to the owner"
 
     def t_say(self, text, emotion=None, act=None):
-        said = self._speak(text)
+        said = self._speak(text, emotion=emotion, act=act)
         return ("said: " + said) if said else "BLOCKED by the stream filter (no swearing, no degrading, no emoji); say it cleaner"
 
     def t_reply(self, chat_id, viewer, text, emotion=None, act=None):
         name = guards.clean_viewer_name(viewer)
         if name and name.lower().split()[0] not in text.lower():
             text = name + ", " + text
-        said = self._speak(text, reply_to=int(chat_id))
+        said = self._speak(text, reply_to=int(chat_id), emotion=emotion, act=act)
         if said:
             self.greeted_this_tick.add(str(viewer).lower())
             if not self.dry:
