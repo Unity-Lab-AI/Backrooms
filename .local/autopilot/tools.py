@@ -509,6 +509,16 @@ class Toolbox:
         # (UNITY_OWN_VOICE=1), so the laugh is heard, never read. (Piper is retired; her own voice is the only voice.)
         voice_line = self.voice_text if os.environ.get("UNITY_OWN_VOICE") == "1" else clean
         # her own voice takes the delivery the brain chose (the same trained emotions/acts as the tool enums)
+        if not emotion or emotion == "neutral" or not act:
+            # owner, 2026-10-13: "alla her emotions need to reach the model" -- she labelled almost every line neutral
+            try:
+                _us = importlib.util.spec_from_file_location("unity_say", os.path.join(ROOT, ".claude", "tools", "unity-say.py"))
+                _m = importlib.util.module_from_spec(_us); _us.loader.exec_module(_m)
+                _e, _a = _m.feeling(self.voice_text or clean)
+                emotion = _e if not emotion or emotion == "neutral" else emotion
+                act = act or _a
+            except Exception:
+                pass
         speak_env = dict(os.environ, UNITY_SPEAK_EMOTION=emotion or "", UNITY_SPEAK_ACT=act or "",
                          UNITY_SPEAK_CHAT=clean, UNITY_SPEAK_REPLY_TO=str(reply_to) if reply_to is not None else "")
         # Owner: "she need training on how not to over respond. waiting for vocie to play out becasue the last
