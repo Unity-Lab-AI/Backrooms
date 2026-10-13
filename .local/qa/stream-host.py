@@ -206,6 +206,8 @@ def fresh(fact):
     return None
 
 LAST_EMOTION = [""]
+LAST_VIEWER_CAM = [0.0]
+CAM_EVERY = 45          # one viewer-driven webcam frame at a time: a render takes ~20 s and the face queue holds 3
 
 
 def speak(line):
@@ -408,6 +410,18 @@ while True:
                         subprocess.Popen([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "reply", who, ans],
                                          creationflags=0x08000000 if os.name == "nt" else 0)
                     except Exception: pass
+                    # owner, 2026-10-13: "build that into everything ... all the dynamic needs we want for twitch viewer
+                    # suggeted inputs and contorl" -- what a viewer says can show up on her webcam: their words go to the
+                    # face service as the scene, her brain rewrites them into what the camera sees (no lists, no
+                    # fallbacks), nudity asks are refused there. One viewer frame per CAM_EVERY seconds.
+                    if time.time() - LAST_VIEWER_CAM[0] >= CAM_EVERY:
+                        LAST_VIEWER_CAM[0] = time.time()
+                        mood = {"happy": "chill", "excited": "hype", "angry": "angry", "laughing": "laugh", "sad": "sad",
+                                "scared": "scared", "flirty": "flirty", "smug": "smug", "focused": "focus"}.get(LAST_EMOTION[0], "flirty")
+                        try:
+                            subprocess.Popen([sys.executable, os.path.join(ROOT, ".claude", "tools", "unity-cam.py"), mood,
+                                              ans[:90], text[:120]], creationflags=0x08000000 if os.name == "nt" else 0)
+                        except Exception: pass
                 else:
                     print("reply to", who, "not written -- retried next pass", flush=True)
                     later(item)
