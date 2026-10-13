@@ -322,6 +322,9 @@ namespace RimroomsAsyncIndustries.Automation
                 case "freezer": return SetupTools7.Freezer(map);
                 case "butcher": return SetupTools7.Butcher(map);
                 case "kitchen": return SetupTools7.Kitchen(map);
+                case "arm": return SetupTools8.Arm(map);
+                case "draft": return SetupTools8.Draft(map, a);
+                case "hold": return SetupTools8.Hold(map);
                 case "chop": return SetupTools3.Chop(map, a);
                 case "shelter": return SetupTools3.Shelter(map, a);
                 case "stockpile_camp": return SetupTools3.StockpileCamp(map, a);
