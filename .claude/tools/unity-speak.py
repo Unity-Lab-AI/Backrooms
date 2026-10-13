@@ -15,7 +15,9 @@ VOICE_URL = os.environ.get("UNITY_VOICE_TTS_URL", "http://127.0.0.1:5123")
 
 def synth(text, out):
     import json, urllib.request, urllib.error
-    body = {"text": text}
+    # her voice has no phoneme for "!" and refuses the whole line (found 2026-10-13: every "!" line was silent on
+    # stream). The owner's approved delivery speaks "!" as "." -- the exclamation act keeps the energy.
+    body = {"text": text.replace("!", ".").replace("..", ".")}
     if os.environ.get("UNITY_SPEAK_EMOTION"):
         body["emotion"] = os.environ["UNITY_SPEAK_EMOTION"]
     if os.environ.get("UNITY_SPEAK_ACT"):
