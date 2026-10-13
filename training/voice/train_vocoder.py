@@ -176,8 +176,10 @@ def main():
         deployed = torch.load(args.warm_generator, map_location=dev, weights_only=True)
         # The vocoder only sees audio and mels: a re-prepared text frontend (feature_id/frontend_id) does not change
         # what its weights learned. Every other identity field must match; both identities are recorded.
-        # unity-voice-v2 also re-performs the emotional rows of the same voice (new dataset_id, same voice_id)
-        text_side = ("feature_id", "frontend_id", "dataset_id")
+        # unity-voice-v2 also re-performs the emotional rows of the same voice (new dataset_id, same voice_id); the
+        # acoustic model's pitch/energy normalisation (stats_id) and emotion/event counts (support_id) follow the data
+        # too, and the vocoder reads neither
+        text_side = ("feature_id", "frontend_id", "dataset_id", "stats_id", "support_id")
         theirs = deployed.get("identity") or {}
         if deployed.get("kind") != "vocoder" or {k: v for k, v in theirs.items() if k not in text_side} != \
                 {k: v for k, v in identity.items() if k not in text_side}:
