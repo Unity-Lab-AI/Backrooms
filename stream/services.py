@@ -72,7 +72,9 @@ ONE_SHOTS = [[PYW, os.path.join(ROOT, ".claude/tools/unity-overlay.py")]]
 # the start .bat and .sh? form a dead state?" -- a dead state means the GAME too. It is started if missing,
 # and it is never stopped by the switch: a run in progress is the owner's, not ours.
 # RimWorld 1.7 (Waylith, Steam's unstable branch) ships RimWorld.exe; 1.6 shipped RimWorldWin64.exe.
-RW_DIR = r"C:/Program Files (x86)/Steam/steamapps/common/Rimworld"
+# the folder's real casing: 1.7 (Waylith) launched from "...\common\Rimworld" failed to find hundreds of Core textures
+# (red X pawns and items, 2026-10-13); launched from "...\common\RimWorld" it loaded clean
+RW_DIR = r"C:/Program Files (x86)/Steam/steamapps/common/RimWorld"
 RW_IMAGE = "RimWorld" if os.path.exists(os.path.join(RW_DIR, "RimWorld.exe")) else "RimWorldWin64"
 START_ONLY = [
     ("rimworld", RW_IMAGE + ".exe", [os.path.join(RW_DIR, RW_IMAGE + ".exe")], RW_DIR),
