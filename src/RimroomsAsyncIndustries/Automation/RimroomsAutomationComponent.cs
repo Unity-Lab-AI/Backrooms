@@ -75,6 +75,11 @@ namespace RimroomsAsyncIndustries.Automation
             }
 
             ProcessInbox();
+            if (Find.TickManager.TicksGame % Sensors.ScanEveryTicks == 0 && HomeMap != null)
+            {
+                try { Sensors.Write(HomeMap, FolderPath); }
+                catch (Exception e) { Log.Warning("[Rimrooms][Automation] sensor scan failed: " + e.Message); }
+            }
         }
 
         /// <summary>
@@ -286,6 +291,7 @@ namespace RimroomsAsyncIndustries.Automation
                 case "hunt": return SetupTools2.Hunt(map);
                 case "assign": return Assign(map, a);
                 case "unforbid": return SetupTools3.Unforbid(map);
+                case "sensors": return Sensors.Write(map, FolderPath);
                 case "chop": return SetupTools3.Chop(map, a);
                 case "shelter": return SetupTools3.Shelter(map, a);
                 case "stockpile_camp": return SetupTools3.StockpileCamp(map, a);
@@ -318,7 +324,7 @@ namespace RimroomsAsyncIndustries.Automation
             int cookIndex = order.FindIndex(w => w.defName == "Cooking");
 
             DrugPolicy policy = Current.Game.drugPolicyDatabase.AllPolicies
-                .FirstOrDefault(p => p.label.IndexOf("social", StringComparison.OrdinalIgnoreCase) >= 0)
+                .FirstOrDefault(p => p.label.IndexOf("no drug", StringComparison.OrdinalIgnoreCase) >= 0)   // owner 2026-10-13: "drugs are for hospitality guests"
                 ?? Current.Game.drugPolicyDatabase.DefaultDrugPolicy();
 
             var claimed = new HashSet<Thing>();

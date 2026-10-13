@@ -589,6 +589,15 @@ class Toolbox:
         # RimPLC in the game when it is loaded (rimplc/read_ladder, or its command file), else the Python engine.
         # Either way the top live rungs with the measured values that made them fire, so she can say WHY, in the
         # same fields as always (gates.ladder_result / format_ladder).
+        # the start kind the GO chose (keep-playing writes .local/qa/_start_kind) goes into RimPLC's marks, so the
+        # start-crashlanded rung can fire in the game's own engine too (2026-10-13 audit: nothing ever set it)
+        try:
+            sk = int(open(os.path.join(ROOT, ".local", "qa", "_start_kind"), encoding="utf-8").read().strip() or 0)
+            if sk and not self.dry and getattr(self, "_start_kind_sent", None) != sk:
+                self._gates().rimplc("set_mark", {"name": "start_kind", "value": sk}, call=self._rimplc_call())
+                self._start_kind_sent = sk
+        except (OSError, ValueError):
+            pass
         text, _src = self._gates().ladder_result(call=self._rimplc_call())
         return text
 

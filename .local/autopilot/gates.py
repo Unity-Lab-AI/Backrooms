@@ -255,11 +255,45 @@ def derive(raw, lf=None):
         st["mark_" + k] = v if isinstance(v, (int, float)) and not isinstance(v, bool) else bool(v)
     for k in ("pawns_set", "assign_set", "beds_set", "stove_set", "bill_set"):
         st.setdefault("mark_" + k, False)
+    _sensor_file(st)
     if not st.get("mark_start_kind"):          # nothing ever set it (2026-10-13 audit): the GO writes the scenario it chose
         try: st["mark_start_kind"] = int(open(os.path.join(QA, "_start_kind"), encoding="utf-8").read().strip() or 0)
         except (OSError, ValueError): pass
     _chain_inputs(st, crew, raw.get("colonists") is not None)
     return st
+
+
+SENSOR_FILE = os.path.join(os.environ.get("USERPROFILE", ""), "AppData", "LocalLow", "Ludeon Studios",
+                           "RimWorld by Ludeon Studios", "Config", "RimroomsAutomation", "sensors.json")
+COOK_TO = ("Firefighter", "Patient", "Doctor", "PatientBedRest", "BasicWorker", "Warden", "Handling", "Cooking")
+
+
+def _sensor_file(st):
+    """The mod's input scan (Sensors.cs, every 600 ticks): readings the bridge sweep never had. A file older than
+    five minutes is stale and fills nothing, so an old game's scan cannot drive a new one."""
+    try:
+        if time.time() - os.path.getmtime(SENSOR_FILE) > 300:
+            return
+        sx = json.load(open(SENSOR_FILE, encoding="utf-8"))
+    except (OSError, ValueError):
+        return
+    st["sensors_raw"] = True
+    for k in ("bill_rows", "research_queue_empty", "ship_research_done", "items_forbidden", "blueprints", "prisoners"):
+        if k in sx: st[k] = sx[k]
+    pawns = sx.get("pawns") or []
+    if pawns:
+        # the plan: Firefighter..Cooking at 1, nothing the pawn can do left at 0
+        st["grid_matches_plan"] = all(all((p.get("work") or {}).get(w, 1) == 1 for w in COOK_TO) and
+                                      all(v != 0 for v in (p.get("work") or {}).values()) for p in pawns)
+    grow = [z for z in sx.get("zones") or [] if z.get("kind") == "Zone_Growing"]
+    if grow:
+        st["fields_all_default_crop"] = len({z.get("plant") for z in grow}) == 1 and len(grow) > 1
+    texts = [(l.get("label") or "") + " " + (l.get("text") or "") for l in sx.get("letters") or []]
+    if texts:
+        st["letter_labels"] = list(st.get("letter_labels") or []) + texts
+    st["game_conditions"] = sx.get("conditions") or []
+    for cond in st["game_conditions"]:
+        st["condition_" + re.sub(r"[^a-z0-9]+", "_", str(cond).lower()).strip("_")] = True
 
 
 def _chain_inputs(st, crew, crew_read):

@@ -374,6 +374,26 @@
    "type": "int",
    "note": "UNVERIFIED heuristic: the reply has no maxHitPoints and no captured sweep shows damage; an evenly damaged group reads healthy"
   },
+  "bill_rows": {
+   "source": "every bill on every colony workbench (RimPLC Sensors.ReadNormal)",
+   "type": "int"
+  },
+  "grid_matches_plan": {
+   "source": "every colonist: Firefighter..Cooking at 1 and no doable work type left at 0",
+   "type": "bool"
+  },
+  "fields_all_default_crop": {
+   "source": "more than one growing zone and all of them grow the same plant",
+   "type": "bool"
+  },
+  "ship_research_done": {
+   "source": "research ShipBasics finished",
+   "type": "bool"
+  },
+  "game_conditions": {
+   "source": "active map + world game conditions by defName (any mod); also condition_<defname> true",
+   "type": "labels"
+  },
   "caravan_out": {
    "source": "RimPLC: Find.WorldObjects.Caravans, any IsPlayerControlled",
    "type": "bool",
@@ -608,7 +628,6 @@
   },
   {
    "id": "work-priorities-unset",
-   "disabled": "grid_matches_plan has no measurement from the bridge",
    "priority": 10,
    "when": {
     "grid_matches_plan": false
@@ -620,14 +639,13 @@
     "no cell left blank unless the pawn is incapable",
     "read each cell's digit back from get_ui_layout and click until it matches -- never count clicks"
    ],
-   "why": "owner: \"set it how ive told you every day weve played all of them for every one using coopy paste\" / \"dint leave a bunch blankk\"",
+   "why": "owner: \"set it how ive told you every day weve played all of them for every one using coopy paste\" / \"dint leave a bunch blankk\" / re-enabled 2026-10-13: RimPLC now measures its input",
    "family": "configuration",
    "source": "book",
    "mode": "advise"
   },
   {
    "id": "fields-wrong",
-   "disabled": "fields_all_default_crop has no measurement from the bridge",
    "priority": 11,
    "when": {
     "fields_all_default_crop": true
@@ -638,14 +656,13 @@
     "set each field's own crop from the menu's REAL labels, matched by substring",
     "only the fields close to camp: the main-base plots stay undrawn until the crew moves in"
    ],
-   "why": "owner: \"you are going nothing but potatoes everywhere wtf!\" / \"get rid of all the base base fields and just keep the ones close to camp for now\"",
+   "why": "owner: \"you are going nothing but potatoes everywhere wtf!\" / \"get rid of all the base base fields and just keep the ones close to camp for now\" / re-enabled 2026-10-13: RimPLC now measures its input",
    "family": "configuration",
    "source": "book",
    "mode": "advise"
   },
   {
    "id": "bills-missing",
-   "disabled": "bill_rows has no measurement from the bridge",
    "priority": 12,
    "when": {
     "bill_rows": 0
@@ -655,14 +672,13 @@
     "no skill restriction, so everyone trains on it",
     "count the bill rows before and after: the Add-bill menu can throw and silently add nothing"
    ],
-   "why": "owner: \"how ive alllready tolsdd you how to do it effienctly so everyone can train and still get the most in one go\" / \"and set amounts higher and higher as your base grows\"",
+   "why": "owner: \"how ive alllready tolsdd you how to do it effienctly so everyone can train and still get the most in one go\" / \"and set amounts higher and higher as your base grows\" / re-enabled 2026-10-13: RimPLC now measures its input",
    "family": "configuration",
    "source": "book",
    "mode": "advise"
   },
   {
    "id": "research-idle",
-   "disabled": "research_queue_empty has no measurement from the bridge",
    "priority": 13,
    "when": {
     "research_queue_empty": true
@@ -672,7 +688,7 @@
     "Electricity first, then Air conditioning: power, a powered cooler, a real freezer",
     "letters typed as real virtual-key codes, or the box receives nothing"
    ],
-   "why": "owner: \"its like u are open research skeen and dragging the wrong dirrectgion to explore it not using the search at all\"",
+   "why": "owner: \"its like u are open research skeen and dragging the wrong dirrectgion to explore it not using the search at all\" / re-enabled 2026-10-13: RimPLC now measures its input",
    "family": "research",
    "source": "book",
    "mode": "advise"
@@ -972,11 +988,11 @@
     "mark_assign_set": false
    },
    "then": [
-    "Assign tab: food policy Fine for everyone (not Lavish), medical care best, hostility Attack; schedule Anything; drugs Social",
+    "Assign tab: food policy Fine for everyone (not Lavish), medical care best, hostility Attack; schedule Anything; drugs: No drugs for colonists (drugs are for hospitality guests)",
     "empire_pass: a loose gun on every colonist as the primary, the melee weapon kept as the sidearm, self-tend on for everyone; read its ARMS line back, nobody left unarmed",
     "then ladder_set mark assign_set true"
    ],
-   "why": "owner: \"explore the hidden rooms and get outside her walls\" / \"she is letting time pass and hasnt set a priority or shelf or schedula\" / \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner 2026-10-13: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\" -- the setup chain had no arms step, so the guns sat on the floor",
+   "why": "owner: \"explore the hidden rooms and get outside her walls\" / \"she is letting time pass and hasnt set a priority or shelf or schedula\" / \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner 2026-10-13: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\" -- the setup chain had no arms step, so the guns sat on the floor / owner 2026-10-13: \"drugs are for hospitality guests\"",
    "never": [
     "unpause before this"
    ],
@@ -1488,10 +1504,11 @@
     "mark_production_running": true
    },
    "then": [
-    "smokeleaf joints, psychite tea and beer as trade goods",
-    "drug policy kept to Social"
+    "grow and make drugs to SELL and to serve HOSPITALITY GUESTS -- never for colonists",
+    "a guest stockpile of beer, smokeleaf joints and psychite tea in the guest wing",
+    "colonist drug policy stays No drugs"
    ],
-   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner 2026-10-13: \"drugs are for hospitality guests\"",
    "latch": true,
    "source": "book",
    "mode": "advise"
