@@ -611,22 +611,28 @@
       "tip": "A throne is built."
     },
     "pod_launchers": {
-      "source": "sweep (get_cells_info over the camp rect, home on screen only): PodLauncher",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
       "type": "int",
       "note": "defName UNVERIFIED in captures",
-      "group": "Production",
+      "group": "World",
       "label": "Pod launchers",
       "severity": "info",
-      "tip": "Transport pod launchers."
+      "tip": "Pod launchers built.",
+      "cadence": "normal",
+      "api": "listerThings of def PodLauncher",
+      "status": "verified"
     },
     "transport_pods": {
-      "source": "sweep (get_cells_info over the camp rect, home on screen only): TransportPod",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
       "type": "int",
       "note": "defName UNVERIFIED in captures",
-      "group": "Production",
+      "group": "World",
       "label": "Transport pods",
       "severity": "info",
-      "tip": "Transport pods."
+      "tip": "Transport pods built.",
+      "cadence": "normal",
+      "api": "listerThings of def TransportPod",
+      "status": "verified"
     },
     "grav_parts": {
       "source": "sweep (get_cells_info over the camp rect, home on screen only): defName contains Grav",
@@ -799,175 +805,193 @@
       "tip": "Active map and world conditions (any mod)."
     },
     "forbidden_items": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Stores",
       "label": "Forbidden items",
       "severity": "warning",
       "tip": "Forbidden items in the camp. Owner: unforbid the starting materials.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "unpowered_consumers": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Power",
       "label": "Unconnected consumers",
       "severity": "warning",
       "tip": "Powered buildings on no power net: lay conduit.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "unpowered_embrasures": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Power",
       "label": "Unpowered embrasures",
       "severity": "warning",
       "tip": "Powered embrasures switched off or without power.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "power_margin_pct": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "float",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Power",
       "label": "Power margin %",
       "severity": "warning",
       "tip": "Power made as a percent of power used. Under 110 means brownouts are close.",
-      "warn": "<110"
+      "warn": "<110",
+      "cadence": "normal"
     },
     "embrasure_gaps": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "bool",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Defence",
       "label": "Gaps by embrasures",
       "severity": "warning",
       "tip": "Ring gaps next to an embrasure.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "unarmed_colonists": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Crew",
       "label": "Unarmed colonists",
       "severity": "critical",
       "tip": "Colonists able to fight but holding no weapon. Owner: an unarmed pawn is top priority. Run empire_pass.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "pawns_without_sidearm": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Crew",
       "label": "No melee sidearm",
       "severity": "warning",
       "tip": "Fighters with no melee weapon carried. Rifle primary, baton or knife as sidearm.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "flee_hostility_count": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Crew",
       "label": "Set to flee",
       "severity": "warning",
       "tip": "Colonists whose hostility response is not Attack. Owner: attack, not flee.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "colonists_without_bedroom": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Crew",
       "label": "No bedroom",
       "severity": "warning",
       "tip": "Colonists without their own bed in a room.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "pawns_sharing_bedroom": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Crew",
       "label": "Sharing a bedroom",
       "severity": "info",
       "tip": "Colonists sleeping in a barracks.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "colonists_without_armor": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Crew",
       "label": "No armour",
       "severity": "info",
       "tip": "Colonists with little sharp armour. Flak or plate once production allows.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "children": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Crew",
       "label": "Children",
       "severity": "info",
       "tip": "Children in the colony: cribs, toys, schooling.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "lovers_unmarried": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Crew",
       "label": "Unmarried couples",
       "severity": "info",
       "tip": "Lover couples not married yet.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "best_plants_skill": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Crew",
       "label": "Best plants skill",
       "severity": "info",
       "tip": "The best grower's Plants skill. Low skill fails harvests.",
-      "warn": "<6"
+      "warn": "<6",
+      "cadence": "normal"
     },
     "researchers_only_research": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Crew",
       "label": "Research-only pawns",
       "severity": "warning",
       "tip": "Colonists doing nothing but research. Colony work comes first.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "pawns_unconfigured": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "note": "absent (never a fake 0) until the set exists; setup-9-new-pawn uses grid_matches_plan meanwhile",
       "group": "Crew",
       "label": "Not set up",
-      "severity": "warning",
-      "tip": "Colonists whose work grid and Assign settings were never set.",
-      "warn": ">0"
+      "severity": "critical",
+      "tip": "Colonists never fully set up: gun + melee sidearm, Attack, self-tend, a job, the No drugs policy. Owner: an unarmed or unset pawn is top priority. game_set cmd crew_setup, then empire_pass.",
+      "warn": ">0",
+      "cadence": "normal",
+      "api": "SensorsWorld.IsSetUp per colonist; set-up pawns kept in RimPLCGameComponent.ConfiguredPawns (saved)"
     },
     "prisoners": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Crew",
       "label": "Prisoners",
       "severity": "info",
       "tip": "Prisoners: set Recruit and a warden.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "simple_benches": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
@@ -1007,14 +1031,15 @@
       "warn": "==0"
     },
     "monolith": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "note": "also adds monolith_level; anomaly-monolith reads it instead of mark_monolith_advanced",
       "group": "Colony",
       "label": "Void monolith",
       "severity": "info",
-      "tip": "The Anomaly monolith is on the map."
+      "tip": "The Anomaly monolith is on the map.",
+      "cadence": "normal"
     },
     "empire_hostile": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
@@ -1028,74 +1053,81 @@
       "warn": true
     },
     "rooms_out_of_temp": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Rooms",
       "label": "Rooms too hot or cold",
       "severity": "warning",
       "tip": "Rooms under 10C or over 35C. Heaters, coolers, vents.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "room_wall_holes": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Rooms",
       "label": "Rooms with roof holes",
       "severity": "warning",
       "tip": "Rooms with open roof cells: they are not rooms for temperature.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "unfloored_room_cells": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Rooms",
       "label": "Unfloored room cells",
       "severity": "info",
       "tip": "Room cells on bare or natural floor. Floors lift beauty and cleanliness.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "lab_lit": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "bool",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Rooms",
       "label": "Research benches lit",
       "severity": "warning",
       "tip": "Every research bench has light. Dark research is slow.",
-      "warn": false
+      "warn": false,
+      "cadence": "normal"
     },
     "loose_items_unstored": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Stores",
       "label": "Loose items",
       "severity": "warning",
       "tip": "Items lying outside storage. Haul them in.",
-      "warn": ">20"
+      "warn": ">20",
+      "cadence": "normal"
     },
     "camp_water_cells": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Rooms",
       "label": "Marsh or water in the camp",
       "severity": "info",
       "tip": "Marsh, mud or water inside the home area. Owner: terraform or move.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "blueprints_against_rock": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Rooms",
       "label": "Wall plans against rock",
       "severity": "warning",
       "tip": "Wall blueprints next to unmined rock. Mine first.",
-      "warn": ">0"
+      "warn": ">0",
+      "cadence": "normal"
     },
     "hud_visible": {
       "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs fast cadence (ReadFast)",
@@ -1108,28 +1140,30 @@
       "warn": false
     },
     "window_fullscreen": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs fast cadence (ReadFast)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "bool",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Game",
       "label": "Fullscreen",
       "severity": "info",
-      "tip": "The game window is fullscreen."
+      "tip": "The game window is fullscreen.",
+      "cadence": "normal"
     },
     "camera_on_colonist": {
-      "source": "RimPLC: RimPLC/Source/RimPLC/Sensors.cs fast cadence (ReadFast)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "bool",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Game",
       "label": "Camera on the crew",
       "severity": "info",
       "tip": "The camera shows at least one colonist.",
-      "warn": false
+      "warn": false,
+      "cadence": "normal"
     },
     "owner_input_active": {
-      "source": "gates.py: Win32 GetLastInputInfo age < {OWNER_SETTLE_S}, excluding Unity's own injected input",
+      "source": "host input: gates.host_inputs() pushed with rimplc/set_host before every ladder read (dropped after 120 s)",
       "type": "bool",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Stream",
       "label": "Owner at the controls",
       "severity": "info",
@@ -1147,9 +1181,9 @@
       "warn": true
     },
     "chat_unanswered": {
-      "source": "gates.py: chat lines from tools.read_chat with no reply_chat since",
+      "source": "host input: gates.host_inputs() pushed with rimplc/set_host before every ladder read (dropped after 120 s)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Stream",
       "label": "Chat unanswered",
       "severity": "critical",
@@ -1157,9 +1191,9 @@
       "warn": ">0"
     },
     "chat_asks_mod": {
-      "source": "gates.py: an unanswered chat line matches mod|repo|workshop|download",
+      "source": "host input: gates.host_inputs() pushed with rimplc/set_host before every ladder read (dropped after 120 s)",
       "type": "bool",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Stream",
       "label": "Chat asks for the mod",
       "severity": "warning",
@@ -1167,9 +1201,9 @@
       "warn": true
     },
     "new_joiners": {
-      "source": "gates.py: Twitch first-message names not greeted this stream",
+      "source": "host input: gates.host_inputs() pushed with rimplc/set_host before every ladder read (dropped after 120 s)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Crew",
       "label": "New joiners",
       "severity": "info",
@@ -1177,9 +1211,9 @@
       "warn": ">0"
     },
     "seconds_since_spoken": {
-      "source": "gates.py: now - time of the last unity-speak line",
+      "source": "host input: gates.host_inputs() pushed with rimplc/set_host before every ladder read (dropped after 120 s)",
       "type": "float",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Stream",
       "label": "Seconds since she spoke",
       "severity": "warning",
@@ -1187,18 +1221,18 @@
       "warn": ">45"
     },
     "voice_playing": {
-      "source": "gates.py: current voice wav still inside its duration",
+      "source": "host input: gates.host_inputs() pushed with rimplc/set_host before every ladder read (dropped after 120 s)",
       "type": "bool",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Stream",
       "label": "Voice playing",
       "severity": "info",
       "tip": "Her voice is speaking a line right now."
     },
     "seconds_since_webcam": {
-      "source": "gates.py: now - mtime of the newest webcam/snap frame",
+      "source": "host input: gates.host_inputs() pushed with rimplc/set_host before every ladder read (dropped after 120 s)",
       "type": "float",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Stream",
       "label": "Seconds since webcam",
       "severity": "warning",
@@ -1206,9 +1240,9 @@
       "warn": ">180"
     },
     "seconds_since_tool": {
-      "source": "gates.py: now - last tools.dispatch call",
+      "source": "host input: gates.host_inputs() pushed with rimplc/set_host before every ladder read (dropped after 120 s)",
       "type": "float",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Stream",
       "label": "Seconds since she acted",
       "severity": "warning",
@@ -1216,9 +1250,9 @@
       "warn": ">180"
     },
     "prompt_version_changed": {
-      "source": "gates.py: hash(prompt.md + playbook.gates.json) differs from the previous scan",
+      "source": "host input: gates.host_inputs() pushed with rimplc/set_host before every ladder read (dropped after 120 s)",
       "type": "bool",
-      "status": "not-measured",
+      "status": "verified",
       "group": "Stream",
       "label": "Her prompt changed",
       "severity": "info",
@@ -1284,16 +1318,17 @@
       "tip": "The highest royal title held."
     },
     "monolith_level": {
-      "source": "RimPLC: Find.Anomaly.Level (decisions.json monolith entry)",
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
       "type": "int",
-      "status": "not-measured",
+      "status": "verified",
       "requires": [
         "Anomaly"
       ],
       "group": "Colony",
       "label": "Monolith level",
       "severity": "info",
-      "tip": "The Anomaly monolith's level."
+      "tip": "The Anomaly monolith's level.",
+      "cadence": "normal"
     },
     "condition_heatwave": {
       "source": "RimPLC Sensors.cs: condition_<defname lower>, true while the GameCondition is active",
@@ -1364,6 +1399,258 @@
       "severity": "warning",
       "tip": "A map condition is active: volcanicwinter.",
       "warn": true
+    },
+    "trade_ships_in_orbit": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "Map.passingShipManager.passingShips.Count",
+      "status": "verified",
+      "group": "World",
+      "label": "Trade ships in orbit",
+      "severity": "info",
+      "tip": "Orbital traders passing. Call them from the comms console; goods land on the trade beacons.",
+      "warn": ">0"
+    },
+    "trade_beacons": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "colonist buildings of class Building_OrbitalTradeBeacon (modded beacons count)",
+      "status": "verified",
+      "group": "World",
+      "label": "Trade beacons",
+      "severity": "info",
+      "tip": "Orbital trade beacons. Only goods in their range can be sold to ships."
+    },
+    "comms_consoles": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "colonist buildings of class Building_CommsConsole",
+      "status": "verified",
+      "group": "World",
+      "label": "Comms consoles",
+      "severity": "info",
+      "tip": "Comms consoles: traders, factions and (No Quests Without Comms) quests."
+    },
+    "caravans_out": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "Find.WorldObjects.Caravans where IsPlayerControlled",
+      "status": "verified",
+      "group": "World",
+      "label": "Caravans out",
+      "severity": "info",
+      "tip": "Player caravans travelling. Home has fewer hands: no big builds, keep the defence staffed.",
+      "warn": ">0"
+    },
+    "caravan_pawns_out": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "colonists inside player caravans",
+      "status": "verified",
+      "group": "World",
+      "label": "Colonists away",
+      "severity": "info",
+      "tip": "Colonists inside caravans right now.",
+      "warn": ">0"
+    },
+    "quests_active": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "Find.QuestManager quests Ongoing, not hidden",
+      "status": "verified",
+      "group": "World",
+      "label": "Quests running",
+      "severity": "info",
+      "tip": "Accepted quests in progress."
+    },
+    "quests_offered": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "Find.QuestManager quests NotYetAccepted, not hidden",
+      "status": "verified",
+      "group": "World",
+      "label": "Quests offered",
+      "severity": "info",
+      "tip": "Quests waiting for an answer. Read each one; accept what the colony can do.",
+      "warn": ">0"
+    },
+    "pen_markers": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "colonist buildings with CompAnimalPenMarker",
+      "status": "verified",
+      "group": "Colony",
+      "label": "Animal pens",
+      "severity": "info",
+      "tip": "Animal pen markers."
+    },
+    "pen_animals_unpenned": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "colony animals AnimalPenUtility.NeedsToBeManagedByRope and GetCurrentPenOf == null",
+      "status": "verified",
+      "group": "Colony",
+      "label": "Animals outside a pen",
+      "severity": "warning",
+      "tip": "Roped animals with no pen. They wander and eat the fields. Build a pen (game_set cmd pen).",
+      "warn": ">0"
+    },
+    "power_nets": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "Map.powerNetManager nets with at least one power comp",
+      "status": "verified",
+      "group": "Power",
+      "label": "Power nets",
+      "severity": "info",
+      "tip": "Separate power grids."
+    },
+    "power_nets_dead": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "nets with power comps but no HasActivePowerSource (cut or unrouted conduit)",
+      "status": "verified",
+      "group": "Power",
+      "label": "Dead power nets",
+      "severity": "warning",
+      "tip": "Grids with machines but no working power source: a cut or missing conduit. Route conduit to a generator or battery.",
+      "warn": ">0"
+    },
+    "stockpiles": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "Zone_Stockpile count",
+      "status": "verified",
+      "group": "Stores",
+      "label": "Stockpiles",
+      "severity": "info",
+      "tip": "Stockpile zones."
+    },
+    "storage_buildings": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "colonist buildings of class Building_Storage (modded shelves count)",
+      "status": "verified",
+      "group": "Stores",
+      "label": "Storage buildings",
+      "severity": "info",
+      "tip": "Shelves and other storage buildings."
+    },
+    "stockpiles_default_priority": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "stockpiles still at StoragePriority.Normal",
+      "status": "verified",
+      "group": "Stores",
+      "label": "Stockpiles at Normal",
+      "severity": "info",
+      "tip": "Stockpiles still at Normal priority. Food and medicine stores should be Important."
+    },
+    "ideo_roles": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "PrimaryIdeo.RolesListForReading.Count (Ideology only)",
+      "status": "verified",
+      "group": "Colony",
+      "label": "Ideoligion roles",
+      "severity": "info",
+      "tip": "Roles the ideoligion has."
+    },
+    "ideo_roles_unassigned": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "roles with ChosenPawnSingle() == null (Ideology only)",
+      "status": "verified",
+      "group": "Colony",
+      "label": "Empty ideo roles",
+      "severity": "info",
+      "tip": "Ideoligion roles nobody holds. Assign leader and moral guide once 3+ colonists.",
+      "warn": ">0"
+    },
+    "ideo_leader_assigned": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "bool",
+      "cadence": "normal",
+      "api": "a leaderRole precept has a chosen pawn (Ideology only)",
+      "status": "verified",
+      "group": "Colony",
+      "label": "Leader assigned",
+      "severity": "info",
+      "tip": "The ideoligion leader role is held.",
+      "warn": false
+    },
+    "ritual_spots": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "listerThings of def RitualSpot (Ideology only)",
+      "status": "verified",
+      "group": "Colony",
+      "label": "Ritual spots",
+      "severity": "info",
+      "tip": "Ritual spots built."
+    },
+    "ideo_rituals": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "PrimaryIdeo Precept_Ritual count (Ideology only)",
+      "status": "verified",
+      "group": "Colony",
+      "label": "Rituals",
+      "severity": "info",
+      "tip": "Rituals the ideoligion has."
+    },
+    "visitors": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "humanlike non-player, non-hostile, non-prisoner pawns on the home map",
+      "status": "verified",
+      "group": "World",
+      "label": "Visitors",
+      "severity": "info",
+      "tip": "Friendly outsiders on the map: greet them on stream, trade if a trader.",
+      "warn": ">0"
+    },
+    "hospitality_guests": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "visitors hosted by the player (guest.HostFaction == player)",
+      "status": "verified",
+      "group": "World",
+      "label": "Hospitality guests",
+      "severity": "info",
+      "tip": "Guests staying (Hospitality). They need guest beds and recreation.",
+      "warn": ">0"
+    },
+    "guest_beds": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "api": "colonist buildings whose thingClass name contains GuestBed (Hospitality; UNVERIFIED class name)",
+      "status": "UNVERIFIED",
+      "group": "World",
+      "label": "Guest beds",
+      "severity": "info",
+      "tip": "Hospitality guest beds."
     }
   },
   "gates": [
@@ -9373,7 +9660,7 @@
     },
     {
       "id": "war-manhunter-butcher",
-      "priority": 2.6,
+      "priority": 2.61,
       "family": "war",
       "when": {
         "mark_raid_kind": 6,
@@ -9757,6 +10044,196 @@
         "send an unarmed colonist to hunt or to fight"
       ],
       "why": "owner: \"once again u arnt armed!!! wtf!!!!\" / \"pawn with out a wepaon is a very high rankeing need to fix\""
+    },
+    {
+      "id": "crew-not-set-up",
+      "priority": 3.49,
+      "family": "setup",
+      "when": {
+        "colony_exists": true,
+        "pawns_unconfigured": ">0",
+        "hostiles_on_map": "==0"
+      },
+      "then": [
+        "game_set cmd crew_setup (everyone): Attack, self-tend, the No drugs policy",
+        "empire_pass for anyone the line calls STILL UNARMED (gun primary, melee sidearm)",
+        "game_set cmd set_work_priority if a colonist has no job at all",
+        "read pawns_unconfigured again: 0"
+      ],
+      "never": [
+        "leave a colonist unarmed, on flee, or on a drug policy"
+      ],
+      "why": "owner: \"and she still has guns on the ground can u tell her to euaipthem as main equip and use the pain batons as side arms ... self tend medical and attack not flee\" / owner: \"kill em,, we have to finishe the RimPLC\""
+    },
+    {
+      "id": "power-net-dead",
+      "priority": 17.03,
+      "family": "base-and-fortress",
+      "when": {
+        "colony_exists": true,
+        "power_nets_dead": ">0",
+        "hostiles_on_map": "==0"
+      },
+      "then": [
+        "game_list_architect_designators Power: find the grid with machines and no generator or battery",
+        "build PowerConduit from that grid to the nearest live grid (game_set cmd build def PowerConduit, one line of cells)",
+        "read power_nets_dead again: 0"
+      ],
+      "why": "inventory D: conduit routing / owner: \"kill em,, we have to finishe the RimPLC\""
+    },
+    {
+      "id": "stockpile-priorities",
+      "priority": 17.63,
+      "family": "base-and-fortress",
+      "when": {
+        "colony_exists": true,
+        "stockpiles": ">1",
+        "food_store": true,
+        "stockpiles_default_priority": ">1"
+      },
+      "latch": true,
+      "then": [
+        "game_list_zones: find the food store and the medicine store",
+        "game_set cmd stockpile_priority zone <food store> priority Important",
+        "a second food or medicine pile: game_set cmd stockpile_copy from <food store> to <it>",
+        "ladder_set mark stockpile_priorities_set true"
+      ],
+      "why": "inventory D: storage copy / owner: \"kill em,, we have to finishe the RimPLC\""
+    },
+    {
+      "id": "trade-ship-orbit",
+      "priority": 20.02,
+      "family": "economy",
+      "when": {
+        "colony_exists": true,
+        "trade_ships_in_orbit": ">0",
+        "comms_consoles": ">0",
+        "hostiles_on_map": "==0"
+      },
+      "then": [
+        "order the highest-Social colonist to the comms console and call the ship",
+        "sell: joints, beer, clothes, art, junk weapons, tainted gear (only goods near a trade beacon)",
+        "buy: steel, components, plasteel, medicine, cows, needed tech",
+        "say on stream what was bought and sold"
+      ],
+      "why": "owner: \"have to trade ... get a silver supply like cash\" / owner: \"kill em,, we have to finishe the RimPLC\""
+    },
+    {
+      "id": "trade-beacon-missing",
+      "priority": 24.09,
+      "family": "economy",
+      "when": {
+        "colony_exists": true,
+        "comms_consoles": ">0",
+        "trade_beacons": "==0"
+      },
+      "then": [
+        "game_set cmd build def OrbitalTradeBeacon inside the main stockpile",
+        "power it (conduit to the grid)",
+        "read trade_beacons again: 1"
+      ],
+      "why": "inventory D: trade / owner: \"kill em,, we have to finishe the RimPLC\""
+    },
+    {
+      "id": "guests-no-beds",
+      "priority": 24.21,
+      "family": "economy",
+      "when": {
+        "colony_exists": true,
+        "hospitality_guests": ">0",
+        "guest_beds": "==0"
+      },
+      "then": [
+        "game_set cmd build_room: a small guest room",
+        "build a guest bed inside (Hospitality's guest bed in the architect menu)",
+        "say on stream that the guests get a room"
+      ],
+      "why": "owner: \"Invite {name} to stay (No guest beds)\" / \"drugs are for hospitality guests\" / owner: \"kill em,, we have to finishe the RimPLC\""
+    },
+    {
+      "id": "pen-animals-loose",
+      "priority": 24.57,
+      "family": "economy",
+      "when": {
+        "colony_exists": true,
+        "pen_animals_unpenned": ">0",
+        "pen_markers": "==0",
+        "hostiles_on_map": "==0"
+      },
+      "then": [
+        "pick open grass near the base, away from the fields",
+        "game_set cmd pen x z w h (at least 7x7, no roof)",
+        "game_set cmd set_work_priority Handling 2 on one pawn",
+        "read pen_animals_unpenned again after the pen is built: 0"
+      ],
+      "why": "owner: \"make a corral for cows and such\" / owner: \"kill em,, we have to finishe the RimPLC\""
+    },
+    {
+      "id": "pen-animals-roping",
+      "priority": 24.58,
+      "family": "economy",
+      "when": {
+        "colony_exists": true,
+        "pen_animals_unpenned": ">2",
+        "pen_markers": ">0",
+        "hostiles_on_map": "==0"
+      },
+      "then": [
+        "game_set cmd set_work_priority Handling 1 on the best handler (they rope animals to the pen)",
+        "pen too small or blocked: game_set cmd pen a bigger one"
+      ],
+      "why": "inventory D: pens / owner: \"kill em,, we have to finishe the RimPLC\""
+    },
+    {
+      "id": "quest-offered",
+      "priority": 25.02,
+      "family": "growth",
+      "when": {
+        "colony_exists": true,
+        "quests_offered": ">0",
+        "hostiles_on_map": "==0"
+      },
+      "then": [
+        "game_open_main_tab Quests: read every offered quest",
+        "accept one the colony can do (enough fighters, no long trip while home is thin)",
+        "say on stream which quest and why"
+      ],
+      "why": "owner: \"dont ignore you messages / are you reading pop up messages\" / owner: \"kill em,, we have to finishe the RimPLC\""
+    },
+    {
+      "id": "ritual-spot-missing",
+      "priority": 33.21,
+      "family": "ideology-biotech-anomaly",
+      "when": {
+        "colony_exists": true,
+        "ideo_rituals": ">0",
+        "ritual_spots": "==0",
+        "colonists": ">=3"
+      },
+      "then": [
+        "game_set cmd build def RitualSpot in the dining room or a hall",
+        "read ritual_spots again: 1"
+      ],
+      "why": "inventory D: rituals / owner: \"kill em,, we have to finishe the RimPLC\""
+    },
+    {
+      "id": "caravan-home-thin",
+      "priority": 2.66,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "caravans_out": ">0",
+        "hostiles_on_map": ">0"
+      },
+      "then": [
+        "draft everyone at home behind cover, ranged first",
+        "no new builds or hauling outside the walls until the hostiles are gone",
+        "say on stream that the home team is short-handed"
+      ],
+      "never": [
+        "send more colonists away while hostiles are on the map"
+      ],
+      "why": "inventory D: caravans / owner: \"kill em,, we have to finishe the RimPLC\""
     }
   ],
   "tags": {

@@ -316,6 +316,9 @@ namespace RimroomsAsyncIndustries.Automation
                 case "bury": return SetupTools5.Bury(map, a);
                 case "ideo_role": return SetupTools5.IdeoRole(map, a);
                 case "save_game": return SetupTools5.SaveGame(a);
+                case "stockpile_priority": return SetupTools6.StockpilePriority(map, a);
+                case "stockpile_copy": return SetupTools6.StockpileCopy(map, a);
+                case "crew_setup": return SetupTools6.CrewSetup(map, a);
                 case "chop": return SetupTools3.Chop(map, a);
                 case "shelter": return SetupTools3.Shelter(map, a);
                 case "stockpile_camp": return SetupTools3.StockpileCamp(map, a);

@@ -12,7 +12,7 @@ namespace RimPLC
     /// storage, camp terrain and the perimeter. Normal cadence. Each block is guarded on its own -- one unreadable value
     /// (a mod's odd def, a 1.7 API change) leaves that block's keys out and never the rest; a key that cannot be read is
     /// left out, never a fake 0, so a rung that needs it stays quiet.
-    /// pawns_unconfigured is NOT measured here: it needs saved per-pawn setup state the component does not keep yet.
+    /// pawns_unconfigured and inventory section D are read by SensorsWorld (called at the end of Read).
     /// </summary>
     public static class SensorsBuild
     {
@@ -28,6 +28,7 @@ namespace RimPLC
             Guard(() => Camp(st, home));
             Guard(() => Perimeter(st, home));
             Guard(() => Screen(st, home));
+            SensorsWorld.Read(st, home, crew);   // section D + pawns_unconfigured
         }
 
         private static void Guard(Action a)
