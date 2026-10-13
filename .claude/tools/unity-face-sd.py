@@ -26,7 +26,7 @@ STEPS = 20 if DEVICE == "cpu" else 30
 SEED = 1031  # the owner's cam image is the reference (.claude/likeness/unity-likeness-original-cam.png), 2026-10-13
 NEG = ("airbrushed, plastic skin, smooth skin, doll, cgi, render, glowing eyes, bright blue eyes, oversaturated, beauty filter, perfect skin, uncanny, nipples, nude, topless, nsfw, see-through, sheer, wardrobe malfunction, tattoo, tattoos, "
        "t-shirt, sleeves, covered chest, high neckline, hat, beret, cap, beanie, black headset, black headphones, dark skin, pale white skin, black lipstick, heavy goth makeup, neon, cartoon, anime, 3d render, blurry, lowres, bad anatomy, "
-       "deformed face, extra fingers, watermark, text, child, teen, old, middle aged, wrinkles, saggy breasts, chubby, chunky, fat, plump, thick arms, wide face, round face, teenager, teen girl, young looking, childlike, baby face, petite child body")
+       "deformed face, extra fingers, watermark, text, child, teen, old, middle aged, wrinkles, saggy breasts, chubby, chunky, fat, plump, thick arms, wide face, round face, teenager, teen girl, young looking, childlike, baby face, petite child body, asian, east asian, japanese, korean, chinese, anime face")
 # Owner, 2026-10-10: "dont look like her a homie one not like currently your about 37" -- she kept reading
 # mid-thirties, so the youth cues are explicit and every ageing cue is in the negatives.
 # Owner, 2026-10-13: a gaming webcam, girl next door with a hint of emo, light caucasian skin (not pale), black wavy bob
@@ -175,7 +175,7 @@ def scene_words(text):
 
 
 # owner: "the girls ag to be about 3-5 years older than current so 20-25"
-SHE = "the same 24 year old adult woman, mature face: long straight dark hair with pink-purple streaks, blunt bangs, bright pink cat-ear headset, black choker"
+SHE = "the same 24 year old white caucasian adult woman, european features, mature face: long straight dark hair with pink-purple streaks, blunt bangs, bright pink cat-ear headset, black choker"
 
 
 def compose(req):
