@@ -55,7 +55,7 @@ def main():
             text = ""          # never the scripted text as-is (owner: "NEVER EVER ANY FALLBACKS")
     text = speakable(text)
     if not text: return
-    post(text)
+    # the chat row is posted by unity-speak when the line starts playing, so chat never runs ahead of her voice
     # a picture with every line (owner: "make some images more offten like as much as you talk")
     _gl = os.path.join(HERE, "..", ".cam-highlight.json")
     try: _recent = time.time() - json.load(open(_gl)).get("ts", 0) < 90
@@ -64,7 +64,7 @@ def main():
         subprocess.Popen([sys.executable, os.path.join(HERE, "unity-glance.py"), text],
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     speak = [sys.executable, os.path.join(HERE, "unity-speak.py")] + ([] if wait else ["--bg"]) + [text]
-    subprocess.run(speak)
+    subprocess.run(speak, env=dict(os.environ, UNITY_SPEAK_CHAT=text, UNITY_SPEAK_REPLY_TO=""))
 
 
 if __name__ == "__main__":

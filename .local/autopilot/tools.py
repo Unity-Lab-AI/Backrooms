@@ -493,7 +493,8 @@ class Toolbox:
         if self.dry:
             log("DRY-RUN would SAY:", clean, "(reply to %s)" % reply_to if reply_to else "")
             return clean
-        _outbox(clean, reply_to)
+        # the chat row is posted by unity-speak the moment this line starts playing (owner: "she is still sending like
+        # 3-4 messages at once"); posting here ran chat ahead of her voice
         if reply_to is None:
             # a picture with every narrated line (owner: "make some images more offten like as much as you talk")
             subprocess.Popen([PY, SCRIPTS["glance"], clean], cwd=ROOT, stdout=subprocess.DEVNULL,
@@ -503,7 +504,8 @@ class Toolbox:
         # (UNITY_OWN_VOICE=1), so the laugh is heard, never read. (Piper is retired; her own voice is the only voice.)
         voice_line = self.voice_text if os.environ.get("UNITY_OWN_VOICE") == "1" else clean
         # her own voice takes the delivery the brain chose (the same trained emotions/acts as the tool enums)
-        speak_env = dict(os.environ, UNITY_SPEAK_EMOTION=emotion or "", UNITY_SPEAK_ACT=act or "")
+        speak_env = dict(os.environ, UNITY_SPEAK_EMOTION=emotion or "", UNITY_SPEAK_ACT=act or "",
+                         UNITY_SPEAK_CHAT=clean, UNITY_SPEAK_REPLY_TO=str(reply_to) if reply_to is not None else "")
         # Owner: "she need training on how not to over respond. waiting for vocie to play out becasue the last
         # stream at time see was speaking over herself sending messages before the last finished". Speaking BLOCKS:
         # the tool returns only after the line has finished playing (unity-speak holds its turn for the whole
@@ -511,7 +513,7 @@ class Toolbox:
         started = time.time()
         try:
             r = subprocess.run([PY, SCRIPTS["speak"], voice_line], cwd=ROOT, stdout=subprocess.DEVNULL,
-                               stderr=subprocess.PIPE, text=True, shell=False, timeout=120, env=speak_env)
+                               stderr=subprocess.PIPE, text=True, shell=False, timeout=300, env=speak_env)
             if r.returncode != 0:
                 log("SPEAK FAILED (no fallback voice):", (r.stderr or "").strip()[-200:])
         except subprocess.TimeoutExpired:

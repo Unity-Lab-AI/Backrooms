@@ -19,6 +19,21 @@ from dataset_contract import EMOTIONS, FEATURES, SPEECH_ACTS   # noqa: E402
 from unity_voice import Voice                # noqa: E402
 
 CKPT = HERE
+import infer                                 # noqa: E402
+PACE_FILE = os.path.join(HERE, "pace.txt")
+
+
+def pace():
+    """Her speed, read before every line so a change is heard on the next one (owner 2026-10-13: "can we easily turn
+    down her speed ... in some easiy weay , NOW"). pace.txt holds one number: 1.0 natural, higher is slower (1.2 = 20%
+    slower), lower is faster. No file: UNITY_VOICE_LENGTH_SCALE, else 1.0."""
+    try:
+        v = float(open(PACE_FILE, encoding="utf-8").read().strip())
+        if 0.6 <= v <= 1.8:
+            return v
+    except (OSError, ValueError):
+        pass
+    return float(os.environ.get("UNITY_VOICE_LENGTH_SCALE", "1.0"))
 PORT = int(sys.argv[sys.argv.index("--port") + 1]) if "--port" in sys.argv else int(os.environ.get("UNITY_VOICE_PORT", "5123"))
 VOICE = Voice(CKPT)
 LOCK = threading.Lock()                      # one line on the GPU at a time
@@ -31,6 +46,7 @@ def render(text, emotion=None, intensity=None, act=None):
     if act is not None and act not in SPEECH_ACTS:
         raise ValueError("unknown speech act %r (trained: %s)" % (act, ", ".join(SPEECH_ACTS)))
     with LOCK:
+        infer.LENGTH_SCALE[0] = pace()
         return VOICE.say(text, emotion, intensity, 1.0, act)
 
 

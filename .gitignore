@@ -242,4 +242,5 @@ models/**
 !models/**/*.py
 !models/**/*.json
 !models/**/requirements.txt
+!models/**/pace.txt
 !models/**/Modelfile
