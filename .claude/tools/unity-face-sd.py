@@ -183,8 +183,31 @@ def _render_locked(req):
     ref = Image.open(REF).convert("RGB")
     prompt = compose(req)
     strength = float(req.get("strength") or 0.7)   # room for a new pose and outfit; the scene and her face hold   # 0.55: the mood shows, the face and the top stay
-    return i2i(prompt=prompt, image=ref, strength=strength, negative_prompt=neg, ip_adapter_image=face_image(),
-               num_inference_steps=STEPS, guidance_scale=6.5, generator=g).images[0]
+    out = i2i(prompt=prompt, image=ref, strength=strength, negative_prompt=neg, ip_adapter_image=face_image(),
+              num_inference_steps=STEPS, guidance_scale=6.5, generator=g).images[0]
+    # her room never changes (owner, 2026-10-13: "so the room is just going to change every time??? i already pioced the
+    # room"): outside her zone the picked room's own pixels come back, blended softly, so only she moves
+    return Image.composite(out, ref, her_zone(ref))
+
+
+_zone = {}
+
+
+def her_zone(ref):
+    """Where she may move: her silhouette and the chair in the reference, widened a lot and feathered. Computed once."""
+    from PIL import ImageFilter
+    key = (os.path.getmtime(REF), ref.size)
+    if key not in _zone:
+        try:
+            from rembg import remove, new_session
+            m = remove(ref, session=new_session("isnet-general-use"), only_mask=True).point(lambda v: 255 if v > 30 else 0)
+        except Exception:
+            from PIL import Image as _I, ImageDraw
+            m = _I.new("L", ref.size, 0)
+            ImageDraw.Draw(m).rectangle([ref.width // 6, ref.height // 12, ref.width * 5 // 6, ref.height], fill=255)
+        _zone.clear()
+        _zone[key] = m.filter(ImageFilter.MaxFilter(71)).filter(ImageFilter.GaussianBlur(28))
+    return _zone[key]
 
 
 class H(BaseHTTPRequestHandler):

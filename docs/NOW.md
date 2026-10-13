@@ -11,7 +11,7 @@
 
 ---
 
-## LIVE NOW (2026-10-13 ~03:30 local): stream DOWN, RimPLC rebuilt, Unity's webcam look locked, voice retrain prepared (not running)
+## LIVE NOW (2026-10-13 ~03:40 local): stream DOWN, RimPLC rebuilt, Unity's webcam look locked, voice retrain prepared (not running)
 
 **Nothing is running; the GPU is empty.** All work is committed on `feature/bug-testing`, not pushed. No pods, RunPod $0.
 **Steam must be running before `start.bat`** (2026-10-13: without Steam the workshop mods, Harmony and RimBridgeServer did not load).
@@ -21,6 +21,7 @@
 |---|---|
 | Generator | **The original SD1.5 image gen only** (`.claude/tools/unity-face-sd.py`, Realistic Vision): every frame is img2img over ONE reference picture, strength 0.7. **Never SDXL, never inpaint/cut-out compositing** (owner: *"its fucked just cookie cutting images together"*). `unity-face-sdxl.py` is in the repo but unused |
 | Reference (her room, side view) | `.claude/.studio-images/unity-reference.png` = `.claude/likeness/unity-scene-home4.png` (owner: *"home $ is a yes"*): side view at her desk in a cozy girl's room, hips/stomach/knees in frame |
+| **Room locked** | Owner: *"so the room is just going to change every time??? i already pioced the room"* -- at strength 0.7 the room was redrawn every frame. Fix in `unity-face-sd.py` (`her_zone()`): each frame is painted whole, then the picked room's own pixels are restored outside her zone (her + chair from the reference, widened ~70 px, feathered ~28 px) -- only she moves. **Built and compiled; the proof sheet (`home-live.png`) was still rendering at handoff -- check it shows one identical room** |
 | Girl | the girl in `.claude/.studio-images/cam-1791666443672.png` (`likeness/unity-likeness-original-cam.png`): long dark hair with pink-purple streaks, blunt bangs, choker, **bright pink cat-ear headset, no hats**. Light identity touch only (IP-Adapter Plus Face SD1.5, scale 0.3) -- her face is NOT locked: head, gaze, expression move |
 | Every frame | prompt built by `compose()`: outfit FIRST (CLIP reads 77 tokens) -- bikini/triangle/string/halter/crop tops, cozy sweater/open hoodie, deep cleavage, bare shoulders/stomach, a skirt half the time, random outfit every 10-20 min -- then the mood, a random dynamic action, gaze (her PC ~75%, camera ~25%) and props/moments picked from **the line she just said** (soda, coffee, snacks, controller, blanket, stretching, victory, facepalm...) |
 | Wiring | `unity-cam.py` sends the mood; `persona-studio.cjs` now forwards her line as `caption` to the face service |
@@ -36,7 +37,7 @@
 - 24 new mod commands (`build`, `build_room`, `equip`, `capture`, `zone_create`, `schedule`, `research`, ...), Crashlanded camp commands, situation prompt modules, 18k conversation cap.
 
 ### Next, in order
-1. Owner reviews `home-live.png`; tune anything he flags in `unity-face-sd.py` (scene and girl stay).
+1. Check the room-locked `home-live.png` (one identical room, only she changes); then owner review; tune what he flags in `unity-face-sd.py`.
 2. Voice: owner's prep, then the retrain only on his explicit "start".
 3. Start: Steam, `start.bat`, GO "fresh crash landed colony, new stream" (Earth3); watch her opening, RimPLC alerts, her webcam.
 
