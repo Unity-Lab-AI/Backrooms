@@ -608,6 +608,8 @@ class Toolbox:
                 self._start_kind_sent = sk
         except (OSError, ValueError):
             pass
+        if not self.dry:
+            self._gates().push_host()       # remote I/O: chat, voice, dead air, owner at the controls
         text, _src = self._gates().ladder_result(call=self._rimplc_call())
         try:   # the live top rung's meta prompt rides along (rung-prompts.json)
             rp = json.load(open(os.path.join(HERE, "rung-prompts.json"), encoding="utf-8"))

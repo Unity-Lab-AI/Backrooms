@@ -256,6 +256,10 @@ def derive(raw, lf=None):
     for k in ("pawns_set", "assign_set", "beds_set", "stove_set", "bill_set"):
         st.setdefault("mark_" + k, False)
     _sensor_file(st)
+    try:
+        for k, v in host_inputs().items(): st.setdefault(k, v)
+    except Exception:
+        pass
     if not st.get("mark_start_kind"):          # nothing ever set it (2026-10-13 audit): the GO writes the scenario it chose
         try: st["mark_start_kind"] = int(open(os.path.join(QA, "_start_kind"), encoding="utf-8").read().strip() or 0)
         except (OSError, ValueError): pass
@@ -870,6 +874,86 @@ def _rimplc_file(cmd, args, wait_s):
             if d.get("id") == rid and isinstance(d.get("result"), dict):
                 return d["result"]
     return None
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# Host inputs (2026-10-13): readings only this PC has. Pushed into RimPLC with set_host each turn (remote I/O), so the
+# stream rungs (dead-air, chat-first, viewer-joined, webcam-stale, idle-watchdog) can fire in the game's own engine.
+# ---------------------------------------------------------------------------------------------------------------
+_HOST_PROMPT_HASH = [None]
+
+
+def host_inputs():
+    import hashlib, tempfile, ctypes
+    claude = os.path.join(ROOT, ".claude")
+    out, now = {}, time.time()
+    def rows(path):
+        try: return [json.loads(l) for l in open(path, encoding="utf-8", errors="replace") if l.strip()][-200:]
+        except (OSError, ValueError): return []
+    outbox, inbox = rows(os.path.join(claude, ".studio-outbox.jsonl")), rows(os.path.join(claude, ".studio-inbox.jsonl"))
+    spoke = max((r.get("ts", 0) for r in outbox if r.get("persona") == "unity"), default=0) / 1000.0
+    if spoke: out["seconds_since_spoken"] = round(now - spoke, 1)
+    try:
+        owners = {l.strip().lower() for l in open(os.path.join(ROOT, ".local", "tw", "owner.txt"), encoding="utf-8") if l.strip()}
+    except OSError:
+        owners = set()
+    unanswered = joins = mod = 0
+    for r in inbox:
+        if r.get("ts", 0) / 1000.0 <= spoke: continue
+        m = re.match(r"\[twitch\] (\w+): (.*)", r.get("text") or "")
+        if not m or m.group(1).lower() in owners or m.group(1).lower() == "unityplaysrimworld": continue
+        if m.group(2) == "(joined the stream)": joins += 1
+        else:
+            unanswered += 1
+            if re.search(r"(mod|repo|workshop|download|github|link)", m.group(2), re.I): mod += 1
+    out.update(chat_unanswered=unanswered, new_joiners=joins, chat_asks_mod=mod > 0)
+    try:
+        imgs = [os.path.join(claude, ".studio-images", f) for f in os.listdir(os.path.join(claude, ".studio-images"))]
+        out["seconds_since_webcam"] = round(now - max(os.path.getmtime(f) for f in imgs), 1)
+    except (OSError, ValueError):
+        pass
+    try:
+        tr = os.path.join(HERE, "traces"); newest = max(os.path.getmtime(os.path.join(tr, f)) for f in os.listdir(tr))
+        out["seconds_since_tool"] = round(now - newest, 1)
+    except (OSError, ValueError):
+        pass
+    # her voice holds this lock while a line plays (unity-speak.py)
+    lock = os.path.join(tempfile.gettempdir(), "unity-voice-playing.lock")
+    try:
+        import msvcrt
+        with open(lock, "a+b") as f:
+            try:
+                f.seek(0); msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1); msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
+                out["voice_playing"] = False
+            except OSError:
+                out["voice_playing"] = True
+    except (OSError, ImportError):
+        pass
+    try:   # the owner is at the controls: keyboard/mouse used in the last 60 s (the bridge never sends real input)
+        class LII(ctypes.Structure): _fields_ = [("cbSize", ctypes.c_uint), ("dwTime", ctypes.c_uint)]
+        li = LII(); li.cbSize = ctypes.sizeof(LII)
+        if ctypes.windll.user32.GetLastInputInfo(ctypes.byref(li)):
+            out["owner_input_active"] = (ctypes.windll.kernel32.GetTickCount() - li.dwTime) / 1000.0 < 60
+    except (AttributeError, OSError):
+        pass
+    try:
+        h = hashlib.sha1()
+        for f in (os.path.join(HERE, "prompt.md"), PLAYBOOK):
+            h.update(open(f, "rb").read())
+        d = h.hexdigest()
+        out["prompt_version_changed"] = _HOST_PROMPT_HASH[0] is not None and d != _HOST_PROMPT_HASH[0]
+        _HOST_PROMPT_HASH[0] = d
+    except (OSError, TypeError):
+        pass
+    return out
+
+
+def push_host():
+    """Send the host inputs to RimPLC (command file; the bridge has no set_host tool). Returns RimPLC's reply or None."""
+    try:
+        return rimplc("set_host", {"values": host_inputs()}, call=None, wait_s=2.0)
+    except Exception:
+        return None
 
 
 def rimplc(cmd, args=None, call=None, wait_s=4.0):

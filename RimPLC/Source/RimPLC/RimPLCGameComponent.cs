@@ -119,6 +119,7 @@ namespace RimPLC
                 {
                     var n = new Dictionary<string, object>();
                     Sensors.ReadNormal(n, home, f.TryGetValue("colonists", out object c) ? Engine.ToDouble(c) : 0);
+                    SensorsBuild.Read(n, home);   // the rebuilt ladder's inputs (2026-10-13)
                     normal = n;
                 }
 
@@ -166,9 +167,21 @@ namespace RimPLC
         }
 
         /// <summary>The input image: slow, then normal, then fast on top; alert_* flags combine by OR (direct health reads and alert classes).</summary>
+        /// <summary>Host inputs (remote I/O): readings only the stream PC has -- chat unanswered, seconds since she spoke,
+        /// voice playing, owner at the controls. Pushed by the autopilot with rimplc/set_host every turn, merged first so a
+        /// game reading of the same name wins, and dropped when older than HostMaxAgeSeconds (her player stopped).</summary>
+        public Dictionary<string, object> Host = new Dictionary<string, object>();
+        public DateTime HostAt = DateTime.MinValue;
+        public const double HostMaxAgeSeconds = 120;
+
         private Dictionary<string, object> Merge()
         {
             var st = new Dictionary<string, object>();
+            if ((DateTime.UtcNow - HostAt).TotalSeconds <= HostMaxAgeSeconds)
+            {
+                foreach (var kv in Host) st[kv.Key] = kv.Value;
+            }
+
             foreach (var src in new[] { slow, normal, fast, demand })
             {
                 if (src == null) continue;
