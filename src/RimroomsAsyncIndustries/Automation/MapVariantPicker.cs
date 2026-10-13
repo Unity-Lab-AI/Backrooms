@@ -24,17 +24,28 @@ namespace RimroomsAsyncIndustries.Automation
     /// same: it renders <see cref="Candidates"/> seeds through Map Preview's generator, reads each preview's rock cells
     /// (Map Preview paints mountain in four fixed browns), scores them, commits the best seed and reads it back.
     ///
-    /// Score: a mountain that runs north-south (many columns mostly rock, others open; rock present top to bottom),
-    /// plus a nook -- open ground with rock on at least three sides, opening off the main mountain. A map with neither
-    /// can still win when nothing better rendered; the result file says so. Map Preview is optional: without it the
+    /// Score (owner: "a true N/S facing must have its main mass touch both east and west sides of the tiles map to be
+    /// N/S u can tell wehr like 30% of the map or more is all brown touching both sides"): the biggest connected rock
+    /// mass must reach both the west and the east edge and cover 30%+ of the map, with a nook -- a pocket of open ground
+    /// with that main mountain on at least three sides. When no map qualifies the closest one is taken and the result
+    /// file says so. Map Preview is optional: without it the
     /// tile is used as it comes, and the result file says that too. Everything is by reflection; no hard dependency.
     /// </summary>
     internal static class MapVariantPicker
     {
-        private const int Candidates = 30;
-        private const float TimeoutSeconds = 240f;
+        private const int Candidates = 60;
+        private const float TimeoutSeconds = 120f;  // per batch
+        // Map Preview's own preview window on the tile page can clear the shared render queue when the selected tile
+        // changes (live 2026-10-13: 60 queued, none finished). No progress for this long re-queues what is missing.
+        private const float StallSeconds = 15f;
+        private const int MaxRequeues = 3;
+        // owner: "and it can hit the recycle looking button to regenerate" -- the dice window's refresh shows the next
+        // seeds; when no map in a batch qualifies, the next batch is rendered, up to this many
+        private const int MaxBatches = 5;
         private const int Cell = 3;          // the 300x300 preview is scored on a 100x100 grid of 3x3 blocks
-        private const int NookReach = 25;    // a wall counts when rock is within 25 blocks (75 cells) that way
+        private const int NookReach = 25;    // a wall counts when the main mountain is within 25 blocks (75 cells) that way
+        private const int MinNook = 30;      // a pocket of at least ~30 blocks (about 270 cells) ...
+        private const int MaxNook = 900;     // ... and at most ~900 (a pocket, not the open plain)
 
         private static readonly Color[] Rock =
         {
@@ -48,6 +59,14 @@ namespace RimroomsAsyncIndustries.Automation
         private static PlanetTile tile = PlanetTile.Invalid;
         private static int originalSeed;
         private static float startedAt;
+        private static int batch;
+        private static int lastCount;
+        private static float lastProgress;
+        private static int requeues;
+        private static object generatorInstance;
+        private static MethodInfo queueMethod;
+        private static ConstructorInfo makeRequest;
+        private static Type requestType;
         private static Delegate handler;
         private static EventInfo finishedEvent;
         private static readonly ConcurrentDictionary<int, Score> scores = new ConcurrentDictionary<int, Score>();
@@ -64,9 +83,11 @@ namespace RimroomsAsyncIndustries.Automation
 
         private struct Score
         {
-            public float RockFraction, RowSpan, NorthSouth, NookBlocks, Total;
-            public override string ToString() => string.Format("rock {0:P0}, top-to-bottom {1:P0}, N/S {2:F2}, nook {3} blocks, score {4:F2}",
-                                                               RockFraction, RowSpan, NorthSouth, (int)NookBlocks, Total);
+            public float RockFraction, MainMass, NookBlocks, Total;
+            public bool EastToWest;
+            public override string ToString() => string.Format("main mountain {0:P0} of the map{1}, all rock {2:P0}, nook {3} blocks, score {4:F2}",
+                                                               MainMass, EastToWest ? " touching east and west" : " NOT edge to edge",
+                                                               RockFraction, (int)NookBlocks, Total);
         }
 
         /// <summary>True once a tile and its map are settled; false while the previews are still rendering.</summary>
@@ -121,33 +142,71 @@ namespace RimroomsAsyncIndustries.Automation
                                 Expression.Convert(arg, typeof(object))), arg).Compile();
             finishedEvent.AddEventHandler(null, handler);
 
-            object gen = generator.GetMethod("Init", BindingFlags.Public | BindingFlags.Static).Invoke(null, null);
-            generator.GetMethod("ClearQueue")?.Invoke(gen, null);
-            MethodInfo queue = generator.GetMethod("QueuePreviewRequest");
-            ConstructorInfo make = request.GetConstructor(new[] { typeof(int), typeof(PlanetTile), typeof(IntVec2) });
+            generatorInstance = generator.GetMethod("Init", BindingFlags.Public | BindingFlags.Static).Invoke(null, null);
+            generator.GetMethod("ClearQueue")?.Invoke(generatorInstance, null);
+            queueMethod = generator.GetMethod("QueuePreviewRequest");
+            requestType = request;
+            makeRequest = request.GetConstructor(new[] { typeof(int), typeof(PlanetTile), typeof(IntVec2) });
             // the size the colony is made at (Site sets the same 300x300); the preview must match the real map
             Find.GameInitData.mapSize = 300;
-            var size = new IntVec2(300, 300);
-            for (int i = 0; i < Candidates; i++)
-            {
-                int seed = unchecked(originalSeed + i);
-                object req = make.Invoke(new object[] { seed, tile, size });
-                request.GetProperty("GeneratorDef")?.SetValue(req, MapGeneratorDefOf.Base_Player);
-                request.GetProperty("UseTrueTerrainColors")?.SetValue(req, false);
-                request.GetProperty("UseMinimalMapComponents")?.SetValue(req, true);
-                queue.Invoke(gen, new[] { req });
-            }
-            startedAt = Time.realtimeSinceStartup;
+            batch = 0;
+            requeues = 0;
+            QueueBatch();
             phase = Phase.Rendering;
-            WorldSetupDriver.Note(string.Format("map variant: tile {0} -- rendering {1} maps to find a north-south mountain with a nook",
+            WorldSetupDriver.Note(string.Format("map variant: tile {0} -- rendering {1} maps to find a north/south-facing mountain (east to west, 30%+) with a nook",
                                                 tile.tileId, Candidates));
             return false;
         }
 
+        /// <summary>Seeds original + batch*Candidates ... + Candidates-1, as the dice window's refresh walks them.</summary>
+        private static void QueueBatch()
+        {
+            var size = new IntVec2(300, 300);
+            lastCount = scores.Count;
+            lastProgress = Time.realtimeSinceStartup;
+            for (int i = 0; i < Candidates; i++)
+            {
+                int seed = unchecked(originalSeed + batch * Candidates + i);
+                if (scores.ContainsKey(seed)) { continue; }
+                object req = makeRequest.Invoke(new object[] { seed, tile, size });
+                requestType.GetProperty("GeneratorDef")?.SetValue(req, MapGeneratorDefOf.Base_Player);
+                requestType.GetProperty("UseTrueTerrainColors")?.SetValue(req, false);
+                requestType.GetProperty("UseMinimalMapComponents")?.SetValue(req, true);
+                queueMethod.Invoke(generatorInstance, new[] { req });
+            }
+            startedAt = Time.realtimeSinceStartup;
+        }
+
+        private static bool Qualifies(Score s) => s.EastToWest && s.MainMass >= 0.30f && s.NookBlocks >= MinNook;
+
         private static bool Poll()
         {
             bool timedOut = Time.realtimeSinceStartup - startedAt > TimeoutSeconds;
-            if (scores.Count < Candidates && !timedOut) { return false; }
+            if (scores.Count != lastCount) { lastCount = scores.Count; lastProgress = Time.realtimeSinceStartup; }
+            bool batchDone = scores.Count >= (batch + 1) * Candidates;
+            if (!batchDone && !timedOut && Time.realtimeSinceStartup - lastProgress > StallSeconds)
+            {
+                if (requeues < MaxRequeues)
+                {
+                    requeues++;
+                    WorldSetupDriver.Note(string.Format("map variant: rendering stalled at {0} -- queueing the missing maps again ({1} of {2})",
+                                                        scores.Count, requeues, MaxRequeues));
+                    float started = startedAt;
+                    QueueBatch();
+                    startedAt = started;
+                    return false;
+                }
+                timedOut = true;
+            }
+            if (!batchDone && !timedOut) { return false; }
+            if (!scores.Values.Any(Qualifies) && batch + 1 < MaxBatches && !timedOut)
+            {
+                batch++;
+                WorldSetupDriver.Note(string.Format("map variant: none of {0} qualified -- regenerating (batch {1} of {2})",
+                                                    scores.Count, batch + 1, MaxBatches));
+                QueueBatch();
+                return false;
+            }
             Unsubscribe();
             phase = Phase.Done;
             if (scores.Count == 0)
@@ -156,8 +215,9 @@ namespace RimroomsAsyncIndustries.Automation
                 return true;
             }
 
-            bool Passes(Score s) => s.RockFraction >= 0.15f && s.RockFraction <= 0.6f && s.RowSpan >= 0.8f && s.NookBlocks >= 40f;
-            var passing = scores.Where(kv => Passes(kv.Value)).ToList();
+            // owner: "a true N/S facing must have its main mass touch both east and west sides of the tiles map ... like 30%
+            // of the map or more is all brown touching both sides", plus a nook dug into that mass
+            var passing = scores.Where(kv => Qualifies(kv.Value)).ToList();
             var pool = passing.Count > 0 ? passing : scores.ToList();
             var best = pool.OrderByDescending(kv => kv.Value.Total).First();
 
@@ -173,9 +233,9 @@ namespace RimroomsAsyncIndustries.Automation
             bool accepted = effective == best.Key;
 
             WorldSetupDriver.Note(string.Format("map variant: {0} of {1} rendered, {2} passed; chose {3} ({4}) -- {5}",
-                scores.Count, Candidates, passing.Count, best.Key == originalSeed ? "the original" : "#" + unchecked(best.Key - originalSeed),
+                scores.Count, (batch + 1) * Candidates, passing.Count, best.Key == originalSeed ? "the original" : "#" + unchecked(best.Key - originalSeed),
                 best.Value, accepted ? "accepted" : "NOT accepted (seed read back " + effective + ")"));
-            if (passing.Count == 0) { WorldSetupDriver.Note("map variant: none had both a north-south mountain and a nook -- took the best of them"); }
+            if (passing.Count == 0) { WorldSetupDriver.Note("map variant: none had a 30%+ east-to-west main mountain with a nook -- took the closest"); }
             return true;
         }
 
@@ -234,22 +294,40 @@ namespace RimroomsAsyncIndustries.Automation
                 }
             }
 
-            // north-south: columns split into mostly-rock and mostly-open, rows do not; rock reaches top to bottom
-            var col = new float[w];
-            var row = new float[h];
-            int rowsWithRock = 0;
-            for (int bx = 0; bx < w; bx++) for (int bz = 0; bz < h; bz++) if (rock[bx, bz]) { col[bx]++; row[bz]++; }
-            for (int bx = 0; bx < w; bx++) col[bx] /= h;
-            for (int bz = 0; bz < h; bz++) { row[bz] /= w; if (row[bz] >= 0.1f) rowsWithRock++; }
-            float Band(float[] v)
+            // the main mountain: the biggest connected rock mass; it must reach both the west and the east edge
+            var main = new bool[w, h];
+            var seenRock = new bool[w, h];
+            int mainSize = 0;
+            bool mainWE = false;
+            var stack = new System.Collections.Generic.Stack<int>();
+            for (int bx = 0; bx < w; bx++)
             {
-                var s = v.OrderByDescending(x => x).ToArray();
-                int top = Math.Max(1, s.Length / 5), low = Math.Max(1, s.Length / 2);
-                return s.Take(top).Average() - s.Skip(s.Length - low).Average();
+                for (int bz = 0; bz < h; bz++)
+                {
+                    if (!rock[bx, bz] || seenRock[bx, bz]) { continue; }
+                    var cells = new System.Collections.Generic.List<int>();
+                    bool west = false, east = false;
+                    stack.Push(bx * h + bz); seenRock[bx, bz] = true;
+                    while (stack.Count > 0)
+                    {
+                        int v = stack.Pop(), x = v / h, z = v % h;
+                        cells.Add(v); west |= x == 0; east |= x == w - 1;
+                        foreach (var (nx, nz) in new[] { (x + 1, z), (x - 1, z), (x, z + 1), (x, z - 1) })
+                        {
+                            if (nx < 0 || nz < 0 || nx >= w || nz >= h || seenRock[nx, nz] || !rock[nx, nz]) { continue; }
+                            seenRock[nx, nz] = true; stack.Push(nx * h + nz);
+                        }
+                    }
+                    if (cells.Count > mainSize)
+                    {
+                        mainSize = cells.Count; mainWE = west && east;
+                        Array.Clear(main, 0, main.Length);
+                        foreach (int v in cells) { main[v / h, v % h] = true; }
+                    }
+                }
             }
-            float northSouth = Band(col) - Band(row);
 
-            // nook: open blocks with rock within reach on at least three of the four sides; the largest such patch
+            // nook: open ground with the MAIN mountain on at least three sides -- a pocket dug into it, not open plain
             var nook = new bool[w, h];
             for (int bx = 0; bx < w; bx++)
             {
@@ -257,16 +335,15 @@ namespace RimroomsAsyncIndustries.Automation
                 {
                     if (rock[bx, bz]) { continue; }
                     int walls = 0;
-                    if (Hit(rock, w, h, bx, bz, 1, 0)) walls++;
-                    if (Hit(rock, w, h, bx, bz, -1, 0)) walls++;
-                    if (Hit(rock, w, h, bx, bz, 0, 1)) walls++;
-                    if (Hit(rock, w, h, bx, bz, 0, -1)) walls++;
+                    if (Hit(main, w, h, bx, bz, 1, 0)) walls++;
+                    if (Hit(main, w, h, bx, bz, -1, 0)) walls++;
+                    if (Hit(main, w, h, bx, bz, 0, 1)) walls++;
+                    if (Hit(main, w, h, bx, bz, 0, -1)) walls++;
                     nook[bx, bz] = walls >= 3;
                 }
             }
             int biggest = 0;
             var seen = new bool[w, h];
-            var stack = new System.Collections.Generic.Stack<int>();
             for (int bx = 0; bx < w; bx++)
             {
                 for (int bz = 0; bz < h; bz++)
@@ -283,19 +360,21 @@ namespace RimroomsAsyncIndustries.Automation
                             seen[nx, nz] = true; stack.Push(nx * h + nz);
                         }
                     }
-                    biggest = Math.Max(biggest, size);
+                    if (size <= MaxNook) { biggest = Math.Max(biggest, size); }
                 }
             }
 
             var score = new Score
             {
                 RockFraction = rockBlocks / (float)(w * h),
-                RowSpan = rowsWithRock / (float)h,
-                NorthSouth = northSouth,
+                MainMass = mainSize / (float)(w * h),
+                EastToWest = mainWE,
                 NookBlocks = biggest,
             };
-            // a nook of ~200 blocks (about 40x40 cells) is plenty; bigger stops counting
-            score.Total = score.NorthSouth + 0.6f * Mathf.Min(biggest / 200f, 1f) + 0.3f * score.RowSpan;
+            // edge to edge first, then a 30%+ main mass, then the nook (up to ~300 blocks counts); so much rock that
+            // little tan ground is left costs
+            score.Total = (mainWE ? 2f : 0f) + Mathf.Min(score.MainMass / 0.30f, 1f) + Mathf.Min(biggest / 300f, 1f)
+                          - Mathf.Max(0f, score.RockFraction - 0.65f) * 3f;
             return score;
         }
 
