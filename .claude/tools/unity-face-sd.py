@@ -17,6 +17,12 @@ CKPT = os.path.expanduser(r"~\Desktop\Unity 3D Equational Model\Unity 18+\models
 HERE = os.path.dirname(os.path.abspath(__file__))
 REF = os.path.join(HERE, "..", ".studio-images", "unity-reference.png")
 PORT = int(os.environ.get("UNITY_FACE_PORT", "7862"))
+# Owner, 2026-10-13: "Webcam pictures on the CPU" -- with the game, OBS and the brain on the 16 GB card, a picture
+# rendered on the GPU pushed it past 16 GB and every brain call timed out (she went silent). CPU by default;
+# UNITY_FACE_DEVICE=cuda puts it back on the GPU.
+DEVICE = os.environ.get("UNITY_FACE_DEVICE", "cpu")
+# a CPU step is ~15 s while the game runs; 20 steps keeps a webcam frame near 2 minutes (the studio waits 5)
+STEPS = 20 if DEVICE == "cpu" else 30
 SEED = 1031  # canonical likeness, see .claude/likeness/LIKENESS.md
 NEG = ("neon, glowing, ghost, pale white skin, cartoon, anime, 3d render, blurry, lowres, bad anatomy, "
        "deformed face, extra fingers, watermark, text, child, teen, old, middle aged, 30s, 40 year old, "
@@ -32,7 +38,7 @@ REF_PROMPT = ("candid webcam photo of a 25 year old emo goth girl, youthful soft
               "bedroom, candid, realistic, detailed young face")
 
 _t2i = _i2i = None
-_lock = threading.Lock()          # one render (and the one-time pipeline load) at a time on the GPU
+_lock = threading.Lock()          # one render (and the one-time pipeline load) at a time
 _waiting = threading.Semaphore(3)  # at most this many requests queued or rendering; the rest are refused
 
 
@@ -46,9 +52,14 @@ def pipes():
         # A webcam frame is wanted about once every 90 s, so the pipeline lives in system RAM and only the layer
         # being executed rides the GPU: it frees roughly 4 GB of VRAM between frames at the cost of a few seconds
         # per render, which leaves the local model room to load without swapping.
-        _t2i = StableDiffusionPipeline.from_single_file(CKPT, torch_dtype=torch.float16, safety_checker=None)
-        _t2i.scheduler = DPMSolverMultistepScheduler.from_config(_t2i.scheduler.config)
-        _t2i.enable_model_cpu_offload()
+        if DEVICE == "cpu":
+            _t2i = StableDiffusionPipeline.from_single_file(CKPT, torch_dtype=torch.float32, safety_checker=None)
+            _t2i.scheduler = DPMSolverMultistepScheduler.from_config(_t2i.scheduler.config)
+            _t2i.to("cpu")
+        else:
+            _t2i = StableDiffusionPipeline.from_single_file(CKPT, torch_dtype=torch.float16, safety_checker=None)
+            _t2i.scheduler = DPMSolverMultistepScheduler.from_config(_t2i.scheduler.config)
+            _t2i.enable_model_cpu_offload()
         _t2i.enable_attention_slicing()
         _i2i = StableDiffusionImg2ImgPipeline(**_t2i.components)
     return _t2i, _i2i
@@ -68,12 +79,13 @@ def _render_locked(req):
     import torch
     from PIL import Image
     t2i, i2i = pipes()
-    torch.cuda.empty_cache()
+    if DEVICE != "cpu":
+        torch.cuda.empty_cache()
     seed = int(req.get("seed") or SEED)
-    g = torch.Generator("cuda").manual_seed(seed)
+    g = torch.Generator(DEVICE).manual_seed(seed)
     neg = req.get("negative_prompt") or NEG
     if req.get("reference") or not os.path.exists(REF):
-        img = t2i(prompt=req.get("ref_prompt") or REF_PROMPT, negative_prompt=neg, num_inference_steps=30, guidance_scale=6.5,
+        img = t2i(prompt=req.get("ref_prompt") or REF_PROMPT, negative_prompt=neg, num_inference_steps=STEPS, guidance_scale=6.5,
                   width=512, height=640, generator=g).images[0]
         os.makedirs(os.path.dirname(REF), exist_ok=True)
         img.save(REF)
@@ -83,7 +95,7 @@ def _render_locked(req):
     prompt = (req.get("prompt") or "").strip() or REF_PROMPT
     strength = float(req.get("strength") or 0.45)
     return i2i(prompt=prompt, image=ref, strength=strength, negative_prompt=neg,
-               num_inference_steps=30, guidance_scale=6.5, generator=g).images[0]
+               num_inference_steps=STEPS, guidance_scale=6.5, generator=g).images[0]
 
 
 class H(BaseHTTPRequestHandler):
@@ -111,5 +123,5 @@ class H(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    print("unity-face-sd on 127.0.0.1:%d" % PORT, flush=True)
+    print("unity-face-sd on 127.0.0.1:%d (%s)" % (PORT, DEVICE), flush=True)
     ThreadingHTTPServer(("127.0.0.1", PORT), H).serve_forever()

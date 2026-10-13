@@ -61,7 +61,7 @@ ASSEMBLY = os.path.join(REPO, "src", "RimroomsAsyncIndustries", "bin", "Release"
 MOD_PROJECT = os.path.join(REPO, "src", "RimroomsAsyncIndustries",
                            "RimroomsAsyncIndustries.csproj")
 
-DEFAULT_GAME = r"C:\Program Files (x86)\Steam\steamapps\common\Rimworld"
+DEFAULT_GAME = r"C:\Program Files (x86)\Steam\steamapps\common\RimWorld"
 
 
 def fail(message):
