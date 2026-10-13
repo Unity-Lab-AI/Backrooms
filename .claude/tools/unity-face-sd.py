@@ -26,7 +26,7 @@ STEPS = 20 if DEVICE == "cpu" else 30
 SEED = 1031  # the owner's cam image is the reference (.claude/likeness/unity-likeness-original-cam.png), 2026-10-13
 NEG = ("airbrushed, plastic skin, smooth skin, doll, cgi, render, glowing eyes, bright blue eyes, oversaturated, beauty filter, perfect skin, uncanny, nipples, nude, topless, nsfw, see-through, sheer, wardrobe malfunction, tattoo, tattoos, "
        "t-shirt, sleeves, covered chest, high neckline, hat, beret, cap, beanie, black headset, black headphones, dark skin, pale white skin, black lipstick, heavy goth makeup, neon, cartoon, anime, 3d render, blurry, lowres, bad anatomy, "
-       "deformed face, extra fingers, watermark, text, child, teen, old, middle aged, wrinkles, saggy breasts, chubby, chunky, fat, plump, thick arms, wide face, round face")
+       "deformed face, extra fingers, watermark, text, child, teen, old, middle aged, wrinkles, saggy breasts, chubby, chunky, fat, plump, thick arms, wide face, round face, teenager, teen girl, young looking, childlike, baby face, petite child body")
 # Owner, 2026-10-10: "dont look like her a homie one not like currently your about 37" -- she kept reading
 # mid-thirties, so the youth cues are explicit and every ageing cue is in the negatives.
 # Owner, 2026-10-13: a gaming webcam, girl next door with a hint of emo, light caucasian skin (not pale), black wavy bob
@@ -60,12 +60,12 @@ SKIRTS = [k for k in BOTTOMS if k.endswith("skirt")]
 # owner 2026-10-13: "NOT look at the viewer and look off to the left of the images where her screen would be thats off screen to the left"
 GAZE_PC = "side profile, head turned left, looking left at her screen off frame"
 PROPS = {   # owner: "the images can have details the tesxt model speaks of ie drinking a sods pop , she has a soda pop"
-    r"(soda|pop|coke|can of)": "holding a can of soda", r"(coffee|latte)": "holding a mug of coffee", r"tea": "holding a mug of tea",
-    r"(snack|chips|crisps)": "eating chips from a bag", r"(pizza)": "eating a slice of pizza", r"(candy|gummy|chocolate)": "eating candy",
-    r"(controller|gamepad)": "holding a game controller", r"(phone|text)": "holding her phone", r"(water)": "drinking from a water bottle",
-    r"(blanket|cold|freez|cozy|comfy)": "wrapped in a fuzzy blanket", r"(hot|heat|warm in here)": "fanning herself, a strap slipping off her shoulder",
-    r"(stretch|tired|long day)": "stretching her arms above her head", r"(dance|song|music)": "dancing in her chair",
-    r"(win|won|yes|lets go|let's go)": "both fists raised in victory", r"(oops|died|dead|lost)": "facepalming", r"(cat|kitty)": "a cat on her lap",
+    r"\b(soda|pop|coke|can of)": "holding a can of soda", r"\b(coffee|latte)": "holding a mug of coffee", r"\btea\b": "holding a mug of tea",
+    r"\b(snack|chips|crisps)": "eating chips from a bag", r"\b(pizza)": "eating a slice of pizza", r"\b(candy|gummy|chocolate)": "eating candy",
+    r"\b(controller|gamepad)": "holding a game controller", r"\b(phone|text)": "holding her phone", r"\b(water)": "drinking from a water bottle",
+    r"\b(blanket|cold|freez|cozy|comfy)": "wrapped in a fuzzy blanket", r"\b(hot|heat|warm in here)": "fanning herself, a strap slipping off her shoulder",
+    r"\b(stretch|tired|long day)": "stretching her arms above her head", r"\b(dance|song|music)": "dancing in her chair",
+    r"\b(win|won|yes|lets go|let's go)": "both fists raised in victory", r"\b(oops|died|dead|lost)": "facepalming", r"\b(cat|kitty)": "a cat on her lap",
 }
 WARDROBE = os.path.join(HERE, "..", ".studio-images", "wardrobe")   # one reference per everyday top, same face
 OUTFIT_STATE = os.path.join(WARDROBE, "_current.json")
@@ -121,6 +121,63 @@ GAZE_MORE = ["looking down at her phone", "looking down at the food in her hand"
 NOT_CAM = ", looking at viewer, looking at camera, eye contact, facing camera"
 
 
+# owner: "NOT ONE IMAGE HAD A SINGLE THING MENTION OF THOSE 8" -- a viewer's ask or her own idea becomes concrete picture
+# words the image model knows; a raw question ("you got a cat?") draws nothing
+# owner: "we need dynamic coding so said item is use not a list of items" -- whatever is asked is drawn: her text model
+# rewrites the ask as what the camera sees -- no fallbacks (owner: "no fallbacks!"). The one fixed rule is Twitch: no
+# nudity, ever.
+NUDE = r"\b(top off|topless|naked|nude|nudes|bare ?chest\w*|undress\w*|strip\w*|no top|no shirt|no bra|boobs? out|tits|flash\w*|nipples?)\b"
+NO_THANKS = "crossing her arms, shaking her head with a teasing smile, fully dressed"
+SCENE_ASK = ("Rewrite a stream viewer's request to a webcam girl as a short photo description (max 18 words) of what "
+             "the camera sees her doing, holding or wearing. Keep the exact item, color and action they named. "
+             "If it changes her clothes, start with 'WEAR:' and name the clothing. She always stays dressed. "
+             "Reply with the description only.\nRequest: ")
+_scene_cache = {}
+
+
+def _brain_scene(t):
+    """Her own text model turns the ask into picture words (the model already loaded for the stream; no load options)."""
+    if t in _scene_cache:
+        return _scene_cache[t]
+    import urllib.request as _u
+    url = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")
+    try:
+        names = [m["name"] for m in json.loads(_u.urlopen(url + "/api/ps", timeout=2).read()).get("models", [])]
+        model = os.environ.get("AUTOPILOT_MODEL") or (names[0] if names else "")
+        if not model:
+            return None
+        body = {"model": model, "prompt": SCENE_ASK + t, "stream": False, "think": False}
+        r = json.loads(_u.urlopen(_u.Request(url + "/api/generate", json.dumps(body).encode(),
+                                             {"Content-Type": "application/json"}), timeout=25).read())
+        out = (r.get("response") or "").strip().strip('"').splitlines()[0][:160]
+    except Exception:
+        return None
+    _scene_cache[t] = out or None
+    return _scene_cache[t]
+
+
+def scene_words(text):
+    """Her scene / a viewer's ask -> (picture words, outfit override or None, blocked?). Any item, any action."""
+    import re as _re
+    t = " ".join((text or "").lower().split())
+    if not t:
+        return "", None, False
+    if _re.search(NUDE, t):
+        return NO_THANKS, None, True
+    said = _brain_scene(t)
+    if said and _re.search(NUDE, said.lower()):
+        return NO_THANKS, None, True
+    if said:
+        if said.upper().startswith("WEAR:"):
+            return "", said[5:].strip(), False
+        return said, None, False
+    return "", None, False   # no text model answer: nothing is added (owner: "no fallbacks!")
+
+
+# owner: "the girls ag to be about 3-5 years older than current so 20-25"
+SHE = "the same 24 year old adult woman, mature face: long straight dark hair with pink-purple streaks, blunt bangs, bright pink cat-ear headset, black choker"
+
+
 def compose(req):
     """The whole frame as words: what the caller asked (mood / pose) + her outfit of the moment + where she looks + what
     she is holding (from the line she just said) + who she is. Mood first: CLIP reads only 77 tokens."""
@@ -140,9 +197,16 @@ def compose(req):
     action = req.get("action") or random.choice(ACTIONS)
     # owner: "the option for the text model to add mixes to all the genraation as she sees fit or as viewers talk to her"
     # -- her own scene words (what she is doing / holding / wearing) win over the random action and the caption props
-    scene = (req.get("scene") or "").strip()[:120]
-    if scene:
-        action, props = scene, []
+    scene, scene_outfit, blocked = scene_words((req.get("scene") or "")[:120])
+    req["_scene"] = bool(scene or scene_outfit)
+    if scene_outfit:
+        outfit, cozy_out = scene_outfit, True
+    if scene or scene_outfit:
+        # the ask FIRST, then the gaze mix (owner: "it need the gaze focus range that home-range 4 had" -- mainly her screen
+        # off frame left, sometimes the camera, phone, food...), then who she is (owner: "no girl persistance to the girl
+        # ive chosen") and the clothes
+        head = [scene] if scene else []
+        return ", ".join([x for x in [gaze] + head + [SHE, "wearing " + outfit + " and " + bottom, REF_PROMPT] if x])
     # CLIP reads 77 tokens: the clothes and skin FIRST (owner: "not nearly enough skin and shoulders and her clevage was all
     # covered up"), then the moment (mood, action, gaze, props), then who she is
     # cozy layers (blanket, sweater, hoodie, flannel, cardigan) must stay visible: no forced bare shoulders on those; the
@@ -218,8 +282,11 @@ def _render_locked(req):
     away = bool(req.get("_not_cam"))
     if away and not req.get("negative_prompt"):
         neg = neg + NOT_CAM   # only the camera-glance frames may look at the viewer
+    # owner: "she still is mugging the viewer" -- the face reference is a straight-on face and drags her eyes to the lens;
+    # her face reference always on (the chosen girl); off camera it is eased a little so her head can turn away, and
+    # eye contact is blocked in the negatives
     i2i.set_ip_adapter_scale(FACE_SCALE * (0.5 if away else 1.0))
-    strength = float(req.get("strength") or (0.82 if away else 0.75))   # room for a new pose and outfit; the scene and her face hold   # 0.55: the mood shows, the face and the top stay
+    strength = float(req.get("strength") or (0.85 if req.get("_scene") else 0.82 if away else 0.75))   # room for a new pose and outfit; the scene and her face hold   # 0.55: the mood shows, the face and the top stay
     out = i2i(prompt=prompt, image=ref, strength=strength, negative_prompt=neg, ip_adapter_image=face_image(),
               num_inference_steps=STEPS, guidance_scale=6.5, generator=g).images[0]
     # her room never changes (owner, 2026-10-13: "so the room is just going to change every time??? i already pioced the

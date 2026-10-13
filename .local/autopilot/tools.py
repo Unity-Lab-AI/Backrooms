@@ -329,8 +329,9 @@ class Toolbox:
                      "ordinary moves.", S({"what": s}, ["what"]), self.t_plan),
             "webcam": ("[STREAM] Re-render Unity's webcam with a mood and a short clean caption (raids, deaths, wins, "
                        "chat moments). Optional scene: a few words of what you are doing, holding or wearing right now -- "
-                       "your own idea or where chat took the talk (e.g. 'eating pizza', 'wrapped in a blanket', "
-                       "'holding a soda, feet up', 'cozy sweater').",
+                       "your own idea or where chat took the talk. Write what the camera SEES, not the question: 'holding a "
+                       "fluffy cat', 'wearing a green crop top', 'jumping in mid air', 'peace sign', 'eating pizza'. "
+                       "Never nudity: you stay dressed on stream.",
                        S({"mood": {"type": "string", "enum": list(MOODS)}, "caption": s, "scene": s},
                                            ["mood", "caption"]), self.t_webcam),
             "snap": ("[STREAM] Post an annotated screenshot of a map rect to the webcam panel with up to 3 circled "
@@ -834,6 +835,8 @@ class Toolbox:
             log("DRY-RUN would webcam", mood, cap)
             return "dry-run: not executed"
         scn = guards.clean_for_stream(scene or "", max_len=80) or ""
+        if re.search(r"\b(top off|topless|naked|nude|bare chest|undress|strip|no top|no shirt|boobs out|flash)", scn.lower()):
+            scn = "crossing her arms, shaking her head with a teasing smile"   # never on Twitch: she stays dressed
         subprocess.Popen([PY, SCRIPTS["cam"], mood, cap, scn], cwd=ROOT, stdout=subprocess.DEVNULL,
                          stderr=subprocess.DEVNULL, shell=False)
         return "webcam rendering: %s / %s%s" % (mood, cap, (" / " + scn) if scn else "")
