@@ -61,7 +61,7 @@ SERVICES = [
     # ("cursorjobs",  ".local/qa/cursor-jobs.py",         [PYW, os.path.join(QA, "cursor-jobs.py")]),
     ("keepgoing",   ".local/qa/keep-playing.py",        [PYW, "-u", os.path.join(QA if "QA" in globals() else HERE, "keep-playing.py")]),
     # her own voice (models/unity-voice) served once on :5123; unity-speak.py posts every line to it, no fallback
-    ("voice",       "training/voice/serve.py",          [PYW, "-u", os.path.join(ROOT, "training/voice/serve.py")]),
+    ("voice",       "models/unity-voice/serve.py",      [PYW, "-u", os.path.join(ROOT, "models/unity-voice/serve.py")]),
     ("autopilot",   ".local/autopilot/autopilot.py",    [PYW, "-u", os.path.join(ROOT, ".local/autopilot/autopilot.py"), "--num-gpu", os.environ.get("AUTOPILOT_NUM_GPU", "0")]),
     ("admin",       "stream/admin.py",                  [PYW, "-u", os.path.join(HERE, "admin.py")]),
 ]
@@ -114,8 +114,9 @@ OLLAMA = os.path.expandvars(r"%LOCALAPPDATA%/Programs/Ollama/ollama.exe")
 if not os.path.exists(OLLAMA): OLLAMA = "ollama"
 MODELS = ["dolphin3:8b", "qwen3:8b", "qwen3.6:35b"]         # pulled from the registry: the voice base and the player
 BRAIN_DIR = os.path.join(ROOT, "models", "unity-brain")   # her one brain + its README (git-ignored weights)
+BRAIN_STATE = os.path.join(ROOT, "training", "models", "unity-brain")   # apply stamps + the owner's line-writer choice
 if not os.path.exists(os.path.join(BRAIN_DIR, "unity-brain.gguf")):
-    BRAIN_DIR = os.path.join(ROOT, "training", "models")
+    BRAIN_DIR = BRAIN_STATE = os.path.join(ROOT, "training", "models")
 # Unity's one brain (training/BRAIN_PLAN.md): its base is pulled only once a trained brain has been downloaded
 if os.path.exists(os.path.join(BRAIN_DIR, "unity-brain.gguf")):
     MODELS.append("qwen3.5:9b")
@@ -126,12 +127,12 @@ OLLAMA_ENV = {"OLLAMA_FLASH_ATTENTION": "1", "OLLAMA_KV_CACHE_TYPE": "q8_0"}
 
 def brain_env():
     """Env for every service once the brain is applied: it plays on the GPU with a 32K context (her longest turns
-    plus the tool list fit in ~24K), and -- only when its eval beat or matched today's voice (models/brain-voice.ok,
+    plus the tool list fit in ~24K), and -- only when its eval beat or matched today's voice (brain-voice.ok,
     written by training/apply.py) -- every voice caller asks it too, so one model sits on the GPU, not two."""
-    if not os.path.exists(os.path.join(BRAIN_DIR, "unity-brain.gguf.applied")):
+    if not os.path.exists(os.path.join(BRAIN_STATE, "unity-brain.gguf.applied")):
         return {}
     env = {"AUTOPILOT_MODEL": "unity-brain", "AUTOPILOT_NUM_CTX": "32768"}
-    if os.path.exists(os.path.join(BRAIN_DIR, "brain-voice.ok")):
+    if os.path.exists(os.path.join(BRAIN_STATE, "brain-voice.ok")):
         env.update(OLLAMA_URL="http://127.0.0.1:11434", UNITY_VOICE_URL="http://127.0.0.1:11434", UNITY_VOICE_LLM="unity-brain",
                    UNITY_VOICE_NUM_CTX="32768")   # same context as the player, so Ollama never reloads between them
     return env

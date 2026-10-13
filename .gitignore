@@ -149,8 +149,20 @@ __pycache__/
 .local/tools/
 .local/qa/_asked.flag
 .local/autopilot/traces/
-training/models/
+training/models/*
 training/preflight/
+# The brain's build records (eval, quant, owner's line-writer choice, expected sha256, adapter config) are tracked;
+# its weights, apply stamps and generated Modelfile stay local.
+!training/models/unity-brain/
+training/models/unity-brain/*
+!training/models/unity-brain/*.json
+!training/models/unity-brain/*.md
+!training/models/unity-brain/*.sha256
+!training/models/unity-brain/quant.txt
+!training/models/unity-brain/lora/
+training/models/unity-brain/lora/*
+!training/models/unity-brain/lora/README.md
+!training/models/unity-brain/lora/adapter_config.json
 training/sources/
 training/_fetch.log
 
@@ -218,13 +230,14 @@ outputs/**/*.zip
 # One-off local scratch and backups
 .local/voice-lab/stream-script-originals/
 .local/qa/_*.sh
-# models/: only the READMEs and small metadata are tracked; every weight file stays local (owner 2026-10-13:
-# "a git ignored folder called models ... with each model how they where built and what for and their readmees
-# just big model files git ignored").
+# models/: each folder is a complete, usable model -- weights + only the code/config to run it + a README.
+# The weights stay local; the rest is tracked. How each was built lives in training/ (owner 2026-10-13: "the whole
+# point of the model folder to hold tohe complete fucking model and nothing eles but a readme jsut what they need
+# to use it not what it took to build and build secrets").
 models/**
 !models/*/
 !models/**/README.md
+!models/**/*.py
 !models/**/*.json
-!models/**/*.sha256
-!models/**/SHA256SUMS
-!models/**/quant.txt
+!models/**/requirements.txt
+!models/**/Modelfile

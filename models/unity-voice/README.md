@@ -1,20 +1,65 @@
 # unity-voice
 
-**What for:** Unity's own speaking voice on stream, replacing Piper. Emotion, intensity, pace and speech act are
-inputs; recorded laughter and breath events are supported.
+Unity's speaking voice. Text in, speech out (24 kHz wav), with emotion and recorded laughter/breath.
+Everything needed to run it is in this folder.
 
-**How it was built (2026-10-12, RunPod 2x H100):**
-- Script: 5,000 owner-approved lines (`training/voice/STREAM_CORPUS.jsonl` + events, 420 with laughter).
-- Recorded on the pod by two teacher TTS models (Qwen3-TTS + CosyVoice3) steered to the approved A2 low warm
-  alto; screened with speech recognition: **4,845 kept** (121 word mismatches, 22 long silences, 12 rushed dropped).
-- Trained from scratch: acoustic model 20,000 steps (GPU 0) and HiFi-GAN-style vocoder 100,000 steps on real
-  audio + 20,000 polishing steps on the acoustic model's own output (GPU 1). Best held-out vocoder error 0.189.
-- Code `training/voice/` at commit `fd208ef0` (digest `5103180e...`), run id `f8bb6cd3...`, dataset `85b62deb...`.
-- Files: `acoustic.pt`, `vocoder.pt`, `voice-meta.json` (checked by `SHA256SUMS`), `publication.json`.
+## What's here
 
-**Accepted:** owner on the final samples, 2026-10-12: *"smaples are perfect"* --
-`training/voice/receipts/trained-voice-acceptance-2026-10-12.json` binds that to these exact file hashes.
-Live pace: `UNITY_VOICE_LENGTH_SCALE` **1.0** (set by `stream/services.py`). The 1.2 stretch was for the too-fast
-local test voice; on this voice the owner heard it as "1/5th too slow" (2026-10-13).
+| File | What it is |
+|---|---|
+| `acoustic.pt` | Turns phonemes into sound features (109 MB) |
+| `vocoder.pt` | Turns those features into audio (56 MB) |
+| `voice-meta.json` | Her phoneme list, normalisation and the deliveries she was trained on |
+| `unity_voice.py` | The loader: `Voice().say(...)` and a command line |
+| `serve.py` | Optional local HTTP server, so a program can get a line with one request |
+| `model.py`, `vocoder.py`, `infer.py`, `dataset_contract.py`, `speech_text.py`, `speech_turns.py`, `feature_arrays.py`, `student_state.py` | The model code the loader needs |
+| `requirements.txt` | Python packages |
 
-**To use:** `python training/voice/infer.py models/unity-voice "text" out.wav --emotion amused --intensity .35`
+## Setup
+
+Python 3.10+. A CUDA GPU is used when present (~0.5 GB); it also runs on CPU, slower.
+
+```
+pip install -r requirements.txt
+```
+
+`misaki` must be exactly 0.9.4 (it turns text into the phonemes she learned). It uses espeak-ng for words it
+doesn't know; on Windows install espeak-ng, on Linux `apt install espeak-ng`.
+
+## Use it
+
+Command line:
+
+```
+python unity_voice.py "Hey chat, what are we doing today?" out.wav --emotion amused --intensity 0.35
+```
+
+From Python:
+
+```python
+from unity_voice import Voice
+import soundfile as sf
+voice = Voice()                                   # loads once
+wav = voice.say("That raid went badly.", "concerned", 0.4)
+sf.write("line.wav", wav, 24000)
+```
+
+As a server (127.0.0.1 only):
+
+```
+python serve.py --port 5123
+curl -X POST localhost:5123/say -d "{\"text\": \"Hello chat.\", \"emotion\": \"happy\"}" -o line.wav
+curl localhost:5123/health
+```
+
+## Options
+
+- **emotion:** `neutral`, `warm`, `happy`, `amused`, `excited`, `sad`, `concerned`, `frustrated`, `surprised`
+- **intensity:** 0 to 1 (default 0.35; 0 for neutral)
+- **speech act** (optional, guessed from punctuation otherwise): `statement`, `yes_no_question`, `wh_question`,
+  `exclamation`, `instruction`, `reassurance`, `aside`
+- **laughter / breath:** put `[laughter]` or `[breath]` in the text
+- **pace:** `UNITY_VOICE_LENGTH_SCALE` environment variable; 1.0 is her natural pace, higher is slower
+
+A delivery she was never trained on (an unknown emotion, or an intensity outside what she recorded for that
+emotion) is refused with the reason instead of being faked.
