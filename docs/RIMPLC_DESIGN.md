@@ -708,6 +708,13 @@ Everything "still open after the review" above that can be settled without a liv
 - **Guest beds (`guest_beds`):** `guest-bed-fees` (24.22, new, latched) lists the guest beds and their fee once `guest_beds > 0`. The playbook gives no fee order (the "$20" the owner quoted was what he saw), so the mod default stays. `guest-wing` and `econ-guest-beds-full` use the list where they said `set_bed_price` was missing.
 - **Security rooms (`security_room`):** `security-room-ne` / `-nw` / `-se` / `-sw` (27.95-27.98, new) run `security_room x <corner_x> z <corner_z> size 3` once that corner's tower stands (new sensors `tower_<corner>_built`: a built embrasure within 8 cells), then set `mark_security_room_<corner>`.
 - All of these commands are in the window list and her `game_set` enum. `trade_dialog`, `set_bed_price` and `set_prisoner_interaction` are in the checker's retired-name list.
-- The ladder is now 411 rungs and 196 sensors. Both checkers are CLEAN. `RimPLC.dll` builds 0/0; Rimrooms compiles 0/0 to a scratch folder.
+- **Tower detection fixed, and tower coolers (`room_cooler`):**
+  - `tower_<corner>_built` used to be "any embrasure within 8 cells", which counted plain wall embrasures as a tower. It is now what the `tower` command builds: a proper, fully roofed indoor room of 4-36 cells within 8 cells of the corner with a built embrasure in its walls.
+  - `tower_<corner>` is that room, or embrasure blueprints/frames near the corner (a tower laid out).
+  - New sensors per corner: `tower_<corner>_cell_x` / `_z` (a cell inside the tower room) and `tower_<corner>_cooler` (0 none, 1 planned, 2 built and powered, 3 built with no power).
+  - `tower-cooler-<corner>` (27.981-27.984) runs `room_cooler x z celsius 21` on that cell once the tower stands with no cooler.
+  - `tower-cooler-power-<corner>` (27.985-27.988) runs `power` when the cooler is built but unpowered.
+  - `room_cooler` is in both command lists and the enum.
+- The ladder is now 419 rungs and 208 sensors. Both checkers are CLEAN. `RimPLC.dll` builds 0/0; Rimrooms compiles 0/0 to a scratch folder.
 
 **Still open:** none of this has run in a live game; calling a trader in (`call_trader`) has no command.

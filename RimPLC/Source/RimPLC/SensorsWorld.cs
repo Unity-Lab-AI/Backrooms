@@ -292,18 +292,69 @@ namespace RimPLC
                 minX = Math.Min(minX, c.x); maxX = Math.Max(maxX, c.x);
                 minZ = Math.Min(minZ, c.z); maxZ = Math.Max(maxZ, c.z);
             }
-            var emb = new List<IntVec3>();
-            foreach (Building b in home.listerBuildings.allBuildingsColonist)
-                if (b.def.defName.Contains("Embrasure")) emb.Add(b.Position);
-            var built = new List<IntVec3>(emb);   // tower_<corner>_built: built embrasures only (security_room needs the tower standing)
+            // planned: embrasure blueprints / frames near the corner (a tower the tower command has laid out)
+            var plannedEmb = new List<IntVec3>();
             foreach (Thing t in home.listerThings.ThingsInGroup(ThingRequestGroup.Blueprint).Concat(home.listerThings.ThingsInGroup(ThingRequestGroup.BuildingFrame)))
-                if (t.def.entityDefToBuild != null && t.def.entityDefToBuild.defName.Contains("Embrasure")) emb.Add(t.Position);
+                if (t.def.entityDefToBuild != null && t.def.entityDefToBuild.defName.Contains("Embrasure")) plannedEmb.Add(t.Position);
             // literal keys, one corner per block, so the checker (tools/rimplc-check.py) can see every key written
             IntVec3 ne = new IntVec3(maxX, 0, maxZ), nw = new IntVec3(minX, 0, maxZ), se = new IntVec3(maxX, 0, minZ), sw = new IntVec3(minX, 0, minZ);
-            st["corner_ne_x"] = (double)ne.x; st["corner_ne_z"] = (double)ne.z; st["tower_ne"] = emb.Any(e => e.InHorDistOf(ne, 8f)); st["tower_ne_built"] = built.Any(e => e.InHorDistOf(ne, 8f));
-            st["corner_nw_x"] = (double)nw.x; st["corner_nw_z"] = (double)nw.z; st["tower_nw"] = emb.Any(e => e.InHorDistOf(nw, 8f)); st["tower_nw_built"] = built.Any(e => e.InHorDistOf(nw, 8f));
-            st["corner_se_x"] = (double)se.x; st["corner_se_z"] = (double)se.z; st["tower_se"] = emb.Any(e => e.InHorDistOf(se, 8f)); st["tower_se_built"] = built.Any(e => e.InHorDistOf(se, 8f));
-            st["corner_sw_x"] = (double)sw.x; st["corner_sw_z"] = (double)sw.z; st["tower_sw"] = emb.Any(e => e.InHorDistOf(sw, 8f)); st["tower_sw_built"] = built.Any(e => e.InHorDistOf(sw, 8f));
+            Room rne = TowerRoom(home, ne), rnw = TowerRoom(home, nw), rse = TowerRoom(home, se), rsw = TowerRoom(home, sw);
+            st["corner_ne_x"] = (double)ne.x; st["corner_ne_z"] = (double)ne.z; st["tower_ne_built"] = rne != null; st["tower_ne"] = rne != null || plannedEmb.Any(e => e.InHorDistOf(ne, 8f));
+            st["corner_nw_x"] = (double)nw.x; st["corner_nw_z"] = (double)nw.z; st["tower_nw_built"] = rnw != null; st["tower_nw"] = rnw != null || plannedEmb.Any(e => e.InHorDistOf(nw, 8f));
+            st["corner_se_x"] = (double)se.x; st["corner_se_z"] = (double)se.z; st["tower_se_built"] = rse != null; st["tower_se"] = rse != null || plannedEmb.Any(e => e.InHorDistOf(se, 8f));
+            st["corner_sw_x"] = (double)sw.x; st["corner_sw_z"] = (double)sw.z; st["tower_sw_built"] = rsw != null; st["tower_sw"] = rsw != null || plannedEmb.Any(e => e.InHorDistOf(sw, 8f));
+            if (rne != null) { IntVec3 c = rne.Cells.First(); st["tower_ne_cell_x"] = (double)c.x; st["tower_ne_cell_z"] = (double)c.z; st["tower_ne_cooler"] = (double)CoolerState(home, rne); }
+            if (rnw != null) { IntVec3 c = rnw.Cells.First(); st["tower_nw_cell_x"] = (double)c.x; st["tower_nw_cell_z"] = (double)c.z; st["tower_nw_cooler"] = (double)CoolerState(home, rnw); }
+            if (rse != null) { IntVec3 c = rse.Cells.First(); st["tower_se_cell_x"] = (double)c.x; st["tower_se_cell_z"] = (double)c.z; st["tower_se_cooler"] = (double)CoolerState(home, rse); }
+            if (rsw != null) { IntVec3 c = rsw.Cells.First(); st["tower_sw_cell_x"] = (double)c.x; st["tower_sw_cell_z"] = (double)c.z; st["tower_sw_cooler"] = (double)CoolerState(home, rsw); }
+        }
+
+        /// <summary>The tower the Rimrooms tower command builds, near a corner: a proper, fully roofed indoor room of 4-36 cells
+        /// within 8 cells of the corner with at least one built embrasure in its walls. Plain wall embrasures with no such
+        /// room do not count.</summary>
+        private static Room TowerRoom(Map home, IntVec3 corner)
+        {
+            var seen = new HashSet<Room>();
+            foreach (IntVec3 c in GenRadial.RadialCellsAround(corner, 8f, true))
+            {
+                if (!c.InBounds(home)) continue;
+                Room r = c.GetRoom(home);
+                if (r == null || !seen.Add(r)) continue;
+                if (r.PsychologicallyOutdoors || !r.ProperRoom || r.OpenRoofCount > 0 || r.CellCount < 4 || r.CellCount > 36) continue;
+                if (WallThings(home, r).Any(b => b.def.defName.Contains("Embrasure"))) return r;
+            }
+            return null;
+        }
+
+        private static IEnumerable<Building> WallThings(Map home, Room r)
+        {
+            var done = new HashSet<Building>();
+            foreach (IntVec3 c in r.Cells)
+                foreach (IntVec3 d in GenAdj.CardinalDirections)
+                {
+                    IntVec3 n = c + d;
+                    Building b = n.InBounds(home) ? n.GetEdifice(home) : null;
+                    if (b != null && b.Faction == Faction.OfPlayer && done.Add(b)) yield return b;
+                }
+        }
+
+        /// <summary>A tower room's cooler: 0 none (built or planned) in its walls, 1 planned, 2 built and powered, 3 built with no
+        /// power.</summary>
+        private static double CoolerState(Map home, Room r)
+        {
+            foreach (Building b in WallThings(home, r))
+            {
+                if (b.def.defName != "Cooler") continue;
+                CompPowerTrader pt = b.TryGetComp<CompPowerTrader>();
+                return pt == null || pt.PowerOn ? 2 : 3;
+            }
+            foreach (IntVec3 c in r.Cells)
+                foreach (IntVec3 d in GenAdj.CardinalDirections)
+                {
+                    IntVec3 n = c + d;
+                    if (n.InBounds(home) && n.GetThingList(home).Any(t => (t.def.IsBlueprint || t.def.IsFrame) && t.def.entityDefToBuild?.defName == "Cooler")) return 1;
+                }
+            return 0;
         }
 
         /// <summary>stone_blocks: stone blocks of every kind in storage (ResourceCounter, things in the StoneBlocks category).</summary>

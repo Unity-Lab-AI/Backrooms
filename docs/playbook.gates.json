@@ -1775,7 +1775,7 @@
       "type": "bool",
       "cadence": "normal",
       "status": "verified",
-      "api": "an embrasure built, framed or planned within 8 cells of the north-east Home-area corner",
+      "api": "the north-east tower: a roofed indoor room of 4-36 cells within 8 cells of the corner with a built embrasure in its walls, or embrasure blueprints/frames there (a tower laid out)",
       "group": "Defence",
       "label": "Tower NE",
       "severity": "info",
@@ -1809,7 +1809,7 @@
       "type": "bool",
       "cadence": "normal",
       "status": "verified",
-      "api": "an embrasure built, framed or planned within 8 cells of the north-west Home-area corner",
+      "api": "the north-west tower: a roofed indoor room of 4-36 cells within 8 cells of the corner with a built embrasure in its walls, or embrasure blueprints/frames there (a tower laid out)",
       "group": "Defence",
       "label": "Tower NW",
       "severity": "info",
@@ -1843,7 +1843,7 @@
       "type": "bool",
       "cadence": "normal",
       "status": "verified",
-      "api": "an embrasure built, framed or planned within 8 cells of the south-east Home-area corner",
+      "api": "the south-east tower: a roofed indoor room of 4-36 cells within 8 cells of the corner with a built embrasure in its walls, or embrasure blueprints/frames there (a tower laid out)",
       "group": "Defence",
       "label": "Tower SE",
       "severity": "info",
@@ -1877,7 +1877,7 @@
       "type": "bool",
       "cadence": "normal",
       "status": "verified",
-      "api": "an embrasure built, framed or planned within 8 cells of the south-west Home-area corner",
+      "api": "the south-west tower: a roofed indoor room of 4-36 cells within 8 cells of the corner with a built embrasure in its walls, or embrasure blueprints/frames there (a tower laid out)",
       "group": "Defence",
       "label": "Tower SW",
       "severity": "info",
@@ -1971,7 +1971,7 @@
       "type": "bool",
       "cadence": "normal",
       "status": "verified",
-      "api": "a BUILT embrasure within 8 cells of the north-east Home-area corner (blueprints and frames not counted)",
+      "api": "a roofed indoor room of 4-36 cells within 8 cells of the north-east corner with a built embrasure in its walls (what the tower command builds)",
       "group": "Defence",
       "label": "Tower NE built",
       "severity": "info",
@@ -1982,7 +1982,7 @@
       "type": "bool",
       "cadence": "normal",
       "status": "verified",
-      "api": "a BUILT embrasure within 8 cells of the north-west Home-area corner (blueprints and frames not counted)",
+      "api": "a roofed indoor room of 4-36 cells within 8 cells of the north-west corner with a built embrasure in its walls (what the tower command builds)",
       "group": "Defence",
       "label": "Tower NW built",
       "severity": "info",
@@ -1993,7 +1993,7 @@
       "type": "bool",
       "cadence": "normal",
       "status": "verified",
-      "api": "a BUILT embrasure within 8 cells of the south-east Home-area corner (blueprints and frames not counted)",
+      "api": "a roofed indoor room of 4-36 cells within 8 cells of the south-east corner with a built embrasure in its walls (what the tower command builds)",
       "group": "Defence",
       "label": "Tower SE built",
       "severity": "info",
@@ -2004,11 +2004,147 @@
       "type": "bool",
       "cadence": "normal",
       "status": "verified",
-      "api": "a BUILT embrasure within 8 cells of the south-west Home-area corner (blueprints and frames not counted)",
+      "api": "a roofed indoor room of 4-36 cells within 8 cells of the south-west corner with a built embrasure in its walls (what the tower command builds)",
       "group": "Defence",
       "label": "Tower SW built",
       "severity": "info",
       "tip": "A built embrasure stands near the south-west corner: its security room can go up."
+    },
+    "tower_ne_cell_x": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "a cell inside the north-east tower room, x",
+      "group": "Defence",
+      "label": "Tower NE cell x",
+      "severity": "info",
+      "tip": "A cell inside the north-east tower room (room_cooler goes here)."
+    },
+    "tower_ne_cell_z": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "a cell inside the north-east tower room, z",
+      "group": "Defence",
+      "label": "Tower NE cell z",
+      "severity": "info",
+      "tip": "A cell inside the north-east tower room (room_cooler goes here)."
+    },
+    "tower_ne_cooler": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "the north-east tower room's cooler: 0 none, 1 planned, 2 built and powered, 3 built with no power",
+      "group": "Defence",
+      "label": "Tower NE cooler",
+      "severity": "warning",
+      "tip": "The north-east tower room's cooler: 0 none, 1 planned, 2 built and powered, 3 built with no power.",
+      "warn": "==3"
+    },
+    "tower_nw_cell_x": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "a cell inside the north-west tower room, x",
+      "group": "Defence",
+      "label": "Tower NW cell x",
+      "severity": "info",
+      "tip": "A cell inside the north-west tower room (room_cooler goes here)."
+    },
+    "tower_nw_cell_z": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "a cell inside the north-west tower room, z",
+      "group": "Defence",
+      "label": "Tower NW cell z",
+      "severity": "info",
+      "tip": "A cell inside the north-west tower room (room_cooler goes here)."
+    },
+    "tower_nw_cooler": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "the north-west tower room's cooler: 0 none, 1 planned, 2 built and powered, 3 built with no power",
+      "group": "Defence",
+      "label": "Tower NW cooler",
+      "severity": "warning",
+      "tip": "The north-west tower room's cooler: 0 none, 1 planned, 2 built and powered, 3 built with no power.",
+      "warn": "==3"
+    },
+    "tower_se_cell_x": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "a cell inside the south-east tower room, x",
+      "group": "Defence",
+      "label": "Tower SE cell x",
+      "severity": "info",
+      "tip": "A cell inside the south-east tower room (room_cooler goes here)."
+    },
+    "tower_se_cell_z": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "a cell inside the south-east tower room, z",
+      "group": "Defence",
+      "label": "Tower SE cell z",
+      "severity": "info",
+      "tip": "A cell inside the south-east tower room (room_cooler goes here)."
+    },
+    "tower_se_cooler": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "the south-east tower room's cooler: 0 none, 1 planned, 2 built and powered, 3 built with no power",
+      "group": "Defence",
+      "label": "Tower SE cooler",
+      "severity": "warning",
+      "tip": "The south-east tower room's cooler: 0 none, 1 planned, 2 built and powered, 3 built with no power.",
+      "warn": "==3"
+    },
+    "tower_sw_cell_x": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "a cell inside the south-west tower room, x",
+      "group": "Defence",
+      "label": "Tower SW cell x",
+      "severity": "info",
+      "tip": "A cell inside the south-west tower room (room_cooler goes here)."
+    },
+    "tower_sw_cell_z": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "a cell inside the south-west tower room, z",
+      "group": "Defence",
+      "label": "Tower SW cell z",
+      "severity": "info",
+      "tip": "A cell inside the south-west tower room (room_cooler goes here)."
+    },
+    "tower_sw_cooler": {
+      "source": "RimPLC: RimPLC/Source/RimPLC/SensorsWorld.cs (normal cadence)",
+      "type": "int",
+      "cadence": "normal",
+      "status": "verified",
+      "api": "the south-west tower room's cooler: 0 none, 1 planned, 2 built and powered, 3 built with no power",
+      "group": "Defence",
+      "label": "Tower SW cooler",
+      "severity": "warning",
+      "tip": "The south-west tower room's cooler: 0 none, 1 planned, 2 built and powered, 3 built with no power.",
+      "warn": "==3"
     }
   },
   "gates": [
@@ -10479,6 +10615,126 @@
       ],
       "latch": false,
       "why": "owner (tower command doc): towers with their own security rooms; runs once the south-west tower stands"
+    },
+    {
+      "id": "tower-cooler-ne",
+      "priority": 27.981,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "tower_ne_built": true,
+        "tower_ne_cooler": 0
+      },
+      "then": [
+        "game_set cmd room_cooler x <tower_ne_cell_x> z <tower_ne_cell_z> celsius 21 -- the tower room gets its own cooler in its wall; read the reply",
+        "once it is built: tower-cooler-power-ne wires it"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): every tower with its own ventilation; cooler then power once it stands"
+    },
+    {
+      "id": "tower-cooler-power-ne",
+      "priority": 27.985,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "tower_ne_cooler": 3
+      },
+      "then": [
+        "game_set cmd power -- the tower cooler is built with no power: one conduit line to the nearest live grid; read the reply"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): every tower with its own ventilation; cooler then power once it stands"
+    },
+    {
+      "id": "tower-cooler-nw",
+      "priority": 27.982,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "tower_nw_built": true,
+        "tower_nw_cooler": 0
+      },
+      "then": [
+        "game_set cmd room_cooler x <tower_nw_cell_x> z <tower_nw_cell_z> celsius 21 -- the tower room gets its own cooler in its wall; read the reply",
+        "once it is built: tower-cooler-power-nw wires it"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): every tower with its own ventilation; cooler then power once it stands"
+    },
+    {
+      "id": "tower-cooler-power-nw",
+      "priority": 27.986,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "tower_nw_cooler": 3
+      },
+      "then": [
+        "game_set cmd power -- the tower cooler is built with no power: one conduit line to the nearest live grid; read the reply"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): every tower with its own ventilation; cooler then power once it stands"
+    },
+    {
+      "id": "tower-cooler-se",
+      "priority": 27.983,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "tower_se_built": true,
+        "tower_se_cooler": 0
+      },
+      "then": [
+        "game_set cmd room_cooler x <tower_se_cell_x> z <tower_se_cell_z> celsius 21 -- the tower room gets its own cooler in its wall; read the reply",
+        "once it is built: tower-cooler-power-se wires it"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): every tower with its own ventilation; cooler then power once it stands"
+    },
+    {
+      "id": "tower-cooler-power-se",
+      "priority": 27.987,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "tower_se_cooler": 3
+      },
+      "then": [
+        "game_set cmd power -- the tower cooler is built with no power: one conduit line to the nearest live grid; read the reply"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): every tower with its own ventilation; cooler then power once it stands"
+    },
+    {
+      "id": "tower-cooler-sw",
+      "priority": 27.984,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "tower_sw_built": true,
+        "tower_sw_cooler": 0
+      },
+      "then": [
+        "game_set cmd room_cooler x <tower_sw_cell_x> z <tower_sw_cell_z> celsius 21 -- the tower room gets its own cooler in its wall; read the reply",
+        "once it is built: tower-cooler-power-sw wires it"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): every tower with its own ventilation; cooler then power once it stands"
+    },
+    {
+      "id": "tower-cooler-power-sw",
+      "priority": 27.988,
+      "family": "war",
+      "when": {
+        "colony_exists": true,
+        "tower_sw_cooler": 3
+      },
+      "then": [
+        "game_set cmd power -- the tower cooler is built with no power: one conduit line to the nearest live grid; read the reply"
+      ],
+      "latch": false,
+      "why": "owner (tower command doc): every tower with its own ventilation; cooler then power once it stands"
     },
     {
       "id": "war-bastions-towers",
