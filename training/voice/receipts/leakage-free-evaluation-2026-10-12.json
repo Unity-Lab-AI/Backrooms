@@ -1,0 +1,14 @@
+{
+ "schema_version": 1,
+ "check_id": "leakage_free_evaluation",
+ "decision": "accepted",
+ "accepted_by": "engineering (Unity, final pre-launch checks requested by the owner 2026-10-12: \"option 3 final checks and caps a 50$ per pod\")",
+ "recorded_at": "2026-10-12T06:38:36-06:00",
+ "scope": "training-preflight",
+ "evidence": [
+  "training/voice/prep.py: split_for(normalized transcript) puts lexical variants on one side; train-only statistics",
+  "run2/logs/acoustic.log HELDOUT_ORACLE mel 1.333 -> 0.826 -> 0.744 on the held-out split",
+  "8 independently written unseen lines (D:/voice-lab/poc/unseen-lines.txt) never in any corpus"
+ ],
+ "residual_risk": "Full-corpus split is computed on the pod from the generated set."
+}

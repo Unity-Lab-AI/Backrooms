@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    RimPLC core assembly. Settings copied from src/RimroomsAsyncIndustries (net472, C# 7.3, deterministic, warnings
+    as errors, game references read-only with Private=false, no Harmony, no other dependency).
+
+    OUTPUT STAYS INSIDE THIS MOD FOLDER: RimPLC/1.6/Assemblies/RimPLC.dll. Nothing here builds into, copies into or
+    deploys to a RimWorld Mods folder or the game install. Staging is the owner's step (docs/BUILDING.md).
+  -->
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>RimPLC</AssemblyName>
+    <RootNamespace>RimPLC</RootNamespace>
+    <Version>0.1.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <Authors>Operator</Authors>
+    <Company>Operator</Company>
+    <Product>RimPLC</Product>
+    <Description>A ladder-logic advisor for RimWorld: sensors, tags, marks and rungs, scanned in game.</Description>
+    <Copyright>Copyright (c) 2026 Operator</Copyright>
+    <Deterministic>true</Deterministic>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <DebugType>portable</DebugType>
+    <AutomaticallyUseReferenceAssemblyPackages>false</AutomaticallyUseReferenceAssemblyPackages>
+    <OutputPath>$(MSBuildProjectDirectory)/../../1.6/Assemblies/</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <RimWorldPath Condition="'$(RimWorldPath)' == ''">$(RIMWORLD_PATH)</RimWorldPath>
+    <RimWorldPath Condition="'$(RimWorldPath)' == ''">C:/Program Files (x86)/Steam/steamapps/common/RimWorld</RimWorldPath>
+    <RimWorldManagedPath>$(RimWorldPath)/RimWorldWin64_Data/Managed</RimWorldManagedPath>
+    <PathMap>$(MSBuildProjectDirectory)=/RimPLC/Source/RimPLC</PathMap>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" PrivateAssets="all" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RimWorldManagedPath)/Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(RimWorldManagedPath)/UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(RimWorldManagedPath)/UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(RimWorldManagedPath)/UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <Target Name="RequireLocalGameReferences" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(RimWorldManagedPath)/Assembly-CSharp.dll')" Text="RimWorld 1.6 managed references are missing from $(RimWorldManagedPath). Set RimWorldPath or RIMWORLD_PATH. Do not download or commit game binaries." />
+  </Target>
+</Project>

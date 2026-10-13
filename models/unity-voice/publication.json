@@ -1,0 +1,107 @@
+{
+  "schema": "unity-voice-publication-v1",
+  "identity": {
+    "schema": "unity-voice-checkpoint-v2",
+    "feature_id": "5ff1fbb11f55dcac2970628853b6faf8fe60103d39094dc3fa01650be04a401f",
+    "dataset_id": "85b62deba8a2cb7b750795a051f9b1c3b4b02449564d02d75dfd62baf1d77a50",
+    "voice_id": "unity-a2-low-warm-alto-v1",
+    "frontend_id": "cd389683adf047f70032d660851a0f6f7e7b7a98b719bc2bb0d6ecaf85e29bac",
+    "vocab_id": "dd11bafb2bd051b988d8f84261acb32953d6050fcfc500281bb8851e5be0e41f",
+    "stats_id": "11c6150803fd932c1e1286d0f1e8faf876e4291cb68e87c132031a66ae1b322e",
+    "support_id": "ae48012e75e8f7c135aae5d9e83556e0ba2117e4cdb2a1dd3b7a32d14834540e",
+    "acoustic_config": {
+      "n_mels": 80,
+      "d": 256,
+      "enc": 4,
+      "dec": 4,
+      "conditioning": "emotion-act-intensity-pace-v2",
+      "voicing": true
+    },
+    "vocoder_config": {
+      "n_mels": 80,
+      "ch": 512,
+      "rates": [
+        8,
+        8,
+        2,
+        2
+      ],
+      "kernels": [
+        16,
+        16,
+        4,
+        4
+      ],
+      "rk": [
+        3,
+        7,
+        11
+      ],
+      "rd": [
+        [
+          1,
+          3,
+          5
+        ],
+        [
+          1,
+          3,
+          5
+        ],
+        [
+          1,
+          3,
+          5
+        ]
+      ]
+    },
+    "emotions": [
+      "neutral",
+      "warm",
+      "happy",
+      "amused",
+      "excited",
+      "sad",
+      "concerned",
+      "frustrated",
+      "surprised"
+    ],
+    "speech_acts": [
+      "statement",
+      "yes_no_question",
+      "wh_question",
+      "exclamation",
+      "instruction",
+      "reassurance",
+      "aside"
+    ]
+  },
+  "working_acoustic_sha256": "9d0b8a3435b6b85b2bd279f8fe2a2d766419977a4e1b32e0f5fa8eb60bcc016d",
+  "working_vocoder_sha256": "6b9706973567b12c39728af641fba1f0f1846c74450c86dfea5a7348e41ea24b",
+  "student_source": {
+    "schema": "unity-student-source-v1",
+    "files_sha256": {
+      "model.py": "f6bf62847e053f9af63d34ffe21ce11a9b079828da8760c52f458488ab9d7714",
+      "vocoder.py": "f6e8543d98c8a0e25a88fd903827c276225aa8713b7c06fe11c6d94ff34822d8",
+      "prep.py": "bc845dc41bc9111bd296f9405f68f25c97f5fa5f178f288284074feaa5cab3bb",
+      "train_acoustic.py": "58fc541ad97030705108ac405b8d1aba77c927d8f208cfc5f833aed2c76e5f5f",
+      "train_vocoder.py": "12572f0e1ebad9be9381ba0e75c612a4853d287844e5b1ca23b743fddf4d9657",
+      "infer.py": "e87a900901df02cc04d00da3c2d1080b4ce4b245883d2c528275b7b718d81f10",
+      "feature_arrays.py": "3039687c3e48af953576e5d49afec7836618a3df3a3394a28bf38d72e454850e",
+      "speech_turns.py": "fd5b5a56d33af5923c8190450bbed0c242331618efe6d33a4fae2eb4beb8cd4b",
+      "student_state.py": "ef3d48779b5c0bb2eb4db7d2d1b4ad544fb677c07abf61f0f9ec225c64847bd7"
+    },
+    "source_id": "22f76788166d6d44a6bb669ebbc6e11ddf03fcc0f53d261ff96818a1c8826b7f"
+  },
+  "source_digest": "5103180e58caa4b3fd24557c2215facc8860ae8cc52785535fe29e417207e4e7",
+  "training_steps": {
+    "acoustic": 20000,
+    "vocoder": 120000
+  },
+  "deployment_accepted": false,
+  "files": {
+    "acoustic.pt": "9fe8a7220b12745215d56ad7f433ec6bac57a0dce8beea0e7f1dcf7c82421ac4",
+    "vocoder.pt": "bbfcd8c261168be103f55eeb23ff3862db49883d6db2b25409f76e83c659b5a4",
+    "voice-meta.json": "20bf5d9ad522c34f0ebb97036d103c20e8fc7e8d7441fc41bd25a85cbf92bd0d"
+  }
+}

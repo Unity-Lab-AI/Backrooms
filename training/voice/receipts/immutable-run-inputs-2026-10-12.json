@@ -1,0 +1,14 @@
+{
+ "schema_version": 1,
+ "check_id": "immutable_run_inputs",
+ "decision": "accepted",
+ "accepted_by": "engineering (Unity, final pre-launch checks requested by the owner 2026-10-12: \"option 3 final checks and caps a 50$ per pod\")",
+ "recorded_at": "2026-10-12T06:38:36-06:00",
+ "scope": "training-preflight",
+ "evidence": [
+  "pods clone a pinned 40-hex commit and refuse unless VOICE_MANIFEST digest (5b870084...) / brain MANIFEST digest (7d2cac95...) match",
+  "training/voice/receipts/local-environment-build.json + environment-2026-10-11-v2: 103 pinned packages",
+  "requirements-template.txt / requirements-teacher-*.txt / constraints-teacher.txt pinned"
+ ],
+ "residual_risk": "Package installs on the provider resolve from the pins at launch."
+}

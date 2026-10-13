@@ -7,7 +7,7 @@ across every file given.
 """
 import collections, json, os, re, sys
 
-CATS = {"hard_moments", "advice", "stream_running", "boundaries", "qa", "setup", "banter", "reactions"}
+CATS = {"admin", "pacing", "hard_moments", "advice", "stream_running", "boundaries", "qa", "setup", "banter", "reactions"}
 EMOTIONS = {"neutral", "warm", "happy", "amused", "excited", "sad", "concerned", "frustrated", "surprised"}
 ACTS = {"statement", "yes_no_question", "wh_question", "exclamation", "instruction", "reassurance", "aside"}
 BANNED = re.compile(r"\b(damn|dammit|hell|crap|crappy|shit|fuck\w*|bitch|ass|sucks?|freaking|frickin|wtf|omfg|stupid|"
@@ -37,16 +37,23 @@ def main(paths):
             t = ep.get("turns")
             if not isinstance(t, list) or not 1 <= len(t) <= 4: probs.append("needs 1-4 turns")
             for k, turn in enumerate(t or [], 1):
-                if ("chat" in turn) == ("event" in turn): probs.append("turn %d needs exactly one of chat/event" % k)
+                srcs = [x for x in ("chat", "event", "owner") if x in turn]
+                if not srcs or ("chat" in turn and "event" in turn): probs.append("turn %d needs chat, event or owner (chat+owner allowed)" % k)
                 viewers = {c.get("viewer") for c in turn.get("chat", [])}
                 for c in turn.get("chat", []):
                     if not c.get("viewer") or not c.get("msg"): probs.append("turn %d chat entry needs viewer and msg" % k)
                     if "forever11231" in (c.get("viewer", "") + c.get("msg", "")).lower(): probs.append("owner handle")
                 if not turn.get("think") or len(turn["think"].split()) > 25: probs.append("turn %d think missing/too long" % k)
                 calls = turn.get("calls") or []
-                if not 1 <= len(calls) <= 2: probs.append("turn %d needs 1-2 calls" % k)
+                if ep.get("category") == "pacing":
+                    if len(calls) > 1: probs.append("pacing turn %d may speak at most once" % k)
+                elif not 1 <= len(calls) <= 2: probs.append("turn %d needs 1-2 calls" % k)
                 for c in calls:
                     a, name = c.get("args", {}), c.get("name")
+                    if name == "reply_owner":
+                        if "owner" not in turn: probs.append("reply_owner without an owner message")
+                        if not a.get("text") or BANNED.search(a.get("text", "")): probs.append("reply_owner text empty or unclean")
+                        continue
                     if name not in ("say", "reply_chat"): probs.append("tool %s not allowed" % name); continue
                     if name == "reply_chat" and a.get("viewer") not in viewers: probs.append("reply_chat viewer not in this turn's chat")
                     text = a.get("text", "")

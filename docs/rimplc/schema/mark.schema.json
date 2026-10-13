@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rimplc.local/schema/mark.schema.json",
+  "title": "RimPLC marks (frozen v1)",
+  "description": "What cannot be measured, recorded with ladder_set mark / rimplc/set_mark. A mark holds a bool or a number; numbers stay numbers. Exposed to conditions as mark_<name>. A boolean mark never set reads false; a numeric mark reads its default.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "note": {"type": "string"},
+    "defaults": {"type": "object", "propertyNames": {"$ref": "#/$defs/name"}, "additionalProperties": {"type": "number"}},
+    "numeric": {"type": "object", "propertyNames": {"$ref": "#/$defs/name"}, "additionalProperties": {"type": "string"}},
+    "boolean": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "name": {"type": "string", "pattern": "^[a-z0-9_]{1,40}$"},
+    "value": {"type": ["boolean", "number"]}
+  }
+}

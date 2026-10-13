@@ -11,6 +11,13 @@ listens to each clip before training. This is the rule that stands in for it, ap
 Writes <out>/metadata.jsonl (the kept rows, unchanged) and hard-links each kept WAV (copies if links fail), then
 re-loads the result with dataset_contract.load_dataset and writes <out>/screen-report.json, which lists every
 dropped clip (id, line, reasons, what the recognizer heard) so it can be listened to at home.
+
+Speed (owner, 2026-10-12: "Slow to about 3.3 w/s (Recommended)"): after the edges are trimmed, each kept clip whose
+speech runs faster than VOICE_TARGET_WPS (default 3.3 words per second of speech, first to last sound) is slowed with
+a pitch-preserving phase-vocoder time-stretch (librosa.effects.time_stretch, librosa pinned in
+requirements-teacher-qwen.txt) toward that rate. The stretch is never below 0.80x speed and never speeds a clip up.
+The dataset row fields are fixed by dataset_contract (pace is unchanged), so the per-clip factor is recorded in
+<out>/stretch.jsonl and summarised in screen-report.json.
 """
 import json, os, re, shutil, sys
 from collections import Counter
@@ -58,6 +65,41 @@ def edit_rate(expected, heard):
     return d[len(b)] / max(1, len(a))
 
 
+# OFF by default (0). Owner, 2026-10-12, on the time-stretched clips: "they all sound like two recording just offset"
+# -- the phase vocoder smears the voice. Pace is set by the student instead (infer.py LENGTH_SCALE 1.2), so the clips
+# are trained as the teacher recorded them. A value > 0 turns the old audio stretch back on.
+TARGET_WPS = float(os.environ.get("VOICE_TARGET_WPS", "0"))
+MIN_RATE = 0.80
+
+
+def slow_to_target(wav, sr, text, pad_seconds=0.15, target=TARGET_WPS):
+    """Trim to pad_seconds of quiet at each edge and slow the speech span toward target words/s.
+    Returns (wav, info); info has the words, speech seconds before/after, words/s before/after and the rate used
+    (1.0 = unchanged; 0.85 = played at 85% speed, i.e. 1/0.85 longer)."""
+    import numpy as np
+    level = np.abs(wav)
+    loud = np.flatnonzero(level > max(1e-4, 0.03 * float(level.max()))) if len(wav) else []
+    n = len(words(text))
+    if not len(loud):
+        return wav, {"words": n, "rate": 1.0, "reason": "no sound found"}
+    a, b, pad = int(loud[0]), int(loud[-1]) + 1, int(pad_seconds * sr)
+    speech = wav[a:b]
+    before = len(speech) / sr
+    wps = n / before if before > 0 else 0.0
+    rate = 1.0
+    if target > 0 and n >= 2 and before >= 0.3 and wps > target:
+        rate = max(MIN_RATE, target / wps)
+    if rate < 1.0:
+        import librosa
+        speech = librosa.effects.time_stretch(np.ascontiguousarray(speech, dtype=np.float32), rate=rate)
+        speech = np.clip(speech, -1.0, 1.0)
+    out = np.concatenate([wav[max(0, a - pad):a], speech, wav[b:b + pad]]).astype(np.float32)
+    after = len(speech) / sr
+    return out, {"words": n, "rate": round(rate, 4), "speech_seconds_before": round(before, 3),
+                 "speech_seconds_after": round(after, 3), "wps_before": round(wps, 3),
+                 "wps_after": round(n / after if after > 0 else 0.0, 3)}
+
+
 def laugh_heard(heard):
     return any(w.strip(".,!?'").lower() in LAUGH for w in (heard or "").split())
 
@@ -94,13 +136,35 @@ def main():
     if tmp.exists():
         shutil.rmtree(tmp)
     (tmp / "wavs").mkdir(parents=True)
+    # Uniform edges. The local proof run (owner: "most we cut off starts ... speed up sounding") showed teacher clips
+    # starting with 0.03-1.0 s of silence at random, which the student smeared into its first sound. Every kept clip
+    # is trimmed to the same PAD seconds of quiet before the first and after the last sound, its hash re-recorded.
+    import numpy as np, soundfile as sf, hashlib
+    PAD = 0.15
+    # Then the speed step: speech faster than TARGET_WPS is slowed (pitch kept) toward it; see the module doc.
+    trimmed, stretch = [], []
     for row in kept:
         src, dst = merged / row["audio"], tmp / row["audio"]
         dst.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            os.link(src, dst)
-        except OSError:
-            shutil.copy2(src, dst)
+        wav, sr = sf.read(str(src), dtype="float32")
+        wav, info = slow_to_target(wav, sr, row["text"], PAD)
+        sf.write(str(dst), wav, sr, subtype="PCM_16")
+        row = dict(row, sha256=hashlib.sha256(dst.read_bytes()).hexdigest())
+        trimmed.append(row)
+        stretch.append(dict(id=row["id"], **info))
+    kept = trimmed
+    with open(tmp / "stretch.jsonl", "w", encoding="utf-8", newline="\n") as f:
+        for item in stretch:
+            f.write(json.dumps(item) + "\n")
+    slowed = [x for x in stretch if x["rate"] < 1.0]
+    measured = [x for x in stretch if "wps_before" in x]
+    mean = lambda xs: round(sum(xs) / len(xs), 3) if xs else None
+    speed = {"target_wps": TARGET_WPS, "min_rate": MIN_RATE, "method": "librosa.effects.time_stretch (phase vocoder, pitch kept)",
+             "clips_slowed": len(slowed), "clips_unchanged": len(stretch) - len(slowed),
+             "mean_rate_of_slowed": mean([x["rate"] for x in slowed]),
+             "mean_wps_before": mean([x["wps_before"] for x in measured]),
+             "mean_wps_after": mean([x["wps_after"] for x in measured]),
+             "per_clip": "stretch.jsonl"}
     with open(tmp / "metadata.jsonl", "w", encoding="utf-8", newline="\n") as f:
         for row in kept:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
@@ -113,10 +177,12 @@ def main():
               "rescued_after_normalising": rescued,
               "laughter_heard": sum(1 for r in kept if "[laughter]" in r["text"]
                                     and laugh_heard(screened.get(r["id"], {}).get("recognized_text"))),
-              "rule": "keep only rows screened with no flags and a matching WAV hash; a words-only mismatch is kept if it matches within 10% after normalising numbers, contractions and heard laughter"}
+              "rule": "keep only rows screened with no flags and a matching WAV hash; a words-only mismatch is kept if it matches within 10% after normalising numbers, contractions and heard laughter",
+              "edges": "every kept clip trimmed to 0.15 s of quiet before the first and after the last sound",
+              "speed": speed}
     (tmp / "screen-report.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
     tmp.rename(out)
-    print(json.dumps({k: report[k] for k in ("kept_clips", "total_clips", "dropped_by_reason", "kept_laughter", "laughter_heard")} | {"rescued": len(rescued)}))
+    print(json.dumps({k: report[k] for k in ("kept_clips", "total_clips", "dropped_by_reason", "kept_laughter", "laughter_heard", "speed")} | {"rescued": len(rescued)}))
 
 
 if __name__ == "__main__":

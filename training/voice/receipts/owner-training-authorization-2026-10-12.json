@@ -1,0 +1,41 @@
+{
+ "schema_version": 1,
+ "check_id": "owner_training_authorization",
+ "decision": "accepted",
+ "accepted_by": "owner",
+ "recorded_at": "2026-10-12T06:46:50-06:00",
+ "scope": "training-preflight",
+ "mode": "generated-on-pod",
+ "owner_quote": "Go fastest, voice cap $70 (owner, 2026-10-12, after \"okay do whats best\" and \"option 3 final checks and caps a 50$ per pod running 3 pods in tandum together\") | cap raised: \"well we are gonna have to double that cap\" (owner, 2026-10-12, after the setup restarts)",
+ "approved_source_digest": "5103180e58caa4b3fd24557c2215facc8860ae8cc52785535fe29e417207e4e7",
+ "approved_dataset_id": "generated-on-pod",
+ "approved_hourly_price": 7.98,
+ "approved_budget_usd": 140,
+ "approved_config": {
+  "ACOUSTIC_STEPS": 20000,
+  "ACOUSTIC_FRAMES": 96000,
+  "VOCODER_STEPS": 120000,
+  "VOCODER_BATCH": 32,
+  "GTA_STEPS": 20000,
+  "VOICE_SEED": 17,
+  "VOICE_VOLUME_ID": "nk8oyfxwc7",
+  "VOICE_VOLUME_RECEIPT_SHA256": "generated-on-pod",
+  "KEEP_HOURS": 1
+ },
+ "evidence": [
+  "voice training pod: 2x H100 SXM, secure, US-CA-2, $7.98/h live price 2026-10-12 (list-gpu-types count 2)",
+  "network volume nk8oyfxwc7 (US-CA-2, 150 GB)",
+  "clip pod 4x H200 $21.16/h cap $50 and brain pod 1x H100 $3.99/h cap $50 launched alongside",
+  "owner listening approvals: pace-1.2 'ismaples sound good', laughter 'those are good'",
+  "relaunch after both voice pods refused on a shared-volume clone collision (fixed: per-pod local clone)",
+  "relaunch: teacher workers ran the system python because the venv symlink was resolved (fixed: venv path kept)",
+  "relaunch: teacher models moved onto the volume (container-disk copies were wiped by the restart)",
+  "relaunch: Cosy probe accepts the onnxruntime-gpu distribution",
+  "relaunch: Cosy runtime cache folder created with its parents",
+  "voice training cap $70 -> $140, clip pod cap $50 -> $100 (owner: double the cap)",
+  "Cosy renders before Qwen (owner: keep the qwen ones if an issue)",
+  "generate_on_pod.sh: empty shard folders left by an S3 clear start fresh",
+  "Cosy env gets gdown + wget (Matcha imports them; debug pod 1kpwfq367r9aov showed ModuleNotFoundError: gdown)",
+  "Cosy env drops wetext so the text front-end matches the approved recipe (text_frontend False); wetext hung on a 403 from modelscope.cn"
+ ]
+}

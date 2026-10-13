@@ -18,6 +18,13 @@ CFG = dict(base=os.environ.get("BRAIN_BASE", "Qwen/Qwen3.5-9B"), seq=24576, r=32
            # full attention, the linear-attention (gated delta) projections and the MLP: every text layer learns
            targets=["q_proj", "k_proj", "v_proj", "o_proj", "in_proj_qkv", "in_proj_z", "out_proj",
                     "gate_proj", "up_proj", "down_proj"])
+# Owner: "make sure we are peggin these GPUS pod when we do it". The effective batch stays 16 sequences per optimizer
+# step (what is learned does not change); BRAIN_BS sets how many go through the GPU at once, and run.sh picks the
+# largest of 8/4/2 that survives the preflight on the longest rows, so the H100 is filled instead of half idle.
+CFG["bs"] = int(os.environ.get("BRAIN_BS", CFG["bs"]))
+if CFG["bs"] < 1 or 16 % CFG["bs"]:
+    raise SystemExit("BRAIN_BS must divide 16")
+CFG["ga"] = 16 // CFG["bs"]
 
 t0 = time.time()
 from unsloth import FastLanguageModel                      # noqa: E402  (unsloth must import first)
@@ -33,6 +40,7 @@ model = FastLanguageModel.get_peft_model(
 tok = getattr(proc, "tokenizer", proc)                      # the multimodal processor wraps the text tokenizer
 tools = json.load(open(os.path.join(D, "tools.json"), encoding="utf-8"))
 
+IMAGE_TOKEN = getattr(proc, "image_token_id", None) or tok.convert_tokens_to_ids("<|image_pad|>")
 SPAN = re.compile(r"<\|im_start\|>assistant\n(.*?<\|im_end\|>)", re.S)
 rows, skipped, cut = [], 0, 0
 for line in open(os.path.join(D, "train.jsonl"), encoding="utf-8"):
@@ -65,9 +73,13 @@ for line in open(os.path.join(D, "train.jsonl"), encoding="utf-8"):
         skipped += 1
         continue
     row = {"input_ids": list(enc["input_ids"]), "attention_mask": list(enc["attention_mask"]), "labels": labels}
-    if images:
-        row["pixel_values"] = enc["pixel_values"].tolist()
-        row["image_grid_thw"] = enc["image_grid_thw"].tolist()
+    # only the paths are kept; the pixels are made again per batch in collate(). Holding every 4K screenshot's
+    # pixel_values as Python lists took ~1.5 GB each and the pod was OOM-killed at step 8 (2026-10-12). Every row
+    # carries the key (empty for text rows) because Dataset.from_list takes its columns from the first row.
+    row["image_paths"] = list(images)
+    # Qwen3.5's multimodal RoPE needs to know which tokens are image tokens whenever an image is in the batch
+    # (1 = image token, 0 = text), built from the image placeholder id so it never depends on processor flags
+    row["mm_token_type_ids"] = [1 if t == IMAGE_TOKEN else 0 for t in row["input_ids"]]
     rows.append(row)
 print("examples", len(rows), "skipped", skipped, "cut to seq", cut, "longest tokens",
       max(len(r["input_ids"]) for r in rows), flush=True)
@@ -80,16 +92,21 @@ def collate(batch):
     out = {"input_ids": torch.tensor([b["input_ids"] + [pad] * (n - len(b["input_ids"])) for b in batch]),
            "attention_mask": torch.tensor([b["attention_mask"] + [0] * (n - len(b["attention_mask"])) for b in batch]),
            "labels": torch.tensor([b["labels"] + [-100] * (n - len(b["labels"])) for b in batch])}
-    pv = [b for b in batch if b.get("pixel_values")]
-    if pv:
-        out["pixel_values"] = torch.cat([torch.tensor(b["pixel_values"]) for b in pv]).to(torch.bfloat16)
-        out["image_grid_thw"] = torch.cat([torch.tensor(b["image_grid_thw"]) for b in pv])
+    paths = [p for b in batch for p in (b.get("image_paths") or [])]
+    if paths:
+        from PIL import Image
+        pics = [Image.open(os.path.join(D, p)).convert("RGB") for p in paths]
+        img = proc.image_processor(images=pics, return_tensors="pt")   # same processor and settings as tokenizing
+        out["pixel_values"] = img["pixel_values"].to(torch.bfloat16)
+        out["image_grid_thw"] = img["image_grid_thw"]
+        out["mm_token_type_ids"] = torch.tensor([b["mm_token_type_ids"] + [0] * (n - len(b["mm_token_type_ids"]))
+                                                 for b in batch])
     return out
 
 
 if PREFLIGHT:                                               # the longest rows, plus any image row, 2 steps
     rows.sort(key=lambda r: -len(r["input_ids"]))
-    rows = rows[:CFG["bs"] * CFG["ga"] * 2] + [r for r in rows if r.get("pixel_values")][:2]
+    rows = rows[:CFG["bs"] * CFG["ga"] * 2] + [r for r in rows if r.get("image_paths")][:2]
 ds = Dataset.from_list(rows).shuffle(seed=7)
 
 
@@ -117,7 +134,7 @@ trainer = Trainer(
                num_train_epochs=CFG["epochs"], max_steps=2 if PREFLIGHT else -1, learning_rate=CFG["lr"],
                lr_scheduler_type="cosine", warmup_steps=15, logging_steps=5, save_strategy="steps", save_steps=40,
                save_total_limit=2, bf16=True, optim="adamw_8bit", weight_decay=0.0, seed=7, output_dir=ckdir,
-               report_to="none", group_by_length=not PREFLIGHT, remove_unused_columns=False, dataloader_num_workers=4))
+               report_to="none", group_by_length=not PREFLIGHT, remove_unused_columns=False, dataloader_num_workers=0))
 # an interrupted run resumes from its newest checkpoint (run.sh clears them whenever the inputs change)
 resume = not PREFLIGHT and os.path.isdir(ckdir) and any(d.startswith("checkpoint-") for d in os.listdir(ckdir))
 if resume:

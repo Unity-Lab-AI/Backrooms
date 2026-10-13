@@ -163,7 +163,7 @@ class Toolbox:
     # The tools that actually play the colony. Owner: "no she has to do it" -- so she has to be fast, and 72 tool
     # definitions (~9k tokens) were re-read on CPU every turn. Camera minutiae, UI layout, tab and save plumbing
     # stay registered (a call to them still works) but are not offered in the prompt.
-    CORE = {"ladder", "ladder_set", "pawn_priorities", "new_colony", "game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "plan", "webcam", "snap",
+    CORE = {"ladder", "ladder_set", "pawn_priorities", "new_colony", "game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "reply_owner", "plan", "webcam", "snap",
             "twitch_chat", "note", "read_doc", "run_list", "empire_pass", "play_slices",
             "game_apply_architect_designator", "game_select_architect_designator", "game_list_architect_designators",
             "game_list_architect_categories", "game_set_zone_target", "game_list_zones", "game_list_areas",
@@ -314,6 +314,9 @@ class Toolbox:
             "reply_chat": ("[STREAM] Answer a Twitch viewer by name, out loud and in the overlay chat. chat_id is the "
                            "number given with their message.", S({"chat_id": i, "viewer": s, "text": s, "emotion": EMO, "act": ACT},
                                                                   ["chat_id", "viewer", "text"]), self.t_reply),
+            "reply_owner": ("[PRIVATE] Answer the OWNER in the private admin channel (Persona Studio window / admin "
+                            "panel). Never spoken, never on stream. msg_id is the number given with their message.",
+                            S({"msg_id": i, "text": s}, ["msg_id", "text"]), self.t_reply_owner),
             "new_colony": ("Start a brand-new colony on the company scenario, set up the owner's way (world 30%, 300x300, "
                            "Spring, pollution 0, factions, mountainous forest tile, the Godsmultiplayer ideoligion, the "
                            "Preset3 crew, day one). ONLY when the owner orders it. It abandons the current colony.",
@@ -336,10 +339,12 @@ class Toolbox:
             "ladder": ("Read your PLC ladder: the live rung(s) for what is measured right now, every rung that holds, the "
                        "tag table (constants + live setpoints) and your own marks and rungs. Check it at the start of a turn.",
                        S({}, []), self.t_ladder),
-            "ladder_set": ("Edit your ladder on the fly (open-ended, for the whole empire): op 'mark' (name, value true/false) "
-                           "marks a step done; op 'tag' (name, value) changes a setpoint; op 'add_rung' (rung: {id, priority, "
-                           "when: {measured_key: value}, then: [actions], why}) adds or replaces a rung of your own; op "
-                           "'remove_rung' (name) removes one of yours. Book rungs from the owner cannot be deleted.",
+            "ladder_set": ("Edit your ladder on the fly (open-ended, for the whole empire): op 'mark' (name, value true/false "
+                           "or a number, e.g. title_rank 4) records what the game cannot measure; op 'tag' (name, value) "
+                           "moves a variable setpoint within its bounds (constants are owner-only); op 'add_rung' (rung: "
+                           "{id, priority, when: {measured_key: value or '<X' '>X' '<=X' '>=X' '!=X'}, then: [actions], "
+                           "why, latch}) adds or replaces a rung of your own; op 'remove_rung' (name) removes one of "
+                           "yours. Book rungs from the owner cannot be deleted.",
                            S({"op": {"type": "string", "enum": ["mark", "tag", "add_rung", "remove_rung"]}, "name": s,
                               "value": {"type": ["string", "number", "boolean"]}, "rung": {"type": "object"}}, ["op"]),
                            self.t_ladder_set),
@@ -469,7 +474,7 @@ class Toolbox:
         return run_script("empire", ["--dry"] if report_only else [], timeout=300)
 
     # -- stream output: every path goes through guards.clean_for_stream -----------------------------------------
-    def _speak(self, text, reply_to=None):
+    def _speak(self, text, reply_to=None, emotion=None, act=None):
         # Voice tags ([laughter], [breath], [sigh]) are instructions for Unity's own voice model, never words for
         # Twitch chat or the overlay. Owner: "its better not print [laughter} in the chat of twitch". They are cut
         # from everything shown; voice_text keeps them for the new voice (today's Piper would read them out loud,
@@ -495,22 +500,47 @@ class Toolbox:
                              stderr=subprocess.DEVNULL, shell=False)
         # Owner: "but she still has to laugh when it comes through". Chat and overlay get the clean line; the voice
         # gets the tagged line (same words, already passed the stream filter) once her own voice is live
-        # (UNITY_OWN_VOICE=1), so the laugh is heard, never read. Today's Piper cannot laugh, so it gets the clean line.
+        # (UNITY_OWN_VOICE=1), so the laugh is heard, never read. (Piper is retired; her own voice is the only voice.)
         voice_line = self.voice_text if os.environ.get("UNITY_OWN_VOICE") == "1" else clean
-        subprocess.Popen([PY, SCRIPTS["speak"], "--bg", voice_line], cwd=ROOT, stdout=subprocess.DEVNULL,
-                         stderr=subprocess.DEVNULL, shell=False)
+        # her own voice takes the delivery the brain chose (the same trained emotions/acts as the tool enums)
+        speak_env = dict(os.environ, UNITY_SPEAK_EMOTION=emotion or "", UNITY_SPEAK_ACT=act or "")
+        # Owner: "she need training on how not to over respond. waiting for vocie to play out becasue the last
+        # stream at time see was speaking over herself sending messages before the last finished". Speaking BLOCKS:
+        # the tool returns only after the line has finished playing (unity-speak holds its turn for the whole
+        # line), so her next line can never start or show in chat before this one is done.
+        started = time.time()
+        try:
+            r = subprocess.run([PY, SCRIPTS["speak"], voice_line], cwd=ROOT, stdout=subprocess.DEVNULL,
+                               stderr=subprocess.PIPE, text=True, shell=False, timeout=120, env=speak_env)
+            if r.returncode != 0:
+                log("SPEAK FAILED (no fallback voice):", (r.stderr or "").strip()[-200:])
+        except subprocess.TimeoutExpired:
+            log("SPEAK timed out after 120 s:", clean[:80])
+        self.last_speech = time.time()
+        self.last_spoken_seconds = round(self.last_speech - started, 1)
         log("SAID:", clean)
         return clean
 
+    def t_reply_owner(self, msg_id, text):
+        line = re.sub(r"\s*\[(laughter|breath|sigh)\]\s*", " ", str(text)).strip()
+        if not line:
+            return "nothing to send"
+        if self.dry:
+            log("DRY-RUN would REPLY TO OWNER:", line)
+        else:
+            _outbox(line, int(msg_id))          # replyTo = the owner's message: the stream feed never shows it
+        log("TO OWNER:", line[:200])
+        return "sent privately to the owner"
+
     def t_say(self, text, emotion=None, act=None):
-        said = self._speak(text)
+        said = self._speak(text, emotion=emotion, act=act)
         return ("said: " + said) if said else "BLOCKED by the stream filter (no swearing, no degrading, no emoji); say it cleaner"
 
     def t_reply(self, chat_id, viewer, text, emotion=None, act=None):
         name = guards.clean_viewer_name(viewer)
         if name and name.lower().split()[0] not in text.lower():
             text = name + ", " + text
-        said = self._speak(text, reply_to=int(chat_id))
+        said = self._speak(text, reply_to=int(chat_id), emotion=emotion, act=act)
         if said:
             self.greeted_this_tick.add(str(viewer).lower())
             if not self.dry:
@@ -537,25 +567,81 @@ class Toolbox:
     def _ladder_path(self):
         return os.path.join(os.path.dirname(os.path.abspath(__file__)), "scratch", "ladder.json")
 
+    def _gates(self):
+        """gates.py, loaded once: the Python ladder engine and the RimPLC thin client (one RimPLC retry timer)."""
+        if getattr(self, "_gates_mod", None) is None:
+            spec = importlib.util.spec_from_file_location("gates_rt", os.path.join(os.path.dirname(os.path.abspath(__file__)), "gates.py"))
+            g = importlib.util.module_from_spec(spec); spec.loader.exec_module(g)
+            self._gates_mod = g
+        return self._gates_mod
+
+    def _rimplc_call(self):
+        return None if self.bridge.offline else self.bridge.call
+
     def t_ladder(self):
-        spec = importlib.util.spec_from_file_location("gates_rt", os.path.join(os.path.dirname(os.path.abspath(__file__)), "gates.py"))
-        g = importlib.util.module_from_spec(spec); spec.loader.exec_module(g)
-        hits, st = g.decide(every=True)
-        try: mine = json.load(open(self._ladder_path(), encoding="utf-8"))
-        except Exception: mine = {}
-        live = [{"id": h["id"], "priority": h["priority"], "then": h.get("then", [])} for h in hits[:4]]
-        return json.dumps({"live_rungs": live, "tags": st.get("tags"), "my_marks": mine.get("marks", {}),
-                           "my_rungs": [r.get("id") for r in mine.get("gates", [])]}, default=str)[:5000]
+        # RimPLC in the game when it is loaded (rimplc/read_ladder, or its command file), else the Python engine.
+        # Either way the top live rungs with the measured values that made them fire, so she can say WHY, in the
+        # same fields as always (gates.ladder_result / format_ladder).
+        text, _src = self._gates().ladder_result(call=self._rimplc_call())
+        return text
+
+    def _book(self):
+        try:
+            return json.load(open(os.path.join(ROOT, "docs", "playbook.gates.json"), encoding="utf-8"))
+        except Exception:
+            return {}
+
+    RIMPLC_OPS = {"mark": "set_mark", "tag": "set_tag", "add_rung": "upsert_rung", "remove_rung": "remove_rung"}
 
     def t_ladder_set(self, op, name=None, value=None, rung=None):
+        """ladder_set: through RimPLC when it is loaded (mark -> set_mark, tag -> set_tag, add_rung -> upsert_rung,
+        remove_rung -> remove_rung), mirrored into scratch/ladder.json so the Python fallback keeps her edits; else
+        straight into scratch/ladder.json. Same result text and refusals either way."""
+        cmd = self.RIMPLC_OPS.get(op)
+        if cmd and not self.dry:
+            args = {"set_mark": {"name": name, "value": value}, "set_tag": {"name": name, "value": value},
+                    "upsert_rung": {"rung": rung}, "remove_rung": {"id": name}}[cmd]
+            r = self._gates().rimplc(cmd, args, call=self._rimplc_call())
+            if r is not None:
+                if not r.get("ok"):
+                    raise GuardError(r.get("refused") or "refused by RimPLC")
+                try:
+                    self._ladder_set_local(op, name, value, json.loads(json.dumps(rung)) if rung is not None else None)
+                except GuardError:
+                    pass
+                note = r.get("note")
+                return str(r.get("result", "ladder updated: " + op)) + ((" " + note) if note else "")
+        return self._ladder_set_local(op, name, value, rung)
+
+    def _ladder_set_local(self, op, name=None, value=None, rung=None):
         path = self._ladder_path()
         try: d = json.load(open(path, encoding="utf-8"))
         except Exception: d = {}
+        note = ""
         if op == "mark":
             if not re.fullmatch(r"[a-z0-9_]{1,40}", str(name or "")): raise GuardError("mark name: lowercase_with_underscores")
-            d.setdefault("marks", {})[name] = bool(value) if not isinstance(value, str) else value.lower() in ("true", "1", "yes", "done")
+            # numeric marks stay numbers (title_rank 4, gate_sections_done 3); everything else is true/false
+            if isinstance(value, bool): v = value
+            elif isinstance(value, (int, float)): v = value
+            else:
+                sv = str(value if value is not None else "").strip().lower()
+                if re.fullmatch(r"-?\d+", sv): v = int(sv)
+                elif re.fullmatch(r"-?\d+\.\d+", sv): v = float(sv)
+                else: v = sv in ("true", "yes", "done", "on")
+            d.setdefault("marks", {})[name] = v
         elif op == "tag":
             if not re.fullmatch(r"[A-Z0-9_]{1,40}", str(name or "")): raise GuardError("tag name: UPPER_CASE")
+            tg = self._book().get("tags") or {}
+            if name in (tg.get("constants") or {}):
+                raise GuardError("%s is a constant: a safety limit only the owner changes" % name)
+            spec = (tg.get("variables") or {}).get(name)
+            if spec is None:
+                raise GuardError("%s is not a variable on the ladder" % name)
+            try: value = float(value) if not isinstance(value, (int, float)) or isinstance(value, bool) else value
+            except (TypeError, ValueError): raise GuardError("tag value must be a number")
+            lo, hi = spec.get("min"), spec.get("max")
+            if (lo is not None and value < lo) or (hi is not None and value > hi):
+                note = " (clamped to %s..%s when read)" % (lo, hi)
             d.setdefault("tags", {})[name] = value
         elif op == "add_rung":
             r = rung or {}
@@ -563,13 +649,22 @@ class Toolbox:
                 raise GuardError("rung needs id, priority (number), when (object), then (list)")
             r["id"] = "unity-" + re.sub(r"[^a-z0-9-]", "-", str(r["id"]).lower())[:40] if not str(r["id"]).startswith("unity-") else str(r["id"])[:46]
             r["then"] = [str(x)[:300] for x in (r.get("then") or [])][:8]
+            if "latch" in r: r["latch"] = bool(r["latch"])
+            # THE STREAM IS CLEAN: a notice is shown in the game (RimPLC does the same check with its port of the filter)
+            if r.get("notice") is not None and guards.clean_for_stream(str(r["notice"])) is None:
+                raise GuardError("notice is not clean for the stream: reword it")
+            bk = self._book()
+            known = set((bk.get("sensors") or {}).keys()) | set(((bk.get("tags") or {}).get("variables") or {}).keys()) \
+                | set(((bk.get("tags") or {}).get("constants") or {}).keys()) | {"letter_matches"}
+            unknown = [k for k, _w in self._gates().leaves(r["when"]) if not k.startswith(("mark_", "alert_")) and k not in known]
+            if unknown: note = " (keys with no sensor, the rung stays quiet until measured: %s)" % ", ".join(unknown)
             d["gates"] = [g for g in d.get("gates", []) if g.get("id") != r["id"]] + [r]
         elif op == "remove_rung":
             d["gates"] = [g for g in d.get("gates", []) if g.get("id") != name]
         else:
             raise GuardError("op must be mark, tag, add_rung or remove_rung")
         guards.scratch_write("ladder.json", json.dumps(d, indent=1))
-        return "ladder updated: " + op + " " + str(name or (rung or {}).get("id", ""))
+        return "ladder updated: " + op + " " + str(name or (rung or {}).get("id", "")) + note
 
     def t_pawn_priorities(self, pawn, custom=None):
         """Owner: "set up all priorities ... for every one using coopy paste to paste one to the tosthers then
@@ -612,6 +707,11 @@ class Toolbox:
                 d = {"marks": {}}
             d["letters_seen"] = sorted(set(d.get("letters_seen", [])) | set(ids))
             json.dump(d, open(p, "w", encoding="utf-8"), indent=1)
+        except Exception:
+            pass
+        try:
+            # RimPLC keeps its own seen-letter set (the `letters` count): tell it too when it is loaded
+            self._gates().rimplc("letters_seen", {}, call=self._rimplc_call(), wait_s=1.0)
         except Exception:
             pass
 
@@ -736,6 +836,26 @@ def _outbox(text, reply_to):
     with open(OUTBOX, "a", encoding="utf-8") as f:
         f.write(json.dumps({"id": last + 1, "replyTo": reply_to, "ts": int(time.time() * 1000),
                             "persona": "unity", "text": text}) + "\n")
+
+
+def read_owner(after_id=0):
+    """The owner's private messages: studio-inbox rows WITHOUT the "[twitch]" prefix, typed in the Persona Studio
+    window (owner: "train in twitch versus admin conversions fromn the admin panel and admin hud thing"). Never shown
+    on stream; answered with reply_owner, whose outbox row points at the message so the stream feed skips it."""
+    inbox = os.path.join(ROOT, ".claude", ".studio-inbox.jsonl")
+    out = []
+    try:
+        for line in open(inbox, encoding="utf-8"):
+            try:
+                r = json.loads(line)
+            except ValueError:
+                continue
+            text = str(r.get("text") or "")
+            if int(r.get("id", 0)) > after_id and text and not text.startswith("[twitch]"):
+                out.append({"msg_id": int(r["id"]), "text": text[:600]})
+    except OSError:
+        pass
+    return out
 
 
 def read_chat():

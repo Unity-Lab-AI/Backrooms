@@ -1,0 +1,14 @@
+{
+ "schema_version": 1,
+ "check_id": "resume_integrity",
+ "decision": "accepted",
+ "accepted_by": "engineering (Unity, final pre-launch checks requested by the owner 2026-10-12: \"option 3 final checks and caps a 50$ per pod\")",
+ "recorded_at": "2026-10-12T06:38:36-06:00",
+ "scope": "training-preflight",
+ "evidence": [
+  "run2/logs/gta.log: 'resumed v2 acoustic at step 6000' -- checkpoint resume exercised locally",
+  "start_template.sh: resume keeps the first start and deadline; price/budget/volume must match",
+  "training/pod/train.py: save_steps 40, save_total_limit 2 (brain)"
+ ],
+ "residual_risk": "Interrupted-write and RNG-exact resume not exercised on the provider; a resume can only shorten the remaining budget."
+}

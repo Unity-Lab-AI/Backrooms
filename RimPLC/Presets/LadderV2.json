@@ -1,0 +1,3174 @@
+{
+ "version": 2,
+ "preset": {
+  "id": "LadderV2",
+  "source": "docs/playbook.gates.json",
+  "schema": "docs/rimplc/schema/ladder.schema.json"
+ },
+ "note": "RimPLC ladder (v2). \"i think this is the whoole PLC like logic chain if this then this if heath level reaches then this type of thing for the whole game properly layed out into a PLC that we will call RimPLC\" -- laid out as a PLC: `sensors` are the measured inputs (gates.py derive(); a key it cannot read is left out and the rung stays quiet), `tags` are constants (owner-only safety limits) and variables (setpoints recomputed each scan, clamped, overridable with ladder_set tag), `marks` are what she records herself with ladder_set mark (booleans or numbers), and `gates` are the rungs: when (an AND over sensors, marks and tags; ops = exact, <, >, <=, >=, !=) -> then (an ordered action chain). Lower priority fires first; only the first live rung plus `always` is handed over. A rung with latch:true gets mark_<id>_done:false in its when and sets it as its last step, so a finished growth rung never hides the rungs after it. Rungs at GRACE_FROM_PRIORITY and above (except always) wait until day > START_GRACE_DAYS. Anything marked UNVERIFIED in a note has not been seen in a captured bridge reply or the mod's wiki. Control chains (owner decision 3, docs/RIMPLC_DESIGN.md): rungs with a `chain` field (combat, medical, repairs, defense, supply) are wired like relays -- each rung's last steps set a mark that is the next rung's input, a reset rung drops the latch when the condition clears; every chain rung is `mode: advise` and carries `check` (the question it answers) and `notice` (a one-line message for a human).",
+ "sensors": {
+  "ticks_moving": {
+   "source": "get_game_info.ticksGame read twice 1.2 s apart",
+   "type": "bool"
+  },
+  "day": {
+   "source": "get_game_info.ticksGame / 60000",
+   "type": "float"
+  },
+  "quadrum_index": {
+   "source": "floor(ticksGame / 900000) % 4",
+   "type": "int",
+   "note": "a counter, NOT a season: the season depends on latitude (UNVERIFIED as a season)"
+  },
+  "paused": {
+   "source": "state.paused on bridge replies (captured on list_zones)",
+   "type": "bool"
+  },
+  "map_count": {
+   "source": "get_game_info.mapCount",
+   "type": "int"
+  },
+  "dialog_open": {
+   "source": "get_ui_state.nonImmediateDialogWindowOpen",
+   "type": "bool"
+  },
+  "letters": {
+   "source": "list_letters, ids not yet in ladder.json letters_seen",
+   "type": "int"
+  },
+  "threat_letter": {
+   "source": "list_letters letterDef in ThreatBig/ThreatSmall, ageTicks <= 2 days",
+   "type": "bool",
+   "note": "def names from decompiled vanilla (LetterDefOf); only PositiveEvent captured live"
+  },
+  "quest_letter": {
+   "source": "unseen letter, 'quest' in label or 'Quest' in letterDef",
+   "type": "bool",
+   "note": "UNVERIFIED def name"
+  },
+  "empire_letter": {
+   "source": "unseen letter, 'empire' in relatedFaction",
+   "type": "bool",
+   "note": "UNVERIFIED: relatedFaction is the faction's NAME"
+  },
+  "alert_<x>": {
+   "source": "list_alerts alerts[].label substring (gates.ALERT_MATCH)",
+   "type": "bool",
+   "note": "UNVERIFIED labels: no list_alerts reply captured; labels logged to scratch/alert_labels.json"
+  },
+  "colonists": {
+   "source": "list_colonists, factionIsPlayer and humanlike",
+   "type": "int"
+  },
+  "downed_count": {
+   "source": "list_colonists downed",
+   "type": "int"
+  },
+  "drafted_count": {
+   "source": "list_colonists drafted",
+   "type": "int"
+  },
+  "mental_break": {
+   "source": "list_colonists mentalState not null",
+   "type": "bool"
+  },
+  "away_maps": {
+   "source": "distinct mapId among crew - 1",
+   "type": "int"
+  },
+  "colony_animals": {
+   "source": "list_colonists animal and factionIsPlayer",
+   "type": "int",
+   "note": "UNVERIFIED that the list holds animals: written only when > 0"
+  },
+  "colony_mechs": {
+   "source": "list_colonists mechanoid and factionIsPlayer",
+   "type": "int",
+   "note": "UNVERIFIED, written only when > 0"
+  },
+  "hostile_pawns_listed": {
+   "source": "list_colonists factionHostileToPlayer, not dead/downed",
+   "type": "int",
+   "note": "field captured; UNVERIFIED that hostiles are listed: written only when > 0"
+  },
+  "home_on_screen": {
+   "source": "list_colonists currentMapOnly holds the home map",
+   "type": "bool"
+  },
+  "growing_cells": {
+   "source": "list_zones Zone_Growing cellCount sum",
+   "type": "int"
+  },
+  "stockpile_cells": {
+   "source": "list_zones Zone_Stockpile cellCount sum",
+   "type": "int"
+  },
+  "food_store": {
+   "source": "a zone label contains 'food'",
+   "type": "bool"
+  },
+  "main_store": {
+   "source": "a zone label contains 'main'",
+   "type": "bool"
+  },
+  "home_cells": {
+   "source": "list_areas Area_Home cellCount (or a swept cell's areas[])",
+   "type": "int"
+  },
+  "colony_exists": {
+   "source": "any crew",
+   "type": "bool"
+  },
+  "explore_done": {
+   "source": ".local/qa/_explore_done.flag",
+   "type": "bool"
+  },
+  "game_foreground": {
+   "source": "Win32 foreground window",
+   "type": "bool"
+  },
+  "meals": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): defName Meal*",
+   "type": "int"
+  },
+  "raw_food": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): defName Raw*",
+   "type": "int"
+  },
+  "wood": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): WoodLog",
+   "type": "int"
+  },
+  "medicine": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): defName contains Medicine",
+   "type": "int"
+  },
+  "days_of_food": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): (meals*0.9 + raw*0.05) / (1.6 * crew)",
+   "type": "float"
+  },
+  "blueprints": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): blueprintBuildDefs",
+   "type": "int"
+  },
+  "humanlikes_not_ours": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): pawn label with ', title' not in crew",
+   "type": "int"
+  },
+  "hostiles_on_map": {
+   "source": "humanlikes_not_ours while threat_letter, or hostile_pawns_listed",
+   "type": "int"
+  },
+  "has_power": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): a generator or Battery",
+   "type": "bool"
+  },
+  "defences_built": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): turret, Sandbags, Barricade or Embrasure",
+   "type": "bool"
+  },
+  "store_roofed_fraction": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): food/main stockpile cells with roofDefName",
+   "type": "float"
+  },
+  "unroofed_store_cells": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): food/main stockpile cells without a roof",
+   "type": "int"
+  },
+  "steel": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): Steel x stackCount",
+   "type": "int",
+   "note": "stackCount UNVERIFIED in captures (1 per stack otherwise)"
+  },
+  "components": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): ComponentIndustrial",
+   "type": "int",
+   "note": "stackCount UNVERIFIED"
+  },
+  "adv_components": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): ComponentSpacer",
+   "type": "int",
+   "note": "stackCount UNVERIFIED"
+  },
+  "plasteel": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): Plasteel",
+   "type": "int",
+   "note": "defName UNVERIFIED in captures"
+  },
+  "uranium": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): Uranium",
+   "type": "int",
+   "note": "defName UNVERIFIED in captures"
+  },
+  "gold": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): Gold",
+   "type": "int",
+   "note": "defName UNVERIFIED in captures"
+  },
+  "silver": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): Silver",
+   "type": "int",
+   "note": "defName UNVERIFIED in captures"
+  },
+  "chemfuel": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): Chemfuel",
+   "type": "int",
+   "note": "defName UNVERIFIED in captures"
+  },
+  "cloth": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): Cloth + Leather_*",
+   "type": "int",
+   "note": "Leather_* captured; Cloth UNVERIFIED"
+  },
+  "berry_bushes": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): Plant_Berry, Plant_Strawberry_Wild",
+   "type": "int",
+   "note": "Plant_Strawberry_Wild captured; Plant_Berry UNVERIFIED"
+  },
+  "healroot_plants": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): Plant_Healroot, Plant_HealrootWild",
+   "type": "int"
+  },
+  "wild_game": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): non-human pawn without ', title', not NEVER_HUNT, minus colony_animals",
+   "type": "int",
+   "note": "tamed and wild animals look the same in cell data"
+  },
+  "danger_animals_near": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): pawn defName Boomalope/Thrumbo/Elephant/Rhinoceros/Megasloth/Bear_*",
+   "type": "int",
+   "note": "defNames UNVERIFIED in captures"
+  },
+  "mount_candidates": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): pawn defName in MOUNT_DEFS",
+   "type": "int",
+   "note": "defNames UNVERIFIED in captures"
+  },
+  "designations_hunt": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): cell designations[].defName Hunt",
+   "type": "int",
+   "note": "field shape captured; def name UNVERIFIED"
+  },
+  "designations_tame": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): designations Tame",
+   "type": "int",
+   "note": "def name UNVERIFIED"
+  },
+  "designations_harvest": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): designations HarvestPlant",
+   "type": "int",
+   "note": "def name UNVERIFIED"
+  },
+  "designations_mine": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): designations Mine",
+   "type": "int",
+   "note": "def name UNVERIFIED"
+  },
+  "designations_cut": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): designations CutPlant",
+   "type": "int",
+   "note": "def name UNVERIFIED"
+  },
+  "stoves": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): FueledStove, ElectricStove (objects)",
+   "type": "int",
+   "note": "ElectricStove captured; FueledStove UNVERIFIED. Objects = touching same-def cells merged"
+  },
+  "research_benches": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): Building_ResearchBench (objects)",
+   "type": "int"
+  },
+  "comms_console": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): CommsConsole",
+   "type": "bool"
+  },
+  "turrets": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): defName contains Turret (objects)",
+   "type": "int"
+  },
+  "embrasures": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): defName contains Embrasure (cells)",
+   "type": "int"
+  },
+  "beds": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): Building_Bed or Hospitality Building_GuestBed (objects)",
+   "type": "int",
+   "note": "touching beds merge into one object"
+  },
+  "throne": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): defName contains Throne (built)",
+   "type": "bool",
+   "note": "built Throne defName UNVERIFIED (Blueprint_Throne captured)"
+  },
+  "pod_launchers": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): PodLauncher",
+   "type": "int",
+   "note": "defName UNVERIFIED in captures"
+  },
+  "transport_pods": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): TransportPod",
+   "type": "int",
+   "note": "defName UNVERIFIED in captures"
+  },
+  "grav_parts": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): defName contains Grav",
+   "type": "int",
+   "note": "UNVERIFIED: Odyssey / VE Gravship defNames"
+  },
+  "ship_parts": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): defName starts Ship_",
+   "type": "int",
+   "note": "UNVERIFIED"
+  },
+  "power_generators": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): defName contains Generator, WindTurbine, GeothermalGenerator (objects)",
+   "type": "int"
+  },
+  "fire_cells": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): thing defName Fire",
+   "type": "int",
+   "note": "UNVERIFIED: never captured"
+  },
+  "corpses": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): className contains Corpse",
+   "type": "int",
+   "note": "UNVERIFIED: never captured"
+  },
+  "wall_gaps": {
+   "source": "NOT MEASURED",
+   "type": "int",
+   "note": "UNVERIFIED heuristic; perimeter-hole stays disabled until it agrees with a screenshot three times"
+  },
+  "able_shooters": {
+   "source": "list_colonists: crew not downed, not dead, no mentalState",
+   "type": "int",
+   "note": "UNVERIFIED that each can shoot: incapable-of-violence and unarmed pawns are not readable"
+  },
+  "fight_ratio": {
+   "source": "able_shooters / hostiles_on_map, written only while hostiles_on_map > 0",
+   "type": "float",
+   "note": "inherits hostiles_on_map (home on screen only); pawn health is not readable from the bridge"
+  },
+  "colonist_hurt": {
+   "source": "downed_count > 0, alert_needs_tend, pawn_bleeding, or mark colonist_hurt",
+   "type": "bool",
+   "note": "no pawn health read exists on the bridge (a pawn's cell hitPoints is -1, captured); alert labels UNVERIFIED"
+  },
+  "pawn_bleeding": {
+   "source": "alert_bleeding or alert_life_threat (list_alerts), or mark pawn_bleeding (set after pawn_check Health)",
+   "type": "bool",
+   "note": "UNVERIFIED alert labels ('bleed', 'life-threatening'); written only when alerts were read or the mark exists"
+  },
+  "loose_weapons": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): defName Gun_* / MeleeWeapon_* / Bow_* lying in cells",
+   "type": "int",
+   "note": "Gun_ captured (Gun_ChargeRifle); MeleeWeapon_ and Bow_ UNVERIFIED; equipped weapons are not in cells"
+  },
+  "junk_weapons": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): loose weapon whose label quality is awful or poor",
+   "type": "int",
+   "note": "label format '(<color>normal</color>)' captured; the words awful/poor UNVERIFIED"
+  },
+  "buildings_damaged": {
+   "source": "sweep (get_cells_info over the camp rect, home on screen only): building cells below the best hitPoints of the same def+stuff (groups of 3+ cells)",
+   "type": "int",
+   "note": "UNVERIFIED heuristic: the reply has no maxHitPoints and no captured sweep shows damage; an evenly damaged group reads healthy"
+  },
+  "caravan_out": {
+   "source": "RimPLC: Find.WorldObjects.Caravans, any IsPlayerControlled",
+   "type": "bool",
+   "cadence": "slow",
+   "api": "WorldObjectsHolder.Caravans",
+   "status": "verified",
+   "fallback": "mark_caravan_out"
+  },
+  "research_microelectronicsbasics": {
+   "source": "RimPLC: ResearchProjectDef MicroelectronicsBasics .IsFinished",
+   "type": "bool",
+   "cadence": "slow",
+   "api": "ResearchProjectDef.IsFinished",
+   "status": "verified",
+   "note": "defName verified (decomp, ResearchProjectDefOf.MicroelectronicsBasics)",
+   "fallback": "mark_research_microelectronics"
+  },
+  "research_transportpod": {
+   "source": "RimPLC: ResearchProjectDef TransportPod .IsFinished",
+   "type": "bool",
+   "cadence": "slow",
+   "api": "ResearchProjectDef.IsFinished",
+   "status": "UNVERIFIED",
+   "note": "defName TransportPod UNVERIFIED (no ResearchProjectDefOf entry); if it is wrong the key stays unmeasured and the fallback mark is read",
+   "fallback": "mark_research_transport_pod"
+  },
+  "research_xenogenetics": {
+   "source": "RimPLC: ResearchProjectDef Xenogenetics .IsFinished",
+   "type": "bool",
+   "cadence": "slow",
+   "api": "ResearchProjectDef.IsFinished",
+   "status": "UNVERIFIED",
+   "requires": [
+    "Biotech"
+   ],
+   "note": "defName Xenogenetics UNVERIFIED (Biotech); if it is wrong the key stays unmeasured and the fallback mark is read",
+   "fallback": "mark_research_xenogenetics"
+  }
+ },
+ "gates": [
+  {
+   "id": "new-colony",
+   "priority": 0,
+   "when": {
+    "colony_exists": false
+   },
+   "then": [
+    "the switch starts it (new_colony only on the owner's order); the mod sets world 30%, 300x300, Spring, factions, a mountainous forest tile, the Godsmultiplayer ideoligion and the Preset3 crew; day one sets priorities, schedule, drugs, Attack"
+   ],
+   "why": "owner, 2026-10-10: \"lets get the local model starting a new coloy and everything as the company doing everything that you normal do corrrectly while playing\" -- the equator camp ended on an empty larder",
+   "never": [
+    "load an old save",
+    "start the built-in quick-test colony: it has no company and no gate"
+   ],
+   "family": "meta",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "dialog-open",
+   "priority": 1,
+   "when": {
+    "dialog_open": true
+   },
+   "then": [
+    "read the dialog's own buttons with get_ui_layout -- never guess from the window type",
+    "a demand for payment, silver, items or a pawn: refuse (refuse/reject/decline), never pay",
+    "visitors, traders, notices, naming, look-change: accept or Close",
+    "click the button by its real targetId with click_ui_target, then confirm windowCount dropped"
+   ],
+   "why": "owner: \"anser them most are shit never pay them\" / \"you have a pop up u havent ckicked yet thats you are fucking ignoring\"",
+   "never": [
+    "delete .claude/.popup.json to clear a stall -- the flag is the guard telling the truth"
+   ],
+   "family": "meta",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "hostile-on-map",
+   "priority": 2,
+   "when": {
+    "hostiles_on_map": ">0",
+    "drafted_count": 0
+   },
+   "then": [
+    "pause",
+    "draft everyone who can shoot",
+    "post each behind an embrasure on the threatened side",
+    "field-tend any downed pawn where they lie before capture or haul",
+    "run time again once posted"
+   ],
+   "why": "owner: \"remmebr always field tnde directly brefopre cpature and haul\" / prisoner bed before any fight",
+   "never": [
+    "draft while the raid letter is still 'preparing' -- drafted pawns do no work"
+   ],
+   "family": "base-and-fortress",
+   "note": "hostiles_on_map counts the humanlike crowd only while a recent ThreatBig/ThreatSmall letter vouches for it (letterDef, not the word 'raid'), or list_colonists names hostile pawns",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "letter-unread",
+   "priority": 3,
+   "when": {
+    "letters": ">0"
+   },
+   "then": [
+    "read every letter's text, not just its label",
+    "a raid letter is a WARNING, not a contact: check hostiles_on_map before any combat move",
+    "a caravan letter means the crowd outside is a trader -- do not shoot it",
+    "dismiss what needs no action"
+   ],
+   "why": "owner: \"you need to read message and pop up s shit\" / a sweep cannot tell a trader from a raider",
+   "family": "meta",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "pawn-starving",
+   "priority": 4,
+   "when": {
+    "meals": 0,
+    "raw_food": "<5",
+    "days_of_food": "<{FOOD_PANIC_DAYS}"
+   },
+   "then": [
+    "designate every berry bush and harvestable food plant near camp",
+    "designate hunting on animals, but NEVER rhinoceros, elephant, bear, thrumbo or megasloth with fewer than 3 rifles",
+    "NEVER a boomalope: it explodes when it dies, which is a fire next to a wooden camp for almost no meat",
+    "add a stove bill: simple meals, Do until you have 30, no skill restriction",
+    "force the nearest colonist onto the closest food job",
+    "if no food plants are left on the map, meat is the only income until the fields mature -- say so and keep the hunts full"
+   ],
+   "why": "owner: \"you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!\"",
+   "never": [
+    "mark a boomalope, insect hive or anything that explodes or swarms as a hunt target"
+   ],
+   "family": "survival",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "food-rotting-or-no-cold",
+   "priority": 5,
+   "when": {
+    "store_roofed_fraction": "<1.0"
+   },
+   "then": [
+    "a room with no roof is not a room: a cooler in it cools open sky",
+    "wall the room on its INTERIOR sides only (build-wall), never out to the camp perimeter",
+    "mark the roof area (areabuildroofexpand) -- a roof needs support within 6 cells",
+    "then the passive cooler means something; a powered cooler waits on Electricity"
+   ],
+   "why": "owner: \"rot is rotting away still havent figured cooler /freezer and vents in rooms\" / \"ur componetes are roting\"",
+   "family": "survival",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "perimeter-hole",
+   "disabled": "wall_gaps has no measurement from the bridge (a fixed 0 is not a reading)",
+   "priority": 6,
+   "when": {
+    "wall_gaps": ">0"
+   },
+   "then": [
+    "read an intact stretch of the SAME wall and copy its defName -- do not take the first embrasure the list offers",
+    "plain Vin_Embrasure for a non-powered wall; a door near the corners and mid-side",
+    "keep the lane along the inside of the wall clear: no furniture, no second wall"
+   ],
+   "why": "owner: \"wtf why u putting walls upganets and replacing embrasures that wont work fix those walls\" / \"door on corner and sides\"",
+   "family": "base-and-fortress",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "blueprints-but-no-material",
+   "disabled": "cost_of_blueprints has no measurement from the bridge",
+   "priority": 7,
+   "when": {
+    "blueprints": ">0",
+    "wood": "<cost_of_blueprints"
+   },
+   "then": [
+    "a blueprint with no material on site is a pawn playing horseshoes, not an idle pawn",
+    "mark trees for chopping ONE CELL AT A TIME and verify each designation landed",
+    "if two queues compete, cancel the lower one so the material lands on the thing that keeps pawns alive",
+    "wood lying at the stumps is still wood: count the whole map, not just inside the camp"
+   ],
+   "why": "owner: \"keep building what you need to\" -- 30 blueprints waited on 2 wood logs",
+   "family": "configuration",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "no-medicine",
+   "priority": 8,
+   "when": {
+    "medicine": 0
+   },
+   "then": [
+    "healroot_plants > 0 on the sweep: designate them for harvest first",
+    "sweep the map for wild healroot; if none exists say so rather than hunting endlessly",
+    "route 1: set a field to healroot (needs the Plant: menu -- cursor)",
+    "route 2: trade with any caravan on the map (cursor)",
+    "route 3: Electricity -> comms console -> call a trader (research first)",
+    "until then: self-tend ON for everyone, and no fights that can be avoided"
+   ],
+   "why": "owner: \"Low medicine\" standing / \"those medicail red x;s need to be checked for self heal\"",
+   "family": "survival",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "heat-wave",
+   "priority": 2.5,
+   "when": {
+    "letter_matches": "heat wave"
+   },
+   "then": [
+    "send the whole crew through the gate into the backrooms (indoors, about 60F) until it breaks",
+    "keep the coolers fuelled; a roofed room is the only room that cools"
+   ],
+   "why": "owner: \"you need to figure out the tmepature pronblem asap ASAP one heat wave and your dead in 3 minutes\"",
+   "note": "UNVERIFIED: 'about 60F' inside the backrooms is not stated in docs/wiki",
+   "family": "survival",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "work-priorities-unset",
+   "disabled": "grid_matches_plan has no measurement from the bridge",
+   "priority": 10,
+   "when": {
+    "grid_matches_plan": false
+   },
+   "then": [
+    "manual priorities ON",
+    "every column Firefight through Cook = 1 for everyone (that is the paste)",
+    "then customise after Cook per pawn: Gee grow/research, Scar construct/craft, Unity hunt/mine/haul",
+    "no cell left blank unless the pawn is incapable",
+    "read each cell's digit back from get_ui_layout and click until it matches -- never count clicks"
+   ],
+   "why": "owner: \"set it how ive told you every day weve played all of them for every one using coopy paste\" / \"dint leave a bunch blankk\"",
+   "family": "configuration",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "fields-wrong",
+   "disabled": "fields_all_default_crop has no measurement from the bridge",
+   "priority": 11,
+   "when": {
+    "fields_all_default_crop": true
+   },
+   "then": [
+    "a growing-zone cell has a plant on it: the first click selects the plant, click again to reach the zone",
+    "never act unless exactly ONE zone is selected -- a second click can grab every field at once",
+    "set each field's own crop from the menu's REAL labels, matched by substring",
+    "only the fields close to camp: the main-base plots stay undrawn until the crew moves in"
+   ],
+   "why": "owner: \"you are going nothing but potatoes everywhere wtf!\" / \"get rid of all the base base fields and just keep the ones close to camp for now\"",
+   "family": "configuration",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "bills-missing",
+   "disabled": "bill_rows has no measurement from the bridge",
+   "priority": 12,
+   "when": {
+    "bill_rows": 0
+   },
+   "then": [
+    "Do until you have X, never Do endlessly, and raise X as the colony grows",
+    "no skill restriction, so everyone trains on it",
+    "count the bill rows before and after: the Add-bill menu can throw and silently add nothing"
+   ],
+   "why": "owner: \"how ive alllready tolsdd you how to do it effienctly so everyone can train and still get the most in one go\" / \"and set amounts higher and higher as your base grows\"",
+   "family": "configuration",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "research-idle",
+   "disabled": "research_queue_empty has no measurement from the bridge",
+   "priority": 13,
+   "when": {
+    "research_queue_empty": true
+   },
+   "then": [
+    "open Research and TYPE THE NAME IN THE SEARCH BOX -- never drag the tree looking for it",
+    "Electricity first, then Air conditioning: power, a powered cooler, a real freezer",
+    "letters typed as real virtual-key codes, or the box receives nothing"
+   ],
+   "why": "owner: \"its like u are open research skeen and dragging the wrong dirrectgion to explore it not using the search at all\"",
+   "family": "research",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "game-paused",
+   "priority": 14,
+   "when": {
+    "ticks_moving": false,
+    "hostiles_on_map": 0
+   },
+   "then": [
+    "pause to SET things up, then run time again in the same turn",
+    "a frozen game builds nothing, chops nothing, hauls nothing, and the stream goes static",
+    "say in the log why it was paused"
+   ],
+   "why": "owner: \"STOP UNPAUSING TILL ALL ISSUES ARE ADDDRESSED\" -- set everything, then run it",
+   "family": "meta",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "window-not-in-front",
+   "disabled": "wants_click has no measurement",
+   "priority": 15,
+   "when": {
+    "game_foreground": false,
+    "wants_click": true
+   },
+   "then": [
+    "click_cell and right_click_cell do nothing without focus: selection will not stick, menus come back empty",
+    "try ONCE, say the window is not in front, then switch to work the API can do alone",
+    "designators, zones, draft, time speed, letters, screenshots and every read all work regardless",
+    "the cursor-only jobs are already queued in cursor-jobs.py, which waits for the window itself"
+   ],
+   "why": "four turns were lost to retrying a click that cannot land",
+   "family": "meta",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "always",
+   "priority": 99,
+   "when": {},
+   "then": [
+    "messages and chat are #1: greet joiners by name, answer viewers, never go quiet",
+    "name the stream and set the category with twitch-say.py title / category when a new run starts",
+    "answer viewers in the real Twitch chat with .local/tw/twitch-say.py reply NAME \"line\", not only out loud",
+    "the stream is clean -- no cussing, no degrading, ever",
+    "one spoken line, at most 18 words, first person, about what is actually happening",
+    "never invent events, names or numbers",
+    "verify by result, never by narration: read back the thing you changed",
+    "never edit the mod, never write code, never touch anything outside RimWorld and the stream"
+   ],
+   "why": "owner: \"messages and chat are #1\" / \"NO CUSSING OR DEGRADING ON STEAM\" / the handover's standing contract",
+   "family": "meta",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "rung-2-power-and-cold",
+   "priority": 20,
+   "when": {
+    "days_of_food": ">{FOOD_MIN_DAYS}",
+    "medicine": ">0"
+   },
+   "then": [
+    "research Electricity, then Air conditioning, by typing it in the search box",
+    "a wood-fired generator row, conduit as ONE continuous string, never a spur per building",
+    "a powered cooler on the food room with the hot side OUTSIDE, so the store becomes a freezer",
+    "electric wall lamps replace torches, two per room",
+    "only then is the colony off hand-to-mouth"
+   ],
+   "why": "owner: \"u need power and ac units and shit just like the last paly through\" -- the rung above food, nothing more",
+   "never": [
+    "start this while days-of-food is under three"
+   ],
+   "latch": true,
+   "family": "base-and-fortress",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "rung-3-defence",
+   "priority": 21,
+   "when": {
+    "days_of_food": ">{FOOD_MIN_DAYS}",
+    "has_power": true
+   },
+   "then": [
+    "embrasure wall all the way round, non-powered type, matching what is already built",
+    "doors two cells in from each corner and one mid-side, lanes behind them kept clear",
+    "a marble firebreak ring three wide outside the wall",
+    "a prisoner room with its own bed before any fight, and a hospital bed marked Medical",
+    "everyone carries a ranged weapon; a sidearm second"
+   ],
+   "why": "owner: \"make wall of embrasure non powered type all around then u can shoot out\" / \"door on corner and sides\"",
+   "never": [
+    "leave a pawn outside the wall when a raid letter is live"
+   ],
+   "latch": true,
+   "family": "base-and-fortress",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "rung-4-production",
+   "priority": 22,
+   "when": {
+    "days_of_food": ">{FOOD_COMFORT_DAYS}",
+    "has_power": true,
+    "defences_built": true
+   },
+   "then": [
+    "crops into products: beer from hops, joints from smokeleaf, psychite tea, cloth into clothes",
+    "every bill Do-until-you-have, the number raised as the colony grows, no skill restriction",
+    "a comms console: call a trader rather than waiting for one",
+    "stone blocks from the mountain for everything that should not burn"
+   ],
+   "why": "owner: \"lots to sell and production\" / \"set amounts higher and higher as your base grows\"",
+   "latch": true,
+   "family": "economy",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "rung-5-the-mountain-base",
+   "priority": 23,
+   "when": {
+    "days_of_food": ">{FOOD_COMFORT_DAYS}",
+    "mark_production_running": true,
+    "mark_mountain_base_done": false
+   },
+   "then": [
+    "mine the mountain cutout: ONE door in, never pierce the outer rock",
+    "a 3-wide spine south into the gut, throne room centred on it",
+    "labs and tech deeper in, prison and guest wings off the first cross hall",
+    "two cells of rock between every room and the outside face",
+    "move the natural gate into a sealed laboratory at the back",
+    "ladder_set mark mountain_base_done true when the base is sealed and fed"
+   ],
+   "why": "owner: \"plan on putting you bas inside that natural cut out ... never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spine\"",
+   "family": "base-and-fortress",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "rung-6-off-world",
+   "priority": 24,
+   "when": {
+    "mark_mountain_base_done": true
+   },
+   "then": [
+    "ship research, then the hull, engines, reactor and cryptosleep",
+    "defend the launch: a raid comes for the ship, not the colony",
+    "the company's gates and expeditions feed the build -- that is what they are for",
+    "nothing here starts until the mountain base is sealed and fed"
+   ],
+   "why": "owner: \"dominate the universe with a space ewarfare and planet domination\" -- the top rung of the ladder, reached by climbing it",
+   "never": [
+    "chase this rung while anything below it is unfinished"
+   ],
+   "latch": true,
+   "family": "space",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "rung-5b-the-gate",
+   "priority": 23.5,
+   "when": {
+    "days_of_food": ">{FOOD_COMFORT_DAYS}",
+    "mark_mountain_base_done": true,
+    "mark_gate_designated": false
+   },
+   "then": [
+    "a gate is ANY door you designate, not a custom building: Door/Autodoor = 1 cell, Ornate door = 2, wider modded doors 3+ (width decides what fits through)",
+    "put that door in the sealed laboratory at the back of the mountain, never in a room anyone lives in",
+    "assembly is 4 sections at 25 steel and 2 components each -- 100 steel and 8 components for the gate, whatever the bench count",
+    "link up to three more machining tables on the Machine pane so up to four people build a section each at once",
+    "link up to three more communications consoles: the gate's own console plus three = four operator stations",
+    "wire a power switch to it: that is the kill switch, reachable from outside the room",
+    "at most three operational gates per branch, counted across every map you hold (GATE_MAX)",
+    "then ladder_set mark gate_designated true"
+   ],
+   "why": "the company exists for the gate; it is built after the mountain is sealed and fed, not before",
+   "never": [
+    "open a gate with fewer than three days of food",
+    "cross with the whole crew at once"
+   ],
+   "family": "backrooms",
+   "note": "verified against docs/wiki/gates.md (Any door will do / Four benches / Four stations / Three gates / The kill switch)",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "mod:Rimrooms.AsyncIndustries"
+   ]
+  },
+  {
+   "id": "rung-5c-the-backrooms",
+   "priority": 23.7,
+   "when": {
+    "mark_gate_open": true
+   },
+   "then": [
+    "one scout through, armed, carrying medicine and a meal, with a marked route home",
+    "mark a route home at every junction -- that marker is the only map you get",
+    "haul what the branch needs: components, medicine, glitterworld anything, the research dossier",
+    "come back before the scout's needs bottom out; a pawn who faints in there does not come back",
+    "the gate room stays sealed and the kill switch stays reachable"
+   ],
+   "why": "owner: \"lock for gates and go through them come back to this level if they lead deerer ur exit is on this level\"",
+   "never": [
+    "send a hungry or hurt pawn in",
+    "leave a crossing open while a raid is on the home map"
+   ],
+   "latch": true,
+   "family": "backrooms",
+   "note": "first-crossing protocol; reset with ladder_set mark rung_5c_the_backrooms_done false before a new crossing",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "mod:Rimrooms.AsyncIndustries"
+   ]
+  },
+  {
+   "id": "rung-6b-orbit-and-beyond",
+   "disabled": "ship_research_done: use mark_research_ship_basics; superseded by space rungs 60-64",
+   "priority": 24.5,
+   "when": {
+    "ship_research_done": true
+   },
+   "then": [
+    "hull, engines, reactor, cryptosleep, in that order, inside the mountain where a raid cannot reach them",
+    "the launch itself draws a raid: the defence rung has to hold before the engines light",
+    "the company's gates and expeditions pay for the ship -- that is what they are for",
+    "every colonist in a pod before the countdown, nobody left holding the door"
+   ],
+   "why": "owner: \"dominate the universe with a space ewarfare and planet domination\" -- the top of the ladder",
+   "never": [
+    "light the engines with the colony undefended"
+   ],
+   "family": "space",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "setup-1-explore",
+   "priority": 3.51,
+   "when": {
+    "colony_exists": true,
+    "explore_done": false
+   },
+   "then": [
+    "game_set cmd explore -- it queues every colonist through every door and along the fog edge",
+    "unpause (game_pause_game pause false) so they walk; keep-playing re-sends explore every 3 minutes",
+    "rooms still 100% fogged with no door: find the hidden door or mark the thinnest wall to mine",
+    "when explore answers 'nothing left' this rung clears by itself"
+   ],
+   "why": "owner: \"explore the hidden rooms and get outside her walls\" / \"she is letting time pass and hasnt set a priority or shelf or schedula\" / \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\"",
+   "never": [
+    "set up stores before exploring",
+    "sit researching"
+   ],
+   "family": "setup",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "setup-2-pawns",
+   "priority": 3.52,
+   "when": {
+    "colony_exists": true,
+    "explore_done": true,
+    "mark_pawns_set": false
+   },
+   "then": [
+    "PAUSE first",
+    "pawn_priorities once per pawn: Firefighter..Cooking = 1, then custom levels by each pawn's skills and passions, none blank",
+    "then ladder_set mark pawns_set true"
+   ],
+   "why": "owner: \"explore the hidden rooms and get outside her walls\" / \"she is letting time pass and hasnt set a priority or shelf or schedula\" / \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\"",
+   "never": [
+    "set priorities one cell at a time",
+    "leave a work type blank"
+   ],
+   "family": "setup",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "setup-3-assign",
+   "priority": 3.53,
+   "when": {
+    "colony_exists": true,
+    "mark_pawns_set": true,
+    "mark_assign_set": false
+   },
+   "then": [
+    "Assign tab: food policy Fine for everyone (not Lavish), medical care best, hostility Attack; schedule Anything; drugs Social",
+    "then ladder_set mark assign_set true"
+   ],
+   "why": "owner: \"explore the hidden rooms and get outside her walls\" / \"she is letting time pass and hasnt set a priority or shelf or schedula\" / \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\"",
+   "never": [
+    "unpause before this"
+   ],
+   "family": "setup",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "setup-4-stores",
+   "priority": 3.54,
+   "when": {
+    "colony_exists": true,
+    "mark_assign_set": true,
+    "food_store": false
+   },
+   "then": [
+    "game_set cmd stockpile_room mode food",
+    "game_set cmd stockpile_room mode nofood",
+    "game_set cmd beds; game_set cmd shelves"
+   ],
+   "why": "owner: \"explore the hidden rooms and get outside her walls\" / \"she is letting time pass and hasnt set a priority or shelf or schedula\" / \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\"",
+   "never": [
+    "stockpile on fogged cells"
+   ],
+   "family": "setup",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "setup-5-stove",
+   "priority": 3.55,
+   "when": {
+    "colony_exists": true,
+    "food_store": true,
+    "mark_stove_set": false
+   },
+   "then": [
+    "game_set cmd stove (a fueled stove blueprint near the food store)",
+    "unpause so it is built; when it stands, game_set cmd add_bill x z recipe CookMealSimple count {MEAL_BILL_TARGET}",
+    "then ladder_set mark stove_set true"
+   ],
+   "why": "owner: \"explore the hidden rooms and get outside her walls\" / \"she is letting time pass and hasnt set a priority or shelf or schedula\" / \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\"",
+   "never": [
+    "place a second stove"
+   ],
+   "family": "setup",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "setup-6-run",
+   "priority": 3.56,
+   "when": {
+    "colony_exists": true,
+    "mark_stove_set": true,
+    "ticks_moving": false
+   },
+   "then": [
+    "unpause and keep time running",
+    "game_set cmd crops plant Plant_Rice, then Plant_Potato; game_set cmd hunt",
+    "turn Research back on (pawn_priorities custom Research 3)"
+   ],
+   "why": "owner: \"explore the hidden rooms and get outside her walls\" / \"she is letting time pass and hasnt set a priority or shelf or schedula\" / \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\"",
+   "never": [],
+   "family": "setup",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "start-crashlanded",
+   "priority": 3.4,
+   "family": "start",
+   "when": {
+    "colony_exists": true,
+    "mark_start_kind": 1
+   },
+   "then": [
+    "run the setup-1..6 chain unchanged",
+    "haul the scattered pod cargo into the stockpile first",
+    "set research_<project> marks as projects finish"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "start-tribal",
+   "priority": 3.41,
+   "family": "start",
+   "when": {
+    "mark_start_kind": 2
+   },
+   "then": [
+    "tribal tech: no guns or electricity yet, research is slow",
+    "first research: Complex furniture or Stonecutting, then Smithing, then Electricity",
+    "campfire for cooking, crafting spot for tribalwear and bows",
+    "hunt with recurve and short bows only, never a NEVER_HUNT animal",
+    "pemmican bills once a cooking spot exists"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "start-naked",
+   "priority": 3.42,
+   "family": "start",
+   "when": {
+    "mark_start_kind": 3
+   },
+   "then": [
+    "harvest berries and pick up everything on the map before night",
+    "crafting spot, a wooden club and a knife",
+    "hand-sew tribalwear from the first leather",
+    "a bedroll and a walled 3x3 roofed hut before the first cold night",
+    "accept every wanderer join or refugee offer"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "start-async",
+   "priority": 3.43,
+   "family": "start",
+   "when": {
+    "mark_start_kind": 4
+   },
+   "then": [
+    "the facility is built; the gate is assembled most of the way, not yet working (wiki: scenarios)",
+    "restore power first",
+    "finish the gate sections at the linked machining tables: 25 steel + 2 components a section, 100 steel + 8 components for the whole gate",
+    "ladder_set mark gate_designated true and set gate_sections_done to the number already built",
+    "run one crossing and bring back a record, then hand over to the backrooms rungs (80-86)"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "verified: docs/wiki/scenarios.md (Async Industries) + docs/wiki/gates.md",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "start-store",
+   "priority": 3.44,
+   "family": "start",
+   "when": {
+    "mark_start_kind": 5
+   },
+   "then": [
+    "secure the public area and account for anyone missing",
+    "pick ONE approach: evacuate and seal the basement, a short supervised search, or document the way through and ask for outside help",
+    "record the choice as a mark (store_approach 1/2/3)"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "verified: docs/wiki/scenarios.md (The Store)",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "start-lone",
+   "priority": 3.45,
+   "family": "start",
+   "when": {
+    "mark_start_kind": 6
+   },
+   "then": [
+    "one person, already inside: the map you start on is a coordinate",
+    "stay alive, learn a local rule, record a way out",
+    "fall back to the survival rungs every turn"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "verified: docs/wiki/scenarios.md (Lone survivor)",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "fire-in-camp",
+   "priority": 2.05,
+   "family": "survival",
+   "when": {
+    "fire_cells": ">0"
+   },
+   "then": [
+    "pause",
+    "every non-downed pawn on Firefight (already priority 1)",
+    "designate the cells next to the fire as Home so pawns fight it"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: a burning cell lists a thing with defName 'Fire' -- never captured",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "downed-pawn",
+   "priority": 2.1,
+   "family": "survival",
+   "when": {
+    "downed_count": ">0",
+    "hostiles_on_map": 0
+   },
+   "then": [
+    "rescue to a medical bed",
+    "tend with the best medicine in stock; field-tend where they lie if bleeding"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "mental-break",
+   "priority": 2.2,
+   "family": "survival",
+   "when": {
+    "mental_break": true
+   },
+   "then": [
+    "never draft against a berserk pawn with lethal weapons: fists or arrest",
+    "keep others away from a fire-starter",
+    "say the cause on stream"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "starving",
+   "priority": 4.0,
+   "family": "survival",
+   "when": {
+    "alert_starv": true
+   },
+   "then": [
+    "harvest every berry bush and agave",
+    "hunt wild_game that is not NEVER_HUNT",
+    "eat raw if there is no stove (STARVE_EAT_RAW)",
+    "growing_cells = 0: a rice zone on the best soil at once"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED alert label ('starv' substring); fixed from scratch/alert_labels.json after the first live scans",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "starving-no-game",
+   "priority": 4.01,
+   "family": "survival",
+   "when": {
+    "alert_starv": true,
+    "wild_game": 0,
+    "berry_bushes": 0
+   },
+   "then": [
+    "slaughter the least useful colony animal, never a trained mount",
+    "ask any trader caravan for packaged survival meals or pemmican",
+    "insect and human meat are last resorts: say the mood cost on stream"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED alert label; berry_bushes counts Plant_Berry (UNVERIFIED defName) and Plant_Strawberry_Wild (captured)",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "food-low",
+   "priority": 4.1,
+   "family": "survival",
+   "when": {
+    "days_of_food": "<{FOOD_MIN_DAYS}"
+   },
+   "then": [
+    "raise the meal bill to {MEAL_BILL_TARGET}",
+    "a second growing zone sized colonists x FIELD_CELLS_PER_PAWN",
+    "hunting designations on safe game"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "cold",
+   "priority": 4.3,
+   "family": "survival",
+   "when": {
+    "alert_hypotherm": true
+   },
+   "then": [
+    "everyone indoors",
+    "campfire or wood-fired heater in the barracks",
+    "a parka or tribalwear bill, Do until X = colonists",
+    "ladder_set mark outdoor_cold true"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED alert label ('hypotherm' substring)",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "heat",
+   "priority": 4.31,
+   "family": "survival",
+   "when": {
+    "alert_heatstroke": true
+   },
+   "then": [
+    "indoors",
+    "passive coolers (wood, no power) in roofed rooms",
+    "send the crew through the gate if one is open (heat-wave rung)"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED alert label ('heatstroke' substring)",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "disease",
+   "priority": 4.4,
+   "family": "survival",
+   "when": {
+    "alert_sickness": true
+   },
+   "then": [
+    "bed rest in a hospital bed",
+    "medical care best for the sick pawn",
+    "a doctor on tending priority 1",
+    "keep the room clean"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED alert label ('sick' substring)",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "warm-clothes",
+   "priority": 4.5,
+   "family": "survival",
+   "when": {
+    "alert_warm_clothes": true
+   },
+   "then": [
+    "tailoring bills for a parka or tribalwear",
+    "trade for clothes"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED alert label ('warm' substring)",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "raid-posted",
+   "priority": 2.3,
+   "family": "base-and-fortress",
+   "when": {
+    "hostiles_on_map": ">0",
+    "drafted_count": ">0"
+   },
+   "then": [
+    "posted behind embrasures on the threatened side",
+    "turrets get forced targets on sappers (mlie.allturretscansetforcedtarget)",
+    "field-tend any downed pawn where they lie before capture or haul"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "hostile-on-map (2) drafts; this rung holds the posted line once anyone is drafted",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "raid-cleanup",
+   "priority": 2.35,
+   "family": "base-and-fortress",
+   "when": {
+    "hostiles_on_map": 0,
+    "corpses": ">{CORPSE_LIMIT}"
+   },
+   "then": [
+    "undraft",
+    "strip and haul corpses to a dump zone or crematorium (xercaine.fueledcrematorium)",
+    "capture downed raiders: prisoner bed first"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: corpses are counted by className containing 'Corpse' -- never captured",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "fortress-ring",
+   "priority": 20.5,
+   "family": "base-and-fortress",
+   "when": {
+    "defences_built": true,
+    "embrasures": "<{EMBRASURE_TARGET}"
+   },
+   "then": [
+    "close the ring with embrasures matching the wall already built",
+    "killbox: KILLBOX_GAPS gap, turrets behind embrasures, a sandbag lane",
+    "firebreak FIREBREAK_WIDTH wide"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "turret-line",
+   "priority": 21.5,
+   "family": "base-and-fortress",
+   "when": {
+    "has_power": true,
+    "turrets": "<{TURRET_TARGET}",
+    "steel": ">200"
+   },
+   "then": [
+    "mini-turrets behind embrasures at the killbox mouth",
+    "repair after every raid"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "steel counts stacks x stackCount; stackCount is UNVERIFIED in captures (1 per stack otherwise)",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "stockpiles-sized",
+   "priority": 22.2,
+   "family": "economy",
+   "when": {
+    "stockpile_cells": "<{STOCK_CELLS}"
+   },
+   "then": [
+    "expand the main stockpile",
+    "shelves from the storage mods (adaptive.storage.framework, asf.deepstorage)"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "comms",
+   "priority": 22.5,
+   "family": "economy",
+   "when": {
+    "has_power": true,
+    "comms_console": false,
+    "research_microelectronicsbasics": true
+   },
+   "then": [
+    "build a comms console; calling a trader costs goodwill",
+    "arakos.callatrader.acat and zal.calltradeships are installed: read the gizmos first"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: how the call-a-trader mods work",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "trade-run",
+   "priority": 23,
+   "family": "economy",
+   "when": {
+    "comms_console": true,
+    "silver": ">{TRADE_SILVER_MIN}"
+   },
+   "then": [
+    "call an orbital trader",
+    "sell surplus: art, drugs, extra weapons",
+    "buy components and plasteel"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "reset the latch (ladder_set mark trade_run_done false) to trade again",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "components-low",
+   "priority": 23.2,
+   "family": "economy",
+   "when": {
+    "components": "<{COMPONENT_RESERVE}"
+   },
+   "then": [
+    "fabrication bench bill (after Fabrication research), or mine compacted machinery, or deep drill"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "drugs-econ",
+   "priority": 24,
+   "family": "economy",
+   "when": {
+    "mark_production_running": true
+   },
+   "then": [
+    "smokeleaf joints, psychite tea and beer as trade goods",
+    "drug policy kept to Social"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "research-next",
+   "priority": 30,
+   "family": "research",
+   "when": {
+    "research_benches": ">0",
+    "alert_need_research": true
+   },
+   "then": [
+    "open Research and TYPE the name in the search box",
+    "queue the first project in RESEARCH_ORDER whose research_<x> mark is false",
+    "when it finishes: ladder_set mark research_<x> true"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED alert label ('research' substring)",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "hitech-bench",
+   "priority": 30.5,
+   "family": "research",
+   "when": {
+    "research_microelectronicsbasics": true,
+    "has_power": true
+   },
+   "then": [
+    "high-tech research bench",
+    "a multi-analyzer once researched"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "empire-quest",
+   "priority": 40,
+   "family": "royalty",
+   "when": {
+    "empire_letter": true,
+    "quest_letter": true
+   },
+   "then": [
+    "open the quest",
+    "accept if the reward includes honor and the threat is survivable",
+    "send the pawn closest to the next title"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: empire_letter matches 'empire' in relatedFaction (a faction NAME, captured as e.g. 'Decay Crew'); quest_letter matches 'quest' in label/letterDef",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Royalty"
+   ]
+  },
+  {
+   "id": "bestowing",
+   "priority": 40.5,
+   "family": "royalty",
+   "when": {
+    "letter_matches": "bestow"
+   },
+   "then": [
+    "clear the throne room",
+    "the pawn attends; keep raids away",
+    "afterwards ladder_set mark title_rank <n> and psylink_level <n>"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "UNVERIFIED letter wording 'bestow'",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Royalty"
+   ]
+  },
+  {
+   "id": "throne-room",
+   "priority": 41,
+   "family": "royalty",
+   "when": {
+    "mark_title_rank": ">2",
+    "throne": false
+   },
+   "then": [
+    "throne room inside the mountain base, off the spine",
+    "throne, high beauty, no beds",
+    "read the room requirement from the title inspect tab, not from memory"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: exact throne-room numbers and Throne defNames (Blueprint_Throne captured)",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Royalty"
+   ]
+  },
+  {
+   "id": "psycasts",
+   "priority": 42,
+   "family": "royalty",
+   "when": {
+    "mark_psylink_level": ">0"
+   },
+   "then": [
+    "a meditation spot or throne for psyfocus",
+    "choose psycasts: Skip, Berserk and Stun are battle tools",
+    "never exceed neural heat in combat"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Royalty"
+   ]
+  },
+  {
+   "id": "permit-aid",
+   "priority": 43,
+   "family": "royalty",
+   "when": {
+    "hostiles_on_map": ">{AID_CALL_FOES}",
+    "mark_title_rank": ">3"
+   },
+   "then": [
+    "call military aid (permit) instead of losing a pawn",
+    "note the cooldown as a mark"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: per-title permit list",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Royalty"
+   ]
+  },
+  {
+   "id": "empire-hostile",
+   "priority": 2.6,
+   "family": "royalty",
+   "when": {
+    "mark_empire_hostile": true,
+    "threat_letter": true
+   },
+   "then": [
+    "imperial raids bring cataphracts and psycasters: pull back behind turrets",
+    "EMP the shielded ones"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED for 1.6: EMP against imperial shields",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Royalty"
+   ]
+  },
+  {
+   "id": "tame-mounts",
+   "priority": 50,
+   "family": "animals",
+   "when": {
+    "mount_candidates": ">0",
+    "mark_mounts_trained": "<{MOUNT_TARGET}",
+    "colonists": ">3"
+   },
+   "then": [
+    "designate taming on the best MOUNT_DEFS animal in sight",
+    "the tamer needs high Animals skill",
+    "elephants and thrumbos can go manhunter when taming fails: draft guards first"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: which MOUNT_DEFS species Giddy-up can ride",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "animal-pen",
+   "priority": 50.5,
+   "family": "animals",
+   "when": {
+    "colony_animals": ">0"
+   },
+   "then": [
+    "animal sleeping spots, a pen or allowed area (create_allowed_area)",
+    "a hay or kibble stockpile"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "UNVERIFIED: whether list_colonists lists colony animals (key absent until one is seen)",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "train-mounts",
+   "priority": 51,
+   "family": "animals",
+   "when": {
+    "colony_animals": ">0",
+    "mark_mounts_trained": "<{MOUNT_TARGET}"
+   },
+   "then": [
+    "training: Obedience, then Release",
+    "a dedicated handler",
+    "ladder_set mark mounts_trained <n>"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: colony_animals source (see animal-pen)",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "armor-mounts",
+   "priority": 51.5,
+   "family": "animals",
+   "when": {
+    "mark_mounts_trained": ">2"
+   },
+   "then": [
+    "craft animal armor if the bench offers it"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "UNVERIFIED: animal armor recipes (ingendum.animalarmorbasic)",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "cavalry-check",
+   "priority": 52,
+   "family": "animals",
+   "when": {
+    "mark_mounts_trained": ">0",
+    "mark_mounted_ready": false,
+    "CAVALRY_ENABLED": ">0"
+   },
+   "then": [
+    "draft one rider",
+    "list_selected_gizmos",
+    "mount gizmo there: mount and ladder_set mark mounted_ready true",
+    "no gizmo: ladder_set tag CAVALRY_ENABLED 0 -- war rungs fall back to infantry with animals on Release"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: the Giddy-up mount gizmo",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "cavalry-tactics",
+   "priority": 53,
+   "family": "animals",
+   "when": {
+    "hostiles_on_map": ">0",
+    "mark_mounted_ready": true,
+    "CAVALRY_ENABLED": ">0"
+   },
+   "then": [
+    "mounted riders flank on open ground, Run and Gun shooting on the move (memegoddess.runandgun)",
+    "elephants front-line on Release",
+    "never charge a turret line or mortars",
+    "retreat behind embrasures when hurt"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "war-prep",
+   "priority": 55,
+   "family": "war",
+   "when": {
+    "colonists": ">{WAR_MIN_CREW}",
+    "medicine": ">{MEDICINE_RESERVE}"
+   },
+   "then": [
+    "Gunsmithing or better weapons",
+    "flak or plate armor",
+    "a medical kit per raider",
+    "pick the nearest hostile settlement: ladder_set mark war_target_set true"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "caravan-raid",
+   "priority": 56,
+   "family": "war",
+   "when": {
+    "mark_war_target_set": true,
+    "caravan_out": false,
+    "research_transportpod": false
+   },
+   "then": [
+    "form a caravan: fighters, mounts if CAVALRY_ENABLED, food for the round trip plus 3 days",
+    "leave HOME_GUARD at home",
+    "ladder_set mark caravan_out true"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "pod-assault",
+   "priority": 56.5,
+   "family": "war",
+   "when": {
+    "research_transportpod": true,
+    "pod_launchers": ">{POD_SQUAD}",
+    "chemfuel": ">{POD_FUEL}"
+   },
+   "then": [
+    "load the squad into pods",
+    "drop at the edge, not the centre, unless the squad is shielded",
+    "a second wave of pods carries meds"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "UNVERIFIED: chemfuel cost per tile (POD_FUEL is generous)",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "assault-on-map",
+   "priority": 57,
+   "family": "war",
+   "when": {
+    "away_maps": ">0",
+    "hostiles_on_map": ">0"
+   },
+   "then": [
+    "fight on the away map: cover, focus fire, Search and Destroy off for the medics",
+    "retreat via the map edge if half the squad is downed"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "hostiles_on_map is measured on the map on screen only",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "settlement-down",
+   "priority": 57.5,
+   "family": "war",
+   "when": {
+    "away_maps": ">0",
+    "hostiles_on_map": 0,
+    "caravan_out": true
+   },
+   "then": [
+    "loot silver, components and prisoners",
+    "destroy the settlement or leave",
+    "head home",
+    "ladder_set mark caravan_out false"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "grav-core",
+   "priority": 60,
+   "family": "space",
+   "when": {
+    "quest_letter": true,
+    "mark_gravcore_found": false
+   },
+   "then": [
+    "take quests that reward the grav engine / gravcore",
+    "ladder_set mark gravcore_found true on receipt"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: Odyssey quest wording and gravcore name",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Odyssey"
+   ]
+  },
+  {
+   "id": "grav-build",
+   "priority": 61,
+   "family": "space",
+   "when": {
+    "mark_gravcore_found": true,
+    "grav_parts": "<{GRAV_PARTS_TARGET}"
+   },
+   "then": [
+    "lay substructure",
+    "engine, thrusters, fuel storage and pilot console per the Architect's Odyssey category (list_architect_designators, never guess)",
+    "move barracks, freezer, workshop and turrets onto it"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: every gravship defName (grav_parts = defName contains 'Grav')",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Odyssey"
+   ]
+  },
+  {
+   "id": "grav-ready",
+   "priority": 62,
+   "family": "space",
+   "when": {
+    "grav_parts": ">={GRAV_PARTS_TARGET}"
+   },
+   "then": [
+    "fill fuel",
+    "check the launch prerequisites on the console",
+    "ladder_set mark gravship_ready true"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "UNVERIFIED: fuel type, amounts, cooldown",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Odyssey"
+   ]
+  },
+  {
+   "id": "megaship-drop",
+   "priority": 63,
+   "family": "space",
+   "when": {
+    "mark_gravship_ready": true,
+    "mark_war_target_set": true
+   },
+   "then": [
+    "fly the ship near the target tile",
+    "launch the pod assault from the ship's own launchers",
+    "cavalry follows by caravan if the terrain allows"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Odyssey"
+   ]
+  },
+  {
+   "id": "ship-launch",
+   "priority": 64,
+   "family": "space",
+   "when": {
+    "ship_parts": ">0"
+   },
+   "then": [
+    "vanilla ship: hull, engines, reactor, cryptosleep inside the mountain",
+    "the launch draws a raid: the defence rung has to hold first",
+    "every colonist in a pod before the countdown"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "UNVERIFIED: vanilla ship defNames start with 'Ship_'",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "ideo-roles",
+   "priority": 70,
+   "family": "ideology-biotech-anomaly",
+   "when": {
+    "colonists": ">3",
+    "mark_ideo_roles_set": false
+   },
+   "then": [
+    "assign the leader and moral guide",
+    "specialist roles when there are colonists for them",
+    "ladder_set mark ideo_roles_set true"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Ideology"
+   ]
+  },
+  {
+   "id": "ideo-ritual",
+   "priority": 70.5,
+   "family": "ideology-biotech-anomaly",
+   "when": {
+    "mark_ideo_roles_set": true
+   },
+   "then": [
+    "hold the precept's rituals for mood",
+    "build the shrine and altar the ideoligion asks for (read the Ideoligion tab)"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Ideology"
+   ]
+  },
+  {
+   "id": "mechanitor",
+   "priority": 72,
+   "family": "ideology-biotech-anomaly",
+   "when": {
+    "mark_mechlink_installed": true
+   },
+   "then": [
+    "mech gestator",
+    "lifters and constructors first, then war mechs",
+    "watch bandwidth",
+    "recharger on power"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Biotech"
+   ]
+  },
+  {
+   "id": "genes",
+   "priority": 73,
+   "family": "ideology-biotech-anomaly",
+   "when": {
+    "research_xenogenetics": true
+   },
+   "then": [
+    "gene extractor and assembler",
+    "bank useful genes"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "UNVERIFIED: specific gene names",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Biotech"
+   ]
+  },
+  {
+   "id": "anomaly-monolith",
+   "priority": 76,
+   "family": "ideology-biotech-anomaly",
+   "when": {
+    "letter_matches": "monolith"
+   },
+   "then": [
+    "the void monolith activates in stages",
+    "containment platforms (zoarak.anomalyplat) before advancing",
+    "study entities in holding",
+    "never advance without the defence rung holding"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "UNVERIFIED letter wording 'monolith'",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Anomaly"
+   ]
+  },
+  {
+   "id": "anomaly-entity",
+   "priority": 2.7,
+   "family": "ideology-biotech-anomaly",
+   "when": {
+    "letter_matches": "entity",
+    "threat_letter": true
+   },
+   "then": [
+    "treat as a raid",
+    "read the letter text for the entity's weakness; do not assume"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED letter wording 'entity'",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "Anomaly"
+   ]
+  },
+  {
+   "id": "gate-assemble",
+   "priority": 80,
+   "family": "backrooms",
+   "when": {
+    "mark_gate_designated": true,
+    "mark_gate_sections_done": "<4",
+    "steel": ">=25",
+    "components": ">=2"
+   },
+   "then": [
+    "link up to three more machining tables on the Machine pane (four benches)",
+    "one section each in parallel: 25 steel + 2 components a section, 100 steel + 8 components in total",
+    "an unlinked or destroyed bench's sections stay outstanding on the others",
+    "ladder_set mark gate_sections_done <n>"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "verified: docs/wiki/gates.md (Four benches); steel/components counts use stackCount (UNVERIFIED in captures)",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "mod:Rimrooms.AsyncIndustries"
+   ]
+  },
+  {
+   "id": "gate-power",
+   "priority": 80.5,
+   "family": "backrooms",
+   "when": {
+    "mark_gate_sections_done": 4,
+    "mark_gate_online": false
+   },
+   "then": [
+    "the gate is a load on its circuit while open; a generator surplus keeps the batteries untouched",
+    "the reserve always holds one return's charge",
+    "link up to three more communications consoles (four stations; an unpowered console is not a station)",
+    "ladder_set mark gate_online true"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "verified: docs/wiki/gates.md (The reserve / Four stations)",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "mod:Rimrooms.AsyncIndustries"
+   ]
+  },
+  {
+   "id": "gate-open",
+   "priority": 81,
+   "family": "backrooms",
+   "when": {
+    "mark_gate_online": true,
+    "mark_gate_open": false,
+    "days_of_food": ">{FOOD_COMFORT_DAYS}"
+   },
+   "then": [
+    "operator to a console until the connection is up -- walking away loses charge",
+    "first crossing: one armed scout with a meal and medicine",
+    "ladder_set mark gate_open true"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "verified: docs/wiki/gates.md (Opening one is work)",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "mod:Rimrooms.AsyncIndustries"
+   ]
+  },
+  {
+   "id": "gate-staffed",
+   "priority": 2.8,
+   "family": "backrooms",
+   "when": {
+    "mark_gate_open": true,
+    "mark_operator_on_station": false
+   },
+   "then": [
+    "an operator back to any of the four stations within half an hour or the connection drops",
+    "Standing Relief (company project) doubles that grace to an hour"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "verified: docs/wiki/gates.md (An empty chair is forgiven for half an hour)",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "mod:Rimrooms.AsyncIndustries"
+   ]
+  },
+  {
+   "id": "backrooms-mine",
+   "priority": 83,
+   "family": "backrooms",
+   "when": {
+    "mark_gate_open": true,
+    "mark_coordinate_held": true
+   },
+   "then": [
+    "use the coordinate: mine (three times the ore of an ordinary map), farm (sun lamps), storage, prison, workshop or field hospital",
+    "a prisoner can cross and stays a prisoner",
+    "three operational gates per branch at most (GATE_MAX), across every map"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "verified: docs/wiki/backrooms.md (A coordinate is a map you can use) + docs/wiki/gates.md (Three gates)",
+   "source": "book",
+   "mode": "advise",
+   "requires": [
+    "mod:Rimrooms.AsyncIndustries"
+   ]
+  },
+  {
+   "id": "empire-dominion",
+   "priority": 95,
+   "family": "endgame",
+   "when": {
+    "mark_title_rank": ">={TARGET_TITLE}",
+    "mark_gravship_ready": true
+   },
+   "then": [
+    "choose the ending on stream: Empire high title, gravship voyage, vanilla ship launch, or Anomaly",
+    "announce it",
+    "plan backwards with marks"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "latch": true,
+   "note": "UNVERIFIED: Anomaly's ending as a distinct ending in this mod set",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "combat-0-reset",
+   "priority": 1.58,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "fight over? hostiles_on_map = 0 while the combat chain is still latched",
+   "when": {
+    "mark_combat_paused": true,
+    "hostiles_on_map": 0
+   },
+   "then": [
+    "undraft everyone (game_set_draft false per pawn)",
+    "run time again (game_pause_game pause false)",
+    "ladder_set mark combat_paused false",
+    "ladder_set mark combat_plan 0",
+    "ladder_set mark help_coming false",
+    "ladder_set mark colonist_hurt false"
+   ],
+   "notice": "Fight over: chain reset, undrafted, time running.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "combat-0-reassess-worse",
+   "priority": 1.585,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "float switch: we chose to fight but fight_ratio fell under FIGHT_RATIO_MIN",
+   "when": {
+    "mark_combat_plan": 1,
+    "fight_ratio": "<{FIGHT_RATIO_MIN}"
+   },
+   "then": [
+    "pause (game_pause_game pause true)",
+    "ladder_set mark combat_plan 0 -- the odds dropped, the branch rungs pick again"
+   ],
+   "notice": "Odds dropped mid-fight: paused to re-plan.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "combat-0-reassess-better",
+   "priority": 1.586,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "float switch: holding/kiting/retreating but fight_ratio is back at FIGHT_RATIO_MIN",
+   "when": {
+    "mark_combat_plan": ">1",
+    "fight_ratio": ">={FIGHT_RATIO_MIN}"
+   },
+   "then": [
+    "pause (game_pause_game pause true)",
+    "ladder_set mark combat_plan 0 -- the odds turned, the fight rung takes over"
+   ],
+   "notice": "Odds improved: paused to switch to fighting.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "combat-1-damage-pause",
+   "priority": 1.6,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "colonist took damage with hostiles on the map",
+   "when": {
+    "colonist_hurt": true,
+    "hostiles_on_map": ">0",
+    "mark_combat_paused": false
+   },
+   "then": [
+    "pause (game_pause_game pause true)",
+    "read fight_ratio = able_shooters / hostiles_on_map off the ladder",
+    "ladder_set mark combat_paused true"
+   ],
+   "notice": "A colonist is hurt and hostiles are here: game paused for a fight check.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "combat-2-fight",
+   "priority": 1.61,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "can we handle this fight? fight_ratio >= FIGHT_RATIO_MIN -> YES",
+   "when": {
+    "mark_combat_paused": true,
+    "mark_combat_plan": 0,
+    "fight_ratio": ">={FIGHT_RATIO_MIN}"
+   },
+   "then": [
+    "YES, we can handle it: draft every able shooter (game_set_draft)",
+    "post them behind embrasures on the threatened side",
+    "ladder_set mark combat_plan 1",
+    "unpause and fight (game_pause_game pause false)"
+   ],
+   "notice": "We can take this fight: drafted and fighting.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "combat-2-help-coming",
+   "priority": 1.62,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "can we handle it? NO -> can help get there soon? YES (mark help_coming)",
+   "when": {
+    "mark_combat_paused": true,
+    "mark_combat_plan": 0,
+    "fight_ratio": "<{FIGHT_RATIO_MIN}",
+    "mark_help_coming": true
+   },
+   "then": [
+    "NO, but help is on the way: draft and hold inside the walls, out of their range",
+    "ladder_set mark combat_plan 2",
+    "unpause and hold until the help lands"
+   ],
+   "notice": "Outmatched but help is coming: holding inside the walls.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "combat-2-call-help-comms",
+   "priority": 1.63,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "too many (fight_ratio < CALL_HELP_RATIO), a comms console stands",
+   "when": {
+    "mark_combat_paused": true,
+    "mark_combat_plan": 0,
+    "fight_ratio": "<{CALL_HELP_RATIO}",
+    "mark_help_coming": false,
+    "comms_console": true
+   },
+   "then": [
+    "too many: call for help at the comms console (an allied faction's military aid)",
+    "ladder_set mark help_coming true",
+    "ladder_set mark combat_plan 4",
+    "meanwhile retreat inside the walls, then unpause"
+   ],
+   "notice": "Too many hostiles: calling for help, falling back inside.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "note": "UNVERIFIED: which allies answer and the goodwill cost (read the comms menu, never guess)",
+   "source": "book"
+  },
+  {
+   "id": "combat-2-call-help-permit",
+   "priority": 1.635,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "too many, no comms console, a title with a permit",
+   "when": {
+    "mark_combat_paused": true,
+    "mark_combat_plan": 0,
+    "fight_ratio": "<{CALL_HELP_RATIO}",
+    "mark_help_coming": false,
+    "mark_title_rank": ">3"
+   },
+   "then": [
+    "too many: call imperial military aid with the title permit",
+    "ladder_set mark help_coming true",
+    "ladder_set mark combat_plan 4",
+    "retreat inside the walls, then unpause"
+   ],
+   "notice": "Too many hostiles: calling imperial aid.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "note": "UNVERIFIED: per-title permit list (same as permit-aid)",
+   "source": "book"
+  },
+  {
+   "id": "combat-2-retreat",
+   "priority": 1.64,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "too many, no way to call help",
+   "when": {
+    "mark_combat_paused": true,
+    "mark_combat_plan": 0,
+    "fight_ratio": "<{CALL_HELP_RATIO}",
+    "mark_help_coming": false
+   },
+   "then": [
+    "too many and nobody to call: retreat inside the walls (the mountain base, or through an open gate)",
+    "draft, close the doors behind, shoot from the embrasures only",
+    "ladder_set mark combat_plan 5",
+    "unpause"
+   ],
+   "notice": "Too many hostiles and no help: retreating inside the walls.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "combat-2-kite",
+   "priority": 1.65,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "can we handle it? NO -> help soon? NO -> not too many (the call-help/retreat rungs above take fight_ratio < CALL_HELP_RATIO first)",
+   "when": {
+    "mark_combat_paused": true,
+    "mark_combat_plan": 0,
+    "fight_ratio": "<{FIGHT_RATIO_MIN}",
+    "mark_help_coming": false
+   },
+   "then": [
+    "NO, and no help soon: keep range -- draft, fall back while shooting, never stand in melee",
+    "ladder_set mark combat_plan 3",
+    "unpause and kite"
+   ],
+   "notice": "Outmatched, no help near: keeping range and kiting.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "med-1-bleeding-under-fire",
+   "priority": 1.68,
+   "family": "survival",
+   "chain": "medical",
+   "mode": "advise",
+   "check": "pawn bleeding -> enemy on map? YES",
+   "when": {
+    "pawn_bleeding": true,
+    "hostiles_on_map": ">0",
+    "mark_combat_plan": ">0"
+   },
+   "then": [
+    "enemy on the map: draft everyone able and kill the threat first (combat_plan 1), or follow the plan the chain picked",
+    "never carry a bleeding pawn under fire",
+    "the moment the shooting near them stops: field tend where they lie (med-2)"
+   ],
+   "notice": "A colonist is bleeding with hostiles here: threat first, then field care.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "combat-3-hold-plan",
+   "priority": 1.69,
+   "family": "survival",
+   "chain": "combat",
+   "mode": "advise",
+   "check": "fight in progress, plan latched",
+   "when": {
+    "mark_combat_plan": ">0",
+    "hostiles_on_map": ">0"
+   },
+   "then": [
+    "follow combat_plan: 1 fight, 2 hold for help, 3 kite, 4 help called, 5 retreat",
+    "re-read fight_ratio every scan (the reassess rungs re-plan)"
+   ],
+   "notice": "Fight in progress: holding the chosen plan.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "med-2-field-tend",
+   "priority": 2.06,
+   "family": "survival",
+   "chain": "medical",
+   "mode": "advise",
+   "check": "pawn bleeding -> enemy on map? NO -> tend now",
+   "when": {
+    "pawn_bleeding": true,
+    "hostiles_on_map": 0,
+    "mark_field_tended": false
+   },
+   "then": [
+    "enemy on map? NO: field tend the bleeder where they lie, best medicine in stock, before any carry",
+    "ladder_set mark field_tended true"
+   ],
+   "notice": "Bleeding colonist: field tending in place.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "med-3-carry-to-hospital",
+   "priority": 2.07,
+   "family": "survival",
+   "chain": "medical",
+   "mode": "advise",
+   "check": "field tended -> carry to hospital",
+   "when": {
+    "mark_field_tended": true,
+    "hostiles_on_map": 0
+   },
+   "then": [
+    "carry (rescue) them to a bed marked Medical",
+    "a doctor tends again there",
+    "ladder_set mark field_tended false",
+    "ladder_set mark pawn_bleeding false (if she set it; a live bleed alert re-arms med-2)"
+   ],
+   "notice": "Tended in the field: carrying to the hospital bed.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "repair-0-reset",
+   "priority": 4.58,
+   "family": "survival",
+   "chain": "repairs",
+   "mode": "advise",
+   "check": "repairs finished? buildings_damaged = 0",
+   "when": {
+    "buildings_damaged": 0,
+    "mark_repairs_set": true
+   },
+   "then": [
+    "ladder_set mark repairs_set false"
+   ],
+   "notice": "Repairs done.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "repair-1-wait",
+   "priority": 4.6,
+   "family": "survival",
+   "chain": "repairs",
+   "mode": "advise",
+   "check": "buildings damaged -> pawns safe? NO",
+   "when": {
+    "buildings_damaged": ">0",
+    "hostiles_on_map": ">0"
+   },
+   "then": [
+    "buildings damaged but pawns are NOT safe: wait, nobody walks out to repair under fire"
+   ],
+   "notice": "Damage noted: repairs wait until the hostiles are gone.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "repair-2-set",
+   "priority": 4.61,
+   "family": "survival",
+   "chain": "repairs",
+   "mode": "advise",
+   "check": "buildings damaged -> pawns safe? YES -> set repairs",
+   "when": {
+    "buildings_damaged": ">0",
+    "hostiles_on_map": 0,
+    "mark_repairs_set": false
+   },
+   "then": [
+    "pawns safe: keep the damaged buildings inside the Home area (repairs only happen there)",
+    "builders on Construction (pawn_priorities)",
+    "ladder_set mark repairs_set true"
+   ],
+   "notice": "Damaged buildings: repairs set.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "note": "buildings_damaged is an UNVERIFIED heuristic (see sensors)",
+   "source": "book"
+  },
+  {
+   "id": "defense-0-reset-embrasures",
+   "priority": 19.4,
+   "family": "base-and-fortress",
+   "chain": "defense",
+   "mode": "advise",
+   "check": "secure contact drops: embrasures under target",
+   "when": {
+    "mark_defense_secure": true,
+    "embrasures": "<{EMBRASURE_TARGET}"
+   },
+   "then": [
+    "ladder_set mark defense_secure false"
+   ],
+   "notice": "Defenses no longer secure: embrasures short.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "defense-0-reset-turrets",
+   "priority": 19.41,
+   "family": "base-and-fortress",
+   "chain": "defense",
+   "mode": "advise",
+   "check": "secure contact drops: turrets under target",
+   "when": {
+    "mark_defense_secure": true,
+    "turrets": "<{TURRET_TARGET}"
+   },
+   "then": [
+    "ladder_set mark defense_secure false"
+   ],
+   "notice": "Defenses no longer secure: turrets short.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "defense-0-reset-damage",
+   "priority": 19.42,
+   "family": "base-and-fortress",
+   "chain": "defense",
+   "mode": "advise",
+   "check": "secure contact drops: damage on the map",
+   "when": {
+    "mark_defense_secure": true,
+    "buildings_damaged": ">0"
+   },
+   "then": [
+    "ladder_set mark defense_secure false"
+   ],
+   "notice": "Defenses no longer secure: damage to repair.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "defense-1-secure",
+   "priority": 19.5,
+   "family": "base-and-fortress",
+   "chain": "defense",
+   "mode": "advise",
+   "check": "defenses secure? embrasures >= EMBRASURE_TARGET, turrets >= TURRET_TARGET, nothing damaged -> YES",
+   "when": {
+    "defences_built": true,
+    "embrasures": ">={EMBRASURE_TARGET}",
+    "turrets": ">={TURRET_TARGET}",
+    "buildings_damaged": 0,
+    "mark_defense_secure": false
+   },
+   "then": [
+    "defenses secure: continue with the rungs below",
+    "ladder_set mark defense_secure true"
+   ],
+   "notice": "Defenses secure.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "defense-2-embrasures",
+   "priority": 19.6,
+   "family": "base-and-fortress",
+   "chain": "defense",
+   "mode": "advise",
+   "check": "defenses secure? embrasures < EMBRASURE_TARGET",
+   "when": {
+    "defences_built": true,
+    "embrasures": "<{EMBRASURE_TARGET}",
+    "mark_defense_secure": false
+   },
+   "then": [
+    "defenses secure? NO -- build list: embrasures short by EMBRASURE_TARGET - embrasures",
+    "close the ring with the same embrasure def the wall already uses"
+   ],
+   "notice": "Defense check: embrasures below target, build list made.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "defense-3-turrets",
+   "priority": 19.7,
+   "family": "base-and-fortress",
+   "chain": "defense",
+   "mode": "advise",
+   "check": "defenses secure? turrets < TURRET_TARGET",
+   "when": {
+    "has_power": true,
+    "turrets": "<{TURRET_TARGET}",
+    "mark_defense_secure": false
+   },
+   "then": [
+    "defenses secure? NO -- build list: turrets short by TURRET_TARGET - turrets, behind embrasures at the killbox",
+    "steel under STEEL_RESERVE: the steel supply rung comes first"
+   ],
+   "notice": "Defense check: turrets below target, build list made.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "supply-food-0-reset",
+   "priority": 22.6,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "food back at FOOD_COMFORT_DAYS",
+   "when": {
+    "mark_food_short_set": true,
+    "days_of_food": ">={FOOD_COMFORT_DAYS}"
+   },
+   "then": [
+    "ladder_set mark food_short_set false"
+   ],
+   "notice": "Food back at level.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "supply-food-1-low",
+   "priority": 22.61,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "supply level: days_of_food < FOOD_COMFORT_DAYS",
+   "when": {
+    "days_of_food": "<{FOOD_COMFORT_DAYS}",
+    "mark_food_short_set": false
+   },
+   "then": [
+    "food under the comfort level (food-low 4.1 already handles under FOOD_MIN_DAYS)",
+    "meal bill up to MEAL_BILL_TARGET, a growing zone sized colonists x FIELD_CELLS_PER_PAWN, hunts on safe game",
+    "ladder_set mark food_short_set true"
+   ],
+   "notice": "Food below comfort level: bills and fields raised.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "supply-steel-0-reset",
+   "priority": 22.62,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "steel back at STEEL_RESERVE",
+   "when": {
+    "mark_steel_short_set": true,
+    "steel": ">={STEEL_RESERVE}"
+   },
+   "then": [
+    "ladder_set mark steel_short_set false"
+   ],
+   "notice": "Steel back at level.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "supply-steel-1-buy",
+   "priority": 22.63,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "supply level: steel < STEEL_RESERVE, comms + silver -> buy",
+   "when": {
+    "steel": "<{STEEL_RESERVE}",
+    "comms_console": true,
+    "silver": ">={TRADE_SILVER_MIN}",
+    "mark_steel_short_set": false
+   },
+   "then": [
+    "steel shortage and silver to spend: call a trader and buy steel",
+    "ladder_set mark steel_short_set true"
+   ],
+   "notice": "Steel short: buying from a trader.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "supply-steel-2-mine",
+   "priority": 22.64,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "supply level: steel < STEEL_RESERVE -> mine",
+   "when": {
+    "steel": "<{STEEL_RESERVE}",
+    "mark_steel_short_set": false
+   },
+   "then": [
+    "steel shortage: mine compacted steel, deconstruct steel junk, or a deep drill",
+    "ladder_set mark steel_short_set true"
+   ],
+   "notice": "Steel short: mining for more.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "supply-podfuel-0-reset",
+   "priority": 22.65,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "pod fuel back at POD_FUEL",
+   "when": {
+    "mark_fuel_short_set": true,
+    "chemfuel": ">={POD_FUEL}"
+   },
+   "then": [
+    "ladder_set mark fuel_short_set false"
+   ],
+   "notice": "Pod fuel back at level.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "supply-podfuel-1-low",
+   "priority": 22.66,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "supply level: chemfuel < POD_FUEL with pod launchers built",
+   "when": {
+    "pod_launchers": ">0",
+    "chemfuel": "<{POD_FUEL}",
+    "mark_fuel_short_set": false
+   },
+   "then": [
+    "pod fuel low: a biofuel refinery bill for chemfuel, Do until you have POD_FUEL",
+    "ladder_set mark fuel_short_set true"
+   ],
+   "notice": "Pod fuel low: refinery bill set.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "supply-shipfuel-0-reset",
+   "priority": 22.67,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "ship fuel back at SHIP_FUEL_RESERVE",
+   "when": {
+    "mark_shipfuel_short_set": true,
+    "chemfuel": ">={SHIP_FUEL_RESERVE}"
+   },
+   "then": [
+    "ladder_set mark shipfuel_short_set false"
+   ],
+   "notice": "Ship fuel back at level.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "supply-shipfuel-1-low",
+   "priority": 22.68,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "supply level: chemfuel < SHIP_FUEL_RESERVE with a gravship started",
+   "when": {
+    "grav_parts": ">0",
+    "chemfuel": "<{SHIP_FUEL_RESERVE}",
+    "mark_shipfuel_short_set": false
+   },
+   "then": [
+    "ship fuel low: refinery bill; read the console for the real fuel type first",
+    "ladder_set mark shipfuel_short_set true"
+   ],
+   "notice": "Ship fuel low: refuel bill set.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "note": "UNVERIFIED: the gravship fuel type and amount (chemfuel assumed)",
+   "source": "book"
+  },
+  {
+   "id": "supply-weapons-0-reset",
+   "priority": 22.69,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "loose weapons back at WEAPON_KEEP or fewer",
+   "when": {
+    "mark_junk_weapons_set": true,
+    "loose_weapons": "<={WEAPON_KEEP}"
+   },
+   "then": [
+    "ladder_set mark junk_weapons_set false"
+   ],
+   "notice": "Weapon pile cleared.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "supply-weapons-1-sell",
+   "priority": 22.7,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "supply level: loose_weapons > WEAPON_KEEP, a trader can be called -> sell",
+   "when": {
+    "loose_weapons": ">{WEAPON_KEEP}",
+    "comms_console": true,
+    "mark_junk_weapons_set": false
+   },
+   "then": [
+    "too many junk weapons: call a trader and sell the extras, worst quality (junk_weapons) first",
+    "ladder_set mark junk_weapons_set true"
+   ],
+   "notice": "Too many spare weapons: selling them.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "source": "book"
+  },
+  {
+   "id": "supply-weapons-2-smelt",
+   "priority": 22.71,
+   "family": "economy",
+   "chain": "supply",
+   "mode": "advise",
+   "check": "supply level: loose_weapons > WEAPON_KEEP -> smelt",
+   "when": {
+    "loose_weapons": ">{WEAPON_KEEP}",
+    "mark_junk_weapons_set": false
+   },
+   "then": [
+    "too many junk weapons, no trader: smelt them at an electric smelter (smelt weapon bill), or keep them for the next caravan",
+    "ladder_set mark junk_weapons_set true"
+   ],
+   "notice": "Too many spare weapons: smelting them.",
+   "why": "owner, 2026-10-12 (RimPLC decision 3): \"option one its what the ai checks or human is notified to their game like a auto updating checkl ist of controls and switchs and replays and contactors for signaling and control like a electrical mechanic would do ie float switch for healt bars and colonist has taken damage pausing and liek can she handle this fight if yes unpasue if no plan help o can help get there soon? no then run keep range too many get help like all this type of shit for everything from low food to low ship fuel to too many junk wepons needed to sell, not enough steel supply shortage needed supplies at level, ect ect defenses secure if so then if no then, buildings damaged? set repairs if pawns safe, ppawn bnleeding is there enemy on map if so daft all kill thing, save pawns field tend before carry to hospiital ectect ect you know what i mean\"",
+   "note": "UNVERIFIED: the smelt-weapon recipe name in this mod set",
+   "source": "book"
+  }
+ ],
+ "tags": {
+  "note": "PLC tag table. CONSTANTS are safety limits: owner only, ladder_set refuses them. VARIABLES are setpoints: gates.py recomputes the ones with a size rule from measured state each scan, clamps every value to min/max, and her ladder_set tag override wins inside those bounds. Reference them in a rung's when as {NAME}, or use a tag name directly as a when key.",
+  "constants": {
+   "FOOD_PANIC_DAYS": 1.0,
+   "RIFLES_FOR_BIG_GAME": 3,
+   "LAMPS_PER_ROOM": 2,
+   "ROCK_CELLS_AROUND_ROOMS": 2,
+   "SPINE_WIDTH": 3,
+   "MOUNTAIN_DOORS_IN": 1,
+   "FIREBREAK_WIDTH": 3,
+   "MAX_COMMANDS_PER_PASS": 32,
+   "NEVER_HUNT": [
+    "boomalope",
+    "rhinoceros",
+    "elephant",
+    "bear",
+    "thrumbo",
+    "megasloth",
+    "insect hive"
+   ],
+   "START_GRACE_DAYS": 5,
+   "GRACE_FROM_PRIORITY": 20,
+   "KILLBOX_GAPS": 1,
+   "STARVE_EAT_RAW": true,
+   "MOUNT_DEFS": [
+    "Elephant",
+    "Horse",
+    "Dromedary",
+    "Muffalo",
+    "Thrumbo"
+   ],
+   "RESEARCH_ORDER": [
+    "electricity",
+    "battery",
+    "air_conditioning",
+    "microelectronics",
+    "gunsmithing",
+    "multi_analyzer",
+    "fabrication",
+    "transport_pod",
+    "gravship (Odyssey, UNVERIFIED names)",
+    "ship_basics"
+   ],
+   "GATE_MAX": 3,
+   "HOME_GUARD": 2
+  },
+  "variables": {
+   "FOOD_MIN_DAYS": {
+    "value": 3.2,
+    "rule": "2 + 0.4 per colonist",
+    "min": 3.0,
+    "max": 30.0
+   },
+   "FOOD_COMFORT_DAYS": {
+    "value": 6.4,
+    "rule": "twice FOOD_MIN_DAYS",
+    "min": 5.0,
+    "max": 60.0
+   },
+   "MEAL_BILL_TARGET": {
+    "value": 30,
+    "rule": "10 per colonist",
+    "min": 10,
+    "max": 300
+   },
+   "WOOD_RESERVE": {
+    "value": 180,
+    "rule": "60 per colonist",
+    "min": 100,
+    "max": 2000
+   },
+   "MEDICINE_RESERVE": {
+    "value": 6,
+    "rule": "2 per colonist",
+    "min": 4,
+    "max": 80
+   },
+   "BEDS_NEEDED": {
+    "value": 4,
+    "rule": "one per colonist, plus one spare",
+    "min": 2,
+    "max": 60
+   },
+   "COOLERS_PER_ROOM": {
+    "value": 1,
+    "rule": "one per room up to 3 rooms, then one per 2 rooms",
+    "min": 1,
+    "max": 8
+   },
+   "FIELD_CELLS_PER_PAWN": {
+    "value": 40,
+    "rule": "fixed setpoint; rice yield per cell UNVERIFIED, so 40 is a margin",
+    "min": 25,
+    "max": 120
+   },
+   "EMBRASURE_TARGET": {
+    "value": 40,
+    "rule": "4 x sqrt(home_cells)",
+    "min": 16,
+    "max": 200
+   },
+   "TURRET_TARGET": {
+    "value": 3,
+    "rule": "2 + colonists/3",
+    "min": 2,
+    "max": 30
+   },
+   "CORPSE_LIMIT": {
+    "value": 3,
+    "rule": "fixed setpoint (mood penalty for seen corpses)",
+    "min": 0,
+    "max": 20
+   },
+   "STOCK_CELLS": {
+    "value": 75,
+    "rule": "30 + 15 per colonist",
+    "min": 30,
+    "max": 2000
+   },
+   "TRADE_SILVER_MIN": {
+    "value": 500,
+    "rule": "fixed setpoint",
+    "min": 100,
+    "max": 20000
+   },
+   "COMPONENT_RESERVE": {
+    "value": 8,
+    "rule": "5 + colonists",
+    "min": 5,
+    "max": 200
+   },
+   "STEEL_RESERVE": {
+    "value": 450,
+    "rule": "150 per colonist",
+    "min": 150,
+    "max": 20000
+   },
+   "TARGET_TITLE": {
+    "value": 6,
+    "rule": "fixed setpoint: 6 = Baron (rank list after Count UNVERIFIED)",
+    "min": 1,
+    "max": 9
+   },
+   "AID_CALL_FOES": {
+    "value": 6,
+    "rule": "2 per colonist",
+    "min": 2,
+    "max": 100
+   },
+   "MOUNT_TARGET": {
+    "value": 3,
+    "rule": "one mount per colonist",
+    "min": 1,
+    "max": 60
+   },
+   "CAVALRY_ENABLED": {
+    "value": 1,
+    "rule": "1 on, 0 off (cavalry-check sets 0 when no mount gizmo exists)",
+    "min": 0,
+    "max": 1
+   },
+   "WAR_MIN_CREW": {
+    "value": 6,
+    "rule": "fixed setpoint: raid with 4, leave 2",
+    "min": 3,
+    "max": 60
+   },
+   "POD_SQUAD": {
+    "value": 4,
+    "rule": "fixed setpoint: one pawn per pod",
+    "min": 1,
+    "max": 30
+   },
+   "POD_FUEL": {
+    "value": 600,
+    "rule": "150 x POD_SQUAD (cost per tile UNVERIFIED, generous)",
+    "min": 150,
+    "max": 10000
+   },
+   "GRAV_PARTS_TARGET": {
+    "value": 12,
+    "rule": "placeholder: set after counting what the console requires (UNVERIFIED)",
+    "min": 1,
+    "max": 500
+   },
+   "FIGHT_RATIO_MIN": {
+    "value": 1.0,
+    "rule": "fixed setpoint: able shooters per hostile to take the fight",
+    "min": 0.3,
+    "max": 5.0
+   },
+   "CALL_HELP_RATIO": {
+    "value": 0.5,
+    "rule": "fixed setpoint: under this many shooters per hostile it is 'too many' -- call help or retreat",
+    "min": 0.1,
+    "max": 2.0
+   },
+   "WEAPON_KEEP": {
+    "value": 5,
+    "rule": "colonists + 2 spare loose weapons",
+    "min": 2,
+    "max": 200
+   },
+   "SHIP_FUEL_RESERVE": {
+    "value": 300,
+    "rule": "fixed setpoint (UNVERIFIED: gravship fuel use)",
+    "min": 50,
+    "max": 10000
+   }
+  }
+ },
+ "marks": {
+  "note": "What the bridge cannot measure without moving the selection or opening a UI. She reads it on purpose during a turn and records it with ladder_set mark. A boolean mark never set reads false; a numeric mark reads its default below.",
+  "defaults": {
+   "start_kind": 0,
+   "title_rank": 0,
+   "psylink_level": 0,
+   "mounts_trained": 0,
+   "gate_sections_done": 0,
+   "wealth_band": 0,
+   "monolith_level": 0,
+   "combat_plan": 0
+  },
+  "numeric": {
+   "start_kind": "1 Crashlanded, 2 Lost Tribe, 3 Naked Brutality, 4 Async Industries, 5 The Store, 6 Lone survivor (read off the new-colony screen)",
+   "title_rank": "0 none, 1 Freeholder, 2 Yeoman, 3 Acolyte, 4 Knight, 5 Praetor, 6 Baron, 7 Count ... (after Count UNVERIFIED)",
+   "honor_to_next": "honor still needed (Royalty inspect tab)",
+   "psylink_level": "highest psylink in the colony",
+   "mounts_trained": "animals with Obedience + Release done (Animals tab)",
+   "gate_sections_done": "0-4 gate assembly sections built (Machine pane)",
+   "wealth_band": "colony wealth bucket (History tab)",
+   "monolith_level": "void monolith stage (UNVERIFIED stage count)",
+   "store_approach": "1 seal the basement, 2 supervised search, 3 document and ask for help",
+   "combat_plan": "combat chain latch: 0 not chosen, 1 fight, 2 hold for help, 3 kite, 4 help called, 5 retreat"
+  },
+  "boolean": [
+   "outdoor_cold",
+   "outdoor_hot",
+   "research_<project>",
+   "empire_hostile",
+   "caravan_out",
+   "mood_low",
+   "ideo_roles_set",
+   "mechlink_installed",
+   "gravcore_found",
+   "gravship_ready",
+   "mounted_ready",
+   "gate_designated",
+   "gate_online",
+   "gate_open",
+   "operator_on_station",
+   "coordinate_held",
+   "war_target_set",
+   "mountain_base_done",
+   "production_running",
+   "pawns_set",
+   "assign_set",
+   "stove_set",
+   "combat_paused",
+   "help_coming",
+   "colonist_hurt",
+   "pawn_bleeding",
+   "field_tended",
+   "repairs_set",
+   "defense_secure",
+   "food_short_set",
+   "steel_short_set",
+   "fuel_short_set",
+   "shipfuel_short_set",
+   "junk_weapons_set",
+   "<rung_id>_done (latches)"
+  ]
+ }
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>RimPLC</name>
+  <author>Operator</author>
+  <packageId>Operator.RimPLC</packageId>
+  <modVersion>0.1.0</modVersion>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <!-- No modDependencies: RimPLC references only Assembly-CSharp and three UnityEngine modules, uses no Harmony,
+       and resolves every def by name at runtime, so it works with any mod list and any DLC. loadAfter is ordering
+       only, never a requirement. -->
+  <loadAfter>
+    <li>Ludeon.RimWorld</li>
+    <li>Ludeon.RimWorld.Royalty</li>
+    <li>Ludeon.RimWorld.Ideology</li>
+    <li>Ludeon.RimWorld.Biotech</li>
+    <li>Ludeon.RimWorld.Anomaly</li>
+    <li>Ludeon.RimWorld.Odyssey</li>
+  </loadAfter>
+  <description>A ladder-logic advisor for the whole colony, laid out like a PLC: sensors read straight from the game (health, bleeding, hostiles, food, stores, buildings, research, letters, alerts), tags (setpoints that grow with the colony, and fixed safety limits), marks (what you record yourself) and rungs (if this, then this), scanned every few hundred ticks.
+
+The ladder window shows every rung live, with each contact coloured: green true, dark false, amber unmeasured, red unresolved. Switch rungs on or off, set tags and marks, and read the advice of the first live rung. Linked control chains cover combat (pause, assess the odds, fight, kite or call help), medical (bleeding under fire, field tend, hospital), repairs, defenses and supply levels.
+
+Advise-only by default: RimPLC notifies and advises, it does not play for you. It never spawns, destroys or edits anything in this version.
+
+An optional companion for RimBridgeServer exposes the ladder to tools (rimplc/*), and a command file in the RimWorld config folder does the same without it.
+
+No dependencies. Can be added to an existing save; removing it from a save has not been checked yet.</description>
+</ModMetaData>

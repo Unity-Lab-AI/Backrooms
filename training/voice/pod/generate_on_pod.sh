@@ -21,9 +21,21 @@
 set -euo pipefail
 SRC="$1"; G="$2"; V="$SRC/training/voice"
 # Owner: "we dont want one lagging the other and we dont want it taking forever". Every GPU on the clip pod is used:
-# GEN_SHARDS defaults to 3 workers per GPU (each A2 teacher worker needs ~5-6 GB), and shard k runs on GPU k % gpus.
+# Owner: "make sure we are peggin these GPUS pod when we do it". Workers per GPU are sized from the smallest GPU's
+# measured VRAM: (VRAM - GEN_RESERVE_GB, default 4) / GEN_WORKER_GB (default 6; each A2 teacher worker needs ~5-6 GB),
+# at least 1, at most GEN_MAX_PER_GPU (default 12), and never more workers in total than CPU cores (the ASR screen
+# that follows is CPU work). GEN_SHARDS still overrides. Shard k runs on GPU k % gpus.
 GPUS=$(nvidia-smi --query-gpu=index --format=csv,noheader 2>/dev/null | wc -l); [ "$GPUS" -ge 1 ] || GPUS=1
-SHARDS="${GEN_SHARDS:-$((GPUS * 3))}"
+VRAM_MIB=$(nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits 2>/dev/null | sort -n | head -1); VRAM_MIB=${VRAM_MIB:-24576}
+PER_GPU=$(( (VRAM_MIB / 1024 - ${GEN_RESERVE_GB:-4}) / ${GEN_WORKER_GB:-6} ))
+[ "$PER_GPU" -ge 1 ] || PER_GPU=1; [ "$PER_GPU" -le "${GEN_MAX_PER_GPU:-12}" ] || PER_GPU="${GEN_MAX_PER_GPU:-12}"
+CORES=$(nproc 2>/dev/null || echo 8); AUTO=$((GPUS * PER_GPU)); [ "$AUTO" -le "$CORES" ] || AUTO="$CORES"
+SHARDS="${GEN_SHARDS:-$AUTO}"
+# A restart keeps the shard count the script was first split into (a different GPU shape must not orphan shards).
+[ -f "$G/state/shard-count" ] && SHARDS=$(cat "$G/state/shard-count")
+# ASR screening threads per shard: the cores shared out over the shards (1..8, the screener's own limits).
+SCREEN_THREADS=$(( CORES / SHARDS )); [ "$SCREEN_THREADS" -ge 1 ] || SCREEN_THREADS=1; [ "$SCREEN_THREADS" -le 8 ] || SCREEN_THREADS=8
+echo "$(date -u +%FT%TZ) gen: $GPUS GPU(s), ${VRAM_MIB} MiB smallest, $PER_GPU workers/GPU, $CORES cores -> $SHARDS shards, $SCREEN_THREADS screen threads each"
 mkdir -p "$G/state" "$G/logs"
 have() { [ -f "$G/state/$1" ]; }
 done_() { touch "$G/state/$1"; echo "$(date -u +%FT%TZ) gen: $1 done"; }
@@ -66,9 +78,16 @@ snapshot_download(repo_id=repo, revision=rev, local_dir=out)
 json.dump({"repo": repo, "revision": rev}, open(out + "/audition-source.json", "w"))
 PY
 }
-M="$SRC/.local/voice-lab/models"; mkdir -p "$M"
-have model-qwen || { fetch Qwen/Qwen3-TTS-12Hz-1.7B-Base fd4b254389122332181a7c3db7f27e918eec64e3 "$M/qwen3-tts-base"; done_ model-qwen; }
-have model-cosy || { fetch FunAudioLLM/Fun-CosyVoice3-0.5B-2512 29e01c4e8d000f4bcd70751be16fa94bf3d85a18 "$M/cosyvoice3"; done_ model-cosy; }
+# Matcha (bundled in the Cosy code) imports gdown and wget at load; an older venv-cosy without them hung every Cosy
+# worker on the first pod launch (2026-10-12), so make sure they are there even when the venv marker is set.
+"$G/venv-cosy/bin/python" -c "import gdown, wget" 2>/dev/null || "$G/venv-cosy/bin/pip" install -q gdown==5.2.0 wget==3.2
+# The approved recipe renders Cosy with no text front-end (text_frontend False), as the local renders did. With wetext
+# installed Cosy picks it and downloads its files from modelscope.cn, which answers 403 to the pod: every worker hung.
+"$G/venv-cosy/bin/pip" uninstall -y -q wetext 2>/dev/null || true
+# Teacher models live on the shared volume (the code checkout is on the container disk, which a restart wipes).
+M="$G/models"; mkdir -p "$M"
+have model-qwen-vol || { fetch Qwen/Qwen3-TTS-12Hz-1.7B-Base fd4b254389122332181a7c3db7f27e918eec64e3 "$M/qwen3-tts-base"; done_ model-qwen-vol; }
+have model-cosy-vol || { fetch FunAudioLLM/Fun-CosyVoice3-0.5B-2512 29e01c4e8d000f4bcd70751be16fa94bf3d85a18 "$M/cosyvoice3"; done_ model-cosy-vol; }
 # The ASR screener, same snapshot the local screening used.
 have model-asr || { fetch Systran/faster-whisper-base ebe41f70d5b6dfa9166e2c581c45c9c0cfc57b66 "$G/asr-model"; done_ model-asr; }
 
@@ -89,6 +108,7 @@ for name, out in (("STREAM_CORPUS.jsonl", "corpus"), ("STREAM_EVENT_CORPUS.jsonl
         open(os.path.join(G, "shards", "%s-%d.jsonl" % (out, k)), "w", encoding="utf-8", newline="\n").writelines(part)
 print("sharded into", K)
 PY
+  echo "$SHARDS" > "$G/state/shard-count"
   done_ shards
 fi
 
@@ -96,6 +116,8 @@ fi
 pids=()
 for k in $(seq 0 $((SHARDS - 1))); do
   have "render-$k" && continue
+  # a shard folder with no files left in it (cleared over S3, which leaves empty folders behind) starts fresh
+  [ -d "$G/render/shard-$k" ] && [ -z "$(find "$G/render/shard-$k" -type f -print -quit)" ] && rm -rf "$G/render/shard-$k"
   ( cd "$SRC" && CUDA_VISIBLE_DEVICES=$((k % GPUS)) "$G/venv-qwen/bin/python" -B -u training/voice/make_dataset.py "$G/render/shard-$k" --all \
         --corpus "$G/shards/corpus-$k.jsonl" --event-corpus "$G/shards/events-$k.jsonl" \
         --model-dir "$M/qwen3-tts-base" --qwen-python "$G/venv-qwen/bin/python" \
@@ -118,7 +140,7 @@ fi
 pids=()
 for k in $(seq 0 $((SHARDS - 1))); do
   have "screen-$k" && continue
-  ( cd "$SRC" && "$G/venv-qwen/bin/python" -B -u training/voice/inspect_source_audio.py "$G/render/shard-$k" "$G/screen/shard-$k"         --model-dir "$G/asr-model" --threads 4 > "$G/logs/screen-$k.log" 2>&1 && touch "$G/state/screen-$k" ) &
+  ( cd "$SRC" && "$G/venv-qwen/bin/python" -B -u training/voice/inspect_source_audio.py "$G/render/shard-$k" "$G/screen/shard-$k"         --model-dir "$G/asr-model" --threads "$SCREEN_THREADS" > "$G/logs/screen-$k.log" 2>&1 && touch "$G/state/screen-$k" ) &
   pids+=($!)
 done
 fail=0; for p in "${pids[@]}"; do wait "$p" || fail=1; done

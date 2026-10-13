@@ -135,8 +135,17 @@ W=/workspace; mkdir -p "$W/state" "$W/out/samples" "$W/out/progress"
 exec > >(tee -a $W/voice.log) 2>&1
 # Proposed H100 work defaults, not measurements on the newly approved corpus.
 # The last GTA_STEPS use oracle aligned mels, not free-running predicted prosody.
-ACOUSTIC_STEPS="${ACOUSTIC_STEPS:-20000}"; ACOUSTIC_FRAMES="${ACOUSTIC_FRAMES:-96000}"
-VOCODER_STEPS="${VOCODER_STEPS:-120000}"; VOCODER_BATCH="${VOCODER_BATCH:-32}"; GTA_STEPS="${GTA_STEPS:-20000}"
+# Owner: "make sure we are peggin these GPUS pod when we do it". Unless set explicitly, the acoustic frame budget and
+# the vocoder batch scale with the GPU's measured VRAM: 96,000 frames and batch 32 per 80 GB (H100), never below
+# those, frames rounded to 1,000 and batch to 8. Both trainers keep all features on the GPU (no data loader) and the
+# acoustic model already trains in bf16 autocast; the model math is unchanged, only how much goes through per step.
+VRAM_MIB=$(timeout 10s nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits 2>/dev/null | head -1)
+VRAM_MIB=${VRAM_MIB:-81559}
+SCALE_FRAMES=$(( (96000 * VRAM_MIB / 81559 + 500) / 1000 * 1000 )); [ "$SCALE_FRAMES" -ge 96000 ] || SCALE_FRAMES=96000
+SCALE_BATCH=$(( (32 * VRAM_MIB / 81559) / 8 * 8 )); [ "$SCALE_BATCH" -ge 32 ] || SCALE_BATCH=32
+ACOUSTIC_STEPS="${ACOUSTIC_STEPS:-20000}"; ACOUSTIC_FRAMES="${ACOUSTIC_FRAMES:-$SCALE_FRAMES}"
+VOCODER_STEPS="${VOCODER_STEPS:-120000}"; VOCODER_BATCH="${VOCODER_BATCH:-$SCALE_BATCH}"; GTA_STEPS="${GTA_STEPS:-20000}"
+echo "GPU memory ${VRAM_MIB} MiB -> ACOUSTIC_FRAMES=$ACOUSTIC_FRAMES VOCODER_BATCH=$VOCODER_BATCH"
 VOICE_SEED="${VOICE_SEED:-17}"
 export ACOUSTIC_STEPS ACOUSTIC_FRAMES VOCODER_STEPS VOCODER_BATCH GTA_STEPS VOICE_SEED
 python3 - <<'PY'
@@ -162,15 +171,17 @@ import json, os, sys
 import torch
 spec = json.load(open(sys.argv[1], encoding='utf-8'))
 name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else ''
-# One Hopper-class GPU (H100 any form factor, or H200). The image path also pins the exact CUDA runtime;
+# One or two Hopper-class GPUs (H100 any form factor, or H200); with two, the acoustic model and the source vocoder
+# each get one (owner: "no way to speed it up than 11 hrs?"). The image path also pins the exact CUDA runtime;
 # the template path pins torch 2.7.1+cu126 through requirements-template.txt and preflight --template.
-ok = (torch.cuda.is_available() and torch.cuda.device_count() == 1
-      and torch.cuda.get_device_capability(0) >= (9, 0)
-      and any(tag in name for tag in ('H100', 'H200')))
+n = torch.cuda.device_count() if torch.cuda.is_available() else 0
+ok = (n in (1, 2)
+      and all(torch.cuda.get_device_capability(i) >= (9, 0)
+              and any(tag in torch.cuda.get_device_name(i) for tag in ('H100', 'H200')) for i in range(n)))
 if os.environ.get('VOICE_ENV_MODE', 'image') == 'image':
     ok = ok and torch.version.cuda == spec['torch_cuda']
 if not ok:
-    raise ValueError('Expected one H100/H200 (sm_90) with the pinned CUDA runtime; no training started')
+    raise ValueError('Expected one or two H100/H200 (sm_90) with the pinned CUDA runtime; no training started')
 print('CUDA device:', name, 'torch', torch.__version__, 'cuda', torch.version.cuda)
 PY
 RUN_CONFIG=$(python3 - "$V" <<'PY'
@@ -187,6 +198,25 @@ PY
 )
 export RUN_CONFIG
 RUN_ID=$(python3 -c "import json, os; print(json.loads(os.environ['RUN_CONFIG'])['run_id'])")
+# VOICE_RESUME_RUN_ID resumes an existing namespace after an orchestration-only fix: it is accepted only when the
+# stored run config matches this one in everything except source_digest (same data, frontend, model configs and
+# work), and the resume is recorded next to it. Without it a code fix would retrain from scratch (2026-10-12).
+if [ -n "${VOICE_RESUME_RUN_ID:-}" ] && [ -f "$W/voice-runs/$VOICE_RESUME_RUN_ID/run-config.json" ]; then
+  python3 - "$W/voice-runs/$VOICE_RESUME_RUN_ID/run-config.json" <<'PY' || exit 1
+import json, os, sys, time
+stored = json.load(open(sys.argv[1], encoding='utf-8')); record = json.loads(os.environ['RUN_CONFIG'])
+strip = lambda r: {k: v for k, v in r.items() if k not in ('source_digest', 'run_id')}
+if strip(stored) != strip(record):
+    raise SystemExit('VOICE_RESUME_RUN_ID refused: the run differs in more than the source digest')
+with open(sys.argv[1].replace('run-config.json', 'resumes.jsonl'), 'a', encoding='utf-8', newline=chr(10)) as f:
+    f.write(json.dumps({'utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()), 'resumed_with_source_digest':
+                        record['source_digest'], 'would_have_been_run_id': record['run_id']}) + chr(10))
+print('resuming namespace', stored['run_id'], 'with source digest', record['source_digest'])
+PY
+  RUN_ID=$VOICE_RESUME_RUN_ID
+  RUN_CONFIG=$(cat "$W/voice-runs/$RUN_ID/run-config.json" | python3 -c "import json,sys; print(json.dumps(json.load(sys.stdin), sort_keys=True))")
+  export RUN_CONFIG
+fi
 R="$W/voice-runs/$RUN_ID"; STATE="$R/state"; CKPT="$R/ckpt"; FEATS="$R/features"
 mkdir -p "$STATE" "$CKPT"
 python3 - "$R/run-config.json" <<'PY'
@@ -251,7 +281,7 @@ wait_stages() {
     done
     [ "$active" -gt 0 ] || break
     now=$(date +%s)
-    if [ "$((now - last_gpu))" -ge 60 ]; then
+    if [ "$((now - last_gpu))" -ge 30 ]; then
       printf '%s run=%s ' "$(date -u +%FT%TZ)" "$RUN_ID" >> "$W/out/gpu.txt"
       bounded_run timeout --signal=TERM --kill-after=2s 5s nvidia-smi \
           --query-gpu=utilization.gpu,memory.used --format=csv,noheader >> "$W/out/gpu.txt" 2>&1 || true
@@ -271,12 +301,18 @@ wait_stages() {
   pids=()
   stages=()
 }
+# Owner, 2026-10-12: "no way to speed it up than 11 hrs?" / "okay do whats best". The acoustic model and the
+# source vocoder are independent and already run at the same time; with two GPUs each gets its own card instead of
+# sharing one (counted by nvidia-smi; one GPU keeps the old shared behaviour).
+VOICE_GPUS=$(nvidia-smi --query-gpu=index --format=csv,noheader 2>/dev/null | wc -l)
+if [ "${VOICE_GPUS:-1}" -ge 2 ]; then ACOUSTIC_GPU=0; VOCODER_GPU=1; else ACOUSTIC_GPU=0; VOCODER_GPU=0; fi
+echo "voice GPUs: $VOICE_GPUS (acoustic on $ACOUSTIC_GPU, vocoder on $VOCODER_GPU)"
 if ! have acoustic; then
-  launch_stage acoustic "$W/acoustic.log" python3 "$V/train_acoustic.py" "$FEATS" "$CKPT" \
+  CUDA_VISIBLE_DEVICES=$ACOUSTIC_GPU launch_stage acoustic "$W/acoustic.log" python3 "$V/train_acoustic.py" "$FEATS" "$CKPT" \
       --steps "$ACOUSTIC_STEPS" --frames "$ACOUSTIC_FRAMES" --seed "$VOICE_SEED"
 fi
 if ! have vocoder-source; then
-  launch_stage vocoder-source "$W/vocoder.log" python3 "$V/train_vocoder.py" \
+  CUDA_VISIBLE_DEVICES=$VOCODER_GPU launch_stage vocoder-source "$W/vocoder.log" python3 "$V/train_vocoder.py" \
       "$VOICE_DATASET_DIR" "$FEATS" "$CKPT" --steps "$((VOCODER_STEPS - GTA_STEPS))" \
       --batch "$VOCODER_BATCH" --seed "$VOICE_SEED"
 fi
@@ -284,21 +320,23 @@ wait_stages
 have acoustic && have vocoder-source || { echo "A training stage failed" >&2; exit 1; }
 # Completed exact exports are hash-checked by the trainer; interrupted temp siblings
 # remain intact. Predicted heldout mels are NEVER passed as directly aligned GAN targets.
-bounded_run python3 "$V/train_acoustic.py" "$FEATS" "$CKPT" --frames "$ACOUSTIC_FRAMES" \
+# Each checkpoint is reloaded on the one GPU it trained on: its saved random state records the device count, and
+# on 2 GPUs a reload that saw both was refused (2026-10-12, right after the 100k-step vocoder phase).
+CUDA_VISIBLE_DEVICES=$ACOUSTIC_GPU bounded_run python3 "$V/train_acoustic.py" "$FEATS" "$CKPT" --frames "$ACOUSTIC_FRAMES" \
     --seed "$VOICE_SEED" --export-gta "$R/oracle-gta"
 if ! have vocoder; then
-  launch_stage vocoder "$W/vocoder.log" python3 "$V/train_vocoder.py" \
+  CUDA_VISIBLE_DEVICES=$VOCODER_GPU launch_stage vocoder "$W/vocoder.log" python3 "$V/train_vocoder.py" \
       "$VOICE_DATASET_DIR" "$FEATS" "$CKPT" --steps "$VOCODER_STEPS" \
       --batch "$VOCODER_BATCH" --seed "$VOICE_SEED" --gta "$R/oracle-gta"
   wait_stages
 fi
-bounded_run python3 "$V/train_acoustic.py" "$FEATS" "$CKPT" --frames "$ACOUSTIC_FRAMES" \
+CUDA_VISIBLE_DEVICES=$ACOUSTIC_GPU bounded_run python3 "$V/train_acoustic.py" "$FEATS" "$CKPT" --frames "$ACOUSTIC_FRAMES" \
     --seed "$VOICE_SEED" --export-heldout-inference "$R/predicted-heldout"
 
 # A complete exact publication is reusable; partial siblings are preserved. A
 # second run namespace cannot overwrite another completed model or its receipts.
 PUBLISHED="$W/out/models/$RUN_ID"
-bounded_run python3 "$V/pod/publish_voice.py" "$FEATS" "$CKPT" "$PUBLISHED"
-bounded_run bash -c 'render_samples "$1" "$2"' _ "$PUBLISHED" "$W/out/samples/$RUN_ID/$(date -u +%Y%m%dT%H%M%SZ)-$BASHPID"
+CUDA_VISIBLE_DEVICES=$ACOUSTIC_GPU bounded_run python3 "$V/pod/publish_voice.py" "$FEATS" "$CKPT" "$PUBLISHED"
+CUDA_VISIBLE_DEVICES=$ACOUSTIC_GPU bounded_run bash -c 'render_samples "$1" "$2"' _ "$PUBLISHED" "$W/out/samples/$RUN_ID/$(date -u +%Y%m%dT%H%M%SZ)-$BASHPID"
 done_ configured-work-complete
 echo "Configured v2 work complete; final listening, billing-stop reliability and deployment remain separate."

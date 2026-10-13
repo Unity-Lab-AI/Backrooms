@@ -1,8 +1,8 @@
 {
- "digest": "52fe2c95118cada11be95a32dc0066282154b019a81b5e2eeff4a7d0b4051198",
+ "digest": "7d2cac954c1cceb87563f5af1cae7494842f44fc7d9a3d296e1461d251f647dd",
  "files": {
   "baseline_voice.json": "4cf61a3880beed2296e0a5c61b052470a46b3309c540d52dc95f200bba87346c",
-  "eval_tools.jsonl": "d25a3c3eafd85ae36de7f9e3aa4e23cc7178303664867cb9fb787792a15cf51b",
+  "eval_tools.jsonl": "d946ef2242f1abc60a1ced3764f8276004bb3d5abd792feca82b621b0be6de9c",
   "eval_voice.jsonl": "8325f5fbd451b283393251f9143954ebfa1008bb64bd5621202ca16bcd246125",
   "screens/00000.png": "c841a6c595a7d3800438311cfb630fd3b55c4e92f7544a7d8ea779122e94ced8",
   "screens/00001.png": "0ad7510c51555416e844834bd879887c88dbefb825c694efdb7bd185b0115ed8",
@@ -24,29 +24,32 @@
   "screens/00017.png": "8a8460af54f70a21ae81fa116da4fc6802fe164b7201404ee0325afd6fe70daa",
   "screens/00018.png": "f175259368dbac4f36047848d7438e5072107d33a261f65a593edada2320aa65",
   "screens/00019.png": "cdbdd13bd41bb038e973587d8acb81bd9dff4871134c7f580880096c6c9b6eae",
-  "tools.json": "435caacb4e95676d3a050637b0ba15e17acaaa0b5ef7fce18646a99afcc24a4d",
-  "train.jsonl": "a465d351a647804a7ae1c7e2dd5722807c98c629aaa63e3fb45e882a71ebf68f"
+  "tools.json": "1237a0a0eaecb0c5eb124805f88282393e373a6d8d1d0ec64b7919ecf3bcafd7",
+  "train.jsonl": "838fe2428a86a50ee09bd0a296c3f225d8e810bf0239c0fd098947fe279fc519"
  },
  "train_counts": {
   "knowledge": 2125,
-  "voice": 638,
-  "play": 706,
-  "life_hard_moments": 246,
-  "life_qa": 272,
-  "chat": 484,
-  "life_boundaries": 195,
-  "life_setup": 188,
-  "writeup": 150,
-  "life_advice": 273,
-  "life_stream_running": 293,
-  "highlight": 45,
+  "life_advice": 251,
+  "play": 1878,
   "screen": 100,
-  "life_banter": 242,
+  "life_banter": 280,
+  "life_setup": 182,
+  "chat": 484,
+  "life_hard_moments": 232,
+  "life_reactions": 271,
+  "writeup": 150,
+  "life_admin": 283,
+  "life_qa": 437,
+  "life_stream_running": 282,
   "image": 220,
-  "life_reactions": 285
+  "voice": 638,
+  "life_boundaries": 192,
+  "fortress": 193,
+  "life_pacing": 238,
+  "highlight": 45
  },
  "eval_voice": 63,
- "eval_tools": 21,
+ "eval_tools": 249,
  "play_dropped": 12,
  "play_removed": {
   "truncated at a recital": 40,
@@ -54,6 +57,6 @@
   "closing recital": 12
  },
  "image_tool": false,
- "tools": 48,
+ "tools": 49,
  "delivery_inferred_calls": 1053
 }

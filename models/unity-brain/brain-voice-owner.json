@@ -1,0 +1,6 @@
+{
+ "brain_writes_lines": true,
+ "decided": "2026-10-13",
+ "owner_choice": "Brain writes lines too",
+ "why": "16 GB stress test (.local/qa/vram-stress-20261012-185722.json): brain 6.3 GB + line writer unity-local 7.2 GB peaked at 15.9 of 16 GB with no RimWorld or OBS running. Dropping the line writer frees ~7 GB. Trade-off accepted: eval line pass 0.897 vs 0.984, distinct 0.968 vs 0.857."
+}
