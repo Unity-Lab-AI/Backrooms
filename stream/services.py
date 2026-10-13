@@ -125,7 +125,10 @@ if os.path.exists(os.path.join(BRAIN_DIR, "unity-brain.gguf")):
     MODELS.append("qwen3.5:9b")
 # Ollama on a 16 GB card shared with RimWorld, OBS and the Twitch window: flash attention and an 8-bit KV cache
 # roughly halve the context's VRAM with no audible change in her lines. Takes effect when Ollama next starts.
-OLLAMA_ENV = {"OLLAMA_FLASH_ATTENTION": "1", "OLLAMA_KV_CACHE_TYPE": "q8_0"}
+# two slots (owner 2026-10-13: "she needs to talk ... every like 30s -1m"): her short spoken lines no longer wait
+# behind a long play turn on the one shared brain; costs one more 32K KV cache (~1 GB), paid for by the webcam
+# picture model moving to the CPU
+OLLAMA_ENV = {"OLLAMA_FLASH_ATTENTION": "1", "OLLAMA_KV_CACHE_TYPE": "q8_0", "OLLAMA_NUM_PARALLEL": "2"}
 
 
 def brain_env():
