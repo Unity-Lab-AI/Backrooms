@@ -196,3 +196,25 @@ RimPLC/**/*.dll
 RimPLC/**/*.pdb
 RimPLC/**/obj/
 RimPLC/**/bin/
+
+# Model weights and run output never go to the remotes (owner 2026-10-13: "we will need to gitignor all the
+# models and run files that we dont need to puch to remotes"). Trained models live on D:\voice-lab\pod-results\
+# and are re-pulled from there; already-tracked files (the round1/round2 voice references) stay tracked.
+*.gguf
+*.safetensors
+*.onnx
+*.ckpt
+*.pth
+*.pt
+*.bin
+training/**/out/
+training/**/ckpt/
+training/**/gguf/
+# Generated distribution builds, wiki renders, touch-up archives and other dated run folders under outputs/
+outputs/rimrooms-*-distribution-*/
+outputs/wiki-*/
+outputs/preview-touchup-*/
+outputs/**/*.zip
+# One-off local scratch and backups
+.local/voice-lab/stream-script-originals/
+.local/qa/_*.sh
