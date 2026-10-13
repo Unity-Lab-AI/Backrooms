@@ -89,7 +89,14 @@ def main():
     parser.add_argument("--steps", type=int, default=120000); parser.add_argument("--batch", type=int, default=32)
     parser.add_argument("--seed", type=int, default=17)
     parser.add_argument("--gta"); parser.add_argument("--smoke", action="store_true")
+    # A GTA polish on a NEW acoustic model, started from deployed (weights-only) vocoder weights: the live vocoder was
+    # saved without its discriminator/optimizers, and the only full checkpoint is far older. A fresh discriminator is
+    # trained alone for --d-warmup steps first so it cannot tear the generator apart.
+    parser.add_argument("--warm-generator", help="deployed vocoder.pt whose G starts a fresh --gta run")
+    parser.add_argument("--d-warmup", type=int, default=2000)
     args = parser.parse_args()
+    if args.warm_generator and not args.gta:
+        raise ValueError("--warm-generator is only for a GTA polish (--gta)")
     if args.steps < 1 or args.batch < 1 or not 0 <= args.seed < 2 ** 32 or not torch.cuda.is_available():
         raise ValueError("Invalid vocoder configuration or CUDA unavailable")
     random.seed(args.seed); np.random.seed(args.seed); torch.manual_seed(args.seed)
@@ -131,6 +138,7 @@ def main():
     if meta_path.exists() and json.loads(meta_path.read_text(encoding="utf-8")) != metadata:
         raise ValueError("Checkpoint metadata is legacy or belongs to another pair")
     step = 0
+    warm_start, d_only_until = None, 0
     if path.exists():
         checkpoint = torch.load(path, map_location=dev, weights_only=True)
         require_checkpoint(checkpoint, identity, "vocoder")
@@ -160,7 +168,29 @@ def main():
         if type(step) is not int or step < 1:
             raise ValueError("Working vocoder checkpoint has no valid completed step")
         restore_random_state(checkpoint["rng"])
+        warm_start = checkpoint.get("warm_start")
+        if warm_start:
+            d_only_until = warm_start["d_only_until"]
         print("resumed v2 vocoder at step", step, flush=True)
+    elif args.warm_generator:
+        deployed = torch.load(args.warm_generator, map_location=dev, weights_only=True)
+        # The vocoder only sees audio and mels: a re-prepared text frontend (feature_id/frontend_id) does not change
+        # what its weights learned. Every other identity field must match; both identities are recorded.
+        text_side = ("feature_id", "frontend_id")
+        theirs = deployed.get("identity") or {}
+        if deployed.get("kind") != "vocoder" or {k: v for k, v in theirs.items() if k not in text_side} != \
+                {k: v for k, v in identity.items() if k not in text_side}:
+            raise ValueError("Deployed vocoder belongs to another dataset/audio pair")
+        require_finite_state({"G": deployed["G"]}, "vocoder")
+        generator.load_state_dict(deployed["G"])
+        step = int(deployed.get("step") or 0)
+        if step < 1:
+            raise ValueError("Deployed vocoder has no recorded step")
+        d_only_until = step + max(0, args.d_warmup)
+        warm_start = {"from": str(args.warm_generator), "sha256": file_hash(args.warm_generator), "from_step": step,
+                      "from_mode": deployed.get("input_mode"), "d_only_until": d_only_until,
+                      "from_identity": theirs}
+        print("warm start from deployed G at step %d; discriminator alone until %d" % (step, d_only_until), flush=True)
     elif (directory / "acoustic.pt").exists() and not meta_path.exists():
         raise ValueError("Unidentified acoustic checkpoint; use a fresh v2 directory")
     ensure_voice_metadata(directory, manifest)
@@ -179,6 +209,11 @@ def main():
         od.zero_grad(set_to_none=True); ld.backward()
         torch.nn.utils.clip_grad_norm_(discriminator.parameters(), float("inf"), error_if_nonfinite=True)
         od.step()
+        if step < d_only_until:   # warm start: the fresh discriminator learns the live voice before G moves
+            step += 1
+            if step % 200 == 0 or args.smoke:
+                print("step %d disc-warmup disc %.3f" % (step, ld.item()), flush=True)
+            continue
         for parameter in discriminator.parameters():
             parameter.requires_grad_(False)
         with torch.no_grad():
@@ -214,7 +249,8 @@ def main():
                         "student_source": student_source_identity(), "training_config": training_config,
                         "D": discriminator.state_dict(), "og": og.state_dict(), "od": od.state_dict(),
                         "sg": sg.state_dict(), "sd": sd.state_dict(), "step": step, "seed": args.seed,
-                        "rng": capture_random_state(), "input_mode": input_provenance["mode"], "input_provenance": input_provenance}, temporary)
+                        "rng": capture_random_state(), "input_mode": input_provenance["mode"], "input_provenance": input_provenance,
+                        "warm_start": warm_start}, temporary)
             os.replace(temporary, path)
     print("vocoder: completed configured steps; naturalness and deployment remain unverified", flush=True)
 
