@@ -1,4 +1,4 @@
-"""Raid drill for Marble Hollow, the same way every time.
+"""Raid drill for the colony, the same way every time.
 
     python .local/qa/raid.py block              draft every gun into the mid-base block, kids into the hall
     python .local/qa/raid.py block X Z          the same block, centred on X Z (a spot that SEES them)

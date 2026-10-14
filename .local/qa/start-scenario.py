@@ -71,7 +71,7 @@ _spec.loader.exec_module(_bridge)
 # alone, which is why each entry is attempted and not required.
 PAGE_CHOICES = {
     # owner, 2026-10-09: "not peace full you cheap skat community buiilder go back" -- Cassandra Classic on
-    # Community builder, the same preset Marble Hollow runs, never Peaceful
+    # Community builder, the same preset every colony runs, never Peaceful
     "RimWorld.Page_SelectStoryteller": ("Cassandra Classic", "Community builder", "Reload anytime mode"),
 }
 

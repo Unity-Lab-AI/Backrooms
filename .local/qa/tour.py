@@ -15,7 +15,7 @@ def pos():
     m = re.search(r'"position": \{\s*"x": (\d+),\s*"z": (\d+)', seg)
     return (int(m.group(1)), int(m.group(2))) if m else None
 STOPS = [
-    ((150, 68), "Tour time, chat! I am running the whole wall of Marble Hollow. We start at the main gate, the only way in, flanked by two bastions."),
+    ((150, 68), "Tour time, chat! I am running the whole wall of our colony. We start at the main gate, the only way in, flanked by two bastions."),
     ((114, 68), "Southwest corner bastion. Seven by seven, embrasures on both outer faces, so anything hugging the wall gets shot from the side."),
     ((114, 85), "On our right, the bedroom block and the old storehouse, the first thing we built after the crash."),
     ((114, 100), "West wall. Inside is Hotel Gloom, three marble guest rooms, twenty silver a night."),
@@ -26,7 +26,7 @@ STOPS = [
     ((188, 132), "Northeast corner bastion. Every corner and every long wall has one."),
     ((186, 104), "East side, the prison. Reaper the minstrel lives here now, and behind the security hall, the dissection room."),
     ((186, 88), "The warehouse, the freezer we call Alfonzoid's Morgue, and the power yard going in next door."),
-    ((150, 68), "And we are back at the gate. That is Marble Hollow, chat. A goth city built from the ground up, and we are just getting started."),
+    ((150, 68), "And we are back at the gate. That is our colony, chat. A goth city built from the ground up, and we are just getting started."),
 ]
 call("rimworld/set_draft", {"pawnName": PAWN, "drafted": True})
 call("rimworld/set_camera_zoom", {"zoomRange": "Close"})
