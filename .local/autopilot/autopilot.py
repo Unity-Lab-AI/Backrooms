@@ -425,6 +425,15 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=(), ca
             # the NEWEST order on its own line at the top: in the 2,500-char tail it was buried among old ones and
             # "force haul everything to storage first" sat unanswered for four turns (run 5, 00:27-00:31)
             _last = next((l.strip() for l in reversed(txt.splitlines()) if l.strip()), "")
+            # an order from a DEAD colony is not the newest order: run 5 attempt 5, first line of the fresh colony, "moving
+            # the shelves inside before the fortress walls close in" -- last colony's order. The file must be newer than
+            # this colony's start (the epoch the mod's day_one reply set).
+            try:
+                _epoch_ts = float(tools.colony_epoch().get("ts") or 0)
+                if _epoch_ts and os.path.getmtime(OWNER_ORDERS) < _epoch_ts:
+                    _last = ""
+            except Exception:
+                pass
             if _last:
                 # FIRST line of the brief, above the live rung: two "do this first" lines had the rung winning three
                 # turns running (run 5, 00:33-00:36: "Wood first" while the owner's haul order sat below it)
