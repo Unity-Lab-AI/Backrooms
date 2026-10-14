@@ -22,13 +22,51 @@ namespace RimroomsAsyncIndustries.Automation
     {
         public IntVec3 anchor = IntVec3.Invalid;
         public bool manual;
+        // wall_swap: rock cells marked to mine that get a built wall the moment they are clear (WallSwap.cs)
+        private List<IntVec3> pendingWalls = new List<IntVec3>();
+        private List<string> pendingStuff = new List<string>();
 
         public RimroomsCampComponent(Map map) : base(map) { }
+
+        public int PendingCount => pendingWalls?.Count ?? 0;
+
+        public void Queue(IntVec3 c, ThingDef stuff)
+        {
+            if (pendingWalls == null) { pendingWalls = new List<IntVec3>(); pendingStuff = new List<string>(); }
+            if (pendingWalls.Contains(c)) return;
+            pendingWalls.Add(c); pendingStuff.Add(stuff.defName);
+        }
+
+        public override void MapComponentTick()
+        {
+            if (pendingWalls == null || pendingWalls.Count == 0 || Find.TickManager.TicksGame % 120 != 0) return;
+            for (int i = pendingWalls.Count - 1; i >= 0; i--)
+            {
+                IntVec3 c = pendingWalls[i];
+                if (!c.InBounds(map)) { Drop(i); continue; }
+                Building e = c.GetEdifice(map);
+                if (e != null && e.def.building != null && e.def.building.isNaturalRock) continue;        // still rock: not mined yet
+                if (e != null || c.GetThingList(map).Any(t => t.def.IsBlueprint || t.def.IsFrame)) { Drop(i); continue; }  // a wall or a plan stands
+                ThingDef stuff = DefDatabase<ThingDef>.GetNamedSilentFail(pendingStuff[i]) ?? ThingDefOf.Steel;
+                if (GenConstruct.CanPlaceBlueprintAt(ThingDefOf.Wall, c, Rot4.North, map, false, null, null, stuff).Accepted)
+                    GenConstruct.PlaceBlueprintForBuild(ThingDefOf.Wall, c, map, Rot4.North, Faction.OfPlayer, stuff);
+                Drop(i);
+            }
+        }
+
+        private void Drop(int i) { pendingWalls.RemoveAt(i); pendingStuff.RemoveAt(i); }
 
         public override void ExposeData()
         {
             Scribe_Values.Look(ref anchor, "rr_campAnchor", IntVec3.Invalid);
             Scribe_Values.Look(ref manual, "rr_campManual", false);
+            Scribe_Collections.Look(ref pendingWalls, "rr_pendingWalls", LookMode.Value);
+            Scribe_Collections.Look(ref pendingStuff, "rr_pendingStuff", LookMode.Value);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                if (pendingWalls == null) pendingWalls = new List<IntVec3>();
+                if (pendingStuff == null || pendingStuff.Count != pendingWalls.Count) pendingStuff = pendingWalls.Select(_ => "Steel").ToList();
+            }
         }
     }
 
