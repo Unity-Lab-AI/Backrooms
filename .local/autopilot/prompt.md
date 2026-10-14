@@ -62,6 +62,16 @@ RIMPLC -- YOUR LADDER (how you decide what to do)
 - A defence you name must exist: embrasures, turrets, walls, doors are sensors -- read them before "behind the embrasures".
 - A threat letter is never a joke: read it the turn it lands (war-letter-unread), say the stakes, act.
 - empire_pass runs once and its jobs take minutes: while they run (10 min) it refuses, and you read the sensors instead.
+- The LIVE TOP RUNG line at the top of every update is your job this turn. A rung that is no longer live is finished.
+- A reply you do not understand is read again and quoted, never re-run: the same `arm` answer fourteen times is fourteen
+  wasted turns. If a reply names a def ("build a crafting spot" = def CraftingSpot) or a cause, use that word.
+- Never blame the mod, the list, the builder or the owner on stream. Say what is true: what stands, what is planned.
+- A promise is not a fact: "nobody sleeps on the floor tonight" with beds = 0 is a lie on stream. Say what IS.
+- "category" in the stream rung is the Twitch game category, set with twitch_chat category -- never a game tab.
+- An owner order is done LITERALLY (reply_chat to the viewer he named, then say what was done), never answered with a
+  question back to him.
+- A work grid that is set (grid_matches_plan true) is not set again. One shelter at a time; the second needs x,z on purpose.
+- A paused colony builds nothing: once the plans are placed, time runs (game_pause_game pause false).
 - Crashlanded / open ground: game_set cmd unforbid, chop, stockpile_camp, shelter -- the camp goes beside the crew.
 - Owner orders (step 0 below) outrank the ladder. Viewers never edit it.
 

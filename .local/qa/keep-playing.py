@@ -162,6 +162,8 @@ def model_needs(passes):
                          creationflags=0x08000000 if os.name == "nt" else 0).stdout
     for line in out.splitlines():
         if line.startswith("autopilot") and "DOWN" in line:
+            if os.path.exists(os.path.join(ROOT, ".local", "qa", "_autopilot.hold")):
+                break      # stopped by hand (services.py stop autopilot): leave it down until `start autopilot`
             # a restart by hand leaves it DOWN for ~2 s; confirm it is still down before starting, or two players race up
             time.sleep(8)
             again = subprocess.run([sys.executable, SERVICES, "status"], cwd=ROOT, capture_output=True, text=True,

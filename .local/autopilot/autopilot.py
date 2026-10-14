@@ -69,16 +69,19 @@ WORLD_COUNT = os.path.join(ROOT, ".local", "qa", "_earth_seed.count")   # keep-p
 # "[x] assign" at her first pad write of a colony that had run none of them, plus invented facts ("the bedroom at
 # 173,164 is roofed but full of limestone", "camp about 109,80"). A new colony starts from THIS pad, with no [x] on it;
 # a [x] is accepted by the note tool only when the mod's own ok: reply for that item is on record (tools.t_note).
-PAD_TEMPLATE = """FRESH COLONY -- nothing is done yet. Tick an item [x] ONLY after the mod answered ok: for it (the note tool checks the mod's outbox and refuses a [x] it cannot find). Write what the mod said, never what you assume.
+PAD_TEMPLATE = """FRESH COLONY -- nothing is done yet. Tick an item [x] ONLY after the mod answered ok: for it (the note tool checks the mod's outbox and refuses a [x] it cannot find). Write what the mod said, never what you assume. THE ORDER IS THE LADDER'S: the camp around the supplies first, exploring last.
 - [ ] unforbid every starting item (game_set cmd unforbid)
 - [ ] pawn_priorities for every pawn, one call each (1s Firefighter through Cooking, the rest customised, no blanks)
-- [ ] assign: food Fine, medicine Best, hostility Attack (game_set cmd assign)
-- [ ] explore with time running until it says nothing left (game_set cmd explore) -- open ground with no rooms: camp beside the crew instead
-- [ ] stores: stockpile_camp food, then nofood (stockpile_room only when rooms lists a real room with free floor)
-- [ ] shelter beside the crew (game_set cmd shelter w 7 h 7), then beds
-- [ ] shelves next to the food store
-- [ ] one stove and its meal bill (game_set cmd stove, then add_bill CookMealSimple)
-- [ ] unpause; crops, hunt, outside, then the empire
+- [ ] assign: food Fine, medicine Best, hostility Attack (game_set cmd assign); arm (game_set cmd arm) -- nobody unarmed
+- [ ] camp: game_set cmd camp (the anchor is the supply drop; read it, never pick a spot by eye)
+- [ ] wood: game_set cmd chop count 300 when wood is short (site trees first)
+- [ ] stores: game_set cmd stockpile_camp mode nofood FIRST (the Main store over the supply pile), then mode food beside it
+- [ ] storage room: game_set cmd storage_room (walls, door and roof around the pile; the supplies stay where they are)
+- [ ] shelter beside the storage room (game_set cmd shelter w 7 h 7), then beds (walls, head in; 'shelter was planned' = call again when the walls stand)
+- [ ] shelves inside the storage room (game_set cmd shelves)
+- [ ] one stove on a wall and its meal bill (game_set cmd stove, then game_set cmd kitchen)
+- [ ] explore ONLY after the stove: game_set cmd explore with time running until it says nothing left
+- [ ] unpause; crops, hunt (a butcher table first), outside, then the empire
 """
 
 
@@ -255,10 +258,34 @@ def gather_owner(st):
     return rows
 
 
+def live_top_line(toolbox=None):
+    """The live top rung in two lines (id, first step), measured now -- goes on EVERY turn's update, so the job of the
+    moment is in front of her whether the conversation is fresh or old. Run 3 (2026-10-13 21:49-21:51): after a
+    restart she played explore and hunt from carried refusals for three turns while fire-in-camp was the live top
+    rung, because only a fresh brief carried the ladder."""
+    try:
+        import importlib.util as _il
+        _gs = _il.spec_from_file_location("gates", os.path.join(HERE, "gates.py"))
+        _g = _il.module_from_spec(_gs); _gs.loader.exec_module(_g)
+        _gates, _gstate = _g.decide()
+        top = next((g for g in _gates if g.get("priority", 99) < 98), None)
+        if toolbox is not None:
+            toolbox.live_top = (top["id"], top.get("family", ""), float(top.get("priority", 99))) if top else None
+        if not top:
+            return ""
+        step = (top.get("then") or [""])[0]
+        return ("LIVE TOP RUNG NOW: [%s] (%s %.2f) -- %s" % (top["id"], top.get("family", ""), float(top.get("priority", 99)), step[:220]) +
+                chr(10) + "Do THIS first. A rung that is no longer live is finished: never chase its leftovers.")
+    except Exception as e:
+        return ""
+
+
 def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=(), carry=False):
     # the unchanging parts go FIRST so Ollama can reuse them from the last turn (prompt cache); a turn number at
     # the top changed every turn and forced the CPU to re-read the whole brief, orders included, every time
     parts = []
+    _top = live_top_line(toolbox)
+    if _top: parts.append(_top)
     if with_orders and os.path.exists(OWNER_ORDERS):
         txt = open(OWNER_ORDERS, encoding="utf-8", errors="replace").read().strip()
         if txt:
@@ -387,8 +414,9 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=(), ca
     # each reset she restarted the same refused loop from scratch). A refused call is NOT done.
     refused = st.get("refused") or []
     if refused:
-        lines = ["refused: (this colony, newest last -- these calls were REFUSED, so they are not done; never repeat "
-                 "one as it was: do the rung's fallback, change the target, or note it for the owner)"]
+        lines = ["refused: HISTORY, not a to-do (this colony, newest last). These calls were REFUSED: they are not done "
+                 "and they are not yours to retry -- the live rung decides what you do now. If the live rung needs one of "
+                 "them, do its fallback step once; otherwise leave them."]
         for r in refused[-10:]:
             times = (" (x%d)" % r["times"]) if r.get("times", 1) > 1 else ""
             lines.append("- %s %s %s%s: %s" % (r.get("ts", ""), r.get("what", ""), r.get("args", ""), times, r.get("why", "")))
@@ -511,7 +539,9 @@ def short_update(toolbox, st, joins, msgs, owner_msgs=()):
     faster and better")."""
     fresh = new_orders()
     head = ("NEW OWNER ORDERS (binding, do these first):" + chr(10) + fresh + chr(10)) if fresh else ""
-    return (head + "UPDATE (turn %d) -- what is new; your orders from the start of this conversation still stand:" % st["tick"]
+    top = live_top_line(toolbox)
+    return (head + (top + chr(10) if top else "") +
+            "UPDATE (turn %d) -- what is new; your orders from the start of this conversation still stand:" % st["tick"]
             + chr(10) + brief(toolbox, st, joins, msgs, "", with_orders=False, owner_msgs=owner_msgs))
 
 def turn(toolbox, st, args, system, specs):
@@ -536,7 +566,18 @@ def turn(toolbox, st, args, system, specs):
         _WAS_DOWN = True
         time.sleep(20)
         return False
-    if up and not st.get("colony_exists") and not args.dry_run:
+    # the colony check reads the MEASURED state (gates.state), not this bookkeeping dict -- run 3, 21:24-21:30: the
+    # gate read st["colony_exists"], which this dict never carries, and held her for good after the map was up
+    colony_up = True
+    if up and not args.dry_run:
+        try:
+            import importlib.util as _il
+            _gs = _il.spec_from_file_location("gates", os.path.join(HERE, "gates.py"))
+            _g = _il.module_from_spec(_gs); _gs.loader.exec_module(_g)
+            colony_up = bool(_g.state().get("colony_exists"))
+        except Exception as _e:
+            log("colony check failed (%s) -- assuming a colony" % str(_e)[:60]); colony_up = True
+    if up and not colony_up and not args.dry_run:
         # the game answers but no colonist stands on a map: the main menu, or keep-playing's new-game flow (storyteller,
         # world, site, ideology, Prepare Carefully). Test run 2026-10-13 18:49-18:52: a turn ran here, called
         # stockpile_camp on a map that did not exist yet and closed the wizard's own Dialog_NodeTree three times
@@ -547,6 +588,22 @@ def turn(toolbox, st, args, system, specs):
         time.sleep(20)
         return False
     globals()["_NO_COLONY_LOGGED"] = False
+    if up and not args.dry_run:
+        # the setup marks the mod confirms are set by the loop itself: run 3 (21:47-22:06) she never wrote arms_set
+        # although the mod read everyone armed, and the whole setup chain (pawns -> assign -> camp) stayed dead behind it
+        try:
+            confirmed = tools.Toolbox.confirmed_marks()
+            plc = toolbox.bridge.call("rimplc/read_ladder", {"top": 1})
+            have = (plc.get("my_marks") if isinstance(plc, dict) else None) or {}
+            for _k, _v in confirmed.items():
+                if _v and not have.get(_k):
+                    try:
+                        toolbox.t_ladder_set("mark", _k, True)
+                        log("mark %s confirmed by the mod -> set" % _k)
+                    except Exception as _e:
+                        log("mark %s confirmed but not set (%s)" % (_k, str(_e)[:80]))
+        except Exception as _e:
+            log("confirmed-mark pass skipped (%s)" % str(_e)[:80])
     if up and globals().get("_WAS_DOWN"):
         CONVO = []; log("game is back -- conversation reset")
     _WAS_DOWN = not up

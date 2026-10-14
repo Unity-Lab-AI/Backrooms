@@ -296,6 +296,12 @@ const server = http.createServer(async (req, res) => {
 
     // Stream chat: Twitch viewers and Unity's lines ONLY. The owner's own studio-window messages
     // and Unity's replies to them never reach the stream (owner: "nothing personal of ours").
+    if (req.method === 'GET' && pathname === '/api/token') {
+      // the token is new on every start; a page opened before a restart holds the old one and every send fails
+      // (owner, 2026-10-13: "send failed: forbidden: missing or wrong studio token"). Same-origin GET only
+      // (the Host check above); the page refetches it on a 403 and retries once.
+      return sendJson(res, 200, { token: TOKEN });
+    }
     if (req.method === 'GET' && pathname === '/api/chat') {
       const since = parseInt(query.since, 10) || 0;
       const inbox = readJsonl(INBOX_PATH);

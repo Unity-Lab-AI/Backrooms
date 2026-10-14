@@ -42,11 +42,36 @@ namespace RimroomsAsyncIndustries.Automation
 
         private static IntVec3 Cell(Dictionary<string, string> a) => new IntVec3(Int(a, "x", -1), 0, Int(a, "z", -1));
 
+        /// <summary>How many 4-letter pieces of the asked name appear in a def's name or label (0 = no relation).</summary>
+        private static int NameScore(string want, ThingDef d)
+        {
+            string hay = (d.defName + " " + d.label).ToLowerInvariant();
+            int score = 0;
+            for (int i = 0; i + 4 <= want.Length; i++)
+                if (hay.Contains(want.Substring(i, 4))) score++;
+            foreach (string word in new[] { "table", "bench", "spot", "stove", "turret", "bed", "lamp", "cooler", "heater" })
+                if (want.Contains(word) && hay.Contains(word)) score += 2;
+            return score;
+        }
+
         public static string Build(Map map, Dictionary<string, string> a)
         {
             a.TryGetValue("def", out string defName);
             ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail(defName ?? "");
-            if (def == null || !def.BuildableByPlayer) return "refused: no buildable def " + defName;
+            if (def == null || !def.BuildableByPlayer)
+            {
+                // run 3, 2026-10-13 22:00-22:04: seven guessed names (ResearchTable, CraftingTable, WorkBench, TailoringBench,
+                // SmithingBench, StonecutterTable, GunTurretMiniturret) refused one after another while the real defs sat a
+                // word away. Name the nearest real ones so the next call is right.
+                string want = (defName ?? "").ToLowerInvariant();
+                var near = DefDatabase<ThingDef>.AllDefsListForReading
+                    .Where(d => d.BuildableByPlayer && d.designationCategory != null)
+                    .Select(d => new { d, score = NameScore(want, d) }).Where(x => x.score > 0)
+                    .OrderByDescending(x => x.score).ThenBy(x => x.d.defName.Length).Take(6)
+                    .Select(x => x.d.defName + " (" + x.d.label + ")").ToList();
+                return "refused: no buildable def " + defName + (near.Count > 0 ? " -- did you mean: " + string.Join(", ", near)
+                       : " -- the def names come from list_architect_designators or the mod's own replies, never from memory");
+            }
             IntVec3 c = Cell(a);
             if (!c.InBounds(map)) return "refused: x,z outside the map";
             Rot4 rot = new Rot4(Math.Max(0, Math.Min(3, Int(a, "rot", 0))));

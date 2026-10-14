@@ -45,6 +45,11 @@ namespace RimroomsAsyncIndustries.Automation
 
         // ---------------------------------------------------------------- arm
 
+        /// <summary>A weapon that is a weapon: not a wood log, a beer, a stone chunk or any other resource the game lets a pawn swing.</summary>
+        private static bool RealWeapon(ThingDef d) =>
+            d.IsWeapon && !d.IsStuff && !d.IsIngestible &&
+            (d.thingCategories == null || !d.thingCategories.Any(c => c == ThingCategoryDefOf.ResourcesRaw || c.defName.StartsWith("Resources") || c.defName == "StoneChunks"));
+
         public static string Arm(Map map)
         {
             List<Pawn> crew = map.mapPawns.FreeColonistsSpawned.Where(p => !p.Downed && !p.InMentalState &&
@@ -53,14 +58,24 @@ namespace RimroomsAsyncIndustries.Automation
             var claimed = new HashSet<Thing>();
             var report = new List<string>();
             int unarmed = 0;
+            var noGun = new List<string>();      // armed with a melee weapon only: armed for now, a gun when one exists
+            var bare = new List<string>();       // nothing in hand at all
 
             foreach (Pawn p in crew.Where(p => !HasRanged(p)))
             {
                 ThingWithComps gun = map.listerThings.ThingsInGroup(ThingRequestGroup.Weapon).OfType<ThingWithComps>()
-                    .Where(t => t.def.IsRangedWeapon && !claimed.Contains(t) && !t.IsForbidden(p) &&
+                    .Where(t => t.def.IsRangedWeapon && RealWeapon(t.def) && !claimed.Contains(t) && !t.IsForbidden(p) &&
                                 p.CanReserveAndReach(t, PathEndMode.ClosestTouch, Danger.Some))
                     .OrderBy(t => t.Position.DistanceToSquared(p.Position)).FirstOrDefault();
-                if (gun == null) { unarmed++; continue; }
+                if (gun == null)
+                {
+                    // run 3, 2026-10-13: "1 still unarmed" fourteen times for a colonist holding a knife, while the sensors
+                    // read everyone armed -- name who and what, and count only an empty hand as unarmed
+                    ThingWithComps held = p.equipment?.Primary;
+                    if (held != null) noGun.Add(p.LabelShort + " holds " + held.LabelShort);
+                    else { unarmed++; bare.Add(p.LabelShort); }
+                    continue;
+                }
                 claimed.Add(gun);
                 p.jobs.TryTakeOrderedJob(JobMaker.MakeJob(JobDefOf.Equip, gun), JobTag.Misc);
                 report.Add(p.LabelShort + " -> " + gun.LabelShort);
@@ -70,7 +85,7 @@ namespace RimroomsAsyncIndustries.Automation
             foreach (Pawn p in crew.Where(p => HasRanged(p) && !CarriesMelee(p)))
             {
                 ThingWithComps blade = map.listerThings.ThingsInGroup(ThingRequestGroup.Weapon).OfType<ThingWithComps>()
-                    .Where(t => t.def.IsMeleeWeapon && !claimed.Contains(t) && !t.IsForbidden(p) &&
+                    .Where(t => t.def.IsMeleeWeapon && RealWeapon(t.def) && !claimed.Contains(t) && !t.IsForbidden(p) &&
                                 p.CanReserveAndReach(t, PathEndMode.ClosestTouch, Danger.Some))
                     .OrderBy(t => t.Position.DistanceToSquared(p.Position)).FirstOrDefault();
                 if (blade == null) continue;
@@ -101,11 +116,13 @@ namespace RimroomsAsyncIndustries.Automation
                     break;
                 }
                 if (craft.Length == 0)
-                    craft = "; " + unarmed + " still unarmed and no built table can make a gun or bow (build a crafting spot or machining table)";
+                    craft = "; " + unarmed + " with NO weapon (" + string.Join(", ", bare) + ") and no free gun and no built table that makes one -- game_set cmd build def CraftingSpot x z (a short bow), or trade";
             }
+            string melee = noGun.Count == 0 ? "" : "; melee only, armed for now (no free gun): " + string.Join(", ", noGun) +
+                           " -- a gun when a crafting spot (def CraftingSpot) makes a bow or a trader sells one";
 
-            if (report.Count == 0 && unarmed == 0) return "ok: everyone already carries a gun and a melee sidearm (or none is free)";
-            return "ok: " + (report.Count == 0 ? "no free weapon moved" : string.Join("; ", report)) + craft;
+            if (report.Count == 0 && unarmed == 0 && noGun.Count == 0) return "ok: everyone already carries a gun and a melee sidearm (or none is free)";
+            return "ok: " + (report.Count == 0 ? "no free weapon moved" : string.Join("; ", report)) + melee + craft;
         }
 
         // ---------------------------------------------------------------- draft

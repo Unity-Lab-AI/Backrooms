@@ -314,6 +314,7 @@ namespace RimroomsAsyncIndustries.Automation
                 case "mine": return SetupTools5.Mine(map, a);
                 case "room_plan": return RoomDesign.RoomPlan(map, a);
                 case "wall_swap": return WallSwap.Swap(map, a);
+                case "home_area": return SetupTools5.HomeArea(map, a);
                 case "firebreak": return SetupTools5.Firebreak(map, a);
                 case "pen": return SetupTools5.Pen(map, a);
                 case "bury": return SetupTools5.Bury(map, a);

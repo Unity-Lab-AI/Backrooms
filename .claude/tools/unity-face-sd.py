@@ -202,6 +202,19 @@ def fit_clip(parts, drop):
     return text
 
 
+def fit_tokens(text, limit=75):
+    """Cut a prompt to CLIP's window by its own tokenizer (the negatives ran ~147 tokens: everything past 77 was dropped
+    without a word, run 3 2026-10-13 21:23 `93 > 77`). The first words are the ones that matter, so the tail goes."""
+    try:
+        pipes(); tok = _t2i.tokenizer
+        ids = tok(text).input_ids
+        if len(ids) <= limit + 2: return text
+        return tok.decode(ids[1:limit + 1]).strip()
+    except Exception:
+        words = text.split()
+        return " ".join(words[:55]) if len(words) > 55 else text
+
+
 def compose(req):
     """The whole frame as words: what the caller asked (mood / pose) + her outfit of the moment + where she looks + what
     she is holding (from the line she just said) + who she is. Mood first: CLIP reads only 77 tokens."""
@@ -296,7 +309,7 @@ def _render_locked(req):
         torch.cuda.empty_cache()
     seed = int(req.get("seed") or SEED)
     g = torch.Generator(DEVICE).manual_seed(seed)
-    neg = req.get("negative_prompt") or NEG
+    neg = fit_tokens(req.get("negative_prompt") or NEG)
     if req.get("reference") or not os.path.exists(REF):
         img = t2i(prompt=req.get("ref_prompt") or REF_PROMPT, negative_prompt=neg, num_inference_steps=STEPS, guidance_scale=6.5, ip_adapter_image=face_image(),
                   width=512, height=640, generator=g).images[0]
