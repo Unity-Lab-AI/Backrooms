@@ -16,7 +16,7 @@ Links (checked 2026-10-08, all answer 200):
 | Mod site / wiki | https://g-fourteen.github.io/Rimrooms-AsyncIndustries/ |
 | Source repo | https://github.com/Unity-Lab-AI/Backrooms |
 | Bug reports | https://github.com/Unity-Lab-AI/Backrooms/issues |
-| RimPLC wiki | https://g-fourteen.github.io/Rimrooms-AsyncIndustries/rimplc.html |
+| RimPLC wiki | https://g-fourteen.github.io/RimPLC/ |
 | RimPLC source | https://github.com/G-Fourteen/RimPLC (and https://git.unityailab.com/GFourteen/RimPLC) |
 | RimPLC bug reports | https://github.com/G-Fourteen/RimPLC/issues |
 | Steam Workshop collection | https://steamcommunity.com/sharedfiles/filedetails/?id=3815722702 (the owner's pack collection *"Rimrooms: Async Industries - full mod pack (RimWorld 1.6)"*, 288 items, made 2026-10-08; owner 2026-10-08: *"and the rwmods is the mod collection"* · *"on steam"* · *"its mine"* · *"the first one i made"*) |
@@ -37,7 +37,7 @@ it). Images are 320x110 in the overlay's style, rendered by [`twitch-panels/rend
 | ![](twitch-panels/panel-source.png) `panel-source.png` | https://github.com/Unity-Lab-AI/Backrooms |
 | ![](twitch-panels/panel-bugs.png) `panel-bugs.png` | https://github.com/Unity-Lab-AI/Backrooms/issues |
 | ![](twitch-panels/panel-workshop.png) `panel-workshop.png` | https://steamcommunity.com/sharedfiles/filedetails/?id=3815722702 |
-| ![](twitch-panels/panel-rimplc-wiki.png) `panel-rimplc-wiki.png` | https://g-fourteen.github.io/Rimrooms-AsyncIndustries/rimplc.html |
+| ![](twitch-panels/panel-rimplc-wiki.png) `panel-rimplc-wiki.png` | https://g-fourteen.github.io/RimPLC/ |
 | ![](twitch-panels/panel-rimplc-github.png) `panel-rimplc-github.png` | https://github.com/G-Fourteen/RimPLC |
 | ![](twitch-panels/panel-rimplc-forgejo.png) `panel-rimplc-forgejo.png` | https://git.unityailab.com/GFourteen/RimPLC |
 | ![](twitch-panels/panel-rimplc-bugs.png) `panel-rimplc-bugs.png` | https://github.com/G-Fourteen/RimPLC/issues |
@@ -118,7 +118,7 @@ Found a bug on stream? Say it in chat and Unity logs it.
 - **Advice first**: it tells you what to do; it never takes over your pawns
 - No Harmony, no required mods, works with any mod list
 
-- **[RimPLC wiki](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/rimplc.html)**
+- **[RimPLC wiki](https://g-fourteen.github.io/RimPLC/)**
 - **[Source on GitHub](https://github.com/G-Fourteen/RimPLC)** · [Forgejo](https://git.unityailab.com/GFourteen/RimPLC)
 - **[Report a RimPLC bug](https://github.com/G-Fourteen/RimPLC/issues)**
 ```

@@ -2145,6 +2145,16 @@
       "severity": "warning",
       "tip": "The south-west tower room's cooler: 0 none, 1 planned, 2 built and powered, 3 built with no power.",
       "warn": "==3"
+    },
+    "threat_letter_unread": {
+      "source": "list_letters letterDef in ThreatBig/ThreatSmall whose id is not in ladder.json letters_seen (gates.py)",
+      "type": "bool",
+      "group": "Threats",
+      "label": "Threat letter unread",
+      "severity": "critical",
+      "tip": "A raid or threat letter is on the stack and has not been read. Read it this turn; it never ages out unread.",
+      "warn": true,
+      "note": "gates.py-side reading like threat_letter: computed from list_letters and ladder.json letters_seen, not by RimPLC's Sensors.cs"
     }
   },
   "gates": [
@@ -6519,7 +6529,8 @@
         "game_dismiss_letter what needs no action"
       ],
       "never": [
-        "dismiss a letter unread"
+        "dismiss a letter unread",
+        "read a threat letter as a joke"
       ],
       "latch": false,
       "why": "owner: \"you need to read message and pop up s shit\" / owner: \"dont ignore you messages\" / a sweep cannot tell a trader from a raider",
@@ -10152,6 +10163,28 @@
       "never": [
         "spend medicine on minor wounds"
       ]
+    },
+    {
+      "id": "war-letter-unread",
+      "priority": 1.09,
+      "family": "war",
+      "latch": false,
+      "when": {
+        "threat_letter_unread": true
+      },
+      "then": [
+        "an UNREAD threat letter is on the stack: read its full text NOW (game_state letters, then game_open_letter), before any other step -- it never ages out of the ladder until it is read",
+        "an animal's revenge or a manhunter pack: a threat, not a joke -- game_set cmd draft for everyone able, everyone indoors (game_set cmd set_area area Home), doors closed; war-manhunter has the rest",
+        "a raid: classify it as war-letter-classify says (ladder_set mark raid_kind N); a trader or caravan letter: no raid_kind, the comms console",
+        "say the stakes in one line (who, how many, where) -- never a joke while a colonist is down or bleeding",
+        "dismiss the letter once read (bridge right-click on it) so threat_letter_unread drops"
+      ],
+      "never": [
+        "read a threat letter as a joke",
+        "name a defence that is not built -- embrasures, turrets, walls, doors are sensors: read them before 'behind the embrasures'",
+        "act on the label without the text"
+      ],
+      "why": "owner, verbatim: \"ive alkready told yuou already read messages always instantly!!!!! your under attrack!!!!\" / test run 2026-10-13 ledger 19:27 and 19:31: the Badger revenge threat letter sat unopened for 11 minutes and was read as a joke while Unity lay wounded; 'others stay behind the embrasures' with none built"
     },
     {
       "id": "war-letter-classify",
