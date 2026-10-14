@@ -141,6 +141,18 @@ def _trim(obj, limit=5000):
     return s if len(s) <= limit else s[:limit] + " ...[truncated]"
 
 
+# Words no spoken sentence ends on: a say line that stops on one of them (and carries no full stop) arrived cut.
+_DANGLING = frozenset("""a an the and or but nor so yet until till unless if when whenever while because since
+    as than that which who whom whose where of to in on at by for with from into onto upon over under about
+    between through during before after without within along across behind beyond toward towards against
+    per via my your our their his her its this these those every each some any no not very""".split())
+
+
+def _not_said(result):
+    """True for the strings _speak hands back when a line was NOT said (the brain acts on them as-is)."""
+    return isinstance(result, str) and result.startswith(("CUT:", "REPEAT:", "SPEAK FAILED:"))
+
+
 # ---------------------------------------------------------------------------------------------------------------
 # The registry
 # ---------------------------------------------------------------------------------------------------------------
@@ -394,6 +406,7 @@ class Toolbox:
                                                                "slaughter", "allow_area", "self_tend", "schedule", "drug_policy", "research", "bed_medical", "bed_prisoner", "cooler_temp",
                                                                "equip", "capture", "bill_count", "zone_create", "roof_area", "firebreak", "pen", "bury", "ideo_role", "save_game",
                                                                "stockpile_priority", "stockpile_copy", "crew_setup", "terraform",
+                                                               "camp", "storage_room", "mine",
                                                                "freezer", "butcher", "kitchen", "arm", "draft", "hold", "tower", "power", "hall", "research_next", "generator", "prisoner", "trade", "gate_posture", "guest_beds", "security_room", "room_cooler", "call_trader"]},
                             "x": i, "z": i, "plant": s, "allow": b, "pawn": s, "work": s, "level": i,
                             "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s, "food": s, "medicine": s, "hostility": s, "map": s, "w": i, "h": i, "def": s, "rot": i, "stuff": s, "what": s, "on": b, "hours": s, "assignment": s, "policy": s, "project": s, "celsius": i, "sidearm": b, "kind": s, "label": s, "role": s, "name": s, "zone": s, "from": s, "to": s, "size": i, "x1": i, "z1": i, "x2": i, "z2": i, "width": i, "with": s, "sell": s, "buy": s, "posture": s, "fee": i, "faction": s},
@@ -501,12 +514,21 @@ class Toolbox:
 
     # -- stream output: every path goes through guards.clean_for_stream -----------------------------------------
     def _speak(self, text, reply_to=None, emotion=None, act=None):
+        """The stream-safe line once it has PLAYED; None when the filter blocked it; a 'CUT: ...' / 'REPEAT: ...' /
+        'SPEAK FAILED: ...' string when it was not said (the brain reads that string and acts on it)."""
         # Voice tags ([laughter], [breath], [sigh]) are instructions for Unity's own voice model, never words for
         # Twitch chat or the overlay. Owner: "its better not print [laughter} in the chat of twitch". They are cut
         # from everything shown; voice_text keeps them for the new voice (today's Piper would read them out loud,
         # so it also gets the stripped line until the own voice is live).
         self.voice_text = text
         text = re.sub(r"\s*\[(laughter|breath|sigh)\]\s*", " ", text, flags=re.I).strip()
+        # 2026-10-13 19:43: "Give me a minute, I cannot do anything until" went out on stream, cut. The text arrived
+        # from the brain already ending there (the TOOL log line shows it), and the next two turns copied the same
+        # cut call out of the conversation. A line that stops on a word no sentence ends on is handed back unsaid.
+        tail = re.sub(r"[\"'’”)\]]+$", "", text.rstrip())
+        last = re.findall(r"[A-Za-z']+$", tail)
+        if last and last[0].lower() in _DANGLING and not re.search(r"[.!?]$", tail):
+            return "CUT: your line stops mid-sentence at '...%s' -- finish the sentence and say it again" % text[-40:]
         clean = guards.clean_for_stream(text)
         if not clean:
             log("STREAM FILTER blocked:", repr(text)[:200])
@@ -515,9 +537,9 @@ class Toolbox:
         if gap < 3.0:
             time.sleep(3.0 - gap)
         self.last_speech = time.time()
-        self.spoken.append(clean)
         if self.dry:
             log("DRY-RUN would SAY:", clean, "(reply to %s)" % reply_to if reply_to else "")
+            self.spoken.append(clean)
             return clean
         # the chat row is posted by unity-speak the moment this line starts playing (owner: "she is still sending like
         # 3-4 messages at once"); posting here ran chat ahead of her voice
@@ -541,12 +563,23 @@ class Toolbox:
         try:
             r = subprocess.run([PY, SCRIPTS["speak"], voice_line], cwd=ROOT, stdout=subprocess.DEVNULL,
                                stderr=subprocess.PIPE, text=True, shell=False, timeout=300, env=speak_env)
+            failed = None
             if r.returncode != 0:
-                log("SPEAK FAILED (no fallback voice):", (r.stderr or "").strip()[-200:])
+                failed = (r.stderr or "").strip()[-200:] or ("exit %d" % r.returncode)
         except subprocess.TimeoutExpired:
-            log("SPEAK timed out after 120 s:", clean[:80])
+            failed = "timed out after 300 s"
         self.last_speech = time.time()
         self.last_spoken_seconds = round(self.last_speech - started, 1)
+        if failed:
+            # 2026-10-13 19:07-19:16: three refused lines were each logged SAID and returned as said, so the brain
+            # believed the stream heard them. A failed line is logged ONCE as a failure and handed back as one;
+            # unity-speak answers "REPEAT: ..." for a line the stream already heard, and the brain rephrases.
+            if failed.startswith("REPEAT:"):
+                log("SPEAK REFUSED:", failed)
+                return failed
+            log("SPEAK FAILED (no fallback voice):", failed)
+            return "SPEAK FAILED: " + failed + " -- nothing was heard on stream"
+        self.spoken.append(clean)
         log("SAID:", clean)
         return clean
 
@@ -563,6 +596,8 @@ class Toolbox:
 
     def t_say(self, text, emotion=None, act=None):
         said = self._speak(text, emotion=emotion, act=act)
+        if _not_said(said):
+            return said
         return ("said: " + said) if said else "BLOCKED by the stream filter (no swearing, no degrading, no emoji); say it cleaner"
 
     def t_reply(self, chat_id, viewer, text, emotion=None, act=None):
@@ -570,6 +605,8 @@ class Toolbox:
         if name and name.lower().split()[0] not in text.lower():
             text = name + ", " + text
         said = self._speak(text, reply_to=int(chat_id), emotion=emotion, act=act)
+        if _not_said(said):
+            return said
         if said:
             self.greeted_this_tick.add(str(viewer).lower())
             if not self.dry:
