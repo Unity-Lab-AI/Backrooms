@@ -278,6 +278,11 @@ class Toolbox:
             gid = str(args.get("gizmoId") or "")
             if gid not in self.known_gizmos:
                 raise GuardError("unknown gizmo id: list_selected_gizmos first (on the thing you mean) and execute only an id from that list")
+        if name in ("rimworld/apply_architect_designator", "rimworld/select_architect_designator"):
+            # run 5 (2026-10-14 00:31): a made-up roof designator id applied three times ("the tool cannot find it")
+            did = str(args.get("designatorId") or "")
+            if did not in getattr(self, "known_designators", set()):
+                raise GuardError("unknown designator id: game_list_architect_designators <category> first and use only an id from that list")
         if self.dry and name not in guards.BRIDGE_READ:
             log("DRY-RUN would call", name, json.dumps(args))
             return "dry-run: not executed (%s %s)" % (name, json.dumps(args))
@@ -286,6 +291,9 @@ class Toolbox:
         if name == "rimworld/list_selected_gizmos":
             try: self.known_gizmos = set(re.findall(r'selection-gizmo:[A-Za-z0-9:_-]+', json.dumps(r)))
             except Exception: self.known_gizmos = set()
+        if name == "rimworld/list_architect_designators":
+            try: self.known_designators = getattr(self, "known_designators", set()) | set(re.findall(r'architect-designator:[A-Za-z0-9:_-]+', json.dumps(r)))
+            except Exception: pass
         if name == "rimworld/get_ui_layout" and isinstance(r, dict):
             found = {}
             _walk_targets(r, found)
@@ -1329,7 +1337,7 @@ def read_owner(after_id=0):
                 continue
             text = str(r.get("text") or "")
             if int(r.get("id", 0)) > after_id and text and not text.startswith("[twitch]"):
-                out.append({"msg_id": int(r["id"]), "text": text[:600]})
+                out.append({"msg_id": int(r["id"]), "text": text[:600], "ts": r.get("ts") or 0})
     except OSError:
         pass
     return out
