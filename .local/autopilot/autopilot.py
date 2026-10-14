@@ -291,7 +291,7 @@ def gather_owner(st):
         # last twenty minutes is a live order (run 5, 00:28: a restart swallowed the owner's 00:26 order to cancel the
         # east wall and haul first; she never saw it)
         rows = tools.read_owner(0)
-        cut = (time.time() - 20 * 60) * 1000
+        cut = (time.time() - 60 * 60) * 1000      # the same hour host_inputs() counts as unread (run 5, 00:58: counted but hidden = an unanswerable rung)
         old = [r["msg_id"] for r in rows if (r.get("ts") or 0) < cut]
         st["owner_last"] = max(old + [0])
         fresh = [r for r in rows if r["msg_id"] > st["owner_last"]]
