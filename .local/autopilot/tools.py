@@ -404,7 +404,9 @@ class Toolbox:
                          "stockpile_filter (x,z,mode food|nofood|all, priority), beds, shelves, stove, crops (plant), "
                          "hunt, day_one, assign (the Assign tab: pawn or empty for all, food Fine, medicine Best, hostility Attack). "
                          "OPEN-GROUND CAMP (Crashlanded, no rooms): unforbid (every starting item), chop (count = wood wanted, nearest trees to the crew), "
-                         "shelter (w,h inside size; a wood room + door + roof beside the crew), stockpile_camp (mode food|nofood; a 6x6 store beside the crew). "
+                         "shelter (w,h inside size; a wood room + door + roof beside the crew), stockpile_camp (mode food|nofood; a 6x6 store beside the crew), "
+                         "haul (every loose stack within 30 cells unforbidden + Hauling priority 1 for all: the pile goes into the store first), "
+                         "cancel (x,z,w,h: every planned building and designation in the rect is cancelled -- the owner's 'delete that wall'). "
                          "BUILD AND MANAGE: build (def, x, z, rot 0-3, stuff -- any architect thing, e.g. TorchLamp, Sandbags, Barricade, Cooler, "
                          "SimpleResearchBench, Battery; read refused/ok), build_room (x,z inside corner, w, h, stuff -- walls+door+roof), deconstruct "
                          "(def or x,z), harvest (what food|medicine|all -- wild plants), tame (def), slaughter (def, count; never milkers or bonded), "
@@ -423,7 +425,7 @@ class Toolbox:
                                                                "beds", "shelves", "stove", "crops", "hunt", "day_one", "assign",
                                                                "set_zone_plant", "set_zone_sowing", "set_work_priority",
                                                                "set_bed_owner", "add_bill", "set_area",
-                                                               "unforbid", "chop", "shelter", "stockpile_camp", "build", "build_room", "deconstruct", "harvest", "tame",
+                                                               "unforbid", "chop", "shelter", "stockpile_camp", "haul", "cancel", "build", "build_room", "deconstruct", "harvest", "tame",
                                                                "slaughter", "allow_area", "self_tend", "schedule", "drug_policy", "research", "bed_medical", "bed_prisoner", "cooler_temp",
                                                                "equip", "capture", "bill_count", "zone_create", "roof_area", "firebreak", "pen", "bury", "ideo_role", "save_game",
                                                                "stockpile_priority", "stockpile_copy", "crew_setup", "terraform",
@@ -796,7 +798,7 @@ class Toolbox:
     # reading (sensors.json from the mod's Sensors.cs via gates.state(), and the mod's ok: replies in
     # RimroomsAutomation/outbox.jsonl since this colony started). The value written is always the measured one.
     SETUP_FAMILIES = ("setup", "start", "configuration")
-    SETUP_MARK_RE = re.compile(r"^(setup_.*|.*_set|.*_done)$")
+    SETUP_MARK_RE = re.compile(r"^(setup_.*|.*_set|.*_done|.*_hauled|.*_built|.*_placed)$")   # run 5: "supplies_hauled" set by hand after a missing command
     # mark -> (the mod replies that confirm it: game_set cmds answered "ok", AND/OR the sensor test), with the source
     # named for the refusal text. A mark with no entry and a setup_* name has no reading at all and is refused.
     CONFIRMED_MARKS = {
@@ -816,6 +818,7 @@ class Toolbox:
         # the camp is LAID OUT: the mod's ok to ALL THREE of storage_room, shelter and stove (plans, not buildings). This is the
         # mark that lets time run (setup-6-run) -- owner: "should not unpause until inistal setup and zoneing is done and buildings are layed out"
         "layout_set": (None, ("storage_room", "shelter", "stove"), "ok: replies to ALL of storage_room, shelter and stove in the mod's outbox (the camp is laid out; the crew builds it once time runs)"),
+        "supplies_hauled": (None, ("haul",), "an ok: reply to game_set cmd haul (the pile unforbidden, Hauling at 1 for everyone)"),
         "shelter_set": (None, ("shelter",),
                         "an ok: reply to game_set cmd shelter (or build_room) in the mod's outbox"),
         "camp_set": (None, ("camp",), "an ok: reply to game_set cmd camp (the anchor read) in the mod's outbox"),

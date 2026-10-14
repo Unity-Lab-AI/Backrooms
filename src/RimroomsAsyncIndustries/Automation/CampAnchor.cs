@@ -159,6 +159,14 @@ namespace RimroomsAsyncIndustries.Automation
             {
                 IntVec3 at = new IntVec3(x, 0, z);
                 if (!at.InBounds(map)) return "refused: x,z outside the map";
+                // Run 5 (2026-10-14 00:29-00:35): `camp x z` walked the anchor one cell at a time to 150,176 -- thirty cells from the
+                // supplies and into the mountain -- and every room was refused around it. The anchor is the DROP: a hand-set
+                // point stays within 12 cells of where the supplies lie (or of the storage room once it is planned); force true overrides.
+                bool forceMove = a.TryGetValue("force", out string fm) && fm.StartsWith("t", StringComparison.OrdinalIgnoreCase);
+                IntVec3 drop = comp != null && comp.storageBox.Width > 0 ? comp.storageBox.CenterCell : Compute(map);
+                if (!forceMove && drop.IsValid && at.DistanceTo(drop) > 12f)
+                    return "refused: " + x + "," + z + " is " + (int)at.DistanceTo(drop) + " cells from the supplies at " + drop.x + "," + drop.z +
+                           " -- the camp anchor stays within 12 cells of where the supplies lie (storage room, shelter and stove place themselves beside it); force true to override";
                 if (comp != null) { comp.anchor = at; comp.manual = true; }
                 return "ok: camp anchor set to " + x + "," + z + " -- every setup command builds around it now";
             }
@@ -179,32 +187,74 @@ namespace RimroomsAsyncIndustries.Automation
         ///   {"cmd":"storage_room"}  walls + door + roof around the supply pile at the anchor; the Main store zone covers the
         ///                            inside; trees inside are marked to chop; min inside 6x6, max 14x14
         /// </summary>
+        /// <summary>The full-fill edifices (natural rock, a wall) inside a box -- the cells a store cannot use.</summary>
+        private static List<IntVec3> Rock(Map map, CellRect box) =>
+            box.Cells.Where(c => c.InBounds(map) && c.GetEdifice(map) is Building ed && ed.def.Fillage == FillCategory.Full && !(ed is Building_Door)).ToList();
+
         public static string StorageRoom(Map map, Dictionary<string, string> a)
         {
             IntVec3 anchor = Get(map);
             if (!anchor.IsValid) return "refused: no crew on this map";
+            RimroomsCampComponent camp = map.GetComponent<RimroomsCampComponent>();
+            bool force = a.TryGetValue("force", out string fo) && fo.StartsWith("t", StringComparison.OrdinalIgnoreCase);
+            // Run 5 (2026-10-14 00:29-00:30): with a room already planned, a second call from a moved anchor answered "refused: rock"
+            // and she re-fought a won fight for twenty minutes. A standing plan is reported, never re-planned (force true re-plans).
+            if (!force && camp != null && camp.storageBox.Width > 0)
+            {
+                int planned = camp.storageBox.EdgeCells.Count(c => c.InBounds(map) && c.GetThingList(map).Any(t => t.def.IsBlueprint || t.def.IsFrame));
+                int standing = camp.storageBox.EdgeCells.Count(c => c.InBounds(map) && c.GetEdifice(map) is Building e && !(e.def.building != null && e.def.building.isNaturalRock));
+                if (planned + standing > 0)
+                    return "ok: the storage room is already planned at " + camp.storageBox.minX + "," + camp.storageBox.minZ + " (" + camp.storageBox.Width + "x" +
+                           camp.storageBox.Height + ", " + planned + " walls planned, " + standing + " standing) -- nothing to re-plan; next: shelter beside it, then stove";
+            }
             List<Thing> pile = SupplyPile(map, anchor);
             CellRect inside = pile.Count > 0 ? CellRect.FromCellList(pile.Select(t => t.Position)) : CellRect.CenteredOn(anchor, 3);
             inside = inside.ExpandedBy(1);
             // size: at least 6x6, at most 14x14, grown or shrunk around its own centre
             int w = Math.Max(6, Math.Min(14, inside.Width)), h = Math.Max(6, Math.Min(14, inside.Height));
             inside = new CellRect(inside.CenterCell.x - w / 2, inside.CenterCell.z - h / 2, w, h).ClipInsideMap(map);
+
+            // Run 5 (2026-10-14 00:11-00:25): the supplies lay against a granite outcrop, every box held rock, and six refusals said "camp
+            // x,z elsewhere or mine it first". The box slides off the rock by itself (up to 8 cells, the pile kept inside as far as it
+            // goes), and what rock is left inside is marked to mine -- never a refusal for rock.
+            List<IntVec3> rock = Rock(map, inside);
+            string shifted = "";
+            if (rock.Count > 0)
+            {
+                CellRect best = inside; int bestRock = rock.Count, bestKeep = pile.Count(t => inside.Contains(t.Position));
+                for (int r = 1; r <= 8 && bestRock > 0; r++)
+                    foreach (IntVec3 d in new[] { new IntVec3(r, 0, 0), new IntVec3(-r, 0, 0), new IntVec3(0, 0, r), new IntVec3(0, 0, -r), new IntVec3(r, 0, r), new IntVec3(-r, 0, r), new IntVec3(r, 0, -r), new IntVec3(-r, 0, -r) })
+                    {
+                        CellRect cand = new CellRect(inside.minX + d.x, inside.minZ + d.z, w, h);
+                        if (cand.minX < 1 || cand.minZ < 1 || cand.maxX >= map.Size.x - 1 || cand.maxZ >= map.Size.z - 1) continue;
+                        if (cand.ExpandedBy(2).Cells.Any(c => c.InBounds(map) && RoomSite.Geyser(map, c))) continue;
+                        int cr = Rock(map, cand).Count, keep = pile.Count(t => cand.Contains(t.Position));
+                        if (cr < bestRock && keep * 10 >= pile.Count * 6) { best = cand; bestRock = cr; bestKeep = keep; }
+                    }
+                if (best != inside)
+                {
+                    shifted = ", box moved " + (best.minX - inside.minX) + "," + (best.minZ - inside.minZ) + " to clear rock (" + bestKeep + " of " + pile.Count + " stacks still inside)";
+                    inside = best; rock = Rock(map, inside);
+                }
+            }
             CellRect ring = inside.ExpandedBy(1).ClipInsideMap(map);
 
             ThingDef wall = ThingDefOf.Wall, door = ThingDefOf.Door, wood = ThingDefOf.WoodLog;
-            // inside must be buildable ground or hold an item; trees inside are chopped, rock inside is a refusal
-            int chop = 0;
+            int chop = 0, mined = 0;
             foreach (IntVec3 c in ring.ExpandedBy(1))
             {
                 if (!c.InBounds(map)) continue;
                 if (RoomSite.Geyser(map, c))
                     return "refused: a steam geyser at " + c.x + "," + c.z + " touches the pile's box -- leave its 5x5 for a geothermal generator; camp x,z elsewhere";
             }
+            foreach (IntVec3 c in rock)
+            {
+                // rock still inside after the slide: mined out (mining is the one setup step that needs the clock -- the ladder's lock allows it)
+                if (map.designationManager.DesignationAt(c, DesignationDefOf.Mine) == null)
+                { map.designationManager.AddDesignation(new Designation(c, DesignationDefOf.Mine)); mined++; }
+            }
             foreach (IntVec3 c in inside)
             {
-                Building ed = c.GetEdifice(map);
-                if (ed != null && ed.def.Fillage == FillCategory.Full && !(ed is Building_Door))
-                    return "refused: solid rock or a wall at " + c.x + "," + c.z + " inside the pile's box -- camp x,z elsewhere or mine it first";
                 Plant p = c.GetPlant(map);
                 if (p != null && p.def.plant.IsTree && map.designationManager.DesignationOn(p) == null)
                 { map.designationManager.AddDesignation(new Designation(p, DesignationDefOf.HarvestPlant)); chop++; }
@@ -236,7 +286,6 @@ namespace RimroomsAsyncIndustries.Automation
             if (walls + doors == 0 && kept == 0) return "refused: nothing of the ring could be placed around " + anchor.x + "," + anchor.z;
 
             foreach (IntVec3 c in inside) map.areaManager.BuildRoof[c] = true;
-            RimroomsCampComponent camp = map.GetComponent<RimroomsCampComponent>();
             if (camp != null) camp.storageBox = ring;
             // the camp is Home from the first wall: fires inside it get fought, floors cleaned (run 3: no Home, 47 fire cells)
             foreach (IntVec3 c in ring) map.areaManager.Home[c] = true;
@@ -262,6 +311,7 @@ namespace RimroomsAsyncIndustries.Automation
             return "ok: storage room around the supplies -- inside " + w + "x" + h + " from " + inside.minX + "," + inside.minZ +
                    ", door at " + doorCell.x + "," + doorCell.z + ", " + walls + " walls + " + doors + " door planned (" + kept + " kept, " +
                    blocked + " blocked), roof marked, Main store covers " + zoned + " more cells (" + pile.Count + " item stacks inside)" +
+                   shifted + (mined > 0 ? ", " + mined + " rock cell(s) inside marked to mine (needs time running and Mining on)" : "") +
                    (chop > 0 ? ", " + chop + " trees inside marked to chop" : "") + "; needs about " + cost +
                    " wood -- chop if short, keep Construction on; the supplies stay where they are and come under the roof";
         }

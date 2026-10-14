@@ -91,9 +91,12 @@ namespace RimroomsAsyncIndustries.Automation
             if (!asked.InBounds(map) && !force && camp != null && camp.Unbuilt(camp.shelterBox))
                 return "refused for now: the shelter planned at " + camp.shelterBox.minX + "," + camp.shelterBox.minZ + " (" + camp.shelterBox.Width + "x" + camp.shelterBox.Height +
                        ") is still being built -- let it stand (time running, Construction on, wood in stock); a second one on purpose: shelter x z, or force true";
+            // the search starts from the planned storage room when there is one (the shelter belongs beside it), else the
+            // anchor, and reaches 40 cells: run 5 found a 25-cell ring around a hand-moved anchor in the mountain empty six times
+            IntVec3 from = camp != null && camp.storageBox.Width > 0 ? camp.storageBox.CenterCell : home;
             IEnumerable<IntVec3> corners = asked.InBounds(map)
                 ? new[] { new IntVec3(asked.x - 1, 0, asked.z - 1) }
-                : GenRadial.RadialCellsAround(home, 25f, true);
+                : GenRadial.RadialCellsAround(from, 40f, true);
             // the outer box is (w+2) x (h+2): walls on the ring, the door mid-south, roof over the inside
             foreach (IntVec3 corner in corners)
             {
@@ -122,7 +125,40 @@ namespace RimroomsAsyncIndustries.Automation
             }
             return asked.InBounds(map)
                 ? "refused: the " + (w + 2) + "x" + (h + 2) + " box with its inside corner at " + asked.x + "," + asked.z + " is not open buildable ground -- pick another corner or leave x,z out"
-                : "refused: no open " + (w + 2) + "x" + (h + 2) + " patch of buildable ground within 25 cells of the camp anchor " + home.x + "," + home.z;
+                : "refused: no open " + (w + 2) + "x" + (h + 2) + " patch of buildable ground within 40 cells of " + from.x + "," + from.z +
+                  " -- try a smaller room (w 5 h 4) or chop/mine the ground beside the store first";
+        }
+
+        /// <summary>
+        /// The owner's "force haul everything to storage first": every loose item within 30 cells of the camp is unforbidden and
+        /// Hauling goes to priority 1 for every colonist who can haul, so the pile goes into the store before anything else.
+        ///   {"cmd":"haul"}  (run 5, 2026-10-14 00:42: she called a haul command that did not exist and marked it done herself)
+        /// </summary>
+        public static string Haul(Map map, Dictionary<string, string> a)
+        {
+            IntVec3 home = CrewCentre(map);
+            if (!home.IsValid) return "refused: no free colonist on this map";
+            int freed = 0, loose = 0;
+            foreach (Thing t in map.listerThings.AllThings.ToList())
+            {
+                if (t.def.category != ThingCategory.Item || !t.Spawned || map.fogGrid.IsFogged(t.Position) || !t.def.EverHaulable) continue;
+                if (t.Position.DistanceTo(home) > 30f) continue;
+                if (map.zoneManager.ZoneAt(t.Position) is Zone_Stockpile) continue;      // already in a store
+                loose++;
+                if (t.IsForbidden(Faction.OfPlayer)) { t.SetForbidden(false, false); freed++; }
+            }
+            WorkTypeDef hauling = WorkTypeDefOf.Hauling;
+            int haulers = 0;
+            foreach (Pawn p in map.mapPawns.FreeColonistsSpawned)
+            {
+                if (p.workSettings == null || p.WorkTypeIsDisabled(hauling)) continue;
+                p.workSettings.EnableAndInitializeIfNotAlreadyInitialized();
+                p.workSettings.SetPriority(hauling, 1); haulers++;
+            }
+            int stores = map.zoneManager.AllZones.OfType<Zone_Stockpile>().Count();
+            if (stores == 0) return "refused: no stockpile zone to haul into -- stockpile_camp first";
+            return "ok: " + loose + " loose stacks within 30 cells of the camp (" + freed + " unforbidden), Hauling at priority 1 for " + haulers +
+                   " colonists; they carry the pile into the store once time runs -- pawn_priorities sets Hauling back later";
         }
 
         public static string StockpileCamp(Map map, Dictionary<string, string> a)

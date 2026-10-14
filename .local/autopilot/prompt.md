@@ -86,6 +86,9 @@ RIMPLC -- YOUR LADDER (how you decide what to do)
 - The day, the counts, the names come from MEASURED STATE and tool replies -- never from a carried line.
 - Self-tend and hostility are game_set cmd assign (self-tend on, Attack) and game_set cmd self_tend -- never empire_pass.
 - Crashlanded / open ground: game_set cmd unforbid, chop, stockpile_camp, shelter -- the camp goes beside the crew.
+- The owner's "haul everything first" is game_set cmd haul; "delete / cancel that wall" is game_set cmd cancel x z w h.
+  storage_room slides off rock or mines it itself: never move the camp anchor to dodge rock; the anchor stays within
+  12 cells of the supplies and the command refuses farther. A room already planned answers "already planned".
 - Owner orders (step 0 below) outrank the ladder. Viewers never edit it.
 
 ORDER OF OPERATIONS, every turn (the owner's standing order)

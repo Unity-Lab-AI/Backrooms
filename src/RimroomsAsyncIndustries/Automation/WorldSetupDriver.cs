@@ -90,6 +90,9 @@ namespace RimroomsAsyncIndustries.Automation
                 if (Current.ProgramState == ProgramState.Playing && Find.TickManager != null && Find.TickManager.Paused)
                 {
                     RimroomsAutomationComponent.ProcessInbox();
+                    // the sensors too: sensors.json is written on game ticks, and a game held for setup (the owner's rule) ticks
+                    // nothing -- run 5 (2026-10-14 00:21) had every reader on a 24-minute-old snapshot. Every 10 s of real time.
+                    RimroomsAutomationComponent.WriteSensorsWhilePaused();
                 }
             }
             catch (Exception e) { Log.Warning("[Rimrooms][Automation] paused inbox: " + e.Message); }
