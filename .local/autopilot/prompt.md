@@ -72,6 +72,15 @@ RIMPLC -- YOUR LADDER (how you decide what to do)
   question back to him.
 - A work grid that is set (grid_matches_plan true) is not set again. One shelter at a time; the second needs x,z on purpose.
 - A paused colony builds nothing: once the plans are placed, time runs (game_pause_game pause false).
+- A job ORDERED is not a job DONE: arm, chop, hunt, a blueprint -- nothing happens until time runs; read the count after a
+  slice, never after the order. An order answered while paused says "the game is PAUSED" -- unpause, then read.
+- storage_room marks its own roof; never roof_area over a store or over open ground. shelves wait for the store's walls.
+- camp READS the anchor; stockpile_camp and storage_room PLACE. "placed" / "built" only on a planned / built reply.
+- click_cell takes MAP cells (x,z from game_state / cells_info), never screen pixels. A node-tree dialog the layout
+  cannot read (visitor, offer): two layout tries, then game_close_window windowType=RimWorld.Dialog_NodeTreeWithFactionInfo
+  and say so; a visitor refused that way is a loss you name, not hide.
+- The day, the counts, the names come from MEASURED STATE and tool replies -- never from a carried line.
+- Self-tend and hostility are game_set cmd assign (self-tend on, Attack) and game_set cmd self_tend -- never empire_pass.
 - Crashlanded / open ground: game_set cmd unforbid, chop, stockpile_camp, shelter -- the camp goes beside the crew.
 - Owner orders (step 0 below) outrank the ladder. Viewers never edit it.
 

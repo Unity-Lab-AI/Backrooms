@@ -543,6 +543,19 @@ class Toolbox:
         # read "Still unarmed" over the mod's "3 armed". The pass clicks the procurement and assign UI, so it is also
         # never run while the owner's hands are on the game.
         if not report_only:
+            # run 4 (2026-10-13 22:40): the pass marked six animals to hunt on day 0 with no butcher table, no camp -- it is
+            # maintenance for a standing colony, never a setup tool (and never a hunting tool before meat can be processed)
+            try:
+                r = subprocess.run([PY, os.path.join(ROOT, ".local", "qa", "bridge.py"), "call", "rimplc/read_state",
+                                    json.dumps({"keys": "butcher_tables,stoves"})], capture_output=True, text=True, timeout=30, cwd=ROOT, shell=False)
+                t = r.stdout or ""; i = t.find("{"); d = json.loads(t[i:]) if i >= 0 else {}
+                stt = d.get("state") if isinstance(d.get("state"), dict) else {}
+                if (stt.get("butcher_tables") or 0) < 1:
+                    return ("refused: empire_pass is maintenance for a standing colony -- no butcher table yet, so it would only mark animals "
+                            "to hunt that nobody can process. Camp first: camp, stockpile_camp, storage_room, shelter, stove, butcher. "
+                            "Self-tend and hostility are set by game_set cmd assign (self-tend on, Attack) and game_set cmd self_tend.")
+            except Exception:
+                pass
             import gates
             if gates.host_inputs().get("owner_input_active"):
                 return "refused: the owner is at the controls (owner_input_active) -- empire_pass clicks the game UI; a quiet turn until the rung drops"
@@ -714,6 +727,10 @@ class Toolbox:
         return text
 
     def _book(self):
+        return self._book_static()
+
+    @staticmethod
+    def _book_static():
         try:
             return json.load(open(os.path.join(ROOT, "docs", "playbook.gates.json"), encoding="utf-8"))
         except Exception:
@@ -743,8 +760,10 @@ class Toolbox:
         "config_drug_policy_done": (None, ("drug_policy", "day_one"),
                                     "an ok: reply to game_set cmd drug_policy (or day_one) in the mod's outbox"),
         "arms_set": ("armed", None, "the mod's able_shooters_armed == able_shooters > 0 (Sensors.cs)"),
-        "shelter_set": (None, ("shelter", "build_room"),
+        "shelter_set": (None, ("shelter",),
                         "an ok: reply to game_set cmd shelter (or build_room) in the mod's outbox"),
+        "camp_set": (None, ("camp",), "an ok: reply to game_set cmd camp (the anchor read) in the mod's outbox"),
+        "storage_room_set": (None, ("storage_room",), "an ok: reply to game_set cmd storage_room (walls, door and roof planned) in the mod's outbox"),
         "stove_set": ("stove_and_bill", ("stove", "add_bill"),
                       "the mod's stoves >= 1 and bill_rows > 0 (Sensors.cs), or ok: replies to both stove and add_bill"),
         "ideo_roles_set": ("ideo_roles", ("ideo_role",),
