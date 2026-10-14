@@ -389,6 +389,81 @@ def live_top_line(toolbox=None):
         return ""
 
 
+# owner (run 5, 2026-10-14 02:40): "game is running she left it running while nothing was happening she can NOT do thast while
+# she plans". Time STOPS for the whole turn -- her thinking and every tool call -- and every unpause / speed call she makes
+# meanwhile is recorded by the toolbox, not sent. When the turn ends time runs again at the speed she asked for, ONLY if the
+# crew has queued work (blueprints, designations, a colonist mid-job) or hostiles are on the map; nobody with a job and
+# nothing planned = the game stays stopped and the next brief says so. Superfast burned day one (run 5): Fast at most
+# until day 3.
+_TIME_NOTE = [""]
+IDLE_JOBS = ("Wait", "Wander", "Skygaze", "Idle", "GotoWander", "LayDown")
+
+
+def _time_plan_start(toolbox, args):
+    toolbox.wants_time = None
+    toolbox.paused_on_purpose = False
+    toolbox.time_was_running = False
+    if args.dry_run:
+        return
+    try:
+        st = toolbox.bridge.call("rimplc/read_state", {"keys": "paused"})
+        st = st.get("state", st) if isinstance(st, dict) else {}
+        toolbox.time_was_running = st.get("paused") is False
+        if toolbox.time_was_running:
+            toolbox.bridge.call("rimworld/pause_game", {"pause": True})
+            log("time stopped for the turn (it was running) -- it runs again when the turn ends if work is queued")
+    except Exception as e:
+        log("could not stop time for the turn:", str(e)[:80])
+
+
+def _work_queued(toolbox):
+    """(queued, summary): blueprints, designations, colonists mid-job, hostiles -- read live, never guessed."""
+    st = toolbox.bridge.call("rimplc/read_state", {"keys": "blueprints,designations_mine,designations_cut,hostiles_on_map,day"})
+    st = st.get("state", st) if isinstance(st, dict) else {}
+    bp = int(st.get("blueprints") or 0); des = int(st.get("designations_mine") or 0) + int(st.get("designations_cut") or 0)
+    hostiles = int(st.get("hostiles_on_map") or 0)
+    cols = toolbox.bridge.call("rimworld/list_colonists", {})
+    cols = cols.get("colonists") or cols.get("pawns") or [] if isinstance(cols, dict) else []
+    busy, idle = [], []
+    for c in cols:
+        job = str(c.get("job") or "")
+        (idle if (not job or any(job.startswith(k) or k in job for k in IDLE_JOBS)) else busy).append("%s (%s)" % (c.get("name") or "?", job or "nothing"))
+    queued = bp > 0 or des > 0 or bool(busy) or hostiles > 0
+    summary = "%d blueprints, %d designations, busy: %s, idle: %s%s" % (bp, des, ", ".join(busy) or "nobody", ", ".join(idle) or "nobody",
+                                                                      ", HOSTILES ON THE MAP" if hostiles else "")
+    return queued, summary, float(st.get("day") or 0)
+
+
+def _time_plan_end(toolbox, args):
+    if args.dry_run:
+        return
+    want = getattr(toolbox, "wants_time", None)
+    try:
+        if getattr(toolbox, "paused_on_purpose", False) and not want:
+            _TIME_NOTE[0] = "TIME IS STOPPED on your own order (plan / pause); unpause when the plan is set -- it takes effect when the turn ends."
+            log("time stays stopped: she paused on purpose"); return
+        why = toolbox._time_blocked()
+        if why:
+            _TIME_NOTE[0] = "TIME IS STOPPED (setup lock): " + why[:300]
+            log("time stays stopped:", why[:120]); return
+        queued, summary, day = _work_queued(toolbox)
+        if not queued:
+            _TIME_NOTE[0] = ("TIME IS STOPPED because the crew has NO WORK QUEUED (" + summary + "). The owner's rule: the game never runs while "
+                             "nothing happens. Lay out the next work this turn (game_set: beds / stove / build / chop / haul / dump) -- time runs "
+                             "the moment your turn ends with work on the board.")
+            log("time stays stopped: nothing queued --", summary); return
+        speed = (want or getattr(toolbox, "last_speed", "") or "Normal")
+        if day < 3 and speed.lower() in ("superfast", "ultrafast"):
+            speed = "Fast"
+        toolbox.bridge.call("rimworld/set_time_speed", {"speed": speed})
+        toolbox.bridge.call("rimworld/pause_game", {"pause": False})
+        toolbox.last_speed = speed
+        _TIME_NOTE[0] = "TIME RUNS between your turns at " + speed + " (" + summary + "); it stops again while you think."
+        log("time runs at %s until the next turn -- %s" % (speed, summary))
+    except Exception as e:
+        log("time plan end failed:", str(e)[:120])
+
+
 def day_one_done_line():
     """What the mod's day_one already did for THIS colony, from its own reply (run 5, 00:05:57: she re-ordered unforbid
     nine minutes after day one had done it, and told the stream nobody was armed while three rifles were on order)."""
@@ -418,6 +493,7 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=(), ca
     if _top: parts.append(_top)
     _d1 = day_one_done_line()
     if _d1: parts.append(_d1)
+    if _TIME_NOTE[0]: parts.append(_TIME_NOTE[0])
     if with_orders and os.path.exists(OWNER_ORDERS):
         txt = open(OWNER_ORDERS, encoding="utf-8", errors="replace").read().strip()
         if txt:
@@ -798,6 +874,7 @@ def turn(toolbox, st, args, system, specs):
                 pass
         except Exception as _e:
             log("confirmed-mark pass skipped (%s)" % str(_e)[:80])
+    _time_plan_start(toolbox, args)
     fam = situation_held()
     if CONVO and fam != _FAMILY[0]:
         log("situation changed %s -> %s: fresh conversation with that module" % (_FAMILY[0], fam))
@@ -903,6 +980,7 @@ def turn(toolbox, st, args, system, specs):
     st["pending_joins"] = still[:10]
     st["pending"] = [m for m in msgs if m["viewer"].lower() not in toolbox.greeted_this_tick
                      and m not in st.get("pending", [])][:5]
+    _time_plan_end(toolbox, args)
     st["memory"].append(time.strftime("%H:%M ") + (final[:200] or "(no summary)") +
                         (" | said: " + " / ".join(s[:80] for s in toolbox.spoken[:3]) if toolbox.spoken else ""))
     save_state(st)
