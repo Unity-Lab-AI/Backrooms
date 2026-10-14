@@ -4760,7 +4760,7 @@
         "mark_steel_short_set": false
       },
       "then": [
-        "a ship in orbit or a caravan on the map: game_set cmd trade ... buy Steel:n (trade-in-reach); calling a trader in is still missing (call_trader)",
+        "a ship in orbit or a caravan on the map: game_set cmd trade ... buy Steel:n (trade-in-reach); none in reach: game_set cmd call_trader (trade-call-caravan)",
         "or company_order (MISSING): Company Procurement steel",
         "ladder_set mark steel_short_set true"
       ],
@@ -4899,7 +4899,7 @@
         "mark_junk_weapons_set": false
       },
       "then": [
-        "a trader in reach: game_set cmd trade ... sell junk weapons first (trade-in-reach); calling one in is still missing (call_trader)",
+        "a trader in reach: game_set cmd trade ... sell junk weapons first (trade-in-reach); none in reach: game_set cmd call_trader (trade-call-caravan)",
         "ladder_set mark junk_weapons_set true"
       ],
       "notice": "Too many spare weapons: selling them.",
@@ -4938,7 +4938,7 @@
         "mark_trade_run_done": false
       },
       "then": [
-        "call_trader (MISSING) via the comms console gizmo; calling costs goodwill",
+        "game_set cmd call_trader faction <best goodwill> kind <Bulk goods> (trade-call-caravan); calling costs goodwill",
         "game_set cmd trade with ship|caravan: sell art, drugs, clothes, extra weapons -- never what the colony needs",
         "buy components, plasteel, steel, marble blocks",
         "ladder_set mark trade_run_done true"
@@ -11124,10 +11124,62 @@
         "trade_ships_in_orbit": 0
       },
       "then": [
-        "ladder_set mark trade_visit_done false (the trader left; the next one gets its own visit)"
+        "ladder_set mark trade_visit_done false (the trader left; the next one gets its own visit)",
+        "ladder_set mark trade_called false (the caravan that was asked for has come and gone)"
       ],
       "latch": false,
       "why": "resets the one-visit mark of trade-in-reach"
+    },
+    {
+      "id": "trade-call-caravan",
+      "priority": 20.012,
+      "family": "economy",
+      "when": {
+        "colony_exists": true,
+        "hostiles_on_map": 0,
+        "comms_consoles": ">0",
+        "mark_trade_called": false,
+        "silver": ">={TRADE_SILVER_MIN}",
+        "quiet": {
+          "ton": {
+            "trader_caravans_on_map": 0,
+            "trade_ships_in_orbit": 0
+          },
+          "hours": 72
+        }
+      },
+      "then": [
+        "game_set cmd call_trader -- list the askable factions and caravan kinds first; read it",
+        "game_set cmd call_trader faction <the best-goodwill faction listed> kind <Bulk goods if it offers it, else the kind that buys what is over TRADE_KEEP> -- the negotiator walks to the console first; the game's own goodwill cost and cooldown apply",
+        "refused for cooldown (the game's own refusal names it): try the next-best faction once; all on cooldown: ladder_set mark trade_called true and wait (trade-call-reset clears it after 48 hours)",
+        "asked: ladder_set mark trade_called true; trade-in-reach deals when the caravan arrives"
+      ],
+      "never": [
+        "never call with silver under TRADE_SILVER_MIN",
+        "never call a faction whose goodwill a call would drop to hostile"
+      ],
+      "latch": false,
+      "why": "owner PLAYBOOK 10: call ships once a beacon stands, trade with caravans; no trader in reach for three days and silver or goods above the keep level: ask one in"
+    },
+    {
+      "id": "trade-call-reset",
+      "priority": 20.013,
+      "family": "economy",
+      "when": {
+        "mark_trade_called": true,
+        "stale": {
+          "ton": {
+            "trader_caravans_on_map": 0,
+            "trade_ships_in_orbit": 0
+          },
+          "hours": 48
+        }
+      },
+      "then": [
+        "ladder_set mark trade_called false (no caravan came in 48 hours, or the cooldown has had its time; trade-call-caravan may ask again)"
+      ],
+      "latch": false,
+      "why": "resets the asked mark of trade-call-caravan"
     },
     {
       "id": "trade-ship-orbit",

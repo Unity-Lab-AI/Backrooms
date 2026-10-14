@@ -715,6 +715,7 @@ Everything "still open after the review" above that can be settled without a liv
   - `tower-cooler-<corner>` (27.981-27.984) runs `room_cooler x z celsius 21` on that cell once the tower stands with no cooler.
   - `tower-cooler-power-<corner>` (27.985-27.988) runs `power` when the cooler is built but unpowered.
   - `room_cooler` is in both command lists and the enum.
-- The ladder is now 419 rungs and 208 sensors. Both checkers are CLEAN. `RimPLC.dll` builds 0/0; Rimrooms compiles 0/0 to a scratch folder.
+- **Calling a trader in (`call_trader`):** `trade-call-caravan` (20.012, new) fires when no ship or caravan has been in reach for 72 game hours, a comms console stands, silver is at `TRADE_SILVER_MIN` or more, no hostiles are on the map and nothing has been asked for yet (`mark_trade_called`). It lists first, then asks the best-goodwill faction, Bulk goods when offered. The game's own cooldown refusal is read from the reply: the next-best faction is tried once, then the mark is set and it waits. `trade-call-reset` (20.013) clears the mark after 48 quiet hours, and `trade-visit-reset` clears it once the caravan has come and gone. `supply-steel-1-buy`, `supply-weapons-1-sell` and `trade-run` now name the command where they said `call_trader` was missing. In both command lists and the enum.
+- The ladder is now 421 rungs and 208 sensors (209 in the preset). Both checkers are CLEAN. `RimPLC.dll` builds 0/0; Rimrooms compiles 0/0 to a scratch folder.
 
-**Still open:** none of this has run in a live game; calling a trader in (`call_trader`) has no command.
+**Still open:** none of this has run in a live game.
