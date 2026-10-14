@@ -1150,9 +1150,10 @@
    "status": "verified",
    "group": "Game",
    "label": "Fullscreen",
-   "severity": "info",
-   "tip": "The game window is fullscreen.",
-   "cadence": "normal"
+   "severity": "warning",
+   "tip": "The game window is exclusive fullscreen: the owner cannot alt-tab to the desktop. The launcher writes windowed into Prefs.xml before every launch (owner, 2026-10-13); if this reads true, Options -> Fullscreen off.",
+   "cadence": "normal",
+   "warn": true
   },
   "camera_on_colonist": {
    "source": "RimPLC: RimPLC/Source/RimPLC/SensorsBuild.cs (normal cadence)",
@@ -2197,7 +2198,8 @@
        }
       }
      }
-    }
+    },
+    "butcher_tables": ">0"
    },
    "then": [
     "game_set cmd hunt -- designates every safe wild animal (skips NEVER_HUNT); read the count it returns",
@@ -2211,7 +2213,7 @@
     "never hunt while hostiles are on the map"
    ],
    "latch": false,
-   "why": "owner: \"you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!\" / \"how u plan on cutting up them animals?\" / \"cook bill maintained at 50 rather than 10\" -- walkthrough W Hunting (hunt when food < 5 days and safe game is on map; never hunt boomalopes near base, thrumbos or packs); walkthrough Q (never hunt boomrats, boomalopes, pack animals or predators)",
+   "why": "owner, run 4 2026-10-13: \"shhe is hunting again and no camp to process the meat to meals\" / owner: \"you have no food!! emergency no frefrisgeration hunt make food bills come one your perople WILL DIE!\" / \"how u plan on cutting up them animals?\" / \"cook bill maintained at 50 rather than 10\" -- walkthrough W Hunting (hunt when food < 5 days and safe game is on map; never hunt boomalopes near base, thrumbos or packs); walkthrough Q (never hunt boomrats, boomalopes, pack animals or predators)",
    "source": "book",
    "mode": "advise"
   },
@@ -4270,26 +4272,6 @@
    ],
    "latch": false,
    "why": "owner: \"i think it doesnt know how to click off the operation menu to use the pawns\" / \"three peopel are there its selecting them but no pawn options apear like draft major bug the model cant haddle\"",
-   "source": "book",
-   "mode": "advise"
-  },
-  {
-   "id": "config-window-fullscreen",
-   "priority": 1.08,
-   "family": "configuration",
-   "when": {
-    "window_fullscreen": false,
-    "colony_exists": true
-   },
-   "then": [
-    "set_window_mode fullscreen (missing tool); until it exists: game_get_ui_layout -> Menu -> Options -> Video, pick Fullscreen (not Borderless), apply, read back",
-    "read window_fullscreen again"
-   ],
-   "never": [
-    "leave the game borderless"
-   ],
-   "latch": true,
-   "why": "owner: \"and change the game back to fullscreen not boarderless so i can tab in and out and u can still do everything u need in game\"",
    "source": "book",
    "mode": "advise"
   },
@@ -8568,7 +8550,7 @@
    },
    "then": [
     "game_set cmd assign (all pawns): food Fine (not Lavish), medicine Best, hostility Attack",
-    "self-tend on for everyone (empire_pass does it; read the line back)",
+    "self-tend on for everyone: game_set cmd assign does it (self-tend on, hostility Attack) and game_set cmd self_tend pawn all on true confirms -- never empire_pass; read the reply",
     "schedule: game_set cmd schedule assignment Anything hours 6-21 (no pawn = all; the sleep hours stay as they are, so no 50 carry runs without a break); read the reply back",
     "drug policy: game_set cmd drug_policy policy 'No drugs' (no pawn = all); the Penicillin every 5 days, carry 2 line is edited in the Assign tab (game_open_main_tab Assign, game_get_ui_layout, click once each)",
     "then ladder_set mark assign_set true -- only now may time run"
@@ -8577,7 +8559,7 @@
     "unpause before this",
     "give colonists recreational drugs"
    ],
-   "why": "owner: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\" / owner: \"drugs are for hospitality guests\" / owner: \"set theri scheldule to anything at all times for all pawns / research and manage your pawns\" / owner: \"u have ppriorities set on stockpiles so thay pull it all through and do you have all the paws set up to heal attack and sleep whenever and take only antibiotic pencylcin every 5 days and carry 2\" / owner: \"set up drugs and scar to attack\" / owner: \"shes just repeating same things not living in the momnet and she still hasent set all the priorties scheduled drug use attakck heal and all that on assign\" / owner: \"were ur crops u get priorities done and scedukele and drug assignment and antibiotics\" / owner: \"wtf!!!!! time is flyying awayy!!!! why did she unpause beforee seeting all the pawn settings this is the fifth time ive told you all of this\" / owner: \"you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax and starting up you facitly small first massive later get ur needs food security and shit settled / you should have a maintaince list of thinge proprigating what all you need to do / make sure u arm up and set everyones setting attack, heal self, schedule, priorities, drugs to no drugs, all of it pause and do it and set control shift carry but becasre full sending them on 50 runs without a break\"",
+   "why": "owner, run 4 2026-10-13: \"attack not flee and allow self tend is not set up\" / owner: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\" / owner: \"drugs are for hospitality guests\" / owner: \"set theri scheldule to anything at all times for all pawns / research and manage your pawns\" / owner: \"u have ppriorities set on stockpiles so thay pull it all through and do you have all the paws set up to heal attack and sleep whenever and take only antibiotic pencylcin every 5 days and carry 2\" / owner: \"set up drugs and scar to attack\" / owner: \"shes just repeating same things not living in the momnet and she still hasent set all the priorties scheduled drug use attakck heal and all that on assign\" / owner: \"were ur crops u get priorities done and scedukele and drug assignment and antibiotics\" / owner: \"wtf!!!!! time is flyying awayy!!!! why did she unpause beforee seeting all the pawn settings this is the fifth time ive told you all of this\" / owner: \"you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax and starting up you facitly small first massive later get ur needs food security and shit settled / you should have a maintaince list of thinge proprigating what all you need to do / make sure u arm up and set everyones setting attack, heal self, schedule, priorities, drugs to no drugs, all of it pause and do it and set control shift carry but becasre full sending them on 50 runs without a break\"",
    "source": "book",
    "mode": "advise"
   },
@@ -8670,7 +8652,8 @@
     "game_set cmd explore -- the camp stands (store roofed, beds, stove); now every colonist through EVERY door and along the fog edge, nearest the camp first; repeat until it answers 'nothing left'",
     "unpause (game_pause_game pause false) so they walk",
     "rooms still 100% fogged with no door: find the hidden door or mark the thinnest wall to mine",
-    "explore answers 'nothing left' -> ladder_set mark explore_done true (explore_done mirrors it); this rung clears"
+    "explore answers 'nothing left' -> ladder_set mark explore_done true (explore_done mirrors it); this rung clears",
+    "sealed rooms in rock: game_set cmd explore dig true -- only now, with the camp standing (never on day one)"
    ],
    "never": [
     "set up stores in fog before exploring",
@@ -8785,7 +8768,8 @@
     "then game_set cmd stockpile_camp mode food -- a 6x6 beside it; game_set cmd stockpile_filter x z mode food priority Important on the food store",
     "only when the crew woke INSIDE a roofed explored room (rooms answers one with free floor > 0 and the pile lies in it): game_set cmd stockpile_room room <id> mode nofood, then mode food on the next best -- never stockpile_room on a crash site",
     "a refused try: ladder_set mark store_tried true, then ladder_set mark store_tried false (each refusal counts once; 2 -> setup-4-stores-fallback)",
-    "haul in short batches; the schedule keeps sleep and recreation -- never 50 carry runs without a break [missing tool: haul limit / rest setting]"
+    "haul in short batches; the schedule keeps sleep and recreation -- never 50 carry runs without a break [missing tool: haul limit / rest setting]",
+    "never roof_area on the store: storage_room marks its own roof when it walls the pile"
    ],
    "never": [
     "designate or build anything inside the mountain rock before the camp is stable (mark camp_stable)",
@@ -8842,7 +8826,7 @@
     "game_set cmd storage_room -- wood walls + one door + roof planned around the supply pile where it lies, the Main store zone covering the inside, trees inside marked to chop; read the reply (inside size, door cell, walls planned, wood needed)",
     "refused for solid rock or a wall inside the pile's box: game_set cmd camp x z one pile-width toward open ground, then storage_room again",
     "refused otherwise: ladder_set mark storage_room_tried true, then ladder_set mark storage_room_tried false (each refusal counts once; 2 -> setup-4a-storage-room-fallback)",
-    "the reply says planned: unpause so it is built, Construction stays on for everyone, chop if the wood needed is above wood; then ladder_set mark storage_room_set true (the shelter rung follows while the walls go up)",
+    "the reply says planned: unpause so it is built, Construction stays on for everyone, chop if the wood needed is above wood; then ladder_set mark storage_room_set true (the mod's ok: confirms it) (the shelter rung follows while the walls go up)",
     "say on stream in one line: the supplies are being roofed where they fell"
    ],
    "never": [

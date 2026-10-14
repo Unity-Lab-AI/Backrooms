@@ -153,6 +153,12 @@ namespace RimroomsAsyncIndustries.Automation
                     result = "error: " + e.Message;
                 }
 
+                // run 4 (2026-10-13 22:33-22:37): arm answered "Scar -> charge rifle ..." three times into a PAUSED game; nobody moved,
+                // the count stayed, she re-ordered and told the stream everyone had a rifle. An order into a paused game says so.
+                string cmdName = null;
+                try { Parse(line).TryGetValue("cmd", out cmdName); } catch (Exception) { cmdName = null; }
+                if (result != null && result.StartsWith("ok") && cmdName != null && Find.TickManager != null && Find.TickManager.Paused && OrderCmds.Contains(cmdName))
+                    result += " -- the game is PAUSED: nothing moves until time runs (game_pause_game pause false)";
                 string row = "{\"result\":\"" + Escape(line) + " -> " + Escape(result) + "\"";
                 if (!string.IsNullOrEmpty(id)) row += ",\"id\":\"" + Escape(id) + "\"";
                 results.Add(row + "}");
@@ -282,7 +288,7 @@ namespace RimroomsAsyncIndustries.Automation
                 case "day_one": return DayOne(map);
                 case "stockpile_filter": return StockpileFilter(map, a);
                 case "rooms": return SetupTools.Rooms(map);
-                case "explore": return SetupTools.Explore(map);
+                case "explore": return SetupTools.Explore(map, a);
                 case "stockpile_room": return SetupTools.StockpileRoom(map, a);
                 case "beds": return SetupTools.Beds(map);
                 case "shelves": return SetupTools2.Shelves(map);
@@ -413,7 +419,7 @@ namespace RimroomsAsyncIndustries.Automation
                 }
 
                 if (pawn.drugs != null && policy != null) pawn.drugs.CurrentPolicy = policy;
-                if (pawn.playerSettings != null) pawn.playerSettings.hostilityResponse = HostilityResponseMode.Attack;
+                if (pawn.playerSettings != null) pawn.playerSettings.hostilityResponse = HostilityResponseMode.Attack; pawn.playerSettings.selfTend = true;
 
                 if (pawn.equipment != null && pawn.equipment.Primary == null)
                 {
@@ -444,6 +450,14 @@ namespace RimroomsAsyncIndustries.Automation
         /// The Assign tab with no clicking (owner: food Fine, medical best, Attack).
         ///   {"cmd":"assign","pawn":"Gee" (empty = everyone),"food":"Fine","medicine":"Best","hostility":"Attack"}
         /// </summary>
+        /// <summary>Commands that order pawns or plan work: they do nothing while the game is paused.</summary>
+        private static readonly HashSet<string> OrderCmds = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "arm", "chop", "hunt", "explore", "equip", "shelter", "storage_room", "build_room", "build", "beds", "shelves", "stove",
+            "butcher", "freezer", "mine", "wall_swap", "harvest", "tame", "slaughter", "deconstruct", "roof_area", "crops",
+            "tower", "security_room", "hall", "generator", "power", "capture", "bury", "firebreak", "draft", "hold"
+        };
+
         private static string Assign(Map map, Dictionary<string, string> a)
         {
             a.TryGetValue("pawn", out string who);
@@ -462,9 +476,11 @@ namespace RimroomsAsyncIndustries.Automation
             foreach (Pawn p in crew)
             {
                 if (p.foodRestriction != null) p.foodRestriction.CurrentFoodPolicy = fp;
-                if (p.playerSettings != null) { p.playerSettings.medCare = mc; p.playerSettings.hostilityResponse = hr; }
+                // the whole Assign tab in one call: self-tend too (owner, run 4: "attack not flee and allow self tend is not set up" --
+                // nothing this colony ever set it; the rung left it to a pass that the cooldown refused)
+                if (p.playerSettings != null) { p.playerSettings.medCare = mc; p.playerSettings.hostilityResponse = hr; p.playerSettings.selfTend = true; }
             }
-            return "ok: " + string.Join(", ", crew.Select(p => p.LabelShort)) + " -- food " + fp.label + ", medicine " + mc + ", hostility " + hr;
+            return "ok: " + string.Join(", ", crew.Select(p => p.LabelShort)) + " -- food " + fp.label + ", medicine " + mc + ", hostility " + hr + ", self-tend on";
         }
 
         /// <summary>

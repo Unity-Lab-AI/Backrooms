@@ -104,6 +104,25 @@ def _world_count():
         return 0
 
 
+PAD_TICKS = (("unforbid", "start_opening_done"), ("pawn_priorities", "pawns_set"), ("assign:", "assign_set"),
+             ("camp:", "camp_set"), ("storage room:", "storage_room_set"), ("shelter", "shelter_set"), ("stove", "stove_set"))
+
+def tick_pad(pad):
+    """The pad's [ ] items that the mod has already confirmed read [x] in the brief, so a reset never restarts finished
+    work (run 4, 22:37: after each reset she re-did unforbid, assign, the three work grids)."""
+    try:
+        conf = tools.Toolbox.confirmed_marks()
+    except Exception:
+        return pad
+    out = []
+    for line in pad.splitlines():
+        low = line.lower()
+        if low.startswith("- [ ]") and any(k in low and conf.get(m) for k, m in PAD_TICKS):
+            line = "- [x]" + line[5:] + "  (confirmed by the mod)"
+        out.append(line)
+    return chr(10).join(out)
+
+
 def colony_epoch_check(st, game_info):
     """A NEW COLONY: the scratch pad, the refusal memory, the carried tool results and the recent-memory lines all
     belong to the colony that is gone. Detected from what the harness already knows, never from her say-so:
@@ -137,6 +156,14 @@ def colony_epoch_check(st, game_info):
     sig["world_n"] = wn
     if not fresh:
         return False
+    try:
+        # the run-list's goals belong to the old colony too (run 4: "22 damaged fortifications" from the last fort)
+        gp = os.path.join(ROOT, ".claude", ".stream-goals.json")
+        json.dump({"now": "a fresh colony just landed -- the camp first", "tests_left": 0,
+                   "goal": "a camp around the supplies, then the mountain base, then the empire", "question": "", "closed": "",
+                   "ts": time.time()}, open(gp, "w", encoding="utf-8"), indent=1)
+    except Exception:
+        pass
     log("new colony detected (%s): scratch pad reset to the fresh template, refusal memory + carried results + "
         "recent-memory lines cleared, setup marks scrubbed, conversation reset" % why)
     try:
@@ -258,17 +285,45 @@ def gather_owner(st):
     return rows
 
 
+def live_rungs(toolbox=None):
+    """The live rungs she will see: RimPLC's own ladder when the mod answers (the same source as her `ladder` tool),
+    the Python engine only as the fallback. Run 4 (2026-10-13 22:44): the brief said "[setup-1-camp] first" from the
+    Python ladder while RimPLC had moved on -- two ladders, two truths, and every loop of the night sat on that gap.
+    Each rung comes back as the book's gate (id, priority, family, then, never, why) so the brief reads the same."""
+    book = {g["id"]: g for g in (tools.Toolbox._book_static() or {}).get("gates", [])}
+    try:
+        if toolbox is not None and not toolbox.dry:
+            r = toolbox.bridge.call("rimplc/read_ladder", {"top": 6})
+            live = (r.get("live_rungs") if isinstance(r, dict) else None)
+            if isinstance(live, list) and live:
+                out = []
+                for lr in live:
+                    g = dict(book.get(lr.get("id"), {}))
+                    g.setdefault("id", lr.get("id")); g.setdefault("priority", lr.get("priority", 99))
+                    g.setdefault("then", lr.get("then") or []); g.setdefault("never", []); g.setdefault("why", "")
+                    g["matched"] = lr.get("matched")
+                    out.append(g)
+                return out, "rimplc"
+    except Exception:
+        pass
+    try:
+        import importlib.util as _il
+        _gs = _il.spec_from_file_location("gates", os.path.join(HERE, "gates.py"))
+        _g = _il.module_from_spec(_gs); _gs.loader.exec_module(_g)
+        _gates, _gstate = _g.decide()
+        return _gates, "python"
+    except Exception:
+        return [], "none"
+
+
 def live_top_line(toolbox=None):
     """The live top rung in two lines (id, first step), measured now -- goes on EVERY turn's update, so the job of the
     moment is in front of her whether the conversation is fresh or old. Run 3 (2026-10-13 21:49-21:51): after a
     restart she played explore and hunt from carried refusals for three turns while fire-in-camp was the live top
     rung, because only a fresh brief carried the ladder."""
     try:
-        import importlib.util as _il
-        _gs = _il.spec_from_file_location("gates", os.path.join(HERE, "gates.py"))
-        _g = _il.module_from_spec(_gs); _gs.loader.exec_module(_g)
-        _gates, _gstate = _g.decide()
-        top = next((g for g in _gates if g.get("priority", 99) < 98), None)
+        _gates, _src = live_rungs(toolbox)
+        top = next((g for g in _gates if float(g.get("priority", 99)) < 98), None)
         if toolbox is not None:
             toolbox.live_top = (top["id"], top.get("family", ""), float(top.get("priority", 99))) if top else None
         if not top:
@@ -297,8 +352,9 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=(), ca
         import importlib.util as _il
         _gs = _il.spec_from_file_location("gates", os.path.join(HERE, "gates.py"))
         _g = _il.module_from_spec(_gs); _gs.loader.exec_module(_g)
-        _gates, _gstate = _g.decide()
-        _lines = ["THE LIVE RUNG (measured). It tells you WHAT matters most right now and what you must never do. "
+        _gstate = _g.state()
+        _gates, _src = live_rungs(toolbox)
+        _lines = ["THE LIVE RUNG (measured by " + str(_src) + "). It tells you WHAT matters most right now and what you must never do. "
                   "It does not think for you: look at the actual situation, weigh the options, pick the best move, "
                   "and say in one line why -- then act. If the rung's steps do not fit what you see, say so and do "
                   "what the colony actually needs:"]
@@ -403,7 +459,7 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=(), ca
     # her scratch pad (owner: "does it need a scratch pad?") -- the plan she keeps between turns, near the end so
     # the unchanging prefix above stays cached; she rewrites it with the note tool, name pad.md
     try:
-        pad = open(guards.scratch_path("pad.md"), encoding="utf-8").read()[:2500]
+        pad = tick_pad(open(guards.scratch_path("pad.md"), encoding="utf-8").read()[:2500])
         parts.append("YOUR SCRATCH PAD (scratch/pad.md, your plan between turns). Do the first unticked item, then "
                      "rewrite the whole pad with the note tool (name pad.md, append false), ticking it [x] ONLY when "
                      "the mod answered ok: for it (the note tool refuses a [x] with no ok: on record), and adding "
@@ -588,9 +644,8 @@ def turn(toolbox, st, args, system, specs):
         time.sleep(20)
         return False
     globals()["_NO_COLONY_LOGGED"] = False
-    if up and not args.dry_run:
-        # the setup marks the mod confirms are set by the loop itself: run 3 (21:47-22:06) she never wrote arms_set
-        # although the mod read everyone armed, and the whole setup chain (pawns -> assign -> camp) stayed dead behind it
+    globals()["_CONFIRM_MARKS_NOW"] = up and not args.dry_run
+    if False:
         try:
             confirmed = tools.Toolbox.confirmed_marks()
             plc = toolbox.bridge.call("rimplc/read_ladder", {"top": 1})
@@ -608,9 +663,39 @@ def turn(toolbox, st, args, system, specs):
         CONVO = []; log("game is back -- conversation reset")
     _WAS_DOWN = not up
     # a new colony on the map: the pad, the refusals and the carried results of the old one are wiped first
-    if up and colony_epoch_check(st, _gi if isinstance(_gi, dict) else None):
+    _new_colony = up and colony_epoch_check(st, _gi if isinstance(_gi, dict) else None)
+    if _new_colony:
         CONVO = []
         _FAMILY[0] = None
+    if globals().get("_CONFIRM_MARKS_NOW") and not _new_colony:
+        # the setup marks the mod confirms are set by the loop itself (run 3: she never wrote arms_set while the mod read
+        # everyone armed) -- AFTER the epoch check (run 4, 22:28:59: the pass ran nine seconds before the new colony was
+        # noticed and confirmed shelter_set / explore_done from the old colony's outbox)
+        try:
+            confirmed = tools.Toolbox.confirmed_marks()
+            plc = toolbox.bridge.call("rimplc/read_ladder", {"top": 1})
+            have = (plc.get("my_marks") if isinstance(plc, dict) else None) or {}
+            for _k, _v in confirmed.items():
+                if _v and not have.get(_k):
+                    try:
+                        toolbox.t_ladder_set("mark", _k, True)
+                        log("mark %s confirmed by the mod -> set" % _k)
+                    except Exception as _e:
+                        log("mark %s confirmed but not set (%s)" % (_k, str(_e)[:80]))
+            # RimPLC's marks are the truth: mirror them into the local ladder so the Python fallback and the pad agree
+            # (run 4: camp_set set through the owner route never reached scratch/ladder.json)
+            try:
+                lp = os.path.join(HERE, "scratch", "ladder.json")
+                local = json.load(open(lp, encoding="utf-8")) if os.path.exists(lp) else {}
+                marks = local.setdefault("marks", {})
+                changed = False
+                for _k, _v in have.items():
+                    if marks.get(_k) != _v: marks[_k] = _v; changed = True
+                if changed: json.dump(local, open(lp, "w", encoding="utf-8"), indent=2)
+            except Exception:
+                pass
+        except Exception as _e:
+            log("confirmed-mark pass skipped (%s)" % str(_e)[:80])
     fam = situation_held()
     if CONVO and fam != _FAMILY[0]:
         log("situation changed %s -> %s: fresh conversation with that module" % (_FAMILY[0], fam))

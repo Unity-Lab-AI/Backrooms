@@ -154,7 +154,7 @@ T = {
     "game_foreground": ("Game", "Game window in front", False, I, "The game window has focus."),
     "home_on_screen": ("Game", "Home map shown", False, I, "The home map is the one on screen."),
     "hud_visible": ("Game", "HUD visible", False, I, "The game's interface is visible."),
-    "window_fullscreen": ("Game", "Fullscreen", None, I, "The game window is fullscreen."),
+    "window_fullscreen": ("Game", "Fullscreen", True, W, "The game window is exclusive fullscreen: the owner cannot alt-tab to the desktop. The launcher writes windowed into Prefs.xml before every launch; if this reads true, Options -> Fullscreen off."),
     "camera_on_colonist": ("Game", "Camera on the crew", False, I, "The camera shows at least one colonist."),
     # ---- inventory section D + pawn setup (2026-10-13)
     "toxic_buildup_max": ("Health", "Worst toxic buildup", ">=0.4", C, "The worst colonist's toxic buildup (0-1). At 40% pull that pawn inside to rest under a roof."),

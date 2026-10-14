@@ -487,8 +487,24 @@ def stop():
     except Exception:
         pass
 
+RW_PREFS = os.path.expandvars(r"%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Config/Prefs.xml")
+
+def windowed_prefs():
+    """RimWorld re-applies Prefs.xml at startup, so `-screen-fullscreen 0 -popupwindow` alone still came up exclusive
+    fullscreen (owner, 2026-10-13: "its still playing in fullscreen i cant see my desktop and have no way to minimizae
+    the game"). Write fullscreen False into the prefs right before the launch; the flags keep the window borderless."""
+    try:
+        if not os.path.exists(RW_PREFS): return
+        txt = open(RW_PREFS, encoding="utf-8").read()
+        new = re.sub(r"<fullscreen>\s*True\s*</fullscreen>", "<fullscreen>False</fullscreen>", txt)
+        if new != txt:
+            open(RW_PREFS, "w", encoding="utf-8").write(new); print("rimworld    prefs: fullscreen -> False (borderless window)")
+    except OSError as e:
+        print("rimworld    prefs not changed (%s)" % str(e)[:60])
+
 def game():
     """Launch the game only. Called by keep-playing once the owner has said GO."""
+    windowed_prefs()
     found = running()
     for name, frag, cmd, cwd in START_ONLY:
         if found.get(frag): print("%-11s already up (%s)" % (name, found[frag][0])); return

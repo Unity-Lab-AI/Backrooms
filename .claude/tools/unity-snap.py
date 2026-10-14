@@ -94,19 +94,63 @@ def main():
             marks.append((int(a[i + 1]), int(a[i + 2]), a[i + 3])); i += 4
         else:
             i += 1
+    # Owner, 2026-10-13: "the highlights she does on the screen captures are just all the same resolution and zoom and no
+    # one can see them whats being pointed out ... the text needs to be like 50% bigger and properly aligned in the image
+    # ... zoomed in possibly screencapturues with text not cut off in the display window". So: the shot ZOOMS on the
+    # marks (a tight box around them, never her whole rect), the frame is sized for the panel, the notes are numbered
+    # callouts kept inside the frame, and the caption plus a numbered legend sit in a band under the picture that the
+    # panel always shows -- nothing drawn where the panel crops.
+    MAX_W, MAX_H = 20, 11                      # cells: wider than this and a colonist is a dot
+    if marks:
+        xs = [m[0] for m in marks]; zs = [m[1] for m in marks]
+        bx0, bx1, bz0, bz1 = min(xs) - 4, max(xs) + 4, min(zs) - 3, max(zs) + 3
+        if bx1 - bx0 + 1 < 14: c = (bx0 + bx1) // 2; bx0, bx1 = c - 7, c + 6
+        if bz1 - bz0 + 1 < 8: c = (bz0 + bz1) // 2; bz0, bz1 = c - 4, c + 3
+        x, z, w, h = bx0, bz0, min(MAX_W, bx1 - bx0 + 1), min(MAX_H, bz1 - bz0 + 1)
+    elif w > MAX_W or h > MAX_H:
+        cx, cz = x + w // 2, z + h // 2
+        w, h = min(w, MAX_W), min(h, MAX_H); x, z = cx - w // 2, cz - h // 2
     im = shoot(x, z, w, h)
-    im.thumbnail((1024, 1024))
+    FRAME_W = 1120                             # twice the overlay panel's width: readable after the panel halves it
+    im = im.resize((FRAME_W, max(1, int(im.size[1] * FRAME_W / max(1, im.size[0])))), Image.LANCZOS)
     W, H = im.size
     cw, ch = W / w, H / h
     d = ImageDraw.Draw(im)
+    badge = ImageFont.truetype(FONT, 52)
     for n, (mx, mz, note) in enumerate(marks):
         px = (mx - x + 0.5) * cw
         py = (z + h - mz - 0.5) * ch
         col = INK[n % len(INK)]
-        wobbly_circle(d, px, py, max(cw, ch) * 2.2, col)
-        tx = px + max(cw, ch) * 2.6 if px < W * 0.6 else px - max(cw, ch) * 2.6 - len(note) * 15
-        text(d, (max(8, tx), max(8, py - 20)), note, 34, col)
-    text(d, (20, H - 70), caption, 46, INK[0])
+        r = max(cw, ch) * 1.6
+        wobbly_circle(d, px, py, r, col)
+        # a numbered badge beside the circle, clamped inside the frame; the words go in the legend below
+        bx = px + r + 8 if px < W * 0.7 else px - r - 70
+        by = min(max(6, py - 34), H - 70)
+        bx = min(max(6, bx), W - 70)
+        d.ellipse((bx, by, bx + 62, by + 62), fill=(0, 0, 0), outline=col, width=4)
+        d.text((bx + 18, by + 2), str(n + 1), font=badge, fill=col)
+    # the band: caption (50 % bigger than before, wrapped to the frame) + the legend "1 note / 2 note"
+    cap_font = ImageFont.truetype(FONT, 70); leg_font = ImageFont.truetype(FONT, 50)
+    def wrap(txt, font, width):
+        words, lines, cur = txt.split(), [], ""
+        for wd in words:
+            t = (cur + " " + wd).strip()
+            if d.textlength(t, font=font) <= width: cur = t
+            else: lines.append(cur); cur = wd
+        if cur: lines.append(cur)
+        return lines or [""]
+    cap_lines = wrap(caption, cap_font, W - 48)
+    leg_lines = [ln for n, (_, _, note) in enumerate(marks) for ln in wrap("%d  %s" % (n + 1, note), leg_font, W - 48)]
+    band_h = 24 + len(cap_lines) * 82 + len(leg_lines) * 60 + 16
+    canvas = Image.new("RGB", (W, H + band_h), (12, 10, 14))
+    canvas.paste(im, (0, 0))
+    d = ImageDraw.Draw(canvas)
+    y = H + 16
+    for ln in cap_lines:
+        text(d, (24, y), ln, 70, INK[0]); y += 82
+    for n, ln in enumerate(leg_lines):
+        text(d, (24, y), ln, 50, INK[min(len(INK) - 1, int(ln.split()[0]) - 1) if ln[:1].isdigit() else 1]); y += 60
+    im = canvas
     buf = io.BytesIO(); im.save(buf, "PNG")
     req = urllib.request.Request("http://127.0.0.1:4317/api/cam",
                                  data=json.dumps({"png": base64.b64encode(buf.getvalue()).decode(),
