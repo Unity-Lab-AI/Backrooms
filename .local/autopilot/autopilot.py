@@ -258,10 +258,34 @@ def gather_owner(st):
     return rows
 
 
+def live_top_line(toolbox=None):
+    """The live top rung in two lines (id, first step), measured now -- goes on EVERY turn's update, so the job of the
+    moment is in front of her whether the conversation is fresh or old. Run 3 (2026-10-13 21:49-21:51): after a
+    restart she played explore and hunt from carried refusals for three turns while fire-in-camp was the live top
+    rung, because only a fresh brief carried the ladder."""
+    try:
+        import importlib.util as _il
+        _gs = _il.spec_from_file_location("gates", os.path.join(HERE, "gates.py"))
+        _g = _il.module_from_spec(_gs); _gs.loader.exec_module(_g)
+        _gates, _gstate = _g.decide()
+        top = next((g for g in _gates if g.get("priority", 99) < 98), None)
+        if toolbox is not None:
+            toolbox.live_top = (top["id"], top.get("family", ""), float(top.get("priority", 99))) if top else None
+        if not top:
+            return ""
+        step = (top.get("then") or [""])[0]
+        return ("LIVE TOP RUNG NOW: [%s] (%s %.2f) -- %s" % (top["id"], top.get("family", ""), float(top.get("priority", 99)), step[:220]) +
+                chr(10) + "Do THIS first. A rung that is no longer live is finished: never chase its leftovers.")
+    except Exception as e:
+        return ""
+
+
 def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=(), carry=False):
     # the unchanging parts go FIRST so Ollama can reuse them from the last turn (prompt cache); a turn number at
     # the top changed every turn and forced the CPU to re-read the whole brief, orders included, every time
     parts = []
+    _top = live_top_line(toolbox)
+    if _top: parts.append(_top)
     if with_orders and os.path.exists(OWNER_ORDERS):
         txt = open(OWNER_ORDERS, encoding="utf-8", errors="replace").read().strip()
         if txt:
@@ -390,8 +414,9 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=(), ca
     # each reset she restarted the same refused loop from scratch). A refused call is NOT done.
     refused = st.get("refused") or []
     if refused:
-        lines = ["refused: (this colony, newest last -- these calls were REFUSED, so they are not done; never repeat "
-                 "one as it was: do the rung's fallback, change the target, or note it for the owner)"]
+        lines = ["refused: HISTORY, not a to-do (this colony, newest last). These calls were REFUSED: they are not done "
+                 "and they are not yours to retry -- the live rung decides what you do now. If the live rung needs one of "
+                 "them, do its fallback step once; otherwise leave them."]
         for r in refused[-10:]:
             times = (" (x%d)" % r["times"]) if r.get("times", 1) > 1 else ""
             lines.append("- %s %s %s%s: %s" % (r.get("ts", ""), r.get("what", ""), r.get("args", ""), times, r.get("why", "")))
@@ -514,7 +539,9 @@ def short_update(toolbox, st, joins, msgs, owner_msgs=()):
     faster and better")."""
     fresh = new_orders()
     head = ("NEW OWNER ORDERS (binding, do these first):" + chr(10) + fresh + chr(10)) if fresh else ""
-    return (head + "UPDATE (turn %d) -- what is new; your orders from the start of this conversation still stand:" % st["tick"]
+    top = live_top_line(toolbox)
+    return (head + (top + chr(10) if top else "") +
+            "UPDATE (turn %d) -- what is new; your orders from the start of this conversation still stand:" % st["tick"]
             + chr(10) + brief(toolbox, st, joins, msgs, "", with_orders=False, owner_msgs=owner_msgs))
 
 def turn(toolbox, st, args, system, specs):
@@ -561,6 +588,22 @@ def turn(toolbox, st, args, system, specs):
         time.sleep(20)
         return False
     globals()["_NO_COLONY_LOGGED"] = False
+    if up and not args.dry_run:
+        # the setup marks the mod confirms are set by the loop itself: run 3 (21:47-22:06) she never wrote arms_set
+        # although the mod read everyone armed, and the whole setup chain (pawns -> assign -> camp) stayed dead behind it
+        try:
+            confirmed = tools.Toolbox.confirmed_marks()
+            plc = toolbox.bridge.call("rimplc/read_ladder", {"top": 1})
+            have = (plc.get("my_marks") if isinstance(plc, dict) else None) or {}
+            for _k, _v in confirmed.items():
+                if _v and not have.get(_k):
+                    try:
+                        toolbox.t_ladder_set("mark", _k, True)
+                        log("mark %s confirmed by the mod -> set" % _k)
+                    except Exception as _e:
+                        log("mark %s confirmed but not set (%s)" % (_k, str(_e)[:80]))
+        except Exception as _e:
+            log("confirmed-mark pass skipped (%s)" % str(_e)[:80])
     if up and globals().get("_WAS_DOWN"):
         CONVO = []; log("game is back -- conversation reset")
     _WAS_DOWN = not up

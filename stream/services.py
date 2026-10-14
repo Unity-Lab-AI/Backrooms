@@ -317,6 +317,9 @@ def announce(line):
         pass
 
 def start(only=None):
+    if only in (None, "autopilot"):
+        try: os.remove(AUTOPILOT_HOLD)
+        except OSError: pass
     found = running()
     env = dict(os.environ, PYTHONUNBUFFERED="1", STUDIO_PERSIST="1", UNITY_OWN_VOICE="1",
                # her pod-trained voice speaks at natural pace; the old 1.2 stretch was for the too-fast local test voice
@@ -383,8 +386,15 @@ def start(only=None):
     except Exception:
         print("rimbridge   DOWN (launch RimWorld yourself -- this switch never touches the game)")
 
+AUTOPILOT_HOLD = os.path.join(QA, "_autopilot.hold")   # while it exists keep-going does not restart the player
+
 def stop_one(name):
     """Stop ONE named service and nothing else (OBS asked to close, never killed)."""
+    if name == "autopilot":
+        # run 3 (2026-10-13 22:08): the player stopped by hand came back within a minute -- keep-going restarts a DOWN
+        # player. A hand-stop leaves a hold file that keep-going honours; `start autopilot` lifts it.
+        try: open(AUTOPILOT_HOLD, "w").write(str(int(time.time())))
+        except OSError: pass
     frag = next((f for n, f, *_ in SERVICES + EXTRAS + START_ONLY if n == name), None)
     if frag is None: print("no service called", name); return
     pids = running().get(frag, [])
@@ -504,6 +514,10 @@ def golive():
     Owner, live: "twich shows network error that should never happen" -- closing OBS ends the broadcast and every
     viewer sees a network error. If OBS is already up (a soft restart keeps it), switch back to Live and make
     sure it is streaming; only a cold start launches it."""
+    # the BRB countdown ends at GO: run 3 (2026-10-13 21:25) the file set for the break stayed on disk and the host kept
+    # telling the live stream "back in 96 minutes" (owner: "she keeps saying be back in 96 minuites stf?")
+    try: os.remove(os.path.join(ROOT, ".local", "obs", "_brb_until"))
+    except OSError: pass
     c = obs_ws()
     if c is not None:
         try:

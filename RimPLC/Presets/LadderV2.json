@@ -7244,14 +7244,15 @@
     "mark_stream_titled": false
    },
    "then": [
-    "twitch_chat action=title text=<Unity Plays RimWorld -- colony / goal of the run>",
+    "twitch_chat action=title text=<write it yourself: 'Unity Plays RimWorld -- ' + tonight's colony and goal from the GO text; the words 'colony / goal of the run' are the shape, never the title>",
     "twitch_chat action=category text=RimWorld",
     "say a hello-stream line",
     "only after both succeed: ladder_set mark stream_titled true",
     "stream noise/static or the overlay blocking the game: reply_owner at once (host plumbing, not a play lever)"
    ],
    "never": [
-    "anything but RimWorld on the stream"
+    "anything but RimWorld on the stream",
+    "read 'category' as a game tab: it is the Twitch game category, twitch_chat action=category"
    ],
    "latch": false,
    "why": "owner: \"Unity Plays RimWorld -- ...\" / owner: \"and Unity knows how to work twich and start new streams and talk in chat\" / owner: \"make sure twitch peopel only ever see you playiong rimworld\" / owner: \"we want a trwitch overlay stream in your style, get to it you ar eblocking the game with fullscreen on everything if u want and maybe a script log only showing the scripts u run with no pi and no names and nothing personal of ours\" / owner: \"okay looking good no u gujust need a niuce cell ui boarder that manages each panel and game screen\" / owner: \"something is wrong with the stream loud static gabble noise\" / owner: \"fix it asap\"",
@@ -8398,18 +8399,20 @@
     "colony_exists": true,
     "paused": false,
     "mark_setup_done": false,
-    "mark_assign_set": false
+    "mark_assign_set": false,
+    "blueprints": "<1"
    },
    "then": [
     "game_pause_game pause true -- before any other order",
     "read game_state once; close any operations menu (game_close_window) so pawn options show",
-    "pawns selected but no pawn options/draft show: game_close_window, then select ONE pawn (click once) and read game_get_ui_layout"
+    "pawns selected but no pawn options/draft show: game_close_window, then select ONE pawn (click once) and read game_get_ui_layout",
+    "plans already placed (blueprints > 0): this rung does not hold -- time runs so they get built"
    ],
    "never": [
     "unpause before mark assign_set is true",
     "let one game hour pass with priorities unset"
    ],
-   "why": "owner: \"FUCK!!!! I PAUSED THE GAME SINCE SHE WOULDNT! FUCK WHY WONT SHE SET SHIT UP!!!!!!!\" / owner: \"wtf!!!!! time is flyying awayy!!!! why did she unpause beforee seeting all the pawn settings this is the fifth time ive told you all of this\" / owner: \"see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause\" / owner: \"i think it doesnt know how to click off the operation menu to use the pawns\" -- walkthrough: walkthrough-opening-and-camp.md 'Pause on landing, before any order.' [setup] Q / owner: \"three peopel are there its selecting them but no pawn options apear like draft major bug the model cant haddle\"",
+   "why": "run 3: paused from 21:54 to 22:08 with 76-122 blueprints waiting -- a colony with plans placed lets time run / owner: \"FUCK!!!! I PAUSED THE GAME SINCE SHE WOULDNT! FUCK WHY WONT SHE SET SHIT UP!!!!!!!\" / owner: \"wtf!!!!! time is flyying awayy!!!! why did she unpause beforee seeting all the pawn settings this is the fifth time ive told you all of this\" / owner: \"see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause\" / owner: \"i think it doesnt know how to click off the operation menu to use the pawns\" -- walkthrough: walkthrough-opening-and-camp.md 'Pause on landing, before any order.' [setup] Q / owner: \"three peopel are there its selecting them but no pawn options apear like draft major bug the model cant haddle\"",
    "source": "book",
    "mode": "advise"
   },
@@ -8455,7 +8458,8 @@
      "reset": {
       "mark_arms_set": true
      }
-    }
+    },
+    "unarmed_colonists": ">0"
    },
    "then": [
     "empire_pass refused twice: for each loose weapon order_pawn pawn_id <unarmed pawn> x z of the weapon option 'Equip'",
@@ -8465,7 +8469,7 @@
    "never": [
     "a third empire_pass for arms"
    ],
-   "why": "owner: \"once again u arnt armed!!! wtf!!!!\" / owner: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\"",
+   "why": "run 3, 2026-10-13 21:47-22:06: fourteen arm calls for a crew the sensors read as armed (one colonist held a knife); the rung now needs a colonist with NO weapon, and the loop writes arms_set itself when the mod confirms it / owner: \"once again u arnt armed!!! wtf!!!!\" / owner: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\"",
    "source": "book",
    "mode": "advise"
   },
@@ -8477,7 +8481,8 @@
    "when": {
     "colony_exists": true,
     "mark_start_opening_done": true,
-    "mark_arms_set": false
+    "mark_arms_set": false,
+    "unarmed_colonists": ">0"
    },
    "then": [
     "game_set cmd arm -- every unarmed colonist equips the nearest free gun, every armed one without a melee weapon picks up a sidearm; read the reply",
@@ -8491,7 +8496,7 @@
     "explore or build before everyone is armed",
     "leave a gun on the ground (loose_weapons > 0 after the pass)"
    ],
-   "why": "owner 2026-10-13: \"she just almost died from a fight without weweapons, weapons should be first thing always updated and checked\" / owner: \"once again u arnt armed!!! wtf!!!!\" / owner: \"put your weapons-out rung FIRST (priority above every setup rung)\" / owner: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\" / owner: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\" -- walkthrough: walkthrough-opening-and-camp.md best shooter gets the bolt-action rifle, next the revolver, knife to best melee; helmet yes, flak no [start] B,Q",
+   "why": "run 3, 2026-10-13 21:47-22:06: fourteen arm calls for a crew the sensors read as armed (one colonist held a knife); the rung now needs a colonist with NO weapon, and the loop writes arms_set itself when the mod confirms it / owner 2026-10-13: \"she just almost died from a fight without weweapons, weapons should be first thing always updated and checked\" / owner: \"once again u arnt armed!!! wtf!!!!\" / owner: \"put your weapons-out rung FIRST (priority above every setup rung)\" / owner: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\" / owner: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\" -- walkthrough: walkthrough-opening-and-camp.md best shooter gets the bolt-action rifle, next the revolver, knife to best melee; helmet yes, flak no [start] B,Q",
    "source": "book",
    "mode": "advise"
   },
