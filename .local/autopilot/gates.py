@@ -981,7 +981,10 @@ def host_inputs():
         _ap = os.path.join(ROOT, ".local", "autopilot", "scratch", "_orders_ack.json")
         _cur = os.path.getsize(_op)
         _ack = json.load(open(_ap, encoding="utf-8")) if os.path.exists(_ap) else {"len": 0, "ts": 0}
-        if _cur > int(_ack.get("len", 0)) and now - os.path.getmtime(_op) <= 3600:
+        # and newer than this colony's start: last colony's orders are not unread on a fresh one (run 5, attempt 5)
+        try: _epoch_ts = float(json.load(open(os.path.join(ROOT, ".local", "autopilot", "scratch", "colony-epoch.json"), encoding="utf-8")).get("ts") or 0)
+        except Exception: _epoch_ts = 0
+        if _cur > int(_ack.get("len", 0)) and now - os.path.getmtime(_op) <= 3600 and os.path.getmtime(_op) >= _epoch_ts:
             out["owner_unread"] += 1
     except (OSError, ValueError):
         pass
