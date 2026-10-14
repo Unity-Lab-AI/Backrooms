@@ -68,6 +68,32 @@ HIST = os.path.join(ROOT, ".claude", ".stream-lines.json")
 BANNED = ("fuck", "shit", "bitch", "damn", "hell", "ass", "cunt", "dick")
 
 
+_NUM_WORDS = {"zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9,
+              "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15, "sixteen": 16,
+              "seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20, "thirty": 30, "forty": 40, "fifty": 50,
+              "sixty": 60, "seventy": 70, "eighty": 80, "ninety": 90, "dozen": 12}
+_NUM_MULT = {"hundred": 100, "thousand": 1000}
+
+
+def _nums(text):
+    """Every quantity a text names, digits and words alike ("three hundred" -> 300, "twenty five" -> 25, "a hundred" -> 100)."""
+    import re as _re
+    out = {int(x) for x in _re.findall(r"\d+", text)}
+    cur = None
+    for t in _re.findall(r"[a-z]+", text.lower()):
+        if t in _NUM_WORDS:
+            cur = (cur or 0) + _NUM_WORDS[t]
+        elif t in _NUM_MULT:
+            cur = (cur if cur is not None else 1) * _NUM_MULT[t]
+        elif t == "and" and cur is not None:
+            continue
+        else:
+            if cur is not None: out.add(cur)
+            cur = None
+    if cur is not None: out.add(cur)
+    return out
+
+
 def fresh(fact):
     """A new line every time (owner, 2026-10-09: "you keep repeating this place never lets us breath, stop that
     shit new origanl shit always"). The local model writes ONE line about the given fact only -- it is told
@@ -99,7 +125,10 @@ def fresh(fact):
             break
         low = line.lower()
         if not line or len(line.split()) > 30 or any(re.search(r"\b%s" % b, low) for b in BANNED): continue
-        if any(n not in fact for n in re.findall(r"\d+", line)): continue
+        # numbers as WORDS too: "nearly three hundred other mods" came back as "nearly thirty others" three times on
+        # 2026-10-13 (owner: "why does she say 30 mods??? we are correctly running all 297ish right?"). Every quantity
+        # the line names (digits or words, 2 and up) must be one the fact names; "one"/"a" are articles and pass.
+        if any(n not in _nums(fact) for n in _nums(line) if n >= 2): continue
         if any(difflib.SequenceMatcher(None, low, h.lower()).ratio() > 0.6 for h in hist[-30:]): continue
         json.dump((hist + [line])[-30:], open(HIST, "w", encoding="utf-8"))
         return line

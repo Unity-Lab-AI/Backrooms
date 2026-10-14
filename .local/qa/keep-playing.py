@@ -209,6 +209,15 @@ def day_one(auto):
     else:
         say("fact: the game is paused until the crew is set up")
 
+def mod_count():
+    """How many mods are active, from the game's own ModsConfig.xml (297 on 2026-10-13); 0 when it cannot be read."""
+    try:
+        import xml.etree.ElementTree as ET
+        p = os.path.expandvars(r"%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Config/ModsConfig.xml")
+        return len(list(ET.parse(p).getroot().find("activeMods")))
+    except Exception:
+        return 0
+
 def gates_bridge_pause(on):
     s, buf = gates._session()
     gates.bridge.exchange(s, buf, "tools/call", {"name": "rimworld/pause_game", "arguments": {"pause": bool(on)}})
@@ -262,7 +271,10 @@ while True:
             try: os.remove(GO)
             except OSError: pass
             # never read the owner's directive aloud -- it is an order to her, not a line for the stream
-            say("fact: the game is loading nearly three hundred mods on RimWorld 1.7, the unstable beta" if os.path.exists(RESUME) else "fact: a new stream is starting and the game is loading nearly three hundred mods on RimWorld 1.7, the unstable beta")
+            # the count in DIGITS: her writer turned "nearly three hundred" into "nearly thirty" three times on 2026-10-13
+            # (owner: "why does she say 30 mods??? we are correctly running all 297ish right?")
+            say(("fact: the game is loading %d mods on RimWorld 1.7, the unstable beta" if os.path.exists(RESUME) else
+                 "fact: a new stream is starting and the game is loading %d mods on RimWorld 1.7, the unstable beta") % mod_count())
             # a NEW stream each start (owner: "make sure it starts a new stream"): fresh title, then OBS live
             try:
                 if os.path.exists(RESUME): raise RuntimeError("resume keeps the current stream title")
@@ -317,7 +329,7 @@ while True:
             shut = clear_debug_windows()
             if shut:
                 print(stamp(), "closed debug windows before the main menu:", ", ".join(shut), flush=True)
-            say("fact: we are on RimWorld 1.7, the unstable beta, running the Rimrooms mod and nearly three hundred other mods; this is the main menu")
+            say("fact: we are on RimWorld 1.7, the unstable beta, running the Rimrooms mod and %d other mods; this is the main menu" % max(0, mod_count() - 1))
             time.sleep(15)
             print(stamp(), "new colony requested (%s) and the window is up -- starting it" % scen, flush=True)
             say("fact: starting a brand new colony; food comes first")
