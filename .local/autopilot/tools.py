@@ -868,6 +868,12 @@ class Toolbox:
         {"result": "{'id': 'x-0', 'cmd': 'stove'} -> ok: ...", "id": "x-0"}."""
         if since_offset is None:
             since_offset = colony_epoch().get("outbox_offset", 0)
+            # the epoch lands at the END of the day_one row (written as the file length right after the reply), so the
+            # day_one ok -- the route for priorities, schedule, drugs, assign -- was never in this colony's set (run 5,
+            # 01:02:44: a correct priorities tick refused, every pawn's grid about to be redone). Start at that row.
+            d1 = last_day_one_offset()
+            if d1 and d1 < since_offset:
+                since_offset = d1
         ok = set()
         try:
             if not os.path.exists(AUTOMATION_OUTBOX):
