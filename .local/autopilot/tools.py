@@ -519,13 +519,23 @@ class Toolbox:
                 cm = {}
             missing = [k for k in ("pawns_set", "assign_set", "layout_set") if not cm.get(k)]
             if missing:
+                # LIVE readings from RimPLC (the mod's sensors.json is written on game ticks, so while the game is held it
+                # is a snapshot from the pause -- run 5, 00:21: hostiles and designations read from a 24-minute-old file)
+                live = {}
                 try:
-                    spec = importlib.util.spec_from_file_location("gates_tb", os.path.join(HERE, "gates.py"))
-                    g = importlib.util.module_from_spec(spec); spec.loader.exec_module(g)
-                    hostile = g.state().get("hostiles_on_map") or 0
+                    r = subprocess.run([PY, os.path.join(ROOT, ".local", "qa", "bridge.py"), "call", "rimplc/read_state",
+                                        json.dumps({"keys": "hostiles_on_map,designations_mine"})], capture_output=True,
+                                       text=True, timeout=30, cwd=ROOT, shell=False)
+                    t = r.stdout or ""; i = t.find("{")
+                    d = json.loads(t[i:]) if i >= 0 else {}
+                    live = d.get("state") if isinstance(d.get("state"), dict) else {}
                 except Exception:
-                    hostile = 0
-                if not hostile:
+                    live = {}
+                hostile = live.get("hostiles_on_map") or 0
+                # the one setup exception besides a raid: rock inside the pile's box is mined with time running (run 5,
+                # 00:21:21: `mine` ok, one cell -- and the lock held time until the layout the rock was blocking)
+                mining = (live.get("designations_mine") or 0) > 0 and not cm.get("storage_room_set")
+                if not hostile and not mining:
                     return ("the game stays PAUSED until the camp is laid out and the crew is set (owner: pause is your friend; "
                             "the camp stands by the end of day one). Not yet confirmed by the mod: %s. Orders you place now are "
                             "QUEUED and run the moment setup-6-run starts time -- keep laying out. layout_set = the mod's ok to "

@@ -8381,13 +8381,15 @@
     "colony_exists": true,
     "paused": false,
     "mark_layout_set": false,
-    "hostiles_on_map": 0
+    "hostiles_on_map": 0,
+    "designations_mine": 0
    },
    "then": [
     "game_pause_game pause true -- before any other order; pause is your friend",
     "read game_state once; close any operations menu (game_close_window) so pawn options show",
     "pawns selected but no pawn options/draft show: game_close_window, then select ONE pawn (click once) and read game_get_ui_layout",
-    "time stays stopped until the camp is LAID OUT (storage_room, shelter and stove ordered -> mark layout_set, confirmed on the mod's three oks) and the pawns are set; setup-6-run is the rung that starts time; orders placed while paused are queued and run then"
+    "time stays stopped until the camp is LAID OUT (storage_room, shelter and stove ordered -> mark layout_set, confirmed on the mod's three oks) and the pawns are set; setup-6-run is the rung that starts time; orders placed while paused are queued and run then",
+    "rock inside the pile's box being mined out for the layout (designations_mine > 0): time runs until it is gone -- the one exception besides a raid"
    ],
    "never": [
     "unpause before mark layout_set is true",
@@ -8824,6 +8826,7 @@
    },
    "then": [
     "game_set cmd storage_room -- wood walls + one door + roof planned around the supply pile where it lies, the Main store zone covering the inside, trees inside marked to chop; read the reply (inside size, door cell, walls planned, wood needed)",
+    "refused for solid rock inside the pile's box: game_set cmd mine on the cells the refusal names, unpause until designations_mine is 0 (the lock allows it), pause, storage_room again -- never walk the anchor one cell at a time",
     "refused for solid rock or a wall inside the pile's box: game_set cmd camp x z one pile-width toward open ground, then storage_room again",
     "refused otherwise: ladder_set mark storage_room_tried true, then ladder_set mark storage_room_tried false (each refusal counts once; 2 -> setup-4a-storage-room-fallback)",
     "the reply says planned: unpause so it is built, Construction stays on for everyone, chop if the wood needed is above wood; then ladder_set mark storage_room_set true (the mod's ok: confirms it) (the shelter rung follows while the walls go up)",
