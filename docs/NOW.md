@@ -11,9 +11,9 @@
 
 ---
 
-## LIVE NOW (2026-10-13 ~18:45 local): stream DOWN by design, everything staged and cascaded, voice v2 LIVE, test run of the full kit is next
+## LIVE NOW (2026-10-13 ~19:50 local): stream on the BRB scene (clock to 21:46), the stack is down, the full-kit test run is DONE -- fix pass now
 
-**Only the voice service is up (v2 on :5123); the GPU is empty otherwise.** Everything is committed AND cascaded: Backrooms `main` on github and forgejo, Rimrooms public repo and RimPLC repo published, both mods staged into Steam Mods (hash-checked, previous copies under `artifacts/staging-backups/`). No pods, RunPod $0. The 1-minute test-run watcher (cron 6853f439) writes what it sees to `docs/TESTRUN_NOTES.md` and fixes nothing; the fix pass comes after the run.
+**Only OBS is up, live on the BRB scene with the countdown (`.local/obs/_brb_until`; edit it to move the estimate, delete it to stop); everything else is stopped and the GPU is free.** The colony is saved as `Saves/Unity-testrun-2026-10-13-1945.rws` (day 3, three colonists, Unity wounded). The test-run watcher is cancelled. Everything is committed AND cascaded: Backrooms `main` on github and forgejo, Rimrooms public repo and RimPLC repo published, both mods staged into Steam Mods (hash-checked, previous copies under `artifacts/staging-backups/`). No pods, RunPod $0. The 1-minute test-run watcher (cron 6853f439) writes what it sees to `docs/TESTRUN_NOTES.md` and fixes nothing; the fix pass comes after the run.
 **Steam must be running before `start.bat`** (2026-10-13: without Steam the workshop mods, Harmony and RimBridgeServer did not load).
 
 ### Unity's webcam (owner-approved 2026-10-13) -- read `memory/project_unity_webcam_look.md` before touching it
@@ -47,15 +47,22 @@
 - Fixed on the way (committed): vocoder warm start and the multipass check ignore the data-side stats/support ids (d9e46f10, 3e0266f3); the GTA export was redone after that code change (old one kept at `gta-before-vocoder-fix`). Two screen counts: 4,555 expressive kept, 64 fell back to the original, 8 off-game lines dropped.
 - Done 2026-10-13 ~18:35.
 
+### The full-kit test run, 2026-10-13 18:47-19:46 -- what we learned (ledger: `docs/TESTRUN_NOTES.md`, 49 rows)
+- **Loads clean on 1.7.4977.** Both mods, RimBridge, 297 mods; one load ERROR (RimPLC's bridge tools register twice).
+- **Her voice:** v2 renders and the stream hears her; the desk did not (the overlay page never played) -- fixed live (2765c51d). Still open: `;` and `:` refused by the frontend, a false `SAID` after a failed speak, verbatim repeats, one cut line.
+- **Her play, in one line:** 55 minutes, 16 conversation resets, 13 `beds` refusals, 3 `stove` refusals, no kitchen, no priorities, a shelter 50 cells from the supplies, beds in the doorway, a threat letter read as a joke while a colonist lay wounded, and `setup is done` declared by setting the gate mark herself.
+- **The causes are few:** every setup command anchors on where the crew stands instead of the camp; `beds`/`shelves`/`stove` demand rooms a crash site has not got and their refusals point the wrong way; the pad survives colonies and records lies, and 16 resets re-read it; the owner-input guard trips on the owner typing to the lead; blueprints are narrated as built; the voice frontend lacks punctuation.
+- **Fix order** is the new TODO section *Test run 2026-10-13*: camp anchor + day-one sequence -> room-design layer -> setup commands and messages -> pad/marks/situation -> owner-input guard -> planned-vs-built -> voice punctuation -> threats/letters -> stack items.
+
 ### RimPLC / her player (committed, not yet seen in a live game)
 - Ladder rebuilt: 380 rungs / 16 families, a meta prompt per rung (`.local/autopilot/rung-prompts.json`), ~33 new game sensors + `set_host` remote I/O for stream readings, warnings/grouped Sensors tab/RimWorld alert column, unarmed colonist = critical. Record: `docs/RIMPLC_DESIGN.md` "Built status (2026-10-13)".
 - 24 new mod commands (`build`, `build_room`, `equip`, `capture`, `zone_create`, `schedule`, `research`, ...), Crashlanded camp commands, situation prompt modules, 18k conversation cap.
 - **2026-10-13 evening desk pass (owner: "get to work on fixing and finishing the RimPLC"):** 61 ladder defects fixed (inputs nothing wrote, bool-vs-number conditions, warnings that never fired, commands nothing answered, 40 stale "missing tool" notes), the wiring pass added to `tools/rimplc-check.py` + `.local/plc-rebuild/check.py`, and the rest of the playbook built as commands with a rung each: food `freezer` / `butcher` / `kitchen` / `room_cooler`; defence `arm` / `draft` / `hold` / `tower` / `security_room`; building `power` / `hall` / `terraform`; research `research_next`; people and trade `generator` / `prisoner` / `trade` / `guest_beds` / `call_trader`; gate `gate_posture`. Three missing sensors built (`toxic_buildup_max`, `worst_disease_margin`, `battery_days_stored`), the tower sensor no longer counts a plain wall embrasure as a tower. Ladder now 419+ rungs / 208+ sensors, both checkers CLEAN, both DLLs 0 errors; **STAGED 2026-10-13 ~18:10 (owner: "all mods are staged"):** Rimrooms 200 files and RimPLC 9 files hash-checked into Steam Mods, previous copies under `artifacts/staging-backups/`; public Rimrooms repo at `8b3553a`, RimPLC repo at `5a8011c`, Backrooms cascaded to develop and main. First live run of today's commands is the next step. The playbook's remaining unbuilt piece: the mountain-base layout as one command.
 
 ### Next, in order
-1. Webcam done and owner-approved; watch her first live frames (does she use `scene`?).
-2. Voice: v2 LIVE. First stream with it: listen for pace and emotion on real lines.
-3. Start: Steam, `start.bat`, GO "fresh crash landed colony, new stream" (Earth3); watch her opening, RimPLC alerts, her webcam.
+1. The fix pass (TODO *Test run 2026-10-13*), in that order, each fix re-staged and cascaded.
+2. Second test run from `Unity-testrun-2026-10-13-1945.rws` or a fresh crash site; the watcher writes a new ledger.
+3. Only then: trade, research, towers, the empire.
 
 ### Gotchas (do not relearn)
 - `.local/qa/` shadows Python's `inspect`: run torch/diffusers scripts from `%TEMP%`.
