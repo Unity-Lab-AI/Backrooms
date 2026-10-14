@@ -176,7 +176,10 @@ claim("the merge rule still honours Core's own answer first",
       "base.AllowStackWith(other)" in allow)
 split = slice_member(comp, "PostSplitOff")
 claim("a piece split off an odd stack is odd",
-      "MarkOdd()" in split, "without this, splitting is a laundering route")
+      # Re-aimed 2026-10-13: the piece is given the stack's own origin, both directions.
+      "split.StampOrigin(origin);" in split
+      and "if (origin == ThingOrigin.Unknown) { return; }" in split,
+      "without this, splitting is a laundering route")
 
 # ------------------------------------------------------------------------ the service
 mark = slice_member(service, "Mark")

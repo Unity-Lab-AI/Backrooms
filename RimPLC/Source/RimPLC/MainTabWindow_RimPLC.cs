@@ -32,6 +32,7 @@ namespace RimPLC
         private Vector2 scroll;
         private string selected;
         private bool liveOnly;
+        private string family;
         private readonly Dictionary<string, string> buffers = new Dictionary<string, string>();
         private string newMarkName = string.Empty;
         private string newMarkValue = string.Empty;
@@ -122,6 +123,22 @@ namespace RimPLC
         {
             Widgets.CheckboxLabeled(new Rect(rect.x, rect.y, 140f, 24f), "Live rungs only", ref liveOnly);
             float bx = rect.x + 150f;
+            // 380 rungs in one list: filter by family (owner: "well organized")
+            if (Widgets.ButtonText(new Rect(bx, rect.y, 120f, 24f), family ?? "All families"))
+            {
+                var opts = new List<FloatMenuOption> { new FloatMenuOption("All families", () => { family = null; scroll = Vector2.zero; }) };
+                foreach (string f in r.Rungs.Select(e => e.Rung.Family ?? "-").Distinct().OrderBy(x => x, StringComparer.Ordinal))
+                {
+                    string fam = f;
+                    int live = r.Rungs.Count(e => (e.Rung.Family ?? "-") == fam && e.Live);
+                    opts.Add(new FloatMenuOption(fam + "  (" + r.Rungs.Count(e => (e.Rung.Family ?? "-") == fam) + (live > 0 ? ", " + live + " live" : "") + ")",
+                                                 () => { family = fam; scroll = Vector2.zero; }));
+                }
+
+                Find.WindowStack.Add(new FloatMenu(opts));
+            }
+
+            bx += 124f;
             if (Widgets.ButtonText(new Rect(bx, rect.y, 100f, 24f), "Letters seen")) plc.MarkLettersSeen();
             bx += 104f;
             if (Widgets.ButtonText(new Rect(bx, rect.y, 90f, 24f), "New rung")) Find.WindowStack.Add(new Dialog_RungEditor(plc, null));
@@ -155,7 +172,7 @@ namespace RimPLC
 
             float detailH = selected != null ? 150f : 0f;
             var outRect = new Rect(rect.x, rect.y + 28f, rect.width, rect.height - 28f - detailH);
-            List<RungEval> rows = liveOnly ? r.Rungs.Where(e => e.Live).ToList() : r.Rungs;
+            List<RungEval> rows = r.Rungs.Where(e => (!liveOnly || e.Live) && (family == null || (e.Rung.Family ?? "-") == family)).ToList();
             var view = new Rect(0f, 0f, outRect.width - 16f, rows.Count * RowH);
             Widgets.BeginScrollView(outRect, ref scroll, view);
             for (int i = 0; i < rows.Count; i++)
@@ -170,7 +187,7 @@ namespace RimPLC
             if (selected != null)
             {
                 RungEval ev = r.Rungs.FirstOrDefault(e => e.Rung.Id == selected);
-                if (ev != null) DrawDetail(new Rect(rect.x, rect.yMax - detailH + 4f, rect.width, detailH - 4f), ev);
+                if (ev != null) DrawDetail(new Rect(rect.x, rect.yMax - detailH + 4f, rect.width, detailH - 4f), ev, r);
             }
         }
 
@@ -280,7 +297,21 @@ namespace RimPLC
             }
         }
 
-        private static void DrawDetail(Rect rect, RungEval ev)
+        // every game_set command the Rimrooms reader answers (2026-10-13); a step naming another one is flagged
+        private static readonly HashSet<string> KnownCmds = new HashSet<string>
+        {
+            "explore", "rooms", "stockpile_room", "stockpile_filter", "beds", "shelves", "stove", "crops", "hunt", "day_one", "assign",
+            "set_zone_plant", "set_zone_sowing", "set_work_priority", "set_bed_owner", "add_bill", "set_area", "unforbid", "chop",
+            "shelter", "stockpile_camp", "sensors", "build", "build_room", "deconstruct", "harvest", "tame", "slaughter", "allow_area",
+            "self_tend", "schedule", "drug_policy", "research", "bed_medical", "bed_prisoner", "cooler_temp", "equip", "capture",
+            "bill_count", "zone_create", "roof_area", "firebreak", "pen", "bury", "ideo_role", "save_game",
+            "stockpile_priority", "stockpile_copy", "crew_setup", "terraform",
+            "freezer", "butcher", "kitchen", "arm", "draft", "hold", "tower", "power", "hall", "research_next", "generator", "prisoner", "trade", "gate_posture", "guest_beds", "security_room", "room_cooler", "call_trader",
+        };
+
+        private static readonly System.Text.RegularExpressions.Regex CmdRef = new System.Text.RegularExpressions.Regex(@"game_set cmd ([a-z_]+)");
+
+        private static void DrawDetail(Rect rect, RungEval ev, ScanResult scan)
         {
             Widgets.DrawBoxSolid(rect, new Color(0f, 0f, 0f, 0.3f));
             Rung r = ev.Rung;
@@ -289,7 +320,27 @@ namespace RimPLC
                       (r.Family != null ? ", " + r.Family : string.Empty) + ")" + (ev.Off != null ? "  OFF: " + ev.Off : string.Empty));
             if (r.Check != null) lines.Add("check: " + r.Check);
             if (r.Notice != null) lines.Add("notice: " + r.Notice);
-            for (int i = 0; i < ev.Then.Count; i++) lines.Add((i + 1) + ". " + ev.Then[i]);
+            // timers, counters, one-shots: their live memory (E1)
+            foreach (var kv in scan.Memory.Where(m => m.Key.StartsWith(r.Id + "/", StringComparison.Ordinal)))
+            {
+                Instr m = kv.Value;
+                string at = kv.Key.Substring(r.Id.Length + 1);
+                string v = "count " + m.Count + (m.Start.HasValue ? ", held " + ((scan.Tick - m.Start.Value) / 2500f).ToString("0.0", CultureInfo.InvariantCulture) + " h" : string.Empty) +
+                           ", input " + (m.Prev ? "on" : "off");
+                lines.Add("memory " + at + ": " + v);
+            }
+
+            // unresolved reasons (E3)
+            foreach (string u in scan.Unresolved.Where(u => u.StartsWith(r.Id, StringComparison.Ordinal))) lines.Add("<color=#ff6666>UNRESOLVED: " + u + "</color>");
+            for (int i = 0; i < ev.Then.Count; i++)
+            {
+                string step = (i + 1) + ". " + ev.Then[i];
+                // a step that names a command nothing answers (E6)
+                foreach (System.Text.RegularExpressions.Match mt in CmdRef.Matches(ev.Then[i]))
+                    if (!KnownCmds.Contains(mt.Groups[1].Value)) step += "  <color=#ffaa33>[MISSING TOOL: " + mt.Groups[1].Value + "]</color>";
+                lines.Add(step);
+            }
+
             foreach (string n in r.Never) lines.Add("NEVER: " + n);
             Text.Font = GameFont.Tiny;
             Widgets.Label(rect.ContractedBy(4f), string.Join("\n", lines.ToArray()));
@@ -369,6 +420,11 @@ namespace RimPLC
 
             var outRect = new Rect(rect.x, rect.y + RowH + 6f, rect.width, rect.height - RowH - 6f);
             List<KeyValuePair<string, object>> marks = plc.Marks.OrderBy(kv => kv.Key, StringComparer.Ordinal).ToList();
+            // every mark a rung reads, even before it is first set (E5): shown as unset with its default false
+            var set = new HashSet<string>(marks.Select(kv => kv.Key));
+            foreach (string k in plc.Last?.Rungs.SelectMany(e => e.Contacts.Select(c => c.Key)).Where(k => k.StartsWith("mark_", StringComparison.Ordinal))
+                                     .Select(k => k.Substring(5)).Distinct().OrderBy(k => k, StringComparer.Ordinal) ?? Enumerable.Empty<string>())
+                if (!set.Contains(k)) marks.Add(new KeyValuePair<string, object>(k, null));
             var view = new Rect(0f, 0f, outRect.width - 16f, marks.Count * RowH);
             Widgets.BeginScrollView(outRect, ref scroll, view);
             float y = 0f;
@@ -377,7 +433,7 @@ namespace RimPLC
                 var row = new Rect(0f, y, view.width, RowH);
                 Widgets.DrawHighlightIfMouseover(row);
                 Widgets.Label(new Rect(4f, y, 300f, RowH), "mark_" + kv.Key);
-                Widgets.Label(new Rect(310f, y, 120f, RowH), Json.Write(kv.Value));
+                Widgets.Label(new Rect(310f, y, 120f, RowH), kv.Value == null ? "unset (false)" : Json.Write(kv.Value));
                 string key = "mark:" + kv.Key;
                 if (!buffers.ContainsKey(key)) buffers[key] = Json.Write(kv.Value);
                 buffers[key] = Widgets.TextField(new Rect(435f, y + 1f, 90f, RowH - 2f), buffers[key]);
@@ -404,29 +460,114 @@ namespace RimPLC
 
         // ------------------------------------------------------------------------------------------- sensors, log
 
+        private bool sensorsWarningsOnly;
+        private readonly HashSet<string> collapsed = new HashSet<string> { "Item counts", "Research done" };
+
+        /// <summary>The input image, organised: a warnings panel (critical first), then every reading by group with a
+        /// plain label, a formatted value and a tooltip that says what it means and when it warns.</summary>
         private void DrawSensors(Rect rect, ScanResult r)
         {
-            List<KeyValuePair<string, object>> rows = r.State.Where(kv => kv.Key != "tags").OrderBy(kv => kv.Key, StringComparer.Ordinal).ToList();
-            var view = new Rect(0f, 0f, rect.width - 16f, rows.Count * 20f);
-            Widgets.BeginScrollView(rect, ref scroll, view);
-            Text.Font = GameFont.Tiny;
-            float y = 0f;
-            JsonObject catalogue = RimPLCMod.Book.Sensors;
-            foreach (var kv in rows)
+            List<SensorView.Reading> all = SensorView.All(r.State);
+            // inputs a rung asks for that have no reading: shown, so a quiet rung says why it is quiet
+            JsonObject cat = RimPLCMod.Book.Sensors;
+            foreach (string k in r.Rungs.SelectMany(e => e.Contacts.Where(c => c.Value == Contact.Unmeasured).Select(c => c.Key)).Distinct())
             {
-                if (y + 20f >= scroll.y && y <= scroll.y + rect.height)
-                {
-                    Widgets.Label(new Rect(4f, y, 260f, 20f), kv.Key);
-                    string v = Json.Write(kv.Value);
-                    Widgets.Label(new Rect(270f, y, view.width - 270f, 20f), v.Length > 160 ? v.Substring(0, 160) + "..." : v);
-                    JsonObject desc = catalogue.GetObject(kv.Key);
-                    if (desc != null) TooltipHandler.TipRegion(new Rect(4f, y, 260f, 20f), desc.GetString("source") ?? string.Empty);
-                }
+                if (r.State.ContainsKey(k)) continue;
+                SensorView.Reading u = SensorView.Describe(k, null, cat);
+                string grp = cat.GetObject(k)?.GetString("group");
+                u.Group = "Not measured";
+                u.Tip = (grp == "Stream" ? "Host input (the stream PC sends it with set_host; absent while her player is off). " : "Asked for by a rung, no reading yet. ") + u.Tip;
+                u.Warning = false;
+                all.Add(u);
+            }
+            List<SensorView.Reading> warns = all.Where(x => x.Warning && x.Severity != SensorView.Level.Info)
+                                                .OrderByDescending(x => x.Severity).ThenBy(x => x.Label, StringComparer.Ordinal).ToList();
+            Widgets.CheckboxLabeled(new Rect(rect.x, rect.y, 190f, 24f), "Warnings only", ref sensorsWarningsOnly);
+            Text.Font = GameFont.Tiny;
+            Widgets.Label(new Rect(rect.x + 200f, rect.y + 4f, rect.width - 200f, 22f),
+                all.Count + " readings, " + warns.Count(x => x.Severity == SensorView.Level.Critical) + " critical, " +
+                warns.Count(x => x.Severity == SensorView.Level.Warning) + " warnings. Hover any row for what it means.");
+            Text.Font = GameFont.Small;
 
-                y += 20f;
+            // the warnings panel: up to a third of the tab
+            float panelH = warns.Count == 0 ? 26f : Mathf.Min(rect.height / 3f, 26f + warns.Count * 22f);
+            var panel = new Rect(rect.x, rect.y + 28f, rect.width, panelH);
+            Widgets.DrawBoxSolid(panel, new Color(0f, 0f, 0f, 0.35f));
+            if (warns.Count == 0)
+            {
+                GUI.color = Green;
+                Widgets.Label(panel.ContractedBy(4f), "No warnings.");
+                GUI.color = Color.white;
+            }
+            else
+            {
+                float wy = panel.y + 2f;
+                foreach (SensorView.Reading w in warns)
+                {
+                    if (wy + 22f > panel.yMax) break;
+                    var row = new Rect(panel.x + 4f, wy, panel.width - 8f, 22f);
+                    Widgets.DrawBoxSolid(new Rect(row.x, row.y + 4f, 14f, 14f), w.Severity == SensorView.Level.Critical ? Red : Amber);
+                    Widgets.Label(new Rect(row.x + 20f, row.y, 240f, 22f), w.Label);
+                    Widgets.Label(new Rect(row.x + 265f, row.y, 90f, 22f), SensorView.Format(w.Value));
+                    Text.Font = GameFont.Tiny;
+                    Widgets.Label(new Rect(row.x + 360f, row.y + 3f, row.width - 360f, 20f), w.Tip);
+                    Text.Font = GameFont.Small;
+                    Widgets.DrawHighlightIfMouseover(row);
+                    TooltipHandler.TipRegion(row, SensorView.Tooltip(w));
+                    wy += 22f;
+                }
             }
 
-            Text.Font = GameFont.Small;
+            // every reading by group
+            var outRect = new Rect(rect.x, panel.yMax + 6f, rect.width, rect.yMax - panel.yMax - 6f);
+            var groups = all.Where(x => !sensorsWarningsOnly || x.Warning)
+                            .GroupBy(x => x.Group)
+                            .OrderBy(g => { int i = Array.IndexOf(SensorView.GroupOrder, g.Key); return i < 0 ? 999 : i; })
+                            .ToList();
+            float total = 0f;
+            foreach (var g in groups) total += 26f + (collapsed.Contains(g.Key) ? 0f : g.Count() * 20f);
+            var view = new Rect(0f, 0f, outRect.width - 16f, total);
+            Widgets.BeginScrollView(outRect, ref scroll, view);
+            float y = 0f;
+            foreach (var g in groups)
+            {
+                bool shut = collapsed.Contains(g.Key);
+                var head = new Rect(0f, y, view.width, 24f);
+                Widgets.DrawBoxSolid(head, new Color(1f, 1f, 1f, 0.08f));
+                int gw = g.Count(x => x.Warning && x.Severity != SensorView.Level.Info);
+                Widgets.Label(new Rect(6f, y + 2f, view.width, 22f), (shut ? "[+] " : "[-] ") + g.Key + "  (" + g.Count() + (gw > 0 ? ", " + gw + " warning" + (gw == 1 ? "" : "s") : "") + ")");
+                if (Widgets.ButtonInvisible(head))
+                {
+                    if (shut) collapsed.Remove(g.Key);
+                    else collapsed.Add(g.Key);
+                }
+
+                y += 26f;
+                if (shut) continue;
+                Text.Font = GameFont.Tiny;
+                foreach (SensorView.Reading x in g.OrderBy(x => x.Label, StringComparer.Ordinal))
+                {
+                    if (y + 20f >= scroll.y && y <= scroll.y + outRect.height)
+                    {
+                        var row = new Rect(0f, y, view.width, 20f);
+                        if (x.Warning && x.Severity != SensorView.Level.Info)
+                            Widgets.DrawBoxSolid(row, x.Severity == SensorView.Level.Critical ? new Color(0.8f, 0.2f, 0.2f, 0.25f) : new Color(0.85f, 0.6f, 0.15f, 0.2f));
+                        Widgets.DrawHighlightIfMouseover(row);
+                        Widgets.Label(new Rect(16f, y, 260f, 20f), x.Label);
+                        string v = SensorView.Format(x.Value);
+                        Widgets.Label(new Rect(280f, y, 220f, 20f), v.Length > 60 ? v.Substring(0, 60) + "..." : v);
+                        GUI.color = Color.gray;
+                        Widgets.Label(new Rect(505f, y, view.width - 505f, 20f), x.Key + (x.Rule != null ? "   warns " + x.Rule : string.Empty));
+                        GUI.color = Color.white;
+                        TooltipHandler.TipRegion(row, SensorView.Tooltip(x));
+                    }
+
+                    y += 20f;
+                }
+
+                Text.Font = GameFont.Small;
+            }
+
             Widgets.EndScrollView();
         }
 

@@ -16,31 +16,32 @@ def studio_token():
         return ""
 
 
-BASE = ("photo of a 25 year old woman, girl next door, natural goth emo style, dark brown hair with subtle pink streaks, "
-        "black band t-shirt, at a home gaming desk, warm desk lamp light, bedroom, candid webcam photo, realistic, ")
+BASE = ""   # who she is, her outfit, gaze and props are added by unity-face-sd.compose() -- the caller sends the mood only
 MOODS = {
-    "chill": "relaxed half smile, smoking a joint, a little smoke, sleepy eyes",
+    "chill": "relaxed half smile, sleepy eyes, chin resting on her hand",
     "hype": "excited wide grin, leaning toward the camera, fist raised",
     "angry": "furious scowl, yelling at the monitor, gripping the headset",
-    "focus": "intense focused stare at the screen, typing fast, joint in the ashtray",
-    "laugh": "laughing hard, head back, joint between fingers",
-    "smug": "smug smirk at the camera, one eyebrow raised, exhaling smoke",
+    "focus": "intense focused stare at the screen, typing fast, lip bitten",
+    "laugh": "laughing hard, head back, eyes squeezed shut, hand on her chest",
+    "smug": "smug smirk at the camera, one eyebrow raised, arms crossed",
     "scared": "shocked wide eyes, hand over mouth, monitor glow on face",
     "sad": "pouting, chin on hand, glossy eyes",
+    "flirty": "playful wink at the camera, finger twirling her hair, teasing smile",
 }
 
 
 def main():
     mood = sys.argv[1] if len(sys.argv) > 1 else "chill"
     caption = sys.argv[2] if len(sys.argv) > 2 else ""
+    scene = sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] != "--now" else ""   # her own idea of the moment
     if "--now" not in sys.argv:
-        subprocess.Popen([sys.executable, __file__, mood, caption, "--now"],
+        subprocess.Popen([sys.executable, __file__, mood, caption, scene, "--now"],
                          creationflags=getattr(subprocess, "DETACHED_PROCESS", 0),
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return
     prompt = BASE + MOODS.get(mood, mood) + ", photo, detailed face"
     req = urllib.request.Request("http://127.0.0.1:4317/api/cam",
-                                 data=json.dumps({"prompt": prompt, "caption": caption, "face": True}).encode(),
+                                 data=json.dumps({"prompt": prompt, "caption": caption, "scene": scene, "face": True}).encode(),
                                  headers={"Content-Type": "application/json", "X-Studio-Token": studio_token()})
     urllib.request.urlopen(req, timeout=300).read()
 

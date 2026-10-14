@@ -1,0 +1,1424 @@
+{
+ "_about": {
+  "purpose": "Binding cross-family decisions for the 16 family fixers. Where a family file disagrees with this file, this file wins. Owner quotes stay verbatim; nothing here rewrites a quote.",
+  "conventions": {
+   "priority": "lower number runs first (meta always is the floor). Each family renumbers its rungs into ITS band rows below, keeping current relative order, values distinct to 2 decimals. A rung listed in a row's 'explicit' gets exactly that value.",
+   "mark_step_syntax": "canonical step text: 'ladder_set mark <name> <true|false|value>'. Rewrite every 'ladder_set op mark name X value Y' / 'op=mark name=X value=Y' to that form so mechanical audits see the setter (several of critic's 27 'never set' marks are this syntax only).",
+   "hostiles_on_map": "numeric everywhere (Sensors.cs line 162 writes a double): 0 for none, \">0\" for some. Never \"0\" as a string, never true/false.",
+   "letter_substring": "'letter_labels: \"~trader\"' is not an operator: use the measured special key 'letter_matches: \"trader\"'.",
+   "pointer_rung": "'pointer' = delete the rung and add one line to that family's notes: 'see <owner-family>:<rung-id>'. Owner quotes the deleted rung carried move VERBATIM into the surviving rung's owner_rules; its useful steps merge into the survivor.",
+   "section_4b": "critic section 5 stands: {ctu|ton: when, preset/hours, reset} is legal; do NOT 'fix' the 40 entries inventory 4b lists."
+  }
+ },
+ "chains": [
+  {
+   "chain": "new colony",
+   "owner": "meta",
+   "survive": {
+    "meta": [
+     "new-colony"
+    ]
+   },
+   "rule": "A new colony starts ONLY on the owner's order: when {colony_exists:false, mark_owner_ordered_new_colony:true}. Nothing else may call new_colony. mark_owner_ordered_new_colony is set only by meta:owner-message when the owner (admin channel, never chat) orders it; meta:new-colony clears it.",
+   "new_colony_also_resets": [
+    "start_kind (read off the screen)",
+    "stream_titled=false",
+    "every mark in progression.order to false"
+   ],
+   "delete_or_pointer": {
+    "setup": {
+     "setup-0-new-colony": "meta:new-colony"
+    },
+    "start": {
+     "start-new-colony": "meta:new-colony"
+    }
+   },
+   "keep_in_start": [
+    "start-colony-lost (colonists 0 -> reply_owner and wait; never starts a colony)",
+    "start-kind-unknown (only setter of start_kind besides meta:new-colony)"
+   ]
+  },
+  {
+   "chain": "opening + camp (start-camp-* vs setup-*)",
+   "owner": "setup owns the generic camp chain; start keeps only kind detection and the kind-specific opening",
+   "survive": {
+    "start": [
+     "start-colony-lost",
+     "start-kind-unknown",
+     "start-crashlanded",
+     "start-tribal",
+     "start-naked",
+     "start-async",
+     "start-store",
+     "start-lone",
+     "start-explore-facility"
+    ],
+    "setup": [
+     "setup-0-pause-on-land",
+     "setup-0-starting-goods",
+     "arms-out-first",
+     "arms-out-fallback",
+     "setup-2-pawns",
+     "setup-2-pawns-fallback",
+     "setup-3-assign",
+     "leader-moral-guide",
+     "setup-1-explore",
+     "setup-1-explore-fallback",
+     "setup-2b-priorities-after-explore",
+     "setup-chop",
+     "setup-4-stores",
+     "setup-4-stores-fallback",
+     "setup-4b-shelter",
+     "setup-5-stove",
+     "setup-6-run",
+     "setup-6b-crops",
+     "setup-7-camp-defence",
+     "setup-8-camp-stable",
+     "setup-9-new-pawn"
+    ]
+   },
+   "delete_or_pointer": {
+    "start": {
+     "start-camp-chop": "setup:setup-chop",
+     "start-camp-chop-fallback": "setup:setup-chop",
+     "start-camp-stores": "setup:setup-4-stores",
+     "start-camp-shelter": "setup:setup-4b-shelter",
+     "start-camp-shelter-fallback": "setup:setup-4b-shelter (add a CTU fallback there on mark_shelter_tried)",
+     "start-camp-beds": "survival:beds-short",
+     "start-camp-food": "survival:food-low",
+     "start-camp-tight": "setup:setup-5-stove",
+     "start-camp-stable": "setup:setup-8-camp-stable",
+     "start-standing-orders": "setup:setup-6-run (its standing-order text goes into setup-6-run's prompt verbatim)",
+     "start-new-pawn": "setup:setup-9-new-pawn"
+    },
+    "setup": {
+     "setup-0-unforbid": "meta:unforbid-constant"
+    },
+    "base-and-fortress": {
+     "camp-wood-wall-ring": "setup:setup-7-camp-defence (build steps + quotes merge verbatim)",
+     "camp-wood-wall-fallback": "setup:setup-7-camp-defence (its CTU on blueprints moves with it)"
+    },
+    "growth": {
+     "growth-new-pawn-setup": "setup:setup-9-new-pawn"
+    },
+    "configuration": {
+     "config-priorities-new-pawn": "setup:setup-9-new-pawn"
+    }
+   },
+   "fixes_to_survivors": {
+    "start-crashlanded/tribal/naked/async/store/lone": "each ends with 'ladder_set mark start_opening_done true' (one shared stage mark); start_crashlanded_done is retired.",
+    "arms-out-first": "add 'mark_start_opening_done': true to when, so the generic chain follows the kind opening.",
+    "setup-4-stores": "drop the 'explored' any-branch: the first food store goes down on day 1, not after every door is explored.",
+    "setup-9-new-pawn": "drop 'mark_setup_done': true; it covers every stage.",
+    "setup-8-camp-stable": "ONLY setter of mark_camp_stable (and setup_done). The camp is 'a staging camp, not a colony'; start-camp-stable's mountain-base siting text is NOT carried over.",
+    "setup-7-camp-defence": "sole setter of mark_camp_defence except backrooms:br-camp-wall (start_kind 7 only)."
+   }
+  },
+  {
+   "chain": "ship (space-* vs endgame-*)",
+   "owner": "endgame owns materials, persona core, defence, site, build, reactor, caskets, launch, endings. space owns opening the off-world program, trade beacon, ally gifts, gravship, megaship drop, chat ask. research owns queueing the ship tree. economy owns comms trading.",
+   "survive": {
+    "endgame": [
+     "empire-dominion",
+     "endgame-research-refused",
+     "endgame-ship-materials",
+     "endgame-materials-check",
+     "endgame-persona-core",
+     "endgame-persona-core-stuck",
+     "endgame-launch-defence",
+     "endgame-defence-check",
+     "endgame-ship-site",
+     "endgame-ship-build",
+     "endgame-ship-build-refused",
+     "endgame-reactor-start",
+     "endgame-reactor-hold",
+     "endgame-load-caskets",
+     "endgame-launch",
+     "endgame-gravship-voyage",
+     "endgame-royal-ascent",
+     "endgame-archonexus",
+     "endgame-journey-offer",
+     "endgame-greed"
+    ],
+    "space": [
+     "rung-6-off-world",
+     "space-microelectronics",
+     "space-trade-beacon",
+     "space-ally-gifts",
+     "grav-core",
+     "grav-build",
+     "grav-ready",
+     "megaship-drop",
+     "space-ask-chat"
+    ],
+    "research": [
+     "research-ship-tree"
+    ]
+   },
+   "delete_or_pointer": {
+    "space": {
+     "space-ship-research": "research:research-ship-tree",
+     "space-persona-core": "endgame:endgame-persona-core",
+     "space-ship-materials": "endgame:endgame-ship-materials",
+     "space-prelaunch-defence": "endgame:endgame-launch-defence",
+     "ship-launch": "endgame:endgame-ship-build",
+     "space-reactor-start": "endgame:endgame-reactor-start",
+     "space-reactor-hold": "endgame:endgame-reactor-hold",
+     "space-launch-load": "endgame:endgame-launch",
+     "space-trade-comms": "economy:trade-run",
+     "space-trade-comms-fallback": "economy:trade-run"
+    },
+    "endgame": {
+     "endgame-ship-research": "research:research-ship-tree"
+    }
+   },
+   "fixes_to_survivors": {
+    "research-ship-tree": "when {mark_ending_ship:true, ship_research_done:false, research_queue_empty:true}. On a refused research click: 'ladder_set mark research_click_refused true' so endgame-research-refused counts it.",
+    "endgame-ship-site": "site is 'inside/adjacent to the fortified mountain base'; the space chain's site mark is gone.",
+    "empire-dominion": "when {mark_empire_ready:true, mark_ending_chosen:false}. One step per ending, exactly one fires: 'mark_gravship_ready true -> ladder_set mark ending_gravship true'; 'mark_title_rank >= {TARGET_TITLE} -> ladder_set mark ending_royal true'; 'letter_matches archonexus -> ladder_set mark ending_archonexus true'; else 'ladder_set mark ending_ship true'. Then 'ladder_set mark ending_chosen true'.",
+    "endgame-reactor-start / endgame-load-caskets": "hostiles_on_map: 0 (numeric).",
+    "endgame-launch": "the ONLY setter of mark_launched for the ship ending (royal-ascent sets it for the royal ending).",
+    "growth-second-colony": "reads mark_launched (mark_ship_launched retired)."
+   },
+   "retired_marks": [
+    "research_ship_basics -> sensor ship_research_done",
+    "persona_core_held -> sensor count_aipersonacore >=1",
+    "ship_defence_ready -> mark_launch_defence_ready",
+    "ship_launched -> mark_launched",
+    "ship_site (space) -> mark_ship_site_set"
+   ]
+  },
+  {
+   "chain": "power (duplicate id power-every-consumer + duplicate power rungs)",
+   "owner": "base-and-fortress",
+   "survive": {
+    "base-and-fortress": [
+     "rung-2-power-and-cold",
+     "power-every-consumer",
+     "power-generation-margin",
+     "battery-room",
+     "coolers-and-vents",
+     "electric-lights",
+     "power-alternate (moved in)"
+    ]
+   },
+   "delete_or_pointer": {
+    "survival": {
+     "power-every-consumer": "base-and-fortress:power-every-consumer (duplicate id; gates.py keeps one silently)"
+    },
+    "ideology-biotech-anomaly": {
+     "power-grid-standing": "base-and-fortress:power-every-consumer",
+     "power-generators-outside": "base-and-fortress:rung-2-power-and-cold (generator yard)",
+     "power-generators-fallback": "base-and-fortress:rung-2-power-and-cold",
+     "power-batteries": "base-and-fortress:battery-room",
+     "power-alternate": "MOVE verbatim to base-and-fortress as power-alternate",
+     "power-ac-fridge": "base-and-fortress:coolers-and-vents (steps merge verbatim)"
+    },
+    "royalty": {
+     "generators-out": "base-and-fortress:rung-2-power-and-cold"
+    }
+   }
+  },
+  {
+   "chain": "threat alarm / mobilize",
+   "owner": "war (classify + mobilize + per-threat tactics); survival owns the combat-* fight loop; base-and-fortress keeps prisoner-bed-before-fight only",
+   "delete_or_pointer": {
+    "base-and-fortress": {
+     "hostile-on-map": "war:war-mobilize",
+     "raid-posted": "war:war-letter-classify",
+     "raid-cleanup": "survival:after-the-kill",
+     "repair-after-raid": "survival:repair-2-set"
+    },
+    "meta": {
+     "crew-armed-attack": "war:war-arms-sidearms + war:war-hostility-attack"
+    },
+    "war": {
+     "war-after-kill-storage": "survival:after-the-kill (storage steps merge verbatim)"
+    }
+   }
+  },
+  {
+   "chain": "arms at landing vs ongoing sidearms",
+   "owner": "setup:arms-out-first at landing; war:war-arms-sidearms afterwards (when gains mark_camp_stable:true, reads unarmed_colonists >0)",
+   "delete_or_pointer": {}
+  },
+  {
+   "chain": "hunting / butchering",
+   "owner": "survival",
+   "survive": {
+    "survival": [
+     "hunter-weapon",
+     "butcher-table",
+     "butcher-fast",
+     "starving-no-game"
+    ]
+   },
+   "delete_or_pointer": {
+    "animals": {
+     "animals-hunter-armed": "survival:hunter-weapon",
+     "animals-butcher-standing": "survival:butcher-fast"
+    },
+    "economy": {
+     "econ-butcher": "survival:butcher-table"
+    }
+   }
+  },
+  {
+   "chain": "unforbid",
+   "owner": "meta:unforbid-constant (reads forbidden_items)",
+   "delete_or_pointer": {
+    "setup": {
+     "setup-0-unforbid": "meta:unforbid-constant"
+    }
+   }
+  },
+  {
+   "chain": "hospital",
+   "owner": "survival:hospital-setup",
+   "delete_or_pointer": {
+    "base-and-fortress": {
+     "hospital": "survival:hospital-setup"
+    },
+    "growth": {
+     "growth-hospital": "survival:hospital-setup",
+     "growth-hospital-fallback": "survival:hospital-setup"
+    }
+   }
+  },
+  {
+   "chain": "bedrooms / couples",
+   "owner": "base-and-fortress (bedrooms-owned, double-bed-rooms)",
+   "delete_or_pointer": {
+    "growth": {
+     "growth-private-rooms": "base-and-fortress:bedrooms-owned",
+     "growth-private-rooms-fallback": "base-and-fortress:bedrooms-owned"
+    },
+    "ideology-biotech-anomaly": {
+     "bio-family-rooms": "base-and-fortress:double-bed-rooms"
+    }
+   },
+   "quotes_to_move": "The war-filed unplaced quotes \"set base goals first; halls 3 wide, never 1; ...\" -> base-and-fortress:walls-halls-roofs owner_rules, and \"adult couples get private double-bed rooms; milk, cribs and toys before births; raise soldiers (combat traits)\" -> base-and-fortress:double-bed-rooms owner_rules (also referenced by ideology-biotech-anomaly:bio-milk-pen and bio-child-care). Copy exactly as stored in owner-rules-*.jsonl, not as abbreviated here."
+  },
+  {
+   "chain": "storage shelves",
+   "owner": "base-and-fortress:storage-shelves",
+   "delete_or_pointer": {
+    "growth": {
+     "growth-shelves-everything": "base-and-fortress:storage-shelves"
+    }
+   }
+  },
+  {
+   "chain": "freezer / cold food",
+   "owner": "survival (food-rotting-or-no-cold, freezer-sorting)",
+   "delete_or_pointer": {
+    "base-and-fortress": {
+     "freezer-cluster": "survival:food-rotting-or-no-cold"
+    },
+    "economy": {
+     "econ-freezer-shelves": "survival:freezer-sorting",
+     "econ-freezer-fallback": "survival:freezer-sorting"
+    }
+   }
+  },
+  {
+   "chain": "fire prevention",
+   "owner": "base-and-fortress:firebreak-ring",
+   "delete_or_pointer": {
+    "survival": {
+     "firebreak": "base-and-fortress:firebreak-ring"
+    }
+   }
+  },
+  {
+   "chain": "antibiotics",
+   "owner": "research (research-antibiotics-queue, research-antibiotics: queue, DrugLab, bill) + configuration:config-antibiotics (drug policy)",
+   "delete_or_pointer": {
+    "ideology-biotech-anomaly": {
+     "ideo-research-antibiotics": "research:research-antibiotics-queue",
+     "ideo-antibiotics": "configuration:config-antibiotics (DrugLab + bill steps merge into research:research-antibiotics verbatim)"
+    }
+   }
+  },
+  {
+   "chain": "colony policy / schedules / drug policy",
+   "owner": "setup:setup-3-assign at landing, configuration (config-schedule-anything, config-drug-policy) standing",
+   "delete_or_pointer": {
+    "ideology-biotech-anomaly": {
+     "ideo-colony-policy": "configuration:config-drug-policy (it must never set pawns_set/assign_set)"
+    }
+   }
+  },
+  {
+   "chain": "leader / moral guide",
+   "owner": "setup:leader-moral-guide (sets ideo_roles_set)",
+   "delete_or_pointer": {
+    "royalty": {
+     "leader-role": "setup:leader-moral-guide"
+    }
+   },
+   "keep": "ideology-biotech-anomaly:ideo-roles + ideo-roles-fallback stay for SPECIALIST roles only: when gains 'mark_ideo_roles_set': true and 'colonists': '>4', sets 'ideo_specialists_set'."
+  },
+  {
+   "chain": "mountain base plan / layout",
+   "owner": "base-and-fortress:mountain-base-plan",
+   "delete_or_pointer": {
+    "royalty": {
+     "throne-base-plan": "base-and-fortress:mountain-base-plan (plan steps merge verbatim: throne room on the 3-wide spine, prison wing east, guest wing west, altar room west of throne, one generator area)"
+    },
+    "backrooms": {
+     "br-base-layout": "base-and-fortress:mountain-base-plan"
+    }
+   }
+  },
+  {
+   "chain": "altar",
+   "owner": "royalty:altar-room builds the room; ideology-biotech-anomaly:ideo-ritual runs rituals",
+   "fix": "altar-room also does 'ladder_set mark ideo_altar_built true'; ideo-ritual's build steps are skipped when mark_altar_room_done is true."
+  },
+  {
+   "chain": "chat links",
+   "owner": "meta",
+   "delete_or_pointer": {
+    "backrooms": {
+     "br-chat-mod-links": "MOVE verbatim to meta as br-chat-mod-links (chat band)"
+    }
+   }
+  }
+ ],
+ "bands": {
+  "rule": "Bands never overlap. A family uses priorities only inside its own rows. A rung not named in any 'explicit' goes into its family's widest row, keeping relative order. Interlock marks (progression), not priority, sequence the stages; priority only orders rungs eligible at the same time. Safety order: owner/dialog < war alarm < survival combat < fight prep < chat < survival emergencies < start < setup < sustain.",
+  "resolves": {
+   "3.4 start-crashlanded/setup-2-pawns": "3.04 / setup band",
+   "3.5 setup-1-explore/start-camp-food/work-grid-set/threat-moment/br-out-of-the-backrooms": "setup band / deleted / survival band / 2.82 / 3.20",
+   "2.0 hostile-on-map/chat-first": "deleted (war-mobilize 1.12) / 1.95",
+   "2.3 raid-posted/life-threat": "deleted (war-letter-classify 1.10) / 2.12",
+   "4.3 cold/animals-danger-clear": "survival band / 10.02",
+   "95 empire-dominion/long-goal-drive": "endgame band / 49.00"
+  },
+  "rows": [
+   {
+    "family": "meta",
+    "from": -1.0,
+    "to": 1.04,
+    "purpose": "owner / control / dialog",
+    "explicit": {
+     "owner-at-controls": -1.0,
+     "idle-watchdog": -0.5,
+     "new-colony": 0.0,
+     "owner-message": 0.5,
+     "dialog-stuck": 0.9,
+     "dialog-open": 1.0
+    }
+   },
+   {
+    "family": "configuration",
+    "from": 1.05,
+    "to": 1.09,
+    "purpose": "UI clear",
+    "explicit": {
+     "config-hud-restore": 1.05,
+     "config-ui-clear-stuck": 1.06,
+     "config-ui-clear": 1.07,
+     "config-window-fullscreen": 1.08
+    }
+   },
+   {
+    "family": "war",
+    "from": 1.1,
+    "to": 1.39,
+    "purpose": "threat alarm + per-threat tactics (before every fight-loop rung)",
+    "explicit": {
+     "war-letter-classify": 1.1,
+     "war-mobilize": 1.12,
+     "war-drop-pods-centre": 1.14,
+     "war-siege-counter": 1.16,
+     "war-sapper-breach": 1.18,
+     "war-manhunter": 1.2,
+     "war-mechanoids": 1.22,
+     "war-tribal-swarm": 1.24,
+     "war-pirate-gunline": 1.26,
+     "war-infestation": 1.28,
+     "war-overwhelmed-indoors": 1.3,
+     "war-stand-down": 1.32
+    }
+   },
+   {
+    "family": "backrooms",
+    "from": 1.4,
+    "to": 1.49,
+    "purpose": "backrooms emergencies",
+    "explicit": {
+     "br-return-window": 1.4,
+     "br-heat": 1.42
+    }
+   },
+   {
+    "family": "survival",
+    "from": 1.5,
+    "to": 1.79,
+    "purpose": "combat loop",
+    "explicit": {
+     "combat-0-reset": 1.5,
+     "combat-0-reassess-worse": 1.51,
+     "combat-0-reassess-better": 1.52,
+     "combat-1-damage-pause": 1.54,
+     "combat-2-fight": 1.56,
+     "combat-2-help-coming": 1.57,
+     "combat-2-call-help-comms": 1.58,
+     "combat-2-call-help-permit": 1.59,
+     "combat-2-retreat": 1.6,
+     "combat-2-kite": 1.61,
+     "med-1-bleeding-under-fire": 1.64,
+     "combat-3-hold-plan": 1.66
+    }
+   },
+   {
+    "family": "base-and-fortress",
+    "from": 1.8,
+    "to": 1.88,
+    "purpose": "fight prep",
+    "explicit": {
+     "prisoner-bed-before-fight": 1.8
+    }
+   },
+   {
+    "family": "royalty",
+    "from": 1.89,
+    "to": 1.9,
+    "purpose": "empire raid",
+    "explicit": {
+     "empire-hostile": 1.89
+    }
+   },
+   {
+    "family": "ideology-biotech-anomaly",
+    "from": 1.91,
+    "to": 1.94,
+    "purpose": "entity alarm",
+    "explicit": {
+     "anomaly-entity": 1.91
+    }
+   },
+   {
+    "family": "meta",
+    "from": 1.95,
+    "to": 1.99,
+    "purpose": "chat first: below every combat rung, above every non-emergency; ties nothing",
+    "explicit": {
+     "chat-first": 1.95,
+     "viewer-joined": 1.96,
+     "br-chat-mod-links": 1.97
+    }
+   },
+   {
+    "family": "survival",
+    "from": 2.0,
+    "to": 2.49,
+    "purpose": "emergencies: fire, downed, medical, breaks, weather",
+    "explicit": {
+     "fire-in-camp": 2.0,
+     "downed-pawn": 2.02,
+     "med-2-field-tend": 2.04,
+     "med-3-carry-to-hospital": 2.06,
+     "mental-break": 2.1,
+     "life-threat": 2.12,
+     "needs-tend": 2.14,
+     "after-the-kill": 2.16,
+     "heat-wave": 2.2,
+     "cold-snap": 2.22,
+     "solar-flare": 2.24,
+     "toxic-fallout": 2.26,
+     "flashstorm": 2.28
+    }
+   },
+   {
+    "family": "growth",
+    "from": 2.5,
+    "to": 2.59,
+    "purpose": "rescue + joiners",
+    "explicit": {
+     "growth-rescue-and-tend": 2.5,
+     "growth-joiner-letter": 2.52
+    }
+   },
+   {
+    "family": "war",
+    "from": 2.6,
+    "to": 2.69,
+    "purpose": "post-fight",
+    "explicit": {
+     "war-manhunter-butcher": 2.6
+    }
+   },
+   {
+    "family": "backrooms",
+    "from": 2.7,
+    "to": 2.79,
+    "purpose": "gate staffing",
+    "explicit": {
+     "gate-staffed": 2.7
+    }
+   },
+   {
+    "family": "meta",
+    "from": 2.8,
+    "to": 2.99,
+    "purpose": "stream attention",
+    "explicit": {
+     "letter-unread": 2.8,
+     "threat-moment": 2.82,
+     "voice-busy": 2.84,
+     "dead-air": 2.86,
+     "webcam-stale": 2.88,
+     "camera-on-crew": 2.9,
+     "stream-setup": 2.92,
+     "updated-spark": 2.94
+    }
+   },
+   {
+    "family": "start",
+    "from": 3.0,
+    "to": 3.19,
+    "purpose": "kind detection + kind opening",
+    "explicit": {
+     "start-colony-lost": 3.0,
+     "start-kind-unknown": 3.02,
+     "start-crashlanded": 3.04,
+     "start-tribal": 3.05,
+     "start-naked": 3.06,
+     "start-async": 3.07,
+     "start-store": 3.08,
+     "start-lone": 3.09,
+     "start-explore-facility": 3.12
+    }
+   },
+   {
+    "family": "backrooms",
+    "from": 3.2,
+    "to": 3.29,
+    "purpose": "Backrooms start (start_kind 7)",
+    "explicit": {
+     "br-out-of-the-backrooms": 3.2,
+     "br-out-fallback": 3.21,
+     "br-haul-out": 3.22
+    }
+   },
+   {
+    "family": "setup",
+    "from": 3.3,
+    "to": 3.99,
+    "purpose": "generic camp chain, current relative order kept",
+    "explicit": {}
+   },
+   {
+    "family": "survival",
+    "from": 4.0,
+    "to": 9.99,
+    "purpose": "sustain: food, cold, beds, medicine, storage, repairs, kitchen",
+    "explicit": {}
+   },
+   {
+    "family": "animals",
+    "from": 10.0,
+    "to": 10.09,
+    "purpose": "food animals",
+    "explicit": {
+     "animals-hunt-food": 10.0,
+     "animals-hunt-fallback": 10.01,
+     "animals-danger-clear": 10.02,
+     "animals-food-steady": 10.03
+    }
+   },
+   {
+    "family": "growth",
+    "from": 10.1,
+    "to": 10.19,
+    "purpose": "needs watch",
+    "explicit": {
+     "growth-needs-watch": 10.1,
+     "growth-catch-up": 10.11
+    }
+   },
+   {
+    "family": "war",
+    "from": 10.2,
+    "to": 10.29,
+    "purpose": "arms + embrasure repair",
+    "explicit": {
+     "war-arms-sidearms": 10.2,
+     "war-arms-fallback": 10.21,
+     "war-hostility-attack": 10.22,
+     "war-fortification-repair": 10.25
+    }
+   },
+   {
+    "family": "backrooms",
+    "from": 10.3,
+    "to": 10.49,
+    "purpose": "Backrooms camp",
+    "explicit": {
+     "br-natural-gate-room": 10.3,
+     "br-camp-wall": 10.32,
+     "br-contact-company": 10.34
+    }
+   },
+   {
+    "family": "meta",
+    "from": 10.5,
+    "to": 10.99,
+    "purpose": "housekeeping",
+    "explicit": {
+     "unforbid-constant": 10.5,
+     "game-paused-stuck": 10.6,
+     "game-paused": 10.62,
+     "window-not-in-front": 10.64
+    }
+   },
+   {
+    "family": "configuration",
+    "from": 11.0,
+    "to": 12.99,
+    "purpose": "standing configuration",
+    "explicit": {}
+   },
+   {
+    "family": "research",
+    "from": 13.0,
+    "to": 14.99,
+    "purpose": "all research rungs",
+    "explicit": {}
+   },
+   {
+    "family": "base-and-fortress",
+    "from": 15.0,
+    "to": 19.99,
+    "purpose": "base: mine/wall, power, defence, rooms, mountain base",
+    "explicit": {
+     "mine-before-wall": 15.0,
+     "perimeter-hole": 15.02
+    }
+   },
+   {
+    "family": "economy",
+    "from": 20.0,
+    "to": 24.99,
+    "purpose": "production, supply, trade, wealth",
+    "explicit": {}
+   },
+   {
+    "family": "growth",
+    "from": 25.0,
+    "to": 27.99,
+    "purpose": "recruiting, cash crops, dining, family, upgrades, second colony",
+    "explicit": {}
+   },
+   {
+    "family": "war",
+    "from": 28.0,
+    "to": 29.99,
+    "purpose": "infestation-prevent, bastions, organ, prison camp, weapons, prep, raids out",
+    "explicit": {}
+   },
+   {
+    "family": "royalty",
+    "from": 30.0,
+    "to": 32.99,
+    "purpose": "titles, throne, rooms, psycasts, permits",
+    "explicit": {}
+   },
+   {
+    "family": "ideology-biotech-anomaly",
+    "from": 33.0,
+    "to": 35.99,
+    "purpose": "ideo / bio / anomaly rest",
+    "explicit": {}
+   },
+   {
+    "family": "animals",
+    "from": 36.0,
+    "to": 37.99,
+    "purpose": "pens, milk, mounts, cavalry",
+    "explicit": {}
+   },
+   {
+    "family": "backrooms",
+    "from": 38.0,
+    "to": 40.99,
+    "purpose": "gate facility, gate ops, mine",
+    "explicit": {}
+   },
+   {
+    "family": "space",
+    "from": 41.0,
+    "to": 42.99,
+    "purpose": "off-world program",
+    "explicit": {}
+   },
+   {
+    "family": "endgame",
+    "from": 43.0,
+    "to": 44.99,
+    "purpose": "endings + ship",
+    "explicit": {}
+   },
+   {
+    "family": "meta",
+    "from": 45.0,
+    "to": 49.99,
+    "purpose": "long horizon",
+    "explicit": {
+     "big-plan": 45.0,
+     "maintenance-sweep": 48.0,
+     "long-goal-drive": 49.0,
+     "always": 49.99
+    }
+   }
+  ]
+ },
+ "sensors": {
+  "rule": "Every rung key must be an existing Sensors.cs key or a canonical name here. EXISTS = rename the rung key. ALIAS = rename to the canonical TO_BUILD key. TO_BUILD = C# added in Sensors.cs (assembled method in inventory.md section C; this file is the per-key spec). TO_BUILD_HOST = gates.py writes it (meta family is host-side). A rung may sit on a TO_BUILD key (amber until built); never on any other unmeasured key.",
+  "keys": {
+   "research_Stonecutting": {
+    "canonical": "research_stonecutting",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "research_GunTurrets": {
+    "canonical": "research_gunturrets",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "research_Battery": {
+    "canonical": "research_batteries",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "research_AirConditioning": {
+    "canonical": "research_airconditioning",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "research_PenoxycylineProduction": {
+    "canonical": "research_penoxycylineproduction",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "research_penoxycyline": {
+    "canonical": "research_penoxycylineproduction",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "count_Hive": {
+    "canonical": "count_hive",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "count_drug_lab": {
+    "canonical": "count_druglab",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "condition_HeatWave": {
+    "canonical": "condition_heatwave",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "heatstroke": {
+    "canonical": "alert_heatstroke",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "low_food": {
+    "canonical": "alert_low_food",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "low_medicine": {
+    "canonical": "alert_low_medicine",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "idle": {
+    "canonical": "alert_idle",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "colonist_needs_rescue": {
+    "canonical": "alert_colonist_needs_rescue",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "mark_research_gunsmithing": {
+    "canonical": "research_gunsmithing",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "mark_research_transport_pod": {
+    "canonical": "research_transportpod",
+    "status": "EXISTS",
+    "note": ""
+   },
+   "count_TableAutopsy": {
+    "canonical": "count_tableautopsy",
+    "status": "EXISTS",
+    "note": "mod defName; if not loaded the key is absent: war-organ-harvest then reads research_benches >=1 + corpses >0 instead"
+   },
+   "research_xenogenetics": {
+    "canonical": "research_xenogermination",
+    "status": "EXISTS",
+    "note": "UNVERIFIED Biotech defName: check the GeneExtractor's researchPrerequisites in DefDatabase and use that defName lowercased"
+   },
+   "hostiles_on_map (\"0\" / false forms)": {
+    "canonical": "hostiles_on_map",
+    "status": "EXISTS",
+    "note": "numeric 0 / \">0\""
+   },
+   "letter_labels ~trader": {
+    "canonical": "letter_matches",
+    "status": "EXISTS",
+    "note": "letter_matches: \"trader\""
+   },
+   "items_forbidden": {
+    "canonical": "forbidden_items",
+    "status": "ALIAS",
+    "note": "one sensor, two names"
+   },
+   "pawns_flee": {
+    "canonical": "flee_hostility_count",
+    "status": "ALIAS",
+    "note": ""
+   },
+   "loose_items_off_shelf": {
+    "canonical": "loose_items_unstored",
+    "status": "ALIAS",
+    "note": ""
+   },
+   "loose_items_outside_storage": {
+    "canonical": "loose_items_unstored",
+    "status": "ALIAS",
+    "note": ""
+   },
+   "unpowered_buildings": {
+    "canonical": "unpowered_consumers",
+    "status": "ALIAS",
+    "note": "its rung power-grid-standing is deleted anyway"
+   },
+   "research_only_pawns": {
+    "canonical": "researchers_only_research",
+    "status": "ALIAS",
+    "note": "the research_ prefix collides with the generic research reader"
+   },
+   "research_room_lit": {
+    "canonical": "lab_lit",
+    "status": "ALIAS",
+    "note": "same reason"
+   },
+   "forbidden_items": {
+    "canonical": "forbidden_items",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "Area ha = home.areaManager.Home; st[\"forbidden_items\"] = (double)home.listerThings.AllThings.Count(t => t.def.EverHaulable && t.IsForbidden(Faction.OfPlayer) && !home.fogGrid.IsFogged(t.Position) && (ha == null || ha[t.Position]));",
+    "note": ""
+   },
+   "unpowered_consumers": {
+    "canonical": "unpowered_consumers",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "int n = 0; foreach (Building b in home.listerBuildings.allBuildingsColonist) { CompPowerTrader pt = b.TryGetComp<CompPowerTrader>(); if (pt != null && pt.PowerOutput <= 0f && (pt.PowerNet == null || !pt.PowerOn)) n++; } st[\"unpowered_consumers\"] = (double)n;",
+    "note": ""
+   },
+   "unpowered_embrasures": {
+    "canonical": "unpowered_embrasures",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "int e = 0; foreach (Building b in home.listerBuildings.allBuildingsColonist) { CompPowerTrader pt = b.TryGetComp<CompPowerTrader>(); if (pt != null && !pt.PowerOn && b.def.defName.IndexOf(\"Embrasure\", StringComparison.OrdinalIgnoreCase) >= 0) e++; } st[\"unpowered_embrasures\"] = (double)e;",
+    "note": ""
+   },
+   "power_margin_pct": {
+    "canonical": "power_margin_pct",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "double prod = 0, cons = 0; foreach (Building b in home.listerBuildings.allBuildingsColonist) { CompPowerTrader pt = b.TryGetComp<CompPowerTrader>(); if (pt == null) continue; if (pt.PowerOutput > 0f) prod += pt.PowerOutput; else cons -= pt.PowerOutput; } if (cons > 0) st[\"power_margin_pct\"] = Math.Round(prod / cons * 100.0);",
+    "note": ""
+   },
+   "wall_gaps": {
+    "canonical": "wall_gaps",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "ReadPerimeter(st, home) exactly as in inventory.md section C: Home-area boundary cells that are Walkable and hold no wall / door / embrasure edifice.",
+    "note": "one pass per scan; move to slow cadence if it shows in the profiler"
+   },
+   "embrasure_gaps": {
+    "canonical": "embrasure_gaps",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "ReadPerimeter(st, home), inventory.md section C: boundary cells 8-adjacent to an embrasure whose edifice is not wall/door/embrasure.",
+    "note": ""
+   },
+   "unarmed_colonists": {
+    "canonical": "unarmed_colonists",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"unarmed_colonists\"] = (double)home.mapPawns.FreeColonistsSpawned.Count(p => !p.WorkTagIsDisabled(WorkTags.Violent) && p.equipment?.Primary == null);",
+    "note": ""
+   },
+   "pawns_without_sidearm": {
+    "canonical": "pawns_without_sidearm",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"pawns_without_sidearm\"] = (double)home.mapPawns.FreeColonistsSpawned.Count(p => !p.WorkTagIsDisabled(WorkTags.Violent) && !p.equipment.AllEquipmentListForReading.Any(e => e.def.IsMeleeWeapon) && !p.inventory.innerContainer.Any(t => t.def.IsMeleeWeapon));",
+    "note": ""
+   },
+   "flee_hostility_count": {
+    "canonical": "flee_hostility_count",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"flee_hostility_count\"] = (double)home.mapPawns.FreeColonistsSpawned.Count(p => p.playerSettings != null && p.playerSettings.hostilityResponse != HostilityResponseMode.Attack);",
+    "note": ""
+   },
+   "colonists_without_bedroom": {
+    "canonical": "colonists_without_bedroom",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"colonists_without_bedroom\"] = (double)home.mapPawns.FreeColonistsSpawned.Count(p => p.ownership?.OwnedBed == null || p.ownership.OwnedBed.ForPrisoners || p.ownership.OwnedRoom == null);",
+    "note": ""
+   },
+   "pawns_sharing_bedroom": {
+    "canonical": "pawns_sharing_bedroom",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"pawns_sharing_bedroom\"] = (double)home.mapPawns.FreeColonistsSpawned.Count(p => p.ownership?.OwnedRoom != null && p.ownership.OwnedRoom.Role == RoomRoleDefOf.Barracks);",
+    "note": ""
+   },
+   "colonists_without_armor": {
+    "canonical": "colonists_without_armor",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"colonists_without_armor\"] = (double)home.mapPawns.FreeColonistsSpawned.Count(p => p.GetStatValue(StatDefOf.ArmorRating_Sharp) < 0.3f);",
+    "note": ""
+   },
+   "children": {
+    "canonical": "children",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"children\"] = (double)home.mapPawns.FreeColonistsSpawned.Count(p => p.DevelopmentalStage.Juvenile());",
+    "note": ""
+   },
+   "lovers_unmarried": {
+    "canonical": "lovers_unmarried",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "int l = home.mapPawns.FreeColonistsSpawned.Count(p => { Pawn q = LovePartnerRelationUtility.ExistingLovePartner(p); return q != null && !p.relations.DirectRelationExists(PawnRelationDefOf.Spouse, q); }); st[\"lovers_unmarried\"] = (double)(l / 2);",
+    "note": ""
+   },
+   "best_plants_skill": {
+    "canonical": "best_plants_skill",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "var crew = home.mapPawns.FreeColonistsSpawned; if (crew.Count > 0) st[\"best_plants_skill\"] = (double)crew.Max(p => p.skills?.GetSkill(SkillDefOf.Plants).Level ?? 0);",
+    "note": ""
+   },
+   "researchers_only_research": {
+    "canonical": "researchers_only_research",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"researchers_only_research\"] = (double)home.mapPawns.FreeColonistsSpawned.Count(p => p.workSettings != null && p.workSettings.EverWork && p.workSettings.GetPriority(WorkTypeDefOf.Research) == 1 && DefDatabase<WorkTypeDef>.AllDefsListForReading.Where(w => w != WorkTypeDefOf.Research && !p.WorkTypeIsDisabled(w)).All(w => p.workSettings.GetPriority(w) == 0));",
+    "note": ""
+   },
+   "pawns_unconfigured": {
+    "canonical": "pawns_unconfigured",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "// RimPLCGameComponent: HashSet<int> configuredPawns; ExposeData: Scribe_Collections.Look(ref configuredPawns, \"configuredPawns\", LookMode.Value); the Inbox adds p.thingIDNumber when assign / set_work_priority / pawn_priorities is applied.\nif (configuredPawns != null) st[\"pawns_unconfigured\"] = (double)home.mapPawns.FreeColonistsSpawned.Count(p => !configuredPawns.Contains(p.thingIDNumber));",
+    "note": "absent (never a fake 0) until the set exists; setup-9-new-pawn uses grid_matches_plan meanwhile"
+   },
+   "prisoners": {
+    "canonical": "prisoners",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"prisoners\"] = (double)home.mapPawns.PrisonersOfColonySpawnedCount;",
+    "note": ""
+   },
+   "simple_benches": {
+    "canonical": "simple_benches",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"simple_benches\"] = (double)CountBuilt(home, \"SimpleResearchBench\");  // static int CountBuilt(Map m, string def) { ThingDef d = DefDatabase<ThingDef>.GetNamedSilentFail(def); return d == null ? 0 : m.listerBuildings.AllBuildingsColonistOfDef(d).Count(); }",
+    "note": ""
+   },
+   "hitech_benches": {
+    "canonical": "hitech_benches",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"hitech_benches\"] = (double)CountBuilt(home, \"HiTechResearchBench\");",
+    "note": ""
+   },
+   "multi_analyzers": {
+    "canonical": "multi_analyzers",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"multi_analyzers\"] = (double)CountBuilt(home, \"MultiAnalyzer\");",
+    "note": ""
+   },
+   "torch_lamps": {
+    "canonical": "torch_lamps",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"torch_lamps\"] = (double)CountBuilt(home, \"TorchLamp\");",
+    "note": ""
+   },
+   "monolith": {
+    "canonical": "monolith",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "if (ModsConfig.AnomalyActive) { ThingDef vm = DefDatabase<ThingDef>.GetNamedSilentFail(\"VoidMonolith\"); if (vm != null) st[\"monolith\"] = home.listerThings.ThingsOfDef(vm).Count > 0; st[\"monolith_level\"] = (double)Find.Anomaly.Level; }",
+    "note": "also adds monolith_level; anomaly-monolith reads it instead of mark_monolith_advanced"
+   },
+   "empire_hostile": {
+    "canonical": "empire_hostile",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "Faction emp = Find.FactionManager.OfEmpire; if (emp != null) st[\"empire_hostile\"] = emp.HostileTo(Faction.OfPlayer);",
+    "note": "replaces the never-set mark_empire_hostile"
+   },
+   "rooms_out_of_temp": {
+    "canonical": "rooms_out_of_temp",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "int n = 0; foreach (Room r in home.regionGrid.AllRooms) { if (r.PsychologicallyOutdoors || r.IsDoorway || !r.ProperRoom || r.Role == null || r.Role == RoomRoleDefOf.None) continue; if (r.Role.defName.IndexOf(\"Freezer\", StringComparison.OrdinalIgnoreCase) >= 0 || r.Role.defName.IndexOf(\"Storage\", StringComparison.OrdinalIgnoreCase) >= 0) continue; if (r.Temperature < 10f || r.Temperature > 35f) n++; } st[\"rooms_out_of_temp\"] = (double)n;",
+    "note": ""
+   },
+   "room_wall_holes": {
+    "canonical": "room_wall_holes",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "int h = 0; foreach (Room r in home.regionGrid.AllRooms) { if (r.PsychologicallyOutdoors || r.IsDoorway || !r.ProperRoom) continue; if (r.OpenRoofCount > 0) h++; } st[\"room_wall_holes\"] = (double)h;",
+    "note": ""
+   },
+   "unfloored_room_cells": {
+    "canonical": "unfloored_room_cells",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "int u = 0; foreach (Room r in home.regionGrid.AllRooms) { if (r.PsychologicallyOutdoors || r.IsDoorway || !r.ProperRoom || r.Role == null || r.Role == RoomRoleDefOf.None) continue; foreach (IntVec3 c in r.Cells) { TerrainDef td = c.GetTerrain(home); if (td.natural && !td.defName.EndsWith(\"_Smooth\")) u++; else if (!td.natural && !td.IsFloor) u++; } } st[\"unfloored_room_cells\"] = (double)u;",
+    "note": ""
+   },
+   "lab_lit": {
+    "canonical": "lab_lit",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "bool lit = true; foreach (Building b in home.listerBuildings.allBuildingsColonist) if (b is Building_ResearchBench && home.glowGrid.GroundGlowAt(b.InteractionCell) < 0.5f) lit = false; st[\"lab_lit\"] = lit;",
+    "note": ""
+   },
+   "loose_items_unstored": {
+    "canonical": "loose_items_unstored",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"loose_items_unstored\"] = (double)home.listerHaulables.ThingsPotentiallyNeedingHauling().Count;",
+    "note": ""
+   },
+   "camp_water_cells": {
+    "canonical": "camp_water_cells",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "Area ha = home.areaManager.Home; if (ha != null) st[\"camp_water_cells\"] = (double)ha.ActiveCells.Count(c => { TerrainDef td = home.terrainGrid.TerrainAt(c); return td.IsWater || td.defName.Contains(\"Marsh\") || td.defName.Contains(\"Mud\"); });",
+    "note": ""
+   },
+   "blueprints_against_rock": {
+    "canonical": "blueprints_against_rock",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence, new Sensors.ReadBuild(st, home, configuredPawns)",
+    "csharp": "st[\"blueprints_against_rock\"] = (double)home.listerThings.ThingsInGroup(ThingRequestGroup.Blueprint).Count(bp => bp.def.entityDefToBuild is ThingDef ed && (ed == ThingDefOf.Wall || ed.defName.IndexOf(\"Wall\", StringComparison.OrdinalIgnoreCase) >= 0) && GenAdj.CardinalDirections.Any(d => { IntVec3 n = bp.Position + d; return n.InBounds(home) && n.GetEdifice(home)?.def.mineable == true; }));",
+    "note": ""
+   },
+   "hud_visible": {
+    "canonical": "hud_visible",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs fast cadence (ReadFast)",
+    "csharp": "st[\"hud_visible\"] = !Find.UIRoot.screenshotMode.Active;",
+    "note": ""
+   },
+   "window_fullscreen": {
+    "canonical": "window_fullscreen",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs fast cadence (ReadFast)",
+    "csharp": "st[\"window_fullscreen\"] = UnityEngine.Screen.fullScreen;",
+    "note": ""
+   },
+   "camera_on_colonist": {
+    "canonical": "camera_on_colonist",
+    "status": "TO_BUILD",
+    "where": "RimPLC/Source/RimPLC/Sensors.cs fast cadence (ReadFast)",
+    "csharp": "CellRect view = Find.CameraDriver.CurrentViewRect; st[\"camera_on_colonist\"] = Find.CurrentMap == home && home.mapPawns.FreeColonistsSpawned.Any(p => view.Contains(p.Position));",
+    "note": ""
+   },
+   "owner_input_active": {
+    "canonical": "owner_input_active",
+    "status": "TO_BUILD_HOST",
+    "where": ".local/autopilot/gates.py scan state (not C#)",
+    "how": "Win32 GetLastInputInfo age < {OWNER_SETTLE_S}, excluding Unity's own injected input"
+   },
+   "owner_unread": {
+    "canonical": "owner_unread",
+    "status": "TO_BUILD_HOST",
+    "where": ".local/autopilot/gates.py scan state (not C#)",
+    "how": "admin-channel messages with id > last replied id (tools.read_owner)"
+   },
+   "chat_unanswered": {
+    "canonical": "chat_unanswered",
+    "status": "TO_BUILD_HOST",
+    "where": ".local/autopilot/gates.py scan state (not C#)",
+    "how": "chat lines from tools.read_chat with no reply_chat since"
+   },
+   "chat_asks_mod": {
+    "canonical": "chat_asks_mod",
+    "status": "TO_BUILD_HOST",
+    "where": ".local/autopilot/gates.py scan state (not C#)",
+    "how": "an unanswered chat line matches mod|repo|workshop|download"
+   },
+   "new_joiners": {
+    "canonical": "new_joiners",
+    "status": "TO_BUILD_HOST",
+    "where": ".local/autopilot/gates.py scan state (not C#)",
+    "how": "Twitch first-message names not greeted this stream"
+   },
+   "seconds_since_spoken": {
+    "canonical": "seconds_since_spoken",
+    "status": "TO_BUILD_HOST",
+    "where": ".local/autopilot/gates.py scan state (not C#)",
+    "how": "now - time of the last unity-speak line"
+   },
+   "voice_playing": {
+    "canonical": "voice_playing",
+    "status": "TO_BUILD_HOST",
+    "where": ".local/autopilot/gates.py scan state (not C#)",
+    "how": "current voice wav still inside its duration"
+   },
+   "seconds_since_webcam": {
+    "canonical": "seconds_since_webcam",
+    "status": "TO_BUILD_HOST",
+    "where": ".local/autopilot/gates.py scan state (not C#)",
+    "how": "now - mtime of the newest webcam/snap frame"
+   },
+   "seconds_since_tool": {
+    "canonical": "seconds_since_tool",
+    "status": "TO_BUILD_HOST",
+    "where": ".local/autopilot/gates.py scan state (not C#)",
+    "how": "now - last tools.dispatch call"
+   },
+   "prompt_version_changed": {
+    "canonical": "prompt_version_changed",
+    "status": "TO_BUILD_HOST",
+    "where": ".local/autopilot/gates.py scan state (not C#)",
+    "how": "hash(prompt.md + playbook.gates.json) differs from the previous scan"
+   }
+  }
+ },
+ "marks": {
+  "rule": "The 27 critic marks. Also: mountain_plan_done is set by base-and-fortress:mountain-base-plan; rung_4_production_done / rung_3_defence_done are latches of economy:rung-4-production / base-and-fortress:rung-3-defence (latch_name). Inventory section 2's other never-set marks (assign_set, pawns_set, shelter_set, got_out, gate_open, ...) are each fixed by their own family: set them in the rung that does the work, normalized syntax.",
+  "decisions": {
+   "start_in_backrooms": {
+    "decision": "DELETE mark; readers use 'mark_start_kind': 7",
+    "readers": [
+     "backrooms:br-out-of-the-backrooms",
+     "backrooms:br-out-fallback"
+    ],
+    "setter": "start:start-kind-unknown sets start_kind 7 for the Backrooms scenario (meta:new-colony likewise)"
+   },
+   "coordinate_held": {
+    "decision": "SET",
+    "setter": "backrooms:gate-open: step 'the gate shows its destination coordinate: ladder_set mark coordinate_held true'"
+   },
+   "rung_5_the_mountain_base_done": {
+    "decision": "DELETE key; readers use mark_mountain_base_done",
+    "readers": [
+     "base-and-fortress:double-bed-rooms",
+     "base-and-fortress:prison-wing",
+     "base-and-fortress:furniture-tight-and-uniform"
+    ]
+   },
+   "main_base_started": {
+    "decision": "SET",
+    "setter": "base-and-fortress:rung-5-the-mountain-base first step 'ladder_set mark main_base_started true' when the cutout is designated; its reader bio-family-rooms is deleted (pointer), so keep only if another rung reads it"
+   },
+   "family_rooms_built": {
+    "decision": "reader bio-family-rooms deleted; bio-milk-pen reads mark_double_rooms_set instead",
+    "note": "was set via 'op mark name' syntax (critic false positive)"
+   },
+   "milk_pen_built": {
+    "decision": "ALREADY SET by ideology-biotech-anomaly:bio-milk-pen (self-latch); normalize syntax"
+   },
+   "child_care_ready": {
+    "decision": "ALREADY SET by ideology-biotech-anomaly:bio-child-care (self-latch); normalize syntax"
+   },
+   "ending_gravship": {
+    "decision": "SET",
+    "setter": "endgame:empire-dominion explicit step (chains/ship)"
+   },
+   "ending_royal": {
+    "decision": "SET",
+    "setter": "endgame:empire-dominion explicit step"
+   },
+   "ending_archonexus": {
+    "decision": "SET",
+    "setter": "endgame:empire-dominion explicit step"
+   },
+   "colony_policy_set": {
+    "decision": "reader deleted (ideo-colony-policy -> configuration:config-drug-policy)"
+   },
+   "ideo_roles_refused": {
+    "decision": "ALREADY SET by ideology-biotech-anomaly:ideo-roles refusal step; normalize syntax"
+   },
+   "peno_policy_set": {
+    "decision": "reader deleted (ideo-antibiotics -> configuration:config-antibiotics)"
+   },
+   "ideo_altar_built": {
+    "decision": "SET by ideology-biotech-anomaly:ideo-ritual (normalize syntax) AND royalty:altar-room"
+   },
+   "ideo_party_room": {
+    "decision": "ALREADY SET by ideology-biotech-anomaly:ideo-party-room (self-latch); normalize syntax"
+   },
+   "generator_cancelled": {
+    "decision": "readers deleted (power-generators-outside / -fallback -> base-and-fortress:rung-2-power-and-cold)"
+   },
+   "dissection_bill_set": {
+    "decision": "ALREADY SET by ideology-biotech-anomaly:anomaly-dissection; normalize syntax"
+   },
+   "monolith_advanced": {
+    "decision": "DELETE mark; anomaly-monolith reads sensor monolith_level (TO_BUILD), e.g. {monolith:true, monolith_level:0}"
+   },
+   "stream_titled": {
+    "decision": "ALREADY SET by meta:stream-setup, cleared by meta:new-colony; normalize syntax"
+   },
+   "plan_needed": {
+    "decision": "SET",
+    "setter": "meta:owner-message (owner asks for a plan) and base-and-fortress:mountain-base-plan + endgame:empire-dominion first step 'ladder_set mark plan_needed true'; meta:big-plan clears it"
+   },
+   "survival_basics_done": {
+    "decision": "DELETE mark; research:research-rush-micro reads 'mark_camp_stable': true"
+   },
+   "empire_hostile": {
+    "decision": "DELETE mark; royalty:empire-hostile reads sensor empire_hostile (TO_BUILD)"
+   },
+   "mountain_base_site": {
+    "decision": "reader deleted (royalty:throne-base-plan -> base-and-fortress:mountain-base-plan)"
+   },
+   "arms_tried": {
+    "decision": "SET",
+    "setter": "setup:arms-out-first: on a refused empire_pass/equip 'ladder_set mark arms_tried true' then false (CTU edge)"
+   },
+   "pawns_tried": {
+    "decision": "SET",
+    "setter": "setup:setup-2-pawns: on a refused pawn_priorities 'ladder_set mark pawns_tried true' then false"
+   },
+   "research_gunsmithing": {
+    "decision": "NOT A MARK: sensor research_gunsmithing",
+    "readers": [
+     "war:war-weapons-upgrade"
+    ]
+   },
+   "research_transport_pod": {
+    "decision": "NOT A MARK: sensor research_transportpod",
+    "readers": [
+     "war:caravan-raid",
+     "war:pod-assault"
+    ]
+   }
+  }
+ },
+ "progression": {
+  "rule": "Each stage mark is set by exactly one rung (or one per mutually exclusive kind) and cleared only by meta:new-colony. Every rung of a later stage reads the previous stage mark; no family starts a later stage's work without it. Alarm/emergency/meta rungs read no stage mark.",
+  "order": [
+   "start_opening_done",
+   "camp_stable",
+   "rung_4_production_done",
+   "mountain_base_done",
+   "empire_ready",
+   "ship_research_done (sensor)",
+   "ship_built",
+   "launched"
+  ],
+  "note": "The owner's order 'production' comes before the finished mountain base in the existing rungs (rung-5-the-mountain-base needs rung_4_production_done), so production is stage 3 and base is stage 4.",
+  "stages": [
+   {
+    "stage": "start",
+    "mark": "start_opening_done",
+    "set_by": "start:start-crashlanded|start-tribal|start-naked|start-async|start-store|start-lone (whichever matches mark_start_kind); backrooms:br-haul-out for start_kind 7",
+    "read_by": [
+     "setup (arms-out-first, hence the whole chain)"
+    ]
+   },
+   {
+    "stage": "camp_stable",
+    "mark": "camp_stable",
+    "set_by": "setup:setup-8-camp-stable",
+    "read_by": [
+     "base-and-fortress (rung-2-power-and-cold, rung-3-defence, stone-blocks-bench, every non-alarm base rung)",
+     "research (research-bench, research-rush-micro)",
+     "economy (crops-full-set onward)",
+     "growth (recruit-past-three onward)",
+     "war (war-arms-sidearms and the 28-29.99 band)",
+     "animals (36-37.99 band)",
+     "configuration (bills-raise-target)"
+    ]
+   },
+   {
+    "stage": "production",
+    "mark": "rung_4_production_done",
+    "set_by": "economy:rung-4-production latch (needs defences_built + mark_crops_full + has_power + food; defences_built depends on stone-blocks-bench reading research_stonecutting)",
+    "read_by": [
+     "base-and-fortress (mountain-base-plan, rung-5-the-mountain-base)",
+     "growth (growth-upgrade-everyone)"
+    ]
+   },
+   {
+    "stage": "base (mountain)",
+    "mark": "mountain_base_done",
+    "set_by": "base-and-fortress:rung-5-the-mountain-base step 'ladder_set mark mountain_base_done true when sealed and fed' (latch stays false; that step is the done condition; reads rung_4_production_done + mountain_plan_done)",
+    "read_by": [
+     "base-and-fortress (double-bed-rooms, prison-wing, furniture-tight-and-uniform, infestation-walloff)",
+     "economy (vault, econ-fields-outside, econ-marble, econ-corral, guest-wing, econ-checklist)",
+     "growth (dining-and-rec, ideology-content, family)",
+     "royalty",
+     "ideology-biotech-anomaly",
+     "backrooms (br-sustainable, rung-5b-the-gate)",
+     "war (war-infestation-prevent)"
+    ]
+   },
+   {
+    "stage": "empire",
+    "mark": "empire_ready",
+    "set_by": "economy:econ-checklist NEW step: 'mark_mountain_base_done true and colonists >= {ENDGAME_COLONISTS} and silver >= {EMPIRE_SILVER} and research_multianalyzer true: ladder_set mark empire_ready true' (new tag EMPIRE_SILVER)",
+    "read_by": [
+     "space:rung-6-off-world (replaces its mark_mountain_base_done)",
+     "endgame:empire-dominion"
+    ]
+   },
+   {
+    "stage": "ship_research",
+    "mark": "ship_research_done (Sensors.cs, measured)",
+    "set_by": "measured; driven by research:research-ship-tree once endgame:empire-dominion sets ending_ship",
+    "read_by": [
+     "endgame (ship-materials, persona-core, persona-core-stuck)"
+    ]
+   },
+   {
+    "stage": "ship_built",
+    "mark": "ship_built",
+    "set_by": "endgame:endgame-ship-build only",
+    "read_by": [
+     "endgame (ship-build-refused, reactor-start)"
+    ]
+   },
+   {
+    "stage": "launched",
+    "mark": "launched",
+    "set_by": "endgame:endgame-launch (ship) / endgame:endgame-royal-ascent (royal)",
+    "read_by": [
+     "endgame (reactor-hold, gravship-voyage, greed)",
+     "growth:growth-second-colony"
+    ]
+   }
+  ]
+ }
+}

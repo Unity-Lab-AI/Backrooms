@@ -1,0 +1,460 @@
+{
+ "family": "royalty",
+ "rungs": [
+  {
+   "id": "empire-hostile",
+   "priority": 1.89,
+   "when": {
+    "empire_hostile": true,
+    "hostiles_on_map": ">0"
+   },
+   "then": [
+    "game_pause_game",
+    "game_list_colonists, then game_set_draft every armed shooter",
+    "order_pawn each shooter into the embrasure room nearest the enemy side (ranged first, fall back while firing)",
+    "shielded cataphracts: focus fire one at a time (EMP grenades if count_weapon_grenadeemp >0)",
+    "order refused: re-issue to the next embrasure cell; still refused -> everyone behind the turrets",
+    "game_set_time_speed 1 once positions are held"
+   ],
+   "never": [
+    "melee-charge cataphracts",
+    "fight in the open outside turret cover"
+   ],
+   "latch": false,
+   "why": "walkthrough: walkthrough-defence-and-combat.md [war]: imperial raids bring cataphracts and psycasters; shields stop ranged fire",
+   "note": "EMP vs imperial shields UNVERIFIED for 1.7; empire_hostile is TO_BUILD (amber until built); the rung stops by itself when hostiles_on_map is 0",
+   "family": "royalty"
+  },
+  {
+   "id": "title-track",
+   "priority": 30.0,
+   "when": {
+    "title_new": {
+     "any": [
+      {
+       "mark_title_tracked": false,
+       "title_seniority": ">0"
+      },
+      {
+       "title_seniority": "!=mark_title_seniority"
+      }
+     ]
+    }
+   },
+   "then": [
+    "ladder_set mark title_seniority <title_seniority as measured>",
+    "ladder_set mark title_rank <1-7 from TITLE_RANK_TABLE using title_seniority>",
+    "ladder_set mark psylink_level <psylink level of that title>",
+    "ladder_set mark title_tracked true"
+   ],
+   "never": [],
+   "latch": false,
+   "why": "RimPLC sensor title_seniority (Sensors.cs ReadSlow) -- replaces hand-guessed title_rank; re-fires whenever title_seniority differs from the stored mark (title raised or lost)",
+   "note": "mark_title_rank is read by endgame:empire-dominion, endgame:endgame-royal-ascent, survival:combat-2-call-help-permit and permit-aid",
+   "family": "royalty"
+  },
+  {
+   "id": "empire-quest",
+   "priority": 30.1,
+   "when": {
+    "quest_new": {
+     "ons": {
+      "empire_letter": true,
+      "quest_letter": true
+     }
+    },
+    "hostile_threat": false,
+    "mark_mountain_base_done": true
+   },
+   "then": [
+    "game_list_letters",
+    "game_open_letter the Empire quest letter",
+    "accept (game_click_ui_target Accept) only if the reward includes honor and fight_ratio >= {QUEST_MIN_FIGHT_RATIO}; otherwise game_dismiss_letter",
+    "accept refused: game_get_ui_layout, click Accept by name; still nothing -> game_dismiss_letter",
+    "order_pawn the pawn closest to the next title as the quest pawn"
+   ],
+   "never": [
+    "accept a quest whose threat outnumbers able_shooters_armed",
+    "send the only doctor away"
+   ],
+   "latch": false,
+   "why": "walkthrough: walkthrough-economy-growth-space.md [royalty]: honor from Empire quests is how titles climb",
+   "note": "UNVERIFIED: empire_letter matches the relatedFaction name",
+   "family": "royalty"
+  },
+  {
+   "id": "bestowing",
+   "priority": 30.2,
+   "when": {
+    "bestow": {
+     "ons": {
+      "letter_matches": "bestow"
+     }
+    }
+   },
+   "then": [
+    "game_open_letter the bestowing letter; note where the bestower lands",
+    "defend first if hostile_threat; clear the throne room",
+    "order_pawn the titled pawn to the bestower when it lands and keep it there to the end",
+    "order refused: order_pawn to the adjacent cell",
+    "title-track records the new title (title_seniority changes); no mark here"
+   ],
+   "never": [
+    "start the ceremony while hostile_threat is true"
+   ],
+   "latch": false,
+   "why": "walkthrough: walkthrough-economy-growth-space.md [royalty]: bestowing gives the title and the psylink",
+   "note": "UNVERIFIED letter wording 'bestow'; unlatched: once per title; event rung, reads no stage mark",
+   "family": "royalty"
+  },
+  {
+   "id": "throne-room",
+   "priority": 30.3,
+   "when": {
+    "mark_mountain_base_done": true,
+    "throne": false
+   },
+   "then": [
+    "walls and door per the mountain-base plan (game_select_architect_designator Wall, game_drag_cell); door on the 3-wide spine straight from the entrance",
+    "throne at the head, north wall centre, facing south (rotate before placing)",
+    "floor it (smooth stone or tile)",
+    "placement refused: game_get_cell_info, clear the cell, ladder_set mark throne_tried true; at the start of the next try ladder_set mark throne_tried false"
+   ],
+   "never": [
+    "beds in the throne room",
+    "a throne room off-centre of the base"
+   ],
+   "latch": false,
+   "why": "owner: \"ideology massive throne roome in center\" | owner: \"start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game\" | owner: \"thone room need help throne goes at hed north facing south and table centered with poart ball speakers and pews all symetrical in rule of 3rds\" | owner: \"main room ienter is the throne room centered on spine labs and tech stuff deepeer in with insta right and left halls to prison and guests seperate\" | walkthrough: walkthrough-economy-growth-space.md [royalty]: throne room needs throne, size and beauty per title",
+   "note": "no title gate: owner wants it as the main room regardless; unlatched: done = sensor throne true (a latch would fire once and starve the retry counter)",
+   "family": "royalty"
+  },
+  {
+   "id": "throne-room-retry",
+   "priority": 30.4,
+   "when": {
+    "throne_fail": {
+     "ctu": {
+      "mark_throne_tried": true
+     },
+     "preset": 3,
+     "reset": {
+      "throne": true
+     }
+    },
+    "throne": false,
+    "mark_mountain_base_done": true
+   },
+   "then": [
+    "game_take_screenshot of the throne room; game_get_cells_info its rect",
+    "short of material: chop wood or order steel",
+    "place the throne in any finished closed room now (the big room later)",
+    "ladder_set mark throne_tried false"
+   ],
+   "never": [],
+   "latch": false,
+   "why": "owner: \"ideology massive throne roome in center\"",
+   "note": "counter input mark_throne_tried is set by throne-room on a refused placement",
+   "family": "royalty"
+  },
+  {
+   "id": "throne-room-layout",
+   "priority": 30.5,
+   "when": {
+    "throne": true,
+    "mark_mountain_base_done": true
+   },
+   "then": [
+    "3x3 table centred in front of the throne",
+    "light balls and loudspeakers flanking the throne symmetrically",
+    "pews in the left and right thirds facing the throne",
+    "braziers in the corners; all mirrored on the centre line on the rule of thirds",
+    "game_take_screenshot to check symmetry; not mirrored -> deconstruct and re-place",
+    "ladder_set mark throne_room_layout_done true"
+   ],
+   "never": [
+    "asymmetric furniture"
+   ],
+   "latch": true,
+   "why": "owner: \"thone room need help throne goes at hed north facing south and table centered with poart ball speakers and pews all symetrical in rule of 3rds\"",
+   "family": "royalty"
+  },
+  {
+   "id": "psycasts",
+   "priority": 30.6,
+   "when": {
+    "mark_psylink_level": ">0"
+   },
+   "then": [
+    "meditation spot or the throne for psyfocus",
+    "choose psycasts: Skip, Berserk, Stun",
+    "psycast gizmo missing: game_list_selected_gizmos on the pawn, pick by name",
+    "ladder_set mark psycasts_done true"
+   ],
+   "never": [
+    "exceed neural heat in combat"
+   ],
+   "latch": true,
+   "why": "walkthrough-defence-and-combat.md [royalty]: psycasts",
+   "family": "royalty"
+  },
+  {
+   "id": "altar-room",
+   "priority": 30.7,
+   "when": {
+    "mark_throne_room_layout_done": true
+   },
+   "then": [
+    "walls in the offset area left (west) of the throne room, entered from the throne room's west door",
+    "make a straight wall north of the edge wall of the altar room",
+    "grand altar reformed to fit, a 2-wide path clear down the left side",
+    "grand altar locked -> standard altar now, upgrade later",
+    "ladder_set mark ideo_altar_built true",
+    "ladder_set mark altar_room_done true"
+   ],
+   "never": [
+    "block the 2-wide path"
+   ],
+   "latch": true,
+   "why": "owner: \"make that offset area an area to left of throne room the alter room\" | owner: \"need top fit a grand alter reformulat and leave two wide path on left\" | owner: \"make that offset area an area to left of throne room the alter room / need top fit a grand alter reformulat and leave two wide path on left\" | owner: \"and you need make a straight wall north of edge wall of the alter room\"",
+   "note": "mark_altar_room_done is read by ideology-biotech-anomaly:ideo-ritual (skips its build steps); ideo_altar_built per decisions chains/altar",
+   "family": "royalty"
+  },
+  {
+   "id": "permit-aid",
+   "priority": 30.8,
+   "when": {
+    "hostiles_on_map": ">{AID_CALL_FOES}",
+    "mark_title_rank": ">3",
+    "aid_ready": {
+     "any": [
+      {
+       "mark_aid_called": false
+      },
+      {
+       "aid_cool": {
+        "ton": {
+         "mark_aid_called": true
+        },
+        "hours": 24
+       }
+      }
+     ]
+    }
+   },
+   "then": [
+    "mark aid_called true (24 h passed): ladder_set mark aid_called false and stop",
+    "select the titled pawn, game_list_selected_gizmos, Call military aid",
+    "greyed (cooldown) -> fight from the embrasures",
+    "ladder_set mark aid_called true"
+   ],
+   "never": [],
+   "latch": false,
+   "why": "walkthrough-defence-and-combat.md [royalty]: permits",
+   "note": "UNVERIFIED per-title permit list; survival:combat-2-call-help-permit calls aid inside the fight loop first; this is the out-of-loop backup with a 24 h cooldown; combat rung, reads no stage mark",
+   "family": "royalty"
+  },
+  {
+   "id": "royal-rooms",
+   "priority": 30.9,
+   "when": {
+    "mark_throne_room_layout_done": true
+   },
+   "then": [
+    "king's chambers: the leader's royal bedroom, the best room -- royal bed, fine floor, dresser, end tables, art, own climate",
+    "moral guide's room: meeker than the king's but luxurious, a notch below on every piece",
+    "drug lab beside the smokeleaf/psychoid supply",
+    "game_set set_bed_owner x,z owner <pawn> on each royal bed; refused -> select the bed and assign by hand",
+    "ladder_set mark royal_rooms_done true"
+   ],
+   "never": [
+    "concubines, lovers or free-love arrangements for anyone under 18, whatever the ideoligion allows"
+   ],
+   "latch": true,
+   "why": "owner: \"need druglab need kings chambers and moral guides meeker but luziourous room\" | owner: \"king get cnew concumbines each night free love check ideology\" | owner: \"okay lets dosomething else new game just a crashlanded scenrio and plan out a massive base with planning tool and refine it as you go building bedrooms, throne rooms, altar rooms, bedrooms for kigs and royals, facilites, hospiotals, prisons, recreation rooms, guest questers and stores and areas, and prisons and vaults with high value goods, and get to use questional ethics mod and start cloning yourself\"",
+   "family": "royalty"
+  },
+  {
+   "id": "royal-vault",
+   "priority": 31.0,
+   "when": {
+    "mark_mountain_base_done": true,
+    "mark_vault_set": false
+   },
+   "then": [
+    "walled vault room with one door and shelves",
+    "game_set stockpile_filter x,z on it (silver, gold, gems, jade, ivory), priority Critical",
+    "game_set shelves for every other resource",
+    "ladder_set mark vault_set true",
+    "ladder_set mark royal_vault_done true"
+   ],
+   "never": [],
+   "latch": true,
+   "why": "owner: \"keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them\"",
+   "note": "sets vault_set so economy's vault rung (reads mark_vault_set false) does not build a second vault",
+   "family": "royalty"
+  },
+  {
+   "id": "landing-pad",
+   "priority": 31.1,
+   "when": {
+    "mark_royal_rooms_done": true
+   },
+   "then": [
+    "shuttle landing spot on open ground by the entrance",
+    "spot refused: game_get_cell_info, clear the cell, one cell over",
+    "ladder_set mark landing_pad_done true"
+   ],
+   "never": [],
+   "latch": true,
+   "why": "owner: \"start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game\"",
+   "family": "royalty"
+  },
+  {
+   "id": "rooms-level-up",
+   "priority": 31.2,
+   "when": {
+    "mark_royal_rooms_done": true,
+    "level_due": {
+     "any": [
+      {
+       "mark_rooms_pass": false
+      },
+      {
+       "rooms_cool": {
+        "ton": {
+         "mark_rooms_pass": true
+        },
+        "hours": 48
+       }
+      }
+     ]
+    }
+   },
+   "then": [
+    "mark rooms_pass true (48 h passed): ladder_set mark rooms_pass false and stop",
+    "every bedroom: end table, dresser, lamp, art, floor",
+    "floors levelled up over time: wood -> stone tile -> fine",
+    "hospital: vitals monitor and life support next to each bed, IV drips, AC/heat and vents",
+    "dissection room behind the security embrasure halls",
+    "no materials -> sell surplus first",
+    "ladder_set mark rooms_pass true"
+   ],
+   "never": [],
+   "latch": false,
+   "why": "owner: \"dont forget bed furnature and shit and floors leving lem up over time and hospital and everything else / ideology massive throne roome in center / disection rooms behind securety emprasure halls / vuitals a life support have to be next to beds / and life support and iv drips and u need ac heat and air vents\" | owner: \"disection rooms behind securety emprasure halls\"",
+   "note": "standing order every 48 game hours via the rooms_pass cycle",
+   "family": "royalty"
+  },
+  {
+   "id": "party-and-statues",
+   "priority": 31.3,
+   "when": {
+    "count_loudspeaker": ">=6",
+    "throne": true,
+    "mark_mountain_base_done": true,
+    "party_due": {
+     "any": [
+      {
+       "mark_party_held": false
+      },
+      {
+       "party_cool": {
+        "ton": {
+         "mark_party_held": true
+        },
+        "hours": 72
+       }
+      }
+     ]
+    }
+   },
+   "then": [
+    "mark party_held true (72 h passed): ladder_set mark party_held false and stop",
+    "party in the throne room regularly (select throne/altar, game_list_selected_gizmos, the party ritual gizmo)",
+    "effigy outside, never indoors",
+    "one of each main and large statue to decorate every room; keep good or better, sell or trash the rest",
+    "party gizmo missing on the throne -> try the altar",
+    "ladder_set mark party_held true"
+   ],
+   "never": [],
+   "latch": false,
+   "why": "owner: \"you effigy needs to be out side some where and once u get 6 speaks in throne room start having parties and shit regualer and start making the statues u need one of each of main ones and large ones forever to decorate every room only keep good or better ones trash/sell the rest\"",
+   "note": "count_loudspeaker is the map-wide generic count_<def> (Sensors.cs), not throne-room-only; UNVERIFIED defName Loudspeaker",
+   "family": "royalty"
+  }
+ ],
+ "prompts": {
+  "empire-hostile": "LIVE: the Empire is hostile and raiding.\n1. game_pause_game first, then game_list_colonists.\n2. game_set_draft every armed shooter; order_pawn them into the embrasure room between base and enemy.\n3. Ranged first, fall back while firing so melee never closes.\n4. Shielded cataphracts: EMP grenades if count_weapon_grenadeemp>0, else focus fire one at a time.\n5. Order refused: re-issue to the next embrasure cell; still refused -> everyone behind turrets.\n6. Done = hostiles_on_map 0 (the rung stops by itself); undraft.",
+  "title-track": "LIVE: a colonist's title changed (title_seniority != mark title_seniority).\n1. ladder: read title_seniority.\n2. Map it with TITLE_RANK_TABLE (100 Freeholder=1 ... 700 Count=7).\n3. ladder_set mark title_seniority <value>; ladder_set mark title_rank <n>; ladder_set mark psylink_level <n>.\n4. ladder_set mark title_tracked true.\nFallback: title unreadable -> game_list_colonists, read the title from the pawn.\nDone = mark title_seniority equals the sensor.",
+  "empire-quest": "LIVE: a new Empire quest letter.\n1. game_list_letters -> game_open_letter.\n2. Honor in the reward AND fight_ratio>=QUEST_MIN_FIGHT_RATIO -> accept; else dismiss.\n3. Quest pawn = nearest the next title, never the only doctor.\n4. Accept refused: game_get_ui_layout, click Accept by name; still nothing -> game_dismiss_letter.\n5. Done = ladder_set mark empire_quest_active true.\nNever: send the only doctor away.",
+  "bestowing": "LIVE: bestowing ceremony.\n1. game_open_letter; note where the bestower lands.\n2. hostile_threat true -> defend first; clear the throne room.\n3. order_pawn the titled pawn beside the bestower; hold until done.\n4. Refused: order_pawn to the adjacent cell.\nDone = title_seniority rises (title-track records it).",
+  "throne-room": "LIVE: build the throne room (main base is done).\n1. Walls + door from the plan, door on the 3-wide spine.\n2. Throne at the north wall centre, facing south.\n3. Floor it; never a bed in it.\n4. Placement refused: game_get_cell_info, clear the cell, ladder_set mark throne_tried true; next try set it false first.\nDone = sensor throne true.\nOwner: \"ideology massive throne roome in center\"\nOwner: \"main room ienter is the throne room centered on spine labs and tech stuff deepeer in with insta right and left halls to prison and guests seperate\"",
+  "throne-room-retry": "LIVE: the throne failed 3 times (ctu on mark throne_tried).\n1. game_take_screenshot; game_get_cells_info.\n2. Material short -> chop / order steel.\n3. Throne into any closed room now, the big room later.\n4. ladder_set mark throne_tried false.\nDone = throne true.\nOwner: \"ideology massive throne roome in center\"",
+  "throne-room-layout": "LIVE: furnish the throne room.\n1. 3x3 table dead centre in front of the throne.\n2. Light balls + loudspeakers flanking it, mirrored.\n3. Pews in left and right thirds facing the throne; braziers in corners.\n4. game_take_screenshot; not mirrored -> deconstruct and re-place.\nDone = ladder_set mark throne_room_layout_done true.\nOwner: \"thone room need help throne goes at hed north facing south and table centered with poart ball speakers and pews all symetrical in rule of 3rds\"",
+  "psycasts": "LIVE: psylink gained.\n1. Meditation spot or throne for psyfocus.\n2. Psycasts Skip, Berserk, Stun; gizmo missing -> game_list_selected_gizmos, pick by name.\n3. Never overheat in combat.\nDone = ladder_set mark psycasts_done true.",
+  "altar-room": "LIVE: altar room west of the throne.\n1. Walls in the offset area left of the throne; door from the throne room.\n2. A straight wall north of the altar room's edge wall.\n3. Grand altar; 2-wide path clear on the left.\n4. Grand altar locked -> standard altar now, upgrade later.\n5. ladder_set mark ideo_altar_built true.\nDone = ladder_set mark altar_room_done true.\nOwner: \"need top fit a grand alter reformulat and leave two wide path on left\"\nOwner: \"and you need make a straight wall north of edge wall of the alter room\"",
+  "permit-aid": "LIVE: big fight, title allows aid (backup to the combat loop).\n1. mark aid_called true and 24 h passed -> ladder_set mark aid_called false, stop.\n2. Select titled pawn -> game_list_selected_gizmos -> Call military aid.\n3. Greyed (cooldown) -> fight from embrasures.\nDone = ladder_set mark aid_called true.",
+  "royal-rooms": "LIVE: king's chambers, moral guide's room, drug lab.\n1. King's room = best room: royal bed, fine floor, dresser, end tables, art.\n2. Moral guide's room one notch below, still luxurious.\n3. Drug lab next to smokeleaf/psychoid storage.\n4. game_set set_bed_owner per bed; refused -> select the bed and assign by hand.\nNever: any romance setup for anyone under 18.\nDone = ladder_set mark royal_rooms_done true.\nOwner: \"need druglab need kings chambers and moral guides meeker but luziourous room\"\nOwner: \"king get cnew concumbines each night free love check ideology\"",
+  "royal-vault": "LIVE: vault for high-value goods.\n1. Walled room, one door, shelves.\n2. stockpile_filter it to silver/gold/gems/jade/ivory, Critical.\n3. game_set shelves for all else.\n4. Refused: game_get_cell_info, pick the next free rect.\n5. ladder_set mark vault_set true.\nDone = ladder_set mark royal_vault_done true.\nOwner: \"you always have to have all resources on shelves\"",
+  "landing-pad": "LIVE: landing pad.\n1. Shuttle landing spot on open ground outside the entrance.\n2. Refused: game_get_cell_info, clear it, one cell over.\nDone = ladder_set mark landing_pad_done true.\nOwner: \"start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game\"",
+  "rooms-level-up": "LIVE: standing order -- level rooms up (every 48 h).\n1. mark rooms_pass true and 48 h passed -> ladder_set mark rooms_pass false, stop.\n2. Bedroom by bedroom: end table, dresser, lamp, art, floor.\n3. Floors wood -> stone tile -> fine.\n4. Hospital: vitals + life support touching each bed, IV drips, AC/heat, vents.\nNo materials -> sell surplus first.\nDone = ladder_set mark rooms_pass true.\nOwner: \"dont forget bed furnature and shit and floors leving lem up over time and hospital and everything else\"",
+  "party-and-statues": "LIVE: 6+ speakers -- parties and statues (every 72 h).\n1. mark party_held true and 72 h passed -> ladder_set mark party_held false, stop.\n2. Select throne or altar -> game_list_selected_gizmos -> party ritual; missing -> try the altar.\n3. Effigy outside.\n4. Statues: one of each main and large; good+ kept, rest sold.\nDone = ladder_set mark party_held true.\nOwner: \"once u get 6 speaks in throne room start having parties and shit regualer\""
+ },
+ "sensors_needed": [
+  {
+   "key": "empire_hostile",
+   "status": "TO_BUILD",
+   "csharp": "Faction emp = Find.FactionManager.OfEmpire; if (emp != null) st[\"empire_hostile\"] = emp.HostileTo(Faction.OfPlayer);",
+   "read_by": [
+    "empire-hostile"
+   ]
+  }
+ ],
+ "variables_needed": [
+  {
+   "name": "QUEST_MIN_FIGHT_RATIO",
+   "value": 1.5,
+   "rule": "accept honor quests only when survivable"
+  },
+  {
+   "name": "TITLE_RANK_TABLE",
+   "value": {
+    "100": 1,
+    "200": 2,
+    "300": 3,
+    "400": 4,
+    "500": 5,
+    "600": 6,
+    "700": 7
+   },
+   "rule": "title_seniority -> title_rank"
+  },
+  {
+   "name": "AID_CALL_FOES",
+   "value": 8,
+   "rule": "existing tag"
+  }
+ ],
+ "missing_tools": [
+  "start_ritual (party at throne/altar)",
+  "reinstall (move a built thing)",
+  "build_room (walls+door+floor from a plan rect)",
+  "place_rotated (furniture with rotation)",
+  "accept_quest"
+ ],
+ "notes": [
+  "see base-and-fortress:mountain-base-plan (throne-base-plan deleted per decisions chains 'mountain base plan / layout'; plan steps merge verbatim: throne room on the 3-wide spine, prison wing east, guest wing west, altar room west of throne, one generator area). Quotes it carried, to move VERBATIM into that rung's owner_rules: [\"you can plan your base out into the mountain in that moutain cut out that surounded on 3 sides\", \"main room ienter is the throne room centered on spine labs and tech stuff deepeer in with insta right and left halls to prison and guests seperate\", \"then teriform the rocks to make all planting areas in the cutout mountin ears that aready exists to the se\", \"okay lets dosomething else new game just a crashlanded scenrio and plan out a massive base with planning tool and refine it as you go building bedrooms, throne rooms, altar rooms, bedrooms for kigs and royals, facilites, hospiotals, prisons, recreation rooms, guest questers and stores and areas, and prisons and vaults with high value goods, and get to use questional ethics mod and start cloning yourself\", \"okay lets dosomething else new game just a crashlanded scenrio and plan out a massive base with planning tool and refine it as you go building bedrooms, throne rooms, altar rooms, bedrooms for kigs and royals, facilites, hospiotals, prisons, recreation rooms, guest questers and stores and areas, and prisons and vaults with high value goods, and get to use questional ethics mod and start cloning yourself\", \"and you need to move thos wood generators out of middle of base room can be better used putting them in a real generator area\", \"disection rooms behind securety emprasure halls\"]",
+  "see base-and-fortress:rung-2-power-and-cold (generators-out deleted per decisions chains 'power'). Quotes it carried: [\"and you need to move thos wood generators out of middle of base room can be better used putting them in a real generator area\", \"Title: The Galaxy\"]",
+  "see setup:leader-moral-guide (leader-role deleted per decisions chains 'leader / moral guide'). Quote it carried: [\"keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them\"] (also still in royal-vault why)",
+  "priority bands: empire-hostile 1.89 (explicit); all others 30.00-31.30 in the old relative order, no ties",
+  "stage: building/quest rungs read mark_mountain_base_done; title-track, bestowing, psycasts, permit-aid and empire-hostile are event/combat rungs and read no stage mark",
+  "retired marks: mark_empire_hostile -> sensor empire_hostile; throne_plan_done -> mark_mountain_base_done; throne_layout_done -> throne_room_layout_done (latch_name); vault_done -> royal_vault_done; meditation_spot -> psycasts_done; throne_room_walls, throne_interim, empire_raid_survived, aid_cooldown had no readers"
+ ],
+ "unplaced_rules": [
+  {
+   "quote": "Title: The Galaxy",
+   "justification": "a stream title line, not a play rule; it was only attached to generators-out and travels with that pointer to base-and-fortress:rung-2-power-and-cold"
+  }
+ ]
+}

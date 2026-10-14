@@ -4,22 +4,105 @@
   "title": "RimPLC sensor catalogue (frozen v1)",
   "description": "Map of sensor key -> description. A sensor that cannot be read is ABSENT from the state, never a fake 0. alert_<x> is one family entry.",
   "type": "object",
-  "propertyNames": {"pattern": "^[a-z][a-z0-9_<>]*$"},
-  "additionalProperties": {"$ref": "#/$defs/sensor"},
+  "propertyNames": {
+    "pattern": "^[a-z][a-z0-9_<>]*$"
+  },
+  "additionalProperties": {
+    "$ref": "#/$defs/sensor"
+  },
   "$defs": {
     "sensor": {
       "type": "object",
-      "required": ["source", "type"],
+      "required": [
+        "source",
+        "type"
+      ],
       "additionalProperties": false,
       "properties": {
-        "source": {"type": "string", "description": "Where the value comes from (bridge read in gates.py)."},
-        "type": {"enum": ["bool", "int", "float", "string", "labels"]},
-        "note": {"type": "string"},
-        "cadence": {"enum": ["fast", "normal", "slow"], "description": "RimPLC refresh class: every scan, every 4th, every 16th."},
-        "api": {"type": "string", "description": "The game member RimPLC reads."},
-        "status": {"enum": ["verified", "UNVERIFIED", "not-measured"]},
-        "requires": {"type": "array", "items": {"type": "string"}},
-        "fallback": {"type": "string", "pattern": "^mark_[a-z0-9_]{1,40}$", "description": "The mark this sensor replaced. While the sensor is unmeasured (gates.py has no bridge read for it, or the def is not loaded) the key reads that mark, or false when it is unset."}
+        "source": {
+          "type": "string",
+          "description": "Where the value comes from (bridge read in gates.py)."
+        },
+        "type": {
+          "enum": [
+            "bool",
+            "int",
+            "float",
+            "string",
+            "labels"
+          ]
+        },
+        "note": {
+          "type": "string"
+        },
+        "cadence": {
+          "enum": [
+            "fast",
+            "normal",
+            "slow"
+          ],
+          "description": "RimPLC refresh class: every scan, every 4th, every 16th."
+        },
+        "api": {
+          "type": "string",
+          "description": "The game member RimPLC reads."
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "UNVERIFIED",
+            "not-measured"
+          ]
+        },
+        "requires": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fallback": {
+          "type": "string",
+          "pattern": "^mark_[a-z0-9_]{1,40}$",
+          "description": "The mark this sensor replaced. While the sensor is unmeasured (gates.py has no bridge read for it, or the def is not loaded) the key reads that mark, or false when it is unset."
+        },
+        "label": {
+          "type": "string",
+          "description": "Plain-English name shown in the RimPLC window."
+        },
+        "group": {
+          "enum": [
+            "Threats",
+            "Health",
+            "Crew",
+            "Food",
+            "Stores",
+            "Power",
+            "Rooms",
+            "Defence",
+            "Research",
+            "Production",
+            "Colony",
+            "World",
+            "Stream",
+            "Game"
+          ],
+          "description": "Section of the Sensors tab."
+        },
+        "tip": {
+          "type": "string",
+          "description": "Tooltip: what the reading means and what to do about it."
+        },
+        "warn": {
+          "description": "When the reading is a problem: a comparison string like \">0\", \"<3\", \"==0\" or a boolean the value must equal."
+        },
+        "severity": {
+          "enum": [
+            "critical",
+            "warning",
+            "info"
+          ],
+          "description": "critical = the game's alert column + red; warning = amber in the window; info = shown, never warned."
+        }
       }
     }
   }

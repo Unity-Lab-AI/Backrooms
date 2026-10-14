@@ -169,6 +169,7 @@ There is no date on this and there will not be one. Open the Operations tab, loo
   <RR_Ledger_PaperworkNextSend>Haul its book into a credit beacon's radius. The company waits.</RR_Ledger_PaperworkNextSend>
   <RR_Ledger_PaperworkNextBook>Filed, and no book agrees with it. The company sends another when the branch holds none.</RR_Ledger_PaperworkNextBook>
   <RR_Ledger_PaperworkNextWrite>Next: {0}. Assign somebody to a records desk.</RR_Ledger_PaperworkNextWrite>
+  <RR_Ledger_PaperworkNextBuildDesk>Next: {0}. Build a records desk (Production tab), then assign somebody to it.</RR_Ledger_PaperworkNextBuildDesk>
   <RR_Ledger_PaperworkNextWaiting>Waiting on the work it reports.</RR_Ledger_PaperworkNextWaiting>
 
   <!-- Ledger reasons. Noun phrases, matching RR_Ledger_SurveyPayment. -->

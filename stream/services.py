@@ -326,7 +326,9 @@ def start(only=None):
         if found.get(frag):
             print("%-11s already up (%s)" % (name, found[frag][0])); continue
         if name == "autopilot" and be:               # the brain runs on the GPU, not the CPU like the 35B did
-            cmd = cmd[:-1] + [os.environ.get("AUTOPILOT_NUM_GPU", "999")]
+            # no --num-gpu at all: num_gpu is a load-time option, and the warm-up and her voice lines never send it --
+            # a play turn that asks for a different value can make Ollama reload the brain (the 2026-10-13 hang)
+            cmd = cmd[:-2] + ([ "--num-gpu", os.environ["AUTOPILOT_NUM_GPU"]] if os.environ.get("AUTOPILOT_NUM_GPU") else [])
         log = open(os.path.join(QA, "_svc_%s.log" % name), "ab", buffering=0)
         subprocess.Popen(cmd, cwd=ROOT, stdout=log, stderr=log,
                          **DETACH, env=env)

@@ -1,0 +1,1290 @@
+{
+ "family": "base-and-fortress",
+ "rungs": [
+  {
+   "id": "prisoner-bed-before-fight",
+   "priority": 1.8,
+   "family": "base-and-fortress",
+   "when": {
+    "threat_letter": true,
+    "hostiles_on_map": 0,
+    "mark_prisoner_bed": false
+   },
+   "then": [
+    "game_set cmd beds (one bed in the prison room)",
+    "game_set cmd set_bed_owner x <bx> z <bz> owner prisoner",
+    "ladder_set mark prisoner_bed true"
+   ],
+   "never": [
+    "draft before contact",
+    "a colonist's bed inside a prison cell"
+   ],
+   "latch": true,
+   "why": "owner: \"Prisoner bed exists BEFORE any fight\" / owner: \"and why are ur colinist sleeeping in the prisons?\" / owner: \"and where are all the bed rooms? why are people sleeping in the proisons\"",
+   "owner_rules": [],
+   "done_mark": "prisoner_bed_before_fight_done"
+  },
+  {
+   "id": "mine-before-wall",
+   "priority": 15.0,
+   "family": "base-and-fortress",
+   "when": {
+    "blueprints_against_rock": ">0"
+   },
+   "then": [
+    "cancel the wall section that touches unmined rock",
+    "mine out the inside first (small, explored areas only)",
+    "re-lay that wall once the inside is clear"
+   ],
+   "never": [
+    "designate Mine on fogged/unexplored rock",
+    "designate more than a pawn-survivable block of mining at once"
+   ],
+   "latch": false,
+   "why": "owner: \"you are building walls straight into a mountian someone is going to get trapped building, you need to mine out the inerside first and wait to build that sections wall\" / owner: \"saw an error, u tried mining an area that was unexplored yet ... half a fucking mountain was set to mine out\" / owner: \"saw an error, u tried mining an area that was unexplored yet and when u went to mine it it went through door and it explored, then half a fucking mountain was set to mine out so i had to cancle it as pawns would of died trying to mine so much\"",
+   "owner_rules": []
+  },
+  {
+   "id": "perimeter-hole",
+   "priority": 15.02,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "wall_gaps": ">0"
+   },
+   "then": [
+    "read an intact stretch of the SAME wall and copy its defName -- never the first embrasure the list offers",
+    "a one-cell gap in an OUTER wall is an entrance: it gets a door; interior gaps get wall",
+    "keep the lane along the inside of the wall clear: no furniture, no second wall",
+    "fix the whole wall, not part of it: walk the full ring after each patch"
+   ],
+   "latch": false,
+   "why": "owner: \"hold some places you put walls where doors are to be opn outer wall\" / owner: \"and u have a coloer out side i think blocking path to larege amout of inner N wall\" / owner: \"its blocking the path nother\"",
+   "owner_rules": [
+    "no u need to fix the whole wall"
+   ]
+  },
+  {
+   "id": "terraform-water-first",
+   "priority": 15.1,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_terraform_done": false,
+    "camp_water_cells": ">0"
+   },
+   "then": [
+    "cancel every wall/blueprint sitting on water (game_apply_architect_designator Cancel over those cells)",
+    "terraform the water/mud inside the perimeter to soil (Rimrooms/terraform designator via game_select_architect_designator + game_drag_cell)",
+    "farm plots inside the walls on sand/gravel/rock: terraform to soil the same way before sowing",
+    "ladder_set mark terraform_done true"
+   ],
+   "never": [
+    "build a wall on water"
+   ],
+   "latch": true,
+   "why": "owner: \"all those walls over top of water need to be cancled and use terraform to change it to dirt first\" / owner: \"use teriform to remove mud and shit like water inside camp perimeter\" / owner: \"you can plan your base out into the mountain in that moutain cut out that surounded on 3 sides / then teriform the rocks to make all planting areas in the cutout mountin ears that aready exists to the se / main room ienter is the throne room centered on spine labs and tech stuff deepeer in with insta right and left halls to prison and guests seperate\"",
+   "owner_rules": [
+    "dont forget terriforming for soil plots"
+   ],
+   "done_mark": "terraform_water_first_done"
+  },
+  {
+   "id": "defense-0-reset-embrasures",
+   "priority": 15.22,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_defense_secure": true,
+    "embrasures": "<{EMBRASURE_TARGET}"
+   },
+   "then": [
+    "ladder_set mark defense_secure false"
+   ],
+   "latch": false,
+   "mode": "advise",
+   "chain": "defense",
+   "notice": "Defenses no longer secure: embrasures short.",
+   "why": "owner: \"now make sure everything ive evr told you to do is a running check list that is never complete and is always checking all things are done wto keep your empire moveing up\"",
+   "owner_rules": []
+  },
+  {
+   "id": "defense-0-reset-turrets",
+   "priority": 15.34,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_defense_secure": true,
+    "turrets": "<{TURRET_TARGET}"
+   },
+   "then": [
+    "ladder_set mark defense_secure false"
+   ],
+   "latch": false,
+   "mode": "advise",
+   "chain": "defense",
+   "notice": "Defenses no longer secure: turrets short.",
+   "why": "owner: \"now make sure everything ive evr told you to do is a running check list that is never complete and is always checking all things are done wto keep your empire moveing up\"",
+   "owner_rules": []
+  },
+  {
+   "id": "defense-0-reset-damage",
+   "priority": 15.46,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_defense_secure": true,
+    "buildings_damaged": ">0"
+   },
+   "then": [
+    "ladder_set mark defense_secure false"
+   ],
+   "latch": false,
+   "mode": "advise",
+   "chain": "defense",
+   "notice": "Defenses no longer secure: damage to repair.",
+   "why": "owner: \"now make sure everything ive evr told you to do is a running check list that is never complete and is always checking all things are done wto keep your empire moveing up\"",
+   "owner_rules": []
+  },
+  {
+   "id": "defense-1-secure",
+   "priority": 15.58,
+   "family": "base-and-fortress",
+   "when": {
+    "defences_built": true,
+    "embrasures": ">={EMBRASURE_TARGET}",
+    "turrets": ">={TURRET_TARGET}",
+    "buildings_damaged": 0,
+    "mark_defense_secure": false
+   },
+   "then": [
+    "defenses secure: continue with the rungs below",
+    "ladder_set mark defense_secure true"
+   ],
+   "latch": false,
+   "mode": "advise",
+   "chain": "defense",
+   "notice": "Defenses secure.",
+   "why": "owner: \"now make sure everything ive evr told you to do is a running check list that is never complete and is always checking all things are done wto keep your empire moveing up\"",
+   "owner_rules": []
+  },
+  {
+   "id": "defense-2-embrasures",
+   "priority": 15.7,
+   "family": "base-and-fortress",
+   "when": {
+    "defences_built": true,
+    "embrasures": "<{EMBRASURE_TARGET}",
+    "mark_defense_secure": false,
+    "mark_rung_3_defence_done": true
+   },
+   "then": [
+    "build list: embrasures short by EMBRASURE_TARGET - embrasures",
+    "close the ring with the same embrasure def the wall already uses"
+   ],
+   "latch": false,
+   "mode": "advise",
+   "chain": "defense",
+   "why": "owner: \"now make sure everything ive evr told you to do is a running check list that is never complete and is always checking all things are done wto keep your empire moveing up\"",
+   "owner_rules": []
+  },
+  {
+   "id": "defense-3-turrets",
+   "priority": 15.82,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_rung_3_defence_done": true,
+    "has_power": true,
+    "turrets": "<{TURRET_TARGET}",
+    "mark_defense_secure": false
+   },
+   "then": [
+    "build list: turrets short by TURRET_TARGET - turrets, behind embrasures at the killbox",
+    "steel under STEEL_RESERVE: the steel supply rung comes first"
+   ],
+   "latch": false,
+   "mode": "advise",
+   "chain": "defense",
+   "why": "owner: \"now make sure everything ive evr told you to do is a running check list that is never complete and is always checking all things are done wto keep your empire moveing up\"",
+   "owner_rules": []
+  },
+  {
+   "id": "rung-2-power-and-cold",
+   "priority": 15.94,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "days_of_food": ">{FOOD_MIN_DAYS}",
+    "medicine": ">0",
+    "mark_power_row_built": false,
+    "cancelled": {
+     "not": {
+      "cancelled_count": {
+       "ctu": {
+        "mark_generator_tried": true
+       },
+       "preset": 2,
+       "reset": {
+        "power_generators": ">=2"
+       }
+      }
+     }
+    }
+   },
+   "then": [
+    "ladder_set mark generator_tried false",
+    "research Electricity, then Air conditioning (game_set cmd add_bill is not research: use the research tab search box)",
+    "wood-fired generators OUTSIDE the rooms but INSIDE the defended wall, in ONE generator yard with the batteries, unroofed (remove-roof area to vent heat), away from the throne entrance hall",
+    "game_select_architect_designator WoodFiredGenerator; game_click_cell each slot of the row; never cancel the blueprint",
+    "generators already standing in the middle of a room: select -> Reinstall gizmo -> place in the yard (crowded cell: click until the inspect text names it)",
+    "conduit as ONE continuous string from the yard to every consumer (link range 6 tiles)",
+    "a powered cooler in the food room wall, blue side in, red side OUTSIDE",
+    "standing lamps replace torches, LAMPS_PER_ROOM per room",
+    "a placement refused or cancelled: ladder_set mark generator_tried true (2 -> power-generators-fallback asks the owner)",
+    "power_generators >= 2 and has_power true: ladder_set mark power_row_built true"
+   ],
+   "never": [
+    "start this while days-of-food is under FOOD_MIN_DAYS",
+    "a generator inside a room",
+    "generators inside roofed rooms",
+    "panels or generators outside the security zone",
+    "cancelling a placed generator blueprint",
+    "10000 wood gens"
+   ],
+   "latch": false,
+   "why": "owner: \"u need power and ac units and shit just like the last paly through\" / owner: \"generators need to be out side\" / owner: \"and make sure you zone shit in right like roofs so courtyards are unroofed and generators need to be out side\" / owner: \"they have a red and blue outputs red faces outside blue inside\" | walkthrough: rimworldwiki.com/wiki/Power (wood gen 1000W); Q: conduit link range 6; Q: vent generator heat with remove-roof",
+   "owner_rules": [
+    "generators need to be out side",
+    "and make sure you zone shit in right like roofs so courtyards are unroofed and generators need to be out side",
+    "u never did your generators youd place them then jsut cancle their palcement",
+    "set up generators still not done",
+    "come on organize your generator like batteries are fucker,,, not all over the place no ryme or reason.. and u need better power not 10000 wood gens",
+    "u got panels out side the security zone",
+    "and you need to move thos wood generators out of middle of base room can be better used putting them in a real generator area",
+    "Title: The Galaxy"
+   ],
+   "merged_from": [
+    "ideology-biotech-anomaly:power-generators-outside",
+    "royalty:generators-out"
+   ]
+  },
+  {
+   "id": "power-generators-fallback",
+   "family": "base-and-fortress",
+   "priority": 16.06,
+   "when": {
+    "mark_power_row_built": false,
+    "cancelled": {
+     "ctu": {
+      "mark_generator_tried": true
+     },
+     "preset": 2,
+     "reset": {
+      "power_generators": ">=2"
+     }
+    }
+   },
+   "then": [
+    "reply_owner: generator placement keeps cancelling, one mouse pass on the generator yard row please",
+    "unity_say a clean line to chat: waiting on one hand-placed generator row"
+   ],
+   "never": [
+    "retry the same placement a third time"
+   ],
+   "latch": true,
+   "why": "moved from ideology-biotech-anomaly:power-generators-fallback (decisions: power chain owned here; CTU fallback on the generator placement)",
+   "owner_rules": [
+    "u never did your generators youd place them then jsut cancle their palcement"
+   ],
+   "merged_from": [
+    "ideology-biotech-anomaly:power-generators-fallback"
+   ],
+   "done_mark": "power_generators_fallback_done"
+  },
+  {
+   "id": "fortress-ring",
+   "priority": 16.18,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_rung_3_defence_done": true,
+    "defences_built": true,
+    "embrasures": "<{EMBRASURE_TARGET}"
+   },
+   "then": [
+    "close the ring with embrasures matching the wall already built",
+    "killbox: KILLBOX_GAPS gap, turrets behind embrasures, a sandbag lane",
+    "firebreak FIREBREAK_WIDTH wide"
+   ],
+   "latch": false,
+   "why": "owner: \"and we are sure we are training it how you played the game earlier in the week when you buiilt the fortress with the empbrasure rooms all around it... u had great planing and editing skills in designing the base and took instruction well building it into future action emenslly well... i know it wont be as good but we are shooting for close\"",
+   "owner_rules": []
+  },
+  {
+   "id": "stone-blocks-bench",
+   "priority": 16.3,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "mark_stonecutter_set": false,
+    "research_stonecutting": true
+   },
+   "then": [
+    "build a stonecutter's table beside the storage",
+    "game_set cmd add_bill recipe Make_StoneBlocksAny count 0 (Forever)",
+    "ladder_set mark stonecutter_set true"
+   ],
+   "latch": true,
+   "why": "owner: \"if doing in stone ur conna need a stone cutting bench\" | walkthrough: B,Q: stonecutter then stone walls",
+   "owner_rules": [],
+   "done_mark": "stone_blocks_bench_done"
+  },
+  {
+   "id": "rung-3-defence",
+   "priority": 16.42,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "days_of_food": ">{FOOD_MIN_DAYS}",
+    "has_power": true
+   },
+   "then": [
+    "unity_say a clean line first: what the build is and that it takes a minute (bulk jobs are announced, never silent)",
+    "stonecutter first (stone-blocks-bench), then the stone wall: embrasure wall all the way round, NON-powered type, matching what is built",
+    "doors two cells in from each corner and one mid-side, the lane behind them kept clear",
+    "a prisoner room with its own bed and a hospital bed marked Medical before any fight",
+    "everyone carries a ranged weapon; a sidearm second"
+   ],
+   "never": [
+    "leave a pawn outside the wall when a raid letter is live",
+    "1x1 embrasures in interior walls"
+   ],
+   "latch": true,
+   "why": "owner: \"and we are sure we are training it how you played the game earlier in the week when you buiilt the fortress with the empbrasure rooms all around it... u had great planing and editing skills in designing the base and took instruction well building it into future action emenslly well... i know it wont be as good but we are shooting for close\" / owner: \"3 places with stupid embracers 1x1 in interior walls that do nothing replace with marble when u can\" | walkthrough: W+Embrasure (75% cover); rimworldwiki.com/wiki/Temperature (outer walls two thick)",
+   "owner_rules": [],
+   "done_mark": "rung_3_defence_done"
+  },
+  {
+   "id": "firebreak-ring",
+   "priority": 16.54,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_rung_3_defence_done": true,
+    "mark_firebreak_done": false
+   },
+   "then": [
+    "game_apply_architect_designator PlantsCut on the FIREBREAK_WIDTH (3) band of grass/trees around the wall and fields (game_set cmd chop for trees)",
+    "smooth-marble (or stone) floor ring FIREBREAK_WIDTH (3) wide outside the wall: game_select_architect_designator the stone floor + game_drag_cell",
+    "cut grass around buildings",
+    "ladder_set mark firebreak_done true",
+    "ladder_set mark firebreak_cut true"
+   ],
+   "latch": true,
+   "why": "owner: \"make it of wood just exterior make 3wide terrriom stone smooth marble for fire break\"",
+   "owner_rules": [
+    "make it of wood just exterior make 3wide terrriom stone smooth marble for fire break"
+   ],
+   "merged_from": [
+    "survival:firebreak"
+   ],
+   "done_mark": "firebreak_ring_done"
+  },
+  {
+   "id": "killbox-funnel",
+   "priority": 16.66,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_rung_3_defence_done": true,
+    "mark_killbox_done": false
+   },
+   "then": [
+    "one long funnel 10-20 tiles of open ground as the ONLY open route; all other perimeter walled",
+    "zig-zag inside the funnel; clear chunks and trees from it (game_set cmd chop)",
+    "sandbags (or barricades) at every shooter tile at the end, embrasures behind",
+    "doors in the killbox wall for friendly traffic, hold-open off",
+    "spike traps in the funnel once researched",
+    "ladder_set mark killbox_done true"
+   ],
+   "latch": true,
+   "why": "owner: \"and we are sure we are training it how you played the game earlier in the week when you buiilt the fortress with the empbrasure rooms all around it... u had great planing and editing skills in designing the base and took instruction well building it into future action emenslly well... i know it wont be as good but we are shooting for close\" | walkthrough: W+Killbox; W+Trap; W+Sandbags; W+Cover; W+Door",
+   "owner_rules": [],
+   "done_mark": "killbox_funnel_done"
+  },
+  {
+   "id": "turret-line",
+   "priority": 16.78,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_rung_3_defence_done": true,
+    "has_power": true,
+    "turrets": "<{TURRET_TARGET}",
+    "steel": ">{STEEL_RESERVE}",
+    "research_gunturrets": true
+   },
+   "then": [
+    "mini-turrets behind embrasures at the killbox mouth, never adjacent to each other or to shooter tiles",
+    "conduit to each",
+    "repair after every raid"
+   ],
+   "latch": false,
+   "why": " | walkthrough: W+Mini-turret (explodes ~3 tiles); W+Turret",
+   "owner_rules": []
+  },
+  {
+   "id": "power-every-consumer",
+   "priority": 16.9,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "has_power": true,
+    "unpowered_consumers": ">0"
+   },
+   "then": [
+    "game_get_cells_info round each unpowered building to find the nearest conduit",
+    "game_select_architect_designator PowerConduit (HiddenConduit inside rooms) + game_drag_cell a single run to it; never leave an island or a string that ends in nothing",
+    "one grid; read each heater/cooler grid line",
+    "re-read unpowered_consumers next pass",
+    "unpowered_consumers 0: ladder_set mark power_wired true"
+   ],
+   "latch": false,
+   "why": "owner: \"and u need to power the things in your base without power always by conduit builds connecting near by / you got shit without power need conduit, ive told you this already!!!!\" / owner: \"you have shit all over your base that doesnt have power\" / owner: \"Cannot use: No power\"",
+   "owner_rules": [
+    "you have shit all over your base that doesnt have power",
+    "8138 W (8400 Wd stored)",
+    "and u need to power the things in your base without power always by conduit builds connecting near by",
+    "you got shit without power need conduit, ive told you this already!!!!",
+    "you still have holes in you embrasures and wires that arent connected just not connected string of conduit"
+   ],
+   "merged_from": [
+    "survival:power-every-consumer",
+    "ideology-biotech-anomaly:power-grid-standing"
+   ],
+   "never": [
+    "power islands",
+    "conduit strings that end in nothing"
+   ]
+  },
+  {
+   "id": "power-generation-margin",
+   "priority": 17.02,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "has_power": true,
+    "power_margin_pct": "<125"
+   },
+   "then": [
+    "add generation in the generator yard: geothermal on a geyser once researched, watermill on a river, else wood-fired; solar/wind outside the mountain",
+    "batteries in the stone battery room for nights"
+   ],
+   "latch": false,
+   "why": "owner: \"come on organize your generator like batteries are fucker,,, not all over the place no ryme or reason.. and u need better power not 10000 wood gens\" / owner: \"might want to design a power facility generators outside batteries in reactors later\" | walkthrough: rimworldwiki.com/wiki/Power (generation >= 1.25x demand)",
+   "owner_rules": []
+  },
+  {
+   "id": "power-alternate",
+   "priority": 17.14,
+   "when": {
+    "mark_camp_stable": true,
+    "research_solarpanels": true,
+    "power_generators": ">=2",
+    "count_solargenerator": "<2"
+   },
+   "then": [
+    "solar/wind inside the wall; geothermal on a steam geyser later; reactors later",
+    "game_select_architect_designator SolarGenerator; game_click_cell"
+   ],
+   "never": [
+    "running the grid on wood alone"
+   ],
+   "why": "owner: \"your gonna need some alternate power\" (docs/playbook.rules.json) | owner: \"your gonna need some alternate power\" (docs/PLAYSCRIPT.md:133) | walkthrough-base-power-temperature.md [base-and-fortress]: wood-fired 1000W (22 wood/day), solar 1700W daytime only, keep generation >= 1.25x continuous demand, stored energy >= one night of demand, vent generator heat with a remove-roof area",
+   "family": "base-and-fortress",
+   "moved_from": "ideology-biotech-anomaly:power-alternate",
+   "owner_rules": [
+    "your gonna need some alternate power"
+   ]
+  },
+  {
+   "id": "battery-room",
+   "priority": 17.26,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "has_power": true,
+    "mark_battery_room_done": false,
+    "research_batteries": true
+   },
+   "then": [
+    "a stone-walled, stone-floored, ROOFED battery room beside the generator yard, away from bedrooms and stockpiles",
+    "batteries in rows with a 1-wide aisle so every battery has a path; game_select_architect_designator Battery; game_click_cell per slot",
+    "conduit under every battery so the draw is shared, not tied to one battery; banks split by power switches",
+    "ladder_set mark battery_room_done true"
+   ],
+   "latch": true,
+   "why": "owner: \"come on organize your generator like batteries are fucker,,, not all over the place no ryme or reason.. and u need better power not 10000 wood gens\" / owner: \"battery room need redesign and path to all batteryies\" / owner: \"might want to design a power facility generators outside batteries in reactors later\" / owner: \"and you need to move thos wood generators out of middle of base room can be better used putting them in a real generator area\" | walkthrough: rimworldwiki.com/wiki/Battery; rimworldwiki.com/wiki/Events (short circuit; roof electrics; switches)",
+   "owner_rules": [
+    "the battery braw needs to be consistant not tied to a single battery",
+    "battery room need redesign and path to all batteryies",
+    "and ur gonna need LOTS OF BATTERIES!",
+    "might want to design a power facility generators outside batteries in reactors later"
+   ],
+   "merged_from": [
+    "ideology-biotech-anomaly:power-batteries"
+   ],
+   "done_mark": "battery_room_done"
+  },
+  {
+   "id": "coolers-and-vents",
+   "priority": 17.38,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "has_power": true,
+    "research_airconditioning": true,
+    "rooms_out_of_temp": ">0"
+   },
+   "then": [
+    "a cooler/heater in the wall of each room outside 10-35C, hot side to unroofed outdoors, COOLERS_PER_ROOM for big rooms",
+    "vents (not open doors) to share temperature between halls and rooms",
+    "freezer: cooler in the freezer wall, blue side in (rotate with Q x2), set to FREEZER_TARGET_C (MISSING set_cooler_target: open the cooler and click the temperature arrows)",
+    "coolers on a narrow room (morgue freezer) go on the side that faces outdoors so they push heat outside"
+   ],
+   "latch": false,
+   "why": "owner: \"you never fucking did the vents ac and heat for all rooms and halls\" / owner: \"you have acs out put in to interior room and you need more for big rooms / on north side\" / owner: \"they have a red and blue outputs red faces outside blue inside\" | walkthrough: rimworldwiki.com/wiki/Cooler; rimworldwiki.com/wiki/Temperature",
+   "owner_rules": [
+    "you still need to figure out storages and frideges you keep forgetting to go back and finish things u need power and ac units and shit just like the last paly through",
+    "fix ur storage ur about to starve",
+    "u need to move those two cooler on the morgue freezer to east side of that narro room so they ppush outside correctly"
+   ],
+   "merged_from": [
+    "ideology-biotech-anomaly:power-ac-fridge"
+   ]
+  },
+  {
+   "id": "electric-lights",
+   "priority": 17.5,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "has_power": true,
+    "torch_lamps": ">0"
+   },
+   "then": [
+    "replace each torch with a standing lamp on the grid (one per ~7 tiles), deconstruct the torch",
+    "hospital/operating room to 50% light"
+   ],
+   "latch": false,
+   "why": "owner: \"and wtf why are you useing tourches.. and quick fucking telling people that i tell you to do stuff\" | walkthrough: rimworldwiki.com/wiki/Standing_lamp",
+   "owner_rules": []
+  },
+  {
+   "id": "storage-shelves",
+   "priority": 17.62,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "loose_items_unstored": ">20"
+   },
+   "then": [
+    "game_set cmd shelves in the dry store (add another shelf row directly on the N side of the existing ones, and fill the missing ones)",
+    "configure ONE shelf (game_set cmd stockpile_filter), then its copy button and paste to the rest",
+    "warehouses Normal, freezer Important, workstation shelves Preferred",
+    "game_set cmd set_work_priority work Hauling level 2 on the lowest-skill pawns",
+    "saying 'storage' is not placing it: place it this pass"
+   ],
+   "latch": false,
+   "why": "owner: \"you always have to have all resources on shelves\" / owner: \"maintain and watch your resources / you always have to have all resources on shelves / oraganize ur shelfs\" / owner: \"oraganize ur shelfs\" / owner: \"ur dry storage needs more shleves\" | walkthrough: B,Q: shelves 3 stacks a tile; chunks cannot go on shelves",
+   "owner_rules": [
+    "ur dry storage needs more shleves",
+    "add another shelfe N side of existing ones directly",
+    "and missing ones",
+    "ur dry storage needs more shleves / add another shelfe N side of existing ones directly / and missing ones",
+    "shes mentioned storage like 10 times and hasnt placed a storage yet, are you seeing this,, this is the shit you are to be monitoring for",
+    "u can set one and use copy button to paste it to other shelves with paste",
+    "full base storage logic rewaork and maintain",
+    "use proper prioritys normal on all places like stockpiles and warhouses and use higher teirs to pull to resource nodes around base  come on ur not silly dont just critical everything use logic chains",
+    "use proper prioritys normal on all places like stockpiles and warhouses and use higher teirs to pull to resource nodes around base come on ur not silly dont just critical everything use logic chains",
+    "keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them",
+    "come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations"
+   ],
+   "merged_from": [
+    "growth:growth-shelves-everything"
+   ]
+  },
+  {
+   "id": "dining-room",
+   "priority": 17.74,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "mark_dining_done": false,
+    "day": ">=3"
+   },
+   "then": [
+    "tables and chairs before day 5 in a >=40-tile dining room beside the kitchen",
+    "ladder_set mark dining_done true"
+   ],
+   "latch": true,
+   "why": "owner: \"and place things tight around inner walls like benches and furnatur and in the center if room permits and try to keep pathing short so kitchen next to freezer workshop s next to storage room and always make sure starages for freezer and dry goods properly all configured correctly\" | walkthrough: rimworldwiki.com/wiki/Room (dining, eat without table)",
+   "owner_rules": [],
+   "done_mark": "dining_room_done"
+  },
+  {
+   "id": "mountain-base-plan",
+   "priority": 17.86,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_rung_4_production_done": true,
+    "mark_mountain_plan_done": false
+   },
+   "then": [
+    "ladder_set mark plan_needed true",
+    "game_take_screenshot of the natural mountain cut-out; plan there: one door into the mountain, never pierce the edge from inside",
+    "game_select_architect_designator Plan; game_drag_cell the districts with real floor plans (facility/massive lab, secure prison, office, factory, homes), mirrored symmetry in the overall composition, not a grid",
+    "entrance door straight into the throne room on the 3-wide spine; east hall to the prison wing, west hall to the guest wing, kept separate; labs/tech deeper; dissection rooms behind the security embrasure halls",
+    "altar room in the offset area west of the throne room; one generator area with the batteries, away from the throne entrance hall",
+    "planting areas in the existing cut-out mountain areas to the SE (terraform/smooth the rock); king's chambers, moral guide's room, drug lab, party room, vault, hospital, bedrooms, guest quarters, landing pad",
+    "bastions: half-rooms against the inside of the wall, embrasures on all sides, at every corner and both sides of every entrance; monolith in the footprint: game_execute_gizmo Uninstall, reinstall outside",
+    "note the plan cells (note tool)",
+    "ladder_set mark throne_plan_done true",
+    "ladder_set mark mountain_plan_done true"
+   ],
+   "latch": true,
+   "why": "owner: \"i said you fucked up by not using archetatual understandings to make a vibrant well planned base\" / owner: \"i told you 1 through 3 i never told you to stop... i said you fucked up by not using archetatual understandings to make a vibrant well planned base\" / owner: \"dont just do a grid look out facility and secur prison and offic and factory and home layout floor plans and design some real shit not some bullshit grid pattern i mena wehere the fuck are you gonna put your massssive lab?\" / owner: \"did you hear what i said about a crash landing sceneria and making a massive symeticial city\"",
+   "owner_rules": [
+    "you can plan your base out into the mountain in that moutain cut out that surounded on 3 sides",
+    "main room ienter is the throne room centered on spine labs and tech stuff deepeer in with insta right and left halls to prison and guests seperate",
+    "then teriform the rocks to make all planting areas in the cutout mountin ears that aready exists to the se",
+    "okay lets dosomething else new game just a crashlanded scenrio and plan out a massive base with planning tool and refine it as you go building bedrooms, throne rooms, altar rooms, bedrooms for kigs and royals, facilites, hospiotals, prisons, recreation rooms, guest questers and stores and areas, and prisons and vaults with high value goods, and get to use questional ethics mod and start cloning yourself",
+    "and you need to move thos wood generators out of middle of base room can be better used putting them in a real generator area",
+    "disection rooms behind securety emprasure halls",
+    "you might want to at sum point long later plan on moving the natural gate to a labratory where u plan to build the gate faciltiy all secure and ur base secure, you might want to plan on putting you bas inside that natural cut out and not let your base have more that a single door into the mountain never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spinein going through the gut south into the main moutian",
+    "NE i mean",
+    "and that generator corrador need to run up to main gate entrance all centered on throne",
+    "City gate to throne",
+    "you can uninstall and reinstall monlith somnewhere if its in you way",
+    "and put them from the wall out not wall in and embrasure on all sides"
+   ],
+   "merged_from": [
+    "royalty:throne-base-plan",
+    "backrooms:br-base-layout"
+   ],
+   "never": [
+    "generators in the middle of the base room",
+    "prison hall joined to the guest hall"
+   ],
+   "done_mark": "mountain_base_plan_done"
+  },
+  {
+   "id": "rung-5-the-mountain-base",
+   "priority": 17.98,
+   "family": "base-and-fortress",
+   "when": {
+    "days_of_food": ">{FOOD_COMFORT_DAYS}",
+    "mark_mountain_base_done": false,
+    "mark_rung_4_production_done": true,
+    "mark_mountain_plan_done": true
+   },
+   "then": [
+    "unity_say a clean line first: what the build is and that it takes a minute (bulk jobs are announced, never silent)",
+    "mine the cutout: ONE door in (MOUNTAIN_DOORS_IN), never pierce the outer rock",
+    "the door opens into the throne room centred on the SPINE_WIDTH (3) spine running NE; prison wing hall east, guest wing hall west",
+    "labs and tech deeper in; ROCK_CELLS_AROUND_ROOMS (2) of natural rock between every room, neighbour and the outside (room for the room wall without breaking the exposed mountain)",
+    "a rock pillar or column every 5-6 tiles in big halls; fields, solar and wind outside under sky",
+    "move the natural gate into a sealed laboratory at the back (later)",
+    "sealed (one door in, wall_gaps 0) and days_of_food > FOOD_COMFORT_DAYS: ladder_set mark mountain_base_done true"
+   ],
+   "never": [
+    "build anything outside the mountain",
+    "mine fogged rock",
+    "remove the last roof support"
+   ],
+   "latch": false,
+   "why": "owner: \"plan on putting you bas inside that natural cut out ... never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spine\" / owner: \"you might want to at sum point long later plan on moving the natural  gate to a labratory where u plan to build the gate faciltiy all secure and ur base secure, you might want to plan on putting you bas inside that natural cut out and not let your base have more that a single door into the mountain never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spinein going through the gut south into the main moutian\" / owner: \"NE i mean\" / owner: \"your gonna have to mine alot nothing is exposed struture out side the mountina walls and plan for the intoer rooms wall too so 2x mountain space along all inrteror warooms\" | walkthrough: rimworldwiki.com/wiki/Roof (supports within 6); rimworldwiki.com/wiki/Infestation; rimworldwiki.com/wiki/Power (fields outside)",
+   "owner_rules": [
+    "your gonna have to mine alot nothing is exposed struture out side the mountina walls and plan for the intoer rooms wall too so 2x mountain space along all inrteror warooms / on exterior maountain walls bunped up to rooms / need 2 so u have rrom for you room wall with out breaking the exposed mountain",
+    "on exterior maountain walls bunped up to rooms",
+    "need 2 so u have rrom for you room wall with out breaking the exposed mountain"
+   ]
+  },
+  {
+   "id": "bedrooms-owned",
+   "priority": 18.1,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "colonists_without_bedroom": ">0"
+   },
+   "then": [
+    "game_set cmd rooms (bedrooms on a quiet side hall, ~4x6 interior)",
+    "game_set cmd beds",
+    "game_set cmd set_bed_owner x z owner <pawn> for each pawn without one",
+    "end table, dresser and a lamp per bed as materials allow",
+    "in the mountain base: one private room per colonist, interior >= 2x3, smoothed stone floor/walls, aim impressiveness >= 30",
+    "rooms refused: game_set cmd shelter w 3 h 4 + beds now, real rooms later"
+   ],
+   "never": [
+    "a colonist bed in a prison cell"
+   ],
+   "latch": false,
+   "why": "owner: \"and where are all the bed rooms? why are people sleeping in the proisons\" / owner: \"you still have t explored your facility to find the bed rooms and other unexplored rooms\" / owner: \"and why are ur colinist sleeeping in the prisons?\" / owner: \"dont forget bed furnature and shit and floors leving lem up over time and hospital and everything else\" | walkthrough: rimworldwiki.com/wiki/Room (bedroom ~4x6, >=29 space); B: end tables, dressers",
+   "owner_rules": [
+    "keep going and wtf.. your selvels have none set to hold your resources, you always have to have all resources on shelves, and why are you not expanding where are your private rooms who is your leader role that you need to set and do all the ideology stuff start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game, you are doing to little, you need to expand you thinking.. do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them"
+   ],
+   "merged_from": [
+    "growth:growth-private-rooms",
+    "growth:growth-private-rooms-fallback"
+   ]
+  },
+  {
+   "id": "finish-before-new",
+   "priority": 18.22,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "blueprints": ">0",
+    "unfinished_hold": {
+     "ton": {
+      "blueprints": ">0"
+     },
+     "hours": 24
+    }
+   },
+   "then": [
+    "unity_say before the job (owner wants viewers warned before long or click-heavy jobs), then list what is half-built; give it materials (haul) or cancel it -- no frames waiting on materials nobody has",
+    "no new blueprint until these are done",
+    "chain a pawn's haul -> build with queued orders (order_pawn queue / shift-click)"
+   ],
+   "latch": false,
+   "why": "owner: \"finish your building you have gaps finish the shit donlnt leave shit un set to build\" / owner: \"you can shift click to stack orders\" / owner: \"now make sure everything ive evr told you to do is a running check list that is never complete and is always checking all things are done wto keep your empire moveing up\" / owner: \"sounds spammy, warn viewers for shit before like that\"",
+   "owner_rules": [
+    "something is wrong u are clicking a million times in a row and it looked weird on steeam",
+    "something is wrong u are clicking a million times in a row and it looked weird on steeam / sounds spammy, warn viewers for shit before like that",
+    "talk come on NEVER FUCKING IGNORE CHAT TELL THEM IF U HAVE TO PROCESS SOMETHING GIVE TO BARE WITH YOU",
+    "upgrade build shit you need"
+   ]
+  },
+  {
+   "id": "walls-halls-roofs",
+   "priority": 18.34,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "room_wall_holes": ">0"
+   },
+   "then": [
+    "every room's walls complete (marble), every hall roofed end to end with a door at each end, courtyards unroofed on purpose",
+    "roofed porches with no walls lose their roof",
+    "double doors along the path, never sideways; no wall in front of them",
+    "a straight wall north of the altar room edge",
+    "halls 3 wide, never 1; rooms hang off halls with proper pathing; cross halls, no mile-long corridors; uniform rooms; anything can be moved or redone"
+   ],
+   "latch": false,
+   "why": "owner: \"holes in building rooms make sure walls are complete on all rooms\" / owner: \"you need to figure out you halls and whats suppose to have roof and not and do everything in back log that you never finished u have rooms with holes in walls and hallways that end nowhere\" / owner: \"and make sure you zone shit in right like roofs so courtyards are unroofed and generators need to be out side\" / owner: \"you have wall in way of 2x doors\"",
+   "owner_rules": [
+    "your base sucks you are a shitty achitect",
+    "you build it as you play i mena shit make some goals not some indefencable narrow halled peice of shit",
+    "you have to continue halls and shit u cnat just attach rooms to a fucking straightr other room u need appropriate pathing",
+    "dont forget cros paths dont want mile long corridors and need vents and lights and furnature for beds",
+    "dont make single widthc halways quickly redo that",
+    "and archetecture archetuecture look shit up if u need to u can move walss and shit anywehere to fill holes and fix building layout to anything at all you can completely redo it to make it your dream hive for your peoples",
+    "come on archeteture archeteture fix your archetecture completely door in correct place no blocked pathing walls complete embrasure fixed and powered , nothing without power need one power gen place not spead all over and not not organized",
+    "and you need make a straight wall north of edge wall of the alter room",
+    "u got double doors side ways one path thinck",
+    "comew on your base sucks think industrial facility designer and archetect, get shit finished up"
+   ]
+  },
+  {
+   "id": "flooring-by-purpose",
+   "priority": 18.46,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_camp_stable": true,
+    "has_power": true,
+    "unfloored_room_cells": ">0"
+   },
+   "then": [
+    "hospital sterile tile, kitchen/dining smoothed stone or tile, bedrooms wood; floor the entrance paths",
+    "chop trees and mine steel for it"
+   ],
+   "latch": false,
+   "why": "owner: \"and u need florring. what ever u want each rrom to be ie hospital sterile tile. beds wood flooring cut down trees mine steel and shit\" / owner: \"dont forget bed furnature and shit and floors leving lem up over time and hospital and everything else\" | walkthrough: R/Food_poisoning: floor kitchen; rimworldwiki.com/wiki/Home_area",
+   "owner_rules": []
+  },
+  {
+   "id": "prison-wing",
+   "priority": 18.58,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_mountain_base_done": true,
+    "mark_prison_wing_done": false
+   },
+   "then": [
+    "a prison hold can be an existing walled room: sleeping spot in it, storage moved to where the table and chairs were (move benches if needed)",
+    "cells with For-prisoners beds only, a torture chamber and a work-camp yard beside the factory",
+    "a direct path from the dissection room space to the prison wing",
+    "door access restricted (needs set_door_policy)",
+    "ladder_set mark prison_wing_done true"
+   ],
+   "latch": true,
+   "why": "owner: \"dont forget your prison and tourture chanmbers and work camps\" / owner: \"you may want to make the dissection room somewhere else and make that a path to the rest of the prisons so save the long walk around\" / owner: \"dont just do a grid look out facility and secur prison and offic and factory and home layout floor plans and design some real shit not some bullshit grid pattern i mena wehere the fuck are you gonna put your massssive lab?\"",
+   "owner_rules": [
+    "nmake that sotrage room a prison hold toss in a spot and put the storage where the table and chairs are might have to move benches, compelte evertthing ive sdaid"
+   ],
+   "done_mark": "prison_wing_done"
+  },
+  {
+   "id": "double-bed-rooms",
+   "priority": 18.7,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_mountain_base_done": true,
+    "colonists": ">=4",
+    "mark_double_rooms_set": false
+   },
+   "then": [
+    "game_list_colonists: adults 18+ only",
+    "private stone rooms inside the wall (game_set cmd rooms), a double bed each (game_select_architect_designator DoubleBed + game_click_cell)",
+    "game_set cmd set_bed_owner x z owner=<partner> for both partners of each adult couple; swap partners between rooms over time",
+    "milk, cribs and toys before births (ideology-biotech-anomaly:bio-milk-pen / bio-child-care read mark_double_rooms_set)",
+    "ladder_set mark double_rooms_set true"
+   ],
+   "latch": true,
+   "why": "owner: \"cant have kids until u privet rooms with double beds, one guy can knock up[ many\" / owner: \"read now.md to continue : cant have kids until u build privet rooms with double beds and set them to sleep there. can swap em in and out till all, one guy can knock up[ many\"",
+   "owner_rules": [
+    "cant have kids until u build privet rooms with double beds and set them to sleep there. can swap em in and out till all, one guy can knock up[ many",
+    "kids need milk and cribs and toys",
+    "duble beds to start families",
+    "mix an match need soldier born",
+    "cant have kids until u privet rooms with double beds, one guy can knock up[ many / read now.md to continue : cant have kids until u build privet rooms with double beds and set them to sleep there. can swap em in and out till all, one guy can knock up[ many",
+    "king get cnew concumbines each night free love check ideology",
+    "cancle that contruction"
+   ],
+   "merged_from": [
+    "ideology-biotech-anomaly:bio-family-rooms"
+   ],
+   "never": [
+    "romance, pairing, double beds or concubines for anyone under 18, whatever the ideoligion allows",
+    "family rooms outside the wall, wood walls, or doors opening outdoors"
+   ],
+   "done_mark": "double_bed_rooms_done"
+  },
+  {
+   "id": "infestation-walloff",
+   "priority": 18.82,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_mountain_base_done": true,
+    "mark_voids_walled": false
+   },
+   "then": [
+    "wall off unused overhead-mountain voids within 30 tiles (a wall every 2nd tile), keep rooms lit",
+    "ladder_set mark voids_walled true"
+   ],
+   "latch": true,
+   "why": "owner: \"plan on putting you bas inside that natural cut out ... never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spine\" / owner: \"you might want to at sum point long later plan on moving the natural  gate to a labratory where u plan to build the gate faciltiy all secure and ur base secure, you might want to plan on putting you bas inside that natural cut out and not let your base have more that a single door into the mountain never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spinein going through the gut south into the main moutian\" | walkthrough: rimworldwiki.com/wiki/Infestation",
+   "owner_rules": [],
+   "done_mark": "infestation_walloff_done"
+  },
+  {
+   "id": "furniture-tight-and-uniform",
+   "priority": 18.94,
+   "family": "base-and-fortress",
+   "when": {
+    "mark_mountain_base_done": true
+   },
+   "then": [
+    "benches and furniture tight to inner walls or centred, short paths (workshops beside storage)",
+    "uniform room shapes; move/rotate furniture where needed (needs move_building)",
+    "recreation (horseshoes pins) against a wide wall, keeping at least one interaction cell unblocked"
+   ],
+   "latch": false,
+   "why": "owner: \"and place things tight around inner walls like benches and furnatur and in the center if room permits and try to keep pathing short so kitchen next to freezer workshop s next to storage room and always make sure starages for freezer and dry goods properly all configured correctly\" / owner: \"think uniformity\" / owner: \"and u can move walls and furnature wher u want it facing direction u want\"",
+   "owner_rules": [
+    "you need to put horse shoes up against wide wall so action area isnt clicked need at minimum one action area unblocked"
+   ]
+  }
+ ],
+ "prompts": {
+  "prisoner-bed-before-fight": "A threat letter is live, no hostiles yet, and there is no prisoner bed.\nSequence: game_set cmd beds -> game_set cmd set_bed_owner (that bed's x z) owner prisoner -> ladder_set mark prisoner_bed true.\nFallback: beds refuses (no room) -> game_set cmd shelter first, then retry once.\nDone = mark prisoner_bed true (latch prisoner_bed_before_fight_done).\nOwner: \"Prisoner bed exists BEFORE any fight\".",
+  "mine-before-wall": "A wall blueprint touches unmined rock.\nSequence: game_apply_architect_designator Cancel on that wall section -> Mine the explored inside (small block) -> re-lay the wall after.\nFallback: rock is fogged -> leave it and wall elsewhere; never Mine fogged rock.\nDone = blueprints_against_rock 0 (standing).\nOwner: \"you are building walls straight into a mountian someone is going to get trapped building\".",
+  "perimeter-hole": "The defended ring has a gap (wall_gaps > 0).\nLook: game_get_cell_info an intact wall cell next to the gap -> copy its defName.\nSequence: outer one-cell gap = door; other gaps = the same wall def (game_select_architect_designator + game_click_cell).\nFallback: def not offered -> stone wall now, swap later; never the first embrasure the list offers.\nNever furniture in the inner lane. Done = wall_gaps 0 (standing).\nOwner: \"wtf why u putting walls upganets and replacing embrasures that wont work fix those walls\".",
+  "terraform-water-first": "Water or mud sits inside the camp, or a farm plot is on sand/gravel/rock.\nSequence: Cancel blueprints on water (game_apply_architect_designator Cancel) -> terraform to soil (game_select_architect_designator + game_drag_cell) -> sow after.\nFallback: designator missing -> list_architect_designators, search 'terraform'; never wall the water.\nDone = ladder_set mark terraform_done true (latch terraform_water_first_done).\nOwner: \"dont forget terriforming for soil plots\".",
+  "firebreak-ring": "The stone wall stands; the firebreak does not.\nSequence: PlantsCut the 3-wide band (game_set cmd chop for trees) -> stone floor ring FIREBREAK_WIDTH wide (game_select_architect_designator + game_drag_cell).\nFallback: stone short -> cut the band now, floor next pass.\nDone = ladder_set mark firebreak_done true (latch firebreak_ring_done).\nOwner: \"make 3wide terrriom stone smooth marble for fire break\".",
+  "rung-2-power-and-cold": "Camp is stable and fed; build the generator yard.\nFirst: ladder_set mark generator_tried false.\nResearch Electricity -> Air conditioning (research tab search box).\nWoodFiredGenerator: game_select_architect_designator + game_click_cell each slot, one row OUTSIDE rooms, INSIDE the wall, unroofed.\nGenerators in a room: Reinstall gizmo -> yard. One conduit string to every consumer.\nCooler in the food wall, red side out; lamps, not torches.\nFallback: placement refused/cancelled -> ladder_set mark generator_tried true (2 -> power-generators-fallback).\nDone = power_generators >= 2 -> ladder_set mark power_row_built true.\nOwner: \"u never did your generators youd place them then jsut cancle their palcement\".",
+  "power-generators-fallback": "Generator placement was refused/cancelled twice.\nreply_owner once: one mouse pass on the generator yard row please; unity_say a clean line to chat.\nFallback: none -- do not retry the placement.\nDone = latch power_generators_fallback_done.\nOwner: \"u never did your generators youd place them then jsut cancle their palcement\".",
+  "power-every-consumer": "A building has no power (unpowered_consumers > 0).\nLook: game_get_cells_info round it for the nearest conduit.\nSequence: game_select_architect_designator PowerConduit (HiddenConduit indoors) + game_drag_cell ONE run to it.\nFallback: no grid nearby -> power-generation-margin first; never an island.\nDone = unpowered_consumers 0 -> ladder_set mark power_wired true.\nOwner: \"you got shit without power need conduit, ive told you this already!!!!\".",
+  "power-generation-margin": "Generation is under 1.25x demand (power_margin_pct < 125).\nSequence: geothermal on a geyser / watermill / solar in the yard first (game_select_architect_designator + game_click_cell), wood-fired last; batteries for nights.\nFallback: research missing -> one more WoodFiredGenerator in the yard.\nDone = power_margin_pct >= 125 (standing).\nOwner: \"u need better power not 10000 wood gens\".",
+  "power-alternate": "Solar is researched and the grid runs on wood only.\nSequence: game_select_architect_designator SolarGenerator; game_click_cell inside the wall under sky; conduit to the grid.\nFallback: no open sky cell -> wind turbine; geothermal on a steam geyser later.\nDone = count_solargenerator >= 2 (standing).\nOwner: \"your gonna need some alternate power\".",
+  "battery-room": "Batteries researched; no battery room.\nSequence: stone room by the yard, roofed -> Battery rows (game_select_architect_designator Battery + game_click_cell) with an aisle to each -> conduit under every battery.\nFallback: steel short -> build the room, batteries next pass.\nDone = ladder_set mark battery_room_done true (latch battery_room_done).\nOwner: \"battery room need redesign and path to all batteryies\" / \"and ur gonna need LOTS OF BATTERIES!\".",
+  "coolers-and-vents": "A room is outside 10-35C.\nSequence: cooler in its outer wall, red side outdoors (game_select_architect_designator Cooler + game_click_cell, Q to rotate); vents for halls.\nFreezer: blue side in, FREEZER_TARGET_C (-5C).\nFallback: no outside wall -> vent it into a cooled hall.\nDone = rooms_out_of_temp 0 (standing).\nOwner: \"u need to move those two cooler on the morgue freezer to east side of that narro room so they ppush outside correctly\".",
+  "electric-lights": "Torches are still up.\nSequence: standing lamp beside each torch (game_select_architect_designator StandingLamp + game_click_cell), conduit, deconstruct the torch.\nFallback: no power to it -> power-every-consumer first.\nDone = torch_lamps 0 (standing).\nStream lines say what Unity is doing, never that the owner told her to.\nOwner: \"and wtf why are you useing tourches..\".",
+  "rung-3-defence": "Camp stable, food and power hold: build the stone fortress wall.\nunity_say first: what the build is and that it takes a minute.\nSequence: stone blocks -> embrasure ring, same non-powered def as built -> doors at corners/mid -> prisoner bed + Medical bed.\nFallback: material short -> build the affordable section, continue next pass.\nDone = latch rung_3_defence_done (read by fortress, killbox, firebreak, turrets).\nOwner: \"make wall of embrasure non powered type all around then u can shoot out\".",
+  "fortress-ring": "Ring short of EMBRASURE_TARGET.\nSequence: game_get_cell_info the built wall -> same-def embrasures into the ring -> killbox gap.\nFallback: steel/stone short -> stone wall now, embrasure later.\nDone = embrasures >= EMBRASURE_TARGET (standing).\nOwner: \"build like the fortress with the empbrasure rooms all around it\".",
+  "killbox-funnel": "Wall built, no killbox.\nSequence: funnel 10-20 tiles (game_drag_cell walls) -> zig-zag -> game_set cmd chop the cover -> sandbags at shooter tiles -> traps.\nFallback: no sandbags -> barricades or walls with gaps.\nNever wall every route: raiders dig if nothing is open.\nDone = ladder_set mark killbox_done true (latch killbox_funnel_done).\nOwner: \"door on corner and sides\".",
+  "turret-line": "Turrets below TURRET_TARGET.\nSequence: game_select_architect_designator Turret_MiniTurret + game_click_cell behind embrasures at the mouth, spaced; conduit each.\nFallback: components short -> steel/components supply rung first.\nDone = turrets >= TURRET_TARGET (standing).\nOwner: \"Cannot use: No power\" -- every turret gets conduit.",
+  "defense-0-reset-embrasures": "Secure contact dropped: embrasures short.\nStep: ladder_set mark defense_secure false; defense-2-embrasures follows.\nFallback: none needed (one mark write).\nDone = mark defense_secure false.\nOwner: \"build like the fortress with the empbrasure rooms all around it\".",
+  "defense-0-reset-turrets": "Secure contact dropped: turrets short.\nStep: ladder_set mark defense_secure false; defense-3-turrets follows.\nFallback: none needed (one mark write).\nDone = mark defense_secure false.\nOwner: \"Cannot use: No power\".",
+  "defense-0-reset-damage": "Secure contact dropped: something is damaged.\nStep: ladder_set mark defense_secure false; survival:repair-2-set follows.\nFallback: none needed (one mark write).\nDone = mark defense_secure false.\nOwner: \"finish your building you have gaps finish the shit donlnt leave shit un set to build\".",
+  "defense-1-secure": "Embrasures and turrets at target, nothing damaged.\nStep: ladder_set mark defense_secure true and move on to the rungs below.\nFallback: none needed (one mark write).\nDone = mark defense_secure true.\nOwner: \"build like the fortress with the empbrasure rooms all around it\".",
+  "defense-2-embrasures": "Embrasures short (advise).\nBuild list: EMBRASURE_TARGET - embrasures, same def as the wall (game_get_cell_info a built one).\nFallback: never a powered embrasure; stone wall if short.\nDone = embrasures >= EMBRASURE_TARGET.\nOwner: \"make wall of embrasure non powered type all around then u can shoot out\".",
+  "defense-3-turrets": "Turrets short (advise).\nBuild list: TURRET_TARGET - turrets behind embrasures at the killbox (game_select_architect_designator + game_click_cell).\nFallback: steel under STEEL_RESERVE -> steel supply first.\nDone = turrets >= TURRET_TARGET.\nOwner: \"Cannot use: No power\".",
+  "stone-blocks-bench": "Stonecutting researched; no stonecutter.\nSequence: game_select_architect_designator TableStonecutter + game_click_cell beside the storage -> game_set cmd add_bill recipe Make_StoneBlocksAny count 0 (Forever).\nFallback: add_bill refused -> open the bench Bills tab once by hand.\nDone = ladder_set mark stonecutter_set true (latch stone_blocks_bench_done).\nOwner: \"if doing in stone ur conna need a stone cutting bench\".",
+  "bedrooms-owned": "Someone has no owned bedroom.\nSequence: game_set cmd rooms -> game_set cmd beds -> game_set cmd set_bed_owner per pawn -> furniture.\nFallback: rooms refuses -> game_set cmd shelter 3x4 + beds now, real rooms later.\nDone = colonists_without_bedroom 0 (standing).\nOwner: \"and where are all the bed rooms? why are people sleeping in the proisons\" / \"where are your private rooms\".",
+  "double-bed-rooms": "Mountain base is done; adult couples need private double-bed rooms.\nLook: game_list_colonists -> adults 18+ only.\nSequence: game_set cmd rooms -> DoubleBed (game_select_architect_designator + game_click_cell) -> game_set cmd set_bed_owner both partners.\nFallback: no room space -> one double room now, swap couples in and out.\nDone = ladder_set mark double_rooms_set true (latch double_bed_rooms_done).\nOwner: \"cant have kids until u build privet rooms with double beds and set them to sleep there\" / \"kids need milk and cribs and toys\".",
+  "storage-shelves": "Resources lie off the shelves (loose_items_unstored > 20).\nSequence: game_set cmd shelves (row on the N side of the existing ones + the missing ones) -> stockpile_filter ONE shelf -> copy/paste to the rest -> priorities Normal/Important/Preferred.\nFallback: shelves refuses -> game_set cmd stockpile_room (stockpile_camp in the open).\nSaying 'storage' is not placing it: place it this pass.\nDone = loose_items_unstored <= 20 (standing).\nOwner: \"ur dry storage needs more shleves\" / \"u can set one and use copy button to paste it to other shelves with paste\".",
+  "flooring-by-purpose": "Rooms stand on bare ground.\nSequence: floor by purpose (sterile tile hospital, stone kitchen/dining, wood bedrooms) via game_select_architect_designator + game_drag_cell.\nFallback: material short -> smooth the stone floor (free).\nDone = unfloored_room_cells 0 (standing).\nOwner: \"and u need florring. what ever u want each rrom to be ie hospital sterile tile\".",
+  "dining-room": "Day 3+, no dining room.\nSequence: table + chairs (game_select_architect_designator + game_click_cell) beside the kitchen, room >= 40 tiles.\nFallback: no room yet -> table and stools in the kitchen corner.\nDone = ladder_set mark dining_done true (latch dining_room_done).\nOwner: \"dont forget cros paths dont want mile long corridors and need vents and lights and furnature for beds\".",
+  "prison-wing": "Base is sealed; build the secure prison district.\nSequence: cells with For-prisoners beds (game_set cmd beds + set_bed_owner owner prisoner) -> work-camp yard -> path to dissection.\nFallback: no space -> turn an existing storage room into the prison hold (sleeping spot), move the storage.\nDone = ladder_set mark prison_wing_done true (latch prison_wing_done).\nOwner: \"nmake that sotrage room a prison hold toss in a spot and put the storage where the table and chairs are\".",
+  "finish-before-new": "Blueprints have sat a full day.\nunity_say first: tell chat what you are doing and to bear with you; warn viewers before click-heavy jobs.\nSequence: haul materials to the frames (order_pawn queue) or game_apply_architect_designator Cancel them.\nFallback: material nobody has -> cancel, never leave the frame.\nNo new blueprint until these are done. Done = blueprints 0 (standing).\nOwner: \"TELL THEM IF U HAVE TO PROCESS SOMETHING GIVE TO BARE WITH YOU\" / \"warn viewers for shit before like that\".",
+  "walls-halls-roofs": "A room has a hole or a hall dead-ends.\nLook: game_get_cells_info the room edge.\nSequence: same-material wall into each gap -> roof halls end to end, unroof courtyards -> double doors along the path.\nHalls 3 wide, never 1; cross halls, no mile-long corridors.\nFallback: a wall cannot close it -> redo the room; anything can be moved.\nDone = room_wall_holes 0 (standing).\nOwner: \"dont make single widthc halways quickly redo that\" / \"and you need make a straight wall north of edge wall of the alter room\".",
+  "furniture-tight-and-uniform": "Standing layout order once the mountain base is done.\nSequence: benches tight to inner walls, workshops beside storage, horseshoes against a wide wall with one interaction cell free.\nFallback: move_building missing -> Reinstall gizmo by hand.\nDone = never (standing order).\nOwner: \"place things tight around inner walls like benches and furnatur\" / \"you need to put horse shoes up against wide wall so action area isnt clicked\".",
+  "rung-5-the-mountain-base": "Production runs and the plan exists; build the mountain base.\nunity_say first: what the build is and that it takes a minute.\nSequence: Mine the spine NE (game_apply_architect_designator Mine, explored rock only) -> throne room at the one door -> prison east, guests west -> labs deeper; pillars every 5-6.\nKeep 2 natural rock cells between every room and the outside.\nFallback: mining refused (fogged) -> explore first; never designate half the mountain.\nDone = sealed and fed -> ladder_set mark mountain_base_done true.\nOwner: \"need 2 so u have rrom for you room wall with out breaking the exposed mountain\".",
+  "mountain-base-plan": "Production is done; plan the mountain base before mining.\nFirst: ladder_set mark plan_needed true.\nSequence: game_take_screenshot of the cut-out -> game_select_architect_designator Plan -> game_drag_cell each district.\nDoor -> throne on the 3-wide spine; prison east, guests west; labs deeper; altar west of throne; one generator area.\nFallback: Plan refused -> game_list_architect_categories -> Orders -> Plan, retry; else write the plan with the note tool.\nDone = ladder_set mark throne_plan_done true + mountain_plan_done true (latch mountain_base_plan_done).\nOwner: \"main room ienter is the throne room centered on spine labs and tech stuff deepeer in with insta right and left halls to prison and guests seperate\".",
+  "infestation-walloff": "Seal unused overhead-mountain voids against infestation.\nSequence: game_select_architect_designator Wall + game_click_cell a wall every 2nd tile across each void within 30 tiles; keep rooms lit.\nFallback: void too big -> light it (StandingLamp) until walled.\nDone = ladder_set mark voids_walled true (latch infestation_walloff_done).\nOwner: \"you are building walls straight into a mountian someone is going to get trapped building\"."
+ },
+ "sensors_needed": [
+  {
+   "key": "blueprints_against_rock",
+   "status": "TO_BUILD",
+   "csharp": "st[\"blueprints_against_rock\"] = (double)home.listerThings.ThingsInGroup(ThingRequestGroup.Blueprint).Count(bp => bp.def.entityDefToBuild is ThingDef ed && IsWallDef(ed) && GenAdj.CardinalDirections.Any(d => { IntVec3 n = bp.Position + d; return n.InBounds(home) && n.GetEdifice(home)?.def.mineable == true; }));",
+   "where": "Sensors.ReadBuild (inventory.md section C), normal cadence"
+  },
+  {
+   "key": "camp_water_cells",
+   "status": "TO_BUILD",
+   "csharp": "Area homeArea = home.areaManager.Home; if (homeArea != null) st[\"camp_water_cells\"] = (double)homeArea.ActiveCells.Count(c => { TerrainDef td = home.terrainGrid.TerrainAt(c); return td.IsWater || td.defName.Contains(\"Marsh\") || td.defName.Contains(\"Mud\"); });",
+   "where": "Sensors.ReadBuild (inventory.md section C), normal cadence"
+  },
+  {
+   "key": "colonists_without_bedroom",
+   "status": "TO_BUILD",
+   "csharp": "foreach (Pawn p in home.mapPawns.FreeColonistsSpawned) { Room own = p.ownership?.OwnedRoom; Building_Bed bed = p.ownership?.OwnedBed; if (bed == null || bed.ForPrisoners || own == null) noBedroom++; } st[\"colonists_without_bedroom\"] = (double)noBedroom;",
+   "where": "Sensors.ReadBuild (inventory.md section C), normal cadence"
+  },
+  {
+   "key": "loose_items_unstored",
+   "status": "TO_BUILD",
+   "csharp": "st[\"loose_items_unstored\"] = (double)home.listerHaulables.ThingsPotentiallyNeedingHauling().Count;",
+   "where": "Sensors.ReadBuild (inventory.md section C), normal cadence"
+  },
+  {
+   "key": "power_margin_pct",
+   "status": "TO_BUILD",
+   "csharp": "same loop: if (pt.PowerOutput > 0) produced += pt.PowerOutput; else consumed += -pt.PowerOutput; if (consumed > 0) st[\"power_margin_pct\"] = Math.Round(produced / consumed * 100.0, 0);",
+   "where": "Sensors.ReadBuild (inventory.md section C), normal cadence"
+  },
+  {
+   "key": "room_wall_holes",
+   "status": "TO_BUILD",
+   "csharp": "same room loop: if (r.OpenRoofCount > 0) holes++; st[\"room_wall_holes\"] = (double)holes;",
+   "where": "Sensors.ReadBuild (inventory.md section C), normal cadence"
+  },
+  {
+   "key": "rooms_out_of_temp",
+   "status": "TO_BUILD",
+   "csharp": "foreach (Room r in home.regionGrid.AllRooms) { if (r.PsychologicallyOutdoors || r.IsDoorway || !r.ProperRoom || r.Role == null || r.Role == RoomRoleDefOf.None) continue; float t = r.Temperature; if (t < 10f || t > 35f) outOfTemp++; } st[\"rooms_out_of_temp\"] = (double)outOfTemp;",
+   "where": "Sensors.ReadBuild (inventory.md section C), normal cadence"
+  },
+  {
+   "key": "torch_lamps",
+   "status": "TO_BUILD",
+   "csharp": "st[\"torch_lamps\"] = (double)CountBuilt(home, \"TorchLamp\"); // CountBuilt: ThingDef d = DefDatabase<ThingDef>.GetNamedSilentFail(defName); return d == null ? 0 : map.listerBuildings.AllBuildingsColonistOfDef(d).Count();",
+   "where": "Sensors.ReadBuild (inventory.md section C), normal cadence"
+  },
+  {
+   "key": "unfloored_room_cells",
+   "status": "TO_BUILD",
+   "csharp": "same room loop: foreach (IntVec3 c in r.Cells) { TerrainDef td = c.GetTerrain(home); if (!td.IsFloor || td.natural) unfloored++; } st[\"unfloored_room_cells\"] = (double)unfloored;",
+   "where": "Sensors.ReadBuild (inventory.md section C), normal cadence"
+  },
+  {
+   "key": "unpowered_consumers",
+   "status": "TO_BUILD",
+   "csharp": "foreach (Building b in home.listerBuildings.allBuildingsColonist) { CompPowerTrader pt = b.TryGetComp<CompPowerTrader>(); if (pt == null || pt.PowerOutput > 0) continue; if (pt.PowerNet == null) unpoweredConsumers++; } st[\"unpowered_consumers\"] = (double)unpoweredConsumers;",
+   "where": "Sensors.ReadBuild (inventory.md section C), normal cadence"
+  },
+  {
+   "key": "wall_gaps",
+   "status": "TO_BUILD",
+   "csharp": "ReadPerimeter(st, home): Area ha = home.areaManager.Home; foreach (IntVec3 c in ha.ActiveCells) { bool edge = GenAdj.CardinalDirections.Any(d => { IntVec3 n = c + d; return !n.InBounds(home) || !ha[n]; }); if (!edge) continue; Building ed = c.GetEdifice(home); bool closed = ed != null && (IsWallDef(ed.def) || ed is Building_Door || ed.def.defName.Contains(\"Embrasure\")); if (!closed && c.Walkable(home)) gaps++; } st[\"wall_gaps\"] = (double)gaps;",
+   "where": "Sensors.ReadBuild (inventory.md section C), normal cadence"
+  }
+ ],
+ "variables_needed": [
+  {
+   "name": "FIREBREAK_WIDTH",
+   "value": 3,
+   "rule": "make it of wood just exterior make 3wide terrriom stone smooth marble for fire break"
+  },
+  {
+   "name": "SPINE_WIDTH",
+   "value": 3,
+   "rule": "main corridor 3 wide spine"
+  },
+  {
+   "name": "ROCK_CELLS_AROUND_ROOMS",
+   "value": 2,
+   "rule": "need 2 so u have rrom for you room wall with out breaking the exposed mountain"
+  },
+  {
+   "name": "MOUNTAIN_DOORS_IN",
+   "value": 1,
+   "rule": "not let your base have more that a single door into the mountain"
+  },
+  {
+   "name": "KILLBOX_LEN",
+   "value": "10-20",
+   "rule": "walkthrough W+Killbox"
+  },
+  {
+   "name": "BUILD_RETRY_PRESET",
+   "value": 3,
+   "rule": "ctu preset for failed build passes before the fallback rung"
+  },
+  {
+   "name": "FREEZER_TARGET_C",
+   "value": -5,
+   "rule": "walkthrough B,Q: set the cooler to -5 C"
+  },
+  {
+   "name": "POWER_MARGIN_MIN_PCT",
+   "value": 125,
+   "rule": "walkthrough Power: generation >= 1.25x demand"
+  },
+  {
+   "name": "PILLAR_EVERY",
+   "value": 6,
+   "rule": "walkthrough Roof: support within 6 tiles"
+  }
+ ],
+ "missing_tools": [
+  {
+   "tool": "set_door_policy",
+   "need": "restrict door access to prison/guest wings and armoury; hold-open off on killbox doors"
+  },
+  {
+   "tool": "set_bed_medical / set_bed_for_prisoners",
+   "need": "toggle Medical / For prisoners on a bed (game_execute_gizmo works only with the bed selected by hand)"
+  },
+  {
+   "tool": "set_cooler_target",
+   "need": "set a cooler/heater target temperature (freezer -5C)"
+  },
+  {
+   "tool": "build (game_set cmd build def x z rot / drag)",
+   "need": "place any architect def (wall, embrasure, conduit, lamp, floor, sandbag, trap) without the UI designator dance"
+  },
+  {
+   "tool": "move_building",
+   "need": "reinstall/rotate a wall or furniture (owner: move walls and furnature)"
+  },
+  {
+   "tool": "copy_paste_storage",
+   "need": "copy one shelf's settings and paste to the rest"
+  },
+  {
+   "tool": "set_roof_area",
+   "need": "build-roof / no-roof areas for courtyards and the generator yard"
+  }
+ ],
+ "unplaced_rules": [
+  {
+   "quote": "there already is a proceddure u",
+   "rule": "the procedure is (storyteller default now Cassandra Classic / Community builder); the presets below are its settings, not a second procedure. Earlier, verbatim: (chat)",
+   "reason": "not a base build lever; belongs to meta / start (world generation, storyteller)"
+  },
+  {
+   "quote": "not peace full you cheap skat community buiilder go back",
+   "rule": "the procedure is (storyteller default now Cassandra Classic / Community builder); the presets below are its settings, not a second procedure. Earlier, verbatim: (chat)",
+   "reason": "not a base build lever; belongs to meta / start (world generation, storyteller)"
+  },
+  {
+   "quote": "you are dsoing test items right you keep getting lost in the game play, set fucking goals foo",
+   "rule": "play toward the numbered goals in [`NOW.md`](NOW.md), each one tied to a TEST row. Base-building is done when a goal needs it, and the standing orders below are kept up along the way, not chased instead of the goals",
+   "reason": "not a base build lever; belongs to meta (goals / NOW.md)"
+  },
+  {
+   "quote": "there is no wood no trees on this map, thats why in advanced setting on world gen setup you set 300x300 mapo and spring, and then when choosing a map tile u pic on that has mountains(the rock areas on map) in forest area and jungle areas",
+   "rule": "8. How to play without wrecking things",
+   "reason": "not a base build lever; belongs to meta / start (world generation, storyteller)"
+  },
+  {
+   "quote": "and this is no longer PErsona Studio, ITS Unity Plays Rimworld and insert a pic of your self in it that shows a new expression and shit of you gaming in front of the webcam smoking weed and building mods like you do",
+   "rule": "window retitled Unity Plays RimWorld, live webcam panel (`.claude/tools/unity-cam.py <mood> \"<caption>\"`), updated on game events and chat. Agent file: `.claude/agents/rimworld-player.md`",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "put ur interface on top left of screen thats just your stock pile no one needs to see that right now, messsage alrts are more important",
+   "rule": "overlay pinned top-left over the resource list; right side stays clear for letters and alerts. / -- webcam frames keep one face (img2img from a fixed reference, fixed seed) and a natural 25-year-old goth-emo girl-next-do",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "and remmeber you are 25",
+   "rule": "overlay pinned top-left over the resource list; right side stays clear for letters and alerts. / -- webcam frames keep one face (img2img from a fixed reference, fixed seed) and a natural 25-year-old goth-emo girl-next-do",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "open up your rim chat and get to planning and buildingf rimchat shall allways be overlayed",
+   "rule": "the overlay window is never hidden. Clicks on the left edge go through bridge designators (`select_architect_designator` / `designate-cells.py`), never by hiding the chat",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "comeone told me it too quiet too much dead air",
+   "rule": "`.claude/tools/dead-air.py` runs beside the stream: after 40 s with no Unity line it speaks one from live game state (a colonist spotlight from their current job, the colony size) or a question for chat / a build update,",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "and dont styrtob the live light its distracting",
+   "rule": "the overlay's LIVE dot is steady, never blinking or pulsing; nothing on the overlay strobes",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "...and sis u add all the links to the twich stream write ups and put ur pic in profile and do all that stuff and stick rimrooms pic wher needed",
+   "rule": "Unity applies the Twitch channel page herself, not just the paste-ready files: profile picture (the locked likeness), banner and offline screen with the Rimrooms art (`docs/twitch-panels/banner-1200x480.png`, `offline-19",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "remmebr im Gee",
+   "rule": "the colonists are people, not units: the pawn Unity is me (first person -- \"I'm hauling\", \"my bed\"), the pawn Gee is the owner (Gee the scientist, my partner in this colony), Scar is our crewmate with her own personality",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "still havnet update your pics yet you are suppose to be doing that,, you can even post game screenshots highlighted things that happen with your hand writting drawn over top",
+   "rule": "a fresh `unity-cam.py <mood> \"<caption>\"` every play cycle (each `play.py` run, roughly every couple of minutes), mood matched to what just happened; never a stale frame for long. Mix in annotated game shots: `python .cl",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "giveeverone a view of the basefacilitys with prompt images highlights",
+   "rule": "local/qa/tour-base.py: frame each facility, ringed + labelled shot, a line each (UNITY_NO_GLANCE keeps the marked shot up) |",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "make sure the local model is update it pic highlights and selfies",
+   "rule": "owner, 2026-10-10: \"make sure the local model is update it pic highlights and selfies\"",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "take a pawn on a run along the bearder follow it directly and give a tour of the base to the viewers",
+   "rule": "a base tour: draft one colonist, run waypoints around the inside of the wall, camera locked on them (jump_camera_to_pawn each slice, Normal speed), a spoken line at every landmark.",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "IS AUTO HARVETS NOT WORKING? CROPS NEED HARVET",
+   "rule": "harvested and resown every day.",
+   "reason": "not a base build lever; belongs to economy (harvest/sow)"
+  },
+  {
+   "quote": "focus on the fucking action no t the fucking middle of the base / talk u cant just pause the game and say nothing for 5 minutes!",
+   "rule": "unity-snap.py frames .claude/.fight.json's rect while a fight is live |",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "TALK TO THE VIEWEREWS YOU ARE FUCKING IGNORING THEM / its quiet becasue you arent entrertaining enough",
+   "rule": "lines talk TO chat like a streamer putting on a show (hype, drama, jokes about the crew), snark at the game and raiders, never at chat; every third line asks chat something |",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "peopel are talking to you answer them alwways first",
+   "rule": "read every CHAT line of every play/step run before anything else; stream-beat.py no longer marks lines seen for chat-watch.py, so the background watcher wakes on every line |",
+   "reason": "not a base build lever; belongs to meta (stream, overlay, webcam, chat, persona)"
+  },
+  {
+   "quote": "Unity make a REV Character / tell reve its one the list Rev character(ask if any requests when u get to making him, as an extra hand will be helpopfull just have to always set up everything for new pawns",
+   "rule": "QUEUED: make a Rev pawn (Character Editor); when starting, ask RoomsIdleHands in chat for requests; every new pawn gets the full setup at once -- hostility Attack, self-tend, Penoxycyline-only drug policy, schedule, work priorities, rifle + sidearm |",
+   "reason": "not a base build lever; belongs to setup:setup-2-pawns / setup-9-new-pawn (work grid, new pawn setup)"
+  },
+  {
+   "quote": "set up all priorities this is the last time i telling you set it how ive told you every day weve played all of them for every one using coopy paste to paste one to the tosthers then customize keep all the 1s firsefiring through cooking / work priorites yours and the pawns / you have to use the mouse to change the work priorities come on get it done / dint leave a bunch blankk",
+   "rule": "manual priorities on, and every column from Firefight through Cook is 1 for all three (that is the paste), then each pawn's own columns after Cook are customised: Gee Grow 1, Research 1, Hunt 2, Construct 2, Plant cut 2, Fish 2, Resource 2, Haul 3, Clean 3; Scar Construct 1, Smith 1, Tailor 1, Craft 1, Art 2 (incapable), Grow 2, Plant cut 2, Haul 2, Clean 2; Unity Hunt 1, Mine 1, Haul 1, Plant cut",
+   "reason": "not a base build lever; belongs to setup:setup-2-pawns / setup-9-new-pawn (work grid, new pawn setup)"
+  },
+  {
+   "quote": "no priorities shall be blank in the work tab if possible",
+   "rule": "no priorities shall be blank in the work tab if possible",
+   "reason": "not a base build lever; belongs to setup:setup-2-pawns / configuration (work grid)"
+  },
+  {
+   "quote": "exploring is not finished damn it ive said this repeadidily the map is even on screen becsue it never went through EVERY DOOR",
+   "rule": "Exploring is not done until a pawn has gone through EVERY door; never call the map explored early.",
+   "reason": "not a base build lever; belongs to setup:setup-1-explore (explore every door)"
+  },
+  {
+   "quote": "kekeep the view port on the action / zoom in like i said eyes on action / keep the focus on your actions too building is something to focus on / zoom out at times to keeep all in fram in context to what ur talking about / charge them but keep ur distance from them in gun range / save scar!!!!",
+   "rule": "always, built into play.py: Closest zoom + jump to a pawn every slice; with no --follow it frames the busiest colonist -- fight/doctor first, then building, then any work. *\"keep the focus on your actions too building is something to focus on\"* -- building is action; the camera rides the builders. *\"zoom out at times to keeep all in fram in context to what ur talking about\"* -- when the talk is ab",
+   "reason": "not a base build lever; belongs to meta (stream/overlay/chat)"
+  },
+  {
+   "quote": "wtf i told you to block soeing at the farms at the main base and make new farms of everything u need grow near the camp outer walls, and like i siad no priorities shall be blank in the work tab if possible set them all correct",
+   "rule": "the eight main-base plots (Zone_12-19, the NE pocket) sow nothing until the crew moves in; their Allow-sowing toggle only answers a real mouse, and while it waited for the cursor Scar walked the whole map to sow them, so the eight zones were removed outright and their rects saved in .local/qa/_ne_plots_bounds.json (Zone_12 x204-212 / Zone_13 x224-234 / Zone_14 x236-246 / Zone_15 x248-259 at z174-1",
+   "reason": "not a base build lever; belongs to economy/survival (sowing) + setup:setup-2-pawns (work grid)"
+  }
+ ],
+ "notes": [
+  {
+   "deleted": "hostile-on-map",
+   "pointer": "see war:war-mobilize",
+   "quotes_to_move_verbatim": [
+    "Prisoner bed exists BEFORE any fight",
+    "kekeep the view port on the action / zoom in like i said eyes on action / keep the focus on your actions too building is something to focus on / zoom out at times to keeep all in fram in context to what ur talking about / charge them but keep ur distance from them in gun range / save scar!!!!",
+    "Cannot use: No power"
+   ]
+  },
+  {
+   "deleted": "raid-posted",
+   "pointer": "see war:war-letter-classify",
+   "quotes_to_move_verbatim": [
+    "kekeep the view port on the action / zoom in like i said eyes on action / keep the focus on your actions too building is something to focus on / zoom out at times to keeep all in fram in context to what ur talking about / charge them but keep ur distance from them in gun range / save scar!!!!"
+   ]
+  },
+  {
+   "deleted": "raid-cleanup",
+   "pointer": "see survival:after-the-kill",
+   "quotes_to_move_verbatim": [
+    "Prisoner bed exists BEFORE any fight"
+   ]
+  },
+  {
+   "deleted": "repair-after-raid",
+   "pointer": "see survival:repair-2-set",
+   "quotes_to_move_verbatim": [
+    "no u need to fix the whole wall",
+    "no priorities shall be blank in the work tab if possible",
+    "wtf i told you to block soeing at the farms at the main base and make new farms of everything u need grow near the camp outer walls, and like i siad no priorities shall be blank in the work tab if possible set them all correct"
+   ]
+  },
+  {
+   "deleted": "camp-wood-wall-ring",
+   "pointer": "see setup:setup-7-camp-defence (build steps + quotes merge verbatim)",
+   "quotes_to_move_verbatim": [
+    "make it of wood just exterior make 3wide terrriom stone smooth marble for fire break",
+    "all those walls over top of water need to be cancled and use terraform to change it to dirt first",
+    "hold some places you put walls where doors are to be opn outer wall"
+   ]
+  },
+  {
+   "deleted": "camp-wood-wall-fallback",
+   "pointer": "see setup:setup-7-camp-defence (its CTU on blueprints moves with it)",
+   "quotes_to_move_verbatim": [
+    "make it of wood just exterior make 3wide terrriom stone smooth marble for fire break"
+   ]
+  },
+  {
+   "deleted": "hospital",
+   "pointer": "see survival:hospital-setup",
+   "quotes_to_move_verbatim": [
+    "and u need florring. what ever u want each rrom to be ie hospital sterile tile. beds wood flooring cut down trees mine steel and shit",
+    "dont forget bed furnature and shit and floors leving lem up over time and hospital and everything else"
+   ]
+  },
+  {
+   "deleted": "freezer-cluster",
+   "pointer": "see survival:food-rotting-or-no-cold",
+   "quotes_to_move_verbatim": [
+    "and place things tight around inner walls like benches and furnatur and in the center if room permits and try to keep pathing short so kitchen next to freezer workshop s next to storage room and always make sure starages for freezer and dry goods properly all configured correctly",
+    "use proper prioritys normal on all places like stockpiles and warhouses and use higher teirs to pull to resource nodes around base  come on ur not silly dont just critical everything use logic chains"
+   ]
+  },
+  "mine-before-wall and terraform-water-first read no stage mark on purpose: they stop a pawn being walled into rock / a wall on water at any stage, camp included.",
+  "power-generators-fallback moved in from ideology-biotech-anomaly:power-generators-fallback; its CTU input mark_generator_tried is set true by rung-2-power-and-cold on a refused/cancelled placement and cleared at the start of each pass, so every refusal is a rising edge.",
+  "rung-2-power-and-cold is no longer latched (a latch would end it after one refused pass); its done mark is power_row_built.",
+  "mountain-base-plan also sets throne_plan_done (royalty:throne-room / royal-vault read it; royalty:throne-base-plan merged here).",
+  "main_base_started is not set: its only reader (ideology-biotech-anomaly:bio-family-rooms) is deleted per decisions.marks.",
+  "loose_items_unstored threshold is the literal 20 (LOOSE_ITEMS_MAX is not in the tag table)."
+ ]
+}

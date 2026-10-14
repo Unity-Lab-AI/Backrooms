@@ -1,0 +1,34 @@
+{
+ "lines": 1500,
+ "rejected": {
+  "dirty": 8,
+  "game": 25,
+  "length": 1897,
+  "repeat": 155,
+  "phoneme": 213,
+  "dup": 1
+ },
+ "topics": 30,
+ "rule": "no 5 words in a row shared with any other line",
+ "by_emotion": {
+  "neutral": 139,
+  "warm": 121,
+  "happy": 225,
+  "amused": 216,
+  "excited": 151,
+  "sad": 117,
+  "concerned": 147,
+  "frustrated": 142,
+  "surprised": 242
+ },
+ "by_act": {
+  "statement": 233,
+  "yes_no_question": 330,
+  "wh_question": 309,
+  "exclamation": 231,
+  "instruction": 108,
+  "reassurance": 183,
+  "aside": 106
+ },
+ "laughter_lines": 27
+}

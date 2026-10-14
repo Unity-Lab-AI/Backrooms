@@ -1,0 +1,557 @@
+{
+ "family": "research",
+ "rungs": [
+  {
+   "id": "research-idle",
+   "priority": 13.0,
+   "family": "research",
+   "when": {
+    "research_queue_empty": true,
+    "research_benches": ">0",
+    "idle_held": {
+     "ton": {
+      "research_queue_empty": true
+     },
+     "hours": 1
+    }
+   },
+   "then": [
+    "open Research and TYPE THE NAME IN THE SEARCH BOX -- never drag the tree looking for it",
+    "queue the first RESEARCH_ORDER project whose research_<defname> is false (Electricity, then AirConditioning, early)",
+    "letters typed as real virtual-key codes, or the box receives nothing",
+    "search box refused (queue still empty after typing): ladder_set mark research_queue_tried true, then ladder_set mark research_queue_tried false"
+   ],
+   "latch": false,
+   "why": "owner: \"its like u are open research skeen and dragging the wrong dirrectgion to explore it not using the search at all\" / owner: \"you still need to figure out storages and frideges you keep forgetting to go back and finish things u need power and ac units and shit just like the last paly through\" / owner: \"u can do the research as u need it\"",
+   "owner_rules": [
+    "u can do the research as u need it",
+    "its like u are open research skeen and dragging the wrong dirrectgion to explore it not using the search at all"
+   ]
+  },
+  {
+   "id": "research-idle-fallback",
+   "priority": 13.1,
+   "family": "research",
+   "when": {
+    "research_queue_empty": true,
+    "stall": {
+     "ctu": {
+      "mark_research_queue_tried": true
+     },
+     "preset": 3,
+     "reset": {
+      "research_queue_empty": false
+     }
+    }
+   },
+   "then": [
+    "look: screenshot the research tab and read what is selected",
+    "type a shorter search term (first 5 letters of the project label); refused again: ladder_set mark research_queue_tried true, then ladder_set mark research_queue_tried false",
+    "still refused: twitch_chat action=say asking chat what to research next; keep playing other rungs; note name=research_stuck"
+   ],
+   "latch": false,
+   "why": "owner: \"its like u are open research skeen and dragging the wrong dirrectgion to explore it not using the search at all\" / owner: \"ask chat question on what u should do and move on repsond and action replies except from that one guy with all the seves\"",
+   "owner_rules": [
+    "its like u are open research skeen and dragging the wrong dirrectgion to explore it not using the search at all"
+   ]
+  },
+  {
+   "id": "research-bench",
+   "priority": 13.2,
+   "family": "research",
+   "when": {
+    "mark_camp_stable": true,
+    "research_benches": 0,
+    "days_of_food": ">{FOOD_MIN_DAYS}",
+    "beds": ">0",
+    "mark_research_bench_done": false
+   },
+   "then": [
+    "game_state: read colonists and wood; game_set cmd rooms to list rooms",
+    "pick an enclosed roofed room (or the kitchen) -- never outdoors",
+    "place a SimpleResearchBench there (needs the missing 'build' tool; today: Architect -> Production via the bridge)",
+    "game_set cmd set_work_priority pawn=<best Intellectual> work=Research level=1",
+    "placement refused (no blueprint appears): ladder_set mark research_bench_tried true, then ladder_set mark research_bench_tried false",
+    "when research_benches>0: ladder_set mark research_bench_done true"
+   ],
+   "never": [
+    "a bench outdoors or in an unroofed room",
+    "a second simple bench before Microelectronics"
+   ],
+   "latch": true,
+   "why": "owner: \"research what u need to unlock better things u can produce\" / owner: \"need to get ur benches insie with wall lights use wall light this time they dont take up floor space just be weirry they aree actual infront of the wall to select\" / owner: \"research and manage your pawns\" -- walkthroughs: 'Build the first research bench by day 3 in its own clean, lit room (laboratory role)' (rimworldwiki Room); 'Build a simple research bench by day 3; keep 1 researcher (highest Intellectual) on it full time' (W Research); 'Build a simple research bench in the first few days (about day 3, once the room and beds are done)' (B,Q)",
+   "owner_rules": [
+    "need to get ur benches insie with wall lights use wall light this time they dont take up floor space just be weirry they aree actual infront of the wall to select",
+    "research what u need to unlock better things u can produce",
+    "research and manage your pawns"
+   ]
+  },
+  {
+   "id": "research-bench-fallback",
+   "priority": 13.3,
+   "family": "research",
+   "when": {
+    "mark_camp_stable": true,
+    "research_benches": 0,
+    "bench_tries": {
+     "ctu": {
+      "mark_research_bench_tried": true
+     },
+     "preset": 3,
+     "reset": {
+      "research_benches": ">0"
+     }
+    }
+   },
+   "then": [
+    "game_set cmd chop count=150 when wood < 100",
+    "game_set cmd shelter w=5 h=5 (a wood room + door + roof beside the crew) -- the bench goes inside it",
+    "retry the bench placement inside the shelter; refused again: ladder_set mark research_bench_tried true, then ladder_set mark research_bench_tried false",
+    "twitch_chat action=say: ask chat where the lab should go, keep playing other rungs"
+   ],
+   "latch": false,
+   "why": "owner: \"research what u need to unlock better things u can produce\" / owner: \"ask chat question on what u should do and move on repsond and action replies except from that one guy with all the seves\" -- fallback after 3 failed bench placements (ctu preset 3)",
+   "owner_rules": [
+    "research what u need to unlock better things u can produce"
+   ]
+  },
+  {
+   "id": "research-rush-micro",
+   "priority": 13.4,
+   "family": "research",
+   "when": {
+    "mark_camp_stable": true,
+    "research_electricity": true,
+    "research_microelectronicsbasics": false,
+    "research_benches": ">0",
+    "not_rushing": {
+     "any": [
+      {
+       "research_queue_empty": true
+      },
+      {
+       "not_micro": {
+        "not": {
+         "research_current": "MicroelectronicsBasics"
+        }
+       }
+      }
+     ]
+    }
+   },
+   "then": [
+    "open Research, TYPE 'Microelectronics' in the search box, queue it now",
+    "best researcher stays at Research 1"
+   ],
+   "latch": false,
+   "why": "owner: \"and you should be rushing microelectionices then the mico analysis things then the computing reasearching building them as you research them to massively speed up research you need the adv research bench\" / owner: \"you have to research microelelectronics to get trade beacons otherwise you have to wait for someone to show up to base\" / owner: \"Microelectronics unlocks things which you cannot build ... Autobong (High life), Sleep accelerator (Transhumanist)\" -- walkthrough (B) says 'Leave Microelectronics (3000) and Geothermal (3200) for later'; the owner's rush overrides once power is in and the camp is stable (mark_camp_stable replaces survival_basics_done) / owner: \"you have to research microelelectronics to get trade beacons otherwise you have to wait for someone to show up to base / and you should be rushing microelectionices then the mico analysis things then the computing reasearching building them as you research them to massively speed up research you need the adv research bench / come on you are AI you should know about upgrading / you always wantr to upgrade and makz out research ability, so mulit analyses adv benches always building benches to get better faster research removing ther out dated benches / research what u need to unlock better things u can produce / u can do the research as u need it\"",
+   "owner_rules": [
+    "you have to research microelelectronics to get trade beacons otherwise you have to wait for someone to show up to base / and you should be rushing microelectionices then the mico analysis things then the computing reasearching building them as you research them to massively speed up research you need the adv research bench / come on you are AI you should know about upgrading / you always wantr to upgrade and makz out research ability, so mulit analyses adv benches always building benches to get better faster research removing ther out dated benches / research what u need to unlock better things u can produce / u can do the research as u need it"
+   ]
+  },
+  {
+   "id": "research-queue-multi",
+   "priority": 13.5,
+   "family": "research",
+   "when": {
+    "research_microelectronicsbasics": true,
+    "research_multianalyzer": false,
+    "not_queued": {
+     "any": [
+      {
+       "research_queue_empty": true
+      },
+      {
+       "not_multi": {
+        "not": {
+         "research_current": "MultiAnalyzer"
+        }
+       }
+      }
+     ]
+    }
+   },
+   "then": [
+    "open Research, TYPE 'Multi-analyzer' in the search box, put it at the front of the queue"
+   ],
+   "latch": false,
+   "why": "owner: \"you havent even upgrade research benches yet, wtf are you doing, u got microelectronics done, you should be upgrade the old benches and putting the research shit like multi analizers and computer and shit in\" / owner: \"and you should be rushing microelectionices then the mico analysis things then the computing reasearching building them as you research them to massively speed up research you need the adv research bench\" -- PLAYSCRIPT: 'then *Multi-analyzer* research to the front of the queue'",
+   "owner_rules": [
+    "and you should be rushing microelectionices then the mico analysis things then the computing reasearching building them as you research them to massively speed up research you need the adv research bench",
+    "you havent even upgrade research benches yet, wtf are you doing, u got microelectronics done, you should be upgrade the old benches and putting the research shit like multi analizers and computer and shit in"
+   ]
+  },
+  {
+   "id": "research-next",
+   "priority": 13.6,
+   "family": "research",
+   "when": {
+    "research_benches": ">0",
+    "alert_need_research": true
+   },
+   "then": [
+    "open Research and TYPE the name in the search box",
+    "queue the first project in RESEARCH_ORDER whose research_<defname> is false",
+    "done when alert_need_research turns false (research_<defname> is measured by Sensors.cs; no mark to set)"
+   ],
+   "latch": false,
+   "note": "alert_need_research = Alert_NeedResearchProject (Sensors.cs alert map 'need_research')",
+   "why": "owner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" / owner: \"research what u need to unlock better things u can produce\" / owner: \"u can do the research as u need it\" -- walkthroughs: 'Early order: Battery -> Passive cooler -> Complex furniture -> Stonecutting -> Smithing -> Machining -> Microelectronics' / 'Mid order: Gun turrets -> Air conditioning -> Hydroponics -> Multi-analyzer -> Fabrication -> Advanced fabrication -> Mortars' (W Research); 'Research first: Battery (400) then Solar panel (600)' / 'Research Watermill generator (700) first instead when the map has a river' / 'Then Smithing (700) -> Machining (1000); Gunsmithing (500) -> Blowback operation (500) -> Gas operation (1000)' (B,Q); 'research bench by day 3; Refrigeration early; Medicine Production after Electricity' (M C)",
+   "owner_rules": [
+    "research what u need to unlock better things u can produce",
+    "u can do the research as u need it"
+   ]
+  },
+  {
+   "id": "research-antibiotics-queue",
+   "priority": 13.7,
+   "family": "research",
+   "when": {
+    "research_drugproduction": true,
+    "research_penoxycylineproduction": false,
+    "research_benches": ">0"
+   },
+   "then": [
+    "open Research, TYPE 'Penoxycyline' in the search box, queue it (Drug production first)",
+    "MISSING_TOOL queue_research project=Penoxycyline (fallback: game_open_main_tab Research, game_click_ui_target Penoxycyline)"
+   ],
+   "latch": false,
+   "why": "owner: \"you also might want to research antibiotics and assign everyones drug scheldule manage to take peneacycline every 5 days once you build it at drug lab after researching antibiotics in game\" / owner: \"and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on\"",
+   "owner_rules": [
+    "you also might want to research antibiotics and assign everyones drug scheldule manage to take peneacycline every 5 days once you build it at drug lab after researching antibiotics in game"
+   ]
+  },
+  {
+   "id": "hitech-bench",
+   "priority": 13.8,
+   "family": "research",
+   "when": {
+    "research_microelectronicsbasics": true,
+    "has_power": true,
+    "count_hitechresearchbench": 0,
+    "mark_hitech_bench_done": false
+   },
+   "then": [
+    "build a HiTechResearchBench in the lab beside the simple bench (missing 'build' tool), conduit to the grid",
+    "once built: remove every SimpleResearchBench (missing 'deconstruct' tool)",
+    "when count_hitechresearchbench>0: ladder_set mark hitech_bench_done true"
+   ],
+   "latch": true,
+   "why": "owner: \"you havent even upgrade research benches yet, wtf are you doing, u got microelectronics done, you should be upgrade the old benches and putting the research shit like multi analizers and computer and shit in\" / owner: \"you always wantr to upgrade and makz out research ability, so mulit analyses adv benches always building benches to get better faster research removing ther out dated benches\" / owner: \"come on you are AI you should know about upgrading\" -- walkthrough: 'After Microelectronics build the hi-tech research bench, then research Multi-analyzer and build one beside it' (W Hi-tech_research_bench)",
+   "owner_rules": [
+    "you always wantr to upgrade and makz out research ability, so mulit analyses adv benches always building benches to get better faster research removing ther out dated benches",
+    "come on you are AI you should know about upgrading",
+    "you havent even upgrade research benches yet, wtf are you doing, u got microelectronics done, you should be upgrade the old benches and putting the research shit like multi analizers and computer and shit in"
+   ]
+  },
+  {
+   "id": "research-multi-analyzer",
+   "priority": 13.9,
+   "family": "research",
+   "when": {
+    "mark_hitech_bench_done": true,
+    "research_multianalyzer": true,
+    "count_multianalyzer": 0,
+    "has_power": true,
+    "mark_research_multi_analyzer_done": false
+   },
+   "then": [
+    "build a MultiAnalyzer touching the hi-tech bench's facility range, powered (missing 'build' tool)",
+    "short on plasteel/components: order through Procurement (economy rungs)",
+    "when count_multianalyzer>0: ladder_set mark research_multi_analyzer_done true"
+   ],
+   "latch": true,
+   "why": "owner: \"and you should be rushing microelectionices then the mico analysis things then the computing reasearching building them as you research them to massively speed up research you need the adv research bench\" / owner: \"you always wantr to upgrade and makz out research ability, so mulit analyses adv benches always building benches to get better faster research removing ther out dated benches\" / owner: \"you havent even upgrade research benches yet, wtf are you doing, u got microelectronics done, you should be upgrade the old benches and putting the research shit like multi analizers and computer and shit in\"",
+   "owner_rules": [
+    "and you should be rushing microelectionices then the mico analysis things then the computing reasearching building them as you research them to massively speed up research you need the adv research bench",
+    "you always wantr to upgrade and makz out research ability, so mulit analyses adv benches always building benches to get better faster research removing ther out dated benches",
+    "you havent even upgrade research benches yet, wtf are you doing, u got microelectronics done, you should be upgrade the old benches and putting the research shit like multi analizers and computer and shit in"
+   ]
+  },
+  {
+   "id": "research-lab-room",
+   "priority": 14.0,
+   "family": "research",
+   "when": {
+    "mark_research_bench_done": true,
+    "lab_lit": false,
+    "mark_research_lab_room_done": false
+   },
+   "then": [
+    "two wall lamps per room against the north wall (torch wall lamp before power, electric wall lamp after has_power); select the cell in front of the wall",
+    "floor the lab and keep it clean: one pawn Clean 2 (game_set cmd set_work_priority work=Cleaning)",
+    "keep the lab 15-24C (passive cooler / heater)",
+    "a bench standing in a storage room or in the way of a room change: move the bench into the lit lab",
+    "when lab_lit true: ladder_set mark research_lab_room_done true"
+   ],
+   "latch": true,
+   "why": "owner: \"need to get ur benches insie with wall lights use wall light this time they dont take up floor space just be weirry they aree actual infront of the wall to select\" / owner: \"minimum 2 lights per room for full brightness\" -- walkthroughs: 'Keep research room clean, lit, floored, 15-24C; dirty room slows research' (W Research_speed); 'Light the bench with a standing lamp (darkness gives a mood penalty)' (Q) / owner: \"nmake that sotrage room a prison hold toss in a spot and put the storage where the table and chairs are might have to move benches, compelte evertthing ive sdaid\"",
+   "owner_rules": [
+    "need to get ur benches insie with wall lights use wall light this time they dont take up floor space just be weirry they aree actual infront of the wall to select",
+    "minimum 2 lights per room for full brightness",
+    "nmake that sotrage room a prison hold toss in a spot and put the storage where the table and chairs are might have to move benches, compelte evertthing ive sdaid"
+   ]
+  },
+  {
+   "id": "research-antibiotics",
+   "priority": 14.1,
+   "family": "research",
+   "when": {
+    "research_penoxycylineproduction": true,
+    "count_penoxycyline": "<6"
+   },
+   "then": [
+    "MISSING_TOOL place_building def=DrugLab inside the wall (fallback: game_select_architect_designator DrugLab + game_click_cell)",
+    "game_set cmd add_bill recipe=Make_Penoxycyline count=6 (one bill; PENOXY_STOCK)",
+    "drug policy (penoxycyline every 5 days for every colonist) is set by configuration:config-antibiotics -- not here"
+   ],
+   "latch": false,
+   "why": "owner: \"you also might want to research antibiotics and assign everyones drug scheldule manage to take peneacycline every 5 days once you build it at drug lab after researching antibiotics in game\"",
+   "owner_rules": [
+    "you also might want to research antibiotics and assign everyones drug scheldule manage to take peneacycline every 5 days once you build it at drug lab after researching antibiotics in game"
+   ]
+  },
+  {
+   "id": "research-upgrade-sweep",
+   "priority": 14.2,
+   "family": "research",
+   "when": {
+    "mark_hitech_bench_done": true,
+    "count_simpleresearchbench": ">0"
+   },
+   "then": [
+    "remove every remaining SimpleResearchBench (missing 'deconstruct' tool)",
+    "one more hi-tech bench per extra researcher",
+    "build any research-speed facility researched (any mod, e.g. computing racks) beside the benches"
+   ],
+   "latch": false,
+   "why": "owner: \"you always wantr to upgrade and makz out research ability, so mulit analyses adv benches always building benches to get better faster research removing ther out dated benches\" / owner: \"you need to be upgrading research benches and equipemnet u remmebr\" / owner: \"come on you are AI you should know about upgrading\"",
+   "owner_rules": [
+    "you always wantr to upgrade and makz out research ability, so mulit analyses adv benches always building benches to get better faster research removing ther out dated benches",
+    "come on you are AI you should know about upgrading",
+    "you need to be upgrading research benches and equipemnet u remmebr"
+   ]
+  },
+  {
+   "id": "research-equipment-tiers",
+   "priority": 14.3,
+   "family": "research",
+   "when": {
+    "has_power": true,
+    "tier_day": {
+     "ton": {
+      "has_power": true
+     },
+     "hours": 24
+    }
+   },
+   "then": [
+    "electric stove replaces the fueled stove; electric tailor bench replaces the hand tailor; machining/fabrication replace the crafting spot -- each as researched (missing 'build' + 'deconstruct')",
+    "the battery room is packed with batteries as steel allows (order steel via Procurement)"
+   ],
+   "latch": false,
+   "why": "owner: \"you need to be upgrading research benches and equipemnet u remmebr / and ur gonna need LOTS OF BATTERIES!\" / owner: \"you need to be upgrading research benches and equipemnet u remmebr\" / owner: \"research what u need to unlock better things u can produce\"",
+   "owner_rules": [
+    "research what u need to unlock better things u can produce",
+    "you need to be upgrading research benches and equipemnet u remmebr",
+    "you need to be upgrading research benches and equipemnet u remmebr / and ur gonna need LOTS OF BATTERIES!"
+   ]
+  },
+  {
+   "id": "research-production-money",
+   "priority": 14.4,
+   "family": "research",
+   "when": {
+    "research_microelectronicsbasics": true,
+    "money_day": {
+     "ton": {
+      "research_queue_empty": false
+     },
+     "hours": 48
+    }
+   },
+   "then": [
+    "queue product research that sells: DrugProduction, PsychiteRefining, Brewing, ComplexClothing, MedicineProduction",
+    "after each unlock: game_set cmd add_bill for the new product at the nearest table",
+    "Microelectronics done -> trade beacon by the comms console (economy rungs)"
+   ],
+   "never": [
+    "selling irreplaceable tech to pay for anything"
+   ],
+   "latch": false,
+   "why": "owner: \"and research benches.. need to start making money nneed guests and products to sell them in seles zone have u even used hospitality tab\" / owner: \"and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on\" / owner: \"okay but you sold whit that was very high tech thats will keep ur colonists from dying from old age and u cant get more...... u need cash crops to sell to bulk goods traders and refine them into better products u need research to make money(silver) or order it from company\" / owner: \"you have to research microelelectronics to get trade beacons otherwise you have to wait for someone to show up to base\" / owner: \"come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations\" -- walkthrough: 'Research Medicine Production; craft industrial medicine at a drug lab (cloth + herbal medicine + neutroamine) when stock runs low' (M)",
+   "owner_rules": [
+    "and research benches.. need to start making money nneed guests and products to sell them in seles zone have u even used hospitality tab",
+    "research what u need to unlock better things u can produce",
+    "okay but you sold whit that was very high tech thats will keep ur colonists from dying from old age and u cant get more...... u need cash crops to sell to bulk goods traders and refine them into better products u need research to make money(silver) or order it from company"
+   ]
+  },
+  {
+   "id": "research-researcher-balance",
+   "priority": 14.5,
+   "family": "research",
+   "when": {
+    "research_benches": ">0",
+    "hogging": {
+     "ton": {
+      "researchers_only_research": ">1"
+     },
+     "hours": 6
+    }
+   },
+   "then": [
+    "pawn_priorities: ONE dedicated researcher (best Intellectual) at Research 1; others Research 3 after their colony jobs",
+    "Firefight through Cook stay 1 for every pawn (game_set cmd set_work_priority)"
+   ],
+   "never": [
+    "more than RESEARCHERS_DEDICATED pawns at the desk while colony work waits"
+   ],
+   "latch": false,
+   "why": "owner: \"ARE YOU FUCKING SEEING WHATS SHES DOING SHE JSUT RESEARCHING AT THE DESKS AND NOT DOING ANYTHING THE COLONY NEEDS COME ONE AND WE ARE STILLL PEGGING ALL THE FUCKING PROICESSES I THOUGHT I TOLD YOU TO OPTIMIZE EVERYTHING\" / owner: \"set up all priorities this is the last time i telling you set it how ive told you every day weve played all of them for every one using coopy paste to paste one to the tosthers then customize keep all the 1s firsefiring through cooking / work priorites yours and the pawns / you have to use the mouse to change the work priorities come on get it done / dint leave a bunch blankk\" / owner: \"research and manage your pawns\"",
+   "owner_rules": [
+    "research and manage your pawns"
+   ]
+  },
+  {
+   "id": "research-ship-tree",
+   "priority": 14.6,
+   "family": "research",
+   "when": {
+    "mark_ending_ship": true,
+    "ship_research_done": false,
+    "research_queue_empty": true
+   },
+   "then": [
+    "queue by search box: Fabrication -> AdvancedFabrication, then Starflight basics -> Ship basics -> Ship cryptosleep -> Ship reactor -> Ship engine -> Ship computer core -> Ship sensor cluster",
+    "a research click that does nothing: ladder_set mark research_click_refused true (endgame:endgame-research-refused counts it)"
+   ],
+   "latch": false,
+   "why": "owner: \"dominate the universe with a space ewarfare and planet domination\" -- walkthroughs: ship tree order and 'Advanced component = 1 plasteel + 2 components + 20 steel + 3 gold at fabrication bench (needs Fabrication)' (W Research)",
+   "note": "survivor of space:space-ship-research and endgame:endgame-ship-research (decisions chains/ship)",
+   "owner_rules": []
+  }
+ ],
+ "prompts": {
+  "research-bench": "LIVE: camp stable, no research bench.\n1 game_state + game_set cmd rooms: find a roofed enclosed room, never outdoors.\n2 Place a simple research bench in it (Architect > Production).\n3 game_set cmd set_work_priority: best Intellectual pawn Research 1, only one.\nRefused: ladder_set mark research_bench_tried true then false. 3x -> research-bench-fallback.\nDone: research_benches>0 -> ladder_set mark research_bench_done true.\nOwner: \"research what u need to unlock better things u can produce\".",
+  "research-bench-fallback": "LIVE: bench placement refused 3 times.\n1 game_set cmd chop count=150 if wood < 100.\n2 game_set cmd shelter w=5 h=5 beside the crew.\n3 Place the bench inside; refused: ladder_set mark research_bench_tried true then false.\nShelter refuses: twitch_chat say asking chat where the lab goes, keep playing.\nDone: research_benches>0 (counter resets).\nOwner: \"ask chat question on what u should do and move on\".",
+  "research-lab-room": "LIVE: lab not lit (lab_lit false).\n1 Two wall lamps on the north wall; select the cell IN FRONT of the wall.\n2 Floor it, one pawn on Cleaning, keep 15-24C.\n3 Bench in a storage room: move it into the lab.\nFallback: no electric wall lamp yet -> torch wall lamp.\nDone: lab_lit true -> ladder_set mark research_lab_room_done true.\nOwner: \"use wall light this time they dont take up floor space\" / \"minimum 2 lights per room for full brightness\" / \"might have to move benches\".",
+  "research-idle": "LIVE: research queue empty for an hour.\n1 Open Research, TYPE the name in the search box. Never drag the tree.\n2 First false research_<x> in RESEARCH_ORDER (Electricity, AirConditioning early).\n3 Real key codes.\nRefused: ladder_set mark research_queue_tried true then false; 3x -> research-idle-fallback.\nDone: research_queue_empty false.\nOwner: \"not using the search at all\".",
+  "research-idle-fallback": "LIVE: search box refused 3 times.\n1 look: screenshot the tab and read it.\n2 Type a shorter term (first 5 letters); refused: ladder_set mark research_queue_tried true then false.\n3 Still refused: twitch_chat say asking chat what to research, play other rungs.\nDone: research_queue_empty false (counter resets).\nOwner: \"dragging the wrong dirrectgion to explore it not using the search at all\".",
+  "research-next": "LIVE: the game asks for a project (alert_need_research).\n1 Read research_* keys; the first false in RESEARCH_ORDER wins.\n2 Research tab, TYPE its name in the search box, queue.\nFallback: research-idle-fallback after 3 refusals.\nDone: alert_need_research false (no mark).\nOwner: \"u can do the research as u need it\".",
+  "research-rush-micro": "LIVE: camp stable, power in, Microelectronics not done.\n1 Research tab, TYPE 'Microelectronics', queue now.\n2 Best researcher stays on Research 1.\nFallback: search refused -> research-idle-fallback.\nDone: research_microelectronicsbasics true.\nOwner: \"you should be rushing microelectionices then the mico analysis things then the computing\".",
+  "research-queue-multi": "LIVE: Microelectronics done, Multi-analyzer not.\n1 Research tab, TYPE 'Multi-analyzer', front of the queue.\nFallback: search refused -> research-idle-fallback.\nDone: research_multianalyzer true.\nOwner: \"putting the research shit like multi analizers and computer and shit in\".",
+  "hitech-bench": "LIVE: Microelectronics done, no hi-tech bench.\n1 Build a hi-tech research bench in the lab, conduit it (MISSING build tool: Architect > Production).\n2 Then remove the old simple bench.\nFallback: no plasteel/components -> Procurement order.\nDone: count_hitechresearchbench>0 -> ladder_set mark hitech_bench_done true.\nOwner: \"you havent even upgrade research benches yet ... u got microelectronics done\".",
+  "research-multi-analyzer": "LIVE: Multi-analyzer researched, none built.\n1 Build it right beside the hi-tech bench, powered (Architect > Misc).\n2 Short on plasteel/components: order from Procurement.\nDone: count_multianalyzer>0 -> ladder_set mark research_multi_analyzer_done true.\nOwner: \"mulit analyses adv benches always building benches\".",
+  "research-upgrade-sweep": "LIVE: outdated simple benches still standing.\n1 Remove them (MISSING deconstruct: Architect > Deconstruct).\n2 Add hi-tech benches and research facilities as unlocked.\nDone: count_simpleresearchbench 0.\nOwner: \"removing ther out dated benches\" / \"come on you are AI you should know about upgrading\".",
+  "research-equipment-tiers": "LIVE: power on for a day: tier check.\n1 Electric stove, electric tailor, machining/fabrication replace older tables as researched.\n2 Batteries fill the battery room; steel via Procurement.\nFallback: build refused -> leave the old table, retry next day.\nDone: nothing older than the researched tier left.\nOwner: \"you need to be upgrading research benches and equipemnet u remmebr / and ur gonna need LOTS OF BATTERIES!\".",
+  "research-researcher-balance": "LIVE: more than one research-only pawn for 6 hours.\n1 pawn_priorities: one researcher at Research 1, others Research 3.\n2 Firefight..Cook stay 1 for everyone (game_set cmd set_work_priority).\nFallback: mouse on the Work tab.\nDone: researchers_only_research <= 1.\nOwner: \"SHE JSUT RESEARCHING AT THE DESKS AND NOT DOING ANYTHING THE COLONY NEEDS\".",
+  "research-antibiotics-queue": "LIVE: drug production done, penoxycyline not.\n1 Research tab, TYPE 'Penoxycyline', queue.\nFallback: game_open_main_tab Research + game_click_ui_target Penoxycyline.\nDone: research_penoxycylineproduction true.\nOwner: \"you also might want to research antibiotics\".",
+  "research-antibiotics": "LIVE: penoxycyline researched, stock under 6.\n1 Drug lab inside the wall (Architect > Production).\n2 game_set cmd add_bill recipe=Make_Penoxycyline count=6.\n3 Drug policy belongs to config-antibiotics.\nDone: count_penoxycyline >= 6.\nOwner: \"take peneacycline every 5 days once you build it at drug lab\".",
+  "research-production-money": "LIVE: Microelectronics done, research must pay.\n1 Queue product research: drugs, brewing, clothing, medicine.\n2 Each unlock -> game_set cmd add_bill at the nearest table.\nNever sell irreplaceable tech.\nFallback: search refused -> research-idle-fallback.\nDone: product bills running.\nOwner: \"u need research to make money(silver) or order it from company\".",
+  "research-ship-tree": "LIVE: ending is the ship, ship not researched, queue empty.\n1 Queue by search: Fabrication, Advanced fabrication, Starflight basics, Ship basics, cryptosleep, reactor, engine, computer core, sensor cluster.\nClick does nothing: ladder_set mark research_click_refused true.\nDone: ship_research_done true.\nOwner: \"dominate the universe with a space ewarfare and planet domination\"."
+ },
+ "sensors_needed": [
+  {
+   "key": "researchers_only_research",
+   "status": "TO_BUILD",
+   "how to measure in C# (RimWorld API)": "st[\"researchers_only_research\"] = (double)home.mapPawns.FreeColonistsSpawned.Count(p => p.workSettings != null && p.workSettings.EverWork && p.workSettings.GetPriority(WorkTypeDefOf.Research) == 1 && DefDatabase<WorkTypeDef>.AllDefsListForReading.Where(w => w != WorkTypeDefOf.Research && !p.WorkTypeIsDisabled(w)).All(w => p.workSettings.GetPriority(w) == 0));"
+  },
+  {
+   "key": "lab_lit",
+   "status": "TO_BUILD",
+   "how to measure in C# (RimWorld API)": "bool lit = true; foreach (Building b in home.listerBuildings.allBuildingsColonist) if (b is Building_ResearchBench && home.glowGrid.GroundGlowAt(b.InteractionCell) < 0.5f) lit = false; st[\"lab_lit\"] = lit;"
+  }
+ ],
+ "variables_needed": [
+  {
+   "name": "RESEARCH_ORDER",
+   "value": [
+    "Electricity",
+    "Battery",
+    "SolarPanels|WatermillGenerator",
+    "PassiveCooler",
+    "AirConditioning",
+    "ComplexFurniture",
+    "Stonecutting",
+    "Smithing",
+    "DrugProduction",
+    "PenoxycylineProduction",
+    "MedicineProduction",
+    "Machining",
+    "MicroelectronicsBasics",
+    "MultiAnalyzer",
+    "GunTurrets",
+    "HydroponicsBasics",
+    "Autodoors",
+    "Fabrication",
+    "AdvancedFabrication",
+    "Mortars",
+    "StarflightBasics",
+    "ShipBasics",
+    "ShipCryptosleep",
+    "ShipReactor",
+    "ShipEngine",
+    "ShipComputerCore",
+    "ShipSensorCluster"
+   ],
+   "rule": "owner: Electricity then Air conditioning; rush Microelectronics -> multi-analyzer -> computing; walkthrough W Research early/mid/ship orders"
+  },
+  {
+   "name": "RESEARCHERS_DEDICATED",
+   "value": 1,
+   "rule": "owner: SHE JSUT RESEARCHING AT THE DESKS AND NOT DOING ANYTHING THE COLONY NEEDS"
+  },
+  {
+   "name": "LAB_LIGHTS_MIN",
+   "value": 2,
+   "rule": "owner: minimum 2 lights per room for full brightness"
+  },
+  {
+   "name": "LAB_TEMP_C",
+   "value": [
+    15,
+    24
+   ],
+   "rule": "walkthrough W Research_speed"
+  },
+  {
+   "name": "BENCH_TRIES",
+   "value": 3,
+   "rule": "ctu preset before research-bench-fallback"
+  },
+  {
+   "name": "PENOXY_DAYS",
+   "value": 5,
+   "rule": "owner: peneacycline every 5 days"
+  },
+  {
+   "name": "PENOXY_STOCK",
+   "value": 6,
+   "rule": "bill count for the drug lab"
+  }
+ ],
+ "missing_tools": [
+  "game_set cmd build (def, x, z, rot, stuff) -- research bench, hi-tech bench, multi-analyzer, drug lab, wall lamps, electric stove/tailor, batteries",
+  "game_set cmd deconstruct (def or x,z) -- remove outdated simple benches and old tables",
+  "game_set cmd research (defName) -- queue a project by defName without the search box",
+  "game_set cmd drug_policy (policy, drug, every_days) -- penoxycyline every 5 days",
+  "game_set cmd floor (room, terrain) -- floor the lab",
+  "queue_research project=<defName> (ideo-research-antibiotics merge)",
+  "place_building def=DrugLab (ideo-antibiotics merge)"
+ ],
+ "unplaced_rules": [
+  "walkthrough: 'Replace corridor doors with autodoors once researched' -- justified: belongs to base-and-fortress (research only queues Autodoors in RESEARCH_ORDER)",
+  "walkthrough: 'Use hidden/waterproof conduits for main runs once researched' -- justified: belongs to the power rungs (base-and-fortress)",
+  "owner (a773bd7d): gate opening duration grows with research -- justified: belongs to the backrooms gate rungs",
+  "owner: trade via comms console / trade beacon use -- justified: economy:trade-run / space:space-trade-beacon own it per decisions chains/ship"
+ ],
+ "notes": [
+  "see research:research-ship-tree for space:space-ship-research and endgame:endgame-ship-research (deleted there)",
+  "see research:research-antibiotics-queue for ideology-biotech-anomaly:ideo-research-antibiotics; research:research-antibiotics takes the DrugLab step of ideo-antibiotics; drug policy is configuration:config-antibiotics",
+  "hitech_benches / simple_benches / multi_analyzers (decisions TO_BUILD) are read through the already-measured generic keys count_hitechresearchbench / count_simpleresearchbench / count_multianalyzer (Sensors.ReadDemand, 0 when none built)",
+  "research_room_clean / research_room_temp_ok dropped: not measured and not in decisions; cleaning and 15-24C stay as steps",
+  "latch done-marks (latch_name): research_bench_done, research_lab_room_done, hitech_bench_done, research_multi_analyzer_done",
+  "marks set here: research_bench_tried, research_queue_tried (CTU inputs), research_click_refused (read by endgame:endgame-research-refused)",
+  "marks read from other families: camp_stable (setup:setup-8-camp-stable), ending_ship (endgame:empire-dominion)"
+ ]
+}

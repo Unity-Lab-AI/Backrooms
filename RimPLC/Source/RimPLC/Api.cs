@@ -129,6 +129,27 @@ namespace RimPLC
             return Ok("ladder updated: tag " + name, note.Trim());
         }
 
+        /// <summary>rimplc/set_host: replace the host-input block (no log line: it arrives every turn). Keys follow the
+        /// ladder's key rule; values are numbers, booleans or short strings.</summary>
+        public static Dictionary<string, object> SetHost(object values)
+        {
+            RimPLCGameComponent c = Plc(out var refusal);
+            if (c == null) return refusal;
+            if (!(values is JsonObject o)) return Refused("set_host needs values: an object of key -> number/bool/string");
+            var host = new Dictionary<string, object>();
+            foreach (var kv in o)
+            {
+                if (!Validate.KeyRule.IsMatch(kv.Key ?? "")) return Refused("bad host key " + kv.Key);
+                if (kv.Value is double || kv.Value is bool) host[kv.Key] = kv.Value;
+                else if (kv.Value is string sv && sv.Length <= 200) host[kv.Key] = sv;
+                else return Refused("host value for " + kv.Key + " must be a number, a boolean or a short string");
+            }
+
+            c.Host = host;
+            c.HostAt = DateTime.UtcNow;
+            return Ok("host inputs: " + host.Count);
+        }
+
         public static Dictionary<string, object> SetMark(string name, object value)
         {
             RimPLCGameComponent c = Plc(out var refusal);

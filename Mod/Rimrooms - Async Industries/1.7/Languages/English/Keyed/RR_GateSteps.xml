@@ -39,7 +39,7 @@
   <RR_Steps_6How>Select the gate door and press "Assign operator". They must be employed staff.</RR_Steps_6How>
 
   <RR_Steps_7Label>The gate calibrated</RR_Steps_7Label>
-  <RR_Steps_7How>Select the gate door and press "Order calibration". The assigned operator walks to the console and does it.</RR_Steps_7How>
+  <RR_Steps_7How>Select the gate door and press "Calibrate gate". The assigned operator walks to the console and does it.</RR_Steps_7How>
 
   <RR_Steps_8Label>Communications console set to gate control</RR_Steps_8Label>
   <RR_Steps_8How>Select {0} on the map and press "Set to gate control". This is a separate switch from the machining table's.</RR_Steps_8How>

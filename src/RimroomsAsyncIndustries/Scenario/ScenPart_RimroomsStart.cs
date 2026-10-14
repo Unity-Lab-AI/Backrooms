@@ -193,8 +193,31 @@ namespace RimroomsAsyncIndustries.Scenario
             receipt.openingComplete = true;
             receipt.failure = null;
             SetStartingRelations();
-            Find.LetterStack.ReceiveLetter("RR_Start_WelcomeTitle".Translate(), "RR_Setup_Welcome".Translate(), LetterDefOf.NeutralEvent);
+            SendWelcome(startDef);
             return result;
+        }
+
+        /// <summary>
+        /// The opening letter, chosen by what the start actually gives the player. Read from the
+        /// start's own flags rather than its id, so the letter cannot promise a facility, a gate or
+        /// a company to a start that has none: inside starts have nothing, starts on the
+        /// corporation's books have the branch, and anything else is a business on its own.
+        /// </summary>
+        private static void SendWelcome(RimroomsStartDef start)
+        {
+            string title = "RR_Start_WelcomeTitle";
+            string text = "RR_Start_Welcome";
+            if (start != null && start.insideStart)
+            {
+                title = "RR_Start_WelcomeInsideTitle";
+                text = "RR_Start_WelcomeInside";
+            }
+            else if (start != null && !start.beginsInCorporationContact)
+            {
+                title = "RR_Start_WelcomeStoreTitle";
+                text = "RR_Start_WelcomeStore";
+            }
+            Find.LetterStack.ReceiveLetter(title.Translate(), text.Translate(), LetterDefOf.NeutralEvent);
         }
 
         private static void ShowStartFailure(string reason)

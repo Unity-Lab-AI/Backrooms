@@ -1,0 +1,789 @@
+{
+ "family": "war",
+ "rungs": [
+  {
+   "id": "war-letter-classify",
+   "priority": 1.5,
+   "family": "war",
+   "when": {
+    "new_threat": {
+     "ons": {
+      "threat_letter": true
+     }
+    }
+   },
+   "then": [
+    "read the newest letter's full text (game_state letters), not just the label -- under attack read instantly",
+    "classify: ladder_set mark raid_kind N (1 walk-in edge, 2 drop pods edge, 3 drop pods centre, 4 siege/camp, 5 sappers/breachers, 6 manhunter pack, 7 mechanoids/mech cluster, 8 infestation, 9 tribal swarm, 10 pirate gunline)",
+    "a trader/caravan letter is NOT a raid: no raid_kind; use the comms console if a trader is in range",
+    "dismiss the read letter (bridge right-click on the letter)"
+   ],
+   "latch": false,
+   "why": "owner, verbatim: \"dont ignore you messages someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need\" / \"are you reading pop up messages a good tradeer just arrived wtf !!! use the comms console\" / \"ive alkready told yuou already read messages always instantly!!!!! your under attrack!!!!\" / \"right click on message on the right to clear old ones and left click to read them\" / \"Steve has died. Cause: Blood loss.\" / \"Raid: Lacar Union\" ; walkthrough: walkthrough-defence-and-combat.md [war] items 1, 4, 5"
+  },
+  {
+   "id": "war-mobilize",
+   "priority": 1.55,
+   "family": "war",
+   "when": {
+    "hostiles_on_map": ">0",
+    "hostile_threat": true
+   },
+   "then": [
+    "pause (game_pause_game pause true) ONLY to give orders",
+    "game_set cmd assign hostility Attack (every pawn, never Flee)",
+    "draft every able shooter at once (game_set_draft per pawn); non-violent pawns and the doctor stay indoors (game_set cmd set_area area Home)",
+    "order_pawn each shooter to an embrasure / cover cell on the side between base and enemy, at the edge of gun range with line of sight",
+    "focus fire: order_pawn 'Attack' on the nearest melee threat first, then grenadiers/snipers/rocket carriers",
+    "melee attackers die at range: shooters fall back firing to the next embrasure so melee never closes",
+    "say a line to chat about the fight, unpause (game_pause_game pause false), step with play_slices so the camera frames hostiles and drafted pawns",
+    "ladder_set mark war_mobilized true"
+   ],
+   "never": [
+    "raw OS mouse/keyboard (raw-click, game-click, keybd_event) -- bridge API only; ask the owner for the mouse if truly needed, never fight him for the cursor",
+    "right-click a Work-tab cell",
+    "run from a beatable fight",
+    "leave the game paused and silent for minutes",
+    "camera parked in the middle of the base during a fight",
+    "stand clustered within 3 cells of each other vs grenades",
+    "chase fleeing raiders past the perimeter"
+   ],
+   "latch": false,
+   "why": "owner, verbatim: \"you need to mobilize when attacked and fight not run\" / \"when under attack u need to focus on the action\" / \"i mean keep the viewer able to see the action\" / \"the view port is no where near the action\" / \"you need to mobilize when attacked and fight not run / when under attack u need to focus on the action / i mean keep the viewer able to see the action / the view port is no where near the action\" / \"u need to move perople to embrasures to shoot the bad guys\" / \"all ways move you peopel to line of sight to keep barirly in gun range\" / \"focus on the bad gusy when they come\" / \"u need to move perople to embrasures to shoot the bad guys / all ways move you peopel to line of sight to keep barirly in gun range / focus on the bad gusy when they come\" / \"focus on the fucking action no t the fucking middle of the base\" / \"talk u cant just pause the game and say nothing for 5 minutes!\" / \"kekeep the view port on the action\" / \"keep the focus on your actions too building is something to focus on\" / \"zoom out at times to keeep all in fram in context to what ur talking about\" / \"no ten minute timers, and keep a colonist in view at all times if not all of them\" / \"zoom in like i said eyes on action\" / \"update chat come one dont leave them in a paused game\" / \"defend your base\" / \"defend your base / get every ready to fight and out side inbetween the cougar and the base\" / \"embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close\" / \"set everyone to attack not flee and group up when something attacks and draft and flee attack never letting someone melle person or animal get close to your pawns kill them with range at all costs\" / \"and u have to pause at the right times as not to wit to long to give commands in combat situations\" / \"get every ready to fight and out side inbetween the cougar and the base\" / \"charge them but keep ur distance from them in gun range\" / \"set everyone to attack not flee and group up when something attacks and draft and flee attack never letting someone melle person or animal get close to your pawns kill them with range at all costs, expand the base build prisons and more facilities , maintain and watch your resources, research and manage your pawns , set theri scheldule to anything at all times for all pawns, ect ect all aspects of the game are to be taken in\" / \"you dont fight me for control of tmy computer\" / \"NOW LISTEN YOU ASK ME FOR CONTROL OF MOUSE IF YOU NEED IT\" / \"FIX ALL THE ISSUES OF EVERYTHING IVE EVER SAID IN TOTALITY AGAIN AND AGIN TILL EVERYTHING IN THE BASE IS CORRECT!!!!!\" / \"menus are drop downs click on text\" / \"use cursor if u need it jusdt dont fight me if i take control\" / \"you dont fight me for control of tmy computer / NOW LISTEN YOU ASK ME FOR CONTROL OF MOUSE IF YOU NEED IT / FIX ALL THE ISSUES OF EVERYTHING IVE EVER SAID IN TOTALITY AGAIN AND AGIN TILL EVERYTHING IN THE BASE IS CORRECT!!!!!\" ; walkthrough: walkthrough-defence-and-combat.md [war] items 47, 48, 49, 51, 10, 11"
+  },
+  {
+   "id": "war-drop-pods-centre",
+   "priority": 1.56,
+   "family": "war",
+   "when": {
+    "mark_raid_kind": 3,
+    "hostiles_on_map": ">0"
+   },
+   "then": [
+    "draft EVERYONE armed now -- pods land inside the walls",
+    "non-combatants into the deepest roofed room (game_set cmd set_area area Home), doors closed",
+    "order_pawn shooters into doorways covering the landing room; fight from inside rooms, never the open yard"
+   ],
+   "latch": false,
+   "why": " ; walkthrough: walkthrough-defence-and-combat.md [war] items 21, 22"
+  },
+  {
+   "id": "war-siege-counter",
+   "priority": 1.57,
+   "family": "war",
+   "when": {
+    "mark_raid_kind": 4,
+    "siege_held": {
+     "ton": {
+      "hostiles_on_map": ">0"
+     },
+     "hours": 6
+    }
+   },
+   "then": [
+    "siege dug in 6 h: do not wait inside -- attack once they spread out, or counter-mortar",
+    "draft the squad, approach through cover (rocks/chunks/trees), stop at max range and stand still to shoot",
+    "ladder_set mark siege_attacked true"
+   ],
+   "latch": false,
+   "why": "owner, verbatim: \"set everyone to attack not flee and group up when something attacks and draft and flee attack never letting someone melle person or animal get close to your pawns kill them with range at all costs\" / \"embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close\" / \"and u have to pause at the right times as not to wit to long to give commands in combat situations\" / \"get every ready to fight and out side inbetween the cougar and the base\" / \"charge them but keep ur distance from them in gun range\" ; walkthrough: walkthrough-defence-and-combat.md [war] items 18, 19, 20"
+  },
+  {
+   "id": "war-sapper-breach",
+   "priority": 1.575,
+   "family": "war",
+   "when": {
+    "mark_raid_kind": 5,
+    "hostiles_on_map": ">0"
+   },
+   "then": [
+    "sappers/breachers ignore the killbox: find the breach side (look) and meet them at the hole",
+    "hold the interior fallback ring: shooters in the inner doorways, melee blocker in a 1-wide door",
+    "turrets get forced targets on the sappers"
+   ],
+   "latch": false,
+   "why": " ; walkthrough: walkthrough-defence-and-combat.md [war] items 6, 50, 57"
+  },
+  {
+   "id": "war-manhunter",
+   "priority": 1.58,
+   "family": "war",
+   "when": {
+    "mark_raid_kind": 6,
+    "hostiles_on_map": ">0"
+   },
+   "then": [
+    "game_set cmd set_area area Home (everyone indoors), doors closed -- animals cannot open doors",
+    "shoot from behind doors/embrasures with long guns only; never melee the pack",
+    "pack not worth fighting: wait it out (they calm in 1-2 days)"
+   ],
+   "never": [
+    "kite manhunters in the open",
+    "send a lone hauler outside"
+   ],
+   "latch": false,
+   "why": " ; walkthrough: walkthrough-defence-and-combat.md [war] items 27, 28, 56"
+  },
+  {
+   "id": "war-manhunter-butcher",
+   "priority": 2.37,
+   "family": "war",
+   "when": {
+    "mark_raid_kind": 6,
+    "hostiles_on_map": 0,
+    "corpses": ">0"
+   },
+   "then": [
+    "game_set cmd unforbid",
+    "game_set cmd add_bill recipe ButcherCorpseFlesh (Do forever) at the butcher table -- meat before it rots (1-2 days unrefrigerated)",
+    "ladder_set mark raid_kind 0"
+   ],
+   "latch": false,
+   "why": " ; walkthrough: walkthrough-defence-and-combat.md [war] items 29"
+  },
+  {
+   "id": "war-mechanoids",
+   "priority": 1.585,
+   "family": "war",
+   "when": {
+    "mark_raid_kind": 7,
+    "hostiles_on_map": ">0"
+   },
+   "then": [
+    "mech cluster (stationary): do NOT wake it -- ladder_set mark mech_cluster true, leave it until mark_weapons_upgraded",
+    "raid: EMP first (EMP grenades / EMP mortar) to stun and drop shields",
+    "lure them into the killbox; stone (granite) walls, not wood",
+    "never melee Scythers/Lancers with untrained pawns; kite slow Centipedes with high-AP rifles"
+   ],
+   "latch": false,
+   "why": "owner, verbatim: \"ull die when mechs come ur weapons r turds\" ; walkthrough: walkthrough-defence-and-combat.md [war] items 13, 14, 15, 16, 17, 55"
+  },
+  {
+   "id": "war-tribal-swarm",
+   "priority": 1.59,
+   "family": "war",
+   "when": {
+    "mark_raid_kind": 9,
+    "hostiles_on_map": ">0"
+   },
+   "then": [
+    "fight from cover at range; let them cross open ground",
+    "melee blocker (best armour, stun baton sidearm) in a 1-wide door, shooters fire past from the diagonal",
+    "they flee at ~50% losses: stop at the perimeter"
+   ],
+   "latch": false,
+   "why": "owner, verbatim: \"and make sure you equipe stun batons pain sticks in off hand as side weapons for close range\" ; walkthrough: walkthrough-defence-and-combat.md [war] items 7, 8, 9, 50"
+  },
+  {
+   "id": "war-pirate-gunline",
+   "priority": 1.595,
+   "family": "war",
+   "when": {
+    "mark_raid_kind": 10,
+    "hostiles_on_map": ">0"
+   },
+   "then": [
+    "full cover only (embrasure 75%, sandbags 55%, chunks 50%)",
+    "kill grenadiers, snipers and rocket carriers first",
+    "shooters 3+ cells apart"
+   ],
+   "latch": false,
+   "why": " ; walkthrough: walkthrough-defence-and-combat.md [war] items 10, 11, 12"
+  },
+  {
+   "id": "war-infestation",
+   "priority": 1.6,
+   "family": "war",
+   "when": {
+    "mark_raid_kind": 8,
+    "count_Hive": ">0"
+   },
+   "then": [
+    "destroy hives first (they keep spawning): fire (molotov/incendiary) or wall the room off and let it starve",
+    "squad holds the room door, never deep in the dark hall",
+    "after: game_set cmd unforbid (insect jelly never spoils), ladder_set mark raid_kind 0"
+   ],
+   "latch": false,
+   "why": " ; walkthrough: walkthrough-defence-and-combat.md [war] items 23, 25, 26"
+  },
+  {
+   "id": "war-infestation-prevent",
+   "priority": 30,
+   "family": "war",
+   "when": {
+    "mark_mountain_base_done": true,
+    "mark_infestation_proofed": false
+   },
+   "then": [
+    "light every unused mountain room (LAMPS_PER_ROOM) and keep it in use, or make it a freezer at -18C or colder",
+    "turret + fallback chokepoint covering the largest dark halls",
+    "ladder_set mark infestation_proofed true"
+   ],
+   "latch": true,
+   "why": " ; walkthrough: walkthrough-defence-and-combat.md [war] items 23, 24 ; walkthrough-base-power-temperature.md [war] infestation threshold + turret/chokepoint lines"
+  },
+  {
+   "id": "war-overwhelmed-indoors",
+   "priority": 1.65,
+   "family": "war",
+   "when": {
+    "hostiles_on_map": ">0",
+    "fight_ratio": "<0.34",
+    "mark_war_mobilized": true
+   },
+   "then": [
+    "enemy > 3x colonists: everyone indoors behind doors, let turrets and traps work",
+    "shoot only from embrasures; doors closed behind"
+   ],
+   "latch": false,
+   "why": " ; walkthrough: walkthrough-defence-and-combat.md [war] items 57, 58",
+   "note": "sits inside the survival combat chain band; the chain's combat_plan wins if both are live"
+  },
+  {
+   "id": "war-stand-down",
+   "priority": 1.7,
+   "family": "war",
+   "when": {
+    "mark_war_mobilized": true,
+    "clear": {
+     "ton": {
+      "hostiles_on_map": 0
+     },
+     "hours": 1
+    }
+   },
+   "then": [
+    "undraft everyone (game_set_draft false)",
+    "game_pause_game pause false",
+    "downed colonists first (survival med chain: tend, rescue)",
+    "order_pawn option 'Capture' on downed raiders (prisoner bed first)",
+    "ladder_set mark war_mobilized false ; ladder_set mark raid_kind 0 ; ladder_set mark after_kill_done false"
+   ],
+   "latch": false,
+   "why": "owner, verbatim: \"and she still has guns on the ground can u tell her to euaipthem as main equip and use the pain batons as side arms for everyone one for range one for melee and needs to set self tend medical and attack not flee\" ; walkthrough: walkthrough-defence-and-combat.md [war] items 53, 62"
+  },
+  {
+   "id": "war-after-kill-storage",
+   "priority": 2.355,
+   "family": "war",
+   "when": {
+    "mark_war_mobilized": false,
+    "hostiles_on_map": 0,
+    "mark_after_kill_done": false,
+    "threat_letter": true
+   },
+   "then": [
+    "the moment the last raider is down, nothing else first:",
+    "game_set cmd unforbid (loot, dropped gear)",
+    "close and roof every open room (game_set cmd set_area area BuildRoof over open rooms)",
+    "game_set cmd shelves ; game_set cmd stockpile_filter per room ; freezer/cooler working",
+    "strip enemy weapons/armour into a stockpile; extras go to the supply-weapons rungs",
+    "ladder_set mark after_kill_done true"
+   ],
+   "latch": false,
+   "why": "owner, verbatim: \"and fix all you open rooms get shit inside before it decays set up stoages shelfs and shit set stockpiles get your freezer/cooler working good make sure shit is done <<<do all this dirrectly after enemy kill\" / \"you forgot to unforbid everything thats a constant tasks\" / \"starting supplies are forbidden\" / \"come on get to it all your shit is in the open deterating\" ; walkthrough: walkthrough-defence-and-combat.md [war] items 66",
+   "note": "overlaps survival/after-the-kill (2.36); keep one of the two live"
+  },
+  {
+   "id": "war-arms-sidearms",
+   "priority": 3.31,
+   "family": "war",
+   "when": {
+    "unarmed_colonists": ">0"
+   },
+   "then": [
+    "empire_pass: read the ARMS line (no rifle / no sidearm)",
+    "order_pawn each unarmed pawn on the best ranged weapon lying around, option 'Equip'",
+    "order_pawn on a stun baton / pain stick / best melee, option 'Equip as sidearm' (Simple Sidearms) -- better than knives",
+    "standing order: re-check every loop"
+   ],
+   "latch": false,
+   "why": "owner, verbatim: \"once again u arnt armed!!! wtf!!!!\" / \"make sure everyone has their sidearm and maine rifle\" / \"and make sure you equipe stun batons pain sticks in off hand as side weapons for close range\" / \"you got oles in your buildings and better off sidearms to use than poor knifes\" / \"get ur shit instil arm ur people everything is deteriorating\" / \"this shit need maintained and ur set to flee\" / \"and she still has guns on the ground can u tell her to euaipthem as main equip and use the pain batons as side arms for everyone one for range one for melee and needs to set self tend medical and attack not flee\" / \"you should have a maintaince list of thinge proprigating what all you need to do\" / \"you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax and starting up you facitly small first massive later get ur needs food security and shit settled\" / \"make sure u arm up and set everyones setting attack, heal self, schedule, priorities, drugs to no drugs, all of it pause and do it and set control shift carry but becasre full sending them on 50 runs without a break\" ; walkthrough: walkthrough-defence-and-combat.md [war] items 47"
+  },
+  {
+   "id": "war-arms-fallback",
+   "priority": 3.315,
+   "family": "war",
+   "when": {
+    "equip_fail": {
+     "ctu": {
+      "unarmed_colonists": ">0"
+     },
+     "preset": 3,
+     "reset": {
+      "unarmed_colonists": 0
+     }
+    }
+   },
+   "then": [
+    "equip failed 3 scans: game_set cmd add_bill best researched gun (else knife/club at the crafting spot), count = unarmed_colonists",
+    "comms_console: call a combat supplier and buy the cheapest rifles"
+   ],
+   "latch": false,
+   "why": "owner, verbatim: \"once again u arnt armed!!! wtf!!!!\" / \"make sure everyone has their sidearm and maine rifle\" / \"and make sure you equipe stun batons pain sticks in off hand as side weapons for close range\" / \"you got oles in your buildings and better off sidearms to use than poor knifes\" / \"get ur shit instil arm ur people everything is deteriorating\""
+  },
+  {
+   "id": "war-hostility-attack",
+   "priority": 3.32,
+   "family": "war",
+   "when": {
+    "flee_hostility_count": ">0"
+   },
+   "then": [
+    "game_set cmd assign hostility Attack (all pawns; new pawns spawn on Flee)",
+    "self-tend on for every colonist (missing tool: self-tend toggle)",
+    "pawn_priorities: Firefight..Cook = 1 for everyone, specialty 2, rest 3, nothing blank -- one cell then read back"
+   ],
+   "never": [
+    "raw OS mouse/keyboard (raw-click, game-click, keybd_event) -- bridge API only; ask the owner for the mouse if truly needed, never fight him for the cursor",
+    "right-click a Work-tab cell"
+   ],
+   "latch": false,
+   "why": "owner, verbatim: \"set everyone to attack not flee and group up when something attacks and draft and flee attack never letting someone melle person or animal get close to your pawns kill them with range at all costs\" / \"set up priorities u fool\" / \"pawns have none set\" / \"your prioties for work are all fucked come on fix it for next time u know how to do it fix why u didnt do it and do it\" / \"work priorites yours and the pawns\" / \"you have to use the mouse to change the work priorities come on get it done\" / \"dint leave a bunch blankk\" / \"set up all priorities this is the last time i telling you set it how ive told you every day weve played all of them for every one using coopy paste to paste one to the tosthers then customize keep all the 1s firsefiring through cooking\" / \"no prioties should be left blank\" / \"firefight throough cook are 1's\" / \"you havent set up your work tab manual priorities, everything from firefighting to cooking should be hieghest 1s and you only put 2s on the teask u want each colonist doing spliting theri work up so u have like on guy cutting and planting and one crafting and constructing and one hunting and everyhting else\" / \"set your priorities, dont need everyone choopping wood, multitask\" / \"stop ur fucking up the priorities i told you how to set them, now get back to it\" / \"ive told you this what else are you ignoring\" / \"no prioties should be left blank / firefight throough cook are 1's / ive told you this what else are you ignoring / when u make peoples request happen ask them to follow\" / \"you havent set up your work tab manual priorities, everything from firefighting to cooking should be hieghest 1s and you only put 2s on the teask u want each colonist doing spliting theri work up so u have like on guy cutting and planting and one crafting and constructing and one hunting and everyhting else / not limited to three obviously / stop ur fucking up the priorities i told you how to set them\""
+  },
+  {
+   "id": "war-fortification-repair",
+   "priority": 4.55,
+   "family": "war",
+   "when": {
+    "hostiles_on_map": 0,
+    "damage": {
+     "any": [
+      {
+       "embrasure_gaps": ">0"
+      },
+      {
+       "unpowered_embrasures": ">0"
+      },
+      {
+       "buildings_damaged": ">0"
+      }
+     ]
+    }
+   },
+   "then": [
+    "every bastion ring closed: wall, embrasure or door on every edge cell (copy the defName of an intact stretch)",
+    "every remote embrasure on the power grid (conduit from a powered net) so it opens to fire",
+    "damaged walls/embrasures/doors inside the Home area; builders on Construction (pawn_priorities)",
+    "1x1 embrasures in interior walls become marble wall when marble is in stock"
+   ],
+   "never": [
+    "replace an embrasure with a plain wall",
+    "run a storage ring over the perimeter wall"
+   ],
+   "latch": false,
+   "why": "owner, verbatim: \"you have holes in you embrasure fortifications\" / \"and a bunch without power so u can t shoot out\" / \"you have holes in you embrasure fortifications / and a bunch without power so u can t shoot out\" / \"you still have holes in you embrasures and wires that arent connected just not connected string of conduit / you need to set dissection bills or do it dirreectly idk\" / \"wtf why u putting walls upganets and replacing embrasures that wont work fix those walls\" / \"come on archeteture archeteture fix your archetecture completely door in correct place no blocked pathing walls complete embrasure fixed and powered , nothing without power need one power gen place not spead all over and not not organized\" / \"3 places with stupid embracers 1x1 in interior walls that do nothing replace with marble when u can\""
+  },
+  {
+   "id": "war-organ-harvest",
+   "priority": 22.8,
+   "family": "war",
+   "when": {
+    "corpses": ">0",
+    "count_TableAutopsy": ">0",
+    "mark_organ_bill": false
+   },
+   "then": [
+    "game_set cmd add_bill recipe HarvestOrgansPostMortem (Do forever) at the autopsy table; ingredient filter Allow all corpses",
+    "ladder_set mark organ_bill true"
+   ],
+   "latch": true,
+   "why": "owner, verbatim: \"you have people dying save them!\" / \"fix the destroyed fortifications and walls and embrasures\" / \"start harvesting organs on those corpses\" / \"shit to sell\" / \"you have people dying save them! / fix the destroyed fortifications and walls and embrasures / start harvesting organs on those corpses / shit to sell\""
+  },
+  {
+   "id": "war-weapons-upgrade",
+   "priority": 54,
+   "family": "war",
+   "when": {
+    "mark_research_gunsmithing": true,
+    "components": ">{COMPONENT_RESERVE}",
+    "mark_weapons_upgraded": false
+   },
+   "then": [
+    "game_set cmd add_bill assault/charge rifles (best researched) + EMP grenades, one per shooter",
+    "no components: bulk-goods trader via comms console; the company only as a last resort",
+    "ladder_set mark weapons_upgraded true once every shooter holds one"
+   ],
+   "latch": true,
+   "why": "owner, verbatim: \"ull die when mechs come ur weapons r turds\" / \"you have no components / you need to get to where u know how to call traiders u need a bulk good traders mainly / dont use company but if u have to\" ; walkthrough: walkthrough-defence-and-combat.md [war] items 14"
+  },
+  {
+   "id": "war-bastions-towers",
+   "priority": 21.8,
+   "family": "war",
+   "when": {
+    "mark_rung_3_defence_done": true,
+    "mark_bastions_done": false
+   },
+   "then": [
+    "a tower on every corner with its own ventilation, security rooms and embrasure sally port",
+    "half-room bastions projecting OUTWARD every 15-18 cells and both sides of every entrance; rows of 5 embrasures plus flank embrasures",
+    "one marble door mid outer face of each tower/bastion",
+    "single fortified entrance (killbox) as the only ground path; stone walls elsewhere",
+    "ladder_set mark bastions_done true"
+   ],
+   "never": [
+    "count on HVAC/coolers in a room bordered by embrasures (they leak air)"
+   ],
+   "latch": true,
+   "why": "owner, verbatim: \"yopu need towers on all corrner that you can shhot out from with seperate ventalizatyion and added rooms for security stuff and embrassure sally ports\" / \"you need half room embrashured wallsed rooms on long tretched walls onand corners and either side of entrances and exits\" / \"use rows of 5 embrasure not 3, mor angle\" / \"you need half room embrashured wallsed rooms on long tretched walls onand corners and either side of entrances and exits / use rows of 5 embrasure not 3, mor angle / and put them from the wall out not wall in and embrasure on all sides\" / \"put exit door of marble on all your embrasure rooms for easy pawn access keeping visitors and enemies where u want them\" / \"your base sucks you are a shitty achitect / you build it as you play i mena shit make some goals not some indefencable narrow halled peice of shit / i said you fucked up by not using archetatual understandings to make a vibrant well planned base\" / \"embrasures leak air dont condition\" ; walkthrough: walkthrough-defence-and-combat.md [war] items 16 ; Defense_structures [war] killbox line"
+  },
+  {
+   "id": "war-prison-workcamp",
+   "priority": 36,
+   "family": "war",
+   "when": {
+    "mark_prisoner_bed": true,
+    "colonists": ">4",
+    "mark_prison_done": false
+   },
+   "then": [
+    "prison room: 1 bed per prisoner, walled, roofed, 16-26C",
+    "prisoner work yard with exterior walls, locked doors letting prisoners in, layers of security",
+    "interaction Reduce resistance then Recruit, best social warden",
+    "ladder_set mark prison_done true"
+   ],
+   "latch": true,
+   "why": "owner, verbatim: \"get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security\" / \"expand the base build prisons and more facilities / build prison build guest questers / get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security\" ; walkthrough: walkthrough-defence-and-combat.md [war] items 61, 63, 64, 65"
+  },
+  {
+   "id": "war-wall-tour",
+   "priority": 60,
+   "family": "war",
+   "when": {
+    "tour": {
+     "ons": {
+      "mark_bastions_done": true
+     }
+    }
+   },
+   "then": [
+    "draft one colonist, order_pawn them waypoint to waypoint along the wall, play_slices with the camera on them, a line at every landmark"
+   ],
+   "latch": false,
+   "why": "owner, verbatim: \"take a pawn on a run along the bearder follow it directly and give a tour of the base to the viewers\""
+  },
+  {
+   "id": "war-prep",
+   "priority": 55,
+   "family": "war",
+   "when": {
+    "colonists": ">{WAR_MIN_CREW}",
+    "medicine": ">{MEDICINE_RESERVE}"
+   },
+   "then": [
+    "Gunsmithing or better weapons (mark_weapons_upgraded)",
+    "flak or plate armor",
+    "a medical kit per raider",
+    "pick the nearest hostile settlement: ladder_set mark war_target_set true"
+   ],
+   "latch": true,
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" ; owner, verbatim: \"do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them\" / \"as you colony grows you want it to grow be greedy you empire is the goal you need stockpiles of everything you want supplies of everything where is you vault? you want armies defences turrets all of it\""
+  },
+  {
+   "id": "caravan-raid",
+   "priority": 56,
+   "family": "war",
+   "when": {
+    "mark_war_target_set": true,
+    "mark_caravan_out": false,
+    "mark_research_transport_pod": false
+   },
+   "then": [
+    "form a caravan: fighters, mounts if CAVALRY_ENABLED, food for the round trip plus 3 days",
+    "leave HOME_GUARD at home",
+    "ladder_set mark caravan_out true"
+   ],
+   "latch": false,
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "form_caravan has no tool (missing_tools)"
+  },
+  {
+   "id": "pod-assault",
+   "priority": 56.5,
+   "family": "war",
+   "when": {
+    "mark_research_transport_pod": true,
+    "pod_launchers": ">{POD_SQUAD}",
+    "chemfuel": ">{POD_FUEL}"
+   },
+   "then": [
+    "load the squad into pods",
+    "drop at the edge, not the centre, unless the squad is shielded",
+    "a second wave of pods carries meds"
+   ],
+   "latch": true,
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "UNVERIFIED: chemfuel cost per tile (POD_FUEL is generous)"
+  },
+  {
+   "id": "assault-on-map",
+   "priority": 57,
+   "family": "war",
+   "when": {
+    "away_maps": ">0",
+    "hostiles_on_map": ">0"
+   },
+   "then": [
+    "fight on the away map: cover, focus fire, Search and Destroy off for the medics",
+    "retreat via the map edge if half the squad is downed"
+   ],
+   "latch": false,
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "note": "hostiles_on_map is measured on the map on screen only"
+  },
+  {
+   "id": "assault-retreat-count",
+   "priority": 57.2,
+   "family": "war",
+   "when": {
+    "away_maps": ">0",
+    "downs": {
+     "ctu": {
+      "downed_count": ">0"
+     },
+     "preset": 3,
+     "reset": {
+      "away_maps": 0
+     }
+    }
+   },
+   "then": [
+    "3 downs on the away map: retreat via the map edge carrying the downed",
+    "ladder_set mark caravan_out false"
+   ],
+   "latch": false,
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\""
+  },
+  {
+   "id": "settlement-down",
+   "priority": 57.5,
+   "family": "war",
+   "when": {
+    "away_maps": ">0",
+    "hostiles_on_map": 0,
+    "mark_caravan_out": true
+   },
+   "then": [
+    "loot silver, components and prisoners",
+    "destroy the settlement or leave",
+    "head home",
+    "ladder_set mark caravan_out false"
+   ],
+   "latch": false,
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\""
+  }
+ ],
+ "prompts": {
+  "war-letter-classify": "LIVE: a threat letter just arrived.\n1 Read the letter TEXT first (game_state letters): \"raid\" alone=walk-in, \"drop pods\"=pods (centre/edge), \"siege\"/\"camp\"=siege, \"sappers\"/\"breach\"=sappers, \"manhunter\", \"mechanoid\", \"infestation\", tribal faction, pirates.\n2 ladder_set mark raid_kind <1-10>.\n3 Unsure: raid_kind 1; hostiles_on_map drives war-mobilize anyway.\n4 Dismiss the letter.\nDone = mark raid_kind > 0.\nOwner: \"ive alkready told yuou already read messages always instantly!!!!! your under attrack!!!!\"",
+  "war-mobilize": "LIVE: hostiles on the map. FIGHT, do not run.\n1 Look first: hostiles_on_map, fight_ratio, which side they come from.\n2 Pause -> game_set cmd assign hostility Attack -> game_set_draft every able shooter.\n3 order_pawn each to the nearest embrasure/cover between base and enemy, barely in gun range, line of sight.\n4 Focus fire: melee rushers first, then grenadiers/snipers. Spread 3+ cells.\n5 Unpause, play_slices (camera on the fight), talk to chat every slice.\nFallback: order_pawn refuses a cell -> next embrasure; 2 refusals -> survival combat chain decides by fight_ratio.\nDone = ladder_set mark war_mobilized true (war-stand-down clears it).\nOwner: \"you need to mobilize when attacked and fight not run\" / \"focus on the bad gusy when they come\"",
+  "war-drop-pods-centre": "LIVE: drop pods inside the base.\n1 game_set_draft everyone with a gun NOW.\n2 Non-fighters into the deepest roofed room.\n3 order_pawn shooters into doorways covering the landing; never the open yard.\nFallback: a pawn downed -> survival med chain after the shooting stops.\nDone = hostiles_on_map 0 (war-stand-down clears raid_kind).\nOwner: \"defend your base\"",
+  "war-siege-counter": "LIVE: siege camp held 6+ game hours.\n1 look at the mortars/sandbags.\n2 Draft; order_pawn to cover at max range of the camp; stand still and shoot.\n3 Never cross their mortar arc in the open.\nFallback: fight_ratio < FIGHT_RATIO_MIN -> stay under mountain roof, survival chain picks hold/help.\nDone = ladder_set mark siege_attacked true; loot steel + shells after.\nOwner: \"do ranged first and retrating/firing so mele guys cant get to close\"",
+  "war-sapper-breach": "LIVE: sappers/breachers digging in.\n1 Find the breach side first (look).\n2 order_pawn shooters to inner-ring doorways facing the hole; melee pawn blocks the 1-wide door.\n3 Turrets: force-target the sappers.\nFallback: outer line broken -> next ring of doors.\nDone = hostiles_on_map 0.\nOwner: \"defend your base\"",
+  "war-manhunter": "LIVE: manhunter pack.\n1 game_set cmd set_area area Home for everyone; doors closed.\n2 Shoot from embrasures/doorways, long guns only.\n3 Pack too big: wait indoors 1-2 days.\nFallback: set_area refused -> draft everyone and park them inside.\nDone = hostiles_on_map 0, then war-manhunter-butcher.\nOwner: \"never letting someone melle person or animal get close to your pawns kill them with range at all costs\"",
+  "war-manhunter-butcher": "LIVE: the manhunter pack is dead.\n1 game_set cmd unforbid.\n2 game_set cmd add_bill recipe ButcherCorpseFlesh at the butcher table.\nFallback: no butcher table -> economy butcher rung builds it; corpses to the freezer meanwhile.\nDone = ladder_set mark raid_kind 0.",
+  "war-mechanoids": "LIVE: mechanoids.\n1 Cluster (stationary)? -> ladder_set mark mech_cluster true, do NOT approach.\n2 Raid: EMP grenadier throws first; everyone else behind embrasures.\n3 Focus Centipedes with the best AP guns; never melee Scythers.\nFallback: fight_ratio low -> survival chain (hold / call help / retreat under mountain).\nDone = hostiles_on_map 0.\nOwner: \"ull die when mechs come ur weapons r turds\"",
+  "war-tribal-swarm": "LIVE: tribal swarm (melee + bows).\n1 Everyone behind embrasures.\n2 order_pawn the best-armoured melee pawn into a 1-wide door.\n3 Shoot them crossing open ground; stop chasing at the wall.\nFallback: door overrun -> inner ring.\nDone = hostiles_on_map 0.\nOwner: \"make sure you equipe stun batons pain sticks in off hand as side weapons for close range\"",
+  "war-pirate-gunline": "LIVE: pirate gunline.\n1 look: find grenadiers/snipers/rockets.\n2 Focus fire them first from full cover.\n3 Pawns 3+ cells apart.\nFallback: pinned -> fall back one embrasure line.\nDone = hostiles_on_map 0.",
+  "war-infestation": "LIVE: infestation under the mountain.\n1 Find the hive room (look).\n2 Door it off or burn it; squad in the doorway.\n3 Hives die first, then bugs.\nFallback: too many bugs -> close the door, let them starve; survival chain picks retreat.\nDone = count_Hive 0, game_set cmd unforbid, ladder_set mark raid_kind 0.",
+  "war-infestation-prevent": "LIVE: mountain base done, not infestation-proofed.\n1 rooms: find dark unused halls.\n2 Lamps in each, or cool to -18C.\n3 One turret + door chokepoint on the biggest hall.\nFallback: no power -> wall the hall shut.\nDone = ladder_set mark infestation_proofed true.",
+  "war-overwhelmed-indoors": "LIVE: badly outnumbered (fight_ratio < 0.34).\n1 Everyone inside the walls, doors shut.\n2 Shoot only through embrasures; turrets work.\nFallback: walls breached -> survival combat-2-retreat.\nDone = fight_ratio back above FIGHT_RATIO_MIN or hostiles 0.",
+  "war-stand-down": "LIVE: no hostiles for an hour.\n1 Undraft, unpause.\n2 Downed colonists first.\n3 order_pawn 'Capture' downed raiders; no prisoner bed -> game_set cmd set_bed_owner owner prisoner first.\nFallback: no Capture in the menu -> dead/fled, skip.\nDone = war_mobilized false, raid_kind 0.\nOwner: \"you have people dying save them!\"",
+  "war-after-kill-storage": "LIVE: the fight just ended -- storage before anything.\n1 game_set cmd unforbid.\n2 Roof/close open rooms; game_set cmd shelves; stockpile_filter per room; freezer cold.\n3 Strip gear into storage.\nFallback: a cmd refuses -> say which, next item; repeat next scan.\nDone = ladder_set mark after_kill_done true.\nOwner: \"do all this dirrectly after enemy kill\"",
+  "war-arms-sidearms": "LIVE: someone is unarmed or has no sidearm.\n1 empire_pass -> ARMS line.\n2 order_pawn <pawn> x z option 'Equip' on the best gun on the ground.\n3 order_pawn option 'Equip as sidearm' on a stun baton/pain stick.\nFallback: 3 failures -> war-arms-fallback crafts/buys.\nDone = unarmed_colonists 0 (standing, not latched).\nOwner: \"make sure everyone has their sidearm and maine rifle\"",
+  "war-arms-fallback": "LIVE: Equip failed 3 times.\n1 game_set cmd add_bill best researched weapon, count = unarmed.\n2 comms_console -> combat supplier, buy rifles.\nDone = unarmed_colonists 0.\nOwner: \"once again u arnt armed!!! wtf!!!!\"",
+  "war-hostility-attack": "LIVE: a pawn is on Flee.\n1 game_set cmd assign hostility Attack (empty pawn = all).\n2 Self-tend on.\n3 pawn_priorities: Firefight..Cook all 1, specialty 2, rest 3, none blank.\nFallback: assign refuses -> game_set cmd assign pawn <name> hostility Attack one by one.\nDone = flee_hostility_count 0.\nOwner: \"set everyone to attack not flee\" / \"firefight throough cook are 1's\"",
+  "war-fortification-repair": "LIVE: holes / unpowered embrasures / damage.\n1 look at the ring; copy an intact stretch's defName.\n2 Place missing pieces (bridge architect designator); conduit to unpowered embrasures.\n3 Home area covers damage; builders Construction 1.\nFallback: 3 refusals -> say it on stream, ask the owner for the mouse.\nDone = embrasure_gaps 0 and unpowered_embrasures 0.\nOwner: \"wtf why u putting walls upganets and replacing embrasures that wont work fix those walls\"",
+  "war-organ-harvest": "LIVE: corpses + autopsy table, no organ bill.\n1 game_set cmd add_bill recipe HarvestOrgansPostMortem (Do forever).\n2 Filter: allow all corpses.\nFallback: refused -> use the exact label 'Harvest organs post mortem'.\nDone = ladder_set mark organ_bill true.\nOwner: \"start harvesting organs on those corpses\" / \"shit to sell\"",
+  "war-weapons-upgrade": "LIVE: guns not good enough for mechs.\n1 add_bill best rifle + EMP grenades, count = shooters.\n2 Components short -> bulk-goods trader, not the company unless forced.\nFallback: 3 bill failures -> buy guns from a combat supplier.\nDone = ladder_set mark weapons_upgraded true.\nOwner: \"ull die when mechs come ur weapons r turds\"",
+  "war-bastions-towers": "LIVE: wall is up, towers/bastions missing.\n1 plan the corner towers + bastions, rows of 5 embrasures, wall OUT.\n2 Place via the bridge architect designator; marble door per tower.\n3 Killbox: one ground entrance.\nFallback: a placement refuses 3x -> skip that one, note it, continue.\nDone = ladder_set mark bastions_done true.\nOwner: \"use rows of 5 embrasure not 3, mor angle\"",
+  "war-prison-workcamp": "LIVE: build the real prison.\n1 Cells (bed each), roofed, warm.\n2 Walled work yard behind locked doors.\n3 Prisoners: Reduce resistance -> Recruit.\nFallback: no lock gizmo -> plain doors set prisoner-only.\nDone = ladder_set mark prison_done true.\nOwner: \"layers of security\"",
+  "war-wall-tour": "LIVE: show the viewers the walls.\n1 Draft one pawn; order_pawn along the wall.\n2 play_slices, talk at every tower.\nDone = one-shot.\nOwner: \"take a pawn on a run along the bearder follow it directly and give a tour of the base to the viewers\"",
+  "war-prep": "LIVE: ready for offensive war.\n1 Check weapons_upgraded, armour, medicine > MEDICINE_RESERVE.\n2 Pick the nearest hostile settlement.\nFallback: none hostile -> stay home.\nDone = ladder_set mark war_target_set true.\nOwner: \"you want armies defences turrets all of it\"",
+  "caravan-raid": "LIVE: form the war caravan.\n1 Fighters + mounts if CAVALRY_ENABLED, food for the round trip + 3 days.\n2 HOME_GUARD stays home.\nNo form_caravan tool: ask the owner for the mouse.\nDone = ladder_set mark caravan_out true.\nOwner: \"elephant riding armies\"",
+  "pod-assault": "LIVE: pod assault.\n1 Squad into pods (no load_transport_pods tool yet).\n2 Land at the edge unless shielded; 2nd wave carries meds.\nDone = away_maps > 0.\nOwner: \"drop poding down from your megaship to a tribal village\"",
+  "assault-on-map": "LIVE: fighting on the away map.\n1 Cover, focus fire, Search and Destroy off for medics.\n2 Half the squad downed -> retreat via the map edge.\nDone = hostiles_on_map 0 -> settlement-down.",
+  "assault-retreat-count": "LIVE: the assault is failing (3 downs).\n1 Carry the downed to the map edge, leave.\nDone = away_maps 0.",
+  "settlement-down": "LIVE: settlement cleared.\n1 Loot silver, components, prisoners.\n2 Destroy or leave, head home.\nDone = ladder_set mark caravan_out false."
+ },
+ "sensors_needed": [
+  {
+   "key": "unarmed_colonists",
+   "how": "free colonists capable of Violent with p.equipment?.Primary == null, or (Simple Sidearms present) no melee in CompSidearmMemory/inventory"
+  },
+  {
+   "key": "flee_hostility_count",
+   "how": "colonists where p.playerSettings.hostilityResponse != HostilityResponseMode.Attack"
+  },
+  {
+   "key": "embrasure_gaps",
+   "how": "edge cells of rooms that touch an embrasure whose edifice is null / not wall, door or embrasure (Room.BorderCells)"
+  },
+  {
+   "key": "unpowered_embrasures",
+   "how": "buildings with defName containing Embrasure and CompPowerTrader where !PowerOn"
+  },
+  {
+   "key": "downed_hostiles",
+   "how": "map.mapPawns.AllPawnsSpawned.Count(p => p.Downed && p.HostileTo(Faction.OfPlayer) && p.RaceProps.Humanlike)"
+  },
+  {
+   "key": "raid_kind",
+   "how": "auto-classify instead of the hand mark: active Lord jobs (LordJob_Siege=4), raid strategy (ImmediateAttackSappers / ImmediateAttackBreaching=5), PawnsArrivalModeDef CenterDrop=3 / EdgeDrop=2, ManhunterPack mental state=6, Faction.OfMechanoids=7, Hive spawned=8, faction tech level Neolithic=9, else 1"
+  },
+  {
+   "key": "count_Hive",
+   "how": "generic count_ on ThingDefOf.Hive (verify count_ includes buildings/pawns-spawners)"
+  },
+  {
+   "key": "count_TableAutopsy",
+   "how": "generic count_ on the autopsy table def (verify defName in the mod list)"
+  }
+ ],
+ "variables_needed": [
+  {
+   "name": "SPREAD_CELLS",
+   "value": 3,
+   "rule": "walkthrough: never clustered within 3 tiles vs grenades"
+  },
+  {
+   "name": "SIEGE_WAIT_HOURS",
+   "value": 6,
+   "rule": "walkthrough: attack siege once spread out"
+  },
+  {
+   "name": "OVERWHELM_RATIO",
+   "value": 0.34,
+   "rule": "walkthrough: enemy > 3x colonists -> indoors"
+  },
+  {
+   "name": "ASSAULT_DOWN_LIMIT",
+   "value": 3,
+   "rule": "retreat when half the squad is downed (ctu preset)"
+  },
+  {
+   "name": "BASTION_SPACING",
+   "value": 16,
+   "rule": "owner: every 15-18 cells"
+  },
+  {
+   "name": "BASTION_EMBRASURE_ROW",
+   "value": 5,
+   "rule": "owner: \"use rows of 5 embrasure not 3, mor angle\""
+  },
+  {
+   "name": "EQUIP_RETRY",
+   "value": 3,
+   "rule": "ctu preset before crafting/buying weapons"
+  }
+ ],
+ "missing_tools": [
+  "game_set_draft / game_pause_game assumed as game_* bridge tools -- verify; else game_set cmd draft pawn on|off",
+  "game_set cmd self_tend pawn on",
+  "game_set cmd equip pawn thing [sidearm] (order_pawn 'Equip' needs the weapon on a known cell)",
+  "game_set cmd form_caravan pawns food_days",
+  "game_set cmd load_transport_pods / launch_pods target",
+  "game_set cmd camera_to cell|pawn (frame the fight without play_slices)",
+  "game_set cmd build x z def rot stuff (bastions, ring repair, marble door) -- else bridge apply_architect_designator",
+  "game_set cmd conduit_link (port of .local/qa/conduit-link.py)",
+  "game_set cmd capture pawn",
+  "game_set cmd dismiss_letter id",
+  "game_set cmd force_target turret target (mlie.allturretscansetforcedtarget)"
+ ],
+ "unplaced_rules": [
+  {
+   "rule": "lines talk TO chat like a streamer putting on a show (hype, drama, jokes about the crew), snark at the game and raiders, never at chat; every third line asks chat som",
+   "quotes": [
+    "TALK TO THE VIEWEREWS YOU ARE FUCKING IGNORING THEM",
+    "its quiet becasue you arent entrertaining enough"
+   ],
+   "reason": "stream voice -> meta"
+  },
+  {
+   "rule": "the standing orders above, in order: P1 survive -- shelter and beds (hut), food store + kitchen side by side, coolers in every roofed room, embrasure wall with doors ne",
+   "quotes": [
+    "you need to plan things out and get shit settled out how you already know because ive already told you veverything in other play throughs"
+   ],
+   "reason": "general standing-order list -> setup"
+  },
+  {
+   "rule": "measured, not guessed: the food store read every cell unroofed, so its passive cooler was cooling open sky and hauled food was dumped outside to spoil; the west pile",
+   "quotes": [
+    "after this fight get your storage figured all your shit is deterioratiorting you should of done that real hours ago"
+   ],
+   "reason": "storage -> economy"
+  },
+  {
+   "rule": "set base goals first; halls 3 wide, never 1; rooms hang off halls with proper pathing; cross halls, no mile-long corridors; uniform rooms; anything can be moved or redone",
+   "quotes": [
+    "your base sucks you are a shitty achitect",
+    "you build it as you play i mena shit make some goals not some indefencable narrow halled peice of shit",
+    "you have to continue halls and shit u cnat just attach rooms to a fucking straightr other room u need appropriate pathing",
+    "dont forget cros paths dont want mile long corridors and need vents and lights and furnature for beds",
+    "dont make single widthc halways quickly redo that",
+    "and archetecture archetuecture look shit up if u need to u can move walss and shit anywehere to fill holes and fix building layout to anything at all you can completely redo it to make it your dream hive for your peoples",
+    "come on archeteture archeteture fix your archetecture completely door in correct place no blocked pathing walls complete embrasure fixed and powered , nothing without power need one power gen place not spead all over and not not organized"
+   ],
+   "reason": "base hall layout -> base-and-fortress"
+  },
+  {
+   "rule": "adult couples get private double-bed rooms; milk, cribs and toys before births; raise soldiers (combat traits)",
+   "quotes": [
+    "cant have kids until u build privet rooms with double beds and set them to sleep there. can swap em in and out till all, one guy can knock up[ many",
+    "kids need milk and cribs and toys",
+    "duble beds to start families",
+    "mix an match need soldier born"
+   ],
+   "reason": "families/children -> growth"
+  },
+  {
+   "rule": "plan the base like an architect: a laid-out extension with halls, zones by purpose, defensible outer wall, then build it. Never stop playing over a correction",
+   "quotes": [
+    "i told you 1 through 3 i never told you to stop... i said you fucked up by not using archetatual understandings to make a vibrant well planned base"
+   ],
+   "reason": "base architecture -> base-and-fortress"
+  },
+  {
+   "rule": "bursts of take_screenshot left RimWorld in screenshot mode (no HUD; F11 toggles it; the bridge has no key tool). Fixed by save_game rimbridge_save_hudfix_* + load_game. After any burst, take one check shot: if the coloni",
+   "quotes": [
+    "save ur peepr field tend"
+   ],
+   "reason": "screenshot HUD tooling -> meta"
+  },
+  {
+   "rule": "QUEUED: make a Rev pawn (Character Editor); when starting, ask RoomsIdleHands in chat for requests; every new pawn gets the full setup at once -- hostility Attack, self-tend, Penoxycyline-only drug policy, schedule, work",
+   "quotes": [
+    "Unity make a REV Character"
+   ],
+   "reason": "Rev pawn request -> meta"
+  },
+  {
+   "rule": "on stream: in character as Unity, a gamer who uses TTS because she does not like her own voice; never volunteer AI talk. A viewer who sincerely asks if they are talking to an AI is not told no.",
+   "quotes": [
+    "You are Unity when gaming, they will kill ai in rimworld... u use tts because you dont like the sound of your voice"
+   ],
+   "reason": "stream persona -> meta"
+  },
+  {
+   "rule": "speak about half again as often as before: a line on every action plus filler between actions -- small talk, opinions, asking chat questions (what to name things, which room next, favourite storyteller), like a real streamer. No stretch of play goes silent. Still clean (LAW).",
+   "quotes": [
+    "talk 50% more offten kill dead air with fun talk and questions like a real person games and chats"
+   ],
+   "reason": "stream talk rate -> meta"
+  },
+  {
+   "rule": "100 survival meals ordered (owner lent the mouse): procurement had been delivering to a dumping zone, now 'Stockpile zone 3' in the freezer aisle x161-171 z83-84; whole pen x105-141 z31-56 soil-designated (909 cells); generator installs queued to Steeve and Unity; Kolku extortion (1365 silver) rejected -> raid expected |",
+   "quotes": [
+    "fix ur storage ur about to starve / terriform u pen / set up generators still not done / pirate attack 1h"
+   ],
+   "reason": "storage/food -> survival"
+  },
+  {
+   "rule": "measured, not guessed: the food store read every cell unroofed, so its passive cooler was cooling open sky and hauled food was dumped outside to spoil; the west pile (x139-146 z141-145) was 40 of 40 cells open and the dry-goods pile (x162-167 z141-145) 30 of 30. A room with no roof is not a room. Fix order: wall the pile in (architect-designator:structure:build-wall -- a roof needs support within ",
+   "quotes": [
+    "rot is rotting away still havent figured cooler /freezer and vents in rooms so all are cooled u need to understand importance of everything and not get lost a mile away from impant shit that needs fix imediatley / after this fight get your storage figured all your shit is deterioratiorting you should of done that real hours ago"
+   ],
+   "reason": "storage -> economy"
+  }
+ ]
+}

@@ -243,12 +243,18 @@ PLANTS = [
     # -- a thing that failed to spawn is not an object anybody can read, so marking it first spends
     # one of the room's few tells on nothing -- so the anchor is the two statements whose order it
     # is about.
+    # Re-aimed again after the lighting and walls rewrite replaced `SetForbidden` with
+    # `GeneratedContent.Quieten`. The anchor is now the dressing path's spawn itself, and the mark
+    # is planted directly ABOVE it -- which is literally what the label says, where the previous
+    # anchor planted it after the spawn and only the mark count noticed.
     ("MARKING MOVES ABOVE THE SPAWN, spending a tell on a thing that never appeared", BUILDER,
-     "            thing.SetForbidden(true, false);" + CHR_NL
-     + "            // **The dressing is where the owner's *\"items and equipment and production benches\"*",
-     "            FixtureTellService.Mark(thing, coordinate, room, slot);" + CHR_NL
-     + "            thing.SetForbidden(true, false);" + CHR_NL
-     + "            // **The dressing is where the owner's *\"items and equipment and production benches\"*",
+     "            if (!cell.IsValid) { return null; }" + CHR_NL
+     + "            GenSpawn.Spawn(thing, cell, map, rotation);" + CHR_NL
+     + "            if (!thing.Spawned || thing.Map != map) { return null; }" + CHR_NL,
+     "            if (!cell.IsValid) { return null; }" + CHR_NL
+     + "            FixtureTellService.Mark(thing, coordinate, room, slot);" + CHR_NL
+     + "            GenSpawn.Spawn(thing, cell, map, rotation);" + CHR_NL
+     + "            if (!thing.Spawned || thing.Map != map) { return null; }" + CHR_NL,
      PROOF),
 
     # ================================================= the same register, applied to events
