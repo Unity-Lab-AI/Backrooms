@@ -547,10 +547,12 @@ def golive():
 
 LOCK = os.path.join(QA, "_svc_control.lock")
 
-def control_lock(wait_s=900, stale_s=1800):
+def control_lock(wait_s=900, stale_s=1800, takeover_s=None):
     """One process-control action at a time: two starts racing the same scan each launch their own copy.
-    A lock older than stale_s belongs to a dead run and is taken over."""
-    t0 = time.time()
+    A lock older than stale_s belongs to a dead run and is taken over. A stop never waits in silence (owner,
+    2026-10-13: "i ran stop.bat and it didnt work! kill all!" -- it sat on the lock the start window still held):
+    it says whose lock it is at once and takes it over after takeover_s seconds."""
+    t0 = time.time(); said = False
     while True:
         try:
             fd = os.open(LOCK, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
@@ -564,7 +566,14 @@ def control_lock(wait_s=900, stale_s=1800):
             return
         except FileExistsError:
             try:
-                if time.time() - os.path.getmtime(LOCK) > stale_s: os.remove(LOCK); continue
+                age = time.time() - os.path.getmtime(LOCK)
+                holder = open(LOCK).read().strip()
+                if age > stale_s: os.remove(LOCK); continue
+                if takeover_s is not None and age > takeover_s:
+                    print("taking the control lock over from pid %s (%.0f s old)" % (holder, age)); os.remove(LOCK); continue
+                if not said:
+                    print("waiting for another start/stop (pid %s, lock %.0f s old)%s" % (holder, age,
+                          " -- it will be taken over in %d s" % takeover_s if takeover_s is not None else " -- Ctrl-C to abort"), flush=True); said = True
             except OSError:
                 continue
             if time.time() - t0 > wait_s:
@@ -572,7 +581,7 @@ def control_lock(wait_s=900, stale_s=1800):
             time.sleep(1)
 
 cmd = (sys.argv[1] if len(sys.argv) > 1 else "status").lower()
-if cmd != "status": control_lock()
+if cmd != "status": control_lock(takeover_s=10 if cmd == "stop" else None)
 if cmd == "game": game(); raise SystemExit
 if cmd == "golive": golive(); raise SystemExit
 ONE = sys.argv[2].lower() if len(sys.argv) > 2 else None   # a name means THAT service only, never the rig
