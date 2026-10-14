@@ -226,7 +226,8 @@ def clean_for_stream(text, max_len=320):
 # stream material (and that line was not even true). A line that talks about it is not said at all.
 TECH_BLOCK = re.compile(r"\b(bridge|server|servers|connection|connections|socket|port|api|script|scripts|"
                         r"python|ollama|model|tokens?|prompt|mod loader|load(?:ing)? the (?:backrooms )?mod|"
-                        r"rimbridge|automation|autopilot|crash(?:ed|ing)?|bug(?:gy|s)?|error|exception|code)\b", re.I)
+                        r"rimbridge|automation|autopilot|crash(?:ed|ing)?(?!\s*-?\s*land)|bug(?:gy|s)?|error|exception|code)\b", re.I)
+# "crash landed" / "Crashlanded" is the scenario, not the plumbing (run 5, 01:57: her hello line blocked twice for it)
 
 
 def clean_viewer_name(who):
