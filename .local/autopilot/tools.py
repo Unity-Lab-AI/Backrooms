@@ -689,6 +689,15 @@ class Toolbox:
         line = re.sub(r"\s*\[(laughter|breath|sigh)\]\s*", " ", str(text)).strip()
         if not line:
             return "nothing to send"
+        # run 5 (2026-10-14 00:57-00:58): replies to msg_id 146 and 147 with an inbox that ends at 49 -- invented ids answer
+        # nobody and the unread line stays unread. 0 = the owner-orders file (Twitch-chat / panel orders); else a real inbox id.
+        try:
+            ids = {r["msg_id"] for r in read_owner(0)}
+        except Exception:
+            ids = set()
+        if int(msg_id) != 0 and int(msg_id) not in ids:
+            raise GuardError("no owner message with msg_id %s: the private lines are %s (use their msg_id), or msg_id 0 for an order from the OWNER ORDERS list"
+                             % (msg_id, sorted(ids)[-6:] if ids else "none"))
         if self.dry:
             log("DRY-RUN would REPLY TO OWNER:", line)
         else:
