@@ -506,6 +506,31 @@ class Toolbox:
         if explored and not (marks.get("pawns_set") and marks.get("assign_set")):
             return ("time stays stopped until every pawn's priorities, schedule, drugs and Assign tab "
                     "are done -- then ladder_set mark pawns_set true and assign_set true, then unpause")
+        # Run 5 (2026-10-13 23:20-23:26): day 0 to day 2 at Superfast with nothing laid out -- play_slices "to let the arming
+        # land", then "plans are all drawn, time runs". Owner: "pause is her friend should should not unpause until inistal
+        # setup and zoneing is done and buildings are layed out" / "she should have beend buildt by the end of day one".
+        # A new colony's setup hold (keep-playing writes it at day one) locks every time-starting route until the mod has
+        # confirmed the crew (pawns_set, assign_set) and the layout (layout_set: storage_room, shelter AND stove ordered).
+        # Hostiles on the map are the one exception: a raid is fought with time running.
+        if os.path.exists(os.path.join(ROOT, ".local", "qa", "_setup_hold.flag")):
+            try:
+                cm = self.confirmed_marks()
+            except Exception:
+                cm = {}
+            missing = [k for k in ("pawns_set", "assign_set", "layout_set") if not cm.get(k)]
+            if missing:
+                try:
+                    spec = importlib.util.spec_from_file_location("gates_tb", os.path.join(HERE, "gates.py"))
+                    g = importlib.util.module_from_spec(spec); spec.loader.exec_module(g)
+                    hostile = g.state().get("hostiles_on_map") or 0
+                except Exception:
+                    hostile = 0
+                if not hostile:
+                    return ("the game stays PAUSED until the camp is laid out and the crew is set (owner: pause is your friend; "
+                            "the camp stands by the end of day one). Not yet confirmed by the mod: %s. Orders you place now are "
+                            "QUEUED and run the moment setup-6-run starts time -- keep laying out. layout_set = the mod's ok to "
+                            "storage_room, shelter AND stove; pawns_set = the work grid; assign_set = game_set cmd assign"
+                            % ", ".join(missing))
         return None
 
     def t_play(self, slices=1):
@@ -759,7 +784,12 @@ class Toolbox:
                                           "an ok: reply to game_set cmd schedule (or day_one) in the mod's outbox"),
         "config_drug_policy_done": (None, ("drug_policy", "day_one"),
                                     "an ok: reply to game_set cmd drug_policy (or day_one) in the mod's outbox"),
-        "arms_set": ("armed", None, "the mod's able_shooters_armed == able_shooters > 0 (Sensors.cs)"),
+        # run 5 (2026-10-13 23:21): armed-by-sensor needs the equip jobs to RUN, and time is stopped during setup -- so she ran
+        # time to get the mark (owner: "pause is her friend"). The mod's ok to `arm` queues the orders; that confirms it.
+        "arms_set": ("armed", ("arm",), "the mod's able_shooters_armed == able_shooters > 0 (Sensors.cs), or an ok: reply to game_set cmd arm (the equip orders are queued and run when time runs)"),
+        # the camp is LAID OUT: the mod's ok to ALL THREE of storage_room, shelter and stove (plans, not buildings). This is the
+        # mark that lets time run (setup-6-run) -- owner: "should not unpause until inistal setup and zoneing is done and buildings are layed out"
+        "layout_set": (None, ("storage_room", "shelter", "stove"), "ok: replies to ALL of storage_room, shelter and stove in the mod's outbox (the camp is laid out; the crew builds it once time runs)"),
         "shelter_set": (None, ("shelter",),
                         "an ok: reply to game_set cmd shelter (or build_room) in the mod's outbox"),
         "camp_set": (None, ("camp",), "an ok: reply to game_set cmd camp (the anchor read) in the mod's outbox"),
@@ -876,7 +906,7 @@ class Toolbox:
         for name in order:
             test, cmds, _src = cls.CONFIRMED_MARKS[name]
             by_sensor = sensor(test) if test else False
-            by_reply = bool(cmds) and (all(c in ok for c in cmds) if name == "stove_set" else any(c in ok for c in cmds))
+            by_reply = bool(cmds) and (all(c in ok for c in cmds) if name in ("stove_set", "layout_set") else any(c in ok for c in cmds))
             out[name] = bool(by_sensor or by_reply)
         return out
 

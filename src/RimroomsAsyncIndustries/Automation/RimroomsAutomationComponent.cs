@@ -157,8 +157,11 @@ namespace RimroomsAsyncIndustries.Automation
                 // the count stayed, she re-ordered and told the stream everyone had a rifle. An order into a paused game says so.
                 string cmdName = null;
                 try { Parse(line).TryGetValue("cmd", out cmdName); } catch (Exception) { cmdName = null; }
+                // Run 5 (2026-10-13 23:21): the old wording ("unpause") sent her straight to play_slices on day 0 with nothing laid
+                // out (owner: "pause is her friend should should not unpause until inistal setup and zoneing is done and buildings
+                // are layed out"). A queued order is normal while the camp is laid out; the ladder's setup-6-run starts time.
                 if (result != null && result.StartsWith("ok") && cmdName != null && Find.TickManager != null && Find.TickManager.Paused && OrderCmds.Contains(cmdName))
-                    result += " -- the game is PAUSED: nothing moves until time runs (game_pause_game pause false)";
+                    result += " -- the game is PAUSED: this order is queued and runs once time runs; during setup keep it paused and keep laying out (setup-6-run starts time)";
                 string row = "{\"result\":\"" + Escape(line) + " -> " + Escape(result) + "\"";
                 if (!string.IsNullOrEmpty(id)) row += ",\"id\":\"" + Escape(id) + "\"";
                 results.Add(row + "}");
@@ -385,6 +388,10 @@ namespace RimroomsAsyncIndustries.Automation
                 .FirstOrDefault(p => p.label.IndexOf("no drug", StringComparison.OrdinalIgnoreCase) >= 0)   // owner 2026-10-13: "drugs are for hospitality guests"
                 ?? Current.Game.drugPolicyDatabase.DefaultDrugPolicy();
 
+            // Run 5 (2026-10-13 23:20): the arming ran BEFORE the unforbid, so every gun in the pod drop was still forbidden and
+            // all three read "no free ranged weapon on the map" with four weapons in the wreck (owner: "what happend to her guns
+            // did they not laod in"). The drop is unforbidden FIRST; a gun still forbidden is unforbidden when it is claimed.
+            string unforbid = SetupTools3.Unforbid(map);
             var claimed = new HashSet<Thing>();
             foreach (Pawn pawn in crew)
             {
@@ -424,13 +431,14 @@ namespace RimroomsAsyncIndustries.Automation
                 if (pawn.equipment != null && pawn.equipment.Primary == null)
                 {
                     Thing gun = map.listerThings.ThingsInGroup(ThingRequestGroup.Weapon)
-                        .Where(t => t.def.IsRangedWeapon && !t.IsForbidden(Faction.OfPlayer) && !claimed.Contains(t) &&
+                        .Where(t => t.def.IsRangedWeapon && !claimed.Contains(t) &&
                                     t.Spawned && pawn.CanReserveAndReach(t, PathEndMode.ClosestTouch, Danger.Deadly))
                         .OrderByDescending(t => t.MarketValue)
                         .FirstOrDefault();
                     if (gun != null)
                     {
                         claimed.Add(gun);
+                        if (gun.IsForbidden(Faction.OfPlayer)) gun.SetForbidden(false);
                         pawn.jobs.TryTakeOrderedJob(JobMaker.MakeJob(JobDefOf.Equip, gun), JobTag.Misc);
                         notes.Add(pawn.LabelShort + " -> " + gun.LabelShort);
                     }
@@ -443,7 +451,7 @@ namespace RimroomsAsyncIndustries.Automation
 
             return "ok: " + crew.Count + " colonists -- work 1s Firefighter..Cooking, rest by skill, none blank; schedule Anything; drugs '" +
                    (policy?.label ?? "none") + "'; hostility Attack; arming: " + (notes.Count > 0 ? string.Join("; ", notes) : "everyone already armed") +
-                   "; " + SetupTools3.Unforbid(map);
+                   "; " + unforbid;
         }
 
         /// <summary>

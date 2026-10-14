@@ -8380,21 +8380,21 @@
    "when": {
     "colony_exists": true,
     "paused": false,
-    "mark_setup_done": false,
-    "mark_assign_set": false,
-    "blueprints": "<1"
+    "mark_layout_set": false,
+    "hostiles_on_map": 0
    },
    "then": [
-    "game_pause_game pause true -- before any other order",
+    "game_pause_game pause true -- before any other order; pause is your friend",
     "read game_state once; close any operations menu (game_close_window) so pawn options show",
     "pawns selected but no pawn options/draft show: game_close_window, then select ONE pawn (click once) and read game_get_ui_layout",
-    "plans already placed (blueprints > 0): this rung does not hold -- time runs so they get built"
+    "time stays stopped until the camp is LAID OUT (storage_room, shelter and stove ordered -> mark layout_set, confirmed on the mod's three oks) and the pawns are set; setup-6-run is the rung that starts time; orders placed while paused are queued and run then"
    ],
    "never": [
-    "unpause before mark assign_set is true",
+    "unpause before mark layout_set is true",
+    "let time run because one blueprint is placed",
     "let one game hour pass with priorities unset"
    ],
-   "why": "run 3: paused from 21:54 to 22:08 with 76-122 blueprints waiting -- a colony with plans placed lets time run / owner: \"FUCK!!!! I PAUSED THE GAME SINCE SHE WOULDNT! FUCK WHY WONT SHE SET SHIT UP!!!!!!!\" / owner: \"wtf!!!!! time is flyying awayy!!!! why did she unpause beforee seeting all the pawn settings this is the fifth time ive told you all of this\" / owner: \"see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause\" / owner: \"i think it doesnt know how to click off the operation menu to use the pawns\" -- walkthrough: walkthrough-opening-and-camp.md 'Pause on landing, before any order.' [setup] Q / owner: \"three peopel are there its selecting them but no pawn options apear like draft major bug the model cant haddle\"",
+   "why": "owner 2026-10-13 (run 5): \"wtf!!!1 she is just letting the game run does she not know to never let the game run just blindly pause is her friend should should not unpause until inistal setup and zoneing is done and buildings are layed out\" / \"one day just fast forwards to day two and she hasnt done a fucking thing this run throuhg is wasted restart it all\" / \"she should have beend buildt by the end of day one\" / run 5: day 0 to day 2 at Superfast with nothing laid out (play_slices 'to let the arming land', then 'plans are all drawn, time runs') / run 3: paused from 21:54 to 22:08 with 76-122 blueprints waiting -- a colony with plans placed lets time run / owner: \"FUCK!!!! I PAUSED THE GAME SINCE SHE WOULDNT! FUCK WHY WONT SHE SET SHIT UP!!!!!!!\" / owner: \"wtf!!!!! time is flyying awayy!!!! why did she unpause beforee seeting all the pawn settings this is the fifth time ive told you all of this\" / owner: \"see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause\" / owner: \"i think it doesnt know how to click off the operation menu to use the pawns\" -- walkthrough: walkthrough-opening-and-camp.md 'Pause on landing, before any order.' [setup] Q / owner: \"three peopel are there its selecting them but no pawn options apear like draft major bug the model cant haddle\"",
    "source": "book",
    "mode": "advise"
   },
@@ -8913,16 +8913,16 @@
     "mark_stove_set": false
    },
    "then": [
-    "game_set cmd stove -- a fueled stove on a wall of the roofed room nearest the food store, never in the doorway",
-    "'kitchen room was planned' / 'walls are still planned': no roofed room stands yet -- unpause, keep Construction on, call stove again once the room is up; do not call it twice in one turn",
-    "unpause so it is built; when stoves >= 1: game_set cmd kitchen (simple meals until {MEAL_BILL_TARGET}, Do until you have X, never Do forever)",
+    "game_set cmd stove -- a fueled stove on a wall of the roofed room nearest the food store, never in the doorway (a PLANNED room is fine: the stove is planned with it)",
+    "'kitchen room was planned' / 'walls are still planned': that is the plan standing, not a refusal -- the camp is now laid out: ladder_set mark layout_set true (confirmed on the storage_room, shelter and stove oks)",
+    "after setup-6-run, when stoves >= 1: game_set cmd kitchen (simple meals until {MEAL_BILL_TARGET}, Do until you have X, never Do forever)",
     "stoves >= 1 and the bill is placed: ladder_set mark stove_set true"
    ],
    "never": [
     "place a second stove",
     "a Do-forever bill"
    ],
-   "why": "owner 2026-10-13: \"and wtf she never built a kitchen and is running around killing animals she cat butcher because she never built a camp\" / owner: \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner: \"and set amounts higher and higher as your base grows\" -- walkthrough: walkthrough-opening-and-camp.md stove bill simple meals, do until ~6-20 [survival] B,Q",
+   "why": "owner 2026-10-13 (run 5): \"wtf!!!1 she is just letting the game run does she not know to never let the game run just blindly pause is her friend should should not unpause until inistal setup and zoneing is done and buildings are layed out\" / \"one day just fast forwards to day two and she hasnt done a fucking thing this run throuhg is wasted restart it all\" / \"she should have beend buildt by the end of day one\" / owner 2026-10-13: \"and wtf she never built a kitchen and is running around killing animals she cat butcher because she never built a camp\" / owner: \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner: \"and set amounts higher and higher as your base grows\" -- walkthrough: walkthrough-opening-and-camp.md stove bill simple meals, do until ~6-20 [survival] B,Q",
    "source": "book",
    "mode": "advise"
   },
@@ -8933,18 +8933,21 @@
    "latch": false,
    "when": {
     "colony_exists": true,
-    "mark_stove_set": true,
+    "mark_layout_set": true,
+    "mark_pawns_set": true,
+    "mark_assign_set": true,
     "ticks_moving": false,
     "hostiles_on_map": 0
    },
    "then": [
-    "unpause and keep time running (game_pause_game pause false)",
+    "unpause and keep time running (game_pause_game pause false) -- the camp is laid out and the crew builds it; the stove bill comes when the stove stands",
+    "the camp stands by the END OF DAY ONE (the owner's standard): Construction 1 for everyone until the storage room, the shelter and the stove stand",
     "turn Research back on (pawn_priorities custom Research 3)",
     "letters first: read every letter (game_state), act, dismiss",
     "run_list -- the propagating maintenance list; the first FIX is the goal; check off test TODO items while playing (note append)"
    ],
    "never": [],
-   "why": "owner: \"okay is it ever going to play the game?(set up cololnist, zones, and shit)\" / owner: \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner: \"and your operations manual script or .md obviousliy isnt good becasue it doesnt have everything ive fucking ever told you as you arent even reading messages and clearing them\" / owner: \"make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done\" / owner: \"you are suppose tho be checking off todo items of the tests stuff while playing the full game to do so\" / owner: \"how are we gonna do the fucking tests if u dont play the game?\"",
+   "why": "owner 2026-10-13 (run 5): \"wtf!!!1 she is just letting the game run does she not know to never let the game run just blindly pause is her friend should should not unpause until inistal setup and zoneing is done and buildings are layed out\" / \"one day just fast forwards to day two and she hasnt done a fucking thing this run throuhg is wasted restart it all\" / \"she should have beend buildt by the end of day one\" / owner: \"okay is it ever going to play the game?(set up cololnist, zones, and shit)\" / owner: \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner: \"and your operations manual script or .md obviousliy isnt good becasue it doesnt have everything ive fucking ever told you as you arent even reading messages and clearing them\" / owner: \"make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done\" / owner: \"you are suppose tho be checking off todo items of the tests stuff while playing the full game to do so\" / owner: \"how are we gonna do the fucking tests if u dont play the game?\"",
    "source": "book",
    "mode": "advise"
   },
@@ -12103,11 +12106,12 @@
    "family": "war",
    "when": {
     "colony_exists": true,
+    "paused": false,
     "unarmed_colonists": ">0",
     "loose_weapons": ">0"
    },
    "then": [
-    "game_set cmd arm -- every unarmed colonist equips the nearest free gun, every armed one without a melee weapon picks up a sidearm; read the reply",
+    "game_set cmd arm -- every unarmed colonist equips the nearest free gun (a forbidden one is unforbidden by the command), every armed one without a melee weapon picks up a sidearm; read the reply; while the game is paused the equip orders are queued and this rung waits",
     "still unarmed after arm: empire_pass -- it equips a loose gun on every unarmed colonist, the melee weapon kept as the sidearm",
     "read its ARMS line: nobody left unarmed",
     "say it on stream"
@@ -12115,7 +12119,29 @@
    "never": [
     "explore, build or research while a colonist is unarmed and a gun is lying on the map"
    ],
-   "why": "owner 2026-10-13: \"she just almost died from a fight without weweapons, weapons should be first thing always updated and checked\" / owner: \"once again u arnt armed!!! wtf!!!!\" / \"pawn with out a wepaon is a very high rankeing need to fix\"",
+   "why": "owner 2026-10-13: \"she just almost died from a fight without weweapons, weapons should be first thing always updated and checked\" / owner: \"once again u arnt armed!!! wtf!!!!\" / \"pawn with out a wepaon is a very high rankeing need to fix\" / run 5: the equip orders queue while setup holds time; the rung speaks when time runs",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "setup-late-day-one",
+   "priority": 2.71,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "day": ">=2",
+    "mark_layout_set": false
+   },
+   "then": [
+    "the camp is LATE: the owner's standard is a camp built by the end of day one -- game_pause_game pause true, then lay it out now in order: game_set cmd camp, stockpile_camp, storage_room, shelter, stove",
+    "reply_owner one line: what stands, what is planned, what is missing -- no excuses",
+    "say it on stream plainly: the camp is late and this is the plan"
+   ],
+   "never": [
+    "explore, hunt, research or trade before the camp is laid out"
+   ],
+   "why": "owner 2026-10-13 (run 5): \"wtf!!!1 she is just letting the game run does she not know to never let the game run just blindly pause is her friend should should not unpause until inistal setup and zoneing is done and buildings are layed out\" / \"one day just fast forwards to day two and she hasnt done a fucking thing this run throuhg is wasted restart it all\" / \"she should have beend buildt by the end of day one\" -- walkthrough: walkthrough-opening-and-camp.md 'the camp by the end of day one' [setup] Q",
    "source": "book",
    "mode": "advise"
   },
@@ -13025,7 +13051,8 @@
    "fuel_short_set",
    "shipfuel_short_set",
    "junk_weapons_set",
-   "<rung_id>_done (latches)"
+   "<rung_id>_done (latches)",
+   "layout_set"
   ]
  }
 }
