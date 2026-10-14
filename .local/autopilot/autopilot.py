@@ -822,6 +822,7 @@ def turn(toolbox, st, args, system, specs):
     final = ""
     seen_calls = {}     # (tool, args) -> times called this turn: a counter with a preset of 2 (2026-10-13 audit)
     last_set_cmd, set_resets = None, 0
+    repeat_refusals = 0
     for step in range(args.max_steps):
         t0 = time.time()
         msg = ollama_chat(args.model, messages, specs, opts)
@@ -851,8 +852,17 @@ def turn(toolbox, st, args, system, specs):
                 # live 2026-10-13: the same lookup five times, the same refused room three times, in one turn
                 result = ("REFUSED: you already made this exact call twice this turn and it did not get you there. "
                           "Do something DIFFERENT: the rung's fallback, another target, or note it for the owner and move on.")
+                repeat_refusals += 1
             else:
                 result = toolbox.dispatch(name, a)
+                repeat_refusals = 0
+            if repeat_refusals >= 3:
+                # run 5 (2026-10-14 01:59): `ladder {}` twelve times in one turn, half a second apart, every one refused -- the
+                # turn ends here and the next one starts from a fresh update
+                log("turn ended: the same refused call three times running (%s)" % name)
+                messages.append({"role": "tool", "tool_name": name, "content": str(result)[:6000]})
+                final = ""
+                break
             messages.append({"role": "tool", "tool_name": name, "content": str(result)[:6000]})
             remember_result(st, name, a, result)     # survives the next reset (refusals + last results)
             # owner: train her on RimWorld (a LoRA). Every step is kept with the state she saw, the call and the
