@@ -286,9 +286,17 @@ def gather_chat(st):
 
 def gather_owner(st):
     """New private messages from the owner (Persona Studio window); answered with reply_owner, never on stream."""
-    if "owner_last" not in st:               # a fresh start never digs up old private messages
-        st["owner_last"] = max([r["msg_id"] for r in tools.read_owner(0)] + [0])
-        return []
+    if "owner_last" not in st:               # a fresh start never digs up OLD private messages -- but a line from the
+        # last twenty minutes is a live order (run 5, 00:28: a restart swallowed the owner's 00:26 order to cancel the
+        # east wall and haul first; she never saw it)
+        rows = tools.read_owner(0)
+        cut = (time.time() - 20 * 60) * 1000
+        old = [r["msg_id"] for r in rows if (r.get("ts") or 0) < cut]
+        st["owner_last"] = max(old + [0])
+        fresh = [r for r in rows if r["msg_id"] > st["owner_last"]]
+        if fresh:
+            st["owner_last"] = max(r["msg_id"] for r in fresh)
+        return fresh
     rows = tools.read_owner(st["owner_last"])
     if rows:
         st["owner_last"] = max(r["msg_id"] for r in rows)
@@ -378,6 +386,11 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=(), ca
         txt = open(OWNER_ORDERS, encoding="utf-8", errors="replace").read().strip()
         if txt:
             parts.append("OWNER ORDERS (from the owner, binding, the only orders beyond the system prompt):\n" + (txt[:1500] + chr(10) + "[...]" + chr(10) + txt[-2500:] if len(txt) > 4000 else txt))   # the standing rules now live in the situation modules   # standing procedures (head) + latest live orders (tail); all 13k chars timed the CPU model out
+            # the NEWEST order on its own line at the top: in the 2,500-char tail it was buried among old ones and
+            # "force haul everything to storage first" sat unanswered for four turns (run 5, 00:27-00:31)
+            _last = next((l.strip() for l in reversed(txt.splitlines()) if l.strip()), "")
+            if _last:
+                parts.insert(1 if _top else 0, "OWNER ORDER, NEWEST (step 0 -- do it THIS turn, then say it is done): " + _last[:400])
     # The playbook is a decision table, not prose: gates.py measures the colony and returns the ONE chain
     # that fires plus the always-gate, so the model looks the answer up instead of re-reasoning a wall.
     # Owner, 2026-10-10: "a actual logical guided logaica gates system of porcess chains and actions".
