@@ -65,7 +65,9 @@ namespace RimroomsAsyncIndustries.Automation
         /// inside and outside. Each idle colonist gets a QUEUE of the nearest unclaimed targets, so one call walks
         /// several doors; the result says how much frontier is left, and the caller repeats until it is zero.
         /// </summary>
-        public static string Explore(Map map)
+        public static string Explore(Map map) => Explore(map, new Dictionary<string, string>());
+
+        public static string Explore(Map map, Dictionary<string, string> a)
         {
             FogGrid fog = map.fogGrid;
             var targets = new List<IntVec3>();
@@ -96,7 +98,7 @@ namespace RimroomsAsyncIndustries.Automation
             if (targets.Count == 0)
             {
                 // v3: rooms that are still fogged but sealed (no door, no walkable frontier): dig the shortest way in
-                string dug = DigIntoSealedRooms(map);
+                string dug = DigIntoSealedRooms(map, a);
                 return dug ?? "ok: nothing left to explore -- no fogged door, fog frontier or sealed fogged room";
             }
 
@@ -126,7 +128,7 @@ namespace RimroomsAsyncIndustries.Automation
         /// and designate those cells for mining. Owner: "it never went through EVERY DOOR" -- some hidden rooms have
         /// no door at all.
         /// </summary>
-        private static string DigIntoSealedRooms(Map map)
+        private static string DigIntoSealedRooms(Map map, Dictionary<string, string> a)
         {
             // only rooms near the crew: on an open-ground start the far mountain pockets are not "exploring", and
             // digging across the map into them is the late mountain-base job (2026-10-13: she dug into room 79,
@@ -140,6 +142,11 @@ namespace RimroomsAsyncIndustries.Automation
                 .OrderBy(r => crew.Min(c => c.DistanceToSquared(Centre(r)))).ToList();
             if (sealedRooms.Count == 0) return null;
             var notes = new List<string>();
+            // digging into fogged mountain rooms is a later-game move (run 4, 2026-10-13: keep-playing's auto-explore marked mountain cells
+            // to mine on day 0 with no camp); it happens only when asked for: explore dig true (the ladder's late explore rung says so)
+            if (!(a.TryGetValue("dig", out string dg) && dg.StartsWith("t", StringComparison.OrdinalIgnoreCase)))
+                return "ok: no doors left; " + sealedRooms.Count + " fogged room(s) remain sealed in rock -- dig into them later with explore dig true (after the camp stands)";
+
             foreach (Room room in sealedRooms.Take(5))
             {
                 var goal = new HashSet<IntVec3>(room.Cells);

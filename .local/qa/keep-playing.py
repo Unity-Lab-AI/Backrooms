@@ -425,7 +425,10 @@ while True:
         # re-send explore every 3 minutes (each call queues every colonist through the nearest doors and fog edge)
         try: _last_explore
         except NameError: _last_explore, _explore_done = 0, False
-        if not _explore_done and st.get("ticks_moving") and time.time() - _last_explore > 180:
+        # run 4 (2026-10-13): this timer sent explore four times on day 0, pulling the crew off the camp walls to walk the fog
+        # and marking mountain rooms to mine. Explore is the ladder's (setup-1-explore, after the stove): the timer only
+        # helps once that rung is reachable.
+        if not _explore_done and st.get("ticks_moving") and st.get("mark_stove_set") is True and time.time() - _last_explore > 180:
             _last_explore = time.time()
             try:
                 last = automate.exchange([{"cmd": "explore"}], wait_s=20)[0][1] or "no answer from the mod"

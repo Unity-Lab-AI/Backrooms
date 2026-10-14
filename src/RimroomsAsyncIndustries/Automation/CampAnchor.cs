@@ -25,6 +25,19 @@ namespace RimroomsAsyncIndustries.Automation
         // wall_swap: rock cells marked to mine that get a built wall the moment they are clear (WallSwap.cs)
         private List<IntVec3> pendingWalls = new List<IntVec3>();
         private List<string> pendingStuff = new List<string>();
+        // the rooms the camp commands planned, so a second one is refused while the first stands unbuilt (run 4:
+        // a shelter went through the storage room's wall count; a build_room went over a steam geyser)
+        public CellRect shelterBox = CellRect.Empty;
+        public CellRect storageBox = CellRect.Empty;
+
+        /// <summary>Does this planned box still have a wall blueprint or frame on its ring?</summary>
+        public bool Unbuilt(CellRect box)
+        {
+            if (box.Width == 0 || box.Height == 0) return false;
+            foreach (IntVec3 c in box.EdgeCells)
+                if (c.InBounds(map) && c.GetThingList(map).Any(t => t.def.IsBlueprint || t.def.IsFrame)) return true;
+            return false;
+        }
 
         public RimroomsCampComponent(Map map) : base(map) { }
 
@@ -61,12 +74,26 @@ namespace RimroomsAsyncIndustries.Automation
             Scribe_Values.Look(ref anchor, "rr_campAnchor", IntVec3.Invalid);
             Scribe_Values.Look(ref manual, "rr_campManual", false);
             Scribe_Collections.Look(ref pendingWalls, "rr_pendingWalls", LookMode.Value);
+            Scribe_Values.Look(ref shelterBox, "rr_shelterBox", CellRect.Empty);
+            Scribe_Values.Look(ref storageBox, "rr_storageBox", CellRect.Empty);
             Scribe_Collections.Look(ref pendingStuff, "rr_pendingStuff", LookMode.Value);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 if (pendingWalls == null) pendingWalls = new List<IntVec3>();
                 if (pendingStuff == null || pendingStuff.Count != pendingWalls.Count) pendingStuff = pendingWalls.Select(_ => "Steel").ToList();
             }
+        }
+    }
+
+    /// <summary>What every room and zone placer must refuse: a steam geyser (and its 1-cell margin).</summary>
+    internal static class RoomSite
+    {
+        public static bool Geyser(Map map, IntVec3 c)
+        {
+            if (!c.InBounds(map)) return false;
+            foreach (IntVec3 o in GenAdj.CellsAdjacent8Way(new TargetInfo(c, map)).Concat(new[] { c }))
+                if (o.InBounds(map) && o.GetThingList(map).Any(t => t.def == ThingDefOf.SteamGeyser)) return true;
+            return false;
         }
     }
 
@@ -167,6 +194,12 @@ namespace RimroomsAsyncIndustries.Automation
             ThingDef wall = ThingDefOf.Wall, door = ThingDefOf.Door, wood = ThingDefOf.WoodLog;
             // inside must be buildable ground or hold an item; trees inside are chopped, rock inside is a refusal
             int chop = 0;
+            foreach (IntVec3 c in ring.ExpandedBy(1))
+            {
+                if (!c.InBounds(map)) continue;
+                if (RoomSite.Geyser(map, c))
+                    return "refused: a steam geyser at " + c.x + "," + c.z + " touches the pile's box -- leave its 5x5 for a geothermal generator; camp x,z elsewhere";
+            }
             foreach (IntVec3 c in inside)
             {
                 Building ed = c.GetEdifice(map);
@@ -203,6 +236,8 @@ namespace RimroomsAsyncIndustries.Automation
             if (walls + doors == 0 && kept == 0) return "refused: nothing of the ring could be placed around " + anchor.x + "," + anchor.z;
 
             foreach (IntVec3 c in inside) map.areaManager.BuildRoof[c] = true;
+            RimroomsCampComponent camp = map.GetComponent<RimroomsCampComponent>();
+            if (camp != null) camp.storageBox = ring;
             // the camp is Home from the first wall: fires inside it get fought, floors cleaned (run 3: no Home, 47 fire cells)
             foreach (IntVec3 c in ring) map.areaManager.Home[c] = true;
 

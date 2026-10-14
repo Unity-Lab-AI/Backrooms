@@ -96,10 +96,20 @@ namespace RimroomsAsyncIndustries.Automation
             if (!c0.InBounds(map)) return "refused: x,z (the inside corner) outside the map";
             a.TryGetValue("stuff", out string sn);
             ThingDef stuff = DefDatabase<ThingDef>.GetNamedSilentFail(sn ?? "") ?? ThingDefOf.WoodLog;
+            bool force = a.TryGetValue("force", out string fo) && fo.StartsWith("t", StringComparison.OrdinalIgnoreCase);
+            RimroomsCampComponent camp = map.GetComponent<RimroomsCampComponent>();
+            // run 4 (2026-10-13 22:47): a third box "walls plus roof in one call" while the storage room was half built -- over a
+            // steam geyser. A room is one at a time: while the storage room or the shelter stands unbuilt, no new box without force
+            if (!force && camp != null && (camp.Unbuilt(camp.storageBox) || camp.Unbuilt(camp.shelterBox)))
+                return "refused for now: a planned room is still being built (" + (camp.Unbuilt(camp.storageBox) ? "the storage room" : "the shelter") +
+                       ") -- let it stand first; a second room on purpose: build_room ... force true";
             var ring = new List<IntVec3>();
             for (int dx = -1; dx <= w; dx++)
                 for (int dz = -1; dz <= h; dz++)
                     if (dx == -1 || dz == -1 || dx == w || dz == h) ring.Add(new IntVec3(c0.x + dx, 0, c0.z + dz));
+            foreach (IntVec3 c in new CellRect(c0.x - 1, c0.z - 1, w + 2, h + 2).ExpandedBy(1))
+                if (RoomSite.Geyser(map, c))
+                    return "refused: a steam geyser at " + c.x + "," + c.z + " touches that box -- leave its 5x5 for a geothermal generator; pick another corner";
             IntVec3 door = new IntVec3(c0.x + w / 2, 0, c0.z - 1);
             int placed = 0, kept = 0, blocked = 0;
             foreach (IntVec3 c in ring)

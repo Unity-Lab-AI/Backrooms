@@ -29,6 +29,7 @@ namespace RimroomsAsyncIndustries.Automation
             // a planned or half-built thing is taken ground (run 3, 2026-10-13 22:02: the second shelter was laid THROUGH the
             // first's planned walls -- owner: "shes building building over top of building")
             !c.GetThingList(map).Any(t => t.def.IsBlueprint || t.def.IsFrame) &&
+            !RoomSite.Geyser(map, c) &&                                        // a room over a geyser cooks whoever enters (owner, run 4)
             map.zoneManager.ZoneAt(c) == null && !c.Roofed(map) && c.GetTerrain(map).affordances != null &&
             c.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy);
 
@@ -84,17 +85,12 @@ namespace RimroomsAsyncIndustries.Automation
             // one shelter at a time: planned, unbuilt walls near the camp mean a room is already on its way; a second box
             // needs x,z on purpose or force true (run 3: a 5x4 "for the bench" went in while the 7x5 stood unbuilt)
             bool force = a.TryGetValue("force", out string fo) && fo.StartsWith("t", StringComparison.OrdinalIgnoreCase);
-            if (!asked.InBounds(map) && !force)
-            {
-                var planned = map.listerThings.AllThings.Where(t => t.Faction == Faction.OfPlayer && (t.def.IsBlueprint || t.def.IsFrame) &&
-                                                                    t.def.entityDefToBuild == ThingDefOf.Wall && t.Position.DistanceTo(home) <= 35f).ToList();
-                if (planned.Count >= 12)
-                {
-                    CellRect pb = CellRect.FromCellList(planned.Select(t => t.Position));
-                    return "refused for now: " + planned.Count + " wall plans already wait unbuilt near the camp (" + pb.minX + "," + pb.minZ + " to " + pb.maxX + "," + pb.maxZ +
-                           ") -- let them stand first (time running, Construction on, wood in stock); a second room on purpose: shelter x z, or force true";
-                }
-            }
+            RimroomsCampComponent camp = map.GetComponent<RimroomsCampComponent>();
+            // one SHELTER at a time: the shelter this command planned must stand before a second one (run 4: the first guard
+            // counted the storage room's walls and blocked the shelter that belongs beside it)
+            if (!asked.InBounds(map) && !force && camp != null && camp.Unbuilt(camp.shelterBox))
+                return "refused for now: the shelter planned at " + camp.shelterBox.minX + "," + camp.shelterBox.minZ + " (" + camp.shelterBox.Width + "x" + camp.shelterBox.Height +
+                       ") is still being built -- let it stand (time running, Construction on, wood in stock); a second one on purpose: shelter x z, or force true";
             IEnumerable<IntVec3> corners = asked.InBounds(map)
                 ? new[] { new IntVec3(asked.x - 1, 0, asked.z - 1) }
                 : GenRadial.RadialCellsAround(home, 25f, true);
@@ -117,6 +113,7 @@ namespace RimroomsAsyncIndustries.Automation
                 foreach (IntVec3 c in ring) GenConstruct.PlaceBlueprintForBuild(c == doorCell ? door : wall, c, map, Rot4.North, Faction.OfPlayer, wood);
                 // the camp is Home: colonists only fight fires and clean inside the Home area (run 3: 47 fire cells with no Home)
                 foreach (IntVec3 c in ring.Concat(inside)) map.areaManager.Home[c] = true;
+                if (camp != null) camp.shelterBox = CellRect.FromCellList(ring);
                 foreach (IntVec3 c in inside) map.areaManager.BuildRoof[c] = true;
                 int cost = (ring.Count - 1) * wall.CostStuffCount + door.CostStuffCount;
                 return "ok: shelter planned, inside " + w + "x" + h + " from " + (corner.x + 1) + "," + (corner.z + 1) +
@@ -147,7 +144,7 @@ namespace RimroomsAsyncIndustries.Automation
                     if (box.Width < 6 || box.Height < 6) box = new CellRect(box.CenterCell.x - 3, box.CenterCell.z - 3, Math.Max(6, box.Width), Math.Max(6, box.Height)).ClipInsideMap(map);
                     // run 3: the drop scatter was 17x22 and the store came out 432 cells -- a field, not a store; cap it at 12x12 around the pile's centre
                     if (box.Width > 12 || box.Height > 12) box = new CellRect(box.CenterCell.x - 6, box.CenterCell.z - 6, Math.Min(12, box.Width), Math.Min(12, box.Height)).ClipInsideMap(map);
-                    var pileCells = box.Cells.Where(c => !map.fogGrid.IsFogged(c) && map.zoneManager.ZoneAt(c) == null &&
+                    var pileCells = box.Cells.Where(c => !map.fogGrid.IsFogged(c) && map.zoneManager.ZoneAt(c) == null && !RoomSite.Geyser(map, c) &&
                                                          (c.Standable(map) || c.GetFirstItem(map) != null) && c.GetEdifice(map) == null).ToList();
                     if (pileCells.Count >= 20)
                     {
