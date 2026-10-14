@@ -409,3 +409,8 @@ Owner, verbatim: *"okay what do you think did we get enough info to really clean
   - the studio token is kept across restarts (the owner's tab failed every send after each restart)
   - RimPLC's load line names the file, its size and the raw rung count in the text (the "127 rungs" scare was a stale `Player.log` from Oct 12 -- not a bug; 1.7 logs elsewhere)
   **Open:** the bridge's layout read on `Dialog_NodeTree`; the 18k conversation cap; everything above played zero times.
+- [~] **Run 5, attempts 2-3 (2026-10-13 23:41-23:57), the owner's words:** *"wtf u didnt fix the shit i said about the twitch stream highlight images"* / *"pick a map for your colony"* / *"send failed: forbidden: missing or wrong studio token"* (a second time, 23:50). **BUILT 2026-10-13 23:58 (seen once on the fresh colony):**
+  - the highlight pictures: `unity-panel.py` (the overlay's picture box at 2x, picture above, caption band below, legend, nothing the panel can crop), `unity-glance.py` zooms 2x on the crew or the marks with ringed names at readable size, `unity-snap.py` letterboxes its rect with numbered badges; the caption is never painted over the picture and the overlay no longer prints it a second time
+  - the studio trusts a POST from a page it served (browser `Origin`), so a tab opened before any restart keeps sending; local helpers still need the token
+  - the staged Rimrooms package: the run-5 DLL was packaged by hand (`build.ps1` refuses 1.7's core assembly hash) and staged with the game closed; day one on the fresh colony armed all three ("charge rifle" x3)
+  **Open:** `build.ps1` for 1.7 (accept the reviewed krafs references); the reset script's BRB line when the voice is busy.
