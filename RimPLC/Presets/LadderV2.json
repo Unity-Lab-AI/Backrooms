@@ -5253,9 +5253,9 @@
     "mark_trade_run_done": false
    },
    "then": [
-    "game_set cmd call_trader faction <best goodwill> kind <Bulk goods> (trade-call-caravan); calling costs goodwill",
-    "game_set cmd trade with ship|caravan: sell art, drugs, clothes, extra weapons -- never what the colony needs",
-    "buy components, plasteel, steel, marble blocks",
+    "multi-step: call, wait, return, trade. game_set cmd call_trader faction <best goodwill> [orbital true with a beacon] kind <Bulk goods> (trade-call-caravan); the negotiator walks to the console first; calling costs goodwill",
+    "wait for the arrival (trade_ships_in_orbit / trader_caravans_on_map); then game_set cmd trade with ship|caravan trader <its name>: sell art, drugs, clothes, extra weapons -- never what the colony needs; back at the console for a ship, beside the caravan otherwise",
+    "buy components, plasteel, steel, marble blocks in the same trade",
     "ladder_set mark trade_run_done true"
    ],
    "why": "owner: \"you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need\" / owner: \"farming trader.. comeon always trade and look to make silver and money and get things you need\" / owner: \"someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need\" / owner: \"might have to buy from trader marble blocks\" / owner: \"not orbital trader that one sucks\"",
@@ -12050,11 +12050,11 @@
     }
    },
    "then": [
-    "game_set cmd trade -- list first: every ship in orbit and trader caravan on the map, what each buys and sells; read it",
-    "sell what is over {TRADE_KEEP} of each (TRADE_KEEP tag): cash crops (smokeleaf, psychoid, hops, cotton/cloth) and refined goods (joints, beer, psychite tea, clothes, art): game_set cmd trade with ship|caravan sell Def:n,... -- the negotiator walks there first, call trade again once they are there to deal",
+    "game_set cmd trade -- list first: every ship in orbit and trader caravan on the map by name, what each buys and sells; read it. If you called one, this is the trader you selected arriving: finish the job",
+    "sell what is over {TRADE_KEEP} of each (TRADE_KEEP tag): cash crops (smokeleaf, psychoid, hops, cotton/cloth) and refined goods (joints, beer, psychite tea, clothes, art): game_set cmd trade with ship|caravan trader <its name> sell Def:n,... -- the negotiator walks to the comms console (ship) or beside the trader (caravan) first; run the same command again once there to deal. Several in reach: name the one you called",
     "buy when low: steel under {STEEL_RESERVE} and components under {COMPONENT_RESERVE}: the same call with buy Steel:n,ComponentIndustrial:n",
-    "never sell spacer tech or anything the colony needs (the command refuses spacer and higher)",
-    "say on stream what was bought and sold, then ladder_set mark trade_visit_done true"
+    "never sell spacer tech or anything the colony needs (the command refuses spacer tech itself); say on stream what was bought and sold",
+    "ladder_set mark trade_visit_done true"
    ],
    "latch": false,
    "why": "owner PLAYBOOK 10: trade with the caravans that walk in and the ships once a beacon stands; sell the cash crops and refined goods, buy what is short",
@@ -12098,10 +12098,12 @@
     }
    },
    "then": [
-    "game_set cmd call_trader -- list the askable factions and caravan kinds first; read it",
-    "game_set cmd call_trader faction <the best-goodwill faction listed> kind <Bulk goods if it offers it, else the kind that buys what is over TRADE_KEEP> -- the negotiator walks to the console first; the game's own goodwill cost and cooldown apply",
+    "TRADING IS A MULTI-STEP PROCESS: call a trader, wait for it to arrive, go back and trade with the one you called (owner, 2026-10-13)",
+    "game_set cmd call_trader -- list the askable factions, their caravan kinds and their ship kinds first; read it",
+    "a comms console AND an orbital trade beacon stand: game_set cmd call_trader faction <the best-goodwill faction listed> orbital true kind <Bulk goods if it offers it> -- a trade SHIP; no beacon: the same without orbital (a caravan). The negotiator walks to the console first; run it again once there. The game's own goodwill cost and cooldown apply",
     "refused for cooldown (the game's own refusal names it): try the next-best faction once; all on cooldown: ladder_set mark trade_called true and wait (trade-call-reset clears it after 48 hours)",
-    "asked: ladder_set mark trade_called true; trade-in-reach deals when the caravan arrives"
+    "asked: ladder_set mark trade_called true and say on stream who was called and what kind. Do NOT trade yet -- nothing has arrived",
+    "when trade_ships_in_orbit > 0 or trader_caravans_on_map > 0, trade-in-reach takes over: back to the comms console for a ship, out to the caravan otherwise, and trade with trader <the one that came>"
    ],
    "never": [
     "never call with silver under TRADE_SILVER_MIN",
@@ -12109,6 +12111,7 @@
    ],
    "latch": false,
    "why": "owner PLAYBOOK 10: call ships once a beacon stands, trade with caravans; no trader in reach for three days and silver or goods above the keep level: ask one in",
+   "check": "trade: call a trader (ship if a beacon stands, else caravan), then wait for it; trading happens in trade-in-reach",
    "source": "book",
    "mode": "advise"
   },

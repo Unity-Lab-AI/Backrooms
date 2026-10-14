@@ -50,7 +50,8 @@ an implemented output. Keep the game's normal controls available.
 Many of the supplied preset's rules name a concrete next step -- arm the colony, put a cooler in
 the freezer wall, add a meal bill, pick the next research project, ask a faction for a trader.
 Those steps are written for an external assistant that can act through the Rimrooms mod's
-[automation file](interface.md#automation-file-optional); without one, read them as advice. The
+[automation file](https://g-fourteen.github.io/Rimrooms-AsyncIndustries/interface.html#automation-file-optional);
+without one, read them as advice. The
 Ladder view shows, for each rule, which steps a present client could carry out and which have no
 answer in the loaded mods.
 
