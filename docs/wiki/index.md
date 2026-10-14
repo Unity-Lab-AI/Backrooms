@@ -57,7 +57,7 @@ have a crew testify, redirect to related work, or complete a research project.
 | **[Multiplayer](multiplayer.md)** | What exists and what does not |
 | **[Troubleshooting](troubleshooting.md)** | When something refuses |
 | **[Links](links.md)** | Workshop, collection, source |
-| **[RimPLC](rimplc.md)** | The separate colony logic mod |
+| **[RimPLC](https://g-fourteen.github.io/RimPLC/)** | The separate colony logic mod -- its own wiki |
 | **[Credits](credits.md)** | |
 
 ---

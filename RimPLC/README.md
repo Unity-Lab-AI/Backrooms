@@ -13,6 +13,8 @@ Source repository: [RimPLC on Forgejo](https://git.unityailab.com/GFourteen/RimP
 
 Design: `docs/RIMPLC_DESIGN.md`. Frozen shapes: `docs/rimplc/schema/`. Book preset: `Presets/LadderV2.json` (made from `docs/playbook.gates.json`).
 
+Wiki: `docs/wiki/*.md` here is the source, rendered by `tools/render-rimplc-wiki.py` into the published repository's `docs/` and served at <https://g-fourteen.github.io/RimPLC/> (RimPLC's own site, not a page of the Rimrooms wiki).
+
 ## What it does (P0 + P1 + P2)
 
 - **Sensors** read straight from the game every scan (fast), every 4th (normal) or every 16th (slow): clock, crew, health (bleed rate, tendable injuries, overall health percent), hostiles (Core threat API), letters, stores (`ResourceCounter`), zones, buildings, designations, animals, loose and junk weapons, alerts, temperature, research, mood, wealth, damaged buildings. Names match the Ladder v2 keys, so the book's 127 rungs load unchanged. A key that cannot be read is absent, never a fake 0.
@@ -55,7 +57,7 @@ dotnet build -c Release RimPLC/Source/RimPLC.BridgeTools  # -> RimPLC/BridgeTool
 
 Both projects reference the game's `Managed` assemblies (and the installed `RimBridgeServer.Sdk.dll`) read only, with `Private=false`. `RimWorldPath` / `RIMWORLD_PATH` override the default Steam path. Output never leaves this folder.
 
-**Staging is the owner's step.** To try it: copy `RimPLC/` (without `Source/` and `BridgeTools/`) into the Mods folder as `RimPLC`, and `BridgeTools/RimPLC.BridgeTools.dll` into `<RimWorld>/BridgeTools/RimPLC/`. Not done by any build or agent.
+**Staging is the owner's step** (`python tools/stage-rimplc.py`, hash-checked against the package manifest): copy `RimPLC/` (without `Source/`) into the Mods folder as `RimPLC`. The companion `BridgeTools/RimPLC.BridgeTools.dll` ships INSIDE that folder and must not also be copied to `<RimWorld>/BridgeTools/RimPLC/` -- RimBridgeServer scans both and registers the same tools twice (`Capability alias 'rimplc/enable_rung' is already registered`, test run 2026-10-13); the stager moves any game-root copy aside.
 
 ## Command file
 

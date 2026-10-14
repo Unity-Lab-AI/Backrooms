@@ -9,6 +9,7 @@ and preserved; nothing is recursively deleted.
 import argparse
 import datetime
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -201,17 +202,44 @@ def support_documents():
                     inspect_refs(child)
         inspect_refs(value)
         result.append((source, file_record(source, "docs/schema/" + source.name, "schema")))
-    source = checked(ROOT / "docs/wiki/rimplc.md")
-    original = source.read_text(encoding="utf-8-sig")
-    text = re.sub(r"\A---\r?\n.*?\r?\n---\r?\n", "", original, count=1, flags=re.S).lstrip()
-    text = text.replace("(install.md)", "(https://g-fourteen.github.io/Rimrooms-AsyncIndustries/install.html)")
-    text = text.replace("(links.md)", "(https://g-fourteen.github.io/Rimrooms-AsyncIndustries/links.html)")
-    for target in re.findall(r"\[[^\]]+\]\(([^)]+)\)", text):
-        if not target.startswith(("https://", "http://", "#")):
-            raise Refusal("standalone guide contains an unresolved relative link: %s" % target)
-    if SECRET_MARKERS.search(text):
-        raise Refusal("credential marker in the RimPLC guide")
-    return result, file_record(source, "docs/wiki/rimplc.md", "guide-context"), text
+    # The wiki is RimPLC's own (owner, 2026-10-13: "the RimPLC repo doesnt have it wiki deployed .. for some
+    # reason ther is a RIMPLC section in the Rimrooms wiki,, this is an error"): its source ships under
+    # docs/wiki/, the rendered site under docs/ (GitHub Pages serves docs/ as the site root), the cover beside it.
+    wiki = checked(PACKAGE / "docs" / "wiki")
+    names = sorted(os.listdir(wiki))
+    if "index.md" not in names:
+        raise Refusal("the RimPLC wiki has no index.md")
+    for name in names:
+        page = checked(wiki / name)
+        if not name.endswith(".md"):
+            raise Refusal("unreviewed wiki file refused: docs/wiki/%s" % name)
+        text = page.read_text(encoding="utf-8-sig")
+        if SECRET_MARKERS.search(text):
+            raise Refusal("credential marker in the wiki page %s" % name)
+        for target in re.findall(r"\[[^\]]+\]\(([^)]+)\)", text):
+            if target.startswith(("https://", "http://", "#")):
+                continue
+            if not re.fullmatch(r"[a-z-]+\.md(#[a-z0-9-]+)?", target) or target.split("#")[0] not in names:
+                raise Refusal("wiki page %s links outside the wiki: %s" % (name, target))
+        result.append((page, file_record(page, "docs/wiki/" + name, "wiki")))
+    cover = checked(PACKAGE / "About" / "Preview.png")
+    result.append((cover, file_record(cover, "docs/assets/Preview.png", "wiki-art")))
+    index = checked(wiki / "index.md")
+    original = index.read_text(encoding="utf-8-sig")
+    body = re.sub(r"\A---\r?\n.*?\r?\n---\r?\n", "", original, count=1, flags=re.S).lstrip()
+    body = re.sub(r"\]\(([a-z-]+\.md(?:#[a-z0-9-]+)?)\)", r"](wiki/\1)", body)
+    guide = ("# RimPLC user guide\n\nThe user guide is the wiki at https://g-fourteen.github.io/RimPLC/ -- its source is "
+             "under [docs/wiki](wiki/) and the rendered pages sit beside this file.\n\n" + body)
+    return result, file_record(index, "docs/wiki/index.md", "guide-context"), guide
+
+
+def rendered_wiki():
+    """The wiki rendered by tools/render-rimplc-wiki.py, as {export path: text}; the cover is an input above."""
+    spec = importlib.util.spec_from_file_location("rimplc_render_wiki", str(ROOT / "tools" / "render-rimplc-wiki.py"))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    out, _binaries = module.render_all()
+    return {"docs/" + rel: text for rel, text in out.items()}
 
 
 def readme(version, has_bridge, github_url):
@@ -253,8 +281,10 @@ folder. A declaration is not a compatibility result: a running 1.7 session has
 not yet been verified. The core requires no other mod, Harmony or expansion.
 Rimrooms-specific preset rungs remain inactive without Rimrooms.
 
-Read the [user guide](docs/USER_GUIDE.md). JSON formats for rules, tags, sensors,
-marks, ladders and commands are included under [docs/schema](docs/schema/).
+Read the [wiki](https://g-fourteen.github.io/RimPLC/): install, the window, the ladder,
+sensors, commands and the AI API, presets and building. Its source is under
+[docs/wiki](docs/wiki/) and the rendered site under `docs/`. JSON formats for rules,
+tags, sensors, marks, ladders and commands are under [docs/schema](docs/schema/).
 
 ## Install
 
@@ -389,6 +419,7 @@ def main():
     manifest_record = file_record(manifest, manifest.relative_to(ROOT).as_posix(), "build-manifest")
     generated = {"README.md": readme(version, any(item["path"] in OPTIONAL for item in package_records), args.github_url),
                  ".gitignore": GITIGNORE, "docs/USER_GUIDE.md": guide_text}
+    generated.update(rendered_wiki())
     expected = {item["path"] for _, item in inputs} | set(generated)
     if len(expected) != len(inputs) + len(generated):
         raise Refusal("duplicate export paths")
@@ -404,12 +435,13 @@ def main():
         if digest(target) != item["sha256"] or target.stat().st_size != item["bytes"]:
             raise Refusal("input changed while copying: %s" % item["path"])
     for rel, text in generated.items():
+        (payload / rel).parent.mkdir(parents=True, exist_ok=True)
         (payload / rel).write_text(text, encoding="utf-8", newline="\n")
     snapshot = tree_files(payload)
     if set(snapshot) != expected:
         raise Refusal("staged file list differs from the explicit allowlist")
     for item in list(inputs) + [(PACKAGE / "README.md", guide),
-                               (ROOT / "docs/wiki/rimplc.md", guide_context), (manifest, manifest_record)]:
+                               (PACKAGE / "docs/wiki/index.md", guide_context), (manifest, manifest_record)]:
         if digest(item[0]) != item[1]["sha256"]:
             raise Refusal("input changed before publication: %s" % item[0])
     receipt = {"schema": 1, "exporter": "export-rimplc-repo.py",

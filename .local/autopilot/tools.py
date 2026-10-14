@@ -168,6 +168,8 @@ class Toolbox:
         self.last_speech = 0.0
         self.pending_images = []      # base64 PNGs for the next model message (vision)
         self.spoken = []              # what was said this tick
+        self._empire_at = 0.0         # empire_pass: when it last ran and what it reported (the cooldown guard)
+        self._empire_report = ""
         self.greeted_this_tick = set()
         self.local = self._local_tools()
 
@@ -506,11 +508,28 @@ class Toolbox:
             return "dry-run: run-list.py not executed (it changes the selection); pretend the first FIX is the top goal in .claude/.stream-goals.json"
         return run_script("run_list", [], timeout=240)
 
+    EMPIRE_COOLDOWN_S = 600
+
     def t_empire(self, report_only=False):
         if self.dry:
             log("DRY-RUN would run empire.py", "--dry" if report_only else "")
             return "dry-run: not executed"
-        return run_script("empire", ["--dry"] if report_only else [], timeout=300)
+        # test run 2026-10-13 19:02 / 19:18 / 19:23: three passes at ~70 s each re-issued jobs already in progress and
+        # read "Still unarmed" over the mod's "3 armed". The pass clicks the procurement and assign UI, so it is also
+        # never run while the owner's hands are on the game.
+        if not report_only:
+            import gates
+            if gates.host_inputs().get("owner_input_active"):
+                return "refused: the owner is at the controls (owner_input_active) -- empire_pass clicks the game UI; a quiet turn until the rung drops"
+            age = time.time() - self._empire_at
+            if age < self.EMPIRE_COOLDOWN_S:
+                return ("refused: empire_pass ran %d s ago and its jobs are still being worked -- not again for %d s; read the sensors "
+                        "(able_shooters_armed, unarmed_colonists, needs_tend_count, designations_hunt) and the ladder instead. Its last report:\n%s"
+                        % (age, self.EMPIRE_COOLDOWN_S - age, self._empire_report or "-"))
+        out = run_script("empire", ["--dry"] if report_only else [], timeout=300)
+        if not report_only:
+            self._empire_at, self._empire_report = time.time(), out[-2500:]
+        return out
 
     # -- stream output: every path goes through guards.clean_for_stream -----------------------------------------
     def _speak(self, text, reply_to=None, emotion=None, act=None):

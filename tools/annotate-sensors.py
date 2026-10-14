@@ -20,6 +20,7 @@ T = {
     "hostile_threat": ("Threats", "Hostile threat active", True, C, "The game says an active threat is on the map right now."),
     "hostile_pawns_listed": ("Threats", "Hostile pawns", ">0", W, "Hostile pawns the colonist list shows."),
     "threat_letter": ("Threats", "Threat letter (2 days)", True, W, "A raid or threat letter arrived in the last 2 days: prepare before contact, prisoner bed first."),
+    "threat_letter_unread": ("Threats", "Threat letter unread", True, C, "A raid or threat letter is on the stack and has not been read. Read it this turn; it never ages out unread."),
     "fight_ratio": ("Threats", "Shooters per enemy", "<1", W, "Armed, able colonists divided by hostiles. Under 1 means fall back to a defended spot."),
     "danger_animals_near": ("Threats", "Dangerous animals", ">0", W, "Bears, thrumbos, elephants and the like on the map. Never hunt them with fewer than 3 rifles."),
     "fire_cells": ("Threats", "Fire", ">0", C, "Cells on fire on the home map. Firefight now."),
