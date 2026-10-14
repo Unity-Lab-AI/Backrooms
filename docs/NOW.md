@@ -11,9 +11,9 @@
 
 ---
 
-## LIVE NOW (2026-10-13 ~03:40 local): stream DOWN, RimPLC rebuilt, Unity's webcam look locked, voice retrain prepared (not running)
+## LIVE NOW (2026-10-13 ~18:45 local): stream DOWN by design, everything staged and cascaded, voice v2 LIVE, test run of the full kit is next
 
-**Nothing is running; the GPU is empty.** All work is committed on `feature/bug-testing`, not pushed. No pods, RunPod $0.
+**Only the voice service is up (v2 on :5123); the GPU is empty otherwise.** Everything is committed AND cascaded: Backrooms `main` on github and forgejo, Rimrooms public repo and RimPLC repo published, both mods staged into Steam Mods (hash-checked, previous copies under `artifacts/staging-backups/`). No pods, RunPod $0. The 1-minute test-run watcher (cron 6853f439) writes what it sees to `docs/TESTRUN_NOTES.md` and fixes nothing; the fix pass comes after the run.
 **Steam must be running before `start.bat`** (2026-10-13: without Steam the workshop mods, Harmony and RimBridgeServer did not load).
 
 ### Unity's webcam (owner-approved 2026-10-13) -- read `memory/project_unity_webcam_look.md` before touching it
