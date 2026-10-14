@@ -72,7 +72,11 @@ namespace RimroomsAsyncIndustries.Automation
             foreach (Building b in map.listerBuildings.allBuildingsColonist.Concat(map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial).OfType<Building>()))
             {
                 if (!(b is Building_Door) && !b.def.IsDoor && b.def.defName.IndexOf("door", StringComparison.OrdinalIgnoreCase) < 0) continue;
-                if (GenAdj.CellsAdjacent8Way(b).Any(c => c.InBounds(map) && fog.IsFogged(c))) targets.Add(b.Position);
+                if (!GenAdj.CellsAdjacent8Way(b).Any(c => c.InBounds(map) && fog.IsFogged(c))) continue;
+                // v3: a forbidden door with fog behind it is a door nobody went through -- "it never went through EVERY
+                // DOOR". Unforbid it so the walk below can use it; a door that is not ours stays as it is.
+                if (b.Faction == Faction.OfPlayer && b.IsForbidden(Faction.OfPlayer)) b.SetForbidden(false, false);
+                targets.Add(b.Position);
             }
             // the fog frontier: fogged, walkable cells right next to seen ground, sampled so the list stays short
             int step = 0;
@@ -121,12 +125,16 @@ namespace RimroomsAsyncIndustries.Automation
             // only rooms near the crew: on an open-ground start the far mountain pockets are not "exploring", and
             // digging across the map into them is the late mountain-base job (2026-10-13: she dug into room 79,
             // two hundred cells from the crash site)
+            // v3 (owner: "the map is even on screen becsue it never went through EVERY DOOR"): every fogged indoor room
+            // counts, nearest the crew first -- the 40-cell cut-off left rooms 360/367/407 (996 cells) fogged for ever
+            // while this reported nothing left. A room half seen through a doorway is still unexplored (share > 0.5).
             List<IntVec3> crew = map.mapPawns.FreeColonistsSpawned.Select(p => p.Position).ToList();
-            var sealedRooms = IndoorRooms(map).Where(r => FoggedShare(map, r) > 0.8f &&
-                                                          crew.Any(c => c.DistanceTo(Centre(r)) <= 40f)).ToList();
+            if (crew.Count == 0) return null;
+            var sealedRooms = IndoorRooms(map).Where(r => FoggedShare(map, r) > 0.5f)
+                .OrderBy(r => crew.Min(c => c.DistanceToSquared(Centre(r)))).ToList();
             if (sealedRooms.Count == 0) return null;
             var notes = new List<string>();
-            foreach (Room room in sealedRooms.Take(3))
+            foreach (Room room in sealedRooms.Take(5))
             {
                 var goal = new HashSet<IntVec3>(room.Cells);
                 var prev = new Dictionary<IntVec3, IntVec3>();
@@ -151,11 +159,11 @@ namespace RimroomsAsyncIndustries.Automation
                         IntVec3 n = cur + d;
                         if (!n.InBounds(map) || depth.ContainsKey(n) || goal.Contains(n)) continue;
                         if (!map.fogGrid.IsFogged(n) && n.Standable(map)) { found = cur; break; }   // reached seen floor
-                        if (depth[cur] >= 12 || !IsMineable(map, n)) continue;
+                        if (depth[cur] >= MaxDigCells || !IsMineable(map, n)) continue;
                         depth[n] = depth[cur] + 1; prev[n] = cur; queue.Enqueue(n);
                     }
                 }
-                if (!found.IsValid) { notes.Add("room " + room.ID + ": no dig path within 12 cells"); continue; }
+                if (!found.IsValid) { notes.Add("room " + room.ID + " (" + room.CellCount + " cells): no dig path within " + MaxDigCells + " cells"); continue; }
                 int marked = 0;
                 for (IntVec3 c = found; !goal.Contains(c); c = prev[c])
                 {
@@ -173,8 +181,11 @@ namespace RimroomsAsyncIndustries.Automation
                 }
                 notes.Add("room " + room.ID + ": " + marked + " cells marked to mine or deconstruct in");
             }
-            return "ok: no doors left, digging into sealed fogged rooms -- " + string.Join("; ", notes) + " (someone needs Mining and Construction work on)";
+            return "ok: no doors left; " + sealedRooms.Count + " fogged room(s) remain, digging into the nearest " + Math.Min(5, sealedRooms.Count) + " -- " + string.Join("; ", notes) + " (someone needs Mining and Construction work on)";
         }
+
+        /// <summary>Rock or wall a dig-in may cross. 12 reached only pockets beside the base; a mountain room sits deeper.</summary>
+        private const int MaxDigCells = 24;
 
         private static bool IsMineable(Map map, IntVec3 c)
         {
