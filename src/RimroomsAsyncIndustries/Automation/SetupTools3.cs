@@ -13,16 +13,16 @@ namespace RimroomsAsyncIndustries.Automation
     ///   {"cmd":"unforbid"}                         every forbidden item on seen ground is unforbidden
     ///   {"cmd":"chop","count":"300"}               trees nearest the crew marked to chop until their wood covers count
     ///   {"cmd":"shelter","w":"7","h":"5"}          a wood-walled room (inside w x h) with a door and roof, by the crew
-    ///   {"cmd":"stockpile_camp","mode":"food|nofood"}  a 6x6 outdoor stockpile beside the crew, named for the ladder
+    ///   {"cmd":"stockpile_camp","mode":"food|nofood"}  nofood = the Main store OVER the supply pile at the camp anchor;
+    ///                                              food = a 6x6 beside it. Then {"cmd":"storage_room"} walls and roofs it
+    ///   {"cmd":"camp"} / {"cmd":"camp","x":"..","z":".."}   the camp anchor (CampAnchor.cs): read, set, recompute
     /// </summary>
     internal static class SetupTools3
     {
-        private static IntVec3 CrewCentre(Map map)
-        {
-            List<Pawn> crew = map.mapPawns.FreeColonistsSpawned.ToList();
-            if (crew.Count == 0) return IntVec3.Invalid;
-            return new IntVec3((int)crew.Average(p => p.Position.x), 0, (int)crew.Average(p => p.Position.z));
-        }
+        // Owner, 2026-10-13: "she is all over the place instead of correctly building camp right where her supplies
+        // and they dropped in on". These anchored on the crew's average position at the moment of the call; the crew
+        // scatters, so the builds did. The camp anchor (CampAnchor: the supply drop, saved with the map) is the point.
+        private static IntVec3 CrewCentre(Map map) => CampAnchor.Get(map);
 
         private static bool Open(Map map, IntVec3 c) =>
             c.InBounds(map) && !map.fogGrid.IsFogged(c) && c.Standable(map) && c.GetEdifice(map) == null &&
@@ -75,8 +75,14 @@ namespace RimroomsAsyncIndustries.Automation
             IntVec3 home = CrewCentre(map);
             if (!home.IsValid) return "refused: no free colonist on this map";
             ThingDef wall = ThingDefOf.Wall, door = ThingDefOf.Door, wood = ThingDefOf.WoodLog;
+            // x,z given: that is the inside corner and the only place tried (the test run's shelter ignored x,z and
+            // landed 50 cells from where she planned it); otherwise the nearest open patch to the camp anchor.
+            IntVec3 asked = new IntVec3(Arg(a, "x", -1, -1, 9999), 0, Arg(a, "z", -1, -1, 9999));
+            IEnumerable<IntVec3> corners = asked.InBounds(map)
+                ? new[] { new IntVec3(asked.x - 1, 0, asked.z - 1) }
+                : GenRadial.RadialCellsAround(home, 25f, true);
             // the outer box is (w+2) x (h+2): walls on the ring, the door mid-south, roof over the inside
-            foreach (IntVec3 corner in GenRadial.RadialCellsAround(home, 25f, true))
+            foreach (IntVec3 corner in corners)
             {
                 var ring = new List<IntVec3>(); var inside = new List<IntVec3>(); bool ok = true;
                 for (int dx = 0; dx < w + 2 && ok; dx++)
@@ -98,7 +104,9 @@ namespace RimroomsAsyncIndustries.Automation
                        ", door at " + doorCell.x + "," + doorCell.z + ", roof marked; needs about " + cost +
                        " wood (chop if short) and Construction work on. When it stands: beds, then stove";
             }
-            return "refused: no open " + (w + 2) + "x" + (h + 2) + " patch of buildable ground within 25 cells of the crew";
+            return asked.InBounds(map)
+                ? "refused: the " + (w + 2) + "x" + (h + 2) + " box with its inside corner at " + asked.x + "," + asked.z + " is not open buildable ground -- pick another corner or leave x,z out"
+                : "refused: no open " + (w + 2) + "x" + (h + 2) + " patch of buildable ground within 25 cells of the camp anchor " + home.x + "," + home.z;
         }
 
         public static string StockpileCamp(Map map, Dictionary<string, string> a)
@@ -110,6 +118,28 @@ namespace RimroomsAsyncIndustries.Automation
                 return "ok: " + label + " already exists";
             IntVec3 home = CrewCentre(map);
             if (!home.IsValid) return "refused: no free colonist on this map";
+            if (mode != "food")
+            {
+                // "zone them in a storage zone": the main store is the supply pile itself, where it lies at the anchor
+                List<Thing> pile = CampAnchor.SupplyPile(map, home);
+                if (pile.Count > 0)
+                {
+                    CellRect box = CellRect.FromCellList(pile.Select(t => t.Position)).ExpandedBy(1).ClipInsideMap(map);
+                    if (box.Width < 6 || box.Height < 6) box = new CellRect(box.CenterCell.x - 3, box.CenterCell.z - 3, Math.Max(6, box.Width), Math.Max(6, box.Height)).ClipInsideMap(map);
+                    var pileCells = box.Cells.Where(c => !map.fogGrid.IsFogged(c) && map.zoneManager.ZoneAt(c) == null &&
+                                                         (c.Standable(map) || c.GetFirstItem(map) != null) && c.GetEdifice(map) == null).ToList();
+                    if (pileCells.Count >= 20)
+                    {
+                        var pz = new Zone_Stockpile(StorageSettingsPreset.DefaultStockpile, map.zoneManager);
+                        map.zoneManager.RegisterZone(pz);
+                        foreach (IntVec3 c in pileCells) pz.AddCell(c);
+                        pz.settings.filter.SetAllowAll(null); pz.settings.filter.SetAllow(ThingCategoryDefOf.Foods, false); pz.settings.filter.SetAllow(ThingCategoryDefOf.Corpses, false);
+                        pz.label = label;
+                        return "ok: " + label + " over the supply pile at the camp anchor, " + pileCells.Count + " cells from " + box.minX + "," + box.minZ +
+                               " (" + pile.Count + " item stacks already inside) -- next: storage_room to wall and roof it";
+                    }
+                }
+            }
             foreach (IntVec3 corner in GenRadial.RadialCellsAround(home, 20f, true).Skip(9))
             {
                 var cells = new List<IntVec3>();
@@ -129,9 +159,9 @@ namespace RimroomsAsyncIndustries.Automation
                 else { f.SetAllowAll(null); f.SetAllow(ThingCategoryDefOf.Foods, false); f.SetAllow(ThingCategoryDefOf.Corpses, false); }
                 zone.label = label;
                 return "ok: " + label + " outdoors, " + cells.Count + " cells from " + corner.x + "," + corner.z +
-                       " beside the crew (open air: move food under a roof once the shelter stands)";
+                       " beside the camp anchor (open air: storage_room walls and roofs the main store; food goes under that roof)";
             }
-            return "refused: no open 6x6 ground within 20 cells of the crew";
+            return "refused: no open 6x6 ground within 20 cells of the camp anchor " + home.x + "," + home.z;
         }
     }
 }

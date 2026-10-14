@@ -338,6 +338,8 @@ namespace RimroomsAsyncIndustries.Automation
                 case "call_trader": return SetupTools14.CallTrader(map, a);
                 case "guest_beds": return SetupTools13.GuestBeds(map, a);
                 case "gate_posture": return SetupTools12.GatePosture(map, a);
+                case "camp": return CampAnchor.Camp(map, a);
+                case "storage_room": return CampAnchor.StorageRoom(map, a);
                 case "chop": return SetupTools3.Chop(map, a);
                 case "shelter": return SetupTools3.Shelter(map, a);
                 case "stockpile_camp": return SetupTools3.StockpileCamp(map, a);
