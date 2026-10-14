@@ -34,6 +34,19 @@ namespace RimroomsAsyncIndustries.Automation
             int placed = 0;
             foreach (Zone_Stockpile z in map.zoneManager.AllZones.OfType<Zone_Stockpile>())
             {
+                // a store inside a room: the room layer's wall slots (never a door lane), kept within the stockpile
+                var zoneCells = new HashSet<IntVec3>(z.Cells);
+                int before = placed;
+                foreach (Room r in z.Cells.Select(c => c.GetRoom(map)).Where(r => RoomDesign.IsRoom(map, r)).Distinct().ToList())
+                {
+                    foreach (RoomDesign.Slot s in RoomDesign.WallSlots(map, r, shelf, stuff))
+                    {
+                        if (placed >= 12) break;
+                        if (!zoneCells.Contains(s.Cell)) continue;
+                        if (TryPlace(map, shelf, s.Cell, s.Rot, stuff)) placed++;
+                    }
+                }
+                if (placed > before) continue;
                 foreach (IntVec3 c in z.Cells.ToList())
                 {
                     if (placed >= 12) break;
@@ -73,17 +86,22 @@ namespace RimroomsAsyncIndustries.Automation
             IntVec3 anchor = CampAnchor.Get(map);
             IntVec3 near = food?.Cells.FirstOrDefault() ?? (anchor.IsValid ? anchor : map.mapPawns.FreeColonistsSpawned.First().Position);
             ThingDef stuff = GenStuff.DefaultStuffFor(stove);
+            // the room layer: a wall slot of the nearest fully roofed room, the cooking side to the room, never a door lane
+            // (owner: furniture along the walls, paths kept clear); a room without beds before a bedroom
+            var seenRooms = new HashSet<Room>();
+            var candidates = new List<Room>();
             foreach (IntVec3 c in GenRadial.RadialCellsAround(near, 25f, true))
             {
-                if (!Free(map, c) || c.Roofed(map) == false || map.zoneManager.ZoneAt(c) != null) continue;
+                if (!c.InBounds(map) || map.fogGrid.IsFogged(c)) continue;
                 Room r = c.GetRoom(map);
-                if (r == null || r.PsychologicallyOutdoors) continue;
-                // against a wall, not in the doorway (owner: furniture along the walls, paths kept clear)
-                bool onWall = GenAdj.CardinalDirections.Any(d => { IntVec3 n = c + d; return n.InBounds(map) && n.Impassable(map); });
-                bool nearDoor = GenAdj.AdjacentCells.Any(d => { IntVec3 n = c + d; return n.InBounds(map) && n.GetEdifice(map) is Building_Door; });
-                if (!onWall || nearDoor) continue;
-                if (TryPlace(map, stove, c, Rot4.South, stuff))
-                    return "ok: fueled stove blueprint at " + c.x + "," + c.z + " -- when built, kitchen (or add_bill recipe CookMealSimple count 30)";
+                if (RoomDesign.IsRoom(map, r) && r.OpenRoofCount == 0 && seenRooms.Add(r)) candidates.Add(r);
+            }
+            foreach (Room r in candidates.OrderBy(r => r.ContainedBeds.Any() ? 1 : 0))
+            {
+                RoomDesign.Slot s = RoomDesign.Place(map, r, stove, stuff, true);
+                if (s != null)
+                    return "ok: fueled stove blueprint at " + s.Cell.x + "," + s.Cell.z + " on a wall of room " + r.ID +
+                           " -- when built, kitchen (or add_bill recipe CookMealSimple count 30)";
             }
             // No roofed room by the store. A crash camp has none until one is built: plan the kitchen room beside the
             // store at the camp anchor instead of refusing (test run 2026-10-13: four stove refusals, no kitchen ever).

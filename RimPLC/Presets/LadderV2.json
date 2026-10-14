@@ -6987,7 +6987,7 @@
     "chat_asks_mod": true
    },
    "then": [
-    "twitch_chat reply: site/wiki https://g-fourteen.github.io/Rimrooms-AsyncIndustries/ , repo https://github.com/Unity-Lab-AI/Backrooms , the Workshop collection is the owner's pack collection"
+    "twitch_chat reply: site/wiki https://g-fourteen.github.io/Rimrooms-AsyncIndustries/ , RimPLC wiki https://g-fourteen.github.io/RimPLC/ , repo https://github.com/Unity-Lab-AI/Backrooms , the Workshop collection is the owner's pack collection"
    ],
    "why": "\"you can give the mode repo and rwmod workshop collection\" (docs/PLAYSCRIPT.md) | \"and the rim rooms site\" (docs/PLAYSCRIPT.md) | \"Rimrooms: Async Industries - full mod pack (RimWorld 1.6)\" (docs/PLAYSCRIPT.md) | \"and the rwmods is the mod collection\" (docs/PLAYSCRIPT.md) | \"the first one i made\" (docs/PLAYSCRIPT.md)",
    "latch": false,

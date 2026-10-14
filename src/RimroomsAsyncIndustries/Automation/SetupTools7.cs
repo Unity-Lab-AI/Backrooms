@@ -178,19 +178,19 @@ namespace RimroomsAsyncIndustries.Automation
                 return "ok: a butcher table is PLANNED (not built yet) at " + plan.Position.x + "," + plan.Position.z +
                        " -- keep time running so it gets built, then run kitchen";
             ThingDef stuff = GenStuff.DefaultStuffFor(table);
+            // the room layer: the nearest roofed room without beds, a wall slot first, then the centre grid; door lanes stay open
+            var seenRooms = new HashSet<Room>();
             foreach (IntVec3 c in GenRadial.RadialCellsAround(NearFoodStore(map), 25f, true))
             {
-                if (!Free(map, c) || !c.Roofed(map) || map.zoneManager.ZoneAt(c) != null) continue;
+                if (!c.InBounds(map) || map.fogGrid.IsFogged(c)) continue;
                 Room r = c.GetRoom(map);
-                if (r == null || r.PsychologicallyOutdoors || r.ContainedBeds.Any()) continue;
-                foreach (Rot4 rot in new[] { Rot4.South, Rot4.East, Rot4.North, Rot4.West })
-                {
-                    if (!GenConstruct.CanPlaceBlueprintAt(table, c, rot, map, false, null, null, stuff).Accepted) continue;
-                    GenConstruct.PlaceBlueprintForBuild(table, c, map, rot, Faction.OfPlayer, stuff);
-                    return "ok: butcher table blueprint at " + c.x + "," + c.z + " -- when built, run kitchen for its bill";
-                }
+                if (!RoomDesign.IsRoom(map, r) || r.OpenRoofCount > 0 || r.ContainedBeds.Any() || !seenRooms.Add(r)) continue;
+                RoomDesign.Slot s = RoomDesign.Place(map, r, table, stuff);
+                if (s != null)
+                    return "ok: butcher table blueprint at " + s.Cell.x + "," + s.Cell.z + (s.OnWall ? " on a wall" : " in the centre") +
+                           " of room " + r.ID + " -- when built, run kitchen for its bill";
             }
-            return "refused: no roofed, explored free spot without beds near the food store";
+            return "refused: no roofed room without beds near the food store has a free slot -- storage_room / shelter first, or build_room w 5 h 4";
         }
 
         // ---------------------------------------------------------------- kitchen bills
