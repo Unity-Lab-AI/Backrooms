@@ -186,6 +186,25 @@ namespace RimroomsAsyncIndustries.Automation
                    (notRock > 0 ? ", " + notRock + " skipped (not rock)" : "") + " -- someone needs Mining work on";
         }
 
+        /// <summary>
+        /// The owner's "delete the east wall thats planned by cancle tool": every blueprint, frame and work designation in a rect
+        /// is cancelled.  {"cmd":"cancel","x":"..","z":"..","w":"..","h":".."}
+        /// </summary>
+        public static string Cancel(Map map, Dictionary<string, string> a)
+        {
+            CellRect r = Rect(map, a);
+            int plans = 0, desigs = 0;
+            foreach (IntVec3 c in r)
+            {
+                foreach (Thing t in c.GetThingList(map).ToList())
+                    if (t.def.IsBlueprint || t.def.IsFrame) { t.Destroy(DestroyMode.Cancel); plans++; }
+                foreach (Designation d in map.designationManager.AllDesignationsAt(c).ToList())
+                { map.designationManager.RemoveDesignation(d); desigs++; }
+            }
+            if (plans + desigs == 0) return "refused: nothing planned or designated in that " + r.Width + "x" + r.Height + " from " + r.minX + "," + r.minZ;
+            return "ok: cancelled " + plans + " planned building(s) and " + desigs + " designation(s) in " + r.Width + "x" + r.Height + " from " + r.minX + "," + r.minZ;
+        }
+
         public static string Firebreak(Map map, Dictionary<string, string> a)
         {
             Area home = map.areaManager.Home;

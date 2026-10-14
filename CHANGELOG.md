@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.13.2-dev - 2026-10-14 - Run 5: the camp on a rock, the orders she never saw
+
+- The storage room slides its box off rock by itself (up to eight cells, the supplies kept inside) and marks what rock is left to mine instead of refusing; a room already planned answers "already planned" instead of re-planning from a moved anchor; the camp anchor refuses a hand-set point more than twelve cells from the supplies; the shelter searches forty cells from the planned room. Run 5 spent twenty minutes on a granite outcrop under the pile, six refusals saying "camp x,z elsewhere", and an anchor walked into the mountain.
+- Two commands for the owner's standing orders: `haul` (every loose stack near the camp unforbidden, Hauling at priority 1 for everyone) and `cancel` (every planned building and designation in a rect).
+- The host inputs reach RimPLC: pushed before every ladder read and after every driver pass. Nothing had pushed them since the one-ladder change, so the owner-message, chat and dead-air rungs were dead in the ladder she reads and four owner orders went unanswered; `owner_unread` also counts the orders file until her `reply_owner` acknowledges it, the newest order is the first line of her brief, a fresh start keeps owner messages under twenty minutes old.
+- The sensors file is written every ten seconds of real time while the game is held, and the Python state overlays the ladder's live sensors: a game held for setup ticks nothing, and every reader was on a snapshot from the pause.
+- The time lock allows the clock while rock is being mined out of the pile's box (the storage room unplanned); the no-colony gate needs the ladder's own colonist count to agree before she waits; the turn's repeat guard resets for an order placed after a different one; carried refusals for a confirmed command are dropped; the pad guard tests only the item a tick names; every placing command is leashed to the planned storage room; designator ids come from the last listing; the webcam render waits while her brain generates; the brief carries what day one already did.
+- `build.ps1` builds against the 1.7 reference set (`RIMWORLD_MANAGED_PATH`) so one command builds and packages again.
+
 ## 0.13.1-dev - 2026-10-13 - Run 5: pause is her friend
 
 - Time on a new colony stays stopped until the camp is laid out: the autopilot refuses every time-starting route while the setup hold stands until the mod has confirmed the crew (`pawns_set`, `assign_set`) and the new `layout_set` mark (its ok to `storage_room`, `shelter` and `stove`); hostiles on the map are the one exception. The driver's hold ends only on those marks and pauses the clock again if it runs before. Run 5 went from day 0 to day 2 at Superfast with no storage room, shelter or stove because an equip order "needed time to land" and a line in the prompt said plans placed means time runs.

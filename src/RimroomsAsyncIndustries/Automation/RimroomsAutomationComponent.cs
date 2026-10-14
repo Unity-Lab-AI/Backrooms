@@ -255,6 +255,17 @@ namespace RimroomsAsyncIndustries.Automation
 
         private static Map HomeMap => Find.CurrentMap ?? Find.Maps.FirstOrDefault(m => m.IsPlayerHome);
 
+        private static float nextPausedScan;
+
+        /// <summary>The sensor scan on real time while the game is held (called once a second by WorldSetupDriver.Update; writes every 10 s).</summary>
+        public static void WriteSensorsWhilePaused()
+        {
+            if (UnityEngine.Time.realtimeSinceStartup < nextPausedScan || HomeMap == null) return;
+            nextPausedScan = UnityEngine.Time.realtimeSinceStartup + 10f;
+            try { Sensors.Write(HomeMap, FolderPath); }
+            catch (Exception e) { Log.Warning("[Rimrooms][Automation] paused sensor scan failed: " + e.Message); }
+        }
+
         private static string Execute(string line)
         {
             Dictionary<string, string> a = Parse(line);
@@ -354,6 +365,8 @@ namespace RimroomsAsyncIndustries.Automation
                 case "camp": return CampAnchor.Camp(map, a);
                 case "storage_room": return CampAnchor.StorageRoom(map, a);
                 case "chop": return SetupTools3.Chop(map, a);
+                case "haul": return SetupTools3.Haul(map, a);
+                case "cancel": return SetupTools5.Cancel(map, a);
                 case "shelter": return SetupTools3.Shelter(map, a);
                 case "stockpile_camp": return SetupTools3.StockpileCamp(map, a);
                 default: return "refused: unknown cmd " + cmd;
@@ -463,7 +476,7 @@ namespace RimroomsAsyncIndustries.Automation
         {
             "arm", "chop", "hunt", "explore", "equip", "shelter", "storage_room", "build_room", "build", "beds", "shelves", "stove",
             "butcher", "freezer", "mine", "wall_swap", "harvest", "tame", "slaughter", "deconstruct", "roof_area", "crops",
-            "tower", "security_room", "hall", "generator", "power", "capture", "bury", "firebreak", "draft", "hold"
+            "tower", "security_room", "hall", "generator", "power", "capture", "bury", "firebreak", "draft", "hold", "haul"
         };
 
         private static string Assign(Map map, Dictionary<string, string> a)
