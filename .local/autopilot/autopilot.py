@@ -752,6 +752,7 @@ def turn(toolbox, st, args, system, specs):
             "keep_alive": "5m" if args.dry_run else -1, "timeout": args.timeout}
     final = ""
     seen_calls = {}     # (tool, args) -> times called this turn: a counter with a preset of 2 (2026-10-13 audit)
+    last_set_cmd, set_resets = None, 0
     for step in range(args.max_steps):
         t0 = time.time()
         msg = ollama_chat(args.model, messages, specs, opts)
@@ -767,6 +768,15 @@ def turn(toolbox, st, args, system, specs):
             name, a = fn.get("name", ""), fn.get("arguments") or {}
             log("TOOL", name, json.dumps(a, ensure_ascii=False)[:300])
             key = name + json.dumps(a, sort_keys=True, ensure_ascii=False)
+            # run 5 (2026-10-14 00:14:07): storage_room was refused as "the same call" AFTER she had moved the camp anchor
+            # with a camp order in between -- the world had changed, the call was new. A different game_set cmd in between
+            # resets the game_set counters (at most three times a turn, so camp/room alternation cannot loop forever).
+            if name == "game_set" and str(a.get("cmd")) != last_set_cmd:
+                if last_set_cmd is not None and set_resets < 3:
+                    set_resets += 1
+                    for k in [k for k in seen_calls if k.startswith("game_set")]:
+                        seen_calls[k] = 0
+                last_set_cmd = str(a.get("cmd"))
             seen_calls[key] = seen_calls.get(key, 0) + 1
             if seen_calls[key] > 2 and name not in ("play_slices", "say", "reply_chat", "reply_owner", "game_state"):
                 # live 2026-10-13: the same lookup five times, the same refused room three times, in one turn
