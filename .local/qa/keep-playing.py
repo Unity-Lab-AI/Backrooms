@@ -400,6 +400,19 @@ while True:
                 try: crew = len(gates.state().get("crew") or [])
                 except Exception: crew = 0
                 if crew: break
+            # the pods land one by one over the first seconds of GAME time: day one at the first count (run 5, 02:05:36: "2
+            # colonists", the third still in the air -- and a game held at tick 0 never lands it). The clock runs until the
+            # count holds still, then day one pauses it.
+            if crew:
+                try: gates_bridge_pause(False)
+                except Exception as e: print(stamp(), "could not run time for the landing:", e, flush=True)
+                for _ in range(8):
+                    time.sleep(5)
+                    try: again = len(gates.state().get("crew") or [])
+                    except Exception: again = crew
+                    if again == crew: break
+                    crew = again
+                print(stamp(), "landing settled: %d colonists on the map" % crew, flush=True)
             try: print(stamp(), "newgame.result:", open(os.path.join(auto, "newgame.result"), encoding="utf-8").read().strip().splitlines()[-8:], flush=True)
             except Exception: pass
             if crew > 0:
