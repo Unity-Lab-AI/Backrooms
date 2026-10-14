@@ -78,7 +78,10 @@ ONE_SHOTS = [[PYW, os.path.join(ROOT, ".claude/tools/unity-overlay.py")]]
 RW_DIR = r"C:/Program Files (x86)/Steam/steamapps/common/RimWorld"
 RW_IMAGE = "RimWorld" if os.path.exists(os.path.join(RW_DIR, "RimWorld.exe")) else "RimWorldWin64"
 START_ONLY = [
-    ("rimworld", RW_IMAGE + ".exe", [os.path.join(RW_DIR, RW_IMAGE + ".exe")], RW_DIR),
+    # borderless window at the screen's size, never exclusive fullscreen: owner, 2026-10-13, "the game is not properly
+    # running in the background, i cant see my desktop when tabbing out of it" -- Prefs.xml said fullscreen True, so
+    # alt-tab swapped the display instead of showing the desktop. Unity's own flags win over the prefs every launch.
+    ("rimworld", RW_IMAGE + ".exe", [os.path.join(RW_DIR, RW_IMAGE + ".exe"), "-screen-fullscreen", "0", "-popupwindow"], RW_DIR),
 ]
 
 # Not python or node, so they are matched and started by their own executables.
@@ -314,6 +317,9 @@ def announce(line):
         pass
 
 def start(only=None):
+    if only in (None, "autopilot"):
+        try: os.remove(AUTOPILOT_HOLD)
+        except OSError: pass
     found = running()
     env = dict(os.environ, PYTHONUNBUFFERED="1", STUDIO_PERSIST="1", UNITY_OWN_VOICE="1",
                # her pod-trained voice speaks at natural pace; the old 1.2 stretch was for the too-fast local test voice
@@ -380,8 +386,15 @@ def start(only=None):
     except Exception:
         print("rimbridge   DOWN (launch RimWorld yourself -- this switch never touches the game)")
 
+AUTOPILOT_HOLD = os.path.join(QA, "_autopilot.hold")   # while it exists keep-going does not restart the player
+
 def stop_one(name):
     """Stop ONE named service and nothing else (OBS asked to close, never killed)."""
+    if name == "autopilot":
+        # run 3 (2026-10-13 22:08): the player stopped by hand came back within a minute -- keep-going restarts a DOWN
+        # player. A hand-stop leaves a hold file that keep-going honours; `start autopilot` lifts it.
+        try: open(AUTOPILOT_HOLD, "w").write(str(int(time.time())))
+        except OSError: pass
     frag = next((f for n, f, *_ in SERVICES + EXTRAS + START_ONLY if n == name), None)
     if frag is None: print("no service called", name); return
     pids = running().get(frag, [])
@@ -501,6 +514,10 @@ def golive():
     Owner, live: "twich shows network error that should never happen" -- closing OBS ends the broadcast and every
     viewer sees a network error. If OBS is already up (a soft restart keeps it), switch back to Live and make
     sure it is streaming; only a cold start launches it."""
+    # the BRB countdown ends at GO: run 3 (2026-10-13 21:25) the file set for the break stayed on disk and the host kept
+    # telling the live stream "back in 96 minutes" (owner: "she keeps saying be back in 96 minuites stf?")
+    try: os.remove(os.path.join(ROOT, ".local", "obs", "_brb_until"))
+    except OSError: pass
     c = obs_ws()
     if c is not None:
         try:
@@ -547,10 +564,12 @@ def golive():
 
 LOCK = os.path.join(QA, "_svc_control.lock")
 
-def control_lock(wait_s=900, stale_s=1800):
+def control_lock(wait_s=900, stale_s=1800, takeover_s=None):
     """One process-control action at a time: two starts racing the same scan each launch their own copy.
-    A lock older than stale_s belongs to a dead run and is taken over."""
-    t0 = time.time()
+    A lock older than stale_s belongs to a dead run and is taken over. A stop never waits in silence (owner,
+    2026-10-13: "i ran stop.bat and it didnt work! kill all!" -- it sat on the lock the start window still held):
+    it says whose lock it is at once and takes it over after takeover_s seconds."""
+    t0 = time.time(); said = False
     while True:
         try:
             fd = os.open(LOCK, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
@@ -564,7 +583,14 @@ def control_lock(wait_s=900, stale_s=1800):
             return
         except FileExistsError:
             try:
-                if time.time() - os.path.getmtime(LOCK) > stale_s: os.remove(LOCK); continue
+                age = time.time() - os.path.getmtime(LOCK)
+                holder = open(LOCK).read().strip()
+                if age > stale_s: os.remove(LOCK); continue
+                if takeover_s is not None and age > takeover_s:
+                    print("taking the control lock over from pid %s (%.0f s old)" % (holder, age)); os.remove(LOCK); continue
+                if not said:
+                    print("waiting for another start/stop (pid %s, lock %.0f s old)%s" % (holder, age,
+                          " -- it will be taken over in %d s" % takeover_s if takeover_s is not None else " -- Ctrl-C to abort"), flush=True); said = True
             except OSError:
                 continue
             if time.time() - t0 > wait_s:
@@ -572,7 +598,7 @@ def control_lock(wait_s=900, stale_s=1800):
             time.sleep(1)
 
 cmd = (sys.argv[1] if len(sys.argv) > 1 else "status").lower()
-if cmd != "status": control_lock()
+if cmd != "status": control_lock(takeover_s=10 if cmd == "stop" else None)
 if cmd == "game": game(); raise SystemExit
 if cmd == "golive": golive(); raise SystemExit
 ONE = sys.argv[2].lower() if len(sys.argv) > 2 else None   # a name means THAT service only, never the rig

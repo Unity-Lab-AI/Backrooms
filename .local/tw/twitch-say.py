@@ -66,9 +66,30 @@ def main():
             return
 
         # title and category live on the creator dashboard's stream manager
-        pg = page_for(ctx, "dashboard.twitch.tv", "https://dashboard.twitch.tv/u/%s/stream-manager" % CHANNEL)
-        edit = pg.locator('button:has-text("Edit Stream Info"), [aria-label*="Edit Stream Info"]').first
-        if edit.count(): edit.click(); time.sleep(2)
+        # the STREAM MANAGER tab, not any dashboard tab: run 3 (2026-10-13 21:29) matched a settings/about tab that was
+        # open, which has no "Edit Stream Info", and the title was refused three times on stream
+        sm = "https://dashboard.twitch.tv/u/%s/stream-manager" % CHANNEL
+        pg = page_for(ctx, "stream-manager", sm)
+        if "stream-manager" not in pg.url:
+            pg.goto(sm, wait_until="domcontentloaded"); time.sleep(6)
+        # the Edit Stream Info modal may already be open (a previous call that did not reach Done, or a hand on the
+        # window): clicking the button again then hits the modal's backdrop and every click retries until it times
+        # out (run 3, 21:33-21:34: "stuck behind a modal"). Open it only when its title box is not already there.
+        if not pg.locator('#edit-broadcast-title-formgroup').count():
+            # by ROLE: the css "button:has-text / [aria-label*=]" pair also matched a hidden node first, and the click
+            # waited 30 s for it to become visible (run 3, 21:29-21:36, every title and category call)
+            edit = pg.get_by_role("button", name="Edit Stream Info").first
+            if edit.count():
+                # a pointer click lands on whatever covers the button in the stream-manager layout (run 3, 21:36:
+                # visible, box at y=1023, click and force-click both left the modal closed); the element's own click
+                # event opens it every time
+                try: edit.click(timeout=5000); time.sleep(1.5)
+                except Exception: pass
+                if not pg.locator('#edit-broadcast-title-formgroup').count():
+                    edit.dispatch_event("click"); time.sleep(2)
+                if not pg.locator('#edit-broadcast-title-formgroup').count():
+                    raise SystemExit("refused: Edit Stream Info did not open its form -- try again")
+            else: raise SystemExit("refused: the stream manager page has no Edit Stream Info button yet -- try again in a few seconds")
 
         if what in ("title", "golive"):
             title = clean(" ".join(sys.argv[2:]) or "Unity Plays RimWorld")
@@ -81,12 +102,30 @@ def main():
         if what in ("category", "golive"):
             cat = " ".join(sys.argv[2:]) if what == "category" else "RimWorld"
             box = pg.locator('#Category-Selector, [data-a-target="stream-game-field"]').first
-            if box.count():
-                box.click(); box.fill(""); box.type(cat, delay=12); time.sleep(2)
+            try: current = box.input_value(timeout=3000) if box.count() else ""
+            except Exception: current = ""
+            if current.strip().lower() == cat.strip().lower():
+                print("category already", current)      # the field stays hidden until it is changed; nothing to type
+            elif box.count():
+                # the same covered-element problem as the Edit button: focus it directly, never wait on a pointer click
+                box.scroll_into_view_if_needed(timeout=4000)
+                try: box.click(timeout=4000)
+                except Exception: box.evaluate("e => e.focus()")
+                try: box.fill("", timeout=4000)
+                except Exception: pg.keyboard.press("Control+A"); pg.keyboard.press("Backspace")
+                pg.keyboard.type(cat, delay=12); time.sleep(2)
                 pg.keyboard.press("ArrowDown"); pg.keyboard.press("Enter"); print("category set:", cat)
+            else:
+                raise SystemExit("refused: the category box was not found -- nothing saved")
 
-        done = pg.locator('button:has-text("Done"), button:has-text("Save")').first
-        if done.count(): done.click(); time.sleep(1.5); print("stream info saved")
+        done = pg.get_by_role("button", name="Done").first
+        if not done.count(): done = pg.get_by_role("button", name="Save").first
+        if done.count():
+            try: done.click(timeout=8000)
+            except Exception: done.click(force=True, timeout=8000)
+            time.sleep(1.5); print("stream info saved")
+        if pg.locator('#edit-broadcast-title-formgroup').count():
+            pg.keyboard.press("Escape"); raise SystemExit("refused: the stream info modal did not close after Done -- nothing is confirmed saved; try again")
 
         if what == "golive":
             # going live is OBS's job; the switch already launches it with --startstreaming

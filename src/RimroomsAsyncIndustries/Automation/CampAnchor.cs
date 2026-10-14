@@ -203,6 +203,8 @@ namespace RimroomsAsyncIndustries.Automation
             if (walls + doors == 0 && kept == 0) return "refused: nothing of the ring could be placed around " + anchor.x + "," + anchor.z;
 
             foreach (IntVec3 c in inside) map.areaManager.BuildRoof[c] = true;
+            // the camp is Home from the first wall: fires inside it get fought, floors cleaned (run 3: no Home, 47 fire cells)
+            foreach (IntVec3 c in ring) map.areaManager.Home[c] = true;
 
             // the stockpile covers the inside, over the supplies where they lie
             Zone_Stockpile store = map.zoneManager.AllZones.OfType<Zone_Stockpile>().FirstOrDefault(z => z.label == "Main store");

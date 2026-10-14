@@ -141,11 +141,17 @@ const state = { lastImg: 0, lastReply: 0, keyConfigured: false, active: "unity",
 const $ = (id) => document.getElementById(id);
 const feed = $("feed"), input = $("input"), sendBtn = $("send");
 
-function api(path, body) {
+async function api(path, body, retried) {
   const opt = { method: body ? "POST" : "GET",
                 headers: { "Content-Type": "application/json", "X-Studio-Token": window.STUDIO_TOKEN || "" } };
   if (body) opt.body = JSON.stringify(body);
-  return fetch(path, opt).then((r) => r.json());
+  const r = await fetch(path, opt);
+  if (r.status === 403 && body && !retried) {
+    // the studio restarted since this page loaded: fetch its new token and send once more
+    try { const t = await fetch("/api/token").then((x) => x.json()); if (t && t.token) { window.STUDIO_TOKEN = t.token; return api(path, body, true); } }
+    catch (e) {}
+  }
+  return r.json();
 }
 function scroll() { feed.scrollTop = feed.scrollHeight; }
 function dropEmpty() { const e = $("empty"); if (e) e.remove(); }

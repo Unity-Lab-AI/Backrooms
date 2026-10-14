@@ -168,6 +168,9 @@ class Toolbox:
         self.last_speech = 0.0
         self.pending_images = []      # base64 PNGs for the next model message (vision)
         self.spoken = []              # what was said this tick
+        self.live_top = None          # (rung id, family, priority) of the live top rung, set by the loop every turn
+        self.last_menu = {}           # (pawn_id, x, z) -> the real context-menu labels, from the last option-less order_pawn
+        self.known_gizmos = set()     # gizmo ids from the last list_selected_gizmos, the only ones execute_gizmo takes
         self._empire_at = 0.0         # empire_pass: when it last ran and what it reported (the cooldown guard)
         self._empire_report = ""
         self.greeted_this_tick = set()
@@ -270,11 +273,19 @@ class Toolbox:
             if time.time() - self.last_gizmo_list < guards.GIZMO_LIST_MIN_GAP_S:
                 raise GuardError("gizmos were listed under 20 s ago; reuse that list (listing them repeatedly crashed the game)")
             self.last_gizmo_list = time.time()
+        if name == "rimworld/execute_gizmo":
+            # run 3 (2026-10-13 21:46, 22:04): a gizmo executed blind on whatever was selected. Only an id from the last list.
+            gid = str(args.get("gizmoId") or "")
+            if gid not in self.known_gizmos:
+                raise GuardError("unknown gizmo id: list_selected_gizmos first (on the thing you mean) and execute only an id from that list")
         if self.dry and name not in guards.BRIDGE_READ:
             log("DRY-RUN would call", name, json.dumps(args))
             return "dry-run: not executed (%s %s)" % (name, json.dumps(args))
         log("CALL", name, json.dumps(args)[:300])
         r = self.bridge.call(name, args)
+        if name == "rimworld/list_selected_gizmos":
+            try: self.known_gizmos = set(re.findall(r'selection-gizmo:[A-Za-z0-9:_-]+', json.dumps(r)))
+            except Exception: self.known_gizmos = set()
         if name == "rimworld/get_ui_layout" and isinstance(r, dict):
             found = {}
             _walk_targets(r, found)
@@ -408,7 +419,7 @@ class Toolbox:
                                                                "slaughter", "allow_area", "self_tend", "schedule", "drug_policy", "research", "bed_medical", "bed_prisoner", "cooler_temp",
                                                                "equip", "capture", "bill_count", "zone_create", "roof_area", "firebreak", "pen", "bury", "ideo_role", "save_game",
                                                                "stockpile_priority", "stockpile_copy", "crew_setup", "terraform",
-                                                               "camp", "storage_room", "mine", "room_plan", "wall_swap",
+                                                               "camp", "storage_room", "mine", "room_plan", "wall_swap", "home_area",
                                                                "freezer", "butcher", "kitchen", "arm", "draft", "hold", "tower", "power", "hall", "research_next", "generator", "prisoner", "trade", "gate_posture", "guest_beds", "security_room", "room_cooler", "call_trader"]},
                             "x": i, "z": i, "plant": s, "allow": b, "pawn": s, "work": s, "level": i,
                             "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s, "food": s, "medicine": s, "hostility": s, "map": s, "w": i, "h": i, "def": s, "rot": i, "stuff": s, "what": s, "on": b, "hours": s, "assignment": s, "policy": s, "project": s, "celsius": i, "sidearm": b, "kind": s, "label": s, "role": s, "name": s, "zone": s, "from": s, "to": s, "size": i, "x1": i, "z1": i, "x2": i, "z2": i, "width": i, "with": s, "sell": s, "buy": s, "posture": s, "fee": i, "faction": s},
@@ -456,16 +467,30 @@ class Toolbox:
         args = [str(pawn_id), str(int(x)), str(int(z))]
         if not re.fullmatch(r"[A-Za-z0-9_]{1,40}", args[0]):
             raise GuardError("pawn_id must be an id like Thing_Human1080")
+        key = (args[0], args[1], args[2])
         if option:
             if guards.UI_NEVER.search(option):
                 raise GuardError("menu option refused by guard")
+            # run 3 (2026-10-13 21:56-21:58): twelve guessed options (Take, Haul, Hunt, Combat, Tend, Rest, Eat, Sleep, Work,
+            # Joy, Build, Prioritize) fired as real orders. An option must come from the menu read for that cell first.
+            menu = self.last_menu.get(key)
+            if menu is None:
+                raise GuardError("read the menu first: order_pawn %s %s %s with no option lists what that cell offers; then pick one of those labels" % key)
+            want = str(option).strip().lower()
+            if not any(m.lower().startswith(want) for m in menu):
+                raise GuardError("'%s' is not on that cell's menu; it offers: %s" % (option, "; ".join(menu[:10]) or "nothing"))
             args.append(str(option)[:60])
         if queue:
             args.append("--queue")
         if self.dry:
             log("DRY-RUN would run api-prio.py", args)
             return "dry-run: not executed"
-        return run_script("api_prio", args, timeout=120)
+        out = run_script("api_prio", args, timeout=120)
+        if not option:
+            labels = [l.strip() for l in out.splitlines() if l.strip() and not l.startswith(("no entry", "done:", "STDERR"))]
+            self.last_menu[key] = labels
+            return ("menu for %s at %s,%s: " % key) + ("; ".join(labels) if labels else "nothing -- that cell offers no order for this pawn")
+        return out
 
     def _time_blocked(self):
         """Why time may not run yet, or None. Every route that advances game time asks this one question
@@ -787,6 +812,23 @@ class Toolbox:
             except Exception:
                 st = {}
         ok = cls._outbox_ok_cmds() if ok_cmds is None else set(ok_cmds)
+        # gates.state() carries the autopilot's own readings; the keys these tests need are RimPLC's (Sensors.cs) and
+        # some never reach it (run 3, 21:47: able_shooters_armed was None here while the mod read 3, so arms_set could
+        # never be confirmed and every setup rung behind it stayed dead). Fill what is missing from the mod itself.
+        need = [k for k in ("able_shooters", "able_shooters_armed", "stoves", "bill_rows", "ideo_leader_assigned",
+                            "ideo_roles_unassigned", "grid_matches_plan", "food_store") if st.get(k) is None]
+        if need:
+            try:
+                r = subprocess.run([PY, os.path.join(ROOT, ".local", "qa", "bridge.py"), "call", "rimplc/read_state",
+                                    json.dumps({"keys": ",".join(need)})], capture_output=True, text=True, timeout=30,
+                                   cwd=ROOT, shell=False)
+                t = r.stdout or ""; i = t.find("{")
+                d = json.loads(t[i:]) if i >= 0 else {}
+                src = d.get("state") if isinstance(d.get("state"), dict) else {}
+                for k in need:
+                    if k in src: st[k] = src[k]
+            except Exception:
+                pass
         def num(k):
             v = st.get(k)
             return v if isinstance(v, (int, float)) and not isinstance(v, bool) else None
@@ -988,7 +1030,14 @@ class Toolbox:
         except Exception:
             pass
 
+    FILLER_CMDS = ("hunt", "explore")
+
     def t_game_set(self, cmd, **kw):
+        # run 3 (2026-10-13 21:50): "the rung is not my own, so I do what the colony needs right now. Hunting is the job now"
+        # -- with fire-in-camp (2.0) live. Filler is refused while a survival or war rung is on top.
+        top = getattr(self, "live_top", None)
+        if cmd in self.FILLER_CMDS and top and top[1] in ("survival", "war") and top[2] < 3.0:
+            raise GuardError("%s is filler: the live top rung is [%s] (%s %.2f) -- do that rung's steps, nothing else" % (cmd, top[0], top[1], top[2]))
         """Owner, 2026-10-10: "fix that so it doesnt ever need the screen and MY DAMN MOUSE" / "build it into
         the mod if you have to". The component reads a command file once a second; the result is written back."""
         payload = {"cmd": cmd}

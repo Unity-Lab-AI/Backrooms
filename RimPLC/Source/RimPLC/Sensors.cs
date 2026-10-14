@@ -252,7 +252,19 @@ namespace RimPLC
             st["medicine"] = (double)med;
             foreach (var kv in res) st[kv.Key] = (double)kv.Value;
             // Core's own nutrition total (Alert_LowFood uses it) over 1.6 nutrition per colonist per day (gates.py)
-            st["days_of_food"] = Math.Round(rc.TotalHumanEdibleNutrition / (1.6 * Math.Max(1.0, crew)), 2);
+            // Core's counter sees stored food only: a Crashlanded landing read 0.0 days with the survival meals lying in the
+            // open (run 3, 2026-10-13: 0.0 -> 27.4 the moment the pile was zoned). Count every human-edible item on the map.
+            double loose = 0;
+            try
+            {
+                foreach (Thing t in home.listerThings.ThingsInGroup(ThingRequestGroup.FoodSourceNotPlantOrTree))
+                {
+                    if (t is Corpse || t.def.ingestible == null || !t.def.ingestible.HumanEdible || !t.def.IsNutritionGivingIngestible) continue;
+                    loose += t.GetStatValue(StatDefOf.Nutrition) * t.stackCount;
+                }
+            }
+            catch (Exception) { loose = 0; }
+            st["days_of_food"] = Math.Round(Math.Max(rc.TotalHumanEdibleNutrition, loose) / (1.6 * Math.Max(1.0, crew)), 2);
 
             // zones and areas
             int growing = 0, stockpile = 0, storeCells = 0, roofed = 0;

@@ -16,6 +16,7 @@ namespace RimroomsAsyncIndustries.Automation
     ///   {"cmd":"zone_create","kind":"stockpile|growing","x":"..","z":"..","w":"..","h":"..","priority":"Preferred","plant":"Plant_Corn"}
     ///   {"cmd":"roof_area","x":"..","z":"..","w":"..","h":"..","mode":"roof|noroof|clear"}
     ///   {"cmd":"mine","x":"..","z":"..","w":"..","h":".."}  natural rock designated to mine (cell or rectangle)
+    ///   {"cmd":"home_area","x":"..","z":"..","w":"..","h":".."}  the Home area over a rectangle (mode remove clears)
     ///   {"cmd":"firebreak","w":"3"}                     cut plants in a ring that wide around the Home area
     ///   {"cmd":"pen","x":"..","z":"..","w":"..","h":".."}  fence ring + fence gate + animal pen marker
     ///   {"cmd":"bury"}                                  a grave blueprint near the camp edge (corpses get hauled in)
@@ -150,6 +151,22 @@ namespace RimroomsAsyncIndustries.Automation
         ///   {"cmd":"mine","x":"..","z":".."}  or with "w","h"   natural rock designated to mine (the test run had no way to
         ///   dig a cell: she tried deconstruct on raw rock four times). Only rock and ore; walls are deconstruct, not mine.
         /// </summary>
+        /// <summary>
+        ///   {"cmd":"home_area","x":"..","z":"..","w":"..","h":".."}  the Home area over that rectangle (mode "remove" clears it).
+        ///   Colonists fight fires, clean and haul only inside Home. Run 3 (2026-10-13 21:51-21:53): she hunted the Home
+        ///   designator through the zone list four times and drew a growing zone over the burning cells instead.
+        /// </summary>
+        public static string HomeArea(Map map, Dictionary<string, string> a)
+        {
+            CellRect r = Rect(map, a);
+            a.TryGetValue("mode", out string mode);
+            bool on = !(mode ?? "").StartsWith("rem", StringComparison.OrdinalIgnoreCase);
+            int n = 0;
+            foreach (IntVec3 c in r) { if (map.areaManager.Home[c] != on) { map.areaManager.Home[c] = on; n++; } }
+            return "ok: Home " + (on ? "added over " : "removed from ") + n + " cells of " + r.Width + "x" + r.Height + " from " + r.minX + "," + r.minZ +
+                   " (Home now " + map.areaManager.Home.TrueCount + " cells)";
+        }
+
         public static string Mine(Map map, Dictionary<string, string> a)
         {
             CellRect r = Rect(map, a);
