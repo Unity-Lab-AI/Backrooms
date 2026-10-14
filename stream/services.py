@@ -60,8 +60,9 @@ SERVICES = [
     ("followcrew",  ".local/qa/follow-crew.py",         [PYW, os.path.join(QA if "QA" in globals() else HERE, "follow-crew.py")]),
     # ("cursorjobs",  ".local/qa/cursor-jobs.py",         [PYW, os.path.join(QA, "cursor-jobs.py")]),
     ("keepgoing",   ".local/qa/keep-playing.py",        [PYW, "-u", os.path.join(QA if "QA" in globals() else HERE, "keep-playing.py")]),
-    # her own voice (models/unity-voice) served once on :5123; unity-speak.py posts every line to it, no fallback
-    ("voice",       "models/unity-voice/serve.py",      [PYW, "-u", os.path.join(ROOT, "models/unity-voice/serve.py")]),
+    # her own voice, version 2 (models/unity-voice-v2, the emotional-range retrain the owner approved 2026-10-13 after
+    # the A/B) served once on :5123; unity-speak.py posts every line to it, no fallback. v1 stays in models/unity-voice.
+    ("voice",       "models/unity-voice-v2/serve.py",   [PYW, "-u", os.path.join(ROOT, "models/unity-voice-v2/serve.py")]),
     ("autopilot",   ".local/autopilot/autopilot.py",    [PYW, "-u", os.path.join(ROOT, ".local/autopilot/autopilot.py"), "--num-gpu", os.environ.get("AUTOPILOT_NUM_GPU", "0")]),
     ("admin",       "stream/admin.py",                  [PYW, "-u", os.path.join(HERE, "admin.py")]),
 ]
