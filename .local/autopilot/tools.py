@@ -408,7 +408,7 @@ class Toolbox:
                                                                "slaughter", "allow_area", "self_tend", "schedule", "drug_policy", "research", "bed_medical", "bed_prisoner", "cooler_temp",
                                                                "equip", "capture", "bill_count", "zone_create", "roof_area", "firebreak", "pen", "bury", "ideo_role", "save_game",
                                                                "stockpile_priority", "stockpile_copy", "crew_setup", "terraform",
-                                                               "camp", "storage_room", "mine", "room_plan",
+                                                               "camp", "storage_room", "mine", "room_plan", "wall_swap",
                                                                "freezer", "butcher", "kitchen", "arm", "draft", "hold", "tower", "power", "hall", "research_next", "generator", "prisoner", "trade", "gate_posture", "guest_beds", "security_room", "room_cooler", "call_trader"]},
                             "x": i, "z": i, "plant": s, "allow": b, "pawn": s, "work": s, "level": i,
                             "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s, "food": s, "medicine": s, "hostility": s, "map": s, "w": i, "h": i, "def": s, "rot": i, "stuff": s, "what": s, "on": b, "hours": s, "assignment": s, "policy": s, "project": s, "celsius": i, "sidearm": b, "kind": s, "label": s, "role": s, "name": s, "zone": s, "from": s, "to": s, "size": i, "x1": i, "z1": i, "x2": i, "z2": i, "width": i, "with": s, "sell": s, "buy": s, "posture": s, "fee": i, "faction": s},

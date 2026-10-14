@@ -2928,7 +2928,7 @@
     "game_click_ui_target 'Found a company branch here' (company_found_branch [missing tool] would make it one call)",
     "ladder_set mark company_contact true"
    ],
-   "why": "\"the mod is active you can start it at any time\" (docs/PLAYSCRIPT.md) | \"save this save.. start new secenerio,, solo/groupd start with same precets pic a mountin tile to start and try to find natural gate to it or just out of back rooms and get in contact with the company\" (docs/playbook.rules.json)",
+   "why": "owner 2026-10-13, verbatim: \"the main bas mining and construction work begins into the moutian makling sure of no collapses when repalacing stone mountain walls for like steel and other materials,, crops are you main money makes producing meals and other goods from them to where the 5 foods are grown, healroot, and the 3 hops smokeleaf and psycoid plants for refinments making as much as u can while keeping basics producded till getting to clothing for everyone and start making helmets and weapons and armours as u have the resources from gathering and mainly trade always keeping and trying to end a trade ewwith at least a 1000 silver surpluse for calling the next trasder tyo land, all while trying to get in contact with the company to build a backrooms facility gate and infistructure(need lots of power)\" / \"the mod is active you can start it at any time\" (docs/PLAYSCRIPT.md) | \"save this save.. start new secenerio,, solo/groupd start with same precets pic a mountin tile to start and try to find natural gate to it or just out of back rooms and get in contact with the company\" (docs/playbook.rules.json)",
    "latch": true,
    "note": "done-mark (latch_name): mark_br_contact_company_done",
    "source": "book",
@@ -2996,9 +2996,10 @@
     "shooting galleries either side of the vestibule firing in through embrasures, entered only from the control room; all air contained",
     "a 2-wide hall wrapping the gate room on the east and north, walked counter-clockwise, prison cells on its outer side; power, support rooms, turrets covering the gate",
     "a placement refused: ladder_set mark facility_tried true (3 -> br-gate-facility-fallback)",
-    "roofed and every door reachable: ladder_set mark gate_facility_built true"
+    "roofed and every door reachable: ladder_set mark gate_facility_built true",
+    "the gate and its infrastructure need lots of power: power-generation-margin and battery-room before the gate goes live -- never a brownout on the gate"
    ],
-   "why": "\"the gaste needs to be center s int he room not the door between the control room and gate room\" (docs/playbook.rules.json) | \"why are you commitioning their bedroom door as a gate you need to build a facility fool\" (docs/playbook.rules.json) | \"and your gate need to be not just a side room it needs to be in a massive facility with all it supposrt structures in a windowed off room for security ect ect and security u can do the research as u need it\" (docs/playbook.rules.json) | \"you need a whooel facility within your facility contain secure protect embrashurs ballistic glass all of it\" (docs/playbook.rules.json) | \"you need a whooel facility within your facility contain secure protect embrashurs ballistic glass all of it / doubdl doo sets with shooting gallerys from inside only all air contained / you have wall in way of 2x doors / u got double doors side ways one path thinck\" (docs/PLAYSCRIPT.md:59) | \"doubdl doo sets with shooting gallerys from inside only all air contained\" (docs/PLAYSCRIPT.md) | \"you have wall in way of 2x doors\" (docs/PLAYSCRIPT.md) | \"u got double doors side ways one path thinck\" (docs/PLAYSCRIPT.md) | \"if u doit right u can wrap cells around the gate room with a 2 wide path hall all the way around it counter clock wise\" (docs/PLAYSCRIPT.md) | \"on the east and north i mean\" (docs/PLAYSCRIPT.md) | \"Separate door is the gate\" (docs/PLAYSCRIPT.md)",
+   "why": "owner 2026-10-13, verbatim: \"the main bas mining and construction work begins into the moutian makling sure of no collapses when repalacing stone mountain walls for like steel and other materials,, crops are you main money makes producing meals and other goods from them to where the 5 foods are grown, healroot, and the 3 hops smokeleaf and psycoid plants for refinments making as much as u can while keeping basics producded till getting to clothing for everyone and start making helmets and weapons and armours as u have the resources from gathering and mainly trade always keeping and trying to end a trade ewwith at least a 1000 silver surpluse for calling the next trasder tyo land, all while trying to get in contact with the company to build a backrooms facility gate and infistructure(need lots of power)\" / \"the gaste needs to be center s int he room not the door between the control room and gate room\" (docs/playbook.rules.json) | \"why are you commitioning their bedroom door as a gate you need to build a facility fool\" (docs/playbook.rules.json) | \"and your gate need to be not just a side room it needs to be in a massive facility with all it supposrt structures in a windowed off room for security ect ect and security u can do the research as u need it\" (docs/playbook.rules.json) | \"you need a whooel facility within your facility contain secure protect embrashurs ballistic glass all of it\" (docs/playbook.rules.json) | \"you need a whooel facility within your facility contain secure protect embrashurs ballistic glass all of it / doubdl doo sets with shooting gallerys from inside only all air contained / you have wall in way of 2x doors / u got double doors side ways one path thinck\" (docs/PLAYSCRIPT.md:59) | \"doubdl doo sets with shooting gallerys from inside only all air contained\" (docs/PLAYSCRIPT.md) | \"you have wall in way of 2x doors\" (docs/PLAYSCRIPT.md) | \"u got double doors side ways one path thinck\" (docs/PLAYSCRIPT.md) | \"if u doit right u can wrap cells around the gate room with a 2 wide path hall all the way around it counter clock wise\" (docs/PLAYSCRIPT.md) | \"on the east and north i mean\" (docs/PLAYSCRIPT.md) | \"Separate door is the gate\" (docs/PLAYSCRIPT.md)",
    "never": [
     "a gate in a side room, broom closet, bedroom door or doorway"
    ],
@@ -3403,7 +3404,8 @@
    "then": [
     "cancel the wall section that touches unmined rock",
     "mine out the inside first (small, explored areas only)",
-    "re-lay that wall once the inside is clear"
+    "re-lay that wall once the inside is clear",
+    "replacing a rock wall that stands: game_set cmd wall_swap (safe cells only), never mine by hand"
    ],
    "never": [
     "designate Mine on fogged/unexplored rock",
@@ -3835,7 +3837,7 @@
     "batteries in the stone battery room for nights"
    ],
    "latch": false,
-   "why": "owner: \"come on organize your generator like batteries are fucker,,, not all over the place no ryme or reason.. and u need better power not 10000 wood gens\" / owner: \"might want to design a power facility generators outside batteries in reactors later\" | walkthrough: rimworldwiki.com/wiki/Power (generation >= 1.25x demand)",
+   "why": "owner 2026-10-13, verbatim: \"the main bas mining and construction work begins into the moutian makling sure of no collapses when repalacing stone mountain walls for like steel and other materials,, crops are you main money makes producing meals and other goods from them to where the 5 foods are grown, healroot, and the 3 hops smokeleaf and psycoid plants for refinments making as much as u can while keeping basics producded till getting to clothing for everyone and start making helmets and weapons and armours as u have the resources from gathering and mainly trade always keeping and trying to end a trade ewwith at least a 1000 silver surpluse for calling the next trasder tyo land, all while trying to get in contact with the company to build a backrooms facility gate and infistructure(need lots of power)\" / owner: \"come on organize your generator like batteries are fucker,,, not all over the place no ryme or reason.. and u need better power not 10000 wood gens\" / owner: \"might want to design a power facility generators outside batteries in reactors later\" | walkthrough: rimworldwiki.com/wiki/Power (generation >= 1.25x demand)",
    "source": "book",
    "mode": "advise"
   },
@@ -4000,6 +4002,7 @@
    "then": [
     "unity_say a clean line first: what the build is and that it takes a minute (bulk jobs are announced, never silent)",
     "mine the cutout: ONE door in (MOUNTAIN_DOORS_IN), never pierce the outer rock",
+    "stone walls to built ones: game_set cmd wall_swap x z w h stuff Steel -- it mines only cells whose roof keeps another support within reach and lays the steel wall the moment each cell is clear; a cell it SKIPS holds the last support of a roof: game_set cmd build def Column beside it first, then wall_swap again; never mine or deconstruct such a cell by hand",
     "the door opens into the throne room centred on the SPINE_WIDTH (3) spine running NE; prison wing hall east, guest wing hall west (game_set cmd hall x1 z1 x2 z2 width 3 for the spine and each wing hall)",
     "labs and tech deeper in; ROCK_CELLS_AROUND_ROOMS (2) of natural rock between every room, neighbour and the outside (room for the room wall without breaking the exposed mountain)",
     "a rock pillar or column every 5-6 tiles in big halls; fields, solar and wind outside under sky",
@@ -4009,10 +4012,12 @@
    "never": [
     "build anything outside the mountain",
     "mine fogged rock",
-    "remove the last roof support"
+    "remove the last roof support",
+    "mine a cell wall_swap skipped",
+    "a thick-roof cell without a holder within reach"
    ],
    "latch": false,
-   "why": "owner: \"plan on putting you bas inside that natural cut out ... never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spine\" / owner: \"you might want to at sum point long later plan on moving the natural  gate to a labratory where u plan to build the gate faciltiy all secure and ur base secure, you might want to plan on putting you bas inside that natural cut out and not let your base have more that a single door into the mountain never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spinein going through the gut south into the main moutian\" / owner: \"NE i mean\" / owner: \"your gonna have to mine alot nothing is exposed struture out side the mountina walls and plan for the intoer rooms wall too so 2x mountain space along all inrteror warooms\" | walkthrough: rimworldwiki.com/wiki/Roof (supports within 6); rimworldwiki.com/wiki/Infestation; rimworldwiki.com/wiki/Power (fields outside)",
+   "why": "owner 2026-10-13, verbatim: \"the main bas mining and construction work begins into the moutian makling sure of no collapses when repalacing stone mountain walls for like steel and other materials,, crops are you main money makes producing meals and other goods from them to where the 5 foods are grown, healroot, and the 3 hops smokeleaf and psycoid plants for refinments making as much as u can while keeping basics producded till getting to clothing for everyone and start making helmets and weapons and armours as u have the resources from gathering and mainly trade always keeping and trying to end a trade ewwith at least a 1000 silver surpluse for calling the next trasder tyo land, all while trying to get in contact with the company to build a backrooms facility gate and infistructure(need lots of power)\" / owner: \"plan on putting you bas inside that natural cut out ... never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spine\" / owner: \"you might want to at sum point long later plan on moving the natural  gate to a labratory where u plan to build the gate faciltiy all secure and ur base secure, you might want to plan on putting you bas inside that natural cut out and not let your base have more that a single door into the mountain never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spinein going through the gut south into the main moutian\" / owner: \"NE i mean\" / owner: \"your gonna have to mine alot nothing is exposed struture out side the mountina walls and plan for the intoer rooms wall too so 2x mountain space along all inrteror warooms\" | walkthrough: rimworldwiki.com/wiki/Roof (supports within 6); rimworldwiki.com/wiki/Infestation; rimworldwiki.com/wiki/Power (fields outside)",
    "source": "book",
    "mode": "advise"
   },
@@ -4757,14 +4762,16 @@
    "then": [
     "read the letter now (game_state letters); letter_matches \"trader\" / \"caravan\"",
     "order_pawn the highest-Social colonist to the trader",
-    "game_set cmd trade with caravan (trade-in-reach): sell joints, beer, clothes, art, junk_weapons, tainted gear; buy steel, components, plasteel, marble blocks, cows, tech that is needed"
+    "game_set cmd trade with caravan (trade-in-reach): sell joints, beer, clothes, art, junk_weapons, tainted gear; buy steel, components, plasteel, marble blocks, cows, tech that is needed",
+    "end the trade with at least {TRADE_SILVER_FLOOR} silver left so the next trader can be called -- sell more or buy less; the trade tool refuses a buy that would drop silver under its floor (floor {TRADE_SILVER_FLOOR}; force true only for medicine in a life threat) and answers 'silver after the deal'"
    ],
-   "why": "owner: \"dont ignore you messages / are you reading pop up messages a good tradeer just arrived wtf !!! use the comms console / ive alkready told yuou already read messages always instantly!!!!! your under attrack!!!!\" / owner: \"farming trader.. comeon always trade and look to make silver and money and get things you need\" / owner: \"someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need\" / owner: \"might have to buy from trader marble blocks\" / owner: \"have to trade, make a corral for cows and such, buy cows, get a silver supply like cash\" / owner: \"you need to read message and pop up s shit its like im having to teach you how to play all over again wtf happened to everything ive taught you\" | walkthrough: walkthrough-economy-growth-space.md [economy] Trader = highest Social colonist; sell art/clothes/drugs, buy components/plasteel",
+   "why": "owner 2026-10-13, verbatim: \"the main bas mining and construction work begins into the moutian makling sure of no collapses when repalacing stone mountain walls for like steel and other materials,, crops are you main money makes producing meals and other goods from them to where the 5 foods are grown, healroot, and the 3 hops smokeleaf and psycoid plants for refinments making as much as u can while keeping basics producded till getting to clothing for everyone and start making helmets and weapons and armours as u have the resources from gathering and mainly trade always keeping and trying to end a trade ewwith at least a 1000 silver surpluse for calling the next trasder tyo land, all while trying to get in contact with the company to build a backrooms facility gate and infistructure(need lots of power)\" / owner: \"dont ignore you messages / are you reading pop up messages a good tradeer just arrived wtf !!! use the comms console / ive alkready told yuou already read messages always instantly!!!!! your under attrack!!!!\" / owner: \"farming trader.. comeon always trade and look to make silver and money and get things you need\" / owner: \"someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need\" / owner: \"might have to buy from trader marble blocks\" / owner: \"have to trade, make a corral for cows and such, buy cows, get a silver supply like cash\" / owner: \"you need to read message and pop up s shit its like im having to teach you how to play all over again wtf happened to everything ive taught you\" | walkthrough: walkthrough-economy-growth-space.md [economy] Trader = highest Social colonist; sell art/clothes/drugs, buy components/plasteel",
    "latch": false,
    "never": [
     "paying demands, ransoms or tribute",
     "buying what the colony does not need",
-    "the orbital trader as the main trade path"
+    "the orbital trader as the main trade path",
+    "end a trade under {TRADE_SILVER_FLOOR} silver"
    ],
    "source": "book",
    "mode": "advise"
@@ -4919,7 +4926,7 @@
    "then": [
     "ladder_set mark crops_tried false",
     "game_set cmd crops",
-    "game_set cmd set_zone_plant x,z plant=<one per zone>: Plant_Berry, Plant_Potato, Plant_Corn, Plant_Healroot (grower Plants >= 8), Plant_Cotton, Plant_Smokeleaf, Plant_Psychoid, Plant_Hops, then every other crop as research unlocks it",
+    "game_set cmd set_zone_plant x,z plant=<one per zone>: the 5 foods Plant_Rice, Plant_Potato, Plant_Corn, Plant_Berry, Plant_Strawberry; Plant_Healroot (grower Plants >= 8); the 3 refinables Plant_Hops, Plant_Smokeleaf, Plant_Psychoid; then Plant_Cotton and every other crop as research unlocks it",
     "on a refused set_zone_plant: ladder_set mark crops_tried true (3 refusals hand over to econ-crops-fallback)",
     "re-read fields_all_default_crop: must be false",
     "when fields_all_default_crop is false: ladder_set mark crops_full true"
@@ -4928,8 +4935,46 @@
     "two zones of the same drug crop",
     "every field left on the default crop"
    ],
-   "why": "owner: \"need berrys potatos corn and healroot minimum plus cotton smoke leaf psycoid and hops so lots to sell and production\" / owner: \"need psycoid and hops too, you dont need two crops of smokeleaf\" / owner: \"fidure it our ur not sleecting crops right\" / owner: \"all of the crops grow them all and make products from them for guests\" / owner: \"start growing cash cropsa\" / owner: \"you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need\" / owner: \"not limited to three obviously\" / owner: \"items as u unlock\" | walkthrough: walkthrough-food-and-medicine.md [economy] Plant rice first, corn for long storage, healroot when Plants >= 8 / owner: \"you still havent started growing cash crops and you still havent figured out you freezer storage as ive already told you how , you have shelfs outside the freezer set to hold freezer goods and good in the freezer not ment to be frozen, i already told you how to set up the shelves and zones, do it\" / owner: \"start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process\"",
+   "why": "owner 2026-10-13, verbatim: \"the main bas mining and construction work begins into the moutian makling sure of no collapses when repalacing stone mountain walls for like steel and other materials,, crops are you main money makes producing meals and other goods from them to where the 5 foods are grown, healroot, and the 3 hops smokeleaf and psycoid plants for refinments making as much as u can while keeping basics producded till getting to clothing for everyone and start making helmets and weapons and armours as u have the resources from gathering and mainly trade always keeping and trying to end a trade ewwith at least a 1000 silver surpluse for calling the next trasder tyo land, all while trying to get in contact with the company to build a backrooms facility gate and infistructure(need lots of power)\" / owner: \"need berrys potatos corn and healroot minimum plus cotton smoke leaf psycoid and hops so lots to sell and production\" / owner: \"need psycoid and hops too, you dont need two crops of smokeleaf\" / owner: \"fidure it our ur not sleecting crops right\" / owner: \"all of the crops grow them all and make products from them for guests\" / owner: \"start growing cash cropsa\" / owner: \"you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need\" / owner: \"not limited to three obviously\" / owner: \"items as u unlock\" | walkthrough: walkthrough-food-and-medicine.md [economy] Plant rice first, corn for long storage, healroot when Plants >= 8 / owner: \"you still havent started growing cash crops and you still havent figured out you freezer storage as ive already told you how , you have shelfs outside the freezer set to hold freezer goods and good in the freezer not ment to be frozen, i already told you how to set up the shelves and zones, do it\" / owner: \"start growing cash crops / what can u doi to make the next visitors happier with their stay beauty better food sales of goods have to set a sell zone and use guests tab and only sell what u dont need like smoneleaft on its higher process\"",
    "latch": false,
+   "source": "book",
+   "mode": "advise"
+  },
+  {
+   "id": "econ-refine-crops",
+   "priority": 20.86,
+   "family": "economy",
+   "latch": false,
+   "when": {
+    "mark_crops_full": true,
+    "days_of_food": ">{FOOD_COMFORT_DAYS}",
+    "mark_refine_bills_set": false,
+    "leaves_in": {
+     "any": [
+      {
+       "count_hops": ">0"
+      },
+      {
+       "count_smokeleafleaves": ">0"
+      },
+      {
+       "count_psychoidleaves": ">0"
+      }
+     ]
+    }
+   },
+   "then": [
+    "the crops are the money: refine them, as much as possible, while the basics stay produced (meals first: the stove's simple-meal bill stays at {MEAL_BILL_TARGET})",
+    "hops: game_set cmd build def Brewery (a wall slot of a roofed room, room_plan tells where) and def FermentingBarrel x2; when built game_set cmd add_bill recipe Make_Wort count 0 (Do forever) -- wort into the barrels becomes beer",
+    "smokeleaf: game_set cmd add_bill recipe Make_SmokeleafJoint count 0 at the crafting spot (no research needed); psychoid: research_drugproduction then game_set cmd build def DrugLab and add_bill recipe Make_PsychiteTea count 0",
+    "the products go to the sell pile for the next trader (trade-run), never into a colonist's pocket: drug policy stays No drugs",
+    "all three bills placed (bill_rows read back): ladder_set mark refine_bills_set true"
+   ],
+   "never": [
+    "a refining bill while meals are under {MEAL_BILL_TARGET} and days_of_food under {FOOD_COMFORT_DAYS}",
+    "drugs for colonists"
+   ],
+   "why": "owner 2026-10-13, verbatim: \"the main bas mining and construction work begins into the moutian makling sure of no collapses when repalacing stone mountain walls for like steel and other materials,, crops are you main money makes producing meals and other goods from them to where the 5 foods are grown, healroot, and the 3 hops smokeleaf and psycoid plants for refinments making as much as u can while keeping basics producded till getting to clothing for everyone and start making helmets and weapons and armours as u have the resources from gathering and mainly trade always keeping and trying to end a trade ewwith at least a 1000 silver surpluse for calling the next trasder tyo land, all while trying to get in contact with the company to build a backrooms facility gate and infistructure(need lots of power)\"",
    "source": "book",
    "mode": "advise"
   },
@@ -5266,14 +5311,16 @@
     "multi-step: call, wait, return, trade. game_set cmd call_trader faction <best goodwill> [orbital true with a beacon] kind <Bulk goods> (trade-call-caravan); the negotiator walks to the console first; calling costs goodwill",
     "wait for the arrival (trade_ships_in_orbit / trader_caravans_on_map); then game_set cmd trade with ship|caravan trader <its name>: sell art, drugs, clothes, extra weapons -- never what the colony needs; back at the console for a ship, beside the caravan otherwise",
     "buy components, plasteel, steel, marble blocks in the same trade",
-    "ladder_set mark trade_run_done true"
+    "ladder_set mark trade_run_done true",
+    "end the trade with at least {TRADE_SILVER_FLOOR} silver left so the next trader can be called -- sell more or buy less; the trade tool refuses a buy that would drop silver under its floor (floor {TRADE_SILVER_FLOOR}; force true only for medicine in a life threat) and answers 'silver after the deal'"
    ],
-   "why": "owner: \"you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need\" / owner: \"farming trader.. comeon always trade and look to make silver and money and get things you need\" / owner: \"someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need\" / owner: \"might have to buy from trader marble blocks\" / owner: \"not orbital trader that one sucks\"",
+   "why": "owner 2026-10-13, verbatim: \"the main bas mining and construction work begins into the moutian makling sure of no collapses when repalacing stone mountain walls for like steel and other materials,, crops are you main money makes producing meals and other goods from them to where the 5 foods are grown, healroot, and the 3 hops smokeleaf and psycoid plants for refinments making as much as u can while keeping basics producded till getting to clothing for everyone and start making helmets and weapons and armours as u have the resources from gathering and mainly trade always keeping and trying to end a trade ewwith at least a 1000 silver surpluse for calling the next trasder tyo land, all while trying to get in contact with the company to build a backrooms facility gate and infistructure(need lots of power)\" / owner: \"you need to start making cash crops of all kinds and start making money in tradeding and calling traders selling all ur junk and crap u dont need\" / owner: \"farming trader.. comeon always trade and look to make silver and money and get things you need\" / owner: \"someone wants to trade.. see if u can get tech and shit and use it if needed plan ahead, be greedy dont buy shit you dont need\" / owner: \"might have to buy from trader marble blocks\" / owner: \"not orbital trader that one sucks\"",
    "latch": false,
    "note": "reset the latch (ladder_set mark trade_run_done false) to trade again",
    "never": [
     "rely on the orbital trader (owner: \"not orbital trader that one sucks\")",
-    "selling raw crops when the processed product can be made"
+    "selling raw crops when the processed product can be made",
+    "end a trade under {TRADE_SILVER_FLOOR} silver"
    ],
    "source": "book",
    "mode": "advise"
@@ -6382,19 +6429,56 @@
    "mode": "advise"
   },
   {
+   "id": "econ-clothing-everyone",
+   "priority": 25.71,
+   "family": "economy",
+   "latch": false,
+   "when": {
+    "mark_crops_full": true,
+    "mark_clothing_set": false,
+    "cloth_or_leather": {
+     "any": [
+      {
+       "count_cloth": ">=60"
+      },
+      {
+       "count_leather_plain": ">=60"
+      },
+      {
+       "count_woolsheep": ">=60"
+      }
+     ]
+    }
+   },
+   "then": [
+    "clothing for everyone before armour: game_set cmd build def HandTailoringBench (a wall slot of a roofed room; ElectricTailoringBench once powered), then game_set cmd add_bill recipe Make_Apparel_Pants count <colonists> and Make_Apparel_BasicShirt count <colonists>; cold biome: Make_Apparel_Parka too",
+    "the bills placed (bill_rows): ladder_set mark clothing_set true -- growth-upgrade-everyone takes over with helmets, weapons and armour"
+   ],
+   "never": [
+    "armour bills before everyone has pants and a shirt",
+    "tainted clothes kept on a colonist"
+   ],
+   "why": "owner 2026-10-13, verbatim: \"the main bas mining and construction work begins into the moutian makling sure of no collapses when repalacing stone mountain walls for like steel and other materials,, crops are you main money makes producing meals and other goods from them to where the 5 foods are grown, healroot, and the 3 hops smokeleaf and psycoid plants for refinments making as much as u can while keeping basics producded till getting to clothing for everyone and start making helmets and weapons and armours as u have the resources from gathering and mainly trade always keeping and trying to end a trade ewwith at least a 1000 silver surpluse for calling the next trasder tyo land, all while trying to get in contact with the company to build a backrooms facility gate and infistructure(need lots of power)\"",
+   "source": "book",
+   "mode": "advise"
+  },
+  {
    "id": "growth-upgrade-everyone",
    "priority": 25.8,
    "family": "growth",
    "when": {
     "mark_rung_4_production_done": true,
-    "colonists_without_armor": ">0"
+    "colonists_without_armor": ">0",
+    "mark_clothing_set": true
    },
    "then": [
-    "empire_pass (arms and sidearms)",
-    "MISSING equip_apparel: armor and helmets on everyone",
+    "empire_pass (arms and sidearms); game_set cmd arm every scan it reads someone unarmed",
+    "helmets first: game_set cmd add_bill recipe Make_Apparel_SimpleHelmet count <colonists> at the smithy (FueledSmithy / ElectricSmithy); then Make_Apparel_FlakVest and Make_Apparel_FlakPants as research_flakarmor allows (TableMachining), Make_Apparel_FlakJacket after; plate armour when steel allows",
+    "weapons from gathering and mainly trade: war-weapons-upgrade (assault rifles once gunsmithing) and trade-run buy the shortfall -- always inside the {TRADE_SILVER_FLOOR} floor",
+    "colonists_without_armor reads 0: say it on stream, the pass is done",
     "bionics for missing limbs once researched"
    ],
-   "why": "owner: \"do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them\"",
+   "why": "owner 2026-10-13, verbatim: \"the main bas mining and construction work begins into the moutian makling sure of no collapses when repalacing stone mountain walls for like steel and other materials,, crops are you main money makes producing meals and other goods from them to where the 5 foods are grown, healroot, and the 3 hops smokeleaf and psycoid plants for refinments making as much as u can while keeping basics producded till getting to clothing for everyone and start making helmets and weapons and armours as u have the resources from gathering and mainly trade always keeping and trying to end a trade ewwith at least a 1000 silver surpluse for calling the next trasder tyo land, all while trying to get in contact with the company to build a backrooms facility gate and infistructure(need lots of power)\" / owner: \"do you know what global control means and what that entails in what you have to do, marry have kids, raise them protect them, hire empoloyees, save them heal them feed them upgrade them arm them defense items them\"",
    "latch": false,
    "source": "book",
    "mode": "advise"
@@ -12884,6 +12968,12 @@
     "rule": "keep this many of each cash crop / refined good before selling the rest",
     "min": 10,
     "max": 2000
+   },
+   "TRADE_SILVER_FLOOR": {
+    "value": 1000,
+    "rule": "owner: end every trade with at least 1000 silver left so the next trader can be called",
+    "min": 200,
+    "max": 20000
    }
   }
  },

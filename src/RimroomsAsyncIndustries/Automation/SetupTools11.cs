@@ -50,6 +50,7 @@ namespace RimroomsAsyncIndustries.Automation
                 .Where(p => p.trader?.traderKind != null && p.CanTradeNow && !p.HostileTo(Faction.OfPlayer)).ToList();
 
             Dictionary<string, int> sell = Parse(a, "sell"), buy = Parse(a, "buy");
+            int silverAfter = 0;
             a.TryGetValue("with", out string with);
             if (sell.Count == 0 && buy.Count == 0) return List(console, ships, caravans);
 
@@ -114,13 +115,25 @@ namespace RimroomsAsyncIndustries.Automation
                     done.Add("buy " + n + " " + t.Label);
                 }
                 if (done.Count == 0) return "refused: nothing to trade -- " + string.Join("; ", skipped);
+                // Owner, 2026-10-13: "always keeping and trying to end a trade ewwith at least a 1000 silver surpluse for calling
+                // the next trasder tyo land". The floor is the deal's own arithmetic -- silver held plus what this deal moves
+                // (Core's currency line: negative when the colony pays) -- never a guess from a stale sensor.
+                int floor = a.TryGetValue("floor", out string fs) && int.TryParse(fs, out int fv) ? fv : 1000;
+                bool force = a.TryGetValue("force", out string fo) && fo.StartsWith("t", StringComparison.OrdinalIgnoreCase);
+                TradeSession.deal.UpdateCurrencyCount();
+                Tradeable cur = TradeSession.deal.CurrencyTradeable;
+                int held = cur != null ? cur.CountHeldBy(Transactor.Colony) : 0;
+                silverAfter = cur != null ? held + cur.CountToTransfer : held;
+                if (cur != null && buy.Count > 0 && silverAfter < floor && !force)
+                    return "refused: the deal would leave " + silverAfter + " silver (" + held + " now), under the " + floor +
+                           " floor that calls the next trader -- sell more or buy less (force true overrides): " + string.Join(", ", done);
                 // Core refuses a deal the colony cannot pay for; the message says why.
                 if (!TradeSession.deal.TryExecute(out bool traded) || !traded)
                     return "refused: the trader would not accept that deal (not enough silver in beacon range, or the trader's limits): " + string.Join(", ", done);
             }
             finally { TradeSession.Close(); }
             return "ok: traded with " + trader.TraderName + " through " + negotiator.LabelShort + ": " + string.Join(", ", done) +
-                   (skipped.Count > 0 ? " -- skipped " + string.Join("; ", skipped) : "");
+                   "; silver after the deal about " + silverAfter + (skipped.Count > 0 ? " -- skipped " + string.Join("; ", skipped) : "");
         }
 
         /// <summary>
