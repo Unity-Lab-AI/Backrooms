@@ -64,3 +64,22 @@ Severity: **blocker** (stream or game down, she cannot play), **wrong** (does th
 | 19:42 | Unity play / logic | Idle-time filler: while waiting on the owner-input guard she fired `hunt`, `explore`, `explore` back to back with the reasoning `Still active. More waiting` / `Quiet waiting` / `Still going` -- commands issued to fill the turn, not to achieve anything (explore returned its 7th zero-result, hunt re-marks what is already marked). The guard turns waiting into pointless game actions instead of a quiet turn. | `_svc_autopilot.log` 19:41:24-19:41:36; outbox ids b5283906e4, 7c1df7591c | rough |
 | 19:43 | Unity play / threats / stream | She finally read the badger letter (19:42:50, eleven minutes after it arrived) and her plan was `Gee is already drafting; others stay behind the embrasures` -- there are no embrasures, nothing of the kind has been built, and nobody was drafted by her; then `The game paused with the raider still up` (a revenge badger is not a raider) and, mid-threat, the owner-input guard stalled her again. The cover line went out CUT on stream: `Okay, fixing something behind the scenes. Give me a minute, I cannot do anything until` -- the `say` text itself ends there, so the line was truncated before it reached the voice. | `_svc_autopilot.log` 19:42:50-19:43:11; overlay outbox 19:43:10 | wrong |
 | 19:44 | Unity play / order of play | Owner, verbatim: *\"and wtf she never built a kitchen and is running around killing animals she cat butcher because she never built a camp\"*. Counts since GO: `hunt` x2 (6 animals marked each time), `stove` x3 (all refused: needs a roofed room near the food store), `butcher` x0, `kitchen` x0 -- so every kill rots on the ground: no butcher table, no stove, no bill, no kitchen room. The ladder makes it worse: the butcher-table rung (`butcher-table`, wired today) only fires once a stove is BUILT, and the stove cannot be placed on an open camp, so hunting runs while the whole food chain behind it is gated shut. A camp needs the kitchen before the hunt: roofed room -> butcher table -> stove -> bill, then `hunt`. | this ledger 19:21-19:43; outbox hunt/stove ids | wrong |
+
+---
+
+# Run 2 — 2026-10-13 ~22:45, resuming `Saves/Unity-testrun-2026-10-13-1945.rws` after the fix pass
+
+Owner, verbatim: *"yeah ill start it up, lets do final checks and set up of the monitor cron like the last test where you write down findings properly monitor what she does and where better choices were not taken and need code work"*.
+
+Same ledger rules as run 1 (above): read-only, once a minute, append-only, evidence on every row, nothing fixed during the run except what the owner asks for live. This run also **grades her choices**: every row where a better choice was available says what it was and whether it is a prompt, a rung or code work. The fix pass shipped tonight (CHANGELOG 0.13.0-dev - 2026-10-13 - Test-run fix pass) is what this run proves or disproves; the first thing checked for each item is whether it happened at all:
+
+- the camp: `camp` read first, `stockpile_camp nofood` over the pile, `storage_room` around it, shelter beside it with beds on the walls, stove on a wall, explore only after -- or the old scatter
+- her memory: a fresh pad, `[x]` only on the mod's `ok:`, `ladder_set` on a setup mark refused, refusals carried over a reset, no turn before a colony stands
+- her voice: `;` `:` dashes spoken as pauses, `SPEAK FAILED` / `CUT` / `REPEAT` coming back to her instead of `SAID`, nothing repeated verbatim on stream; `_svc_host.log` growing
+- the guard: `owner_input_active` only while RimWorld is the foreground window; a quiet turn, no cover line
+- letters: a threat letter read the turn it lands (`war-letter-unread`), never a joke; `empire_pass` refused inside 10 min
+- the stack: RimPLC's tools registered ONCE (no `already registered` in `Player.log`), the face prompt under 77 CLIP tokens (no `149 > 77` warning), GPU memory
+- later, if the run gets there: `wall_swap` skipping unsafe cells, `trade` refusing a buy under the 1000-silver floor, the refining and clothing rungs firing in order
+
+| When | Area | What was seen | Better choice / needs | Evidence | How bad |
+|---|---|---|---|---|---|
