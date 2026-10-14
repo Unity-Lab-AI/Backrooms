@@ -267,7 +267,7 @@ DYNAMIC = ("research_", "count_", "condition_", "alert_")
 DISPLAY_ONLY = {
     "alert_<x>": "catalogue entry documenting the alert_<class> family",
     "colony_mechs": "colony size readout",
-    "designations_harvest": "work queued readout", "designations_mine": "work queued readout",
+    "designations_harvest": "work queued readout",
     "game_conditions": "the list behind condition_<def>", "simple_benches": "research equipment readout",
     "hitech_benches": "research equipment readout (rungs read count_hitechresearchbench)",
     "multi_analyzers": "research equipment readout", "quests_active": "quest readout",

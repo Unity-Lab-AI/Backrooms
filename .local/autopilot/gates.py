@@ -130,6 +130,7 @@ def state():
     raw["here"] = opt("rimworld/list_colonists", {"currentMapOnly": True})
     raw["zones"] = opt("rimworld/list_zones")
     raw["areas"] = opt("rimworld/list_areas")
+    raw["rimplc"] = opt("rimplc/read_state")          # RimPLC's live sensors (computed on request, never a stale file)
     crew = [c for c in (raw["colonists"] or {}).get("colonists", []) if c.get("factionIsPlayer")]
     home = camp.home_map(crew)
     here = (raw["here"] or {}).get("colonists", []) if isinstance(raw["here"], dict) else []
@@ -268,6 +269,26 @@ def derive(raw, lf=None):
     if not st.get("mark_start_kind"):          # nothing ever set it (2026-10-13 audit): the GO writes the scenario it chose
         try: st["mark_start_kind"] = int(open(os.path.join(QA, "_start_kind"), encoding="utf-8").read().strip() or 0)
         except (OSError, ValueError): pass
+    # LIVE overlay from RimPLC: the mod's sensors.json is written on game ticks, so while the game is held (the setup
+    # lock, run 5) it ages past _sensor_file's five minutes and every sweep key here went None -- the driver read
+    # "food days 0.0" and the lock read no hostiles from a 24-minute-old snapshot. RimPLC computes on request.
+    try:
+        _r = raw.get("rimplc")
+        _live = _r.get("state") if isinstance(_r, dict) and isinstance(_r.get("state"), dict) else {}
+        for _k, _v in _live.items():
+            if _k.startswith("mark_") or _k in ("crew",):
+                continue
+            if st.get(_k) is None and isinstance(_v, (int, float, bool)):
+                st[_k] = _v
+        if _live:
+            st["rimplc_live"] = True
+            # run 5, 00:25:20: one empty `list_colonists` read (the game busy planning 35 walls) read as "no colony" and
+            # froze her 104 s with a conversation reset; RimPLC's own count is the second witness
+            if not crew and (_live.get("colonists") or 0) > 0:
+                st["colony_exists"] = True
+                st["crew_list_missing"] = True
+    except Exception:
+        pass
     _chain_inputs(st, crew, raw.get("colonists") is not None)
     return st
 
