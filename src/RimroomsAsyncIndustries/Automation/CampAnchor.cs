@@ -307,10 +307,9 @@ namespace RimroomsAsyncIndustries.Automation
             IntVec3 crew = CrewCentre(map);
             List<IntVec3> doorCells = CampPlan.DoorSites(map, camp, ring, crew, out List<IntVec3> lanes);
             if (doorCells.Count == 0) doorCells.Add(new IntVec3(inside.CenterCell.x, 0, ring.minZ));
-            var flanks = new HashSet<IntVec3>();
-            foreach (IntVec3 dc in doorCells) foreach (IntVec3 f in CampPlan.Flanks(ring, dc)) flanks.Add(f);
-
-            int walls = 0, doors = 0, kept = 0, blocked = 0, waiting = 0;
+            // every wall is planned at once (owner, 2026-10-14 02:20: the door-flank wait read as "missing wall segments all
+            // over"); the way out is the two doors on different sides plus the trapped alarm (colonists_trapped -> free)
+            int walls = 0, doors = 0, kept = 0, blocked = 0;
             foreach (IntVec3 c in ring.EdgeCells)
             {
                 if (inside.Contains(c)) continue;
@@ -318,12 +317,6 @@ namespace RimroomsAsyncIndustries.Automation
                 if (ed != null && (ed.def.passability == Traversability.Impassable || ed is Building_Door)) { kept++; continue; }
                 if (c.GetThingList(map).Any(t => t.def.IsBlueprint || t.def.IsFrame)) { kept++; continue; }
                 bool isDoor = doorCells.Contains(c);
-                if (!isDoor && flanks.Contains(c))
-                {
-                    IntVec3 itsDoor = doorCells.First(dc => CampPlan.Flanks(ring, dc).Contains(c));
-                    if (camp != null) { camp.QueueFlank(c, itsDoor, wood); waiting++; }
-                    continue;
-                }
                 ThingDef def = isDoor ? door : wall;
                 if (!GenConstruct.CanPlaceBlueprintAt(def, c, Rot4.North, map, false, null, null, wood).Accepted) { blocked++; continue; }
                 GenConstruct.PlaceBlueprintForBuild(def, c, map, Rot4.North, Faction.OfPlayer, wood);
@@ -358,7 +351,7 @@ namespace RimroomsAsyncIndustries.Automation
             int cost = walls * wall.CostStuffCount + doors * door.CostStuffCount;
             return "ok: storage room around the supplies -- inside " + w + "x" + h + " from " + inside.minX + "," + inside.minZ +
                    ", " + doors + " door(s) at " + doorsText + " (lanes outside them kept clear), " + walls + " walls planned (" + kept + " kept, " +
-                   blocked + " blocked, " + waiting + " door-flank walls wait for the doors to stand), roof marked, Main store covers " + zoned + " more cells (" + pile.Count + " item stacks inside)" +
+                   blocked + " blocked), roof marked, Main store covers " + zoned + " more cells (" + pile.Count + " item stacks inside)" +
                    shifted + (mined > 0 ? ", " + mined + " rock cell(s) inside marked to mine (needs time running and Mining on)" : "") +
                    (chop > 0 ? ", " + chop + " trees inside marked to chop" : "") + "; needs about " + cost +
                    " wood -- chop if short, keep Construction on; the supplies stay where they are and come under the roof";

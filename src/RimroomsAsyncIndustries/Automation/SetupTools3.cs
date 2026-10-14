@@ -118,20 +118,11 @@ namespace RimroomsAsyncIndustries.Automation
                 IntVec3 hint = camp != null && camp.storageBox.Width > 0 ? camp.storageBox.CenterCell : home;
                 List<IntVec3> doorCells = CampPlan.DoorSites(map, camp, box, hint, out List<IntVec3> lanes);
                 if (doorCells.Count == 0) doorCells.Add(new IntVec3(corner.x + 1 + w / 2, 0, corner.z));
-                var flanks = new HashSet<IntVec3>();
-                foreach (IntVec3 dc in doorCells) foreach (IntVec3 f in CampPlan.Flanks(box, dc)) flanks.Add(f);
-                if (!ring.All(c => flanks.Contains(c) || GenConstruct.CanPlaceBlueprintAt(doorCells.Contains(c) ? door : wall, c, Rot4.North, map, false, null, null, wood).Accepted))
+                // every wall planned at once (the door-flank wait read as missing walls; two doors + the trapped alarm are the way out)
+                if (!ring.All(c => GenConstruct.CanPlaceBlueprintAt(doorCells.Contains(c) ? door : wall, c, Rot4.North, map, false, null, null, wood).Accepted))
                     continue;
-                int waiting = 0;
                 foreach (IntVec3 c in ring)
-                {
-                    if (!doorCells.Contains(c) && flanks.Contains(c))
-                    {
-                        IntVec3 itsDoor = doorCells.First(dc => CampPlan.Flanks(box, dc).Contains(c));
-                        if (camp != null) { camp.QueueFlank(c, itsDoor, wood); waiting++; continue; }
-                    }
                     GenConstruct.PlaceBlueprintForBuild(doorCells.Contains(c) ? door : wall, c, map, Rot4.North, Faction.OfPlayer, wood);
-                }
                 // the camp is Home: colonists only fight fires and clean inside the Home area (run 3: 47 fire cells with no Home)
                 foreach (IntVec3 c in ring.Concat(inside)) map.areaManager.Home[c] = true;
                 if (camp != null) camp.shelterBox = box;
@@ -139,7 +130,7 @@ namespace RimroomsAsyncIndustries.Automation
                 int cost = (ring.Count - doorCells.Count) * wall.CostStuffCount + doorCells.Count * door.CostStuffCount;
                 return "ok: shelter planned, inside " + w + "x" + h + " from " + (corner.x + 1) + "," + (corner.z + 1) +
                        ", " + doorCells.Count + " door(s) at " + string.Join(" and ", doorCells.Select(dc => dc.x + "," + dc.z)) +
-                       " (lanes outside kept clear, " + waiting + " flank walls wait for the doors), roof marked; needs about " + cost +
+                       " (lanes outside kept clear), roof marked; needs about " + cost +
                        " wood (chop if short) and Construction work on. When it stands: beds, then stove";
             }
             return asked.InBounds(map)
