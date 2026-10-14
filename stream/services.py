@@ -399,6 +399,23 @@ def stop_one(name):
     if frag is None: print("no service called", name); return
     pids = running().get(frag, [])
     if not pids: print("%-11s already down" % name); return
+    # the two bridge clients stop GRACEFULLY: a flag they read between turns, then up to 90 s for the process to leave on
+    # its own with its socket closed. A hard kill mid-request crashed the game (run 5, 2026-10-14 02:00:28: RimBridge's
+    # GabpServer threw "Connection is not active" answering the killed client; the 1.7 engine treats that as fatal).
+    flag = {"autopilot": os.path.join(ROOT, ".local", "autopilot", "scratch", "_stop.flag"),
+            "keepgoing": os.path.join(QA, "_keepgoing.stop")}.get(name)
+    if flag:
+        try: open(flag, "w").write(str(int(time.time())))
+        except OSError: pass
+        for _ in range(90):
+            time.sleep(1)
+            if not running().get(frag): break
+        if not running().get(frag):
+            try: os.remove(flag)
+            except OSError: pass
+            print("%-11s stopped (graceful)" % name); return
+        print("%-11s did not stop on request in 90 s -- killing it" % name)
+        pids = running().get(frag, [])
     if WINDOWS:
         verb = "$null = $pr.CloseMainWindow()" if name == "obs" else "Stop-Process -Id $p -Force"
         subprocess.run(["powershell", "-NoProfile", "-Command",
