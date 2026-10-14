@@ -178,6 +178,30 @@ def scene_words(text):
 SHE = "the same 24 year old white caucasian adult woman, european features, mature face: long straight dark hair with pink-purple streaks, blunt bangs, bright pink cat-ear headset, black choker"
 
 
+# the frame prompt's identity, SHORT: the reference image and the IP-Adapter face lock carry who she is (test run
+# 2026-10-13: the frame prompt ran 149 CLIP tokens against 77 with REF_PROMPT at the end, so the identity, the skin
+# and whatever came last never reached the picture)
+WHO = "amateur webcam photo, the same woman, pink cat-ear headset, black choker, realistic"
+
+
+def fit_clip(parts, drop):
+    """CLIP reads 77 tokens and drops the rest without a word. Count with the pipeline's own tokenizer and drop the
+    least important parts, in `drop` order, until the prompt fits; what is kept is kept whole."""
+    parts = [p for p in parts if p]
+    def n(text):
+        try:
+            pipes(); return len(_t2i.tokenizer(text).input_ids)
+        except Exception:
+            return int(len(text.split()) * 1.4) + 2
+    for d in drop:
+        if n(", ".join(parts)) <= 77: break
+        if d in parts: parts.remove(d)
+    text = ", ".join(parts)
+    if n(text) > 77:
+        print("face: prompt still %d CLIP tokens after dropping the optional parts: %s" % (n(text), text[:160]), flush=True)
+    return text
+
+
 def compose(req):
     """The whole frame as words: what the caller asked (mood / pose) + her outfit of the moment + where she looks + what
     she is holding (from the line she just said) + who she is. Mood first: CLIP reads only 77 tokens."""
@@ -206,15 +230,20 @@ def compose(req):
         # off frame left, sometimes the camera, phone, food...), then who she is (owner: "no girl persistance to the girl
         # ive chosen") and the clothes
         head = [scene] if scene else []
-        return ", ".join([x for x in [gaze] + head + [SHE, "wearing " + outfit + " and " + bottom, REF_PROMPT] if x])
+        wearing = "wearing " + outfit + " and " + bottom
+        return fit_clip([gaze] + head + [wearing, WHO], drop=[WHO, wearing])
     # CLIP reads 77 tokens: the clothes and skin FIRST (owner: "not nearly enough skin and shoulders and her clevage was all
     # covered up"), then the moment (mood, action, gaze, props), then who she is
     # cozy layers (blanket, sweater, hoodie, flannel, cardigan) must stay visible: no forced bare shoulders on those; the
     # action and anything in her hands come right after the clothes so CLIP reads them before the 77-token cut
     cozy = any(w in outfit for w in ("blanket", "sweater", "hoodie", "flannel", "cardigan", "mesh"))
     skin = "deep cleavage showing" if cozy else "bare shoulders, bare stomach, deep cleavage showing"
-    return ", ".join([x for x in [gaze, "wearing " + outfit + " and " + bottom] + props + [action, asked, "bright pink cat-ear headset",
-                                  skin, REF_PROMPT] if x])
+    wearing = "wearing " + outfit + " and " + bottom
+    headset = "bright pink cat-ear headset"
+    # kept first: the gaze (off frame left), the clothes, the skin, the ask; dropped first: the headset (WHO carries it),
+    # the action, the props, then the ask, then WHO itself -- the reference image still carries who she is
+    return fit_clip([gaze, wearing] + props + [action, asked, headset, skin, WHO],
+                    drop=[headset, action] + props + [asked, WHO])
 
 
 def pipes():

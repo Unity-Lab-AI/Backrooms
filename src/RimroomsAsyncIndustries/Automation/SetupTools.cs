@@ -277,23 +277,14 @@ namespace RimroomsAsyncIndustries.Automation
                                                .OrderByDescending(r => r.ContainedBeds.Count()).ToList();
             foreach (Room r in rooms)
             {
-                // Owner, 2026-10-13: "she just fills the room with beds no ryhme or reason and blocks the doors". Beds go
-                // against a wall, never on a cell next to a door, never on the row the door opens onto, head to the wall.
-                HashSet<IntVec3> doorCells = new HashSet<IntVec3>(r.BorderCells.Where(c => c.InBounds(map) && c.GetEdifice(map) is Building_Door));
-                bool NearDoor(IntVec3 c) => doorCells.Any(d => (Math.Abs(d.x - c.x) <= 1 && Math.Abs(d.z - c.z) <= 2) || (Math.Abs(d.z - c.z) <= 1 && Math.Abs(d.x - c.x) <= 2));
-                bool OnWall(IntVec3 c) => GenAdj.CardinalDirections.Any(d => { IntVec3 n = c + d; return n.InBounds(map) && n.GetEdifice(map) != null && n.GetEdifice(map).def.passability == Traversability.Impassable; });
-                foreach (IntVec3 c in r.Cells.Where(x => FreeFloor(map, x) && !NearDoor(x) && OnWall(x)).OrderBy(x => doorCells.Count == 0 ? 0 : -doorCells.Min(d => d.DistanceToSquared(x))))
+                if (!RoomDesign.IsRoom(map, r)) continue;
+                // RoomDesign (owner, 2026-10-13: "she just fills the room with beds no ryhme or reason and blocks the doors"):
+                // beds along the walls, head to the wall, foot into the room, never on a door lane; far corners first
+                while (placed.Count < needed)
                 {
-                    if (placed.Count >= needed) break;
-                    // head against the wall the cell touches
-                    IntVec3 wallDir = GenAdj.CardinalDirections.First(d => { IntVec3 n = c + d; return n.InBounds(map) && n.GetEdifice(map) != null && n.GetEdifice(map).def.passability == Traversability.Impassable; });
-                    Rot4 rot = Rot4.FromIntVec3(wallDir);
-                    if (!GenConstruct.CanPlaceBlueprintAt(bed, c, rot, map, false, null, null, stuff).Accepted) continue;
-                    // the foot cell must stay free and not sit next to another bed's foot (one-cell lanes between beds)
-                    IntVec3 foot = c - wallDir;
-                    if (!FreeFloor(map, foot) || NearDoor(foot)) continue;
-                    GenConstruct.PlaceBlueprintForBuild(bed, c, map, rot, Faction.OfPlayer, stuff);
-                    placed.Add(c.x + "," + c.z);
+                    RoomDesign.Slot s = RoomDesign.Place(map, r, bed, stuff, true);
+                    if (s == null) break;
+                    placed.Add(s.Cell.x + "," + s.Cell.z);
                 }
                 if (placed.Count >= needed) break;
             }

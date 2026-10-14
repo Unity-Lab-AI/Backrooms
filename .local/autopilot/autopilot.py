@@ -536,6 +536,17 @@ def turn(toolbox, st, args, system, specs):
         _WAS_DOWN = True
         time.sleep(20)
         return False
+    if up and not st.get("colony_exists") and not args.dry_run:
+        # the game answers but no colonist stands on a map: the main menu, or keep-playing's new-game flow (storyteller,
+        # world, site, ideology, Prepare Carefully). Test run 2026-10-13 18:49-18:52: a turn ran here, called
+        # stockpile_camp on a map that did not exist yet and closed the wizard's own Dialog_NodeTree three times
+        # ("it is the overlay's own panel"). Nothing to play yet: wait, and start fresh when the colony appears.
+        if not globals().get("_NO_COLONY_LOGGED"):
+            log("game up, no colony on a map yet (menu or new-game flow) -- waiting"); globals()["_NO_COLONY_LOGGED"] = True
+        _WAS_DOWN = True
+        time.sleep(20)
+        return False
+    globals()["_NO_COLONY_LOGGED"] = False
     if up and globals().get("_WAS_DOWN"):
         CONVO = []; log("game is back -- conversation reset")
     _WAS_DOWN = not up
