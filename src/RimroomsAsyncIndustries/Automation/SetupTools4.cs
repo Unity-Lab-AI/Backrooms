@@ -132,9 +132,11 @@ namespace RimroomsAsyncIndustries.Automation
                     IntVec3 c = new IntVec3(c0.x + dx, 0, c0.z + dz);
                     if (c.InBounds(map)) map.areaManager.BuildRoof[c] = true;
                 }
+            int columns = CampPlan.Supports(map, new CellRect(c0.x, c0.z, w, h), stuff);   // a roof holds only 6 cells from a wall or column
 
             return (placed == 0 && kept == 0 ? "refused: " : "ok: ") + "room inside " + w + "x" + h + " from " + c0.x + "," + c0.z + ": " +
-                   placed + " wall/door blueprints, " + kept + " existing walls kept, " + blocked + " blocked; door at " + door.x + "," + door.z + "; roof marked";
+                   placed + " wall/door blueprints, " + kept + " existing walls kept, " + blocked + " blocked; door at " + door.x + "," + door.z + "; roof marked" +
+                   (columns > 0 ? " with " + columns + " support column(s) inside" : "");
         }
 
         public static string Deconstruct(Map map, Dictionary<string, string> a)

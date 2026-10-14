@@ -327,6 +327,7 @@ namespace RimroomsAsyncIndustries.Automation
             string doorsText = string.Join(" and ", doorCells.Select(dc => dc.x + "," + dc.z));
 
             foreach (IntVec3 c in inside) map.areaManager.BuildRoof[c] = true;
+            int columns = CampPlan.Supports(map, inside, wood);          // a roof holds only within 6 cells of a wall or column
             if (camp != null) camp.storageBox = ring;
             // the camp is Home from the first wall: fires inside it get fought, floors cleaned (run 3: no Home, 47 fire cells)
             foreach (IntVec3 c in ring) map.areaManager.Home[c] = true;
@@ -351,7 +352,8 @@ namespace RimroomsAsyncIndustries.Automation
             int cost = walls * wall.CostStuffCount + doors * door.CostStuffCount;
             return "ok: storage room around the supplies -- inside " + w + "x" + h + " from " + inside.minX + "," + inside.minZ +
                    ", " + doors + " door(s) at " + doorsText + " (lanes outside them kept clear), " + walls + " walls planned (" + kept + " kept, " +
-                   blocked + " blocked), roof marked, Main store covers " + zoned + " more cells (" + pile.Count + " item stacks inside)" +
+                   blocked + " blocked), roof marked" + (columns > 0 ? " with " + columns + " support column(s) inside (a roof holds only 6 cells from a wall)" : "") +
+                   ", Main store covers " + zoned + " more cells (" + pile.Count + " item stacks inside)" +
                    shifted + (mined > 0 ? ", " + mined + " rock cell(s) inside marked to mine (needs time running and Mining on)" : "") +
                    (chop > 0 ? ", " + chop + " trees inside marked to chop" : "") + "; needs about " + cost +
                    " wood -- chop if short, keep Construction on; the supplies stay where they are and come under the roof";
