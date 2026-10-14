@@ -280,9 +280,13 @@ const server = http.createServer(async (req, res) => {
         try { query[decodeURIComponent(kv[0] || '')] = decodeURIComponent(kv[1] || ''); } catch (e) { /* bad escape */ }
       }
     }
-    // Host check on everything (DNS-rebinding guard); POSTs also need same-origin + token.
+    // Host check on everything (DNS-rebinding guard); POSTs need same-origin AND (the token OR a browser Origin).
+    // The Origin header is set by the browser and cannot be forged by another site, so a page THIS server served
+    // (the studio window, the overlay) is trusted by its Origin alone -- a tab opened before a restart keeps working
+    // (owner, 2026-10-13, three times: "send failed: forbidden: missing or wrong studio token"). A request with no
+    // Origin (a local helper script) still needs the token.
     if (!localHostOk(req)) return sendJson(res, 403, { error: 'bad host' });
-    if (req.method !== 'GET' && (!originOk(req) || !tokenOk(req, query))) {
+    if (req.method !== 'GET' && (!originOk(req) || !(tokenOk(req, query) || req.headers.origin))) {
       return sendJson(res, 403, { error: 'forbidden: missing or wrong studio token' });
     }
 
