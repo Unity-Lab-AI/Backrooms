@@ -15,7 +15,8 @@ namespace RimroomsAsyncIndustries.Automation
     /// comms console for a ship, beside the trader for a caravan. The deal itself is Core's own TradeSession, so prices,
     /// silver and beacon range are the game's.
     ///   {"cmd":"trade"}                                  list traders in reach and what each buys and sells
-    ///   {"cmd":"trade","with":"ship|caravan","sell":"Cloth:200,Beer:40","buy":"Steel:300,ComponentIndustrial:10"}
+    ///   {"cmd":"trade","with":"ship|caravan","trader":"<name>","sell":"Cloth:200,Beer:40","buy":"Steel:300,ComponentIndustrial:10"}
+    /// `trader` picks the one you called (owner: "call the trader they selected"); with several in reach and no name, refused.
     /// </summary>
     internal static class SetupTools11
     {
@@ -53,17 +54,25 @@ namespace RimroomsAsyncIndustries.Automation
             if (sell.Count == 0 && buy.Count == 0) return List(console, ships, caravans);
 
             ITrader trader; Pawn traderPawn = null;
+            a.TryGetValue("trader", out string who);
+            bool Named(string label) => string.IsNullOrEmpty(who) || (label ?? "").IndexOf(who, StringComparison.OrdinalIgnoreCase) >= 0;
             bool wantShip = with != null && with.StartsWith("s", StringComparison.OrdinalIgnoreCase);
             if (wantShip || (with == null && ships.Count > 0 && caravans.Count == 0))
             {
                 if (ships.Count == 0) return "refused: no trade ship in orbit";
                 if (console == null) return "refused: no powered comms console -- a ship can only be reached through one";
-                trader = ships[0];
+                List<TradeShip> chosen = ships.Where(s => Named(s.TraderName) || Named(s.TraderKind.label)).ToList();
+                if (chosen.Count == 0) return "refused: no ship in orbit named " + who + " -- in orbit: " + string.Join(", ", ships.Select(s => s.TraderName));
+                if (chosen.Count > 1) return "refused: name the ship (trader=): " + string.Join(", ", chosen.Select(s => s.TraderName + " (" + s.TraderKind.label + ")"));
+                trader = chosen[0];
             }
             else
             {
                 if (caravans.Count == 0) return "refused: no trader caravan here" + (ships.Count > 0 ? " (a ship is in orbit: with ship)" : "");
-                traderPawn = caravans[0];
+                List<Pawn> chosen = caravans.Where(p => Named(p.LabelShort) || Named(p.Faction?.Name) || Named(p.trader.traderKind.label)).ToList();
+                if (chosen.Count == 0) return "refused: no caravan trader named " + who + " -- here: " + string.Join(", ", caravans.Select(p => p.LabelShort + " of " + (p.Faction?.Name ?? "?")));
+                if (chosen.Count > 1) return "refused: name the trader (trader=): " + string.Join(", ", chosen.Select(p => p.LabelShort + " of " + (p.Faction?.Name ?? "?")));
+                traderPawn = chosen[0];
                 trader = traderPawn;
             }
 
@@ -138,7 +147,7 @@ namespace RimroomsAsyncIndustries.Automation
             foreach (Pawn p in caravans)
                 lines.Add("caravan " + p.LabelShort + " of " + (p.Faction?.Name ?? "?") + " (" + p.trader.traderKind.label + ") at " + p.Position.x + "," + p.Position.z);
             if (lines.Count == 0) return "ok: no trader in reach -- research MicroelectronicsBasics, build a comms console and an orbital trade beacon to call ships";
-            return "ok: " + string.Join("; ", lines) + " -- trade with=ship|caravan sell=Def:n,.. buy=Def:n,.. (never spacer-tech sells)";
+            return "ok: " + string.Join("; ", lines) + " -- trade with=ship|caravan trader=<name> sell=Def:n,.. buy=Def:n,.. (never spacer-tech sells)";
         }
     }
 }
