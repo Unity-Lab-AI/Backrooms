@@ -1,4 +1,4 @@
-"""Unity's voice: her own trained voice (models/unity-voice), served by models/unity-voice/serve.py on :5123.
+"""Unity's voice: her own trained voice (models/unity-voice-v2 since 2026-10-13; v1 kept in models/unity-voice), served by its serve.py on :5123.
 
     python .claude/tools/unity-speak.py "text to say"          # speak and wait
     python .claude/tools/unity-speak.py --bg "text to say"     # speak, return at once

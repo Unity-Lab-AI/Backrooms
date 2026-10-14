@@ -1,4 +1,10 @@
-# VOICE v2 OVERNIGHT RUNBOOK — read this FIRST on every cron wake
+# VOICE v2 OVERNIGHT RUNBOOK — DONE 2026-10-13 18:25; the cron is cancelled
+
+**Closed.** All passes finished, the A/B was reviewed by the owner (*"okay i reviewed we are good to go to plug in v2"*), and v2 is the stream's voice from 2026-10-13 evening (`stream/services.py` -> `models/unity-voice-v2`). The never-list below was for the unattended run and no longer applies to the switch. Kept as the record of how the run was driven.
+
+---
+
+# (original runbook)
 
 Owner, 2026-10-13 ~05:45 local, verbatim: *"SO IM GOOD TO GOTO BED AND YOULL HANDLE THE START OF THE MULIPASS 2ND PASS WHEN IT COMES?"* -> answered yes.
 **This IS the owner's explicit "start" for THIS run only** (the unity-voice-v2 multi-pass). It is not a go for any other training.

@@ -39,12 +39,13 @@
   Guards relaxed on purpose (same voice, same phonemes, new dataset id): `local_prosody_retrain.py` dataset check, `train_vocoder.py --warm-generator` identity (records both). Estimated: training can start ~10-11 h after 2026-10-13 05:30, v2 done ~4.5 h later. The stream cannot run during any GPU step. D: ("Transporter") is the USB voice-lab drive; everything above lives there.
 - Voice test clips: `.local/qa/voice-session/` (her own choices), `.local/qa/voice-ab/` (accepted samples vs pace 1.0/1.2).
 
-### Voice v2 -- DONE 2026-10-13 18:25, NOT LIVE (owner listens first)
+### Voice v2 -- LIVE since 2026-10-13 ~18:35 (owner, after the A/B: "okay i reviewed we are good to go to plug in v2")
+- `stream/services.py` serves `models/unity-voice-v2/serve.py` on :5123; smoke line rendered 4.4 s in 0.3 s (`.local/qa/voice-session/v2-live-smoke.wav`). v2 runs at its natural pace (what the A/B was); drop a `pace.txt` (1.2 = 20% slower, as v1 had) into `models/unity-voice-v2/` to slow her. v1 stays in `models/unity-voice/` as the fallback: change the one path in `services.py` back and restart `voice`.
 - The multi-pass finished end to end (offgame render -> whisper screen -> feats -> prosody 30k -> GTA -> vocoder warm-started from the live 120k G, 2k D-only + 20k joint -> A/B -> package). Package: `models/unity-voice-v2/` (acoustic.pt, vocoder.pt, voice-meta.json, serve.py, README). `models/unity-voice/` untouched; `stream/services.py` still serves v1.
 - **A/B (same lines, live vs new), semitones:** pitch movement 3.04 -> 3.54 (recordings 3.48); accent 1.66 -> 2.31 (recordings 2.10); emotion register spread 1.86 -> 4.34. The new voice moves like the recordings; the live one was flat.
 - **Listen:** `D:/voice-lab/unity-voice-v2-2026-10-13/ab/live` vs `.../ab/new` (8 clips each, same text). Held-out mel at 142k 0.486 -- a vocoder reconstruction number, not a naturalness verdict.
 - Fixed on the way (committed): vocoder warm start and the multipass check ignore the data-side stats/support ids (d9e46f10, 3e0266f3); the GTA export was redone after that code change (old one kept at `gta-before-vocoder-fix`). Two screen counts: 4,555 expressive kept, 64 fell back to the original, 8 off-game lines dropped.
-- To go live (owner's call only): point `stream/services.py` at `models/unity-voice-v2/`, restart the voice service, A/B on stream.
+- Done 2026-10-13 ~18:35.
 
 ### RimPLC / her player (committed, not yet seen in a live game)
 - Ladder rebuilt: 380 rungs / 16 families, a meta prompt per rung (`.local/autopilot/rung-prompts.json`), ~33 new game sensors + `set_host` remote I/O for stream readings, warnings/grouped Sensors tab/RimWorld alert column, unarmed colonist = critical. Record: `docs/RIMPLC_DESIGN.md` "Built status (2026-10-13)".
@@ -53,7 +54,7 @@
 
 ### Next, in order
 1. Webcam done and owner-approved; watch her first live frames (does she use `scene`?).
-2. Voice: v2 is built and NOT live -- listen to the A/B, then decide; switching is your call.
+2. Voice: v2 LIVE. First stream with it: listen for pace and emotion on real lines.
 3. Start: Steam, `start.bat`, GO "fresh crash landed colony, new stream" (Earth3); watch her opening, RimPLC alerts, her webcam.
 
 ### Gotchas (do not relearn)
