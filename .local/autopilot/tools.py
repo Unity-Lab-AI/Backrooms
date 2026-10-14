@@ -826,7 +826,10 @@ class Toolbox:
         "arms_set": ("armed", ("arm",), "the mod's able_shooters_armed == able_shooters > 0 (Sensors.cs), or an ok: reply to game_set cmd arm (the equip orders are queued and run when time runs)"),
         # the camp is LAID OUT: the mod's ok to ALL THREE of storage_room, shelter and stove (plans, not buildings). This is the
         # mark that lets time run (setup-6-run) -- owner: "should not unpause until inistal setup and zoneing is done and buildings are layed out"
-        "layout_set": (None, ("storage_room", "shelter", "stove"), "ok: replies to ALL of storage_room, shelter and stove in the mod's outbox (the camp is laid out; the crew builds it once time runs)"),
+        # run 5 (2026-10-14 01:21): `stove` refuses until a room STANDS ("no finished roofed room ... do not call stove again
+        # until then"), and standing needs time, and time needed the stove's ok -- a deadlock. The layout is the two rooms
+        # laid out; the stove follows once a room stands (setup-5-stove, after setup-6-run).
+        "layout_set": (None, ("storage_room", "shelter"), "ok: replies to BOTH storage_room and shelter in the mod's outbox (the camp is laid out; the crew builds it once time runs; the stove comes when a room stands)"),
         "supplies_hauled": (None, ("haul",), "an ok: reply to game_set cmd haul (the pile unforbidden, Hauling at 1 for everyone)"),
         "chop_set": (None, ("chop",), "an ok: reply to game_set cmd chop (trees marked; the rung counted designations and chopped the same trees every turn -- run 5)"),
         "shelter_set": (None, ("shelter",),
