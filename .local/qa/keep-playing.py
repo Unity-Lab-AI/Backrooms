@@ -240,6 +240,13 @@ asked = False
 went = False      # GO handled in this run (a GO armed before start must go live too, not only one answered after asking)
 passes = 0
 while True:
+    # a graceful stop (services.py writes _keepgoing.stop and waits): the loop ends between passes, never mid-request --
+    # a hard kill of a bridge client crashed the game (run 5, 02:00:28, RimBridge "Connection is not active")
+    if os.path.exists(os.path.join(HERE, "_keepgoing.stop")):
+        try: os.remove(os.path.join(HERE, "_keepgoing.stop"))
+        except OSError: pass
+        print(stamp(), "stopped on request (graceful)", flush=True)
+        break
     try:
         passes += 1
         model_needs(passes)
