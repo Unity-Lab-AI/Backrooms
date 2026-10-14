@@ -36,7 +36,7 @@ def call(tool, args=None):
     except Exception: return {}
 
 
-OPEN = ["Marble Hollow, my little frozen hell.", "Another day in the dark.", "Snow, blood and gunpowder.",
+OPEN = ["My little frozen hell.", "Another day in the dark.", "Snow, blood and gunpowder.",
         "Somebody light a candle, it's grim out here.", "Still alive. Barely. Beautifully.", "Eyes on the colony, chat."]
 MOOD = ["Winter in the backrooms. Cold walls, warm guns.", "I love this place. It hates us, but I love it.",
         "Nine of us against a world that keeps sending raiders. Good odds.", "Somebody tell the neanderthals we have rifles now.",
@@ -117,9 +117,9 @@ def line_from_state(event):
     busy = [(c["name"], JOBS.get(c.get("job") or "", "")) for c in cols]
     busy = [(n, j) for n, j in busy if j and j not in ("asleep", "eating")]
     if not busy:
-        return fresh("The whole crew is asleep in Marble Hollow and Unity is keeping watch alone")
+        return fresh("The whole crew is asleep and Unity is keeping watch alone")
     pick = random.sample(busy, min(3, len(busy)))
-    return fresh("Right now in Marble Hollow: " + "; ".join("%s is %s" % (n, j) for n, j in pick))
+    return fresh("Right now in the colony: " + "; ".join("%s is %s" % (n, j) for n, j in pick))
 
 
 def main():
@@ -135,11 +135,11 @@ def main():
     if False:   # owner, 2026-10-09: "omg shut up and do what i said in chat you are spewing nonsense on the stream" -- no auto lines; Unity speaks deliberately
         subprocess.run([PY, os.path.join(TOOLS, "unity-say.py"), "--wait", "--raw", line_from_state(event)], capture_output=True)   # owner: "wait till tts plays out before saying something new"
     else:
-        subprocess.Popen([PY, os.path.join(TOOLS, "unity-glance.py"), "Marble Hollow"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.Popen([PY, os.path.join(TOOLS, "unity-glance.py"), "the colony"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     # a new webcam picture on every event and every third beat
     if event or st["n"] % 3 == 0:
         mood = next((m for k, m in MOODS.items() if event and k in event.lower()), random.choice(["chill", "focus", "smug", "laugh"]))
-        subprocess.Popen([PY, os.path.join(TOOLS, "unity-cam.py"), mood, (event or "playing Marble Hollow")[:60]],
+        subprocess.Popen([PY, os.path.join(TOOLS, "unity-cam.py"), mood, (event or "playing RimWorld")[:60]],
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     # new viewer chat since the last beat -> printed as CHAT lines; play.py stops on them so Unity answers
     # (owner, 2026-10-09: "dont ignore chat")
