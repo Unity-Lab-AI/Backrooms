@@ -433,6 +433,12 @@ while True:
             except Exception:
                 pass
         firing, st = gates.decide()
+        # the host inputs reach RimPLC between her turns too (owner lines, chat, silence): run 5 found nothing pushed them
+        try:
+            _push = next((getattr(gates, n) for n in dir(gates) if n.startswith("push") and "host" in n), None)
+            if _push: _push()
+        except Exception as e:
+            print(stamp(), "host inputs not pushed:", str(e)[:80], flush=True)
         # owner: "exploring is not finished ... it never went through EVERY DOOR". Until the mod reports nothing left,
         # re-send explore every 3 minutes (each call queues every colonist through the nearest doors and fog edge)
         try: _last_explore

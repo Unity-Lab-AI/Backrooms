@@ -973,6 +973,18 @@ def host_inputs():
     last = max((r.get("id", 0) for r in mine if r.get("id") in replied), default=0)
     out["owner_unread"] = sum(1 for r in mine if r.get("id", 0) > last and r.get("id") not in replied
                               and now - r.get("ts", 0) / 1000.0 <= 3600)
+    # ... plus the owner-orders FILE (the owner's Twitch-chat lines land there, and the admin panel's): unread while it
+    # has grown since her last reply_owner (tools.t_reply_owner writes scratch/_orders_ack.json) and within the hour.
+    # Run 5 (2026-10-14 00:26-00:40): four owner orders, the owner-message rung never live, the chop rung on top.
+    try:
+        _op = os.path.join(ROOT, ".local", "autopilot", "owner-orders.txt")
+        _ap = os.path.join(ROOT, ".local", "autopilot", "scratch", "_orders_ack.json")
+        _cur = os.path.getsize(_op)
+        _ack = json.load(open(_ap, encoding="utf-8")) if os.path.exists(_ap) else {"len": 0, "ts": 0}
+        if _cur > int(_ack.get("len", 0)) and now - os.path.getmtime(_op) <= 3600:
+            out["owner_unread"] += 1
+    except (OSError, ValueError):
+        pass
     try:
         imgs = [os.path.join(claude, ".studio-images", f) for f in os.listdir(os.path.join(claude, ".studio-images"))]
         out["seconds_since_webcam"] = round(now - max(os.path.getmtime(f) for f in imgs), 1)

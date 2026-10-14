@@ -12,6 +12,7 @@ i do with coding knowledge but doesnt and never shall edit the mod or fix code"
 Everything it can do is in tools.Toolbox; everything it may never do is refused in guards.py.
 """
 import argparse
+import importlib.util
 import json, re
 import os
 import sys
@@ -311,6 +312,16 @@ def live_rungs(toolbox=None):
     book = {g["id"]: g for g in (tools.Toolbox._book_static() or {}).get("gates", [])}
     try:
         if toolbox is not None and not toolbox.dry:
+            # the host inputs (owner_unread, chat_unanswered, seconds_since_spoken, owner_input_active...) go to RimPLC
+            # BEFORE every read: nothing pushed them since the one-ladder change, so every input-driven rung was dead in
+            # the ladder she reads (run 5, 00:26-00:40: four owner orders, the owner-message rung never live)
+            try:
+                _gs = importlib.util.spec_from_file_location("gates_hi", os.path.join(HERE, "gates.py"))
+                _gh = importlib.util.module_from_spec(_gs); _gs.loader.exec_module(_gh)
+                _push = next((getattr(_gh, n) for n in dir(_gh) if n.startswith("push") and "host" in n), None)
+                if _push: _push()
+            except Exception as _e:
+                log("host inputs not pushed: %s" % str(_e)[:80])
             r = toolbox.bridge.call("rimplc/read_ladder", {"top": 6})
             live = (r.get("live_rungs") if isinstance(r, dict) else None)
             if isinstance(live, list) and live:
@@ -390,7 +401,10 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=(), ca
             # "force haul everything to storage first" sat unanswered for four turns (run 5, 00:27-00:31)
             _last = next((l.strip() for l in reversed(txt.splitlines()) if l.strip()), "")
             if _last:
-                parts.insert(1 if _top else 0, "OWNER ORDER, NEWEST (step 0 -- do it THIS turn, then say it is done): " + _last[:400])
+                # FIRST line of the brief, above the live rung: two "do this first" lines had the rung winning three
+                # turns running (run 5, 00:33-00:36: "Wood first" while the owner's haul order sat below it)
+                parts.insert(0, "OWNER ORDER, NEWEST -- STEP 0, ABOVE THE LADDER: do it THIS turn with the tool that does it, then say it is done: "
+                             + _last[:400] + "\n(The live rung below waits until this is done.)")
     # The playbook is a decision table, not prose: gates.py measures the colony and returns the ONE chain
     # that fires plus the always-gate, so the model looks the answer up instead of re-reasoning a wall.
     # Owner, 2026-10-10: "a actual logical guided logaica gates system of porcess chains and actions".
@@ -515,6 +529,14 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=(), ca
     # refusal memory: kept in state.json, so it survives every conversation reset (19:13 row of the test run: after
     # each reset she restarted the same refused loop from scratch). A refused call is NOT done.
     refused = st.get("refused") or []
+    # a refusal for a command the mod has since confirmed (storage_room refused four times, then planned) is a fight
+    # already won: carried into a fresh conversation it restarted the fight (run 5, 00:29 and 00:35). Dropped here.
+    try:
+        _cm = toolbox.confirmed_marks()
+        _done_cmds = {c for name, (test, cmds, _s) in tools.Toolbox.CONFIRMED_MARKS.items() if _cm.get(name) for c in (cmds or ())}
+        refused = [r for r in refused if not any(str(r.get("what", "")).endswith(" " + c) for c in _done_cmds)]
+    except Exception:
+        pass
     if refused:
         lines = ["refused: HISTORY, not a to-do (this colony, newest last). These calls were REFUSED: they are not done "
                  "and they are not yours to retry -- the live rung decides what you do now. If the live rung needs one of "
