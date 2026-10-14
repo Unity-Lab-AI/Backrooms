@@ -189,9 +189,14 @@ def derive(raw, lf=None):
         st["letter_defs"] = [l.get("letterDef") for l in letters]
         # a threat letter vouches for the crowd while it is recent, whether or not she has read it: reading a raid
         # letter must not make the raiders vanish from the ladder
-        st["threat_letter"] = any(l.get("letterDef") in THREAT_LETTER_DEFS and
+        # an UNREAD threat letter vouches whatever its age: test run 2026-10-13 19:27, "Badger revenge" passed the
+        # 2-day cap in five real minutes at superfast and left the ladder before she opened it, then got read as a
+        # joke while Unity lay wounded. A read one vouches for the 2 days as before.
+        threat_unread = [l for l in letters if l.get("letterDef") in THREAT_LETTER_DEFS and l.get("id") not in seen]
+        st["threat_letter"] = bool(threat_unread) or any(l.get("letterDef") in THREAT_LETTER_DEFS and
                                   (l.get("ageTicks") is None or l.get("ageTicks") <= THREAT_LETTER_MAX_AGE)
                                   for l in letters)
+        st["threat_letter_unread"] = bool(threat_unread)
         st["quest_letter"] = any("quest" in (l.get("label") or "").lower() or "Quest" in (l.get("letterDef") or "")
                                  for l in unseen)
         st["empire_letter"] = any("empire" in (l.get("relatedFaction") or "").lower() for l in unseen)

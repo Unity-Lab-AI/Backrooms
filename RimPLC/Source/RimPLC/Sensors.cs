@@ -178,7 +178,7 @@ namespace RimPLC
                 var labels = new List<object>();
                 var defs = new List<object>();
                 int unseen = 0;
-                bool threat = false, quest = false, empire = false;
+                bool threat = false, threatUnread = false, quest = false, empire = false;
                 foreach (Letter l in letters)
                 {
                     string label = l.Label.RawText ?? string.Empty;
@@ -192,6 +192,9 @@ namespace RimPLC
                     if (ThreatLetterDefs.Contains(def) && ticks - l.arrivalTick <= ThreatLetterMaxAge) threat = true;
                     if (lettersSeen != null && lettersSeen.Contains(l.ID)) continue;
                     unseen++;
+                    // an unread threat letter vouches whatever its age (test run 2026-10-13: "Badger revenge" aged past the
+                    // cap in five real minutes at superfast and left the ladder before she opened it)
+                    if (ThreatLetterDefs.Contains(def)) { threatUnread = true; threat = true; }
                     if (label.ToLowerInvariant().Contains("quest") || def.Contains("Quest")) quest = true;
                     Faction f = l.relatedFaction;
                     if (f != null && ((f.Name ?? string.Empty).ToLowerInvariant().Contains("empire") || f.def?.defName == "Empire")) empire = true;
@@ -201,6 +204,7 @@ namespace RimPLC
                 st["letter_labels"] = labels;
                 st["letter_defs"] = defs;
                 st["threat_letter"] = threat;
+                st["threat_letter_unread"] = threatUnread;
                 st["quest_letter"] = quest;
                 st["empire_letter"] = empire;
             }
