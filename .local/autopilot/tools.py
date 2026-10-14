@@ -691,6 +691,14 @@ class Toolbox:
             log("DRY-RUN would REPLY TO OWNER:", line)
         else:
             _outbox(line, int(msg_id))          # replyTo = the owner's message: the stream feed never shows it
+        # the acknowledgement of the owner-orders FILE too (Twitch-chat orders land there, not in the studio inbox):
+        # host_inputs() counts the file as unread until a reply_owner follows its last growth (run 5, 00:26-00:40:
+        # four owner orders sat unanswered while the owner-message rung read 0)
+        try:
+            n = os.path.getsize(os.path.join(HERE, "owner-orders.txt"))
+            json.dump({"len": n, "ts": time.time()}, open(os.path.join(HERE, "scratch", "_orders_ack.json"), "w"))
+        except OSError:
+            pass
         log("TO OWNER:", line[:200])
         return "sent privately to the owner"
 
@@ -1099,6 +1107,24 @@ class Toolbox:
 
     FILLER_CMDS = ("hunt", "explore")
 
+    @staticmethod
+    def _storage_room_box():
+        """(x, z, w, h) of the storage room the mod last planned this colony, from its own ok reply ("inside 14x6 from
+        126,142"), or None."""
+        try:
+            with open(AUTOMATION_OUTBOX, "rb") as f:
+                f.seek(last_day_one_offset())
+                text = f.read().decode("utf-8", "replace")
+            m = None
+            for m in re.finditer(r"'cmd': 'storage_room'[^\n]*?-> ok:[^\n]*?inside (\d+)x(\d+) from (\d+),(\d+)", text):
+                pass
+            if not m:
+                return None
+            w, h, x, z = (int(m.group(i)) for i in (1, 2, 3, 4))
+            return (x, z, w, h)
+        except Exception:
+            return None
+
     def t_game_set(self, cmd, **kw):
         # run 3 (2026-10-13 21:50): "the rung is not my own, so I do what the colony needs right now. Hunting is the job now"
         # -- with fire-in-camp (2.0) live. Filler is refused while a survival or war rung is on top.
@@ -1115,6 +1141,33 @@ class Toolbox:
             payload[k] = v
         if cmd == "set_work_priority" and not (0 <= int(payload.get("level", -1)) <= 4):
             raise GuardError("level must be 0-4")
+        if cmd in ("shelves", "beds", "stove", "butcher", "build_room", "stockpile_room", "set_zone_plant", "crops", "shelter",
+                   "build", "zone_create", "home_area", "wall_swap") and str(kw.get("x", "")) != "" and str(kw.get("z", "")) != "":
+            # run 5 (00:39): potatoes at 169,175 and shelves at 157,136 -- thirty cells from the camp, in the mountain
+            box = self._storage_room_box()
+            if box:
+                bx, bz, bw, bh = box
+                cx, cz = bx + bw // 2, bz + bh // 2
+                try: dx, dz = abs(int(float(kw["x"])) - cx), abs(int(float(kw["z"])) - cz)
+                except (TypeError, ValueError): dx = dz = 0
+                if dx > 25 or dz > 25:
+                    raise GuardError("%s at %s,%s is %d cells from the camp: the camp is the storage room planned at %d,%d (%dx%d). Everything "
+                                     "of the camp goes within 25 cells of it, on the open ground beside the room -- give x,z near %d,%d or let "
+                                     "the command place it (no x,z)." % (cmd, kw["x"], kw["z"], max(dx, dz), bx, bz, bw, bh, cx, cz))
+        if cmd == "camp" and str(kw.get("x", "")) != "" and str(kw.get("z", "")) != "":
+            # run 5 (2026-10-14 00:29-00:35): `camp x z` became her escape hatch -- the anchor walked to 150,176, thirty
+            # cells from the planned storage room and into the rock, and every shelter was refused around it. Once the
+            # room is planned the room IS the camp: the anchor stays within 14 cells of it.
+            box = self._storage_room_box()
+            if box:
+                bx, bz, bw, bh = box
+                cx, cz = bx + bw // 2, bz + bh // 2
+                try: dx, dz = abs(int(float(kw["x"])) - cx), abs(int(float(kw["z"])) - cz)
+                except (TypeError, ValueError): dx = dz = 0
+                if dx > 14 or dz > 14:
+                    raise GuardError("the camp IS the storage room planned at %d,%d (%dx%d): the anchor stays within 14 cells of it; the "
+                                     "shelter and the stove go on the open ground beside the room, never in the mountain. Use game_set cmd "
+                                     "camp x %d z %d (the room's centre) and build from there." % (bx, bz, bw, bh, cx, cz))
         if self.dry:
             log("DRY-RUN would game_set", payload)
             return "dry-run: not executed"
@@ -1248,6 +1301,10 @@ class Toolbox:
             # claims (run 5, 00:05:40 and 00:07:04: "[x] stream title and category set; next: ... shelves, stove" was
             # refused twice for the shelves and the stove it had not claimed; owner: "why is ypour not fixing it")
             low = re.split(r";\s*next\b|\bnext:|\s--\s|->|\bthen\b|\bafter that\b", line.lower(), maxsplit=1)[0]
+            # and only the item NAME: what follows ":" or "(" describes it ("[x] storage room: ... (walls, door and
+            # roof around the pile)" was refused for the roof it described -- run 5, 00:34:34); a bundle like
+            # "[x] beds, shelves, stove + bill" has no colon and is still tested whole
+            low = re.split(r"[:(]", low, maxsplit=1)[0]
             for item, pat, cmds in self.PAD_ITEMS:
                 if not re.search(pat, low):
                     continue
