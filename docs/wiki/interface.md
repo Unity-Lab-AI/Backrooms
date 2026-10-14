@@ -87,6 +87,36 @@ own light is held to: every state it shows already has a message, a pane indicat
 
 ---
 
+## Automation file (optional)
+
+The mod can take orders from a file, for an external assistant that plays alongside you without
+a mouse on your screen. Nothing uses it unless something writes to it.
+
+- Commands: `RimroomsAutomation/inbox.jsonl` in RimWorld's configuration folder, one JSON object per
+  line. Results: `outbox.jsonl` beside it, one line per command, with the command's `id` echoed back.
+- Each command is something that otherwise needs a click: a zone's crop, a bed's owner, a bill, work
+  priorities, an allowed area; and the setup steps of a colony -- rooms, exploring, stockpiles,
+  shelves, stove, butcher table, freezer, crops, hunting; defence (arming, drafting, holding at
+  cover, corner towers); building (walls, halls, roofs, conduit); power (a generator with a battery);
+  research order; prisoners; trading by comms console; guest bed fees. Every reply says what was
+  done or exactly why it was refused.
+- It never spawns or destroys anything, never edits a definition, never touches the world map, and
+  refuses a name it cannot find rather than guessing. Anything with a real cost in the game -- a
+  trade, a request to a faction -- still pays that cost, and a colonist still has to walk there.
+
+Examples, one per line:
+
+```
+{"cmd":"add_bill","x":155,"z":141,"recipe":"CookMealSimple","count":30}
+{"cmd":"freezer"}
+{"cmd":"arm"}
+{"cmd":"trade","with":"caravan","sell":"Cloth:200","buy":"Steel:300"}
+```
+
+Delete the file to stop everything queued in it. The game's own controls always win.
+
+---
+
 ## Two things this deliberately does not do
 
 **It does not remap RimWorld's menus.** Nothing on the base game's tab bar is replaced, reordered
