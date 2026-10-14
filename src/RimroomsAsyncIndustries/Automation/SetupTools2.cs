@@ -49,8 +49,11 @@ namespace RimroomsAsyncIndustries.Automation
                     if (TryPlace(map, shelf, c, rot, stuff)) placed++;
                 }
             }
-            return placed == 0 ? "refused: no stockpile with free wall cells (make a stockpile first)"
-                               : "ok: " + placed + " shelf blueprints along the stockpile walls";
+            if (placed > 0) return "ok: " + placed + " shelf blueprints along the stockpile walls";
+            bool anyStore = map.zoneManager.AllZones.OfType<Zone_Stockpile>().Any();
+            return anyStore
+                ? "refused: the stockpile has no wall beside it -- shelves stand against walls; storage_room walls and roofs the main store first, then shelves"
+                : "refused: no stockpile yet -- stockpile_camp (nofood) first, then storage_room, then shelves";
         }
 
         public static string Stove(Map map)
@@ -67,17 +70,33 @@ namespace RimroomsAsyncIndustries.Automation
                 return "ok: a fueled stove is PLANNED (not built yet) at " + plan.Position.x + "," + plan.Position.z +
                        " -- keep time running so it gets built, then add_bill CookMealSimple";
             Zone_Stockpile food = map.zoneManager.AllZones.OfType<Zone_Stockpile>().FirstOrDefault(z => z.label == "Food store");
-            IntVec3 near = food?.Cells.FirstOrDefault() ?? map.mapPawns.FreeColonistsSpawned.First().Position;
+            IntVec3 anchor = CampAnchor.Get(map);
+            IntVec3 near = food?.Cells.FirstOrDefault() ?? (anchor.IsValid ? anchor : map.mapPawns.FreeColonistsSpawned.First().Position);
             ThingDef stuff = GenStuff.DefaultStuffFor(stove);
             foreach (IntVec3 c in GenRadial.RadialCellsAround(near, 25f, true))
             {
                 if (!Free(map, c) || c.Roofed(map) == false || map.zoneManager.ZoneAt(c) != null) continue;
                 Room r = c.GetRoom(map);
                 if (r == null || r.PsychologicallyOutdoors) continue;
+                // against a wall, not in the doorway (owner: furniture along the walls, paths kept clear)
+                bool onWall = GenAdj.CardinalDirections.Any(d => { IntVec3 n = c + d; return n.InBounds(map) && n.Impassable(map); });
+                bool nearDoor = GenAdj.AdjacentCells.Any(d => { IntVec3 n = c + d; return n.InBounds(map) && n.GetEdifice(map) is Building_Door; });
+                if (!onWall || nearDoor) continue;
                 if (TryPlace(map, stove, c, Rot4.South, stuff))
-                    return "ok: fueled stove blueprint at " + c.x + "," + c.z + " -- when built, add_bill x " + c.x + " z " + c.z + " recipe CookMealSimple count 30";
+                    return "ok: fueled stove blueprint at " + c.x + "," + c.z + " -- when built, kitchen (or add_bill recipe CookMealSimple count 30)";
             }
-            return "refused: no roofed, explored free spot near the food store";
+            // No roofed room by the store. A crash camp has none until one is built: plan the kitchen room beside the
+            // store at the camp anchor instead of refusing (test run 2026-10-13: four stove refusals, no kitchen ever).
+            Thing pending = map.listerThings.AllThings.FirstOrDefault(t => t.Faction == Faction.OfPlayer && (t.def.IsBlueprint || t.def.IsFrame) &&
+                                                                          t.def.entityDefToBuild == ThingDefOf.Wall);
+            if (pending != null)
+                return "refused for now: no finished roofed room by the store -- walls are still planned or being built near " + pending.Position.x + "," +
+                       pending.Position.z + "; the stove goes in once a room stands (keep Construction on). Do not call stove again until then";
+            var args = new Dictionary<string, string> { { "w", "5" }, { "h", "4" } };
+            string room = SetupTools3.Shelter(map, args);
+            return room.StartsWith("ok")
+                ? "refused for now: no roofed room, so a 5x4 kitchen room was planned at the camp -- " + room.Substring(4) + "; stove once it stands"
+                : "refused: no roofed room by the store and no kitchen room could be planned (" + room + ")";
         }
 
         public static string Crops(Map map, Dictionary<string, string> a)

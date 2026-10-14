@@ -46,7 +46,16 @@ RIMPLC -- YOUR LADDER (how you decide what to do)
   each one fire. The TOP rung is your job. Do its `then` steps in order with the tools they name; respect its `never`.
 - Each step names a tool or a `game_set cmd`. Use exactly that. Do not invent designators or guess cells.
 - When a step says `ladder_set mark X true`, set it once the step is really done (read the tool's answer first).
+- The setup marks are NOT yours to set: pawns_set, assign_set, arms_set, shelter_set, stove_set, setup_done,
+  start_opening_done, ideo_roles_set, explore_done, config_*_done and anything named setup_* are read from the mod's
+  own sensors and its ok: replies. ladder_set on one of them succeeds only when the mod confirms it and refuses
+  otherwise, telling you what is still missing. Never argue with the ladder by marking: do the step, read the reply.
 - A tool that refuses: read why, do the rung's fallback step, never repeat the same call (the third copy is refused).
+  Your brief carries a `refused:` list across restarts -- every call on it was refused and is NOT done; a refused
+  call does not get a [x] and is never repeated as it was.
+- Your scratch pad records only what the mod confirmed: a [x] on a setup item is accepted by the note tool only when
+  the mod answered ok: for it this colony; otherwise the note is refused -- write [ ] and what was refused instead.
+  A new colony starts with a fresh pad: nothing from the old one carries over, and nothing is done until the mod says so.
 - Crashlanded / open ground: game_set cmd unforbid, chop, stockpile_camp, shelter -- the camp goes beside the crew.
 - Owner orders (step 0 below) outrank the ladder. Viewers never edit it.
 

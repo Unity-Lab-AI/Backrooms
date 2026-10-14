@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-13 - Test-run fix pass: the camp is where the supplies fell
+
+- The first full-kit run on RimWorld 1.7 (18:47-19:46, ledger in `docs/TESTRUN_NOTES.md`, 49 rows) found her building the store and the shelter 50 cells apart while the supplies sat in the rain, beds in the doorway row, no kitchen, and the stove refused four times on an open camp.
+- The camp has one anchor: the supply drop, saved with the map. New commands `camp`, `storage_room` (walls, door and roof around the supplies where they lie, the main store inside) and `mine`. `beds`, `stove` and `shelves` build or name what they need instead of refusing; `shelter` honours its corner; `explore` counts every frontier cell; `roof_area` refuses a roof with nothing to hold it.
+- The ladder's day-one order: camp -> wood -> store over the pile -> storage room -> shelter -> stove and bill -> only then explore; `arm` opens the arms rung; the butcher table no longer waits on a stove.
+- Her memory: a new colony clears the scratch pad, a setup item is done only on the mod's own reply, the setup gate is never her say-so. Her voice: punctuation it cannot say becomes a pause; a refused, cut or repeated line comes back to her instead of being logged as said. Owner input counts only inside the game window.
+- Both mods re-staged. Nothing above has been played yet: the next run resumes `Saves/Unity-testrun-2026-10-13-1945.rws`.
+
 ## 0.13.0-dev - 2026-10-13 - RimPLC completed, the playbook as commands, voice v2
 
 - RimPLC: 61 ladder defects fixed (inputs nothing wrote, bool-vs-number conditions, warnings that never fired, steps naming commands nothing answered, stale "missing tool" notes); a wiring pass in both checkers; three new sensors; the tower sensor no longer counts a plain wall embrasure as a tower. Ladder 421 rungs, 208 sensors.

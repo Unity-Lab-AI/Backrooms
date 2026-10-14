@@ -1167,7 +1167,7 @@
       "group": "Stream",
       "label": "Owner at the controls",
       "severity": "info",
-      "tip": "The owner used the keyboard or mouse in the last minute. Never fight his input.",
+      "tip": "The owner used the keyboard or mouse in RimWorld in the last minute. Never fight his input.",
       "warn": true
     },
     "owner_unread": {
@@ -6300,18 +6300,22 @@
       },
       "then": [
         "stop every mouse/keyboard tool at once: no game_click_cell, game_right_click_cell, game_drag_cell, order_pawn, snap",
-        "keep playing only through the no-mouse channel: game_set (any cmd), pawn_priorities, ladder, game_state, game_list_*",
-        "reply_owner msg_id=<latest> text=<ask for control, e.g. I'm off your mouse, tell me when I can have it back>",
-        "say one clean line to chat that you are fixing something behind the scenes",
-        "retake input only after owner_input_active has read false for the OWNER_SETTLE_S tag s"
+        "quiet turn: at most one ladder read, then end the turn -- no say, no game_set, no order, nothing fired to fill the turn",
+        "reply_owner msg_id=<latest> text=<answer his line> only when owner_unread > 0; never ask for the mouse back",
+        "nothing to clear: the rung is not latched, it drops by itself on the next scan after owner_input_active reads false",
+        "mouse tools again only after owner_input_active has read false for the OWNER_SETTLE_S tag s"
       ],
       "never": [
         "press hotkeys or Win/Alt combos (they opened the Microsoft Store on the owner's PC)",
         "fight the owner's cursor",
-        "use the owner's screen to run tests"
+        "use the owner's screen to run tests",
+        "say a cover line on stream (no 'fixing something behind the scenes', ever)",
+        "fire hunt / explore / any game_set to fill the turn while he plays",
+        "ladder_set remove_rung or a mark to drop this rung -- it is not latched"
       ],
       "latch": false,
       "why": "owner: \"i dont know what eny of this means but im not loaining the mouse it need to have its OWN mouse!!!!!! that doesnt fight user input and deffers instantly before attempting recontol once settles d mouse\" / owner: \"FUCK THANK YOU FOR FUCKING STOPING !!!!! NOW LISTEN YOU ASK ME FOR CONTROL OF MOUSE IF YOU NEED IT< FUCK!!!! UPDATE CHAT YOU WE FUCKING ME OVER IN THE BACK GROUND  AND FIX ALL THE ISSUES OF EVERYTHING IVE EVER SAID IN TOTALITY AGAIN AND AGIN TILL EVERYTHING IN THE BASE IS CORRECT!!!!!\" / owner: \"HOW MANY TIMES HAVE I SAID DONT FIGHT ME!!!!!!!!!! U WERE OPENING THE MICROSOFT\n     STORE REPEADILEY USING HOTKEYS U FUCKING ITIOT U VIRUSED MY COMPUTER AND SHIT STOP DOING THAT\n     IF I TAKE THE FUCKING MOUSE OR KEEYS I HAVE TO BE ABLE TO TALK TO YOU SO FUCK UPDATE THE VIEWER\n     AND FIX THE SHIT NOT OPEN MY FUCKING APPS\" / owner: \"YOU GO PLAY AND RUN THE FUCKING TESTSS IN THE GAME!!!! DONT USE MY SCREEN TO DO IT DO U FUCKING UNDERSTAND!\" / owner: \"tell the players you are fixing it\"",
+      "note": "owner_input_active = real keyboard/mouse input in the last 60 s WHILE RimWorld is the foreground window (gates.host_inputs: GetLastInputInfo + GetForegroundWindow -> process RimWorld); typing in any other window never counts. Not latched: a measured false is pushed every turn and the rung drops on the first scan after his hands leave the game. 2026-10-13 ledger 18:54/19:08/19:11/19:12/19:42: the PC-wide read held her idle while the owner typed to the lead, she tried to delete the rung, said a canned cover line five ways and fired hunt/explore as filler",
       "family": "meta"
     },
     {
@@ -7747,6 +7751,7 @@
         "mark_arms_set": false
       },
       "then": [
+        "game_set cmd arm -- every unarmed colonist equips the nearest free gun, every armed one without a melee weapon picks up a sidearm; read the reply",
         "empire_pass",
         "empire_pass refused, or its ARMS line still shows someone unarmed: ladder_set mark arms_tried true, then ladder_set mark arms_tried false (each refusal counts once; 2 -> arms-out-fallback)",
         "read its ARMS line: nobody unarmed (able_shooters_armed == able_shooters); a gun as primary, the melee weapon/pain baton as sidearm, helmet on, skip flak vest/pants early",
@@ -7757,7 +7762,7 @@
         "explore or build before everyone is armed",
         "leave a gun on the ground (loose_weapons > 0 after the pass)"
       ],
-      "why": "owner: \"once again u arnt armed!!! wtf!!!!\" / owner: \"put your weapons-out rung FIRST (priority above every setup rung)\" / owner: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\" / owner: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\" -- walkthrough: walkthrough-opening-and-camp.md best shooter gets the bolt-action rifle, next the revolver, knife to best melee; helmet yes, flak no [start] B,Q"
+      "why": "owner 2026-10-13: \"she just almost died from a fight without weweapons, weapons should be first thing always updated and checked\" / owner: \"once again u arnt armed!!! wtf!!!!\" / owner: \"put your weapons-out rung FIRST (priority above every setup rung)\" / owner: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\" / owner: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\" -- walkthrough: walkthrough-opening-and-camp.md best shooter gets the bolt-action rifle, next the revolver, knife to best melee; helmet yes, flak no [start] B,Q"
     },
     {
       "id": "setup-2-pawns-fallback",
@@ -7835,6 +7840,29 @@
       "why": "owner: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\" / owner: \"drugs are for hospitality guests\" / owner: \"set theri scheldule to anything at all times for all pawns / research and manage your pawns\" / owner: \"u have ppriorities set on stockpiles so thay pull it all through and do you have all the paws set up to heal attack and sleep whenever and take only antibiotic pencylcin every 5 days and carry 2\" / owner: \"set up drugs and scar to attack\" / owner: \"shes just repeating same things not living in the momnet and she still hasent set all the priorties scheduled drug use attakck heal and all that on assign\" / owner: \"were ur crops u get priorities done and scedukele and drug assignment and antibiotics\" / owner: \"wtf!!!!! time is flyying awayy!!!! why did she unpause beforee seeting all the pawn settings this is the fifth time ive told you all of this\" / owner: \"you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax and starting up you facitly small first massive later get ur needs food security and shit settled / you should have a maintaince list of thinge proprigating what all you need to do / make sure u arm up and set everyones setting attack, heal self, schedule, priorities, drugs to no drugs, all of it pause and do it and set control shift carry but becasre full sending them on 50 runs without a break\""
     },
     {
+      "id": "setup-1-camp",
+      "priority": 3.5,
+      "family": "setup",
+      "latch": false,
+      "when": {
+        "colony_exists": true,
+        "mark_assign_set": true,
+        "mark_camp_set": false
+      },
+      "then": [
+        "game_set cmd camp -- read where the camp anchor is: it is the supply drop (item-weighted centre of the loose starting items), saved with the map; every setup command builds around it",
+        "the reply says 0 loose item stacks within 16 cells, or the anchor sits far from where the pods landed: game_set cmd camp auto true (recompute from the supplies); still wrong: game_set cmd camp x z on the middle of the pile",
+        "say on stream where the camp is going, in one line",
+        "ladder_set mark camp_set true"
+      ],
+      "never": [
+        "pick a camp spot by eye",
+        "build anything before this rung has set the anchor",
+        "move the anchor once walls are planned"
+      ],
+      "why": "owner 2026-10-13: \"it looks like she is all over the place instead of correctly building camp right where her supplies and they dropped in on\" / owner: \"and first fucking thing she should build a base building around her starting supplies and zone them in a storage zone to get them ourt of the rain, currently all her shit hass been out side for days as she neever build a storage room around her supplies and set up base in the drop location for a cmap before designing the main base will small steps at a time building a ewmpire and handling issues\" -- test run 2026-10-13: every setup command anchored on the crew's average position at the moment of the call, so the store landed at 146,120 and the shelter at 197,108, 50 cells from the pile"
+    },
+    {
       "id": "leader-moral-guide",
       "priority": 3.51,
       "family": "setup",
@@ -7856,17 +7884,17 @@
     },
     {
       "id": "setup-1-explore-fallback",
-      "priority": 3.54,
+      "priority": 3.795,
       "family": "setup",
       "latch": false,
       "when": {
         "colony_exists": true,
         "explore_done": false,
-        "mark_assign_set": true,
+        "mark_stove_set": true,
         "explore_stuck": {
           "ton": {
             "explore_done": false,
-            "mark_assign_set": true
+            "mark_stove_set": true
           },
           "hours": 6
         }
@@ -7882,16 +7910,16 @@
     },
     {
       "id": "setup-1-explore",
-      "priority": 3.57,
+      "priority": 3.8,
       "family": "setup",
       "latch": false,
       "when": {
         "colony_exists": true,
-        "mark_assign_set": true,
+        "mark_stove_set": true,
         "explore_done": false
       },
       "then": [
-        "game_set cmd explore -- every colonist through EVERY door and along the fog edge; repeat until it answers 'nothing left'",
+        "game_set cmd explore -- the camp stands (store roofed, beds, stove); now every colonist through EVERY door and along the fog edge, nearest the camp first; repeat until it answers 'nothing left'",
         "unpause (game_pause_game pause false) so they walk",
         "rooms still 100% fogged with no door: find the hidden door or mark the thinnest wall to mine",
         "explore answers 'nothing left' -> ladder_set mark explore_done true (explore_done mirrors it); this rung clears"
@@ -7901,7 +7929,7 @@
         "sit researching",
         "call explore done while a door is unvisited"
       ],
-      "why": "owner: \"explore the hidden rooms and get outside her walls\" / owner: \"exploring is not finished damn it ive said this repeadidily the map is even on screen becsue it never went through EVERY DOOR\" / owner: \"you still have t explored your facility to find the bed rooms and other unexplored rooms\" / owner: \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\""
+      "why": "owner 2026-10-13: \"it looks like she is all over the place instead of correctly building camp right where her supplies and they dropped in on\" / owner: \"and first fucking thing she should build a base building around her starting supplies and zone them in a storage zone to get them ourt of the rain, currently all her shit hass been out side for days as she neever build a storage room around her supplies and set up base in the drop location for a cmap before designing the main base will small steps at a time building a ewmpire and handling issues\" / owner: \"explore the hidden rooms and get outside her walls\" / owner: \"exploring is not finished damn it ive said this repeadidily the map is even on screen becsue it never went through EVERY DOOR\" / owner: \"you still have t explored your facility to find the bed rooms and other unexplored rooms\" / owner: \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\""
     },
     {
       "id": "setup-2b-priorities-after-explore",
@@ -7924,17 +7952,17 @@
     },
     {
       "id": "setup-chop",
-      "priority": 3.63,
+      "priority": 3.505,
       "family": "setup",
       "latch": false,
       "when": {
         "colony_exists": true,
-        "mark_assign_set": true,
+        "mark_camp_set": true,
         "wood": "<{WOOD_RESERVE}",
         "designations_cut": "<20"
       },
       "then": [
-        "game_set cmd chop count 300 (nearest trees to the crew; trees on the site first); unpause so it is cut",
+        "game_set cmd chop count 300 (nearest trees to the camp anchor; trees on the site first -- storage_room marks the ones inside its box by itself); unpause so it is cut",
         "chop refused or 0 trees: game_set cmd explore for trees beyond reach, then game_get_cells_info on the wooded cells and game_apply_architect_designator Chop wood once",
         "no trees on the whole map: reply_owner with the chop reply (the tile was picked wrong); never loop"
       ],
@@ -7945,7 +7973,7 @@
     },
     {
       "id": "setup-4-stores-fallback",
-      "priority": 3.66,
+      "priority": 3.508,
       "family": "setup",
       "latch": false,
       "when": {
@@ -7968,7 +7996,7 @@
               "store_slow": {
                 "ton": {
                   "food_store": false,
-                  "mark_assign_set": true
+                  "mark_camp_set": true
                 },
                 "hours": 3
               }
@@ -7977,7 +8005,7 @@
         }
       },
       "then": [
-        "two refusals or 3 hours without a store: game_get_cells_info around the crew, pick open explored soil 6x6 beside them",
+        "two refusals or 3 hours without a store: game_get_cells_info around the camp anchor (game_set cmd camp tells it), pick open explored soil 6x6 over or beside the supply pile",
         "game_select_architect_designator for a stockpile zone and game_drag_cell over it once (one drag)",
         "ladder_set mark store_tried false"
       ],
@@ -7988,41 +8016,90 @@
     },
     {
       "id": "setup-4-stores",
-      "priority": 3.69,
+      "priority": 3.509,
       "family": "setup",
       "latch": false,
       "when": {
         "colony_exists": true,
-        "mark_assign_set": true,
+        "mark_camp_set": true,
         "food_store": false
       },
       "then": [
-        "game_set cmd rooms first",
-        "no usable explored room (Crashlanded): game_set cmd stockpile_camp mode food, then mode nofood -- beside the crew, by the entrance, never stockpile_room",
-        "rooms answers a room with free floor > 0: game_set cmd stockpile_room room <id> mode food, then mode nofood on the next best",
-        "game_set cmd stockpile_filter x z mode food priority Important on the food store",
+        "game_set cmd stockpile_camp mode nofood FIRST -- it zones the Main store over the supply pile where it lies at the camp anchor (nothing hauled across the map); read the reply: cells and item stacks inside",
+        "then game_set cmd stockpile_camp mode food -- a 6x6 beside it; game_set cmd stockpile_filter x z mode food priority Important on the food store",
+        "only when the crew woke INSIDE a roofed explored room (rooms answers one with free floor > 0 and the pile lies in it): game_set cmd stockpile_room room <id> mode nofood, then mode food on the next best -- never stockpile_room on a crash site",
         "a refused try: ladder_set mark store_tried true, then ladder_set mark store_tried false (each refusal counts once; 2 -> setup-4-stores-fallback)",
         "haul in short batches; the schedule keeps sleep and recreation -- never 50 carry runs without a break [missing tool: haul limit / rest setting]"
       ],
       "never": [
-        "stockpile on fogged cells",
-        "retry a room that refused",
-        "stockpile a room with free floor 0",
-        "talk about storage again before a stockpile is placed",
         "designate or build anything inside the mountain rock before the camp is stable (mark camp_stable)",
-        "try designators by trial and error: one designator for one purpose; the same thought twice means stop and read",
-        "haul everything across the map -- settle near the landing spot"
+        "a store anywhere but at the camp anchor",
+        "the food store before the main store"
       ],
-      "why": "owner: \"you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses\" / owner: \"look at that shit she is setting fucking rooms to build deep inside the moutain with no ryhme or reason\" / owner: \"she is letting time pass and hasnt set a priority or shelf or schedula\" / owner: \"what the fuck do we need to restart it all if so do it so she doesnt fuck it up this time and properly doesnt repeat the exac same shit everything oioriginal and fucking have here actual do the inital game and in game pawn sett up and stockpiles and know wtf to do with freezers\" / owner: \"you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax and starting up you facitly small first massive later get ur needs food security and shit settled / you should have a maintaince list of thinge proprigating what all you need to do / make sure u arm up and set everyones setting attack, heal self, schedule, priorities, drugs to no drugs, all of it pause and do it and set control shift carry but becasre full sending them on 50 runs without a break\" -- walkthrough: walkthrough-opening-and-camp.md 'Lay one stockpile zone over the whole camp floor and haul everything into it.' [start] B,Q"
+      "why": "owner 2026-10-13: \"it looks like she is all over the place instead of correctly building camp right where her supplies and they dropped in on\" / owner: \"and first fucking thing she should build a base building around her starting supplies and zone them in a storage zone to get them ourt of the rain, currently all her shit hass been out side for days as she neever build a storage room around her supplies and set up base in the drop location for a cmap before designing the main base will small steps at a time building a ewmpire and handling issues\" / owner: \"you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses\" / owner: \"look at that shit she is setting fucking rooms to build deep inside the moutain with no ryhme or reason\" / owner: \"she is letting time pass and hasnt set a priority or shelf or schedula\" / owner: \"what the fuck do we need to restart it all if so do it so she doesnt fuck it up this time and properly doesnt repeat the exac same shit everything oioriginal and fucking have here actual do the inital game and in game pawn sett up and stockpiles and know wtf to do with freezers\" / owner: \"you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax and starting up you facitly small first massive later get ur needs food security and shit settled / you should have a maintaince list of thinge proprigating what all you need to do / make sure u arm up and set everyones setting attack, heal self, schedule, priorities, drugs to no drugs, all of it pause and do it and set control shift carry but becasre full sending them on 50 runs without a break\" -- walkthrough: walkthrough-opening-and-camp.md 'Lay one stockpile zone over the whole camp floor and haul everything into it.' [start] B,Q"
     },
     {
-      "id": "setup-4b-shelter-fallback",
-      "priority": 3.72,
+      "id": "setup-4a-storage-room-fallback",
+      "priority": 3.512,
       "family": "setup",
       "latch": false,
       "when": {
         "colony_exists": true,
-        "food_store": true,
+        "main_store": true,
+        "mark_storage_room_set": false,
+        "storage_tries": {
+          "ctu": {
+            "mark_storage_room_tried": true
+          },
+          "preset": 2,
+          "reset": {
+            "mark_storage_room_set": true
+          }
+        }
+      },
+      "then": [
+        "storage_room refused twice: game_set cmd camp to read the pile's box, then game_set cmd shelter x z w h with x,z the pile's south-west cell and w,h the pile's spread plus 2 (the box by hand; the Main store zone already covers the pile)",
+        "that refused too: game_list_architect_designators Structure, then game_apply_architect_designator wood Wall as a ring one cell outside the pile, one Door on the crew's side, game_set cmd roof_area over the inside",
+        "reply_owner with the refusal text once; then ladder_set mark storage_room_set true so the camp goes on"
+      ],
+      "never": [
+        "leave the supplies in the open while arguing with the tool",
+        "a door on the corner cell"
+      ],
+      "why": "owner 2026-10-13: \"it looks like she is all over the place instead of correctly building camp right where her supplies and they dropped in on\" / owner: \"and first fucking thing she should build a base building around her starting supplies and zone them in a storage zone to get them ourt of the rain, currently all her shit hass been out side for days as she neever build a storage room around her supplies and set up base in the drop location for a cmap before designing the main base will small steps at a time building a ewmpire and handling issues\""
+    },
+    {
+      "id": "setup-4a-storage-room",
+      "priority": 3.515,
+      "family": "setup",
+      "latch": false,
+      "when": {
+        "colony_exists": true,
+        "main_store": true,
+        "mark_storage_room_set": false
+      },
+      "then": [
+        "game_set cmd storage_room -- wood walls + one door + roof planned around the supply pile where it lies, the Main store zone covering the inside, trees inside marked to chop; read the reply (inside size, door cell, walls planned, wood needed)",
+        "refused for solid rock or a wall inside the pile's box: game_set cmd camp x z one pile-width toward open ground, then storage_room again",
+        "refused otherwise: ladder_set mark storage_room_tried true, then ladder_set mark storage_room_tried false (each refusal counts once; 2 -> setup-4a-storage-room-fallback)",
+        "the reply says planned: unpause so it is built, Construction stays on for everyone, chop if the wood needed is above wood; then ladder_set mark storage_room_set true (the shelter rung follows while the walls go up)",
+        "say on stream in one line: the supplies are being roofed where they fell"
+      ],
+      "never": [
+        "haul the pile somewhere else first",
+        "a second storage room before the shelter",
+        "steel walls"
+      ],
+      "why": "owner 2026-10-13: \"it looks like she is all over the place instead of correctly building camp right where her supplies and they dropped in on\" / owner: \"and first fucking thing she should build a base building around her starting supplies and zone them in a storage zone to get them ourt of the rain, currently all her shit hass been out side for days as she neever build a storage room around her supplies and set up base in the drop location for a cmap before designing the main base will small steps at a time building a ewmpire and handling issues\" -- test run 2026-10-13: shelves refused four times (no stockpile with free wall cells) because no wall ever went up around the store"
+    },
+    {
+      "id": "setup-4b-shelter-fallback",
+      "priority": 3.518,
+      "family": "setup",
+      "latch": false,
+      "when": {
+        "colony_exists": true,
+        "mark_storage_room_set": true,
         "mark_shelter_set": false,
         "shelter_tries": {
           "ctu": {
@@ -8035,7 +8112,7 @@
         }
       },
       "then": [
-        "shelter tool refused twice: game_list_architect_designators Structure, then game_apply_architect_designator wood Wall as a 7x7 ring by the crew, one Door mid-side, roof over it",
+        "shelter tool refused twice: game_list_architect_designators Structure, then game_apply_architect_designator wood Wall as a 7x7 ring beside the storage room at the camp anchor, one Door mid-side, roof over it",
         "a designator refused: ladder_set mark shelter_tried true, then ladder_set mark shelter_tried false; reply_owner with the refusal text",
         "room closed and roofed, beds >= colonists: ladder_set mark shelter_set true"
       ],
@@ -8047,18 +8124,18 @@
     },
     {
       "id": "setup-4b-shelter",
-      "priority": 3.75,
+      "priority": 3.52,
       "family": "setup",
       "latch": false,
       "when": {
         "colony_exists": true,
-        "food_store": true,
+        "mark_storage_room_set": true,
         "mark_shelter_set": false
       },
       "then": [
-        "game_set cmd shelter w 7 h 7 (wood room + door + roof beside the crew; 9x9 if wood allows); doors mid-side or near a corner, never the corner cell",
+        "game_set cmd shelter w 7 h 7 (wood room + door + roof beside the storage room at the camp anchor; 9x9 if wood allows); give x z only to pin the inside corner (it honours them exactly now); doors mid-side or near a corner, never the corner cell",
         "shelter refused: ladder_set mark shelter_tried true, then ladder_set mark shelter_tried false; next try w 6 h 8 (2 refusals -> setup-4b-shelter-fallback)",
-        "game_set cmd beds (one per colonist), then game_set cmd shelves -- enough shelves for the dry store, more directly on the N side of the existing ones",
+        "game_set cmd beds (one per colonist) -- the tool puts beds against the walls, head to the wall, foot free, never beside the door; 'shelter was planned' means no room stands yet: unpause and call beds again once the walls are up, do not pile beds in; then game_set cmd shelves inside the storage room",
         "fridge (roofed food store), workshop (crafting spot / butcher), 1x2 table + stool, torch lamp, a campfire in the middle -- all inside or touching the camp (game_set cmd build def Campfire x z, game_set cmd build def TorchLamp x z)",
         "store everything under a roof except steel and stone blocks",
         "water/marsh inside the camp perimeter -> game_set cmd terraform mode bridge x z w h before building on it (Core has no mud/water-to-soil; mud: move the build or floor it)",
@@ -8072,29 +8149,30 @@
         "a massive camp",
         "grow the camp beyond what three pawns need"
       ],
-      "why": "owner: \"camp fridege all of it workshop every thing u need in the camp tight and no blocked paths\" / owner: \"door on corner and sides\" / owner: \"you retarn u put doors the the extreem corners thats not gonna work\" / owner: \"see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause\" -- walkthrough: walkthrough-opening-and-camp.md 7x7 wood room, 1-3 doors, walls->beds->table; 3 beds before night 1; campfire; torch lamp; >75% roofed [start]/[survival] B,Q / owner: \"use teriform to remove mud and shit like water inside camp perimeter\" / owner: \"ur dry storage needs more shleves / add another shelfe N side of existing ones directly / and missing ones\""
+      "why": "owner 2026-10-13: \"she needs like room design tools for differnt types of rooms as she just fills the room with beds no ryhme or reason and blocks the doors and shit not haviong access keeping a open floor plan with equipment and furnaturee along the wealls and in center leaving paths but nice and neat\" / owner: \"camp fridege all of it workshop every thing u need in the camp tight and no blocked paths\" / owner: \"door on corner and sides\" / owner: \"you retarn u put doors the the extreem corners thats not gonna work\" / owner: \"see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause\" -- walkthrough: walkthrough-opening-and-camp.md 7x7 wood room, 1-3 doors, walls->beds->table; 3 beds before night 1; campfire; torch lamp; >75% roofed [start]/[survival] B,Q / owner: \"use teriform to remove mud and shit like water inside camp perimeter\" / owner: \"ur dry storage needs more shleves / add another shelfe N side of existing ones directly / and missing ones\""
     },
     {
       "id": "setup-5-stove",
-      "priority": 3.78,
+      "priority": 3.53,
       "family": "setup",
       "latch": false,
       "when": {
         "colony_exists": true,
-        "food_store": true,
+        "mark_storage_room_set": true,
         "mark_shelter_set": true,
         "mark_stove_set": false
       },
       "then": [
-        "game_set cmd stove (fueled stove near the food store)",
-        "unpause so it is built; when stoves >= 1: game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET} (Do until you have X, never Do forever)",
+        "game_set cmd stove -- a fueled stove on a wall of the roofed room nearest the food store, never in the doorway",
+        "'kitchen room was planned' / 'walls are still planned': no roofed room stands yet -- unpause, keep Construction on, call stove again once the room is up; do not call it twice in one turn",
+        "unpause so it is built; when stoves >= 1: game_set cmd kitchen (simple meals until {MEAL_BILL_TARGET}, Do until you have X, never Do forever)",
         "stoves >= 1 and the bill is placed: ladder_set mark stove_set true"
       ],
       "never": [
         "place a second stove",
         "a Do-forever bill"
       ],
-      "why": "owner: \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner: \"and set amounts higher and higher as your base grows\" -- walkthrough: walkthrough-opening-and-camp.md stove bill simple meals, do until ~6-20 [survival] B,Q"
+      "why": "owner 2026-10-13: \"and wtf she never built a kitchen and is running around killing animals she cat butcher because she never built a camp\" / owner: \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner: \"and set amounts higher and higher as your base grows\" -- walkthrough: walkthrough-opening-and-camp.md stove bill simple meals, do until ~6-20 [survival] B,Q"
     },
     {
       "id": "setup-6-run",
@@ -9496,7 +9574,7 @@
       "family": "survival",
       "when": {
         "colony_exists": true,
-        "stoves": ">0",
+        "mark_shelter_set": true,
         "butcher_tables": 0,
         "mark_butcher_built": false,
         "meat_coming": {
@@ -9516,7 +9594,7 @@
         "ladder_set mark butcher_built true",
         "(econ-butcher) refused: game_apply_architect_designator TableButcher next to the freezer by hand"
       ],
-      "why": "owner: \"how u plan on cutting up them animals?\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\" / walkthrough walkthrough-food-and-medicine.md: Butcher corpses within 2 days (raw meat rots in about 2 days above 0C). [survival] F || merged from economy:econ-butcher: owner: \"get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion\" | walkthrough: walkthrough-food-and-medicine.md [economy] Butcher table next to freezer",
+      "why": "owner 2026-10-13: \"and wtf she never built a kitchen and is running around killing animals she cat butcher because she never built a camp\" / owner: \"how u plan on cutting up them animals?\" / owner 2026-10-13: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\" / walkthrough walkthrough-food-and-medicine.md: Butcher corpses within 2 days (raw meat rots in about 2 days above 0C). [survival] F || merged from economy:econ-butcher: owner: \"get that dead body and chuncks out you should be doing this shit by now where is your freexzer shelves torages sized for expansion\" | walkthrough: walkthrough-food-and-medicine.md [economy] Butcher table next to freezer",
       "latch": true
     },
     {
@@ -10990,7 +11068,7 @@
       "never": [
         "explore, build or research while a colonist is unarmed and a gun is lying on the map"
       ],
-      "why": "owner: \"once again u arnt armed!!! wtf!!!!\" / \"pawn with out a wepaon is a very high rankeing need to fix\""
+      "why": "owner 2026-10-13: \"she just almost died from a fight without weweapons, weapons should be first thing always updated and checked\" / owner: \"once again u arnt armed!!! wtf!!!!\" / \"pawn with out a wepaon is a very high rankeing need to fix\""
     },
     {
       "id": "unarmed-no-gun",
