@@ -978,6 +978,17 @@ def main():
     n = 0
     while True:
         n += 1
+        # a GRACEFUL stop: services.py writes scratch/_stop.flag and waits; the loop ends between turns with the bridge
+        # socket closed. A hard kill mid-request crashed the game (run 5, 02:00:28: RimBridge's GabpServer threw "Connection
+        # is not active" answering the killed client, on a thread-pool task the 1.7 engine treats as fatal).
+        _stop = os.path.join(HERE, "scratch", "_stop.flag")
+        if os.path.exists(_stop):
+            try: os.remove(_stop)
+            except OSError: pass
+            log("stopped on request (graceful)")
+            try: toolbox.bridge.close()
+            except Exception: pass
+            break
         try:
             busy = turn(toolbox, st, args, system, specs)
         except KeyboardInterrupt:
