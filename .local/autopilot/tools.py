@@ -828,6 +828,7 @@ class Toolbox:
         # mark that lets time run (setup-6-run) -- owner: "should not unpause until inistal setup and zoneing is done and buildings are layed out"
         "layout_set": (None, ("storage_room", "shelter", "stove"), "ok: replies to ALL of storage_room, shelter and stove in the mod's outbox (the camp is laid out; the crew builds it once time runs)"),
         "supplies_hauled": (None, ("haul",), "an ok: reply to game_set cmd haul (the pile unforbidden, Hauling at 1 for everyone)"),
+        "chop_set": (None, ("chop",), "an ok: reply to game_set cmd chop (trees marked; the rung counted designations and chopped the same trees every turn -- run 5)"),
         "shelter_set": (None, ("shelter",),
                         "an ok: reply to game_set cmd shelter (or build_room) in the mod's outbox"),
         "camp_set": (None, ("camp",), "an ok: reply to game_set cmd camp (the anchor read) in the mod's outbox"),
