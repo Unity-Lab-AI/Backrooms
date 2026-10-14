@@ -1,0 +1,533 @@
+{
+ "family": "ideology-biotech-anomaly",
+ "rungs": [
+  {
+   "id": "anomaly-entity",
+   "priority": 1.91,
+   "when": {
+    "threat_letter": true,
+    "letter_matches": "entity"
+   },
+   "then": [
+    "treat as a raid: game_set_draft for every able shooter",
+    "game_open_letter; read the entity's weakness; do not assume"
+   ],
+   "never": [
+    "fighting an entity before reading its letter"
+   ],
+   "why": "owner: \"ull die when mechs come ur weapons r turds\" (docs/PLAYSCRIPT.md) | owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "family": "ideology-biotech-anomaly"
+  },
+  {
+   "id": "ideo-roles",
+   "priority": 33.0,
+   "when": {
+    "mark_mountain_base_done": true,
+    "mark_ideo_roles_set": true,
+    "colonists": ">4",
+    "mark_ideo_specialists_set": false,
+    "roles_refused": {
+     "not": {
+      "roles_refused_count": {
+       "ctu": {
+        "mark_ideo_roles_refused": true
+       },
+       "preset": 3,
+       "reset": {
+        "mark_ideo_specialists_set": true
+       }
+      }
+     }
+    }
+   },
+   "then": [
+    "game_open_main_tab tab=Ideoligion; game_take_screenshot to read the specialist role slots (Leader and Moral guide are setup:leader-moral-guide)",
+    "MISSING_TOOL set_ideo_role role=<specialist> pawn=<best adult in that skill> (fallback: game_click_ui_target on the slot, game_execute_context_menu_option <pawn>)",
+    "on a refusal: ladder_set mark ideo_roles_refused true (the counter counts it), then ladder_set mark ideo_roles_refused false",
+    "ladder_set mark ideo_specialists_set true"
+   ],
+   "never": [
+    "touching the Leader or Moral guide slot here (setup:leader-moral-guide owns them)"
+   ],
+   "latch": true,
+   "why": "owner: \"now u have a leader u need a morasl guide and they ahave abilities u want to always use / who is your leader role that you need to set\" (docs/PLAYSCRIPT.md:173) | owner: \"now u have a leader u need a morasl guide and they ahave abilities u want to always use\" (docs/playbook.rules.json) | owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "family": "ideology-biotech-anomaly",
+   "done_mark": "mark_ideo_roles_done"
+  },
+  {
+   "id": "ideo-roles-fallback",
+   "priority": 33.05,
+   "when": {
+    "mark_ideo_specialists_set": false,
+    "roles_refused": {
+     "ctu": {
+      "mark_ideo_roles_refused": true
+     },
+     "preset": 3,
+     "reset": {
+      "mark_ideo_specialists_set": true
+     }
+    }
+   },
+   "then": [
+    "reply_owner: a specialist role slot will not take, one click on the Ideoligion tab slot please",
+    "on a refusal of the reply: ladder_set mark ideo_roles_refused true, then ladder_set mark ideo_roles_refused false",
+    "ladder_set mark ideo_specialists_set true once the owner confirms"
+   ],
+   "latch": true,
+   "why": "owner: \"now u have a leader u need a morasl guide and they ahave abilities u want to always use / who is your leader role that you need to set\" (docs/PLAYSCRIPT.md:173)",
+   "family": "ideology-biotech-anomaly",
+   "done_mark": "mark_ideo_roles_fallback_done"
+  },
+  {
+   "id": "ideo-role-abilities",
+   "priority": 33.1,
+   "when": {
+    "mark_ideo_roles_set": true,
+    "lowest_mood": "<0.4",
+    "held": {
+     "ton": {
+      "mark_ideo_roles_set": true
+     },
+     "hours": 24
+    }
+   },
+   "then": [
+    "game_select_pawn <leader>; game_list_selected_gizmos",
+    "game_execute_gizmo <the ready role ability> targeting the lowest-mood colonist",
+    "same for the moral guide",
+    "ability on cooldown: skip it, standing order"
+   ],
+   "never": [
+    "a ready role ability left unused while a colonist is under 40% mood"
+   ],
+   "why": "owner: \"now u have a leader u need a morasl guide and they ahave abilities u want to always use\" (docs/playbook.rules.json)",
+   "family": "ideology-biotech-anomaly"
+  },
+  {
+   "id": "ideo-ritual",
+   "priority": 33.2,
+   "when": {
+    "mark_mountain_base_done": true,
+    "mark_ideo_roles_set": true,
+    "mark_ideo_altar_built": false
+   },
+   "then": [
+    "if mark_altar_room_done is true (royalty:altar-room built it): skip the build steps, go to the last step",
+    "game_open_main_tab Ideoligion; read the required buildings (altar, ideogram, statues)",
+    "game_set cmd rooms; take the room LEFT of the throne room for the altar room; keep a 2-wide walkway on its left",
+    "MISSING_TOOL place_building def=<altar from the Ideoligion tab> centre-north of that room (fallback: game_select_architect_designator + game_click_cell)",
+    "place the ideoligion statues/ideograms as symmetric pairs",
+    "ladder_set mark ideo_altar_built true"
+   ],
+   "never": [
+    "altar outside the wall",
+    "blocking the 2-wide path on the left"
+   ],
+   "latch": true,
+   "why": "owner: \"need top fit a grand alter reformulat and leave two wide path on left\" (372a4068-59cd-43c2-a79d-e04a8fcf9cb0.jsonl) | owner: \"start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game\" (docs/PLAYSCRIPT.md:303) | owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "family": "ideology-biotech-anomaly",
+   "done_mark": "mark_ideo_ritual_done"
+  },
+  {
+   "id": "mechanitor",
+   "priority": 33.3,
+   "when": {
+    "mark_mountain_base_done": true,
+    "count_mechlink": ">=1",
+    "research_basicmechtech": true
+   },
+   "then": [
+    "MISSING_TOOL place_building def=MechGestator and def=MechRecharger inside the wall (fallback: game_select_architect_designator + game_click_cell), conduit to the grid",
+    "lifters and constructors first, then war mechs",
+    "watch bandwidth; never gestate past it"
+   ],
+   "latch": true,
+   "why": "owner: \"ull die when mechs come ur weapons r turds\" (docs/PLAYSCRIPT.md) | owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "family": "ideology-biotech-anomaly",
+   "done_mark": "mark_mechanitor_done"
+  },
+  {
+   "id": "genes",
+   "priority": 33.4,
+   "when": {
+    "mark_mountain_base_done": true,
+    "research_xenogermination": true,
+    "count_geneextractor": "<1"
+   },
+   "then": [
+    "MISSING_TOOL place_building def=GeneExtractor and def=GeneAssembler on power (fallback: game_select_architect_designator + game_click_cell)",
+    "bank useful genes read from the gene list; never invent gene names"
+   ],
+   "latch": true,
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "family": "ideology-biotech-anomaly",
+   "done_mark": "mark_genes_done"
+  },
+  {
+   "id": "ideo-ritual-hold",
+   "priority": 33.5,
+   "when": {
+    "mark_ideo_altar_built": true,
+    "hostiles_on_map": 0,
+    "lowest_mood": "<0.5",
+    "gap": {
+     "ton": {
+      "mark_ideo_altar_built": true
+     },
+     "hours": 120
+    }
+   },
+   "then": [
+    "game_click_cell on the altar; game_list_selected_gizmos",
+    "MISSING_TOOL start_ritual ritual=<best mood ritual> organiser=<moral guide> (fallback: game_execute_gizmo + game_press_accept)",
+    "refused or on cooldown: read why (missing role or building), fix that first, never retry the same click"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\"",
+   "family": "ideology-biotech-anomaly"
+  },
+  {
+   "id": "ideo-party-room",
+   "priority": 33.6,
+   "when": {
+    "mark_mountain_base_done": true,
+    "mark_ideo_altar_built": true,
+    "colonists": ">=5",
+    "mark_ideo_party_room": false
+   },
+   "then": [
+    "game_set cmd rooms (an unused hall-sized room inside the wall)",
+    "MISSING_TOOL place_building tables, chairs, horseshoes pin / chess table; ideology statues at the corners (fallback: game_select_architect_designator + game_click_cell)",
+    "horseshoes pin against a wide wall, at least one action area left unblocked",
+    "ladder_set mark ideo_party_room true"
+   ],
+   "latch": true,
+   "why": "owner: \"start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game\" (docs/PLAYSCRIPT.md:303) | owner: \"you need to put horse shoes up against wide wall so action area isnt clicked need at minimum one action area unblocked\"",
+   "family": "ideology-biotech-anomaly",
+   "done_mark": "mark_ideo_party_room_done"
+  },
+  {
+   "id": "anomaly-monolith",
+   "priority": 33.7,
+   "when": {
+    "mark_mountain_base_done": true,
+    "monolith": true,
+    "monolith_level": 0,
+    "defences_built": true,
+    "turrets": ">=2",
+    "hostiles_on_map": 0
+   },
+   "then": [
+    "containment platforms (zoarak.anomalyplat) before advancing: MISSING_TOOL place_building (fallback: game_select_architect_designator + game_click_cell)",
+    "study entities in holding",
+    "advance the monolith only now (defences_built, turrets >= 2): game_click_cell on the monolith, game_list_selected_gizmos, game_execute_gizmo advance",
+    "refused: read the reason, fix it, never repeat the click"
+   ],
+   "never": [
+    "advancing the monolith while a defence rung is live"
+   ],
+   "why": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\" | monolith_advanced mark deleted per decisions.json; monolith_level (TO_BUILD) rises after the advance so the rung stops",
+   "family": "ideology-biotech-anomaly"
+  },
+  {
+   "id": "anomaly-dissection",
+   "priority": 33.8,
+   "when": {
+    "mark_mountain_base_done": true,
+    "corpses": ">0",
+    "research_benches": ">=1",
+    "mark_dissection_bill_set": false
+   },
+   "then": [
+    "game_set cmd add_bill recipe=<dissection/autopsy recipe from the table's bill list> count=forever",
+    "game_set cmd stockpile_filter x z mode=all (ingredient filter Allow)",
+    "dissection room behind the security embrasure halls",
+    "ladder_set mark dissection_bill_set true"
+   ],
+   "latch": true,
+   "why": "owner: \"you need to set dissection bills or do it dirreectly idk\" (docs/playbook.rules.json)",
+   "family": "ideology-biotech-anomaly",
+   "done_mark": "mark_anomaly_dissection_done"
+  },
+  {
+   "id": "bio-milk-pen",
+   "priority": 33.9,
+   "when": {
+    "mark_mountain_base_done": true,
+    "mark_double_rooms_set": true,
+    "count_milk": "<20",
+    "mark_milk_pen_built": false
+   },
+   "then": [
+    "MISSING_TOOL tame_animal kind=Cow|Goat|Yak (fallback: game_right_click_cell on the animal + Tame; designations_tame rises)",
+    "MISSING_TOOL build_pen fence ring in the field beside the wall, NO roof; terraform/soil the pen floor if it is bare",
+    "pawn_priorities pawn=<best handler> custom {\"Handling\": 1}",
+    "ladder_set mark milk_pen_built true"
+   ],
+   "never": [
+    "a roof over the pen"
+   ],
+   "latch": true,
+   "why": "owner: \"need milk right look for milk makers tame some build a fences in field to put them\" (docs/PLAYSCRIPT.md:220) | owner: \"kids need milk and cribs and toys\" (docs/TEST.md:98) | owner: \"dont put roof over you pen\" (docs/playbook.rules.json) | owner: \"terriform u pen\" (docs/playbook.rules.json) | owner: \"duble beds to start families\" (docs/PLAYSCRIPT.md:129) | owner: \"cant have kids until u build privet rooms with double beds and set them to sleep there. can swap em in and out till all, one guy can knock up[ many\" (docs/PLAYSCRIPT.md:304) | rule (owner-rules, verbatim): \"adult couples get private double-bed rooms; milk, cribs and toys before births; raise soldiers (combat traits)\"",
+   "family": "ideology-biotech-anomaly",
+   "done_mark": "mark_bio_milk_pen_done"
+  },
+  {
+   "id": "bio-child-care",
+   "priority": 34.0,
+   "when": {
+    "children": ">0",
+    "mark_child_care_ready": false
+   },
+   "then": [
+    "MISSING_TOOL place_building def=Crib beside the mother's bed, one per baby (fallback: game_select_architect_designator Crib + game_click_cell)",
+    "toy box / toys in the room",
+    "game_set cmd add_bill recipe=<baby food> count=10 when count_milk < 10",
+    "ladder_set mark child_care_ready true"
+   ],
+   "never": [
+    "romance, pairing, double beds or concubines for anyone under 18, whatever the ideoligion allows"
+   ],
+   "latch": true,
+   "why": "owner: \"kids need milk and cribs and toys\" (docs/TEST.md:98) | owner: \"king get cnew concumbines each night free love check ideology\" (docs/PLAYSCRIPT.md) (adults 18+ only) | rule (owner-rules, verbatim): \"adult couples get private double-bed rooms; milk, cribs and toys before births; raise soldiers (combat traits)\"",
+   "family": "ideology-biotech-anomaly",
+   "done_mark": "mark_bio_child_care_done"
+  },
+  {
+   "id": "bio-growth-moment",
+   "priority": 34.1,
+   "when": {
+    "growth": {
+     "ons": {
+      "letter_matches": "growth moment"
+     }
+    }
+   },
+   "then": [
+    "game_open_letter <growth moment>",
+    "MISSING_TOOL growth_moment_choose trait=Tough|Brawler|Careful shooter passion=Shooting|Melee (fallback: game_click_ui_target per choice)",
+    "game_press_accept"
+   ],
+   "why": "owner: \"mix an match need soldier born\" (docs/PLAYSCRIPT.md:127) | rule (owner-rules, verbatim): \"adult couples get private double-bed rooms; milk, cribs and toys before births; raise soldiers (combat traits)\"",
+   "family": "ideology-biotech-anomaly"
+  }
+ ],
+ "prompts": {
+  "anomaly-entity": "Entity threat letter.\n1 game_set_draft every able shooter.\n2 game_open_letter; read its weakness, do not assume.\n3 Fight it as a raid.\nNo letter text: game_take_screenshot of the letter.\nStanding alarm, no mark.\nOwner: \"ull die when mechs come ur weapons r turds\"",
+  "ideo-roles": "Specialist roles (more than 4 colonists).\nLook first: Ideoligion tab slots.\nSlot -> game_click_ui_target -> pick the pawn.\nRefused: ladder_set mark ideo_roles_refused true then false (3 -> fallback asks the owner).\nDone: ladder_set mark ideo_specialists_set true (latch ideo_roles_done).\nOwner: \"now u have a leader u need a morasl guide and they ahave abilities u want to always use\"",
+  "ideo-roles-fallback": "A specialist slot refused 3 times.\nreply_owner once; do not retry the click.\nDone: ladder_set mark ideo_specialists_set true when he confirms (latch ideo_roles_fallback_done).\nOwner: \"who is your leader role that you need to set\"",
+  "ideo-role-abilities": "Look first: lowest_mood and the leader's gizmos.\ngame_select_pawn leader -> game_list_selected_gizmos -> game_execute_gizmo on the saddest pawn; then the moral guide.\nOn cooldown: skip.\nStanding order, no mark.\nOwner: \"they ahave abilities u want to always use\"",
+  "ideo-ritual": "mark_altar_room_done true: skip to the mark.\nElse: Ideoligion tab required buildings; altar room left of the throne room, 2-wide path on its left; altar centre-north; statues in symmetric pairs.\nPlacement refused: read the reason, pick the next cell.\nDone: ladder_set mark ideo_altar_built true (latch ideo_ritual_done).\nOwner: \"need top fit a grand alter reformulat and leave two wide path on left\"",
+  "mechanitor": "Mechlink present, Basic mechtech done.\nplace_building MechGestator + MechRecharger on power (fallback: architect designator + game_click_cell).\nLifters/constructors first, then war mechs; watch bandwidth.\nRefused: read why (power, material) and fix it.\nDone: latch mechanitor_done.\nOwner: \"ull die when mechs come ur weapons r turds\"",
+  "genes": "Xenogermination done, no gene extractor.\nplace_building GeneExtractor + GeneAssembler on power (fallback: architect designator + game_click_cell).\nBank genes read from the list; never invent names.\nRefused: read why (power, material) and fix it.\nDone: latch genes_done.\nOwner: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables\"",
+  "ideo-ritual-hold": "Altar built, no hostiles (hostiles_on_map 0), mood under 0.5.\nClick the altar -> gizmos -> best ritual, organiser = moral guide -> accept.\nRefused: read why (missing role or building), fix that first.\nStanding order, no mark.\nOwner: \"start making u ideology statues, party room and throne rooms\"",
+  "ideo-party-room": "game_set cmd rooms -> an unused hall inside the wall.\nTables, chairs, chess; horseshoes against a wide wall, one action area unblocked; statues at the corners.\nPlacement refused: next cell.\nDone: ladder_set mark ideo_party_room true (latch ideo_party_room_done).\nOwner: \"start making u ideology statues, party room and throne rooms and landing pads and evertyhting in the game\" / \"you need to put horse shoes up against wide wall so action area isnt clicked need at minimum one action area unblocked\"",
+  "anomaly-monolith": "Monolith at level 0, defences_built, turrets >= 2, no hostiles.\nContainment platforms first, study entities in holding.\nThen game_click_cell monolith -> gizmos -> advance.\nRefused: read the reason, never repeat the click.\nDone: monolith_level rises above 0 (no mark).\nOwner: \"ull die when mechs come ur weapons r turds\"",
+  "anomaly-dissection": "Corpses waiting.\nadd_bill dissection/autopsy count=forever; ingredient filter Allow.\nRoom behind the embrasure halls.\nBill refused: no table yet, build it first.\nDone: ladder_set mark dissection_bill_set true (latch anomaly_dissection_done).\nOwner: \"you need to set dissection bills or do it dirreectly idk\"",
+  "bio-milk-pen": "Double rooms are set, milk under 20.\nTame cows/goats; fenced field pen beside the wall, NO roof, terraform/soil the floor.\nTame refused: handler skill too low, use another pawn.\nDone: ladder_set mark milk_pen_built true (latch bio_milk_pen_done).\nOwner: \"need milk right look for milk makers tame some build a fences in field to put them\" / \"dont put roof over you pen\" / \"terriform u pen\"",
+  "bio-child-care": "A child exists.\nCrib by the mother's bed (place_building, fallback architect designator), toys, milk or a baby food bill.\nNever romance for anyone under 18.\nDone: ladder_set mark child_care_ready true (latch bio_child_care_done).\nOwner: \"kids need milk and cribs and toys\"",
+  "bio-growth-moment": "Growth-moment letter: game_open_letter, pick combat traits and Shooting/Melee passions, game_press_accept.\nNo choice tool: game_click_ui_target per choice.\nStanding order, no mark.\nOwner: \"mix an match need soldier born\""
+ },
+ "sensors_needed": [
+  {
+   "key": "children",
+   "status": "TO_BUILD",
+   "csharp": "st[\"children\"] = (double)home.mapPawns.FreeColonistsSpawned.Count(p => p.DevelopmentalStage.Juvenile());",
+   "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence"
+  },
+  {
+   "key": "monolith (+ monolith_level)",
+   "status": "TO_BUILD",
+   "csharp": "if (ModsConfig.AnomalyActive) { ThingDef vm = DefDatabase<ThingDef>.GetNamedSilentFail(\"VoidMonolith\"); if (vm != null) st[\"monolith\"] = home.listerThings.ThingsOfDef(vm).Count > 0; st[\"monolith_level\"] = (double)Find.Anomaly.Level; }",
+   "where": "RimPLC/Source/RimPLC/Sensors.cs normal cadence"
+  }
+ ],
+ "variables_needed": [
+  {
+   "name": "adult_age_min",
+   "value": 18,
+   "rule": "owner: \"duble beds to start families\" (docs/PLAYSCRIPT.md:129) | owner: \"king get cnew concumbines each night free love check ideology\" (docs/PLAYSCRIPT.md)"
+  },
+  {
+   "name": "role_retry_preset",
+   "value": 3,
+   "rule": "owner: \"now u have a leader u need a morasl guide and they ahave abilities u want to always use / who is your leader role that you need to set\" (docs/PLAYSCRIPT.md:173)"
+  },
+  {
+   "name": "ritual_gap_hours",
+   "value": 120,
+   "rule": "owner, 2026-10-12: \"the logic chains buildable and editable on the fly with ground defaults and constants and variables that it needs to be trained on like a PLC for Rimworld of how to survive an empire space domination run through with everything rimworld has to offer from elephant riding armies drop poding down from your megaship to a tribal village to picking berries because your starving\""
+  },
+  {
+   "name": "altar_left_path_width",
+   "value": 2,
+   "rule": "owner: \"need top fit a grand alter reformulat and leave two wide path on left\" (372a4068-59cd-43c2-a79d-e04a8fcf9cb0.jsonl)"
+  },
+  {
+   "name": "milk_min",
+   "value": 20,
+   "rule": "owner: \"need milk right look for milk makers tame some build a fences in field to put them\" (docs/PLAYSCRIPT.md:220)"
+  }
+ ],
+ "missing_tools": [
+  "set_ideo_role (role Leader/MoralGuide/specialist, pawn)",
+  "place_building (def, x, z, rot) generic architect placement with read-back",
+  "tame_animal (kind or thing id)",
+  "build_pen (fence rect, no roof, soil floor)",
+  "start_ritual (altar, ritual, organiser)",
+  "growth_moment_choose (child, trait, passion)"
+ ],
+ "unplaced_rules": [
+  {
+   "quote": "pirate attack 1h",
+   "source": "docs/playbook.rules.json",
+   "reason": "JUSTIFIED: a one-off raid timing warning from chat, no ideology/biotech/anomaly action; war:war-letter-classify owns raid letters"
+  },
+  {
+   "quote": "use facial retention in generations and make ur self a normal goth emo chick next door not some off putting neon ghost",
+   "source": "docs/PLAYSCRIPT.md",
+   "reason": "JUSTIFIED: webcam/likeness instruction for Unity's image generation (meta/webcam), not a game action"
+  }
+ ],
+ "notes": [
+  "see base-and-fortress:power-every-consumer (was power-grid-standing)",
+  "see base-and-fortress:rung-2-power-and-cold (was power-generators-outside, power-generators-fallback; generator yard)",
+  "see base-and-fortress:battery-room (was power-batteries)",
+  "MOVE verbatim to base-and-fortress as power-alternate (was power-alternate; rung body in moved_rungs)",
+  "see base-and-fortress:coolers-and-vents (was power-ac-fridge; steps merge verbatim, body in moved_rungs)",
+  "see base-and-fortress:double-bed-rooms (was bio-family-rooms)",
+  "see research:research-antibiotics-queue (was ideo-research-antibiotics)",
+  "see configuration:config-antibiotics (was ideo-antibiotics; DrugLab + bill steps merge into research:research-antibiotics verbatim, body in moved_rungs)",
+  "see configuration:config-drug-policy (was ideo-colony-policy; it must never set pawns_set/assign_set)",
+  "ideo-roles / ideo-roles-fallback now handle SPECIALIST roles only; Leader + Moral guide = setup:leader-moral-guide (sets ideo_roles_set)",
+  "altar room built by royalty:altar-room (sets altar_room_done and ideo_altar_built); ideo-ritual skips its build steps then",
+  "anomaly-monolith reads monolith_level (TO_BUILD), mark monolith_advanced deleted",
+  "bio-milk-pen reads mark_double_rooms_set (base-and-fortress:double-bed-rooms) instead of family_rooms_built",
+  "stage gate: every non-alarm rung reads mark_mountain_base_done except ideo-role-abilities, ideo-ritual-hold (behind ideo-ritual), bio-child-care and bio-growth-moment (respond to children/letters whenever they exist) and anomaly-entity (alarm)",
+  "research_xenogenetics -> research_xenogermination per decisions.json (UNVERIFIED defName)"
+ ],
+ "moved_quotes": [
+  {
+   "to": "base-and-fortress:power-every-consumer",
+   "quotes": [
+    "and u need to power the things in your base without power always by conduit builds connecting near by",
+    "you got shit without power need conduit, ive told you this already!!!!",
+    "you still have holes in you embrasures and wires that arent connected just not connected string of conduit"
+   ]
+  },
+  {
+   "to": "base-and-fortress:rung-2-power-and-cold",
+   "quotes": [
+    "generators need to be out side",
+    "and make sure you zone shit in right like roofs so courtyards are unroofed and generators need to be out side",
+    "u never did your generators youd place them then jsut cancle their palcement",
+    "set up generators still not done",
+    "come on organize your generator like batteries are fucker,,, not all over the place no ryme or reason.. and u need better power not 10000 wood gens",
+    "u got panels out side the security zone"
+   ]
+  },
+  {
+   "to": "base-and-fortress:battery-room",
+   "quotes": [
+    "the battery braw needs to be consistant not tied to a single battery",
+    "battery room need redesign and path to all batteryies",
+    "and ur gonna need LOTS OF BATTERIES!",
+    "might want to design a power facility generators outside batteries in reactors later"
+   ]
+  },
+  {
+   "to": "base-and-fortress:power-alternate",
+   "quotes": [
+    "your gonna need some alternate power"
+   ]
+  },
+  {
+   "to": "base-and-fortress:coolers-and-vents",
+   "quotes": [
+    "you still need to figure out storages and frideges you keep forgetting to go back and finish things u need power and ac units and shit just like the last paly through",
+    "fix ur storage ur about to starve"
+   ]
+  },
+  {
+   "to": "base-and-fortress:double-bed-rooms",
+   "quotes": [
+    "cant have kids until u privet rooms with double beds, one guy can knock up[ many / read now.md to continue : cant have kids until u build privet rooms with double beds and set them to sleep there. can swap em in and out till all, one guy can knock up[ many",
+    "cant have kids until u build privet rooms with double beds and set them to sleep there. can swap em in and out till all, one guy can knock up[ many",
+    "duble beds to start families",
+    "king get cnew concumbines each night free love check ideology",
+    "cancle that contruction",
+    "adult couples get private double-bed rooms; milk, cribs and toys before births; raise soldiers (combat traits)"
+   ]
+  },
+  {
+   "to": "research:research-antibiotics-queue + configuration:config-antibiotics",
+   "quotes": [
+    "you also might want to research antibiotics and assign everyones drug scheldule manage to take peneacycline every 5 days once you build it at drug lab after researching antibiotics in game"
+   ]
+  },
+  {
+   "to": "configuration:config-drug-policy",
+   "quotes": [
+    "were ur crops u get priorities done and scedukele and drug assignment and antibiotics",
+    "set theri scheldule to anything at all times for all pawns"
+   ]
+  }
+ ],
+ "moved_rungs": [
+  {
+   "id": "power-alternate",
+   "priority": 43,
+   "when": {
+    "research_solarpanels": true,
+    "power_generators": ">=2",
+    "count_solargenerator": "<2"
+   },
+   "then": [
+    "solar/wind inside the wall; geothermal on a steam geyser later; reactors later",
+    "game_select_architect_designator SolarGenerator; game_click_cell"
+   ],
+   "never": [
+    "running the grid on wood alone"
+   ],
+   "why": "owner: \"your gonna need some alternate power\" (docs/playbook.rules.json) | owner: \"your gonna need some alternate power\" (docs/PLAYSCRIPT.md:133) | walkthrough-base-power-temperature.md [base-and-fortress]: wood-fired 1000W (22 wood/day), solar 1700W daytime only, keep generation >= 1.25x continuous demand, stored energy >= one night of demand, vent generator heat with a remove-roof area",
+   "family": "base-and-fortress",
+   "prompt": "Add solar/wind inside the wall; never wood alone.\nOwner: \"your gonna need some alternate power\""
+  },
+  {
+   "id": "power-ac-fridge",
+   "priority": 44,
+   "when": {
+    "has_power": true,
+    "research_airconditioning": true,
+    "count_cooler": "<1"
+   },
+   "then": [
+    "cooler in the freezer wall, blue side in (rotate with Q x2), MISSING_TOOL set_cooler_temp -10C",
+    "game_set cmd stockpile_room room=<freezer> mode=food"
+   ],
+   "why": "owner: \"you still need to figure out storages and frideges you keep forgetting to go back and finish things u need power and ac units and shit just like the last paly through\" (docs/playbook.rules.json) | owner: \"fix ur storage ur about to starve\" (docs/PLAYSCRIPT.md)",
+   "family": "ideology-biotech-anomaly",
+   "merge_into": "base-and-fortress:coolers-and-vents",
+   "prompt": "Cooler in the freezer wall, blue side in, -10C; food stockpile in the freezer.\nOwner: \"fix ur storage ur about to starve\""
+  },
+  {
+   "id": "ideo-antibiotics",
+   "priority": 71,
+   "when": {
+    "research_penoxycyline": true,
+    "mark_peno_policy_set": false
+   },
+   "then": [
+    "MISSING_TOOL place_building def=DrugLab inside the wall (fallback: game_select_architect_designator DrugLab + game_click_cell)",
+    "game_set cmd add_bill recipe=Make_Penoxycyline count=10",
+    "MISSING_TOOL set_drug_policy drug=Penoxycyline every 5 days for every colonist",
+    "ladder_set op mark name peno_policy_set value true"
+   ],
+   "latch": true,
+   "why": "owner: \"you also might want to research antibiotics and assign everyones drug scheldule manage to take peneacycline every 5 days once you build it at drug lab after researching antibiotics in game\" (docs/playbook.rules.json)",
+   "family": "ideology-biotech-anomaly",
+   "merge_into": "research:research-antibiotics (DrugLab + bill steps) / configuration:config-antibiotics (policy)",
+   "prompt": "Penoxycyline researched.\nDrug lab inside the wall -> add_bill Make_Penoxycyline x10 -> drug policy every 5 days.\nBill refused: the lab is not built yet, build it first.\nDone: mark peno_policy_set.\nOwner: \"manage to take peneacycline every 5 days once you build it at drug lab\""
+  }
+ ]
+}

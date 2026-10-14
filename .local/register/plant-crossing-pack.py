@@ -87,9 +87,17 @@ PLANTS = [
      "                CrossingInventoryPolicy.DropFreight(pawn);" + chr(10) +
      "                if (!SecureCarriedThing(receipt))", 1),
 
+    # Re-aimed 2026-10-13: `HasFreight` now asks Core twice, looking past retained field
+    # equipment. The fault replaces both questions with a hand-rolled "anything in the pack".
     ("Core's keep-list is replaced by a hand-rolled one", POLICY,
-     "return pawn.inventory.FirstUnloadableThing.Thing != null;",
-     "return pawn.inventory.innerContainer.Count > 0;", 1),
+     "            Thing first = pawn.inventory.FirstUnloadableThing.Thing;" + chr(10)
+     + "            if (first == null) { return false; }" + chr(10)
+     + "            if (!IsFieldEquipment(first)) { return true; }" + chr(10)
+     + "            // Core named retained equipment first; look past it." + chr(10)
+     + "            KeepFieldEquipmentLast(pawn);" + chr(10)
+     + "            first = pawn.inventory.FirstUnloadableThing.Thing;" + chr(10)
+     + "            return first != null && !IsFieldEquipment(first);",
+     "            return pawn.inventory.innerContainer.Count > 0;", 1),
 
     ("the whole pack is emptied, so a pawn loses its own medicine", POLICY,
      "            if (!HasFreight(pawn)) { return 0; }",

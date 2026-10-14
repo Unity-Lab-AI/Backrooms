@@ -117,7 +117,9 @@ def fresh(fact):
                   "crew), never your own name in the third person. ONE spoken line, at most 20 words, about "
                   "this and nothing else: \"%s\". Say it IN YOUR OWN WORDS -- react to it, never repeat it back. Invent NO events, "
                   "names or numbers that are not in that fact, and NEVER say you did, built, set up or powered anything unless the fact says it is done. No swearing, nothing degrading. Don't reuse "
-                  "these recent lines: %s. Reply with the line only."
+                  "these recent lines: %s. Start your reply with how you FEEL saying it, in brackets, one of [neutral] [warm] [happy] "
+                  "[amused] [excited] [sad] [concerned] [frustrated] [surprised], then the line. Put [laughter] in the line "
+                  "wherever you actually laugh. Reply with the bracket and the line only."
                   % (fact, " | ".join(hist[-8:])))
         try:
             # the same system/user split her voice shell was trained on (training/build_voice.py): persona and
@@ -138,6 +140,11 @@ def fresh(fact):
             # the player model shares Ollama and can hold it for a while; say why, then let the next pass retry
             print("voice model did not answer:", str(_e)[:80], flush=True); break
         line = line.replace('"', "").strip()
+        # her own emotion choice leads the reply (owner, 2026-10-13: "u need the working model to have like properl
+        # emotional tool calls not edit her fucking outputs") -- taken as she wrote it, never guessed from the words
+        _m = re.match(r"\s*\[(neutral|warm|happy|amused|excited|sad|concerned|frustrated|surprised)\]\s*", line, re.I)
+        LAST_EMOTION[0] = _m.group(1).lower() if _m else ""
+        if _m: line = line[_m.end():]
         # no announcer openers (owner: no corporate scripted showman lines): "Hey guys,", "Alright, listen up,"
         line = re.sub(r"^\W*(?:(?:hey|hi|yo|ok(?:ay)?|alright|so|oh|well)\W+)*(?:(?:guys|everyone|everybody|chat|"
                       r"y'all|folks|listen up|team|crew)\b\W*)+", "", line, flags=re.I).strip()
@@ -191,16 +198,23 @@ def fresh(fact):
         if attempt < 2 and any(_n(t) in _n(low) and any(_n(t) in _n(h) for h in hist[-10:]) for t in THEMES + ("scar and me", "three of", "gee scar")): continue
         # what the crew is actually doing may come back, just not in the last few lines (a ten-line ban on these
         # silenced her: research and farming ARE the colony right now)
-        ACTS = ("guest bed", "growing zone", "table", "reading", "manual", "research")
+        ACTS = ("guest bed", "growing zone", "table", "reading", "manual", "research", "storage", "stockpile")
         if attempt < 2 and any(t in low and any(t in h.lower() for h in hist[-5:]) for t in ACTS): continue  # five lines, not three: "research" came back four lines running
         if any(difflib.SequenceMatcher(None, low, h.lower()).ratio() > 0.6 for h in hist[-30:]): continue
         line = scrub(line)
         json.dump((hist + [line])[-30:], open(sb.HIST, "w", encoding="utf-8")); return line
     return None
 
+LAST_EMOTION = [""]
+LAST_VIEWER_CAM = [0.0]
+CAM_EVERY = 45          # one viewer-driven webcam frame at a time: a render takes ~20 s and the face queue holds 3
+
+
 def speak(line):
     if not line: return
-    subprocess.run([sys.executable, SAY, "--raw", line], env=dict(os.environ, UNITY_NO_GLANCE="1"))
+    env = dict(os.environ, UNITY_NO_GLANCE="1")
+    if LAST_EMOTION[0]: env["UNITY_SPEAK_EMOTION"] = LAST_EMOTION[0]   # her choice from fresh(), passed as-is
+    subprocess.run([sys.executable, SAY, "--raw", line], env=env)
 
 def last_spoken():
     try:
@@ -256,8 +270,14 @@ def state_facts():
                 zl = [z.get("label") for z in call("rimworld/list_zones").get("zones", []) if z.get("label")]
             except BaseException:
                 zl = []
-            facts.append(("we have %s set up now" % ", ".join(zl[:4])) if zl else
-                         "I have not set up storage yet, that is next")
+            # live 2026-10-13: with her player stalled this was nearly the only fact, and she said "storage" ten
+            # times without placing one. "No storage yet" is news once, not again while it is in the last ten lines.
+            try: recent = " ".join(json.load(open(sb.HIST, encoding="utf-8"))[-10:]).lower()
+            except Exception: recent = ""
+            if zl:
+                facts.append("we have %s set up now" % ", ".join(zl[:4]))
+            elif not re.search(r"storage|stockpile", recent):
+                facts.append("I have not set up storage yet, that is next")
         lets = [l.get("label") for l in call("rimworld/list_letters").get("letters", []) if l.get("label")]
         # a waiting letter is news ONCE, not a topic every 20 s (live: "authorization" six lines running)
         global _told_letters
@@ -339,6 +359,8 @@ while True:
                 continue                  # her own chat lines come back through the bridge; never answer herself
             if who.lower() not in OWNER:
                 SEEN.add(who)             # everyone who has talked or joined this stream, for the catch-up
+            if who.lower() in OWNER and text == "(joined the stream)":
+                continue                  # a join is not an order (it was landing in owner-orders.txt as one)
             if who.lower() in OWNER:
                 # the owner typing in Twitch chat is a GAME order for her (owner, 2026-10-10: "i told her to explor
                 # the hidden rroms and get outside her walls but she didnt do it" -- it had only been chat). Her
@@ -347,6 +369,14 @@ while True:
                     with open(os.path.join(ROOT, ".local", "autopilot", "owner-orders.txt"), "a", encoding="utf-8") as f:
                         f.write("\n- OWNER in Twitch chat (game order, binding next turn): " + text[:300] + "\n")
                 except Exception: pass
+                # owner, 2026-10-13: answer him out loud too -- never by name (the handle is secret), spoken only, since
+                # a Twitch reply would @ the handle
+                ans = None
+                for _try in range(3):
+                    ans = fresh("someone in chat said: \"%s\". Answer them briefly and honestly without using any name. "
+                                "What is true right now: %s" % (text[:160], state_facts() or "nothing new on the map this second"))
+                    if ans: break
+                if ans: speak(ans)
                 continue
             if text == "(joined the stream)":
                 if who.lower() in greeted: continue
@@ -380,6 +410,18 @@ while True:
                         subprocess.Popen([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "reply", who, ans],
                                          creationflags=0x08000000 if os.name == "nt" else 0)
                     except Exception: pass
+                    # owner, 2026-10-13: "build that into everything ... all the dynamic needs we want for twitch viewer
+                    # suggeted inputs and contorl" -- what a viewer says can show up on her webcam: their words go to the
+                    # face service as the scene, her brain rewrites them into what the camera sees (no lists, no
+                    # fallbacks), nudity asks are refused there. One viewer frame per CAM_EVERY seconds.
+                    if time.time() - LAST_VIEWER_CAM[0] >= CAM_EVERY:
+                        LAST_VIEWER_CAM[0] = time.time()
+                        mood = {"happy": "chill", "excited": "hype", "angry": "angry", "laughing": "laugh", "sad": "sad",
+                                "scared": "scared", "flirty": "flirty", "smug": "smug", "focused": "focus"}.get(LAST_EMOTION[0], "flirty")
+                        try:
+                            subprocess.Popen([sys.executable, os.path.join(ROOT, ".claude", "tools", "unity-cam.py"), mood,
+                                              ans[:90], text[:120]], creationflags=0x08000000 if os.name == "nt" else 0)
+                        except Exception: pass
                 else:
                     print("reply to", who, "not written -- retried next pass", flush=True)
                     later(item)

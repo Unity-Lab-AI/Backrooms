@@ -62,7 +62,7 @@ Select who you mean first. Anyone who cannot cross is listed with the reason rat
        remembered, so a fully commissioned, assembled and calibrated gate looked broken. -->
   <RR_Portals_NoLaboratoryAddress>No address is remembered for this gate yet, so there is nothing to open. Choose a coordinate below and press "Remember this coordinate as a laboratory address" first.</RR_Portals_NoLaboratoryAddress>
   <RR_Portals_BlockedAssembly>Still to do: the gate is not assembled. Add the "assemble gate" bill to the designated machining table.</RR_Portals_BlockedAssembly>
-  <RR_Portals_BlockedCalibration>Still to do: the gate is not calibrated. Order calibration on the gate itself.</RR_Portals_BlockedCalibration>
+  <RR_Portals_BlockedCalibration>Still to do: the gate is not calibrated. Select the gate and press "Calibrate gate".</RR_Portals_BlockedCalibration>
   <RR_Portals_BlockedNoOperator>Still to do: no operator is assigned. Assign one on the gate.</RR_Portals_BlockedNoOperator>
   <RR_Portals_BlockedOperatorAway>Still to do: {0} is assigned but not at the console. Order them to staff it.</RR_Portals_BlockedOperatorAway>
   <RR_Portals_BlockedConsoleNormalOp>Still to do: {0} is in normal operation. Set it to gate control.</RR_Portals_BlockedConsoleNormalOp>

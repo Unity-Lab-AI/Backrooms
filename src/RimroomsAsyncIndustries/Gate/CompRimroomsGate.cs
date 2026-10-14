@@ -480,14 +480,13 @@ namespace RimroomsAsyncIndustries.Gate
                     // rather than "free".
                     if (!SpendNativeOpeningTick())
                     {
-                        EnterEmergency(HasNativeEnergyDebitFault
-                            ? "RR_NativeGate_EnergyDebitFault" : "RR_NativeGate_OpeningEnergyLow");
+                        EnterEmergency(NativeOpeningSpendFailureReason());
                     }
                 }
                 else if (openingTicksRemaining > 0)
                 {
                     if (!SpendNativeOpeningTick())
-                    { EnterEmergency(HasNativeEnergyDebitFault ? "RR_NativeGate_EnergyDebitFault" : "RR_NativeGate_OpeningEnergyLow"); return; }
+                    { EnterEmergency(NativeOpeningSpendFailureReason()); return; }
                     openingTicksRemaining--;
                     SendOpeningWindowWarnings();
                     if (openingTicksRemaining <= 0) { EnterEmergency("RR_Gate_WindowExpired"); }

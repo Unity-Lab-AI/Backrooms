@@ -111,6 +111,8 @@ namespace RimPLC
                     return Api.SetTag(a.GetString("name"), a.Get("value"), owner);
                 case "set_mark":
                     return Api.SetMark(a.GetString("name"), a.Get("value"));
+                case "set_host":
+                    return Api.SetHost(a.Get("values"));
                 case "upsert_rung":
                     return Api.UpsertRung(a.Get("rung"));
                 case "remove_rung":

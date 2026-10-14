@@ -75,6 +75,11 @@ namespace RimroomsAsyncIndustries.Automation
             }
 
             ProcessInbox();
+            if (Find.TickManager.TicksGame % Sensors.ScanEveryTicks == 0 && HomeMap != null)
+            {
+                try { Sensors.Write(HomeMap, FolderPath); }
+                catch (Exception e) { Log.Warning("[Rimrooms][Automation] sensor scan failed: " + e.Message); }
+            }
         }
 
         /// <summary>
@@ -285,6 +290,57 @@ namespace RimroomsAsyncIndustries.Automation
                 case "crops": return SetupTools2.Crops(map, a);
                 case "hunt": return SetupTools2.Hunt(map);
                 case "assign": return Assign(map, a);
+                case "unforbid": return SetupTools3.Unforbid(map);
+                case "sensors": return Sensors.Write(map, FolderPath);
+                case "build": return SetupTools4.Build(map, a);
+                case "build_room": return SetupTools4.BuildRoom(map, a);
+                case "deconstruct": return SetupTools4.Deconstruct(map, a);
+                case "harvest": return SetupTools4.Harvest(map, a);
+                case "tame": return SetupTools4.Tame(map, a);
+                case "slaughter": return SetupTools4.Slaughter(map, a);
+                case "allow_area": return SetupTools4.AllowArea(map, a);
+                case "self_tend": return SetupTools4.SelfTend(map, a);
+                case "schedule": return SetupTools4.Schedule(map, a);
+                case "drug_policy": return SetupTools4.DrugPolicyCmd(map, a);
+                case "research": return SetupTools4.Research(a);
+                case "bed_medical": return SetupTools4.BedUse(map, a, false);
+                case "bed_prisoner": return SetupTools4.BedUse(map, a, true);
+                case "cooler_temp": return SetupTools4.CoolerTemp(map, a);
+                case "equip": return SetupTools5.Equip(map, a);
+                case "capture": return SetupTools5.Capture(map, a);
+                case "bill_count": return SetupTools5.BillCount(map, a);
+                case "zone_create": return SetupTools5.ZoneCreate(map, a);
+                case "roof_area": return SetupTools5.RoofArea(map, a);
+                case "firebreak": return SetupTools5.Firebreak(map, a);
+                case "pen": return SetupTools5.Pen(map, a);
+                case "bury": return SetupTools5.Bury(map, a);
+                case "ideo_role": return SetupTools5.IdeoRole(map, a);
+                case "save_game": return SetupTools5.SaveGame(a);
+                case "stockpile_priority": return SetupTools6.StockpilePriority(map, a);
+                case "stockpile_copy": return SetupTools6.StockpileCopy(map, a);
+                case "crew_setup": return SetupTools6.CrewSetup(map, a);
+                case "terraform": return SetupTools6.Terraform(map, a);
+                case "freezer": return SetupTools7.Freezer(map);
+                case "room_cooler": return SetupTools7.RoomCooler(map, a);
+                case "butcher": return SetupTools7.Butcher(map);
+                case "kitchen": return SetupTools7.Kitchen(map);
+                case "arm": return SetupTools8.Arm(map);
+                case "draft": return SetupTools8.Draft(map, a);
+                case "hold": return SetupTools8.Hold(map);
+                case "tower": return SetupTools8.Tower(map, a);
+                case "security_room": return SetupTools8.SecurityRoom(map, a);
+                case "power": return SetupTools9.Power(map, a);
+                case "hall": return SetupTools9.Hall(map, a);
+                case "research_next": return SetupTools10.ResearchNext();
+                case "prisoner": return SetupTools10.Prisoner(map, a);
+                case "generator": return SetupTools10.Generator(map, a);
+                case "trade": return SetupTools11.Trade(map, a);
+                case "call_trader": return SetupTools14.CallTrader(map, a);
+                case "guest_beds": return SetupTools13.GuestBeds(map, a);
+                case "gate_posture": return SetupTools12.GatePosture(map, a);
+                case "chop": return SetupTools3.Chop(map, a);
+                case "shelter": return SetupTools3.Shelter(map, a);
+                case "stockpile_camp": return SetupTools3.StockpileCamp(map, a);
                 default: return "refused: unknown cmd " + cmd;
             }
         }
@@ -314,7 +370,7 @@ namespace RimroomsAsyncIndustries.Automation
             int cookIndex = order.FindIndex(w => w.defName == "Cooking");
 
             DrugPolicy policy = Current.Game.drugPolicyDatabase.AllPolicies
-                .FirstOrDefault(p => p.label.IndexOf("social", StringComparison.OrdinalIgnoreCase) >= 0)
+                .FirstOrDefault(p => p.label.IndexOf("no drug", StringComparison.OrdinalIgnoreCase) >= 0)   // owner 2026-10-13: "drugs are for hospitality guests"
                 ?? Current.Game.drugPolicyDatabase.DefaultDrugPolicy();
 
             var claimed = new HashSet<Thing>();
@@ -374,7 +430,8 @@ namespace RimroomsAsyncIndustries.Automation
             }
 
             return "ok: " + crew.Count + " colonists -- work 1s Firefighter..Cooking, rest by skill, none blank; schedule Anything; drugs '" +
-                   (policy?.label ?? "none") + "'; hostility Attack; arming: " + (notes.Count > 0 ? string.Join("; ", notes) : "everyone already armed");
+                   (policy?.label ?? "none") + "'; hostility Attack; arming: " + (notes.Count > 0 ? string.Join("; ", notes) : "everyone already armed") +
+                   "; " + SetupTools3.Unforbid(map);
         }
 
         /// <summary>

@@ -277,6 +277,8 @@ while True:
                 scen_go = "Crashlanded" if "crash" in want.lower().replace(" ", "") else "Async Industries"
                 print(stamp(), "scenario from GO:", scen_go, flush=True)
                 open(os.path.join(HERE, "_new_colony.request"), "w", encoding="utf-8").write(scen_go)
+                # the ladder's start rungs read this (mark_start_kind: 1 Crashlanded, 4 Async Industries)
+                open(os.path.join(HERE, "_start_kind"), "w", encoding="utf-8").write("1" if scen_go == "Crashlanded" else "4")
         # owner: "brb massive update to my systems game is save so we will be right back at it" -- a restart that
         # resumes: .local/qa/_resume.request holds the save name; once the game answers, that save is loaded
         if os.path.exists(RESUME) and _bridge_up():

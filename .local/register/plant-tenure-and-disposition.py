@@ -118,7 +118,9 @@ PLANTS = [
      "                if (!HasCertification(pawn, \"RR_Cert_FieldAnalyst\")) { continue; }", PROOF),
 
     ("being certified starts changing the pawn", CERTS,
-     "            RecordEvent(\"RR_Event_Certified\", pawn.LabelShortCap, certification.LabelCap);",
+     # Re-aimed 2026-10-13: the event now carries the pawn's name twice and wraps a line.
+     "            RecordEvent(\"RR_Event_Certified\", pawn.LabelShortCap, pawn.LabelShortCap," + chr(10)
+     + "                certification.LabelCap);",
      "            pawn.skills.Learn(RimWorld.SkillDefOf.Intellectual, 5000f);", PROOF),
 
     # ================================================= the four dispositions

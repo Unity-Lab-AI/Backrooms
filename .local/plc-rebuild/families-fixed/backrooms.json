@@ -1,0 +1,702 @@
+{
+ "family": "backrooms",
+ "rungs": [
+  {
+   "id": "br-return-window",
+   "priority": 1.4,
+   "family": "backrooms",
+   "when": {
+    "over": {
+     "ton": {
+      "mark_crew_across": true
+     },
+     "hours": 6
+    }
+   },
+   "then": [
+    "order_pawn every pawn on the backrooms map to the gate cell",
+    "the operator stays on station until they are home",
+    "every colonist home: ladder_set mark crew_across false"
+   ],
+   "why": "\"you need to get your peopel back befoer they die in the backrooms\" (docs/playbook.rules.json)",
+   "never": [
+    "leave a crew past its return window"
+   ],
+   "latch": false,
+   "note": "RETURN_HOURS is not a gates.py tag: ton hours are the literal 6"
+  },
+  {
+   "id": "br-heat",
+   "priority": 1.42,
+   "family": "backrooms",
+   "when": {
+    "heat": {
+     "any": [
+      {
+       "condition_heatwave": true
+      },
+      {
+       "alert_heatstroke": true
+      },
+      {
+       "outdoor_temp": ">40"
+      }
+     ]
+    }
+   },
+   "then": [
+    "roof the room first -- a room only cools once walled and roofed",
+    "game_apply_architect_designator Passive cooler (wood-fuelled, no power) in every roofed room: bunk huts, prison hold, food store",
+    "never put a cooler in the lane along the inner wall",
+    "heatstroke pawns: order_pawn to the coolest roofed room; pawn_priorities PatientBedRest"
+   ],
+   "why": "\"your people are in the heat too theri nextr to die\" (docs/playbook.rules.json) | \"you need to figure out the tmepature pronblem asap ASAP one heat wave and your dead in 3 minutes\" (docs/playbook.rules.json)",
+   "never": [
+    "put a cooler in the lane along the inner wall"
+   ],
+   "latch": false,
+   "note": "standing order, not latched; stops when the wave, the alert and the temperature drop"
+  },
+  {
+   "id": "gate-staffed",
+   "priority": 2.7,
+   "family": "backrooms",
+   "when": {
+    "mark_gate_open": true,
+    "mark_operator_on_station": false
+   },
+   "then": [
+    "order_pawn the nearest free pawn to any of the four consoles within half an hour (Standing Relief doubles it)",
+    "ladder_set mark operator_on_station true"
+   ],
+   "why": "\"you need to get your peopel back befoer they die in the backrooms\" (docs/playbook.rules.json)",
+   "latch": false
+  },
+  {
+   "id": "br-out-of-the-backrooms",
+   "priority": 3.2,
+   "family": "backrooms",
+   "when": {
+    "mark_start_kind": 7,
+    "mark_natural_gate_found": false,
+    "explore_fails": {
+     "not": {
+      "tries": {
+       "ctu": {
+        "mark_explore_tried": true
+       },
+       "preset": 3,
+       "reset": {
+        "mark_natural_gate_found": true
+       }
+      }
+     }
+    }
+   },
+   "then": [
+    "ladder_set mark explore_tried false (re-arm the refusal counter)",
+    "game_set cmd explore (time running) -- repeat until the result says nothing left",
+    "game_set cmd rooms -- list every explored room; read each for a natural gate/portal",
+    "game_get_cells_info on any candidate cell; confirm it is a natural gate",
+    "refused / nothing found after explore says nothing left: ladder_set mark explore_tried true (3 -> br-out-fallback)",
+    "found: ladder_set mark natural_gate_found true, ladder_set mark natural_gate_cell <x,z>"
+   ],
+   "why": "\"game ewill be tabbed in do not use ask me question i wont see it just problem solve think critialy design your plans make everything you will ever need secure your resource and food chains do it all keeep ur pasn allive get out of the backrooms first find gats natural and GET OUT!\" (docs/playbook.rules.json) | \"save this save.. start new secenerio,, solo/groupd start with same precets pic a mountin tile to start and try to find natural gate to it or just out of back rooms and get in contact with the company\" (docs/playbook.rules.json) | \"lock for gates and go through them come back to this level if they lead deerer ur exit is on this level\" (docs/playbook.gates.json) | \"i told her to explor the hidden rroms and get outside her walls but she didnt do it\" (372a4068-59cd-43c2-a79d-e04a8fcf9cb0.jsonl) | \"and remember the solo/group start in a backroom needs to 100% have a exit to map natural portal on their first backrroms level with natural portals deeper to an extent till they would need to buidl theri own gate\" (a773bd7d-54f4-4f3b-be1c-de6041878b2e.jsonl) | \"okay do you know how to explore the rooms of the facility and get outside and start collecting resources planting crops and setting bills for food and then get your freezer storages set up so that noraml non needing frozen goods arent in the freezer and things like ambrosia, wort, food, healroot are in the freezer and start seting up the gate i mena u wrote this mod you should know how to play it top to bottom\" (docs/playbook.rules.json)",
+   "never": [
+    "ask the owner a question during the run",
+    "go deeper than the first level while the exit is on this level",
+    "designate mining on cells not yet explored (a mine order is a seam or a room on cells already read)"
+   ],
+   "latch": true,
+   "note": "mark_start_in_backrooms deleted (decisions.json): reads mark_start_kind 7; done-mark (latch_name): mark_br_out_of_the_backrooms_done"
+  },
+  {
+   "id": "br-out-fallback",
+   "priority": 3.21,
+   "family": "backrooms",
+   "when": {
+    "mark_start_kind": 7,
+    "mark_natural_gate_found": false,
+    "explore_fails": {
+     "ctu": {
+      "mark_explore_tried": true
+     },
+     "preset": 3,
+     "reset": {
+      "mark_natural_gate_found": true
+     }
+    }
+   },
+   "then": [
+    "ladder_set mark explore_tried false (re-arm the edge)",
+    "game_take_screenshot + game_list_zones to see the unexplored edges",
+    "order_pawn one armed pawn to the farthest unexplored door (omit option to list the menu, then 'Go')",
+    "game_set cmd explore once more",
+    "a gate that leads deeper: one pawn through, mark the route home, come back to this level -- the exit is on this level",
+    "refused again: ladder_set mark explore_tried true",
+    "found: ladder_set mark natural_gate_found true, ladder_set mark natural_gate_cell <x,z>"
+   ],
+   "why": "\"lock for gates and go through them come back to this level if they lead deerer ur exit is on this level\" (docs/playbook.gates.json)",
+   "latch": false,
+   "note": "ctu fallback (preset 3) on mark_explore_tried; reset when the gate is found"
+  },
+  {
+   "id": "br-haul-out",
+   "priority": 3.22,
+   "family": "backrooms",
+   "when": {
+    "mark_start_kind": 7,
+    "mark_natural_gate_found": true,
+    "mark_got_out": false
+   },
+   "then": [
+    "game_set cmd unforbid (map = the backrooms map) so every starting item can be hauled",
+    "order_pawn each pawn on a supply stack, option 'Haul', queue=true, then to the natural gate cell",
+    "on the surface: game_set cmd stockpile_camp mode food, then mode nofood, beside (not inside) the gate shell",
+    "every colonist on the surface map: ladder_set mark got_out true",
+    "same step: ladder_set mark start_opening_done true (stage mark for start_kind 7)"
+   ],
+   "why": "\"okay if u found way out try to get all your supplies out and into starting structure that will become your main center throne roome you will exapand and plan around later on once settled\" (docs/playbook.rules.json) | \"okay if u found way out try to get all your supplies out and into starting structure that will become your main center throne roome you will exapand and plan around  later on once settled\" (docs/PLAYSCRIPT.md:453) | \"you need to get your peopel back befoer they die in the backrooms\" (docs/playbook.rules.json)",
+   "never": [
+    "leave a pawn behind in the backrooms"
+   ],
+   "latch": true,
+   "note": "sole setter of start_opening_done for start_kind 7 (decisions.json progression); done-mark (latch_name): mark_br_haul_out_done"
+  },
+  {
+   "id": "br-natural-gate-room",
+   "priority": 10.3,
+   "family": "backrooms",
+   "when": {
+    "mark_got_out": true
+   },
+   "then": [
+    "game_list_zones: delete any stockpile in the natural gate room; no bed owned in it (game_set cmd set_bed_owner elsewhere)",
+    "a natural gate is always open -- leave it; minify it only to move it into the gate lab",
+    "a natural gate out of the backrooms to a world tile has no return gate yet: never send a pawn out that way expecting to come back"
+   ],
+   "why": "\"and you shouldnet be living in or using the natural gate room\" (docs/PLAYSCRIPT.md) | \"but remember natural portals like in the not corporation secerio stay open indefinately as the player doesnt have a way to build a lab portal of their own yet\" (a773bd7d-54f4-4f3b-be1c-de6041878b2e.jsonl) | \"hold up tho im doing the store run scenerio.. the gate is a natural one and shouuld always be open.... so whats this mean? i understand the machine gate opening and closing and will kill anyone standing near in front on start up. but the natural portals are open always right? except if minified and put elsewhere or in storage like a building in storage\" (a773bd7d-54f4-4f3b-be1c-de6041878b2e.jsonl) | \"and another bug.. ther natureal gates in the backrrooms that lead to the world map tiles( these gats currently dont have a way back into the backrooms when a pawn goes through a natural gate in the backrroms that leads to a world tile map, they need to have a gate spawn in the world tile that they portal to so they can head back into the backrooms, currently and incorrectyl there is no way for a pawn to go back into the backrooms when they exit via a natural gate. this needs added to the todo and worked on\" (ec0a7455-ac67-432e-b577-e55254557c22.jsonl)",
+   "never": [
+    "sleep, store or work in the natural gate room",
+    "stand a pawn in front of a machine gate at startup"
+   ],
+   "latch": true,
+   "note": "latched now: unlatched with only got_out it fired every scan and hid every rung below 10.30; done-mark (latch_name): mark_br_natural_gate_room_done"
+  },
+  {
+   "id": "br-camp-wall",
+   "priority": 10.32,
+   "family": "backrooms",
+   "when": {
+    "mark_start_kind": 7,
+    "mark_got_out": true,
+    "mark_camp_defence": false,
+    "wood": ">=300",
+    "wall_fails": {
+     "not": {
+      "tries": {
+       "ctu": {
+        "mark_wall_tried": true
+       },
+       "preset": 3,
+       "reset": {
+        "mark_camp_defence": true
+       }
+      }
+     }
+    }
+   },
+   "then": [
+    "ladder_set mark wall_tried false; game_get_cells_info along the planned line first: never wall over an existing embrasure or gate",
+    "game_apply_architect_designator Wall (Wood) around the camp -- exterior only, to be moved later",
+    "game_apply_architect_designator Embrasure (non-powered) all around so gunners shoot out",
+    "gates on east AND west (plus north) so nobody runs round the outside; or embrasure rooms facing the enemy",
+    "3-wide smooth marble firebreak ring outside the wall (Marble flagstone / smooth floor designator)",
+    "keep the inner lane along every wall clear: no cooler, no furniture",
+    "a designator refused: ladder_set mark wall_tried true (3 -> br-camp-wall-fallback)",
+    "ladder_set mark camp_defence true"
+   ],
+   "why": "\"make it of wood just exterior make 3wide terrriom stone smooth marble for fire break\" (docs/playbook.rules.json) | \"thats to be moved later\" (docs/playbook.rules.json) | \"make wall of embrasure non powered type all around then u can shoot out\" (docs/playbook.rules.json) | \"you need east and west gates on you fort too so u dont have to run arouns , or like i said put them where they can shoot out at the bad guys\" (docs/playbook.rules.json) | \"and u have a coloer out side i think blocking path to larege amout of inner N wall\" (docs/playbook.rules.json) | \"wtf why u putting walls upganets and replacing embrasures that wont work fix those walls\" (docs/playbook.rules.json)",
+   "never": [
+    "build plain wall over embrasures or gates",
+    "put a cooler or furniture in the lane along the inner wall"
+   ],
+   "latch": true,
+   "note": "sets mark_camp_defence for start_kind 7 (setup-7-camp-defence for every other kind); mark_camp_wall_done retired; done-mark (latch_name): mark_br_camp_wall_done"
+  },
+  {
+   "id": "br-camp-wall-fallback",
+   "priority": 10.33,
+   "family": "backrooms",
+   "when": {
+    "mark_start_kind": 7,
+    "mark_got_out": true,
+    "mark_camp_defence": false,
+    "wall_fails": {
+     "ctu": {
+      "mark_wall_tried": true
+     },
+     "preset": 3,
+     "reset": {
+      "mark_camp_defence": true
+     }
+    }
+   },
+   "then": [
+    "ladder_set mark wall_tried false",
+    "game_list_architect_designators for exact labels (Wall, Embrasure, flagstone)",
+    "wood short: game_set cmd chop then retry one segment",
+    "refused again: ladder_set mark wall_tried true",
+    "wall closed: ladder_set mark camp_defence true"
+   ],
+   "why": "\"wtf why u putting walls upganets and replacing embrasures that wont work fix those walls\" (docs/playbook.rules.json)",
+   "latch": false,
+   "note": "ctu fallback split out of br-camp-wall so the counter has a reader"
+  },
+  {
+   "id": "br-contact-company",
+   "priority": 10.34,
+   "family": "backrooms",
+   "when": {
+    "mark_got_out": true,
+    "mark_company_contact": false,
+    "comms_console": ">0"
+   },
+   "then": [
+    "game_open_main_tab Operations; game_get_ui_layout",
+    "game_click_ui_target 'Found a company branch here' (company_found_branch [missing tool] would make it one call)",
+    "ladder_set mark company_contact true"
+   ],
+   "why": "\"the mod is active you can start it at any time\" (docs/PLAYSCRIPT.md) | \"save this save.. start new secenerio,, solo/groupd start with same precets pic a mountin tile to start and try to find natural gate to it or just out of back rooms and get in contact with the company\" (docs/playbook.rules.json)",
+   "latch": true,
+   "note": "done-mark (latch_name): mark_br_contact_company_done"
+  },
+  {
+   "id": "br-sustainable",
+   "priority": 38.0,
+   "family": "backrooms",
+   "when": {
+    "mark_colony_sustainable": false,
+    "mark_mountain_base_done": true,
+    "held": {
+     "ton": {
+      "days_of_food": ">{FOOD_COMFORT_DAYS}",
+      "has_power": true,
+      "defences_built": ">0",
+      "alert_low_medicine": false
+     },
+     "hours": 72
+    }
+   },
+   "then": [
+    "food, power, defences and medicine have held for 3 game days",
+    "ladder_set mark colony_sustainable true"
+   ],
+   "why": "\"there are order of operations of everything that needs to be done when starting out and you are no FUCKING WHERE CLOSE TO SUSTAINABLITY BEFORE BUILDING A GATE!\" (docs/playbook.rules.json) | \"what all have i told you fool\" (docs/PLAYBOOK.md)",
+   "latch": true,
+   "note": "interlock: every gate rung needs mark_colony_sustainable; low_medicine -> alert_low_medicine; done-mark (latch_name): mark_br_sustainable_done"
+  },
+  {
+   "id": "br-gate-facility",
+   "priority": 38.1,
+   "family": "backrooms",
+   "when": {
+    "mark_colony_sustainable": true,
+    "mark_gate_facility_built": false,
+    "fac_fails": {
+     "not": {
+      "tries": {
+       "ctu": {
+        "mark_facility_tried": true
+       },
+       "preset": 3,
+       "reset": {
+        "mark_gate_facility_built": true
+       }
+      }
+     }
+    }
+   },
+   "then": [
+    "ladder_set mark facility_tried false; sealed laboratory at the back of the mountain: steel/marble shell, roofed (game_apply_architect_designator)",
+    "gate cell in the CENTRE of the gate room -- never a doorway, never a bedroom door, never a side room",
+    "windowed control room behind a ballistic/reinforced glass wall",
+    "entry airlock: two security doors in line with a vestibule between, one path, no wall across either door",
+    "shooting galleries either side of the vestibule firing in through embrasures, entered only from the control room; all air contained",
+    "a 2-wide hall wrapping the gate room on the east and north, walked counter-clockwise, prison cells on its outer side; power, support rooms, turrets covering the gate",
+    "a placement refused: ladder_set mark facility_tried true (3 -> br-gate-facility-fallback)",
+    "roofed and every door reachable: ladder_set mark gate_facility_built true"
+   ],
+   "why": "\"the gaste needs to be center s int he room not the door between the control room and gate room\" (docs/playbook.rules.json) | \"why are you commitioning their bedroom door as a gate you need to build a facility fool\" (docs/playbook.rules.json) | \"and your gate need to be not just a side room it needs to be in a massive facility with all it supposrt structures in a windowed off room for security ect ect and security u can do the research as u need it\" (docs/playbook.rules.json) | \"you need a whooel facility within your facility contain secure protect embrashurs ballistic glass all of it\" (docs/playbook.rules.json) | \"you need a whooel facility within your facility contain secure protect embrashurs ballistic glass all of it / doubdl doo sets with shooting gallerys from inside only all air contained / you have wall in way of 2x doors / u got double doors side ways one path thinck\" (docs/PLAYSCRIPT.md:59) | \"doubdl doo sets with shooting gallerys from inside only all air contained\" (docs/PLAYSCRIPT.md) | \"you have wall in way of 2x doors\" (docs/PLAYSCRIPT.md) | \"u got double doors side ways one path thinck\" (docs/PLAYSCRIPT.md) | \"if u doit right u can wrap cells around the gate room with a 2 wide path hall all the way around it counter clock wise\" (docs/PLAYSCRIPT.md) | \"on the east and north i mean\" (docs/PLAYSCRIPT.md) | \"Separate door is the gate\" (docs/PLAYSCRIPT.md)",
+   "never": [
+    "a gate in a side room, broom closet, bedroom door or doorway"
+   ],
+   "latch": true,
+   "note": "done-mark (latch_name): mark_br_gate_facility_done"
+  },
+  {
+   "id": "br-gate-facility-fallback",
+   "priority": 38.2,
+   "family": "backrooms",
+   "when": {
+    "mark_colony_sustainable": true,
+    "mark_gate_facility_built": false,
+    "fac_fails": {
+     "ctu": {
+      "mark_facility_tried": true
+     },
+     "preset": 3,
+     "reset": {
+      "mark_gate_facility_built": true
+     }
+    }
+   },
+   "then": [
+    "ladder_set mark facility_tried false",
+    "game_list_architect_designators for the exact wall/door/glass labels; retry the one that refused",
+    "short of steel/plasteel/components: br-company-supply",
+    "refused again: ladder_set mark facility_tried true"
+   ],
+   "why": "\"you need a whooel facility within your facility contain secure protect embrashurs ballistic glass all of it\" (docs/playbook.rules.json) | \"you need a whooel facility within your facility contain secure protect embrashurs ballistic glass all of it / doubdl doo sets with shooting gallerys from inside only all air contained / you have wall in way of 2x doors / u got double doors side ways one path thinck\" (docs/PLAYSCRIPT.md:59)",
+   "latch": false
+  },
+  {
+   "id": "rung-5b-the-gate",
+   "priority": 38.3,
+   "family": "backrooms",
+   "when": {
+    "days_of_food": ">{FOOD_COMFORT_DAYS}",
+    "mark_mountain_base_done": true,
+    "mark_colony_sustainable": true,
+    "mark_gate_facility_built": true,
+    "mark_gate_designated": false
+   },
+   "then": [
+    "a gate is any door you designate (Door 1 cell, Ornate 2, wider modded 3+): the door in the centre of the gate room",
+    "designate_gate [missing tool]; meanwhile game_select... the door, game_list_selected_gizmos, game_execute_gizmo the gate gizmo",
+    "game_apply_architect_designator PowerSwitch outside the room: the kill switch",
+    "at most {GATE_MAX} operational gates per branch, across every map",
+    "ladder_set mark gate_designated true"
+   ],
+   "why": "\"you only  need to assenble the gate once poer gate and like i fucking said u need it in a facitlity not a broom closet\" (372a4068-59cd-43c2-a79d-e04a8fcf9cb0.jsonl) | \"start seting up the gate\" (docs/PLAYBOOK.md) | \"you need to be testing all three scenerios trying to get a gate built in all three\" (docs/PLAYSCRIPT.md)",
+   "never": [
+    "open a gate with fewer than three days of food",
+    "cross with the whole crew at once"
+   ],
+   "latch": true,
+   "note": "verified against docs/wiki/gates.md; the company exists for the gate; it is built after the mountain is sealed and fed; done-mark (latch_name): mark_rung_5b_the_gate_done"
+  },
+  {
+   "id": "rung-5c-the-backrooms",
+   "priority": 38.4,
+   "family": "backrooms",
+   "when": {
+    "mark_gate_open": true,
+    "hostiles_on_map": 0,
+    "alert_low_food": false
+   },
+   "then": [
+    "one scout through, armed, carrying medicine and a meal: order_pawn the scout to the gate cell",
+    "game_set cmd explore map=<backrooms map>: room to room; pawns never chase work in unexplored rooms",
+    "record a route, a distortion and an entity observation; journal each room ~20 s",
+    "home before the window closes; analyse at a bound laboratory, a second person reviews, spend the insight on a company project",
+    "ladder_set mark crew_across true while anyone is over; false when all are home"
+   ],
+   "why": "\"lock for gates and go through them come back to this level if they lead deerer ur exit is on this level\" (docs/playbook.gates.json) | \"Then\nIn the field, record a route, a distortion and an entity observation.\nCome home before the window closes.\nAnalyse the recording at a bound laboratory. Analysis is pawn work over time.\nHave a second person review the finished report.\nSpend the insight on a company project.\nThat loop is the game. Nothing in it is timed except the connection itself.\" (ec0a7455-ac67-432e-b577-e55254557c22.jsonl) | \"survey should go hand in hand with the auto explore and person has task to write in journal when exploring each room for like 20seconds\" (ec0a7455-ac67-432e-b577-e55254557c22.jsonl) | \"and something we need to fix is that the pawns when entering the back room instantly try to find tasks and start running of for example to flower pots to plant the flower work, so we need something that spawned in its like flower pots in the backrooms dont pull a pawn to run through the map to plant a flower or other things similar that casue jobs work just being in the game wehn pawns look for axcessible tasks. like make it so unexplored areas can propigate work as no one knows or has been in those rooms yet. and i think we need a explore option thats toggleable like drafting. so the pawns will go room to room  exploring the maze of the map attempting to explore the seed completely until toggled off or completed with a pop notice \"PAwn radioed in exploration complete\" or something appropriate\" (ec0a7455-ac67-432e-b577-e55254557c22.jsonl)",
+   "never": [
+    "send a hungry or hurt pawn in",
+    "leave a crossing open while a raid is on the home map"
+   ],
+   "latch": true,
+   "note": "first-crossing protocol; reset with ladder_set mark rung_5c_the_backrooms_done false before a new crossing; low_food -> alert_low_food; done-mark (latch_name): mark_rung_5c_the_backrooms_done"
+  },
+  {
+   "id": "br-close-old-levels",
+   "priority": 38.5,
+   "family": "backrooms",
+   "when": {
+    "map_count": ">=4",
+    "mark_crew_across": false
+   },
+   "then": [
+    "abandon a finished backrooms level: abandon_site [missing tool]; else world tab -> select the site -> game_execute_gizmo Abandon",
+    "bring pawns and needed stock home first"
+   ],
+   "why": "\"you already have 5 colonies builds of colonies open u have too close old ones if u want to open new ones\" (docs/playbook.rules.json) | \"blocked: your company is holding open too many gates\" (docs/PLAYSCRIPT.md)",
+   "latch": false,
+   "note": "LEVELS_MAX is not a gates.py tag: literal 4"
+  },
+  {
+   "id": "br-company-supply",
+   "priority": 38.6,
+   "family": "backrooms",
+   "when": {
+    "mark_company_contact": true,
+    "mark_camp_stable": true,
+    "short": {
+     "any": [
+      {
+       "steel": "<{STEEL_RESERVE}"
+      },
+      {
+       "components": "<{COMPONENT_RESERVE}"
+      },
+      {
+       "silver": "<{TRADE_SILVER_MIN}"
+      }
+     ]
+    },
+    "order_fails": {
+     "not": {
+      "tries": {
+       "ctu": {
+        "mark_company_order_tried": true
+       },
+       "preset": 2,
+       "reset": {
+        "mark_camp_stable": false
+       }
+      }
+     }
+    }
+   },
+   "then": [
+    "ladder_set mark company_order_tried false (re-arm)",
+    "steel: game_apply_architect_designator Mine on explored compacted-steel seams first",
+    "a trader first: comms console, a bulk goods trader (trade_call [missing tool]; else game_click_cell console + game_get_context_menu_options)",
+    "company only if it has to: company_order steel/components/silver via Operations -> Procurement [missing tool]",
+    "refused: ladder_set mark company_order_tried true (2 refusals -> br-trade-income carries it)"
+   ],
+   "why": "\"better mine steel or order some trade is your go to once u figure it out\" (docs/playbook.rules.json) | \"you have no components\" (docs/playbook.rules.json) | \"you need to get to where u know how to call traiders u need a bulk good traders mainly\" (docs/playbook.rules.json) | \"and order some silver from the company\" (docs/playbook.rules.json) | \"dont use company but if u have to\" (docs/PLAYSCRIPT.md) | \"and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on. you have a full playthrough write up right you are always updating and maintaing with how to and what works and what not to do ect ect exploring all aspects of your game mods and empire you are building\" (docs/PLAYBOOK.md) | \"and use steel and order steel from the company\" (docs/PLAYSCRIPT.md) | \"and use steel and order steel from the company do missions for cash what ever you need trade sell goods and product reserch druglab and make what u can accire the ingrediants sell products to guest get prison going , what are you waiting on\" (docs/PLAYSCRIPT.md)",
+   "latch": false,
+   "note": "STEEL_FLOOR/COMPONENTS_FLOOR/SILVER_FLOOR were not gates.py tags: uses STEEL_RESERVE / COMPONENT_RESERVE / TRADE_SILVER_MIN"
+  },
+  {
+   "id": "br-trade-income",
+   "priority": 38.7,
+   "family": "backrooms",
+   "when": {
+    "mark_company_contact": true,
+    "mark_camp_stable": true
+   },
+   "then": [
+    "game_set cmd set_zone_plant plant Plant_Smokeleaf (or another cash crop) on a field; game_set cmd add_bill recipe RollJoint -- joints, not leaves",
+    "refine into better products (game_set cmd add_bill); sell to bulk goods traders on the comms console",
+    "research what unlocks better products (drug lab); prisoners working; sell product to guests",
+    "quests and missions for cash: accept from letters (game_open_letter)"
+   ],
+   "why": "\"okay but you sold whit that was very high tech thats will keep ur colonists from dying from old age and u cant get more...... u need cash crops to sell to bulk goods traders and refine them into better products u need research to make money(silver) or order it from company\" (docs/playbook.rules.json) | \"start growing cash crops\" (docs/PLAYSCRIPT.md) | \"come one do stuff.. play the game... grow resources, maintain ur colonists' needs start buisnesss build prison build guest questers, do it all start growing cash cropsa research what u need to unlock better things u can produce, defend your base, accept neew employees hire them i think id, work towrds starting up the gate and get in to the back rooms, do quests and missions increase ur cash build a vault oraganize ur shelfs. cash silver gold high valuable gemms irvory in vaults, meds in hospital lab upgrade get prisoners working keep then contained use locks to allow them to enter work areas with exterial walls and defences containing them , layers of security, embracures near boarders as rooms to shoot frioom to where u head to the closest defences bewteen ur base and the enmies do ranged first and retrating/firing so mele guys cant get to close, and u have to pause at the right times as not to wit to long to give commands in combat situations\" (docs/PLAYSCRIPT.md) | \"make company money from quests\" (docs/PLAYBOOK.md) | \"do quests and missions increase ur cash\" (docs/PLAYBOOK.md)",
+   "never": [
+    "sell irreplaceable high tech (what stops ageing, glitterworld tech)"
+   ],
+   "latch": true,
+   "note": "latched set-up: unlatched with two always-true marks it hid every rung below it; done-mark (latch_name): mark_br_trade_income_done"
+  },
+  {
+   "id": "gate-assemble",
+   "priority": 38.8,
+   "family": "backrooms",
+   "when": {
+    "mark_gate_designated": true,
+    "steel": ">=25",
+    "components": ">=2"
+   },
+   "then": [
+    "game_set cmd add_bill recipe <gate section> on the machining table -- opening is a bill the player controls",
+    "link up to three more machining tables on the Machine pane (gate_link [missing tool]; else game_click_ui_target)",
+    "25 steel + 2 components a section; 100 steel + 8 components total; assemble once per gate",
+    "all four sections built: the latch sets gate_assemble_done"
+   ],
+   "why": "\"the machining table to op[en the gate needs to be a bill currently they instantly try to open the gate and build it and i have no say in the mattter even tho nothing is connected or built yet and havent started the mission line yet\" (a773bd7d-54f4-4f3b-be1c-de6041878b2e.jsonl) | \"you only need to assenble the gate once poer gate and like i fucking said u need it in a facitlity not a broom closet\" (docs/playbook.rules.json)",
+   "latch": true,
+   "note": "numeric mark gate_sections_done had no default (unmeasured, never fired): the latch gate_assemble_done replaces it; done-mark (latch_name): mark_gate_assemble_done"
+  },
+  {
+   "id": "gate-power",
+   "priority": 38.9,
+   "family": "backrooms",
+   "when": {
+    "mark_gate_assemble_done": true,
+    "mark_gate_online": false,
+    "has_power": true
+   },
+   "then": [
+    "generator surplus covers the gate load; the reserve holds one return's charge",
+    "link up to three more powered comms consoles: four operator stations",
+    "Emergency abort -- do not open must be on the load notice; know where it is",
+    "ladder_set mark gate_online true"
+   ],
+   "why": "\"we also need an emergy abort option on the gate connection so hold is not the olny option on the backrooms load start\" (docs/PLAYSCRIPT.md)",
+   "latch": true,
+   "note": "done-mark (latch_name): mark_gate_power_done"
+  },
+  {
+   "id": "gate-open",
+   "priority": 39.0,
+   "family": "backrooms",
+   "when": {
+    "mark_gate_online": true,
+    "mark_gate_open": false,
+    "days_of_food": ">{FOOD_COMFORT_DAYS}",
+    "hostiles_on_map": 0,
+    "open_fails": {
+     "not": {
+      "tries": {
+       "ctu": {
+        "mark_gate_open_tried": true
+       },
+       "preset": 2,
+       "reset": {
+        "mark_gate_open": true
+       }
+      }
+     }
+    }
+   },
+   "then": [
+    "ladder_set mark gate_open_tried false; nobody stands in front of a machine gate at startup",
+    "order_pawn operator to a console, the open option; stays until the connection is up -- walking away loses charge",
+    "first opening ~30 real minutes (GATE_FIRST_WINDOW_MIN)",
+    "the gate shows its destination coordinate: ladder_set mark coordinate_held true",
+    "connected: ladder_set mark gate_open true",
+    "refused: ladder_set mark gate_open_tried true (2 -> gate-open-fallback)"
+   ],
+   "why": "\"get the gate connected\" (docs/PLAYBOOK.md) | \"work towrds starting up the gate and get in to the back rooms\" (docs/PLAYBOOK.md) | \"DO THIS NEXT - step 4\" (docs/PLAYBOOK.md) | \"on gate duration question you should have the first opening be like 30 minutes of real time not game time there has to be time to acually do shit and it only greatly increases from there once u can re call seeds and better tech and levels to being able to open it indefintality at higherr tech and research and staff and power supplies\" (a773bd7d-54f4-4f3b-be1c-de6041878b2e.jsonl)",
+   "latch": true,
+   "note": "sole setter of coordinate_held (decisions.json); done-mark (latch_name): mark_gate_open_done"
+  },
+  {
+   "id": "gate-open-fallback",
+   "priority": 39.1,
+   "family": "backrooms",
+   "when": {
+    "mark_gate_online": true,
+    "mark_gate_open": false,
+    "open_fails": {
+     "ctu": {
+      "mark_gate_open_tried": true
+     },
+     "preset": 2,
+     "reset": {
+      "mark_gate_open": true
+     }
+    }
+   },
+   "then": [
+    "ladder_set mark gate_open_tried false",
+    "check has_power and the console links (game_list_selected_gizmos on the console)",
+    "Emergency abort if the load notice is up and the room is not clear",
+    "retry the open; refused again: ladder_set mark gate_open_tried true",
+    "connected: ladder_set mark gate_open true, ladder_set mark coordinate_held true"
+   ],
+   "why": "\"we also need an emergy abort option on the gate connection so hold is not the olny option on the backrooms load start\" (docs/PLAYSCRIPT.md)",
+   "latch": false
+  },
+  {
+   "id": "backrooms-mine",
+   "priority": 39.2,
+   "family": "backrooms",
+   "when": {
+    "mark_gate_open": true,
+    "mark_coordinate_held": true
+   },
+   "then": [
+    "use the coordinate: mine (three times the ore), farm (sun lamps), storage, prison, saferoom, guest quarters, workshop, field hospital, nugget farm",
+    "prisoners may cross when zoned and doors allow (locks/prisoner mods): game_set cmd set_area",
+    "visitors and friendlies cross for beds and jobs",
+    "at most {GATE_MAX} operational gates"
+   ],
+   "why": "\"this part of the wiki soiunds like thats all to do what about making prisons back there, storage, isolated saferooms, guest quarters from mods, industrial uses and mateerial harvesting, mining, anything and everything.. remember profiting, u can have a nugget farm in a isolated gate seed if wanted\" (ec0a7455-ac67-432e-b577-e55254557c22.jsonl) | \"A prisoner could cross a gate... a prisoner should be able to cross a gate is allowed to ( send the prisonerrs to live and work in there and cross path back if zoned to and door are allowed access remmebr mods we have also along side all of that.. locks and prisoner mods... u know???\" (ec0a7455-ac67-432e-b577-e55254557c22.jsonl) | \"what??? vistors cant walk through the gate to find work and beds??? we need cross map cordinator or something thats automatic merging maps to cross control so pawns auto get command to cross when mpas call them like a empty bed work task or job ect ect or anything at all\" (ec0a7455-ac67-432e-b577-e55254557c22.jsonl) | \"hold up now friendlys can too\" (ec0a7455-ac67-432e-b577-e55254557c22.jsonl)",
+   "latch": true,
+   "note": "done-mark (latch_name): mark_backrooms_mine_done"
+  },
+  {
+   "id": "br-gate-ops-cash",
+   "priority": 39.3,
+   "family": "backrooms",
+   "when": {
+    "mark_gate_open": true,
+    "mark_company_contact": true,
+    "mark_crew_across": false,
+    "hostiles_on_map": 0,
+    "silver": "<{TRADE_SILVER_MIN}"
+   },
+   "then": [
+    "missions through the gate for cash; strip and carry home sellable things",
+    "start contract work from the mission -- a hand-ordered crossing creates no expedition and its payment never settles",
+    "each mission needs a different address; enemies and animals scale with depth",
+    "keep docs/PLAYSCRIPT.md updated with what works and what not to do (note tool)"
+   ],
+   "why": "\"machine gate operations of using the bacvkrooms for cash like stripping and taking things to sell and completing misisons\" (docs/PLAYSCRIPT.md) | \"think massive perfectly set up working facility and machine gate operations of using the bacvkrooms for cash like stripping and taking things to sell and completing misisons ect ect BUILD YOUR EMPIRE UNITY MAKE A RIMWORLD PLAY SCRIPT?.MD\" (docs/PLAYBOOK.md) | \"we still want them to be never ending missions but they should require a differernt address through the gate\" (docs/PLAYSCRIPT.md) | \"there is not a quiet persuer just normal enemies and wild animals maybe nuetral maybne ally maybe enemy and variations of numnbers and difficulty based on depth\" (docs/PLAYSCRIPT.md) | \"remember lsd unnerving feeling with all things\" (docs/PLAYSCRIPT.md) | \"this isnt a issue for me u just dont know what ur doing i think\" (docs/PLAYBOOK.md) | \"yeah you best not be editing game files and shit, breaking shit, we only fuck with loacl directory files for backrooms folder\" (docs/playbook.rules.json)",
+   "never": [
+    "edit or stage game files while RimWorld runs"
+   ],
+   "latch": false,
+   "note": "standing, gated on silver < TRADE_SILVER_MIN so it no longer fires every scan above space/endgame"
+  }
+ ],
+ "prompts": {
+  "br-return-window": "URGENT: the crew has been over 6 game hours.\nLook: game_state, which pawns are on the backrooms map.\n1) order_pawn every pawn there to the gate cell. 2) The operator stays seated.\nRefused order: order_pawn with no option to list the menu labels.\nDONE: all home -> ladder_set mark crew_across false.\nOwner: \"you need to get your peopel back befoer they die in the backrooms\"",
+  "br-heat": "STANDING: heat kills in minutes.\nLook: outdoor_temp, alert_heatstroke, condition_heatwave.\n1) Roof first. 2) game_apply_architect_designator Passive cooler in every roofed room (never in the inner wall lane).\n3) Heatstroke pawns: order_pawn to the coolest roofed room; pawn_priorities PatientBedRest.\nRefused designator: game_list_architect_designators for the cooler's exact label.\nDONE: no mark; the rung stops when the wave and the alert clear.\nOwner: \"you need to figure out the tmepature pronblem asap ASAP one heat wave and your dead in 3 minutes\"\nOwner: \"your people are in the heat too theri nextr to die\"",
+  "gate-staffed": "STANDING: an operator in the chair or the crew is stranded.\nLook: mark_gate_open, who is free.\norder_pawn the nearest free pawn to any of the four consoles.\nRefused: order_pawn with no option to list the labels; try the next console.\nDONE: ladder_set mark operator_on_station true.\nOwner: \"you need to get your peopel back befoer they die in the backrooms\"",
+  "br-out-of-the-backrooms": "LIVE (start_kind 7): get out of the backrooms. Look: game_state, then game_set cmd rooms.\n0) ladder_set mark explore_tried false.\n1) game_set cmd explore, time running; repeat until it says nothing left.\n2) game_set cmd rooms; read every room for a natural gate/portal.\n3) game_get_cells_info on the candidate; it must be a natural gate.\nRefused or nothing found: ladder_set mark explore_tried true (3 -> br-out-fallback).\nDONE: ladder_set mark natural_gate_found true (+ natural_gate_cell); latch br_out_of_the_backrooms_done.\nOwner: \"get out of the backrooms first find gats natural and GET OUT!\"\nOwner: \"lock for gates and go through them come back to this level if they lead deerer ur exit is on this level\"",
+  "br-out-fallback": "LIVE: explore came up empty 3 times. Look at game_take_screenshot + game_list_zones first.\n0) ladder_set mark explore_tried false.\n1) order_pawn one armed pawn to the farthest unexplored door, then game_set cmd explore.\n2) A gate deeper than this level: through, mark home, come BACK.\nRefused order: order_pawn without option to read the menu labels; refused again: ladder_set mark explore_tried true.\nDONE: ladder_set mark natural_gate_found true.\nOwner: \"lock for gates and go through them come back to this level if they lead deerer ur exit is on this level\"",
+  "br-haul-out": "LIVE: haul everything out through the natural gate.\n1) game_set cmd unforbid (backrooms map). 2) order_pawn 'Haul' each stack, queue=true, walk it through the gate.\n3) Surface: game_set cmd stockpile_camp mode food, then mode nofood, beside the gate shell.\nRefused haul: order_pawn with no option to list the menu, pick the haul label.\nNever leave a pawn behind.\nDONE: every colonist on the surface -> ladder_set mark got_out true + ladder_set mark start_opening_done true; latch br_haul_out_done.\nOwner: \"okay if u found way out try to get all your supplies out and into starting structure that will become your main center throne roome\"",
+  "br-natural-gate-room": "ONCE after getting out: the natural gate room is not a home.\nLook: game_list_zones and beds near natural_gate_cell.\n1) Delete any stockpile there. 2) game_set cmd set_bed_owner to move any owned bed elsewhere.\nNatural gates stay open; never send a pawn out one expecting to come back.\nRefused delete: game_take_screenshot, select the zone, game_list_selected_gizmos.\nDONE: latch br_natural_gate_room_done.\nOwner: \"and you shouldnet be living in or using the natural gate room\"",
+  "br-camp-wall": "LIVE (start_kind 7): the camp's wooden wall. Look: game_get_cells_info along the line.\n0) ladder_set mark wall_tried false.\n1) game_apply_architect_designator Wall (Wood), exterior only; Embrasure (non-powered) all round.\n2) Gates east and west; 3-wide smooth marble firebreak outside; inner lane clear.\nRefused: ladder_set mark wall_tried true (3 -> br-camp-wall-fallback).\nDONE: ladder_set mark camp_defence true; latch br_camp_wall_done.\nOwner: \"make it of wood just exterior make 3wide terrriom stone smooth marble for fire break\"\nOwner: \"make wall of embrasure non powered type all around then u can shoot out\"\nOwner: \"wtf why u putting walls upganets and replacing embrasures that wont work fix those walls\"",
+  "br-camp-wall-fallback": "LIVE: the wall build refused 3 times.\n0) ladder_set mark wall_tried false.\n1) game_list_architect_designators for the exact Wall / Embrasure / flagstone labels.\n2) Wood short: game_set cmd chop, then retry one segment.\nRefused again: ladder_set mark wall_tried true.\nDONE: ladder_set mark camp_defence true.\nOwner: \"wtf why u putting walls upganets and replacing embrasures that wont work fix those walls\"",
+  "br-contact-company": "LIVE: get in contact with the company.\nLook: comms_console > 0. game_open_main_tab Operations, then game_get_ui_layout.\ngame_click_ui_target 'Found a company branch here'.\nRefused: game_close_window, reopen, read the layout again.\nDONE: ladder_set mark company_contact true; latch br_contact_company_done.\nOwner: \"try to find natural gate to it or just out of back rooms and get in contact with the company\"",
+  "br-sustainable": "INTERLOCK: no gate before the colony is sustainable.\nLook: days_of_food, has_power, defences_built, alert_low_medicine -- held 72 game hours.\nNothing to build here; if it never holds, the food/power/defence/medicine rungs are the fix.\nDONE: ladder_set mark colony_sustainable true; latch br_sustainable_done.\nOwner: \"you are no FUCKING WHERE CLOSE TO SUSTAINABLITY BEFORE BUILDING A GATE!\"",
+  "br-gate-facility": "LIVE: build the gate FACILITY first, not the gate.\nLook: game_take_screenshot of the lab site; game_get_cells_info its footprint.\n0) ladder_set mark facility_tried false.\n1) Shell + roof. 2) Gate cell centred. 3) Ballistic-glass control room. 4) Two doors in line, one path.\n5) Shooting galleries from inside only. 6) 2-wide hall east+north, counter-clockwise.\nRefused: ladder_set mark facility_tried true (3 -> br-gate-facility-fallback).\nDONE: ladder_set mark gate_facility_built true; latch br_gate_facility_done.\nOwner: \"the gaste needs to be center s int he room not the door between the control room and gate room\"\nOwner: \"you need a whooel facility within your facility contain secure protect embrashurs ballistic glass all of it\"",
+  "br-gate-facility-fallback": "LIVE: the facility build refused 3 times.\n0) ladder_set mark facility_tried false.\n1) game_list_architect_designators for exact labels; retry the one that refused.\n2) Short of steel/plasteel/components: br-company-supply.\nRefused again: ladder_set mark facility_tried true.\nDONE: ladder_set mark gate_facility_built true (from br-gate-facility).\nOwner: \"you need a whooel facility within your facility contain secure protect embrashurs ballistic glass all of it\"",
+  "rung-5b-the-gate": "LIVE: designate the gate door.\nLook: the centre door of the gate room; game_list_selected_gizmos on it.\n1) game_execute_gizmo the gate gizmo (designate_gate missing). 2) PowerSwitch outside the room = kill switch.\nRefused: it must be the facility's centre door -- check mark_gate_facility_built.\nDONE: ladder_set mark gate_designated true; latch rung_5b_the_gate_done.\nOwner: \"you only  need to assenble the gate once poer gate and like i fucking said u need it in a facitlity not a broom closet\"\nOwner: \"you need to be testing all three scenerios trying to get a gate built in all three\"",
+  "rung-5c-the-backrooms": "LIVE: one scout crosses.\nLook: scout health, a meal and medicine carried, hostiles_on_map 0.\n1) order_pawn the scout to the gate. 2) game_set cmd explore on that map. 3) Record route, distortion, entity.\nladder_set mark crew_across true while over. Home before the window closes.\nRefused: order_pawn with no option to list labels.\nDONE: all home -> ladder_set mark crew_across false; latch rung_5c_the_backrooms_done.\nOwner: \"lock for gates and go through them come back to this level if they lead deerer ur exit is on this level\"",
+  "br-close-old-levels": "STANDING: 4 or more maps open.\nLook: map_count and which maps are finished.\n1) Bring pawns and stock home. 2) World tab -> site -> game_execute_gizmo Abandon (abandon_site missing).\nRefused: game_take_screenshot of the world tab and read the gizmo label.\nDONE: map_count below 4; no mark.\nOwner: \"you already have 5 colonies builds of colonies open u have too close old ones if u want to open new ones\"",
+  "br-company-supply": "STANDING: steel / components / silver below reserve.\nLook: steel, components, silver vs STEEL_RESERVE, COMPONENT_RESERVE, TRADE_SILVER_MIN.\n0) ladder_set mark company_order_tried false.\n1) Mine steel seams first. 2) A bulk-goods trader via the comms console. 3) Company order only if it has to.\nRefused: ladder_set mark company_order_tried true (twice -> br-trade-income).\nDONE: all three over reserve; no mark.\nOwner: \"better mine steel or order some trade is your go to once u figure it out\"\nOwner: \"dont use company but if u have to\"",
+  "br-trade-income": "ONCE: set up the money machine.\nLook: silver, research_current, bill_rows, quest letters.\n1) game_set cmd set_zone_plant Plant_Smokeleaf. 2) add_bill RollJoint. 3) Sell to bulk traders; quests for cash.\nRefused add_bill: build the table first, or pick a nearby recipe label.\nDONE: latch br_trade_income_done.\nOwner: \"u need cash crops to sell to bulk goods traders and refine them into better products u need research to make money(silver) or order it from company\"\nOwner: \"start growing cash crops\"",
+  "gate-assemble": "LIVE: assemble the 4 sections, once.\nLook: steel >= 25, components >= 2.\n1) add_bill the section on the machining table. 2) Link up to 3 more tables (gate_link missing; game_click_ui_target).\nShort of components: br-company-supply. Refused bill: game_list_selected_gizmos on the table for the label.\nDONE: all four built -> latch gate_assemble_done.\nOwner: \"the machining table to op[en the gate needs to be a bill\"",
+  "gate-power": "LIVE: power the gate.\nLook: has_power, power_generators, comms_console.\nSurplus covers the load, reserve for one return, four powered consoles; know where Emergency abort is.\nRefused link: game_list_selected_gizmos on the console.\nDONE: ladder_set mark gate_online true; latch gate_power_done.\nOwner: \"we also need an emergy abort option on the gate connection so hold is not the olny option on the backrooms load start\"",
+  "gate-open": "LIVE: connect the gate.\nLook: hostiles_on_map 0, food ok, nobody in front of the gate.\n0) ladder_set mark gate_open_tried false.\n1) order_pawn the operator to a console, open option; stay seated until connected.\n2) Coordinate shown: ladder_set mark coordinate_held true.\nRefused: ladder_set mark gate_open_tried true (2 -> gate-open-fallback).\nDONE: ladder_set mark gate_open true; latch gate_open_done.\nOwner: \"get the gate connected\"",
+  "gate-open-fallback": "LIVE: the gate refused to open twice.\n0) ladder_set mark gate_open_tried false.\n1) Check power and console links (game_list_selected_gizmos). 2) Abort from the load notice if the room is not clear.\nRefused again: ladder_set mark gate_open_tried true.\nDONE: ladder_set mark gate_open true + coordinate_held true.\nOwner: \"we also need an emergy abort option on the gate connection so hold is not the olny option on the backrooms load start\"",
+  "backrooms-mine": "ONCE: put the held coordinate to work.\nPick one use: mine / farm / storage / prison / saferoom / guest quarters / nugget farm.\nPrisoners cross only when zoned and doors allow: game_set cmd set_area.\nRefused: game_take_screenshot of the far map, then the designator again.\nDONE: latch backrooms_mine_done.\nOwner: \"remember profiting, u can have a nugget farm in a isolated gate seed if wanted\"",
+  "br-gate-ops-cash": "STANDING: silver low -> gate operations for cash.\nLook: silver, Operations missions, hostiles_on_map 0, nobody over.\n1) Take a mission from Operations (never a hand-ordered crossing). 2) Strip and haul loot home; sell.\nRefused: game_open_main_tab Operations, game_get_ui_layout, read the labels.\nDONE: silver over TRADE_SILVER_MIN; no mark.\nOwner: \"machine gate operations of using the bacvkrooms for cash like stripping and taking things to sell and completing misisons\""
+ },
+ "sensors_needed": [],
+ "variables_needed": [
+  {
+   "name": "FOOD_COMFORT_DAYS",
+   "value": 3,
+   "rule": "never open a gate with fewer than three days of food"
+  },
+  {
+   "name": "GATE_MAX",
+   "value": 3,
+   "rule": "at most three operational gates per branch"
+  },
+  {
+   "name": "GATE_FIRST_WINDOW_MIN",
+   "value": 30,
+   "rule": "first opening be like 30 minutes of real time",
+   "note": "prompt text only, never a when bound"
+  }
+ ],
+ "missing_tools": [
+  "company_order {item, count} -- Operations -> Procurement order (steel / components / silver)",
+  "company_found_branch -- Operations -> Found a company branch here, one call",
+  "designate_gate {x,z} -- designate a door as the gate",
+  "gate_link {kind table|console, x,z} -- link machining tables / comms consoles on the Machine pane",
+  "abandon_site {map} -- abandon a finished backrooms level",
+  "trade_call {kind} -- call a bulk goods trader on the comms console",
+  "build_plan {plan file} -- place a whole facility / camp wall from a plan instead of cell by cell"
+ ],
+ "unplaced_rules": [],
+ "notes": [
+  "see base-and-fortress:mountain-base-plan (br-base-layout deleted per decisions.json; its quotes move VERBATIM into that rung's owner_rules: \"you might want to at sum point long later plan on moving the natural gate to a labratory where u plan to build the gate faciltiy all secure and ur base secure, you might want to plan on putting you bas inside that natural cut out and not let your base have more that a single door into the mountain never pericing the edge of a mountain internally building all rooms with main corridor 3 wide spinein going through the gut south into the main moutian\" (docs/playbook.rules.json) | \"NE i mean\" (docs/PLAYSCRIPT.md) | \"and that generator corrador need to run up to main gate entrance all centered on throne\" (docs/PLAYSCRIPT.md) | \"City gate to throne\" (docs/PLAYSCRIPT.md) | \"you can uninstall and reinstall monlith somnewhere if its in you way\" (docs/PLAYSCRIPT.md) | \"and put them from the wall out not wall in and embrasure on all sides\" (docs/PLAYSCRIPT.md))",
+  "see meta:br-chat-mod-links (moved VERBATIM to meta, chat band 1.97; quotes: \"you can give the mode repo and rwmod workshop collection\" (docs/PLAYSCRIPT.md) | \"and the rim rooms site\" (docs/PLAYSCRIPT.md) | \"Rimrooms: Async Industries - full mod pack (RimWorld 1.6)\" (docs/PLAYSCRIPT.md) | \"and the rwmods is the mod collection\" (docs/PLAYSCRIPT.md) | \"the first one i made\" (docs/PLAYSCRIPT.md))",
+  "retired marks: start_in_backrooms (-> mark_start_kind 7), camp_wall_done (-> camp_defence), base_layout_planned, gate_sections_done (-> gate_assemble_done latch), explore_refused/wall_build_refused/facility_build_refused/gate_open_refused/company_order_refused (-> *_tried)",
+  "tags replaced with known gates.py tags: STEEL_FLOOR->STEEL_RESERVE, COMPONENTS_FLOOR->COMPONENT_RESERVE, SILVER_FLOOR->TRADE_SILVER_MIN; LEVELS_MAX->literal 4; RETURN_HOURS->literal 6 (ton hours must be literal)",
+  "no TO_BUILD sensor needed: every when key is a Sensors.cs key, a mark or a known tag; old proposals (crew_across, operator_on_station, gate state from the Rimrooms gate comp) stay marks until RimPLC reads the mod's types",
+  "unplaced 'you need to be testing all three scenerios trying to get a gate built in all three' placed in rung-5b-the-gate why + prompt",
+  "rimplc-check (family merged into the live book): only 2 RULE hits, br-heat condition_heatwave / outdoor_temp: both measured in Sensors.cs (line 219 outdoor_temp, line 384 generic condition_<defname>) but missing from the docs/playbook.gates.json sensors catalogue; add catalogue entries at merge"
+ ]
+}

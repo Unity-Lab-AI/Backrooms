@@ -70,7 +70,11 @@ READ_TOOLS = {
     "selection": ("rimworld/get_selection_semantics", {}),
     "colonists": ("rimworld/list_colonists", {}),
     "camera": ("rimworld/get_camera_state", {}),
-    "maps": ("rimworld/list_maps", {}),
+    # There is no `rimworld/list_maps` on this bridge (the live server answers "Tool not found"
+    # and its captured tools/list has no such name); the map count is `mapCount` in `game`.
+    # Zones and areas are what the bridge registers for reading a map's layout.
+    "zones": ("rimworld/list_zones", {}),
+    "areas": ("rimworld/list_areas", {}),
 }
 
 

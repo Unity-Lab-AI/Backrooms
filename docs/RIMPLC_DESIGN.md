@@ -244,15 +244,20 @@ Design: RimPLC builds its own instances of the alert types a ladder names (by cl
 
 ### 4.5 Research, factions, DLC (the Ladder v2 "impossible" marks become sensors)
 
-| Key | API | Status |
-|---|---|---|
-| `research_<defName>` | `ResearchProjectDef.IsFinished` | verified (decomp, `Verse/ResearchProjectDef.cs:120`) |
-| `research_current` (string) / `research_queue_empty` | `Find.ResearchManager.GetProject()` | verified (decomp, `ResearchManager.cs:155`) |
-| `title_rank` | max over colonists of `pawn.royalty.MostSeniorTitle.def.seniority` | `MostSeniorTitle` verified (decomp, `Pawn_RoyaltyTracker.cs:74`); `seniority` UNVERIFIED. `requires: Royalty`. Numeric seniority replaces the hand-made 0–7 table in Ladder v2. |
-| `goodwill_<factionDef>`, `empire_hostile` | `faction.PlayerGoodwill` | verified (decomp, `Faction.cs:102`) |
-| `caravan_out` | `Find.WorldObjects.Caravans` filtered to player caravans | verified (decomp, `WorldObjectsHolder.cs:47`) |
-| `psylink_level`, `mechlink_installed`, `ideo_roles_set`, `gravship_ready`, `monolith_level` | Royalty / Biotech / Ideology / Anomaly / Odyssey trackers | **all UNVERIFIED**. Each is added one at a time against the decomp, `requires`-gated. Until then they stay marks that Unity or the player sets, as in Ladder v2. |
-| `mounts_trained`, `mounted_ready` | Core training records; Giddy-up state for mounting | UNVERIFIED. They stay marks in v1. |
+As built (2026-10-13). Every key here is read straight from the game; a key whose DLC, def or faction is absent is left out, never a fake value.
+
+| Key | Code | API | Status |
+|---|---|---|---|
+| `research_<defName>` (lower case) | `Sensors.ReadSlow` | `ResearchProjectDef.IsFinished` over every loaded project | verified (decomp) |
+| `research_current` (string), `research_queue_empty`, `ship_research_done` | `Sensors.ReadSlow` | `Find.ResearchManager.GetProject()`; `ShipBasics.IsFinished` | verified (decomp) |
+| `title_seniority` | `Sensors.ReadSlow` | max over colonists of `royalty.MostSeniorTitle.def.seniority`; Royalty only | verified (decomp). Raw seniority, **not** the 0-7 rank: `mark_title_rank` stays a mark she sets |
+| `empire_hostile` | `SensorsWorld.Factions` | `Find.FactionManager.OfEmpire.HostileTo(Faction.OfPlayer)`; left out with no Empire | verified (decomp). `goodwill_<factionDef>` was planned and is **not built** |
+| `caravan_out` / `caravans_out`, `caravan_pawns_out` | `Sensors.ReadSlow` / `SensorsWorld.Caravans` | `Find.WorldObjects.Caravans`, player-controlled | verified (decomp) |
+| `ideo_roles`, `ideo_roles_unassigned`, `ideo_leader_assigned`, `ritual_spots`, `ideo_rituals` | `SensorsWorld.Ideology` | the player's primary ideo: `RolesListForReading`, `ChosenPawnSingle()`, `Precept_Ritual`; Ideology only | verified (decomp). `mark_ideo_roles_set` is still the done-mark the rungs set |
+| `monolith`, `monolith_level` | `SensorsBuild.Buildings` | `VoidMonolith` on the map; `Find.Anomaly.Level`; Anomaly only | verified (decomp) |
+| `mount_candidates` | `Sensors.ReadNormal` | mount-capable animals on the home map by def name | heuristic def list from `gates.py` |
+| `toxic_buildup_max`, `worst_disease_margin`, `battery_days_stored` | `SensorsWorld.Toxic` / `Disease` / `Batteries` | `HediffDefOf.ToxicBuildup` severity; `HediffComp_Immunizable.Immunity` - severity; `CompPowerBattery.StoredEnergy` / draw | verified (decomp) |
+| `psylink_level`, `mechlink_installed`, `gravship_ready`, `mounts_trained`, `mounted_ready` | -- | -- | **not sensors**: they stay marks (`mark_*`) she or the player sets, as in Ladder v2 |
 
 ### 4.6 Sensors that stay marks
 
@@ -588,3 +593,129 @@ How they run:
 - **Export / import.** That it round-trips on a real colony.
 - **Performance.** The cost of `count_<def>` sensors at scale (the 1 ms budget).
 - **Already pending from P1.** P3 game actions and P4 links.
+
+## Built status (2026-10-13): the full rebuild, remote I/O, warnings
+
+Owner, verbatim: *"i daubt you fully redid the RimPLC for everything ive evr toldd you and the condencment and distillation of all walkthroughs and all the 100s of meta prompts that will be needed for the 100s of levers swtichs and sensorse and variables in the RimPLC being fully complete"* / *"pawn with out a wepaon is a very high rankeing need to fix just like the other hundred and hundreds of sensores need to wewarn properly and be diplayed well organized and formated with in game tool tip explinations"*.
+
+**The ladder** (`docs/playbook.gates.json`, preset `RimPLC/Presets/LadderV2.json`): 380 rungs in 16 families, rebuilt by a multi-agent pass from 880 owner orders (playbooks, every doc, 7 session transcripts) and ~350 walkthrough rules, then a repair-and-merge pass. Mechanical checks are clean (`.local/plc-rebuild/check.py`): valid, no duplicate ids, no priority ties, no mark read but never set, no unknown `when` key, every rung has a meta prompt. The pre-rebuild ladder is kept at `.local/plc-rebuild/playbook.live-before-swap.json`; all working files (owner rules, walkthrough sheets, inventory, critics) are in `.local/plc-rebuild/`.
+
+**Meta prompts** (`.local/autopilot/rung-prompts.json`): one per rung, <=12 lines -- what to look at, the tools in order, the fallback, the done-mark, the owner's key words. Only the live top rung's prompt reaches the model (the brief and the `ladder` tool both append `HOW TO DO [id] NOW`). The system prompt carries only the situation module of the top rung's family (`.local/autopilot/modules/`, built by `tools/build-prompt-modules.py`); the conversation cap is 18,000 tokens inside the 32,768 context so the prompt is never cut from the front.
+
+**Sensors.** `Sensors.cs` plus `SensorsBuild.cs` (normal cadence, each block guarded): crew (unarmed, sidearm, armour, flee, bedroom, children, lovers, plants skill, research-only, prisoners), buildings (benches, multi-analyzers, torch lamps, monolith), power (unconnected consumers, unpowered buildings and embrasures, margin %), rooms (out of 10-35 C, unfloored cells, roof holes, lab light), storage (loose and forbidden items), camp water/marsh, wall blueprints against rock, perimeter gaps, screen state; plus `explore_done`, `bill_rows`, `grid_matches_plan`, `fields_all_default_crop`, `ship_research_done`, letter body text and `condition_<def>` for every active condition. `pawns_unconfigured` and inventory section D are read by `SensorsWorld.cs` (below).
+
+**Remote I/O** (`rimplc/set_host`, `Api.SetHost`): the stream PC's readings -- `seconds_since_spoken`, `chat_unanswered`, `new_joiners`, `chat_asks_mod`, `seconds_since_webcam`, `seconds_since_tool`, `voice_playing`, `owner_input_active`, `prompt_version_changed`, `owner_unread` (added by the desk review below) -- computed by `gates.host_inputs()` and pushed before every ladder read. Merged first (a game reading of the same name wins), no log line, dropped after 120 s.
+
+**Warnings and display.** Every sensor in the catalogue carries `label`, `group`, `tip` and `severity`, and a `warn` rule where the reading can be a problem (123 of the playbook's 165; schema extended; written by `tools/annotate-sensors.py`, and for the preset-only measured sensors by `MEASURED` in `tools/rimplc-check.py`). The Sensors tab shows a warnings panel (critical red, warning amber) and then every reading by group with a formatted value and a tooltip (what it means, when it warns, the key). Generic `alert_*` and `condition_*` readings warn when true. Critical warnings also raise `Alert_RimPLC` in RimWorld's own alert column. An unarmed colonist is critical and has its own rungs: `unarmed-pawn` (2.6, empire_pass while a gun is on the map) and `unarmed-no-gun` (2.65).
+
+**Commands built for the rungs** (Rimrooms `SetupTools3/4.cs`, all in her `game_set` tool with a read-back): `unforbid`, `chop`, `shelter`, `stockpile_camp`, `build` (any architect def, checked per cell), `build_room`, `deconstruct`, `harvest`, `tame`, `slaughter`, `allow_area`, `self_tend`, `schedule`, `drug_policy`, `research`, `bed_medical`, `bed_prisoner`, `cooler_temp`, and (`SetupTools5/6.cs`) `equip`, `capture`, `bill_count`, `zone_create`, `roof_area`, `firebreak`, `pen`, `bury`, `ideo_role`, `save_game`, `stockpile_priority`, `stockpile_copy`, `crew_setup`. **Window:** a family filter on the Ladder tab; the Sensors tab also lists every input a rung asks for with no reading yet (host inputs marked).
+
+**Section D and pawn setup (2026-10-13, second pass).** Owner, verbatim: *"kill em,, we have to finishe the RimPLC and the prep for the vocie repase multipass run"*.
+- `pawns_unconfigured` (critical): a colonist counts as set up when, at one scan, it has a gun primary and a melee sidearm (violent pawns), hostility Attack (violent pawns), self-tend (if it can doctor), at least one job, and the "No drugs" policy. Set-up pawns are remembered in the save (`RimPLCGameComponent.ConfiguredPawns`, `configuredPawns`), so a weapon dropped later is the unarmed rung's job, not a "never configured" warning. Fixed by the new `crew_setup` command plus `empire_pass`.
+- `SensorsWorld.cs` reads (normal cadence, each block guarded): trade (`trade_ships_in_orbit`, `trade_beacons`, `comms_consoles`, `silver`), caravans (`caravans_out`, `caravan_pawns_out`), pods (`transport_pods`, `pod_launchers`), quests (`quests_active`, `quests_offered`), pens (`pen_markers`, `pen_animals_unpenned`), conduit routing (`power_nets`, `power_nets_dead`), storage (`stockpiles`, `storage_buildings`, `stockpiles_default_priority`), ideology (`ideo_roles`, `ideo_roles_unassigned`, `ideo_leader_assigned`, `ritual_spots`, `ideo_rituals`), visitors (`visitors`, `hospitality_guests`, `guest_beds` -- the guest-bed class name is UNVERIFIED, no Hospitality reference is compiled in). 22 new catalogue entries, all annotated with label, group, tip, warn and severity. 37 catalogue entries that the C# (or the host push) already read were still marked `not-measured`; they are now `verified` with their real source.
+- 11 new rungs with meta prompts: `crew-not-set-up` (3.49), `caravan-home-thin` (2.66), `power-net-dead` (17.03), `stockpile-priorities` (17.63, latched), `trade-ship-orbit` (20.02), `trade-beacon-missing` (24.09), `guests-no-beds` (24.21), `pen-animals-loose` (24.57), `pen-animals-roping` (24.58), `quest-offered` (25.02), `ritual-spot-missing` (33.21). The pre-existing priority tie at 2.6 is resolved: `unarmed-pawn` keeps 2.6, `war-manhunter-butcher` moves to 2.61.
+- New Rimrooms commands (`SetupTools6.cs`, also in her `game_set` tool and the window's known-command list): `stockpile_priority`, `stockpile_copy` (filter + priority copied from one stockpile to another), `crew_setup`.
+- Mod register checked first (`docs/research/mod-register-integration-fields-2026-09-29.csv`): Simple sidearms (sidearms sit in the inventory; the setup check reads both), Wall Orbital Trade Beacon (beacons counted by class), No Quests Without Comms (comms consoles read next to quests), Hospitality (Continued) / Invite to Stay / Storefront / Real Faction Guest (vanilla guest state; guest beds by class name), the storage family -- Adaptive, LWM, Warehouse, RimFridge (`Building_Storage` and vanilla `StorageSettings`, so `stockpile_copy` works on their zones), More filters for animals' pen (vanilla pen marker). Everything is read-only or uses vanilla settings; nothing patches another mod.
+- Checks: `rimplc-check.py --emit` valid (391 rungs, 166 sensors in the preset); the merge checker reported CLEAN (no duplicate ids, no priority ties, no mark read but never set, no unknown key, every rung has a prompt) -- but it read the merge round's candidate files (378 rungs), not the live ones; since the desk review below it reads the live files. Both DLLs built against the Krafs refs and copied to `Mod/` and the game's Mods folder.
+- **Window items E1-E3, E5, E6 were already built** (`MainTabWindow_RimPLC.cs`: instruction memory, coloured operand contacts, unresolved reasons, mark defaults, MISSING TOOL flags); the earlier "still open" line was stale.
+
+**Still open:** none of the 2026-10-13 work has run in a live game yet; a trade dialog tool (sell/buy by item) and quest accept/decline as commands (the rungs use the UI tools for now); Hospitality's guest-bed class name and bed price; the standalone RimPLC repositories (GitHub `G-Fourteen/RimPLC`, Forgejo `GFourteen/RimPLC`) are not synced with this work (needs the owner's go).
+
+## Built status (2026-10-13): desk review before the first live game
+
+The ladder, the meta prompts and the sensor catalogue were checked against the code that feeds and answers them, the defects fixed, and the checker extended so each class stays caught. Nothing was staged or copied to a `Mods` folder, the game was not launched, and nothing ran on the GPU. `RimPLC.dll` was rebuilt (`dotnet build RimPLC/Source/RimPLC/RimPLC.csproj -c Release -p:RimWorldManagedPath=<Krafs.Rimworld.Ref 1.6.4871>/ref/net472`, 0 warnings, 0 errors) into `RimPLC/1.7/Assemblies/` only; the Rimrooms DLL and `RimPLC.BridgeTools.dll` were not touched.
+
+**Found and fixed** (the new checker on the files before the fix: 61 defects on the playbook, 3 more on the preset):
+
+| Class | Found | Fix |
+|---|---|---|
+| Rung input nothing writes | 3: `empire_hostile` (empire-hostile), `hud_visible` (config-hud-restore), `owner_unread` (owner-message) -- catalogued `not-measured`, so the three rungs could never fire | `empire_hostile`: `SensorsWorld.Factions`, `Find.FactionManager.OfEmpire.HostileTo(player)` (verified, decomp `FactionManager.cs`), left out with no Empire. `hud_visible`: `Sensors.ReadFast`, `!Find.ScreenshotModeHandler.Active` (verified, decomp `Find.cs` / `UIRoot.cs`; F11 hides the HUD). `owner_unread`: a host input in `gates.host_inputs()` (private studio-inbox lines no `replyTo` answers, newer than the newest answered one, at most an hour old). All three now `verified` |
+| Condition that can never hold | 5: `comms_console: ">0"` (br-contact-company, config-post-strictness) and `defences_built: ">0"` (br-sustainable) compare a boolean reading with a number; `embrasure_gaps` was catalogued bool and `monolith` int against what the C# writes | `comms_console: true`, `defences_built: true`; `embrasure_gaps` type int, `monolith` type bool. Two steps/prompts that read `defences_built >= 2` now read "true" |
+| Warning rule that never trips / no display entry | 3: `owner_unread` (critical) had a boolean rule on a number, `embrasure_gaps` a number rule on a bool, the preset's `caravan_out` had no label, group, tip or severity | `owner_unread` warns at `>0`; types fixed; `MEASURED` entries in `rimplc-check.py` carry their display fields |
+| Catalogue status the code contradicts | 4: `simple_benches`, `hitech_benches`, `multi_analyzers`, `torch_lamps` marked `not-measured` but read by `SensorsBuild` | `verified`, real source |
+| Step naming a `game_set` command no handler answers | `campfire/torch`, `barricades` (setup-4b-shelter, setup-7-camp-defence); `schedule` and `drug_policy` declared missing in setup-3-assign though handlers exist; `game_set cmd=unforbid` (unforbid-constant) | `game_set cmd build def Campfire / TorchLamp / Barricade x z`, `schedule assignment Anything hours 6-21`, `drug_policy policy 'No drugs'`; `game_set cmd unforbid`. `terraform` stays declared missing (no handler; the steps carry the designator fallback) |
+| Step or prompt calling a tool missing that now exists | 40 (33 rung steps, 7 meta prompts): `set_self_tend`, `set_schedule`, `set_drug_policy`, `set_bill_count`, `zone_create`, `set_ideo_role`, `place_building` / `build_furniture` / the `build` tool, `deconstruct`, `tame_animal`, `build_pen`, `queue_research` / `research_queue` / `set_research`, `set_bed_medical`, `set_cooler_target`, the self-tend toggle, `build_room` | Each rewritten to the `game_set cmd` that answers it, with the UI path kept as the refusal fallback (Penoxycyline queues as `project=PenoxycylineProduction`, UNVERIFIED defName; `research` also matches the label). Still-missing tools stay named (trade dialog, call trader, quest accept, prisoner interaction, marriage, apparel equip, door lock, bed price, form caravan, stockpile filter modes medicine/drugs/valuables/dump) |
+| Notes the code contradicts | `empire-hostile` note "empire_hostile is TO_BUILD"; a `why` tail "monolith_level (TO_BUILD)" | measured (`SensorsWorld`; `Find.Anomaly.Level`) |
+| Built-status text | the 2026-10-13 section said the merge checker ran "on the live files" (it read the 378-rung candidates) and that every sensor carries `warn` | corrected above |
+
+Clean on review, no change needed: duplicate rung ids 0, duplicate meta prompt ids 0, prompts with no rung 0, rungs with no prompt 0, priority ties 0, marks read but never set 0, the window's known-command list equals the 49 Rimrooms handlers. The P2 note "`mark_empire_hostile` (not measured yet)" and §4.5's `empire_hostile` / `monolith_level` rows are superseded by the sensors above.
+
+**The checker now catches every class.** `tools/rimplc-check.py` runs a wiring pass on the playbook and on the emitted preset (classes W1-W10 in its header): an input with no writer (RimPLC C#, host inputs, fallback marks), a catalogued sensor nothing writes or one marked `not-measured` that is written, a host input not catalogued, a mark nothing sets, a `game_set` command with no handler or a declared-missing one that has a handler, a missing-tool claim for a tool that exists, a window/handler command-list drift, prompt/rung parity, duplicate prompt ids and priority ties, display entries (group from `SensorView.GroupOrder`, label, tip, severity, warn rule form and type), a sensor nothing reads (13 display-only readings are listed by name in `DISPLAY_ONLY`; one that starts being read must leave the list), and C#-vs-catalogue types plus boolean/number comparisons in conditions. `.local/plc-rebuild/check.py` now reads the live files by default (`--candidate` for the merge round), runs that wiring pass, and adds prompts-without-a-rung and duplicate prompt ids. Both report CLEAN; on the pre-fix files the wiring pass reports 61.
+
+**Still open after the review:** none of it has run in a live game; `terraform` has no command; the notes on toxic-fallout, disease and eclipse-battery name sensors not built (`toxic_buildup_max`, `worst_disease_margin`, `battery_days_stored`); `config-post-strictness` stays disabled (no setting); `PenoxycylineProduction` and Hospitality's guest-bed class name are UNVERIFIED.
+
+## Built status (2026-10-13): loose ends closed
+
+Everything "still open after the review" above that can be settled without a live game is settled. Nothing was staged, copied to `Mods`, launched or run on the GPU.
+
+- **Three new sensors** (`SensorsWorld.cs`, normal cadence, each block guarded, each catalogued with label, group, tip, warn and severity by `tools/annotate-sensors.py`):
+  - `toxic_buildup_max` (Health, critical at `>=0.4`): the worst colonist's `ToxicBuildup` severity. Read by the new rung `toxic-buildup-high` (2.27, `>={TOXIC_PULL_IN}`: that pawn rests indoors) and named in `toxic-fallout`'s step.
+  - `worst_disease_margin` (Health, critical at `<0.1`): immunity minus severity of the worst visible disease a colonist is still racing (1 when none; toxic buildup left out). Read by the new rung `disease-losing-race` (5.45: Medical bed, best medicine, best doctor).
+  - `battery_days_stored` (Power, warning at `<1`): stored battery Wd over the current draw in W, left out when nothing draws. `eclipse-battery` now fires only when it is under one day.
+  - The three "sensor ... needed" notes are gone. Both new rungs have meta prompts. The ladder was then 393 rungs and 168 sensors (see the next paragraph for the final count).
+- **`terraform` command** (Rimrooms `SetupTools6.Terraform`, in her `game_set` enum and the window's command list): `mode bridge` puts a Core `Bridge` blueprint on every cell of `x,z,w,h` that takes one (water, marsh). `mode smooth` and `mode remove_floor` run Core's own `Designator_SmoothSurface` / `Designator_RemoveFloor` cell by cell with their own checks; those designators act on `Find.CurrentMap`, so they are refused unless that map is on screen. **Core has no mud/sand/water-to-soil operation**, and no mod in the profile adds one. So the steps that asked to "terraform to soil" now bridge what is wet and keep fields and builds off what cannot be converted (setup-4b-shelter, setup-6b-crops, setup-7-camp-defence, terraform-water-first, animals-pen-soil). The Rimrooms DLL compiles clean against the Krafs refs; it was built to a scratch folder only, not into `Mod/` (the `src/` tree holds other uncommitted work).
+- **Antibiotics research defName confirmed:** `PenoxycylineProduction` (`Data/Core/Defs/ResearchProjectDefs/ResearchProjects_1.xml`, label "penoxycyline production"). No change needed.
+- **Hospitality guest bed confirmed:** `Hospitality.Building_GuestBed` in Hospitality (Continued)'s `1.7/Assemblies/Hospitality.dll` (workshop 3509486825, `Orion.Hospitality`). The `guest_beds` match on a thing class whose name contains `GuestBed` is correct; the comment and catalogue entry are now marked verified.
+- **§4.5 rewritten** to match the code (what each key reads, where, and which stay marks; `goodwill_<factionDef>` is not built).
+- **`config-post-strictness` stayed disabled at this point** (enabled below). The setting that would drive it already exists: the gate's **watch posture**, `CompRimroomsGate.watchPosture` (enum `GateWatchPosture`: `Mild`, `Balanced`, `Strict`; default `Balanced`, the owner's "default in between"; saved as `rr_gateWatchPosture`; changed only by the gate's watch-posture gizmo). The eat/safety floor (`GateWatch.MustLeave`) holds in every posture. Before the rung can run, two things are needed: a `gate_watch_posture` sensor (the Rimrooms link of §2.2) and a `game_set` command to set it. The rung's reason, step and meta prompt now say this.
+- **Checker:** W6 also compares her `game_set` tool's `cmd` enum in `tools.py` with the handlers (the mod-internal `sensors` dump excepted). `rimplc-check.py --emit` and `.local/plc-rebuild/check.py` are both CLEAN. `RimPLC.dll` was rebuilt, 0 warnings, 0 errors.
+
+**Commands added in the same pass, wired into the ladder** (the Rimrooms commands `freezer`, `butcher`, `kitchen`, `arm`, `draft`, `hold`, `tower`, `power` and `hall`, from `SetupTools7/8/9.cs`). All of them are in the window's known-command list and in her `game_set` tool enum (`tools.py`, which also gained the `size`, `x1`, `z1`, `x2`, `z2` and `width` arguments); the checker's W6 compares both lists with the handlers.
+
+- **New sensors** (`SensorsWorld.cs`, guarded, annotated). Each is computed with the matching command's own test:
+  - `kitchen_tables_no_bill` and `butcher_tables`.
+  - `freezer_coolers` (built coolers whose cold side is an indoor room), `freezer_coolers_warm` (of those, set above 0 C) and `cooler_planned`.
+  - `corner_<ne|nw|se|sw>_x` / `_z`: the Home area's bounding-box corners, so corners come from the colony's own layout, never the Store's fixed coordinates.
+  - `tower_<corner>`: an embrasure built, framed or planned within 8 cells of that corner.
+  - `stone_blocks`.
+  - The ladder was then 400 rungs and 186 sensors (187 in the preset).
+- **Kitchen and food rungs:**
+  - `kitchen-bills` (4.85, new) runs `kitchen` while `kitchen_tables_no_bill > 0`.
+  - `butcher-table` (5.0) now fires on a built stove, no butcher table, and meat coming in (`corpses > 0` or `designations_hunt > 0`). It runs `butcher`, then `kitchen`.
+  - `freezer-cooler` (6.45, new) runs `freezer` when there is a food store, no freezer cooler and none planned.
+  - `freezer-set-cold` (6.46, new) runs `freezer` again once the cooler is built and still warm, so -5 C gets set. If the reply says NOT POWERED, it runs `power x z` at the cooler first.
+- **Defence rungs:**
+  - `unarmed-pawn` (2.6) calls `arm` first, with `empire_pass` behind it. `unarmed-no-gun` (2.65) calls `arm` (it queues the craft bill for the shortfall) and keeps its melee and trader fallback.
+  - `war-mobilize` (the raid alert) runs `arm`, then `hold`, with `order_pawn` as the fallback.
+  - `war-stand-down` and `combat-0-reset` release with `draft pawn all on false` once no hostiles are left.
+  - `tower-ne` / `-nw` / `-se` / `-sw` (27.91-27.94, new, one per corner) run `tower x <corner_x> z <corner_z> size 3`. They fire when there are no hostiles, the corner has no tower, and steel or stone blocks are at 150 or more. `war-bastions-towers` hands the corners to them.
+- **Power rungs:**
+  - `power-every-consumer` (16.9) now fires whenever a built consumer is on no grid and the colony has power (the camp-stable gate was dropped). It runs `power`, with the conduit designator as the fallback.
+  - `power-net-dead` runs `power` first.
+- **`hall`:** listed in both command lists. No rung asks for a hall yet.
+- **Builds:** `RimPLC.dll` 0 warnings / 0 errors. The Rimrooms project, with `terraform`, compiles 0 / 0 to a scratch folder.
+- **Research (`research_next`):**
+  - `research-pick-next` (12.9, new) runs `research_next` whenever `research_queue_empty` is true, which is both "none chosen" and "the last one finished", since `GetProject()` is empty in both cases. `research-idle` stays as the by-hand fallback.
+  - New sensors `research_upgrades_unbuilt` / `research_upgrades_missing` apply the command's own upgrade list and test: researched and neither built nor planned on the home map.
+  - `research-build-upgrades` (14.15, new) builds each name in that list (`build def <name>`, then `power`).
+  - The ladder was then 402 rungs and 188 sensors.
+- **Generator and prisoners (`generator`, `prisoner`):**
+  - `power-no-grid` (15.9, new) fires on no grid at all (`has_power` false, Electricity researched, no hostiles). It runs `generator kind wood` (solar when researched and wood is short), then `power`.
+  - `prisoner-new-recruit` (3.55, new) runs `prisoner mode recruit pawn <name>` for each name in the new sensor `prisoners_new_names`. `prisoners_new` counts prisoners still on the initial Maintain-only mode that RimPLC has never seen with a stance of their own. A prisoner seen with any other mode is remembered in the save (`RimPLCGameComponent.PrisonersSeen`, `prisonersSeen`), so a stance the playbook or the player sets (enslave, convert, or maintain later) is kept, and the rung never uses `pawn all`.
+  - `growth-prisoner-keep` and `recruit-past-three` now name the `prisoner` command where they said `set_prisoner_interaction` was missing (that name is in the checker's retired list).
+  - The ladder was then 404 rungs and 190 sensors. Both commands are in the window list and her `game_set` enum.
+
+- **Trade (`trade`):**
+  - `trade-in-reach` (20.01, new) fires when a trader caravan is on the map (new sensor `trader_caravans_on_map`), or a ship is in orbit and a comms console stands. It lists first.
+  - It then sells cash crops and refined goods above the new tag `TRADE_KEEP` (50 of each, 10-2000), and buys steel below `STEEL_RESERVE` and components below `COMPONENT_RESERVE`. The negotiator walks there first and the deal runs on the second call. It never sells spacer tech.
+  - The visit is marked `trade_visit_done`; `trade-visit-reset` (20.015) clears the mark when the trader leaves.
+  - `trade-ship-orbit`, `econ-trader-arrived`, `supply-steel-1-buy`, `supply-weapons-1-sell` and `trade-run` now name `trade` where they said `trade_dialog` was missing. Calling a trader in (`call_trader`) is still missing.
+- **Gate watch posture (`gate_posture`):**
+  - New Rimrooms `SetupTools12.GatePosture` (`posture=Mild|Balanced|Strict`) writes `CompRimroomsGate.watchPosture`, the field the gizmo writes, by reflection on every gate on the map.
+  - The new RimPLC sensor `gate_watch_posture` (0/1/2) reads it by reflection on the comp named `CompRimroomsGate`, so RimPLC still has no Rimrooms reference.
+  - `config-post-strictness` is **enabled**: when `gate_watch_posture != 1` it runs `gate_posture posture Balanced` (latched). The eat/safety floor holds in every posture.
+- **Hall (`hall`):** the playbook calls for 3-wide halls in `rung-5-the-mountain-base` (the spine and the prison and guest wing halls) and `walls-halls-roofs`. Their steps now use `hall x1 z1 x2 z2 width 3`. They are layout-time steps inside those rungs, with no hall rung of their own.
+- **Guest beds (`guest_beds`):** `guest-bed-fees` (24.22, new, latched) lists the guest beds and their fee once `guest_beds > 0`. The playbook gives no fee order (the "$20" the owner quoted was what he saw), so the mod default stays. `guest-wing` and `econ-guest-beds-full` use the list where they said `set_bed_price` was missing.
+- **Security rooms (`security_room`):** `security-room-ne` / `-nw` / `-se` / `-sw` (27.95-27.98, new) run `security_room x <corner_x> z <corner_z> size 3` once that corner's tower stands (new sensors `tower_<corner>_built`: a built embrasure within 8 cells), then set `mark_security_room_<corner>`.
+- All of these commands are in the window list and her `game_set` enum. `trade_dialog`, `set_bed_price` and `set_prisoner_interaction` are in the checker's retired-name list.
+- **Tower detection fixed, and tower coolers (`room_cooler`):**
+  - `tower_<corner>_built` used to be "any embrasure within 8 cells", which counted plain wall embrasures as a tower. It is now what the `tower` command builds: a proper, fully roofed indoor room of 4-36 cells within 8 cells of the corner with a built embrasure in its walls.
+  - `tower_<corner>` is that room, or embrasure blueprints/frames near the corner (a tower laid out).
+  - New sensors per corner: `tower_<corner>_cell_x` / `_z` (a cell inside the tower room) and `tower_<corner>_cooler` (0 none, 1 planned, 2 built and powered, 3 built with no power).
+  - `tower-cooler-<corner>` (27.981-27.984) runs `room_cooler x z celsius 21` on that cell once the tower stands with no cooler.
+  - `tower-cooler-power-<corner>` (27.985-27.988) runs `power` when the cooler is built but unpowered.
+  - `room_cooler` is in both command lists and the enum.
+- **Calling a trader in (`call_trader`):** `trade-call-caravan` (20.012, new) fires when no ship or caravan has been in reach for 72 game hours, a comms console stands, silver is at `TRADE_SILVER_MIN` or more, no hostiles are on the map and nothing has been asked for yet (`mark_trade_called`). It lists first, then asks the best-goodwill faction, Bulk goods when offered. The game's own cooldown refusal is read from the reply: the next-best faction is tried once, then the mark is set and it waits. `trade-call-reset` (20.013) clears the mark after 48 quiet hours, and `trade-visit-reset` clears it once the caravan has come and gone. `supply-steel-1-buy`, `supply-weapons-1-sell` and `trade-run` now name the command where they said `call_trader` was missing. In both command lists and the enum.
+- The ladder is now 421 rungs and 208 sensors (209 in the preset). Both checkers are CLEAN. `RimPLC.dll` builds 0/0; Rimrooms compiles 0/0 to a scratch folder.
+
+**Still open:** none of this has run in a live game.

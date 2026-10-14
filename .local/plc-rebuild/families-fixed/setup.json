@@ -1,0 +1,820 @@
+{
+ "family": "setup",
+ "rungs": [
+  {
+   "id": "setup-0-pause-on-land",
+   "priority": 3.3,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "paused": false,
+    "mark_setup_done": false,
+    "mark_assign_set": false
+   },
+   "then": [
+    "game_pause_game pause true -- before any other order",
+    "read game_state once; close any operations menu (game_close_window) so pawn options show",
+    "pawns selected but no pawn options/draft show: game_close_window, then select ONE pawn (click once) and read game_get_ui_layout"
+   ],
+   "never": [
+    "unpause before mark assign_set is true",
+    "let one game hour pass with priorities unset"
+   ],
+   "why": "owner: \"FUCK!!!! I PAUSED THE GAME SINCE SHE WOULDNT! FUCK WHY WONT SHE SET SHIT UP!!!!!!!\" / owner: \"wtf!!!!! time is flyying awayy!!!! why did she unpause beforee seeting all the pawn settings this is the fifth time ive told you all of this\" / owner: \"see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause\" / owner: \"i think it doesnt know how to click off the operation menu to use the pawns\" -- walkthrough: walkthrough-opening-and-camp.md 'Pause on landing, before any order.' [setup] Q / owner: \"three peopel are there its selecting them but no pawn options apear like draft major bug the model cant haddle\"",
+   "owner_rules": [
+    "FUCK!!!! I PAUSED THE GAME SINCE SHE WOULDNT! FUCK WHY WONT SHE SET SHIT UP!!!!!!!",
+    "wtf!!!!! time is flyying awayy!!!! why did she unpause beforee seeting all the pawn settings this is the fifth time ive told you all of this",
+    "see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause",
+    "i think it doesnt know how to click off the operation menu to use the pawns",
+    "three peopel are there its selecting them but no pawn options apear like draft major bug the model cant haddle"
+   ]
+  },
+  {
+   "id": "setup-0-starting-goods",
+   "priority": 3.33,
+   "family": "setup",
+   "latch": true,
+   "when": {
+    "colony_exists": true,
+    "landed": {
+     "ons": {
+      "colony_exists": true,
+      "day": "<=1"
+     }
+    }
+   },
+   "then": [
+    "read count_mealsurvivalpack (survival meals) and meals: the scenario must start with about 100 survival meals plus the Prepare Carefully items",
+    "short: reply_owner with what is on the map vs what was set (never fix files yourself)",
+    "ladder_set mark start_goods_checked true"
+   ],
+   "never": [
+    "count simple meals as the scenario food"
+   ],
+   "why": "owner: \"okay bug hunt feature branch 1. im not correctly starting weith my set up prepare carfully goods and the scenerios starting good... as you can see they are not accurate if you check the current running game, just as an example of whats not right.. my preparecarfully mod food did not appear and the starting scenerio supplies of food did not appear and should start scenerio with survival meals not simple meals and should be like 100 to start besides whats set in prepare carfully so check the current game and whats on the map versus what they were suppose to start with verses how to fix it properly now\"",
+   "done_mark": "setup_0_starting_goods_done",
+   "owner_rules": [
+    "okay bug hunt feature branch 1. im not correctly starting weith my set up prepare carfully goods and the scenerios starting good... as you can see they are not accurate if you check the current running game, just as an example of whats not right.. my preparecarfully mod food did not appear and the starting scenerio supplies of food did not appear and should start scenerio with survival meals not simple meals and should be like 100 to start besides whats set in prepare carfully so check the current game and whats on the map versus what they were suppose to start with verses how to fix it properly now"
+   ]
+  },
+  {
+   "id": "arms-out-fallback",
+   "priority": 3.36,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "mark_arms_set": false,
+    "arms_tries": {
+     "ctu": {
+      "mark_arms_tried": true
+     },
+     "preset": 2,
+     "reset": {
+      "mark_arms_set": true
+     }
+    }
+   },
+   "then": [
+    "empire_pass refused twice: for each loose weapon order_pawn pawn_id <unarmed pawn> x z of the weapon option 'Equip'",
+    "an Equip order refused: ladder_set mark arms_tried true, then ladder_set mark arms_tried false, and order the next pawn",
+    "then ladder_set mark arms_set true"
+   ],
+   "never": [
+    "a third empire_pass for arms"
+   ],
+   "why": "owner: \"once again u arnt armed!!! wtf!!!!\" / owner: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\"",
+   "owner_rules": [
+    "once again u arnt armed!!! wtf!!!!",
+    "she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee"
+   ]
+  },
+  {
+   "id": "arms-out-first",
+   "priority": 3.39,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "mark_start_opening_done": true,
+    "mark_arms_set": false
+   },
+   "then": [
+    "empire_pass",
+    "empire_pass refused, or its ARMS line still shows someone unarmed: ladder_set mark arms_tried true, then ladder_set mark arms_tried false (each refusal counts once; 2 -> arms-out-fallback)",
+    "read its ARMS line: nobody unarmed (able_shooters_armed == able_shooters); a gun as primary, the melee weapon/pain baton as sidearm, helmet on, skip flak vest/pants early",
+    "game_set cmd assign hostility Attack",
+    "loose_weapons 0 and everyone armed: ladder_set mark arms_set true"
+   ],
+   "never": [
+    "explore or build before everyone is armed",
+    "leave a gun on the ground (loose_weapons > 0 after the pass)"
+   ],
+   "why": "owner: \"once again u arnt armed!!! wtf!!!!\" / owner: \"put your weapons-out rung FIRST (priority above every setup rung)\" / owner: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\" / owner: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\" -- walkthrough: walkthrough-opening-and-camp.md best shooter gets the bolt-action rifle, next the revolver, knife to best melee; helmet yes, flak no [start] B,Q",
+   "owner_rules": [
+    "once again u arnt armed!!! wtf!!!!",
+    "put your weapons-out rung FIRST (priority above every setup rung)",
+    "she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee",
+    "make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC"
+   ]
+  },
+  {
+   "id": "setup-2-pawns-fallback",
+   "priority": 3.42,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "mark_pawns_set": false,
+    "prio_tries": {
+     "ctu": {
+      "mark_pawns_tried": true
+     },
+     "preset": 3,
+     "reset": {
+      "mark_pawns_set": true
+     }
+    }
+   },
+   "then": [
+    "pawn_priorities refused 3 times: game_set cmd set_work_priority pawn <name> work <type> level <n> for each missing cell",
+    "a set_work_priority refused: ladder_set mark pawns_tried true, then ladder_set mark pawns_tried false; read the reason, next cell",
+    "then ladder_set mark pawns_set true"
+   ],
+   "never": [
+    "skip priorities"
+   ],
+   "why": "owner: \"she is bnot to skip priorities that is what she must to after exploring wtf am i talking to a wall all week\" / owner: \"set up priorities u fool / pawns have none set / your prioties for work are all fucked come on fix it for next time u know how to do it fix why u didnt do it and do it\"",
+   "owner_rules": [
+    "she is bnot to skip priorities that is what she must to after exploring wtf am i talking to a wall all week",
+    "set up priorities u fool / pawns have none set / your prioties for work are all fucked come on fix it for next time u know how to do it fix why u didnt do it and do it"
+   ]
+  },
+  {
+   "id": "setup-2-pawns",
+   "priority": 3.45,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "mark_arms_set": true,
+    "mark_pawns_set": false
+   },
+   "then": [
+    "PAUSED (setup-0-pause-on-land holds it)",
+    "pawn_priorities once per pawn: Firefighter..Cooking = 1 (manual priorities ON), then custom: passions 2, the rest 3-4, Mining 2, Research 4, Hauling 1 during the opening; Doctor/Construction/Growing 1 on the best-skilled pawn; Crafting to whoever is idle; none blank (0 only for incapable)",
+    "pawn_priorities refused: ladder_set mark pawns_tried true, then ladder_set mark pawns_tried false (3 refusals -> setup-2-pawns-fallback)",
+    "the same grid for everyone, then only the passion cells changed per pawn -- not everyone chopping wood",
+    "check grid_matches_plan true, then ladder_set mark pawns_set true"
+   ],
+   "never": [
+    "set priorities one cell at a time",
+    "leave a work type blank",
+    "unpause before this"
+   ],
+   "why": "owner: \"set up priorities u fool / pawns have none set / your prioties for work are all fucked come on fix it for next time u know how to do it fix why u didnt do it and do it\" / owner: \"set it how ive told you every day weve played all of them for every one using coopy paste\" / owner: \"set your priorities, dont need everyone choopping wood, multitask\" / owner: \"she is bnot to skip priorities that is what she must to after exploring wtf am i talking to a wall all week\" / owner: \"she is letting time pass and hasnt set a priority or shelf or schedula\" / owner: \"see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause\" -- walkthrough: walkthrough-opening-and-camp.md Landing: manual priorities, Firefight/Patient/BedRest/Basic 1, Hauling 1 opening, passion 2 others 4, Mine 2 Research 4 [configuration] B,Q / owner: \"set up all priorities this is the last time i telling you set it how ive told you every day weve played all of them for every one using coopy paste ...\" / owner: \"stop ur fucking up the priorities i told you how to set them\"",
+   "owner_rules": [
+    "set up priorities u fool / pawns have none set / your prioties for work are all fucked come on fix it for next time u know how to do it fix why u didnt do it and do it",
+    "set it how ive told you every day weve played all of them for every one using coopy paste",
+    "set your priorities, dont need everyone choopping wood, multitask",
+    "she is bnot to skip priorities that is what she must to after exploring wtf am i talking to a wall all week",
+    "she is letting time pass and hasnt set a priority or shelf or schedula",
+    "see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause",
+    "set up all priorities this is the last time i telling you set it how ive told you every day weve played all of them for every one using coopy paste ...",
+    "stop ur fucking up the priorities i told you how to set them"
+   ]
+  },
+  {
+   "id": "setup-3-assign",
+   "priority": 3.48,
+   "family": "setup",
+   "latch": true,
+   "when": {
+    "colony_exists": true,
+    "mark_pawns_set": true,
+    "mark_assign_set": false
+   },
+   "then": [
+    "game_set cmd assign (all pawns): food Fine (not Lavish), medicine Best, hostility Attack",
+    "self-tend on for everyone (empire_pass does it; read the line back)",
+    "schedule: Anything at all hours for every pawn, sleep and recreation kept (no 50 carry runs without a break) [missing tool: game_set cmd schedule -> game_open_main_tab Schedule, game_get_ui_layout, click once each]",
+    "drug policy: No drugs for colonists except Penicillin every 5 days, carry 2 [missing tool: game_set cmd drug_policy -> game_open_main_tab Assign, game_get_ui_layout, click once each]",
+    "then ladder_set mark assign_set true -- only now may time run"
+   ],
+   "never": [
+    "unpause before this",
+    "give colonists recreational drugs"
+   ],
+   "why": "owner: \"she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee\" / owner: \"drugs are for hospitality guests\" / owner: \"set theri scheldule to anything at all times for all pawns / research and manage your pawns\" / owner: \"u have ppriorities set on stockpiles so thay pull it all through and do you have all the paws set up to heal attack and sleep whenever and take only antibiotic pencylcin every 5 days and carry 2\" / owner: \"set up drugs and scar to attack\" / owner: \"shes just repeating same things not living in the momnet and she still hasent set all the priorties scheduled drug use attakck heal and all that on assign\" / owner: \"were ur crops u get priorities done and scedukele and drug assignment and antibiotics\" / owner: \"wtf!!!!! time is flyying awayy!!!! why did she unpause beforee seeting all the pawn settings this is the fifth time ive told you all of this\" / owner: \"you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax and starting up you facitly small first massive later get ur needs food security and shit settled / you should have a maintaince list of thinge proprigating what all you need to do / make sure u arm up and set everyones setting attack, heal self, schedule, priorities, drugs to no drugs, all of it pause and do it and set control shift carry but becasre full sending them on 50 runs without a break\"",
+   "done_mark": "setup_3_assign_done",
+   "owner_rules": [
+    "she still has guns on the ground ... euaipthem as main equip and use the pain batons as side arms for everyone ... set self tend medical and attack not flee",
+    "drugs are for hospitality guests",
+    "set theri scheldule to anything at all times for all pawns / research and manage your pawns",
+    "u have ppriorities set on stockpiles so thay pull it all through and do you have all the paws set up to heal attack and sleep whenever and take only antibiotic pencylcin every 5 days and carry 2",
+    "set up drugs and scar to attack",
+    "shes just repeating same things not living in the momnet and she still hasent set all the priorties scheduled drug use attakck heal and all that on assign",
+    "were ur crops u get priorities done and scedukele and drug assignment and antibiotics",
+    "wtf!!!!! time is flyying awayy!!!! why did she unpause beforee seeting all the pawn settings this is the fifth time ive told you all of this",
+    "you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax and starting up you facitly small first massive later get ur needs food security and shit settled / you should have a maintaince list of thinge proprigating what all you need to do / make sure u arm up and set everyones setting attack, heal self, schedule, priorities, drugs to no drugs, all of it pause and do it and set control shift carry but becasre full sending them on 50 runs without a break"
+   ]
+  },
+  {
+   "id": "leader-moral-guide",
+   "priority": 3.51,
+   "family": "setup",
+   "latch": true,
+   "when": {
+    "colony_exists": true,
+    "mark_assign_set": true,
+    "mark_ideo_roles_set": false
+   },
+   "then": [
+    "game_open_main_tab Ideoligion; assign a leader and a moral guide (game_get_ui_layout, then click the listed targets once each)",
+    "a click selected everything (all fields/pawns): game_close_window and read game_get_ui_layout again -- exactly one thing selected before acting",
+    "ladder_set mark ideo_roles_set true"
+   ],
+   "never": [
+    "click an option twice"
+   ],
+   "why": "owner: \"now u have a leader u need a morasl guide and they ahave abilities u want to always use\" / owner: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\" / owner: \"click the option s one not twice\" / owner: \"some time u click twice it selects all firelds be werry\"",
+   "done_mark": "leader_moral_guide_done",
+   "owner_rules": [
+    "now u have a leader u need a morasl guide and they ahave abilities u want to always use",
+    "make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC",
+    "click the option s one not twice",
+    "some time u click twice it selects all firelds be werry"
+   ]
+  },
+  {
+   "id": "setup-1-explore-fallback",
+   "priority": 3.54,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "explore_done": false,
+    "mark_assign_set": true,
+    "explore_stuck": {
+     "ton": {
+      "explore_done": false,
+      "mark_assign_set": true
+     },
+     "hours": 6
+    }
+   },
+   "then": [
+    "explore has run 6 game hours: game_get_cells_info around the crew, order_pawn each pawn to the nearest fog-edge door (option 'Go')",
+    "Crashlanded open ground: no rooms exist -- ladder_set mark explore_done true and go on to stores"
+   ],
+   "never": [
+    "loop explore forever"
+   ],
+   "why": "owner: \"exploring is not finished damn it ive said this repeadidily the map is even on screen becsue it never went through EVERY DOOR\" / owner: \"explore the hidden rooms and get outside her walls\"",
+   "owner_rules": [
+    "exploring is not finished damn it ive said this repeadidily the map is even on screen becsue it never went through EVERY DOOR",
+    "explore the hidden rooms and get outside her walls"
+   ]
+  },
+  {
+   "id": "setup-1-explore",
+   "priority": 3.57,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "mark_assign_set": true,
+    "explore_done": false
+   },
+   "then": [
+    "game_set cmd explore -- every colonist through EVERY door and along the fog edge; repeat until it answers 'nothing left'",
+    "unpause (game_pause_game pause false) so they walk",
+    "rooms still 100% fogged with no door: find the hidden door or mark the thinnest wall to mine",
+    "explore answers 'nothing left' -> ladder_set mark explore_done true (explore_done mirrors it); this rung clears"
+   ],
+   "never": [
+    "set up stores in fog before exploring",
+    "sit researching",
+    "call explore done while a door is unvisited"
+   ],
+   "why": "owner: \"explore the hidden rooms and get outside her walls\" / owner: \"exploring is not finished damn it ive said this repeadidily the map is even on screen becsue it never went through EVERY DOOR\" / owner: \"you still have t explored your facility to find the bed rooms and other unexplored rooms\" / owner: \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\"",
+   "owner_rules": [
+    "explore the hidden rooms and get outside her walls",
+    "exploring is not finished damn it ive said this repeadidily the map is even on screen becsue it never went through EVERY DOOR",
+    "you still have t explored your facility to find the bed rooms and other unexplored rooms",
+    "the whole logic gate chain like a plc i told you to have it use and edit on the fly"
+   ]
+  },
+  {
+   "id": "setup-2b-priorities-after-explore",
+   "priority": 3.6,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "explore_done": true,
+    "grid_matches_plan": false
+   },
+   "then": [
+    "pawn_priorities again for every pawn whose grid drifted (new work types, new pawn)",
+    "Hauling back to 3 once the pod drop is stored"
+   ],
+   "never": [
+    "skip priorities"
+   ],
+   "why": "owner: \"she is bnot to skip priorities that is what she must to after exploring wtf am i talking to a wall all week\" / owner: \"set it how ive told you every day weve played all of them for every one using coopy paste\"",
+   "owner_rules": [
+    "she is bnot to skip priorities that is what she must to after exploring wtf am i talking to a wall all week",
+    "set it how ive told you every day weve played all of them for every one using coopy paste"
+   ]
+  },
+  {
+   "id": "setup-chop",
+   "priority": 3.63,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "mark_assign_set": true,
+    "wood": "<{WOOD_RESERVE}",
+    "designations_cut": "<20"
+   },
+   "then": [
+    "game_set cmd chop count 300 (nearest trees to the crew; trees on the site first); unpause so it is cut",
+    "chop refused or 0 trees: game_set cmd explore for trees beyond reach, then game_get_cells_info on the wooded cells and game_apply_architect_designator Chop wood once",
+    "no trees on the whole map: reply_owner with the chop reply (the tile was picked wrong); never loop"
+   ],
+   "never": [
+    "put everyone on PlantCutting"
+   ],
+   "why": "owner: \"and a big issue its it never auto unforbid all the starting materials and never copped wood to build starting structures rooms\" / owner: \"set your priorities, dont need everyone choopping wood, multitask\" -- walkthrough: walkthrough-opening-and-camp.md 'Chop trees on the site first, then chop more for wood stock.' [start] B,Q / owner: \"there is no wood no trees on this map, thats why in advanced setting on world gen setup you set 300x300 mapo and spring, and then when choosing a map tile u pic on that has mountains(the rock areas on map) in forest area and jungle areas the light green and green, terrain tab on left tells u all this when u highlight via select the tiles\"",
+   "owner_rules": [
+    "and a big issue its it never auto unforbid all the starting materials and never copped wood to build starting structures rooms",
+    "set your priorities, dont need everyone choopping wood, multitask",
+    "there is no wood no trees on this map, thats why in advanced setting on world gen setup you set 300x300 mapo and spring, and then when choosing a map tile u pic on that has mountains(the rock areas on map) in forest area and jungle areas the light green and green, terrain tab on left tells u all this when u highlight via select the tiles"
+   ]
+  },
+  {
+   "id": "setup-4-stores-fallback",
+   "priority": 3.66,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "food_store": false,
+    "store_fail": {
+     "any": [
+      {
+       "store_tries": {
+        "ctu": {
+         "mark_store_tried": true
+        },
+        "preset": 2,
+        "reset": {
+         "food_store": true
+        }
+       }
+      },
+      {
+       "store_slow": {
+        "ton": {
+         "food_store": false,
+         "mark_assign_set": true
+        },
+        "hours": 3
+       }
+      }
+     ]
+    }
+   },
+   "then": [
+    "two refusals or 3 hours without a store: game_get_cells_info around the crew, pick open explored soil 6x6 beside them",
+    "game_select_architect_designator for a stockpile zone and game_drag_cell over it once (one drag)",
+    "ladder_set mark store_tried false"
+   ],
+   "never": [
+    "a third try on the same cells"
+   ],
+   "why": "owner: \"you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses\" / owner: \"look at that shit she is setting fucking rooms to build deep inside the moutain with no ryhme or reason\"",
+   "owner_rules": [
+    "you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses",
+    "look at that shit she is setting fucking rooms to build deep inside the moutain with no ryhme or reason"
+   ]
+  },
+  {
+   "id": "setup-4-stores",
+   "priority": 3.69,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "mark_assign_set": true,
+    "food_store": false
+   },
+   "then": [
+    "game_set cmd rooms first",
+    "no usable explored room (Crashlanded): game_set cmd stockpile_camp mode food, then mode nofood -- beside the crew, by the entrance, never stockpile_room",
+    "rooms answers a room with free floor > 0: game_set cmd stockpile_room room <id> mode food, then mode nofood on the next best",
+    "game_set cmd stockpile_filter x z mode food priority Important on the food store",
+    "a refused try: ladder_set mark store_tried true, then ladder_set mark store_tried false (each refusal counts once; 2 -> setup-4-stores-fallback)",
+    "haul in short batches; the schedule keeps sleep and recreation -- never 50 carry runs without a break [missing tool: haul limit / rest setting]"
+   ],
+   "never": [
+    "stockpile on fogged cells",
+    "retry a room that refused",
+    "stockpile a room with free floor 0",
+    "talk about storage again before a stockpile is placed",
+    "designate or build anything inside the mountain rock before the camp is stable (mark camp_stable)",
+    "try designators by trial and error: one designator for one purpose; the same thought twice means stop and read",
+    "haul everything across the map -- settle near the landing spot"
+   ],
+   "why": "owner: \"you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses\" / owner: \"look at that shit she is setting fucking rooms to build deep inside the moutain with no ryhme or reason\" / owner: \"she is letting time pass and hasnt set a priority or shelf or schedula\" / owner: \"what the fuck do we need to restart it all if so do it so she doesnt fuck it up this time and properly doesnt repeat the exac same shit everything oioriginal and fucking have here actual do the inital game and in game pawn sett up and stockpiles and know wtf to do with freezers\" / owner: \"you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax and starting up you facitly small first massive later get ur needs food security and shit settled / you should have a maintaince list of thinge proprigating what all you need to do / make sure u arm up and set everyones setting attack, heal self, schedule, priorities, drugs to no drugs, all of it pause and do it and set control shift carry but becasre full sending them on 50 runs without a break\" -- walkthrough: walkthrough-opening-and-camp.md 'Lay one stockpile zone over the whole camp floor and haul everything into it.' [start] B,Q",
+   "owner_rules": [
+    "you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses",
+    "look at that shit she is setting fucking rooms to build deep inside the moutain with no ryhme or reason",
+    "she is letting time pass and hasnt set a priority or shelf or schedula",
+    "what the fuck do we need to restart it all if so do it so she doesnt fuck it up this time and properly doesnt repeat the exac same shit everything oioriginal and fucking have here actual do the inital game and in game pawn sett up and stockpiles and know wtf to do with freezers",
+    "you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax and starting up you facitly small first massive later get ur needs food security and shit settled / you should have a maintaince list of thinge proprigating what all you need to do / make sure u arm up and set everyones setting attack, heal self, schedule, priorities, drugs to no drugs, all of it pause and do it and set control shift carry but becasre full sending them on 50 runs without a break"
+   ]
+  },
+  {
+   "id": "setup-4b-shelter-fallback",
+   "priority": 3.72,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "food_store": true,
+    "mark_shelter_set": false,
+    "shelter_tries": {
+     "ctu": {
+      "mark_shelter_tried": true
+     },
+     "preset": 2,
+     "reset": {
+      "mark_shelter_set": true
+     }
+    }
+   },
+   "then": [
+    "shelter tool refused twice: game_list_architect_designators Structure, then game_apply_architect_designator wood Wall as a 7x7 ring by the crew, one Door mid-side, roof over it",
+    "a designator refused: ladder_set mark shelter_tried true, then ladder_set mark shelter_tried false; reply_owner with the refusal text",
+    "room closed and roofed, beds >= colonists: ladder_set mark shelter_set true"
+   ],
+   "never": [
+    "a door on the extreme corner cell",
+    "a third try on the same cells"
+   ],
+   "why": "owner: \"you retarn u put doors the the extreem corners thats not gonna work\" / owner: \"camp fridege all of it workshop every thing u need in the camp tight and no blocked paths\"",
+   "owner_rules": [
+    "you retarn u put doors the the extreem corners thats not gonna work",
+    "camp fridege all of it workshop every thing u need in the camp tight and no blocked paths"
+   ]
+  },
+  {
+   "id": "setup-4b-shelter",
+   "priority": 3.75,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "food_store": true,
+    "mark_shelter_set": false
+   },
+   "then": [
+    "game_set cmd shelter w 7 h 7 (wood room + door + roof beside the crew; 9x9 if wood allows); doors mid-side or near a corner, never the corner cell",
+    "shelter refused: ladder_set mark shelter_tried true, then ladder_set mark shelter_tried false; next try w 6 h 8 (2 refusals -> setup-4b-shelter-fallback)",
+    "game_set cmd beds (one per colonist), then game_set cmd shelves -- enough shelves for the dry store, more directly on the N side of the existing ones",
+    "fridge (roofed food store), workshop (crafting spot / butcher), 1x2 table + stool, torch lamp, a campfire in the middle -- all inside or touching the camp (game_apply_architect_designator Campfire / TorchLamp) [missing tool: game_set cmd campfire/torch]",
+    "store everything under a roof except steel and stone blocks",
+    "mud/marsh/water inside the camp perimeter -> soil before building on it [missing tool: game_set cmd terraform -> game_apply_architect_designator terrain designator, once per drag]",
+    "unpause to build; when beds >= colonists and store_roofed_fraction >= 0.75: ladder_set mark shelter_set true"
+   ],
+   "never": [
+    "build in steel",
+    "put a door on the extreme corner",
+    "block a path: 2-wide walkways",
+    "sleep a pawn on the ground on night 1",
+    "a massive camp",
+    "grow the camp beyond what three pawns need"
+   ],
+   "why": "owner: \"camp fridege all of it workshop every thing u need in the camp tight and no blocked paths\" / owner: \"door on corner and sides\" / owner: \"you retarn u put doors the the extreem corners thats not gonna work\" / owner: \"see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause\" -- walkthrough: walkthrough-opening-and-camp.md 7x7 wood room, 1-3 doors, walls->beds->table; 3 beds before night 1; campfire; torch lamp; >75% roofed [start]/[survival] B,Q / owner: \"use teriform to remove mud and shit like water inside camp perimeter\" / owner: \"ur dry storage needs more shleves / add another shelfe N side of existing ones directly / and missing ones\"",
+   "owner_rules": [
+    "camp fridege all of it workshop every thing u need in the camp tight and no blocked paths",
+    "door on corner and sides",
+    "you retarn u put doors the the extreem corners thats not gonna work",
+    "see this is the shit im talking about sahe is letting time pass and hasnt set a priority or shelf or schedula or anyof the multitude of things required beforoe the firest unpause",
+    "use teriform to remove mud and shit like water inside camp perimeter",
+    "ur dry storage needs more shleves / add another shelfe N side of existing ones directly / and missing ones"
+   ]
+  },
+  {
+   "id": "setup-5-stove",
+   "priority": 3.78,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "food_store": true,
+    "mark_shelter_set": true,
+    "mark_stove_set": false
+   },
+   "then": [
+    "game_set cmd stove (fueled stove near the food store)",
+    "unpause so it is built; when stoves >= 1: game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET} (Do until you have X, never Do forever)",
+    "stoves >= 1 and the bill is placed: ladder_set mark stove_set true"
+   ],
+   "never": [
+    "place a second stove",
+    "a Do-forever bill"
+   ],
+   "why": "owner: \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner: \"and set amounts higher and higher as your base grows\" -- walkthrough: walkthrough-opening-and-camp.md stove bill simple meals, do until ~6-20 [survival] B,Q",
+   "owner_rules": [
+    "the whole logic gate chain like a plc i told you to have it use and edit on the fly",
+    "and set amounts higher and higher as your base grows"
+   ]
+  },
+  {
+   "id": "setup-6-run",
+   "priority": 3.81,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "mark_stove_set": true,
+    "ticks_moving": false,
+    "hostiles_on_map": 0
+   },
+   "then": [
+    "unpause and keep time running (game_pause_game pause false)",
+    "turn Research back on (pawn_priorities custom Research 3)",
+    "letters first: read every letter (game_state), act, dismiss",
+    "run_list -- the propagating maintenance list; the first FIX is the goal; check off test TODO items while playing (note append)"
+   ],
+   "never": [],
+   "why": "owner: \"okay is it ever going to play the game?(set up cololnist, zones, and shit)\" / owner: \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner: \"and your operations manual script or .md obviousliy isnt good becasue it doesnt have everything ive fucking ever told you as you arent even reading messages and clearing them\" / owner: \"make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done\" / owner: \"you are suppose tho be checking off todo items of the tests stuff while playing the full game to do so\" / owner: \"how are we gonna do the fucking tests if u dont play the game?\"",
+   "owner_rules": [
+    "okay is it ever going to play the game?(set up cololnist, zones, and shit)",
+    "the whole logic gate chain like a plc i told you to have it use and edit on the fly",
+    "and your operations manual script or .md obviousliy isnt good becasue it doesnt have everything ive fucking ever told you as you arent even reading messages and clearing them",
+    "make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done",
+    "you are suppose tho be checking off todo items of the tests stuff while playing the full game to do so",
+    "how are we gonna do the fucking tests if u dont play the game?"
+   ]
+  },
+  {
+   "id": "setup-6b-crops",
+   "priority": 3.84,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "mark_stove_set": true,
+    "growing_cells": "<75"
+   },
+   "then": [
+    "sand/gravel/rock under a planned field: terraform it to soil first [missing tool: game_set cmd terraform -> game_apply_architect_designator terrain designator]",
+    "game_set cmd crops plant Plant_Rice (rich soil, near camp)",
+    "more fields: set_zone_plant x z Plant_Potato on one, a strawberry and healroot field when researched",
+    "fields_all_default_crop true: game_set cmd set_zone_plant on all but one field to a different crop",
+    "game_set cmd hunt (no boomrats, boomalopes, predators)"
+   ],
+   "never": [
+    "one crop on every field",
+    "fields far from camp",
+    "plant on sand/gravel/rock without terraforming to soil"
+   ],
+   "why": "owner: \"you are going nothing but potatoes everywhere wtf!\" / owner: \"were ur crops u get priorities done and scedukele and drug assignment and antibiotics\" -- walkthrough: walkthrough-opening-and-camp.md 30-40 tiles day 1; 25/pawn; 2 rice 1 strawberry 1 potato; rice first [growth] B,Q / owner: \"dont forget terriforming for soil plots\"",
+   "owner_rules": [
+    "you are going nothing but potatoes everywhere wtf!",
+    "were ur crops u get priorities done and scedukele and drug assignment and antibiotics",
+    "dont forget terriforming for soil plots"
+   ]
+  },
+  {
+   "id": "setup-7-camp-defence-fallback",
+   "priority": 3.87,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "mark_stove_set": true,
+    "mark_camp_defence": false,
+    "build_tries": {
+     "ctu": {
+      "mark_camp_wall_tried": true
+     },
+     "preset": 3,
+     "reset": {
+      "mark_camp_defence": true
+     }
+    }
+   },
+   "then": [
+    "the wall ring was refused three times: game_set cmd shelter (a small closed wood room the crew can fight from)",
+    "wood barricades on the threat side, shooters behind them; a refusal: ladder_set mark camp_wall_tried true, then ladder_set mark camp_wall_tried false",
+    "ladder_set mark camp_defence true"
+   ],
+   "never": [
+    "a third try on the same cells"
+   ],
+   "why": "owner: \"make it of wood just exterior make 3wide terrriom stone smooth marble for fire break\"",
+   "owner_rules": [
+    "make it of wood just exterior make 3wide terrriom stone smooth marble for fire break"
+   ]
+  },
+  {
+   "id": "setup-7-camp-defence",
+   "priority": 3.9,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "mark_stove_set": true,
+    "mark_camp_defence": false
+   },
+   "then": [
+    "unity_say a clean line first: what the build is and that it takes a minute (bulk jobs are announced, never silent; paced, not a million clicks)",
+    "the STARTING CAMP comes before the main base: one entrance in use, everything else closed",
+    "wood wall ring round the camp (game_select_architect_designator Wall wood, ONE game_drag_cell per side); only the EXTERIOR is wood; doors in every other gap (corners and mid-side)",
+    "water under the line: terraform it to dirt first [missing tool: game_set cmd terraform]",
+    "wood barricades (or sandbags) either side of that entrance, inside, staggered (game_apply_architect_designator Barricade)  [missing tool: game_set cmd barricades]",
+    "game_set cmd set_area area Home over the whole ring so pawns stay inside",
+    "a fallback point behind the barricades where all three gather when drafted",
+    "everyone armed: rifle primary, melee sidearm (empire_pass if anyone is not)",
+    "a mini-turret covering the entrance once steel and components allow",
+    "a drag or designator refused: ladder_set mark camp_wall_tried true, then ladder_set mark camp_wall_tried false (3 -> setup-7-camp-defence-fallback)",
+    "when defences_built >= 2: ladder_set mark camp_defence true; the full embrasure wall and killbox are rung-3-defence, after power"
+   ],
+   "never": [
+    "start the main base or the mountain cutout before the camp is defended",
+    "leave the entrance with no cover",
+    "designate or build anything inside the mountain rock before the camp is stable",
+    "try designators by trial and error: one designator for one purpose; the same thought twice means stop and read",
+    "wall over water (terraform first)",
+    "a wall cell where a door is meant to be"
+   ],
+   "why": "owner: \"you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses\" -- walkthrough: PLAYBOOK 00 step 8; walkthrough-opening-and-camp.md cover values, wall gap funnel [war] Q / owner: \"make it of wood just exterior make 3wide terrriom stone smooth marble for fire break\" / owner: \"all those walls over top of water need to be cancled and use terraform to change it to dirt first\" / owner: \"hold some places you put walls where doors are to be opn outer wall\" / owner: \"something is wrong u are clicking a million times in a row and it looked weird on steeam / sounds spammy, warn viewers for shit before like that\"",
+   "owner_rules": [
+    "you should be reviewing her actions and fixing updating the plc with notes of the issues in what she does prioritizes and how she is fucking up making a starting camp like you know how in the play throughs we did before building the main base with defenses",
+    "make it of wood just exterior make 3wide terrriom stone smooth marble for fire break",
+    "all those walls over top of water need to be cancled and use terraform to change it to dirt first",
+    "hold some places you put walls where doors are to be opn outer wall",
+    "something is wrong u are clicking a million times in a row and it looked weird on steeam / sounds spammy, warn viewers for shit before like that"
+   ]
+  },
+  {
+   "id": "setup-8-camp-stable",
+   "priority": 3.93,
+   "family": "setup",
+   "latch": true,
+   "when": {
+    "colony_exists": true,
+    "mark_camp_defence": true,
+    "mark_camp_stable": false,
+    "stable_held": {
+     "ton": {
+      "days_of_food": ">={FOOD_COMFORT_DAYS}",
+      "stoves": ">=1",
+      "bill_rows": ">0",
+      "mark_shelter_set": true,
+      "growing_cells": ">=75"
+     },
+     "hours": 24
+    }
+   },
+   "then": [
+    "the camp stops growing: it is a staging camp, not a colony",
+    "ladder_set mark camp_stable true -- the mountain base family may now dig",
+    "ladder_set mark setup_done true"
+   ],
+   "never": [
+    "build a massive camp",
+    "mine the fortress before food supply, production and the camp are stable"
+   ],
+   "why": "owner: \"dont go building a massive camp just get telled and start on the mountain base.\" / owner: \"remmeber dont go building a massive camp just get telled and start on the mountain base might need a replan based on starting entrance near or N most farms\" / owner: \"let your people get good on food and set up camp before moving into the base like u said itll tak a while\" / owner: \"and try to get to where everything is stable and food supply is handled production  so that things can settle down and u can start mining out the base, but lots before then\"",
+   "done_mark": "setup_8_camp_stable_done",
+   "owner_rules": [
+    "dont go building a massive camp just get telled and start on the mountain base.",
+    "remmeber dont go building a massive camp just get telled and start on the mountain base might need a replan based on starting entrance near or N most farms",
+    "let your people get good on food and set up camp before moving into the base like u said itll tak a while",
+    "and try to get to where everything is stable and food supply is handled production  so that things can settle down and u can start mining out the base, but lots before then"
+   ]
+  },
+  {
+   "id": "setup-9-new-pawn",
+   "priority": 3.96,
+   "family": "setup",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "mark_assign_set": true,
+    "new_pawn": {
+     "ons": {
+      "grid_matches_plan": false
+     }
+    }
+   },
+   "then": [
+    "a new colonist (or a drifted grid): game_state -> the pawn with a default grid / no area, and their best skills",
+    "pawn_priorities for that pawn (one call per pawn, the same plan as everyone, passion cells changed only); read it back with pawn_check Work tab; a wrong cell: game_set cmd set_work_priority pawn work level, one cell, read back",
+    "game_set cmd assign pawn <name> (food Fine, medicine Best, hostility Attack)",
+    "empire_pass: gun primary, melee sidearm, self-tend on; read its ARMS line",
+    "game_set cmd beds if none free, then game_set cmd set_bed_owner x z owner <name>; game_set cmd set_area pawn <name> area Home",
+    "a new pawn made at the start (e.g. Rev): ask chat once for requests, then set everything up the same day"
+   ],
+   "never": [
+    "leave a new pawn without priorities or a bed",
+    "batch-click priorities across pawns",
+    "leave a new colonist unarmed"
+   ],
+   "why": "owner: \"set it how ive told you every day weve played all of them for every one using coopy paste\" -- walkthrough: walkthrough-opening-and-camp.md 'Give a new colonist work priorities and a bed the same day.' [start] Q / owner: \"tell reve its one the list Rev character(ask if any requests when u get to making him, as an extra hand will be helpopfull just have to always set up everything for new pawns\" / owner: \"stop ur fucking up the priorities i told you how to set them\" / owner: \"set up all priorities this is the last time i telling you set it how ive told you every day weve played all of them for every one using coopy paste ...\"",
+   "owner_rules": [
+    "set it how ive told you every day weve played all of them for every one using coopy paste",
+    "tell reve its one the list Rev character(ask if any requests when u get to making him, as an extra hand will be helpopfull just have to always set up everything for new pawns",
+    "stop ur fucking up the priorities i told you how to set them",
+    "set up all priorities this is the last time i telling you set it how ive told you every day weve played all of them for every one using coopy paste ..."
+   ]
+  }
+ ],
+ "prompts": {
+  "setup-0-pause-on-land": "The game is running and setup is not done. Pause NOW: game_pause_game pause true.\nThen game_state once; if an operations menu is open, game_close_window so pawn options show.\nPawns selected but no options/draft: game_close_window, click ONE pawn once.\nNo other order first. Time stays stopped until mark assign_set is true.\nDone: paused reads true. Owner: \"wtf!!!!! time is flyying awayy!!!! why did she unpause beforee seeting all the pawn settings this is the fifth time ive told you all of this\"",
+  "setup-0-starting-goods": "Day 0-1, once. Read count_mealsurvivalpack and meals from the ladder.\nExpect about 100 survival meals plus the Prepare Carefully items.\nShort: reply_owner with numbers (seen vs expected). You never edit files.\nDone: ladder_set mark start_goods_checked true (latch writes setup_0_starting_goods_done).\nOwner: \"should start scenerio with survival meals not simple meals and should be like 100 to start besides whats set in prepare carfully\"",
+  "arms-out-fallback": "empire_pass failed twice. For each loose weapon: order_pawn pawn_id <unarmed pawn> x z (weapon cell) option 'Equip'.\nOne order per pawn, read the reply. Then ladder_set mark arms_set true.\nOwner: \"euaipthem as main equip and use the pain batons as side arms for everyone\"\nAn Equip refused: ladder_set mark arms_tried true then false; next pawn.",
+  "arms-out-first": "Before anything else: empire_pass. Read the ARMS line.\nEvery colonist: gun primary, melee/pain baton sidearm, helmet on; hostility: game_set cmd assign hostility Attack.\nloose_weapons should drop; able_shooters_armed == able_shooters.\nRefused: ladder_set mark arms_tried true then false (twice -> the fallback equips by order_pawn).\nDone: ladder_set mark arms_set true.\nOwner: \"once again u arnt armed!!! wtf!!!!\" / \"set self tend medical and attack not flee\"",
+  "setup-2-pawns-fallback": "pawn_priorities refused 3 times. game_set cmd set_work_priority pawn work level for each missing cell, read each back.\nA cell refused: ladder_set mark pawns_tried true then false.\nCheck grid_matches_plan, then ladder_set mark pawns_set true.\nOwner: \"she is bnot to skip priorities that is what she must to after exploring wtf am i talking to a wall all week\"",
+  "setup-2-pawns": "Still PAUSED. One pawn_priorities call per pawn -- the whole grid, never one cell.\nFirefighter..Cooking = 1. custom: passions 2, Mining 2, Research 4, Hauling 1 (opening), rest 3-4, none blank.\nDoctor/Construction/Growing at 1 for the best-skilled pawn only; not everyone chopping.\nRefused: ladder_set mark pawns_tried true then false (3 -> fallback uses game_set cmd set_work_priority).\nDone: grid_matches_plan true, then ladder_set mark pawns_set true.\nOwner: \"set it how ive told you every day weve played all of them for every one using coopy paste\"",
+  "setup-3-assign": "Still PAUSED. game_set cmd assign (no pawn = all): food Fine, medicine Best, hostility Attack.\nSelf-tend: empire_pass, read the line. Schedule Anything all hours; drugs No drugs except Penicillin every 5 days, carry 2.\nNo schedule/drug tool yet: open the Assign/Schedule tab (game_open_main_tab, game_get_ui_layout, click once each).\nKeep sleep and recreation: never 50 carry runs without a break.\nDone: ladder_set mark assign_set true (latch writes setup_3_assign_done) -- only then unpause.\nOwner: \"drugs are for hospitality guests\" / \"set theri scheldule to anything at all times for all pawns\"",
+  "leader-moral-guide": "game_open_main_tab Ideoligion, game_get_ui_layout, click the role targets ONCE each: leader, then moral guide.\nA click selected everything: game_close_window and read the layout again.\nDone: ladder_set mark ideo_roles_set true (latch writes leader_moral_guide_done).\nOwner: \"now u have a leader u need a morasl guide and they ahave abilities u want to always use\" / \"some time u click twice it selects all firelds be werry\"",
+  "setup-1-explore-fallback": "Explore ran 6 game hours. game_get_cells_info near the crew; order_pawn each pawn to the nearest fog-edge door, option 'Go'.\nCrashlanded open ground with no rooms: ladder_set mark explore_done true and move to stores.\nOwner: \"explore the hidden rooms and get outside her walls\"",
+  "setup-1-explore": "Settings are done. game_set cmd explore, then game_pause_game pause false so they walk.\nRepeat explore until it answers 'nothing left' -- EVERY door. Fogged room with no door: find the hidden door.\nStuck 6 hours: the fallback rung takes over.\nDone: 'nothing left' -> ladder_set mark explore_done true (the rung clears).\nOwner: \"exploring is not finished damn it ive said this repeadidily the map is even on screen becsue it never went through EVERY DOOR\"",
+  "setup-2b-priorities-after-explore": "grid_matches_plan is false: someone's grid drifted. pawn_priorities for that pawn (whole grid).\nPod drop stored: Hauling back to 3. Done: grid_matches_plan true.\nOwner: \"she is bnot to skip priorities that is what she must to after exploring wtf am i talking to a wall all week\"",
+  "setup-chop": "wood below {WOOD_RESERVE}: game_set cmd chop count 300. One call; trees on the site first; unpause.\nRefused / 0 trees: game_set cmd explore, game_get_cells_info, game_apply_architect_designator Chop wood once.\nNo trees on the map: reply_owner, never loop. PlantCutting on one or two pawns, not all.\nDone: designations_cut >= 20 (rung clears).\nOwner: \"set your priorities, dont need everyone choopping wood, multitask\" / \"and a big issue its it never auto unforbid all the starting materials and never copped wood to build starting structures rooms\"",
+  "setup-4-stores-fallback": "Two refusals or 3 hours with no store. game_get_cells_info around the crew; choose 6x6 open explored soil beside them.\ngame_select_architect_designator stockpile zone, ONE game_drag_cell. Then ladder_set mark store_tried false.\nOwner: \"you need to set stockpile and get everyone hueling stuff out without exahusting them\"",
+  "setup-4-stores": "game_set cmd rooms first. Free floor 0 or no rooms (Crashlanded): game_set cmd stockpile_camp mode food, then mode nofood.\nA room with free floor: stockpile_room room <id> mode food, then nofood on the next. Then stockpile_filter priority Important on food.\nBeside the crew by the entrance only -- never inside the mountain. A refusal: ladder_set mark store_tried true then false, never retry that spot (2 -> fallback).\nHaul in short batches; let them rest -- no 50 runs without a break.\nDone: food_store true.\nOwner: \"look at that shit she is setting fucking rooms to build deep inside the moutain with no ryhme or reason\" / \"you need to set stockpile and get everyone hueling stuff out without exahusting them letting them relax\"",
+  "setup-4b-shelter-fallback": "Shelter tool refused twice.\nTools: game_list_architect_designators Structure -> game_apply_architect_designator wood Wall, 7x7 ring by the crew, Door mid-side, roof.\nRefused: ladder_set mark shelter_tried true then false; reply_owner with the refusal text.\nNever the corner cell for a door.\nDone: roofed, beds >= colonists -> ladder_set mark shelter_set true.\nOwner: \"you retarn u put doors the the extreem corners thats not gonna work\"",
+  "setup-4b-shelter": "game_set cmd shelter w 7 h 7 (9x9 if wood allows), then game_set cmd beds, game_set cmd shelves (enough for dry storage).\nDoors mid-side or near a corner -- never the corner cell. 2-wide walkways. Fridge, workshop, table+stool, campfire, torch lamp inside.\nMud/water inside the perimeter: terraform to soil first (no terraform tool: game_apply_architect_designator once per drag).\nRefused: ladder_set mark shelter_tried true then false; next w 6 h 8 (2 -> setup-4b-shelter-fallback).\nDone: beds >= colonists, roofed >= 0.75: ladder_set mark shelter_set true.\nOwner: \"camp fridege all of it workshop every thing u need in the camp tight and no blocked paths\" / \"use teriform to remove mud and shit like water inside camp perimeter\" / \"ur dry storage needs more shleves\"",
+  "setup-5-stove": "game_set cmd stove. Unpause so it is built. stoves >= 1: game_set cmd add_bill recipe CookMealSimple count {MEAL_BILL_TARGET}.\nNever Do forever, never a second stove. add_bill says no table: wait for the build, do not re-place.\nDone: stoves >= 1 and the bill placed: ladder_set mark stove_set true.\nOwner: \"and set amounts higher and higher as your base grows\"",
+  "setup-6-run": "Setup is in place and time is stopped. game_pause_game pause false. pawn_priorities custom Research 3.\nEvery turn after: letters first (read, act, dismiss), then run_list; the first FIX is the goal; check off test TODO items while playing.\nDone: ticks_moving true.\nOwner: \"okay is it ever going to play the game?(set up cololnist, zones, and shit)\" / \"make sure u maintain everything in totality ive ever tyold you about the game play in totality has to ber maintained not a one and done\"",
+  "setup-6b-crops": "growing_cells below 75: sand/gravel/rock under a field -> terraform to soil first.\ngame_set cmd crops plant Plant_Rice near camp.\nfields_all_default_crop true: set_zone_plant other fields to Plant_Potato / strawberry / healroot.\nThen game_set cmd hunt (never boomrats, boomalopes, predators). Done: growing_cells >= 75.\nOwner: \"you are going nothing but potatoes everywhere wtf!\" / \"dont forget terriforming for soil plots\"",
+  "setup-7-camp-defence-fallback": "The wall ring was refused three times.\nSequence: game_set cmd shelter -> wood barricades on the threat side, shooters behind -> ladder_set mark camp_defence true.\nRefused: ladder_set mark camp_wall_tried true then false.\nThe stone wall comes with rung-3-defence.\nOwner: \"make it of wood just exterior make 3wide terrriom stone smooth marble for fire break\"",
+  "setup-7-camp-defence": "Say it first on stream (clean): what you build, that it takes a minute -- no silent click spam.\nOne entrance in use. Wood wall ring, ONE game_drag_cell per side, doors in the other gaps; water under it: terraform first.\nBarricades either side inside, staggered (game_apply_architect_designator Barricade); Home area over the ring; fallback point; everyone armed.\nRefused: ladder_set mark camp_wall_tried true then false (3 -> setup-7-camp-defence-fallback).\nDone: defences_built >= 2, ladder_set mark camp_defence true.\nOwner: \"make it of wood just exterior make 3wide terrriom stone smooth marble for fire break\" / \"sounds spammy, warn viewers for shit before like that\"",
+  "setup-8-camp-stable": "Food days >= {FOOD_COMFORT_DAYS}, a stove with a bill, shelter and 75 crop cells have held 24 hours. Stop growing the camp: a staging camp, not a colony.\nladder_set mark camp_stable true, then ladder_set mark setup_done true (latch writes setup_8_camp_stable_done). The mountain base may start now.\nOwner: \"dont go building a massive camp just get telled and start on the mountain base.\" / \"let your people get good on food and set up camp before moving into the base like u said itll tak a while\"",
+  "setup-9-new-pawn": "A new pawn or a drifted grid. game_state: who is new, best skills.\npawn_priorities for that pawn (one call), read back with pawn_check; game_set cmd assign pawn <name>; empire_pass for arms; beds + set_bed_owner; set_area Home.\nRefused: game_set cmd set_work_priority one cell at a time, read each back.\nSame day. Done: grid_matches_plan true.\nOwner: \"just have to always set up everything for new pawns\" / \"stop ur fucking up the priorities i told you how to set them\""
+ },
+ "sensors_needed": [
+  {
+   "key": "pawns_unconfigured",
+   "status": "TO_BUILD (decisions.json sensors)",
+   "used_by": "no rung reads it yet: setup-9-new-pawn uses grid_matches_plan (measured) until it exists, then may add an any-branch on it",
+   "csharp": "// RimPLCGameComponent: HashSet<int> configuredPawns; ExposeData: Scribe_Collections.Look(ref configuredPawns, \"configuredPawns\", LookMode.Value); the Inbox adds p.thingIDNumber when assign / set_work_priority / pawn_priorities is applied.\nif (configuredPawns != null) st[\"pawns_unconfigured\"] = (double)home.mapPawns.FreeColonistsSpawned.Count(p => !configuredPawns.Contains(p.thingIDNumber));"
+  }
+ ],
+ "variables_needed": [
+  {
+   "name": "MEAL_BILL_TARGET",
+   "value": "existing gates.py tag (10 x colonists)",
+   "rule": "Do until you have X, raise X"
+  },
+  {
+   "name": "WOOD_RESERVE",
+   "value": "existing gates.py tag (60 x colonists)",
+   "rule": "chop below this (replaces the unknown WOOD_FLOOR)"
+  },
+  {
+   "name": "FOOD_COMFORT_DAYS",
+   "value": "existing gates.py tag",
+   "rule": "camp stable before the mountain base (replaces the unknown FOOD_DAYS_STABLE)"
+  },
+  {
+   "name": "(literals)",
+   "value": "100 survival meals; chop 300; 75 crop cells (25/pawn x 3); ton 24 h stable, 6 h explore, 3 h store; ctu 2 arms, 3 priorities, 2 store, 2 shelter, 3 camp wall",
+   "rule": "gates.py has no tag for these (START_SURVIVAL_MEALS, WOOD_TARGET, CROP_CELLS were never tags); ctu preset / ton hours must be literal"
+  }
+ ],
+ "missing_tools": [
+  "game_set cmd schedule (pawn or all; Anything at all hours)",
+  "game_set cmd drug_policy (No drugs + Penicillin every 5 days, carry 2)",
+  "game_set cmd self_tend (explicit, not only via empire_pass)",
+  "game_set cmd campfire / torch (inside the shelter)",
+  "game_set cmd barricades (either side of the camp entrance, staggered)",
+  "game_set cmd ideo_roles (leader + moral guide without clicking)",
+  "stockpile_camp priority arg (Important for the food store)",
+  "game_set cmd terraform (owner: remove mud/water inside the camp perimeter)",
+  "new_colony step report (300x300, Spring, factions, tile selected, map seed accepted, debug menu closed) so each step is checkable",
+  "haul limit / rest setting (owner: no 50 hauling runs without a break)"
+ ],
+ "unplaced_rules": [
+  "Twitch staging/panels before the first colony (from the fresh-colony quote: \"1. no use a fresh crash landed scenrio all the world sat up and forest moutain tile pic world settup 300x300 in adv settings ect ect and all of that you already know, but before wee can start we need to stage and deploy and do the twitch setup for the RimPLC mod and its links and such for the infor in twitch streams and stuff with all the image like text and chain emoji things for the mods and wiki links ewe need to do for Rim PLC , im not really trusting the model to do that just yet\") -- JUSTIFIED: the new-colony half belongs to meta:new-colony (setup-0-new-colony is a pointer) and the Twitch half is configuration; the owner says he does not trust the model with it, so no setup rung drives it."
+ ],
+ "notes": [
+  "see meta:new-colony (setup-0-new-colony deleted per decisions.chains 'new colony'). Its owner quotes move VERBATIM into meta:new-colony owner_rules: [\"the button you are looking for is new colony on the main menu u fucking idiot\", \"STOP LOADING SAVES!! AND START THE SCENERIOS THROUGH THE NORMAL PATHWAY!\", \"colony dies... start another\", \"and we need to make sure also that Unity knows we are temporarilly on a unstable version and she needs to close the debug menu before getting the main manu to fully show of rimworld playing rimrooms mod and the other 296 mods.\", \"1. no use a fresh crash landed scenrio all the world sat up and forest moutain tile pic world settup 300x300 in adv settings ect ect and all of that you already know\", \"see you are forgeting shit 300x300 adv set\", \"there is no wood no trees on this map, thats why in advanced setting on world gen setup you set 300x300 mapo and spring, and then when choosing a map tile u pic on that has mountains(the rock areas on map) in forest area and jungle areas the light green and green, terrain tab on left tells u all this when u highlight via select the tiles\", \"YOU HAVE TO USE PROPER PROCEESURE ONLY HAVE NORMAL PIRATES REMOVE THAE STARTING 3 and add normal canibals and a nude tribe when u set it up\", \"no tcannibals are not a hostile only tribe only the red ones are so hence only one red one ie normal pirates pluse all the regualr ones ie one of each bassicly but the crap tribes that arent fun\", \"you clicked off the perfect place u found make sure its selected\", \"come one move to the spot shoew it up close and sleect it before moving on\", \"and remembr after map genrtion of the world there is a tile selection and after it finds mountionous and forest ther is a dice button on the minimap headar bar clicking it shows the possible map generations of that tile you can select and it should select a N/S orintated mountain and the tan area of each map is the dirt and the braown area is the mountains and u check the one u one  and chcik it accepted then u clcik the next(start game button that leads to the ideology load) and it might ask about mode it just clicks load anyways\", \"and the N/S facing mountian sdid nt take the mountin it chose was on the east side of the map.. so a true N/S facing must have its main mass touch both east and west sides of the tiles map to be N/S u can tell wehr like 30% of the map or more is all brown touching both sides\", \"you can set one pawn then paste templet to others then a customize them character editor tab bottom right is a go, correct the record\"]",
+  "see meta:unforbid-constant (setup-0-unforbid deleted; it read the ALIAS items_forbidden -> forbidden_items). Quote moves VERBATIM: \"and a big issue its it never auto unforbid all the starting materials and never copped wood to build starting structures rooms\" (also kept in setup-chop's prompt).",
+  "merged in from pointer rungs of other families: start-camp-chop/-fallback -> setup-chop; start-camp-stores -> setup-4-stores; start-camp-shelter/-fallback and start-camp-tight -> setup-4b-shelter + new setup-4b-shelter-fallback (CTU on mark_shelter_tried); start-camp-stable -> setup-8-camp-stable (bill_rows added to the hold; its mountain-base siting text NOT carried); start-standing-orders -> setup-6-run; start-new-pawn, growth-new-pawn-setup, config-priorities-new-pawn -> setup-9-new-pawn; camp-wood-wall-ring/-fallback -> setup-7-camp-defence + new setup-7-camp-defence-fallback (its CTU input moved from the sensor blueprints to mark camp_wall_tried, set on refusal).",
+  "fallback rungs rank just ABOVE their main rung: gates.py hands back one chain, the top eligible rung, and a main rung stays eligible while its guard mark is false, so a fallback ranked below it could never fire. Each fallback is gated by its CTU/TON so it only wins after the strikes. All other rungs keep their relative order; band 3.30-3.96, step 0.03, no ties.",
+  "latch false on rungs that take several passes (arms-out-first, setup-2-pawns, setup-1-explore, setup-4-stores, setup-4b-shelter, setup-5-stove, setup-7-camp-defence): a latch writes its done-mark after the FIRST pass and would retire the rung before its own guard mark is set (the critic's space-ship-research bug). Each clears on its own guard mark instead. Latched (single pass, guard set unconditionally): setup-0-starting-goods, setup-3-assign, leader-moral-guide, setup-8-camp-stable; done_mark = latch_name(id). No rung in any family reads these done-marks.",
+  "explore_done is measured: RimPLC Engine.cs mirrors mark_explore_done into it. mark_explore_skipped retired; setup-4-stores no longer waits on exploring (decisions fixes_to_survivors).",
+  "stage marks: arms-out-first reads mark_start_opening_done (set by start:*); setup-8-camp-stable is the only setter of camp_stable and setup_done; setup-7-camp-defence(-fallback) set camp_defence (backrooms:br-camp-wall for start_kind 7)."
+ ]
+}

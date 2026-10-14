@@ -6,7 +6,7 @@
 The line is appended to .claude/.studio-outbox.jsonl (replyTo null = unprompted narration), so
 the studio window shows what Unity is saying while she plays.
 """
-import json, os, subprocess, sys, time
+import json, os, re, subprocess, sys, time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUTBOX = os.path.join(HERE, "..", ".studio-outbox.jsonl")
@@ -28,11 +28,35 @@ def speakable(text):
     verbalized need shit"): drop emoji and pictographs, *stage directions* and (asides in brackets),
     hashtags, markdown, and stray symbols."""
     import re
+    # her own voice laughs on [laughter] (owner 2026-10-13: "20 minutes noi one giggle or chuckle"): keep that one tag
+    text = re.sub(r"\[(laugh|laughs|laughing|giggle|giggles|chuckle|chuckles)\]", "[laughter]", text, flags=re.I)
+    text = text.replace("[laughter]", "\x00")
     text = re.sub(r"\*[^*]{0,80}\*|\[[^\]]{0,80}\]|<[^>]{0,80}>", " ", text)          # *sighs*, [laughs], <tags>
+    text = text.replace("\x00", " [laughter] ")
     text = re.sub(r"#\w+", " ", text)
     text = "".join(ch for ch in text if ord(ch) < 0x2190)                                  # emoji, dingbats, arrows
     text = re.sub(r"[_~`^|\\{}]+", " ", text)
     return re.sub(r"\s+", " ", text).strip(" -")
+
+
+def feeling(text):
+    """Emotion and delivery for a line nobody labelled (the stream host, greetings, chat replies) -- owner, 2026-10-13:
+    "alla her emotions need to reach the model". Every unlabelled line used to play neutral. -> (emotion, act)"""
+    import re
+    low = text.lower()
+    if "[laughter]" in low or re.search(r"\b(lol|haha|lmao|hilarious|cute|dork|goof)", low): emo = "amused"
+    elif re.search(r"\b(dead|died|lost|miss|sorry|rip|gone)\b", low): emo = "sad"
+    elif re.search(r"\b(raid|careful|hurt|bleed|danger|watch out|hostile|fire)\b", low): emo = "concerned"
+    elif re.search(r"\b(ugh|again|seriously|why would|stop|annoy|refus)", low): emo = "frustrated"
+    elif re.search(r"\b(wow|whoa|wait what|no way|huh)\b", low): emo = "surprised"
+    elif re.search(r"\b(welcome|hey|hi|thanks|thank you|love|missed you|glad)\b", low): emo = "warm"
+    elif text.count("!") >= 1: emo = "excited"
+    elif re.search(r"\b(nice|good|yes|finally|perfect|done)\b", low): emo = "happy"
+    else: emo = "neutral"
+    q = text.rstrip().endswith("?")
+    act = ("wh_question" if q and re.match(r"\s*(what|who|why|how|where|when|which)\b", low) else
+           "yes_no_question" if q else "exclamation" if text.rstrip().endswith("!") else "statement")
+    return emo, act
 
 
 def main():
@@ -64,7 +88,9 @@ def main():
         subprocess.Popen([sys.executable, os.path.join(HERE, "unity-glance.py"), text],
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     speak = [sys.executable, os.path.join(HERE, "unity-speak.py")] + ([] if wait else ["--bg"]) + [text]
-    subprocess.run(speak, env=dict(os.environ, UNITY_SPEAK_CHAT=text, UNITY_SPEAK_REPLY_TO=""))
+    env = dict(os.environ)   # the emotion is the model's own choice (UNITY_SPEAK_EMOTION from the caller), never guessed here
+    shown = re.sub(r"\s+", " ", text.replace("[laughter]", " ")).strip()   # the tag is for her voice, never the chat
+    subprocess.run(speak, env=dict(env, UNITY_SPEAK_CHAT=shown, UNITY_SPEAK_REPLY_TO=""))
 
 
 if __name__ == "__main__":

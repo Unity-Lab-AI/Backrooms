@@ -165,6 +165,8 @@ class Toolbox:
     # stay registered (a call to them still works) but are not offered in the prompt.
     CORE = {"ladder", "ladder_set", "pawn_priorities", "new_colony", "game_state", "look", "pawn_check", "order_pawn", "game_set", "say", "reply_chat", "reply_owner", "plan", "webcam", "snap",
             "twitch_chat", "note", "read_doc", "run_list", "empire_pass", "play_slices",
+            # the dialog rung and the prompt's HOW TO WORK need these; they were never sent to her (2026-10-13 audit)
+            "game_get_ui_layout", "game_click_ui_target", "game_open_main_tab", "game_list_main_tabs", "game_close_main_tab", "game_click_cell",
             "game_apply_architect_designator", "game_select_architect_designator", "game_list_architect_designators",
             "game_list_architect_categories", "game_set_zone_target", "game_list_zones", "game_list_areas",
             "game_get_cell_info", "game_get_cells_info", "game_select_pawn", "game_set_draft", "game_execute_gizmo",
@@ -326,7 +328,11 @@ class Toolbox:
                      "stream what you are planning, the game is paused, and your NEXT turn thinks deeply. Never for "
                      "ordinary moves.", S({"what": s}, ["what"]), self.t_plan),
             "webcam": ("[STREAM] Re-render Unity's webcam with a mood and a short clean caption (raids, deaths, wins, "
-                       "chat moments).", S({"mood": {"type": "string", "enum": list(MOODS)}, "caption": s},
+                       "chat moments). Optional scene: a few words of what you are doing, holding or wearing right now -- "
+                       "your own idea or where chat took the talk. Write what the camera SEES, not the question: 'holding a "
+                       "fluffy cat', 'wearing a green crop top', 'jumping in mid air', 'peace sign', 'eating pizza'. "
+                       "Never nudity: you stay dressed on stream.",
+                       S({"mood": {"type": "string", "enum": list(MOODS)}, "caption": s, "scene": s},
                                            ["mood", "caption"]), self.t_webcam),
             "snap": ("[STREAM] Post an annotated screenshot of a map rect to the webcam panel with up to 3 circled "
                      "marks. Moves the camera to the rect.",
@@ -364,13 +370,33 @@ class Toolbox:
                          "explored rooms), stockpile_room (room id, mode food|nofood -- a stockpile filling that room), "
                          "stockpile_filter (x,z,mode food|nofood|all, priority), beds, shelves, stove, crops (plant), "
                          "hunt, day_one, assign (the Assign tab: pawn or empty for all, food Fine, medicine Best, hostility Attack). "
+                         "OPEN-GROUND CAMP (Crashlanded, no rooms): unforbid (every starting item), chop (count = wood wanted, nearest trees to the crew), "
+                         "shelter (w,h inside size; a wood room + door + roof beside the crew), stockpile_camp (mode food|nofood; a 6x6 store beside the crew). "
+                         "BUILD AND MANAGE: build (def, x, z, rot 0-3, stuff -- any architect thing, e.g. TorchLamp, Sandbags, Barricade, Cooler, "
+                         "SimpleResearchBench, Battery; read refused/ok), build_room (x,z inside corner, w, h, stuff -- walls+door+roof), deconstruct "
+                         "(def or x,z), harvest (what food|medicine|all -- wild plants), tame (def), slaughter (def, count; never milkers or bonded), "
+                         "allow_area (x,z,w,h -- unforbid a rect), self_tend (pawn or all, on), schedule (pawn or all, hours 0-23, assignment Anything|Work|Sleep|Joy), "
+                         "drug_policy (pawn or all, policy -- colonists 'No drugs'), research (project defName or label), bed_medical / bed_prisoner (x,z,on), "
+                         "cooler_temp (x,z,celsius -- freezer -5). "
+                         "MORE: equip (pawn + x,z or def; sidearm true carries it), capture (pawn -- nearest downed enemy to a prisoner bed), "
+                         "bill_count (recipe, count -- raise an existing bill's target), zone_create (kind stockpile|growing, x,z,w,h, priority, plant, label), "
+                         "roof_area (x,z,w,h, mode roof|noroof|clear), firebreak (w), pen (x,z,w,h -- fence + gate), bury (a grave outside home), "
+                         "ideo_role (role leader|moral guide, pawn), save_game (name; always Unity-*), "
+                         "terraform (mode bridge|smooth|remove_floor, x,z,w,h -- bridge over water/marsh; smooth or strip floor; map on screen for smooth/remove_floor). "
+                         "KITCHEN/DEFENCE: freezer (cooler in a small sealed room, -5 C once built), butcher (butcher table near the food store), kitchen (meal / butcher bill on every built table with none), "
+                         "arm (guns on the unarmed, melee sidearms, craft bill for a shortfall), draft (pawn all|names, on true|false), hold (armed colonists to embrasure cells, nearest the threat first), tower (x,z a perimeter corner, size, stuff -- a roofed corner tower, embrasures outward, base door + sally port), power (optional x,z -- one conduit line from each unpowered building to the nearest grid with a generator or battery), hall (x1,z1 to x2,z2, width -- a straight walled, roofed hall), research_next (the next project by the playbook order, else the cheapest; names researched upgrades not built), generator (kind wood|solar|chemfuel -- generator + touching battery outside the colony; then power), prisoner (mode recruit|chat|enslave|convert|release|maintain|interrogate|reducewill, pawn all|name), trade (no args: list traders in reach; with ship|caravan, sell Def:n,.., buy Def:n,.. -- the negotiator walks there first, call again to deal; never spacer tech), gate_posture (posture Mild|Balanced|Strict), guest_beds (no args: list guest beds and fees; fee n sets every guest bed), security_room (x,z the tower corner, size, w, h, stuff -- a room off the tower base door), room_cooler (x,z inside a room, celsius default 21 -- sets its cooler or places one in its wall), call_trader (no args: askable factions and caravan kinds; faction, kind asks one -- negotiator walks to the console; goodwill cost and cooldown are the game's). "
                          "map (optional, e.g. Map_0) picks the map; without it the home map is used. The result comes back from the game: read it.",
                          S({"cmd": {"type": "string", "enum": ["explore", "rooms", "stockpile_room", "stockpile_filter",
                                                                "beds", "shelves", "stove", "crops", "hunt", "day_one", "assign",
                                                                "set_zone_plant", "set_zone_sowing", "set_work_priority",
-                                                               "set_bed_owner", "add_bill", "set_area"]},
+                                                               "set_bed_owner", "add_bill", "set_area",
+                                                               "unforbid", "chop", "shelter", "stockpile_camp", "build", "build_room", "deconstruct", "harvest", "tame",
+                                                               "slaughter", "allow_area", "self_tend", "schedule", "drug_policy", "research", "bed_medical", "bed_prisoner", "cooler_temp",
+                                                               "equip", "capture", "bill_count", "zone_create", "roof_area", "firebreak", "pen", "bury", "ideo_role", "save_game",
+                                                               "stockpile_priority", "stockpile_copy", "crew_setup", "terraform",
+                                                               "freezer", "butcher", "kitchen", "arm", "draft", "hold", "tower", "power", "hall", "research_next", "generator", "prisoner", "trade", "gate_posture", "guest_beds", "security_room", "room_cooler", "call_trader"]},
                             "x": i, "z": i, "plant": s, "allow": b, "pawn": s, "work": s, "level": i,
-                            "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s, "food": s, "medicine": s, "hostility": s, "map": s},
+                            "owner": s, "recipe": s, "count": i, "area": s, "room": s, "mode": s, "priority": s, "food": s, "medicine": s, "hostility": s, "map": s, "w": i, "h": i, "def": s, "rot": i, "stuff": s, "what": s, "on": b, "hours": s, "assignment": s, "policy": s, "project": s, "celsius": i, "sidearm": b, "kind": s, "label": s, "role": s, "name": s, "zone": s, "from": s, "to": s, "size": i, "x1": i, "z1": i, "x2": i, "z2": i, "width": i, "with": s, "sell": s, "buy": s, "posture": s, "fee": i, "faction": s},
                           ["cmd"]), self.t_game_set),
             "twitch_chat": ("[STREAM] Type into the REAL Twitch chat (not just out loud). action: say | reply (needs "
                             "viewer) | title | category. Every line is filtered clean or refused.",
@@ -504,6 +530,7 @@ class Toolbox:
         # (UNITY_OWN_VOICE=1), so the laugh is heard, never read. (Piper is retired; her own voice is the only voice.)
         voice_line = self.voice_text if os.environ.get("UNITY_OWN_VOICE") == "1" else clean
         # her own voice takes the delivery the brain chose (the same trained emotions/acts as the tool enums)
+        # the emotion and act are exactly what she chose in the say/reply_chat call (owner 2026-10-13: "not edit her fucking outputs")
         speak_env = dict(os.environ, UNITY_SPEAK_EMOTION=emotion or "", UNITY_SPEAK_ACT=act or "",
                          UNITY_SPEAK_CHAT=clean, UNITY_SPEAK_REPLY_TO=str(reply_to) if reply_to is not None else "")
         # Owner: "she need training on how not to over respond. waiting for vocie to play out becasue the last
@@ -584,7 +611,25 @@ class Toolbox:
         # RimPLC in the game when it is loaded (rimplc/read_ladder, or its command file), else the Python engine.
         # Either way the top live rungs with the measured values that made them fire, so she can say WHY, in the
         # same fields as always (gates.ladder_result / format_ladder).
+        # the start kind the GO chose (keep-playing writes .local/qa/_start_kind) goes into RimPLC's marks, so the
+        # start-crashlanded rung can fire in the game's own engine too (2026-10-13 audit: nothing ever set it)
+        try:
+            sk = int(open(os.path.join(ROOT, ".local", "qa", "_start_kind"), encoding="utf-8").read().strip() or 0)
+            if sk and not self.dry and getattr(self, "_start_kind_sent", None) != sk:
+                self._gates().rimplc("set_mark", {"name": "start_kind", "value": sk}, call=self._rimplc_call())
+                self._start_kind_sent = sk
+        except (OSError, ValueError):
+            pass
+        if not self.dry:
+            self._gates().push_host()       # remote I/O: chat, voice, dead air, owner at the controls
         text, _src = self._gates().ladder_result(call=self._rimplc_call())
+        try:   # the live top rung's meta prompt rides along (rung-prompts.json)
+            rp = json.load(open(os.path.join(HERE, "rung-prompts.json"), encoding="utf-8"))
+            top = next((i for i in re.findall(r'"id":\s*"([^"]+)"', text) if i in rp), None)
+            if top:
+                text += chr(10) + chr(10) + "HOW TO DO [%s] NOW:" % top + chr(10) + rp[top]
+        except (OSError, ValueError):
+            pass
         return text
 
     def _book(self):
@@ -723,7 +768,7 @@ class Toolbox:
         payload = {"cmd": cmd}
         for k, v in kw.items():
             if v is None or v == "": continue
-            if k in ("pawn", "work", "owner", "area", "plant", "recipe", "room", "mode", "priority", "food", "medicine", "hostility", "map") and not re.fullmatch(r"[A-Za-z0-9_ .-]{1,60}", str(v)):
+            if k in ("pawn", "work", "owner", "area", "plant", "recipe", "room", "mode", "priority", "food", "medicine", "hostility", "map", "def", "stuff", "what", "hours", "assignment", "policy", "project", "kind", "label", "role", "name", "zone", "from", "to") and not re.fullmatch(r"[A-Za-z0-9_ .-]{1,60}", str(v)):
                 raise GuardError("bad value for " + k)
             payload[k] = v
         if cmd == "set_work_priority" and not (0 <= int(payload.get("level", -1)) <= 4):
@@ -785,7 +830,7 @@ class Toolbox:
         self.think_next = True
         return "paused and announced; your next turn thinks deeply -- plan it, then unpause when the plan is set"
 
-    def t_webcam(self, mood, caption):
+    def t_webcam(self, mood, caption, scene=""):
         if mood not in MOODS:
             mood = "focus"
         cap = guards.clean_for_stream(caption, max_len=90)
@@ -794,9 +839,12 @@ class Toolbox:
         if self.dry:
             log("DRY-RUN would webcam", mood, cap)
             return "dry-run: not executed"
-        subprocess.Popen([PY, SCRIPTS["cam"], mood, cap], cwd=ROOT, stdout=subprocess.DEVNULL,
+        scn = guards.clean_for_stream(scene or "", max_len=80) or ""
+        if re.search(r"\b(top off|topless|naked|nude|bare chest|undress|strip|no top|no shirt|boobs out|flash)", scn.lower()):
+            scn = "crossing her arms, shaking her head with a teasing smile"   # never on Twitch: she stays dressed
+        subprocess.Popen([PY, SCRIPTS["cam"], mood, cap, scn], cwd=ROOT, stdout=subprocess.DEVNULL,
                          stderr=subprocess.DEVNULL, shell=False)
-        return "webcam rendering: %s / %s" % (mood, cap)
+        return "webcam rendering: %s / %s%s" % (mood, cap, (" / " + scn) if scn else "")
 
     def t_snap(self, x, z, w, h, caption, marks=None):
         cap = guards.clean_for_stream(caption, max_len=90)

@@ -86,6 +86,32 @@ namespace RimroomsAsyncIndustries.Gate
             }
         }
 
+        /// <summary>
+        /// What stops the circuit paying for an opening. The binding's own answer, less one case: a
+        /// lapsed assembly blocks the NEXT opening and never ends one already running (see
+        /// <see cref="NativeBindingFailureKey"/>), so it must not refuse the per-tick charge either --
+        /// it did, and a full circuit closed its window as "not enough charge".
+        /// </summary>
+        private string NativeSpendFailureKey
+        {
+            get
+            {
+                string failure = NativeBindingFailureKey;
+                return IsOpening && failure == "RR_NativeGate_ServiceLapsed" ? null : failure;
+            }
+        }
+
+        /// <summary>
+        /// The reason an opening tick could not be paid, named for what actually failed. Every refusal
+        /// used to read as "not enough charge", so a thrown breaker or a cut conduit sent the player to
+        /// check batteries that were full.
+        /// </summary>
+        private string NativeOpeningSpendFailureReason()
+        {
+            if (HasNativeEnergyDebitFault) { return "RR_NativeGate_EnergyDebitFault"; }
+            return NativeSpendFailureKey ?? "RR_NativeGate_OpeningEnergyLow";
+        }
+
         private CompPowerBattery NativeBatteryComp
         { get { return nativeBattery == null || nativeBattery.Destroyed ? null : nativeBattery.TryGetComp<CompPowerBattery>(); } }
         /// <summary>
@@ -740,7 +766,7 @@ namespace RimroomsAsyncIndustries.Gate
         private bool TrySpendNativeEnergy(float amount, bool emergency, string operationId)
         {
             if (!FiniteNonnegative(amount) || amount <= 0f || HasNativeEnergyDebitFault) { return false; }
-            if (emergency ? !NativeEmergencyCircuitAvailable() : NativeBindingFailureKey != null) { return false; }
+            if (emergency ? !NativeEmergencyCircuitAvailable() : NativeSpendFailureKey != null) { return false; }
             float paid = 0f;
             if (nativeEnergyDebit != null)
             {

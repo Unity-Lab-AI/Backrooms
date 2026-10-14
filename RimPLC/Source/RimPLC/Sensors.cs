@@ -93,6 +93,13 @@ namespace RimPLC
             // UNVERIFIED in the decomp (UnityEngine, not Assembly-CSharp): Application.isFocused
             st["game_foreground"] = Application.isFocused;
             st["home_on_screen"] = home != null && Find.CurrentMap == home;
+            // the HUD is hidden while screenshot mode (F11) is on: Find.ScreenshotModeHandler (verified, decomp Find.cs / UIRoot.cs)
+            try
+            {
+                ScreenshotModeHandler shot = Find.ScreenshotModeHandler;
+                if (shot != null) st["hud_visible"] = !shot.Active;
+            }
+            catch (Exception) { }
 
             List<Pawn> crew = PawnsFinder.AllMaps_FreeColonistsSpawned;
             int downed = 0, drafted = 0, able = 0, armed = 0, bleeding = 0, tend = 0, sick = 0;
@@ -175,8 +182,12 @@ namespace RimPLC
                 foreach (Letter l in letters)
                 {
                     string label = l.Label.RawText ?? string.Empty;
+                    // the body too, so letter_matches ("heat wave", "monolith") can read what the letter says;
+                    // the quest/empire tests below still read the label alone
+                    string body = string.Empty;
+                    if (l is ChoiceLetter cl) { try { body = " " + (cl.Text.RawText ?? string.Empty); } catch (Exception) { } }
                     string def = l.def?.defName ?? string.Empty;
-                    labels.Add(label);
+                    labels.Add(label + body);
                     defs.Add(def);
                     if (ThreatLetterDefs.Contains(def) && ticks - l.arrivalTick <= ThreatLetterMaxAge) threat = true;
                     if (lettersSeen != null && lettersSeen.Contains(l.ID)) continue;
@@ -224,7 +235,7 @@ namespace RimPLC
                 string d = kv.Key.defName;
                 int n = kv.Value;
                 if (d.StartsWith("Meal")) meals += n;
-                else if (d.StartsWith("Raw")) raw += n;
+                else if (d.StartsWith("Raw") || d.StartsWith("Meat_")) raw += n;   // meat is food (2026-10-13 audit)
                 else if (d == "WoodLog") wood += n;
                 else if (d.Contains("Medicine")) med += n;
                 else if (Resources.TryGetValue(d, out string key)) res[key] += n;
@@ -356,6 +367,31 @@ namespace RimPLC
 
             st["loose_weapons"] = (double)weapons;
             st["junk_weapons"] = (double)junk;
+
+            // 2026-10-13 audit: three rungs read these and nothing measured them
+            int billRows = 0;
+            foreach (Building_WorkTable w in home.listerBuildings.allBuildingsColonist.OfType<Building_WorkTable>()) billRows += w.BillStack.Count;
+            st["bill_rows"] = (double)billRows;
+            List<Pawn> crewHere = home.mapPawns.FreeColonistsSpawned.ToList();
+            if (crewHere.Count > 0)
+            {
+                // the plan: Firefighter..Cooking at 1, nothing a pawn can do left at 0
+                string[] first = { "Firefighter", "Patient", "Doctor", "PatientBedRest", "BasicWorker", "Warden", "Handling", "Cooking" };
+                st["grid_matches_plan"] = crewHere.All(p => p.workSettings == null || !p.workSettings.EverWork ||
+                    DefDatabase<WorkTypeDef>.AllDefsListForReading.Where(w => w.visible && !p.WorkTypeIsDisabled(w))
+                        .All(w => p.workSettings.GetPriority(w) != 0 && (!first.Contains(w.defName) || p.workSettings.GetPriority(w) == 1)));
+            }
+            List<Zone_Growing> fields = home.zoneManager.AllZones.OfType<Zone_Growing>().ToList();
+            if (fields.Count > 0) st["fields_all_default_crop"] = fields.Count > 1 && fields.Select(z => z.GetPlantDefToGrow()).Distinct().Count() == 1;
+            // map and world conditions, any mod's included: condition_<defname> true while active
+            var conds = new List<object>();
+            foreach (GameCondition gc in home.gameConditionManager.ActiveConditions.Concat(Find.World.gameConditionManager.ActiveConditions))
+            {
+                conds.Add(gc.def.defName);
+                string ck = "condition_" + gc.def.defName.ToLowerInvariant();
+                if (Validate.KeyRule.IsMatch(ck)) st[ck] = true;
+            }
+            st["game_conditions"] = conds;
             // wall_gaps is not measured: the perimeter rung stays disabled rather than fed a fixed 0
         }
 
@@ -422,6 +458,8 @@ namespace RimPLC
             {
                 ResearchProjectDef cur = rm.GetProject();
                 st["research_queue_empty"] = cur == null;
+                ResearchProjectDef shipBasics = DefDatabase<ResearchProjectDef>.GetNamedSilentFail("ShipBasics");
+                if (shipBasics != null) st["ship_research_done"] = shipBasics.IsFinished;
                 if (cur != null) st["research_current"] = cur.defName;
                 foreach (ResearchProjectDef r in DefDatabase<ResearchProjectDef>.AllDefsListForReading)
                 {
@@ -449,6 +487,24 @@ namespace RimPLC
 
             if (home == null) return;
             st["wealth"] = Math.Round(home.wealthWatcher.WealthTotal, 0);
+            // explore_done (2026-10-13 critic: only the bridge reply ever set it): no fog frontier -- a fogged walkable
+            // cell touching seen walkable ground -- within 30 cells of any colonist. Far mountain pockets do not count.
+            bool frontier = false;
+            foreach (Pawn p in home.mapPawns.FreeColonistsSpawned)
+            {
+                foreach (IntVec3 c in GenRadial.RadialCellsAround(p.Position, 30f, true))
+                {
+                    if (!c.InBounds(home) || !home.fogGrid.IsFogged(c) || !c.Walkable(home)) continue;
+                    foreach (IntVec3 d in GenAdj.CardinalDirections)
+                    {
+                        IntVec3 n = c + d;
+                        if (n.InBounds(home) && !home.fogGrid.IsFogged(n) && n.Walkable(home)) { frontier = true; break; }
+                    }
+                    if (frontier) break;
+                }
+                if (frontier) break;
+            }
+            if (home.mapPawns.FreeColonistsSpawnedCount > 0) st["explore_done"] = !frontier;
             int damaged = 0;
             foreach (Building b in home.listerBuildings.allBuildingsColonist)
             {

@@ -701,12 +701,14 @@ namespace RimroomsAsyncIndustries.Company
 
         private static void RefreshRouteRecorded(EvidenceRecord record, CoordinateRecord coordinate)
         {
+            // **Any room of the family counts**, which is what *"Survey the six required room
+            // families"* tells a player. This took the first room of each family only, so a
+            // surveyed second lobby or a third borrowed corridor counted for nothing while the
+            // objective read as if it had.
             record.routeRecorded = record.legacyRouteRecorded || RequiredSurveyFamilies.All(family =>
-            {
-                RoomRecord room = coordinate.rooms.FirstOrDefault(r => r != null && r.familyId == family);
-                return room != null && record.observations.Any(o => o != null &&
-                    o.kind == EvidenceObservationKinds.RoomSurvey && o.roomIndex == room.index);
-            });
+                coordinate.rooms.Any(room => room != null && room.familyId == family &&
+                    record.observations.Any(o => o != null &&
+                        o.kind == EvidenceObservationKinds.RoomSurvey && o.roomIndex == room.index)));
         }
     }
 }

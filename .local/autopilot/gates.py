@@ -71,6 +71,7 @@ RESOURCES = {"Steel": "steel", "ComponentIndustrial": "components", "ComponentSp
              "Plasteel": "plasteel", "Uranium": "uranium", "Gold": "gold", "Silver": "silver",
              "Chemfuel": "chemfuel", "Cloth": "cloth"}
 NEVER_HUNT_DEFS = ("Boomalope", "Thrumbo", "Elephant", "Rhinoceros", "Megasloth")   # plus Bear_*
+INSECT_DEFS = ("Megascarab", "Spelopede", "Megaspider")                                   # infestation hive insects
 MOUNT_DEFS_DEFAULT = ("Elephant", "Horse", "Dromedary", "Muffalo", "Thrumbo")
 # designation defName -> key. The field shape {defName, targetCell, targetThingDefName} is captured; these vanilla
 # DesignationDef names are UNVERIFIED (only Deconstruct and SkilledBuilder3 have been seen).
@@ -254,8 +255,49 @@ def derive(raw, lf=None):
         st["mark_" + k] = v if isinstance(v, (int, float)) and not isinstance(v, bool) else bool(v)
     for k in ("pawns_set", "assign_set", "beds_set", "stove_set", "bill_set"):
         st.setdefault("mark_" + k, False)
+    _sensor_file(st)
+    try:
+        for k, v in host_inputs().items(): st.setdefault(k, v)
+    except Exception:
+        pass
+    if not st.get("mark_start_kind"):          # nothing ever set it (2026-10-13 audit): the GO writes the scenario it chose
+        try: st["mark_start_kind"] = int(open(os.path.join(QA, "_start_kind"), encoding="utf-8").read().strip() or 0)
+        except (OSError, ValueError): pass
     _chain_inputs(st, crew, raw.get("colonists") is not None)
     return st
+
+
+SENSOR_FILE = os.path.join(os.environ.get("USERPROFILE", ""), "AppData", "LocalLow", "Ludeon Studios",
+                           "RimWorld by Ludeon Studios", "Config", "RimroomsAutomation", "sensors.json")
+COOK_TO = ("Firefighter", "Patient", "Doctor", "PatientBedRest", "BasicWorker", "Warden", "Handling", "Cooking")
+
+
+def _sensor_file(st):
+    """The mod's input scan (Sensors.cs, every 600 ticks): readings the bridge sweep never had. A file older than
+    five minutes is stale and fills nothing, so an old game's scan cannot drive a new one."""
+    try:
+        if time.time() - os.path.getmtime(SENSOR_FILE) > 300:
+            return
+        sx = json.load(open(SENSOR_FILE, encoding="utf-8"))
+    except (OSError, ValueError):
+        return
+    st["sensors_raw"] = True
+    for k in ("bill_rows", "research_queue_empty", "ship_research_done", "items_forbidden", "blueprints", "prisoners"):
+        if k in sx: st[k] = sx[k]
+    pawns = sx.get("pawns") or []
+    if pawns:
+        # the plan: Firefighter..Cooking at 1, nothing the pawn can do left at 0
+        st["grid_matches_plan"] = all(all((p.get("work") or {}).get(w, 1) == 1 for w in COOK_TO) and
+                                      all(v != 0 for v in (p.get("work") or {}).values()) for p in pawns)
+    grow = [z for z in sx.get("zones") or [] if z.get("kind") == "Zone_Growing"]
+    if grow:
+        st["fields_all_default_crop"] = len({z.get("plant") for z in grow}) == 1 and len(grow) > 1
+    texts = [(l.get("label") or "") + " " + (l.get("text") or "") for l in sx.get("letters") or []]
+    if texts:
+        st["letter_labels"] = list(st.get("letter_labels") or []) + texts
+    st["game_conditions"] = sx.get("conditions") or []
+    for cond in st["game_conditions"]:
+        st["condition_" + re.sub(r"[^a-z0-9]+", "_", str(cond).lower()).strip("_")] = True
 
 
 def _chain_inputs(st, crew, crew_read):
@@ -280,7 +322,7 @@ def _chain_inputs(st, crew, crew_read):
 
 
 def _sweep(st, cells, ours, crew):
-    meals = raw_food = wood = med = bp = foes = roofed = total = defence = 0
+    meals = raw_food = wood = med = bp = foes = beasts = roofed = total = defence = 0
     res = {k: 0 for k in set(RESOURCES.values())}
     berry = healroot = wild = danger = mounts = fire = corpses = embr = weapons = junk = 0; battery = False
     bhp = {}          # (defName, stuff) -> [hitPoints per cell], for the damaged-building float switch
@@ -298,7 +340,7 @@ def _sweep(st, cells, ours, crew):
             for k, test in BUILDING_KEYS.items():
                 if test(d, cl): bcells[k].add((d, xy))
             if d.startswith("Meal"): meals += n
-            elif d.startswith("Raw"): raw_food += n
+            elif d.startswith(("Raw", "Meat_")): raw_food += n       # meat is food too (2026-10-13 audit: a hunting start read as starving)
             elif d == "WoodLog": wood += n
             elif "Medicine" in d: med += n
             elif d in RESOURCES: res[RESOURCES[d]] += n
@@ -312,6 +354,8 @@ def _sweep(st, cells, ours, crew):
                 nm = lab.split("<")[0].strip()
                 if "," in lab:            # humanlikes carry ", <title>" in their label (captured)
                     if nm and nm not in ours: foes += 1
+                elif d.startswith("Mech_") or d in INSECT_DEFS or "manhunter" in lab.lower():
+                    beasts += 1       # mechs, insects and manhunters are hostile with or without a letter
                 elif d != "Human":
                     if d in NEVER_HUNT_DEFS or d.startswith("Bear_"): danger += 1
                     else: wild += 1
@@ -353,7 +397,7 @@ def _sweep(st, cells, ours, crew):
         st["unroofed_store_cells"] = total - roofed
     # hostiles: the crowd counts as hostile only while a recent threat letter vouches for it, or the colonist list
     # itself names hostile pawns
-    st["hostiles_on_map"] = max(foes if st.get("threat_letter") else 0, st.get("hostile_pawns_listed", 0))
+    st["hostiles_on_map"] = max(foes if st.get("threat_letter") else 0, st.get("hostile_pawns_listed", 0)) + beasts
     # wall_gaps is not measured: the perimeter rung stays disabled rather than fed a fixed 0
 
 
@@ -830,6 +874,94 @@ def _rimplc_file(cmd, args, wait_s):
             if d.get("id") == rid and isinstance(d.get("result"), dict):
                 return d["result"]
     return None
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# Host inputs (2026-10-13): readings only this PC has. Pushed into RimPLC with set_host each turn (remote I/O), so the
+# stream rungs (dead-air, chat-first, viewer-joined, webcam-stale, idle-watchdog) can fire in the game's own engine.
+# ---------------------------------------------------------------------------------------------------------------
+_HOST_PROMPT_HASH = [None]
+
+
+def host_inputs():
+    import hashlib, tempfile, ctypes
+    claude = os.path.join(ROOT, ".claude")
+    out, now = {}, time.time()
+    def rows(path):
+        try: return [json.loads(l) for l in open(path, encoding="utf-8", errors="replace") if l.strip()][-200:]
+        except (OSError, ValueError): return []
+    outbox, inbox = rows(os.path.join(claude, ".studio-outbox.jsonl")), rows(os.path.join(claude, ".studio-inbox.jsonl"))
+    spoke = max((r.get("ts", 0) for r in outbox if r.get("persona") == "unity"), default=0) / 1000.0
+    if spoke: out["seconds_since_spoken"] = round(now - spoke, 1)
+    try:
+        owners = {l.strip().lower() for l in open(os.path.join(ROOT, ".local", "tw", "owner.txt"), encoding="utf-8") if l.strip()}
+    except OSError:
+        owners = set()
+    unanswered = joins = mod = 0
+    for r in inbox:
+        if r.get("ts", 0) / 1000.0 <= spoke: continue
+        m = re.match(r"\[twitch\] (\w+): (.*)", r.get("text") or "")
+        if not m or m.group(1).lower() in owners or m.group(1).lower() == "unityplaysrimworld": continue
+        if m.group(2) == "(joined the stream)": joins += 1
+        else:
+            unanswered += 1
+            if re.search(r"(mod|repo|workshop|download|github|link)", m.group(2), re.I): mod += 1
+    out.update(chat_unanswered=unanswered, new_joiners=joins, chat_asks_mod=mod > 0)
+    # owner_unread: private owner lines (studio inbox rows without the "[twitch]" prefix, tools.read_owner) that no
+    # outbox row answers (reply_owner writes replyTo = the owner's msg id), newer than the newest answered one and at
+    # most an hour old, so a fresh start does not dig up old private messages (autopilot.gather_owner does the same)
+    replied = {r.get("replyTo") for r in outbox if r.get("replyTo") is not None}
+    mine = [r for r in inbox if (r.get("text") or "") and not str(r.get("text")).startswith("[twitch]")]
+    last = max((r.get("id", 0) for r in mine if r.get("id") in replied), default=0)
+    out["owner_unread"] = sum(1 for r in mine if r.get("id", 0) > last and r.get("id") not in replied
+                              and now - r.get("ts", 0) / 1000.0 <= 3600)
+    try:
+        imgs = [os.path.join(claude, ".studio-images", f) for f in os.listdir(os.path.join(claude, ".studio-images"))]
+        out["seconds_since_webcam"] = round(now - max(os.path.getmtime(f) for f in imgs), 1)
+    except (OSError, ValueError):
+        pass
+    try:
+        tr = os.path.join(HERE, "traces"); newest = max(os.path.getmtime(os.path.join(tr, f)) for f in os.listdir(tr))
+        out["seconds_since_tool"] = round(now - newest, 1)
+    except (OSError, ValueError):
+        pass
+    # her voice holds this lock while a line plays (unity-speak.py)
+    lock = os.path.join(tempfile.gettempdir(), "unity-voice-playing.lock")
+    try:
+        import msvcrt
+        with open(lock, "a+b") as f:
+            try:
+                f.seek(0); msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1); msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
+                out["voice_playing"] = False
+            except OSError:
+                out["voice_playing"] = True
+    except (OSError, ImportError):
+        pass
+    try:   # the owner is at the controls: keyboard/mouse used in the last 60 s (the bridge never sends real input)
+        class LII(ctypes.Structure): _fields_ = [("cbSize", ctypes.c_uint), ("dwTime", ctypes.c_uint)]
+        li = LII(); li.cbSize = ctypes.sizeof(LII)
+        if ctypes.windll.user32.GetLastInputInfo(ctypes.byref(li)):
+            out["owner_input_active"] = (ctypes.windll.kernel32.GetTickCount() - li.dwTime) / 1000.0 < 60
+    except (AttributeError, OSError):
+        pass
+    try:
+        h = hashlib.sha1()
+        for f in (os.path.join(HERE, "prompt.md"), PLAYBOOK):
+            h.update(open(f, "rb").read())
+        d = h.hexdigest()
+        out["prompt_version_changed"] = _HOST_PROMPT_HASH[0] is not None and d != _HOST_PROMPT_HASH[0]
+        _HOST_PROMPT_HASH[0] = d
+    except (OSError, TypeError):
+        pass
+    return out
+
+
+def push_host():
+    """Send the host inputs to RimPLC (command file; the bridge has no set_host tool). Returns RimPLC's reply or None."""
+    try:
+        return rimplc("set_host", {"values": host_inputs()}, call=None, wait_s=2.0)
+    except Exception:
+        return None
 
 
 def rimplc(cmd, args=None, call=None, wait_s=4.0):

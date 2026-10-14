@@ -293,7 +293,7 @@ namespace RimroomsAsyncIndustries.Gate
             spinUpWorkRequired = SpinUpWorkRequiredFor(edge.CoordinateId);
             spinUpWorkDone = 0f;
             spinUpHeldAtFull = false;
-            Messages.Message("RR_Gate_SpinUpStarted".Translate(edge.CoordinateId), parent,
+            Messages.Message("RR_Gate_SpinUpStarted".Translate(campaign.CoordinateLabelOrId(edge.CoordinateId)), parent,
                 MessageTypeDefOf.TaskCompletion, false);
             RecordGateActivity("RR_Event_GateSpinUpStarted", connectionId,
                 spinUpWorkRequired.ToString("F0", System.Globalization.CultureInfo.InvariantCulture));
@@ -446,7 +446,10 @@ namespace RimroomsAsyncIndustries.Gate
         internal string SpinUpReadout()
         {
             if (!IsSpinningUp) { return null; }
-            string target = string.IsNullOrEmpty(spinUpCoordinateId) ? spinUpConnectionId : spinUpCoordinateId;
+            RimroomsCampaignComponent campaign = Current.Game == null
+                ? null : Current.Game.GetComponent<RimroomsCampaignComponent>();
+            string target = string.IsNullOrEmpty(spinUpCoordinateId) ? spinUpConnectionId
+                : campaign == null ? spinUpCoordinateId : campaign.CoordinateLabelOrId(spinUpCoordinateId);
             if (spinUpHeldAtFull) { return "RR_Gate_SpinUpHeldReadout".Translate(target).ToString(); }
             return "RR_Gate_SpinUpReadout".Translate(target, spinUpWorkDone.ToString("F0"),
                 spinUpWorkRequired.ToString("F0"),

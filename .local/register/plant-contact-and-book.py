@@ -40,14 +40,17 @@ PLANTS = [
     ("THE DELIVERY BECOMES A TAP, SENDING BOOKS TO A BRANCH THAT HAS THEM", DELIVERY,
      "            if (AnyRecordBookHeld(book)) { return; }" + NL, "", PROOF),
 
+    # Re-aimed 2026-10-13: the pack scan and the floor scan became one Core recursive search
+    # (`GetAllThingsRecursively(map, request, out, allowUnspawned, passCheck, alsoGetSpawnedThings)`).
+    # A book in a pack is an UNSPAWNED thing, so that fault switches off `allowUnspawned`; a book on
+    # a floor or a shelf is SPAWNED, so that fault switches off `alsoGetSpawnedThings`.
     ("a book in somebody's pack stops counting", DELIVERY,
-     "                    if (pawn.inventory.innerContainer.Contains(book)) { return true; }" + NL,
-     "", PROOF),
+     "ThingOwnerUtility.GetAllThingsRecursively(map, ThingRequest.ForDef(book), found, true, null, true);",
+     "ThingOwnerUtility.GetAllThingsRecursively(map, ThingRequest.ForDef(book), found, false, null, true);", PROOF),
 
     ("a book on a floor or a shelf stops counting", DELIVERY,
-     "                if (map.listerThings != null" + NL
-     + "                    && map.listerThings.ThingsOfDef(book).Count > 0)" + NL
-     + "                { return true; }" + NL, "", PROOF),
+     "ThingOwnerUtility.GetAllThingsRecursively(map, ThingRequest.ForDef(book), found, true, null, true);",
+     "ThingOwnerUtility.GetAllThingsRecursively(map, ThingRequest.ForDef(book), found, true, null, false);", PROOF),
 
     ("the delivery resolves the book by name instead of asking the dispatch", DELIVERY,
      "ThingDef book = Expedition.ExpeditionCargo.RecordBookDef;",
