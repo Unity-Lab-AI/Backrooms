@@ -78,7 +78,10 @@ ONE_SHOTS = [[PYW, os.path.join(ROOT, ".claude/tools/unity-overlay.py")]]
 RW_DIR = r"C:/Program Files (x86)/Steam/steamapps/common/RimWorld"
 RW_IMAGE = "RimWorld" if os.path.exists(os.path.join(RW_DIR, "RimWorld.exe")) else "RimWorldWin64"
 START_ONLY = [
-    ("rimworld", RW_IMAGE + ".exe", [os.path.join(RW_DIR, RW_IMAGE + ".exe")], RW_DIR),
+    # borderless window at the screen's size, never exclusive fullscreen: owner, 2026-10-13, "the game is not properly
+    # running in the background, i cant see my desktop when tabbing out of it" -- Prefs.xml said fullscreen True, so
+    # alt-tab swapped the display instead of showing the desktop. Unity's own flags win over the prefs every launch.
+    ("rimworld", RW_IMAGE + ".exe", [os.path.join(RW_DIR, RW_IMAGE + ".exe"), "-screen-fullscreen", "0", "-popupwindow"], RW_DIR),
 ]
 
 # Not python or node, so they are matched and started by their own executables.

@@ -787,6 +787,23 @@ class Toolbox:
             except Exception:
                 st = {}
         ok = cls._outbox_ok_cmds() if ok_cmds is None else set(ok_cmds)
+        # gates.state() carries the autopilot's own readings; the keys these tests need are RimPLC's (Sensors.cs) and
+        # some never reach it (run 3, 21:47: able_shooters_armed was None here while the mod read 3, so arms_set could
+        # never be confirmed and every setup rung behind it stayed dead). Fill what is missing from the mod itself.
+        need = [k for k in ("able_shooters", "able_shooters_armed", "stoves", "bill_rows", "ideo_leader_assigned",
+                            "ideo_roles_unassigned", "grid_matches_plan", "food_store") if st.get(k) is None]
+        if need:
+            try:
+                r = subprocess.run([PY, os.path.join(ROOT, ".local", "qa", "bridge.py"), "call", "rimplc/read_state",
+                                    json.dumps({"keys": ",".join(need)})], capture_output=True, text=True, timeout=30,
+                                   cwd=ROOT, shell=False)
+                t = r.stdout or ""; i = t.find("{")
+                d = json.loads(t[i:]) if i >= 0 else {}
+                src = d.get("state") if isinstance(d.get("state"), dict) else {}
+                for k in need:
+                    if k in src: st[k] = src[k]
+            except Exception:
+                pass
         def num(k):
             v = st.get(k)
             return v if isinstance(v, (int, float)) and not isinstance(v, bool) else None

@@ -6745,7 +6745,7 @@
         "mark_stream_titled": false
       },
       "then": [
-        "twitch_chat action=title text=<Unity Plays RimWorld -- colony / goal of the run>",
+        "twitch_chat action=title text=<write it yourself: 'Unity Plays RimWorld -- ' + tonight's colony and goal from the GO text; the words 'colony / goal of the run' are the shape, never the title>",
         "twitch_chat action=category text=RimWorld",
         "say a hello-stream line",
         "only after both succeed: ladder_set mark stream_titled true",
