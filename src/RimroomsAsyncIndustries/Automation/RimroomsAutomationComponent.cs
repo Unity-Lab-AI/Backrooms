@@ -367,6 +367,8 @@ namespace RimroomsAsyncIndustries.Automation
                 case "chop": return SetupTools3.Chop(map, a);
                 case "haul": return SetupTools3.Haul(map, a);
                 case "cancel": return SetupTools5.Cancel(map, a);
+                case "camp_plan": return CampPlan.Report(map, a);
+                case "free": return CampPlan.Free(map, a);
                 case "shelter": return SetupTools3.Shelter(map, a);
                 case "stockpile_camp": return SetupTools3.StockpileCamp(map, a);
                 default: return "refused: unknown cmd " + cmd;
@@ -476,7 +478,7 @@ namespace RimroomsAsyncIndustries.Automation
         {
             "arm", "chop", "hunt", "explore", "equip", "shelter", "storage_room", "build_room", "build", "beds", "shelves", "stove",
             "butcher", "freezer", "mine", "wall_swap", "harvest", "tame", "slaughter", "deconstruct", "roof_area", "crops",
-            "tower", "security_room", "hall", "generator", "power", "capture", "bury", "firebreak", "draft", "hold", "haul"
+            "tower", "security_room", "hall", "generator", "power", "capture", "bury", "firebreak", "draft", "hold", "haul", "free"
         };
 
         private static string Assign(Map map, Dictionary<string, string> a)

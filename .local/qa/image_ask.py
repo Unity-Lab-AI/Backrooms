@@ -73,7 +73,7 @@ def _confirm(text, guess):
     if guess is None:
         return None
     try:
-        body = {"model": os.environ.get("UNITY_VOICE_LLM", "unity-local"), "stream": False, "think": False, "keep_alive": "10m",
+        body = {"model": os.environ.get("UNITY_VOICE_LLM", "unity-local"), "stream": False, "think": False, "keep_alive": -1,
                 "options": {"temperature": 0.0, "num_predict": 24, "num_ctx": 2048},
                 "prompt": ("A Twitch viewer typed this line in chat: \"%s\". Is the viewer asking for a picture, image, drawing or "
                            "photo to be MADE (not describing one, not asking a question about one)? If yes reply exactly: yes: <what the "

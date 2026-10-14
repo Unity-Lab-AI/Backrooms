@@ -117,7 +117,7 @@ def fresh(fact):
                   % (fact, "End it by asking chat a fun question about it. " if ask else "", " | ".join(hist[-8:])))
         try:
             req = urllib.request.Request(os.environ.get("UNITY_VOICE_URL", "http://127.0.0.1:11435") + "/api/generate", data=json.dumps(
-                {"model": os.environ.get("UNITY_VOICE_LLM", "unity-local"), "prompt": prompt, "stream": False, "think": False, "keep_alive": "10m",
+                {"model": os.environ.get("UNITY_VOICE_LLM", "unity-local"), "prompt": prompt, "stream": False, "think": False, "keep_alive": -1,
                  "options": {"temperature": 1.0, "num_ctx": int(os.environ.get("UNITY_VOICE_NUM_CTX", "4096")), "num_predict": 60}}).encode(),
                 headers={"Content-Type": "application/json"})
             line = json.loads(urllib.request.urlopen(req, timeout=40).read())["response"].strip().strip('"').split(chr(10))[0]

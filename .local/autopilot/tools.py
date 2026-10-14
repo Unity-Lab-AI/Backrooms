@@ -406,7 +406,9 @@ class Toolbox:
                          "OPEN-GROUND CAMP (Crashlanded, no rooms): unforbid (every starting item), chop (count = wood wanted, nearest trees to the crew), "
                          "shelter (w,h inside size; a wood room + door + roof beside the crew), stockpile_camp (mode food|nofood; a 6x6 store beside the crew), "
                          "haul (every loose stack within 30 cells unforbidden + Hauling priority 1 for all: the pile goes into the store first), "
-                         "cancel (x,z,w,h: every planned building and designation in the rect is cancelled -- the owner's 'delete that wall'). "
+                         "cancel (x,z,w,h: every planned building and designation in the rect is cancelled -- the owner's 'delete that wall'), "
+                         "camp_plan (the ground survey: rock per side, the open FRONT where raids come, the mountain BACK, the door lanes kept clear), "
+                         "free (everyone walled in gets a way out: a plan cancelled or a wall marked to deconstruct). "
                          "BUILD AND MANAGE: build (def, x, z, rot 0-3, stuff -- any architect thing, e.g. TorchLamp, Sandbags, Barricade, Cooler, "
                          "SimpleResearchBench, Battery; read refused/ok), build_room (x,z inside corner, w, h, stuff -- walls+door+roof), deconstruct "
                          "(def or x,z), harvest (what food|medicine|all -- wild plants), tame (def), slaughter (def, count; never milkers or bonded), "
@@ -425,7 +427,7 @@ class Toolbox:
                                                                "beds", "shelves", "stove", "crops", "hunt", "day_one", "assign",
                                                                "set_zone_plant", "set_zone_sowing", "set_work_priority",
                                                                "set_bed_owner", "add_bill", "set_area",
-                                                               "unforbid", "chop", "shelter", "stockpile_camp", "haul", "cancel", "build", "build_room", "deconstruct", "harvest", "tame",
+                                                               "unforbid", "chop", "shelter", "stockpile_camp", "haul", "cancel", "camp_plan", "free", "build", "build_room", "deconstruct", "harvest", "tame",
                                                                "slaughter", "allow_area", "self_tend", "schedule", "drug_policy", "research", "bed_medical", "bed_prisoner", "cooler_temp",
                                                                "equip", "capture", "bill_count", "zone_create", "roof_area", "firebreak", "pen", "bury", "ideo_role", "save_game",
                                                                "stockpile_priority", "stockpile_copy", "crew_setup", "terraform",
