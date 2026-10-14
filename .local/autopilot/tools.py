@@ -677,10 +677,180 @@ class Toolbox:
 
     RIMPLC_OPS = {"mark": "set_mark", "tag": "set_tag", "add_rung": "upsert_rung", "remove_rung": "remove_rung"}
 
+    # ---- the setup gate is MOD-CONFIRMED, never her say-so (test run 2026-10-13, 19:30 row: "the ladder does not
+    # know we are crashed, so I am telling it" -> ladder_set mark setup_crashlanded true -> "Setup is done, time runs
+    # now", with no stove, no bill, no priorities set). A mark named setup_* / *_set / *_done that a rung of the
+    # setup, start or configuration family reads is not hers to write: ladder_set routes it to the mod's own
+    # reading (sensors.json from the mod's Sensors.cs via gates.state(), and the mod's ok: replies in
+    # RimroomsAutomation/outbox.jsonl since this colony started). The value written is always the measured one.
+    SETUP_FAMILIES = ("setup", "start", "configuration")
+    SETUP_MARK_RE = re.compile(r"^(setup_.*|.*_set|.*_done)$")
+    # mark -> (the mod replies that confirm it: game_set cmds answered "ok", AND/OR the sensor test), with the source
+    # named for the refusal text. A mark with no entry and a setup_* name has no reading at all and is refused.
+    CONFIRMED_MARKS = {
+        "pawns_set": ("grid_matches_plan", None,
+                      "the mod's pawn work grid (sensors.json, Sensors.cs) -> grid_matches_plan"),
+        "assign_set": (None, ("assign", "day_one", "crew_setup"),
+                       "an ok: reply to game_set cmd assign (or day_one / crew_setup) in the mod's outbox"),
+        "config_assign_tab_done": (None, ("assign", "day_one", "crew_setup"),
+                                   "an ok: reply to game_set cmd assign (or day_one / crew_setup) in the mod's outbox"),
+        "config_schedule_anything_done": (None, ("schedule", "day_one"),
+                                          "an ok: reply to game_set cmd schedule (or day_one) in the mod's outbox"),
+        "config_drug_policy_done": (None, ("drug_policy", "day_one"),
+                                    "an ok: reply to game_set cmd drug_policy (or day_one) in the mod's outbox"),
+        "arms_set": ("armed", None, "the mod's able_shooters_armed == able_shooters > 0 (Sensors.cs)"),
+        "shelter_set": (None, ("shelter", "build_room"),
+                        "an ok: reply to game_set cmd shelter (or build_room) in the mod's outbox"),
+        "stove_set": ("stove_and_bill", ("stove", "add_bill"),
+                      "the mod's stoves >= 1 and bill_rows > 0 (Sensors.cs), or ok: replies to both stove and add_bill"),
+        "ideo_roles_set": ("ideo_roles", ("ideo_role",),
+                           "the mod's ideo_leader_assigned true and ideo_roles_unassigned 0, or an ok: reply to ideo_role"),
+        "start_opening_done": ("opening", None,
+                               "unforbid answered ok: plus the confirmed assign_set and pawns_set"),
+        "setup_done": ("setup_all", None,
+                       "the confirmed pawns_set, assign_set and stove_set plus a food store on the map"),
+        "explore_done": ("explore_flag", ("explore",),
+                         ".local/qa/_explore_done.flag (written when exploring finds nothing left)"),
+    }
+
+    @classmethod
+    def setup_gate_marks(cls, book=None):
+        """Every mark name matching setup_* / *_set / *_done that a setup-, start- or configuration-family rung of
+        the book reads, plus the routed names above. These are the marks she may not set herself."""
+        names = set(cls.CONFIRMED_MARKS)
+        try:
+            book = book or json.load(open(os.path.join(ROOT, "docs", "playbook.gates.json"), encoding="utf-8"))
+            for g in book.get("gates") or []:
+                if g.get("family") not in cls.SETUP_FAMILIES:
+                    continue
+                for k in re.findall(r'"mark_([a-z0-9_]+)"', json.dumps(g.get("when") or {})):
+                    if cls.SETUP_MARK_RE.match(k):
+                        names.add(k)
+        except Exception:
+            pass
+        return names
+
+    @staticmethod
+    def _outbox_ok_cmds(since_offset=None):
+        """The game_set cmds the mod answered 'ok' since this colony started (scratch/colony-epoch.json offset into
+        RimroomsAutomation/outbox.jsonl; no epoch = the whole file). Rows look like
+        {"result": "{'id': 'x-0', 'cmd': 'stove'} -> ok: ...", "id": "x-0"}."""
+        if since_offset is None:
+            since_offset = colony_epoch().get("outbox_offset", 0)
+        ok = set()
+        try:
+            if not os.path.exists(AUTOMATION_OUTBOX):
+                return ok
+            with open(AUTOMATION_OUTBOX, encoding="utf-8", errors="replace") as f:
+                if os.path.getsize(AUTOMATION_OUTBOX) >= since_offset:
+                    f.seek(since_offset)
+                for row in f.read().splitlines():
+                    try:
+                        res = str(json.loads(row).get("result", ""))
+                    except Exception:
+                        continue
+                    m = re.search(r"'cmd':\s*'([a-z_]+)'.*?->\s*ok\b", res)
+                    if m:
+                        ok.add(m.group(1))
+        except OSError:
+            pass
+        return ok
+
+    @classmethod
+    def confirmed_marks(cls, st=None, ok_cmds=None):
+        """name -> True/False for every routed setup mark, from the mod's readings only. st is gates.state() (or any
+        dict of measured keys); None reads the live state."""
+        if st is None:
+            try:
+                spec = importlib.util.spec_from_file_location("gates_cm", os.path.join(HERE, "gates.py"))
+                g = importlib.util.module_from_spec(spec); spec.loader.exec_module(g)
+                st = g.state()
+            except Exception:
+                st = {}
+        ok = cls._outbox_ok_cmds() if ok_cmds is None else set(ok_cmds)
+        def num(k):
+            v = st.get(k)
+            return v if isinstance(v, (int, float)) and not isinstance(v, bool) else None
+        out = {}
+        def sensor(test):
+            if test == "grid_matches_plan":
+                return st.get("grid_matches_plan") is True
+            if test == "armed":
+                a, b = num("able_shooters"), num("able_shooters_armed")
+                return a is not None and b is not None and a > 0 and b >= a
+            if test == "stove_and_bill":
+                s, b = num("stoves"), num("bill_rows")
+                return s is not None and b is not None and s >= 1 and b > 0
+            if test == "ideo_roles":
+                return st.get("ideo_leader_assigned") is True and num("ideo_roles_unassigned") == 0
+            if test == "explore_flag":
+                return os.path.exists(os.path.join(ROOT, ".local", "qa", "_explore_done.flag"))
+            if test == "opening":
+                return "unforbid" in ok and out.get("assign_set", False) and out.get("pawns_set", False)
+            if test == "setup_all":
+                return (out.get("pawns_set", False) and out.get("assign_set", False) and out.get("stove_set", False)
+                        and st.get("food_store") is True)
+            return False
+        # dependencies (opening, setup_all) read earlier entries: plain marks first, composites last
+        order = [k for k, v in cls.CONFIRMED_MARKS.items() if v[0] not in ("opening", "setup_all")] + ["start_opening_done", "setup_done"]
+        for name in order:
+            test, cmds, _src = cls.CONFIRMED_MARKS[name]
+            by_sensor = sensor(test) if test else False
+            by_reply = bool(cmds) and (all(c in ok for c in cmds) if name == "stove_set" else any(c in ok for c in cmds))
+            out[name] = bool(by_sensor or by_reply)
+        return out
+
+    @classmethod
+    def scrub_setup_marks(cls):
+        """Drop every setup-gate mark from scratch/ladder.json that the mod does not confirm (a new colony, or a
+        restart). Returns the names removed. The confirmed ones are rewritten with the measured value."""
+        path = os.path.join(HERE, "scratch", "ladder.json")
+        try:
+            d = json.load(open(path, encoding="utf-8"))
+        except Exception:
+            return []
+        marks = d.get("marks") or {}
+        if not marks:
+            return []
+        blocked = cls.setup_gate_marks()
+        confirmed = cls.confirmed_marks()
+        gone = []
+        for k in list(marks):
+            if k in blocked or cls.SETUP_MARK_RE.match(k) and k.startswith("setup_"):
+                if confirmed.get(k):
+                    marks[k] = True
+                else:
+                    del marks[k]; gone.append(k)
+        if gone:
+            d["marks"] = marks
+            guards.scratch_write("ladder.json", json.dumps(d, indent=1))
+        return gone
+
+    def _route_setup_mark(self, name, value):
+        """A setup-gate mark: the value written is the mod's, and a request that disagrees with it is refused with
+        what the mod reads and what is still missing."""
+        want = value if isinstance(value, bool) else str(value if value is not None else "").strip().lower() in ("true", "yes", "done", "on", "1")
+        if name not in self.CONFIRMED_MARKS:
+            raise GuardError("mark %s is not yours to set: no reading of the mod backs it, so the ladder will never "
+                             "take it from you. The start kind is already measured (mark start_kind from the GO); do "
+                             "the live rung's steps and let the mod confirm them" % name)
+        test, cmds, src = self.CONFIRMED_MARKS[name]
+        measured = self.confirmed_marks().get(name, False)
+        if measured != want:
+            raise GuardError("mark %s stays %s: it is read from %s, not from you. %s" % (
+                name, "true" if measured else "false", src,
+                "Do the rung's steps with the real tools and read the mod's reply; the mark follows by itself."
+                if want else "The mod confirms it, so it stays true."))
+        return measured
+
     def t_ladder_set(self, op, name=None, value=None, rung=None):
         """ladder_set: through RimPLC when it is loaded (mark -> set_mark, tag -> set_tag, add_rung -> upsert_rung,
         remove_rung -> remove_rung), mirrored into scratch/ladder.json so the Python fallback keeps her edits; else
-        straight into scratch/ladder.json. Same result text and refusals either way."""
+        straight into scratch/ladder.json. Same result text and refusals either way.
+        A setup-gate mark (setup_gate_marks: pawns_set, assign_set, stove_set, setup_done, setup_* ...) is routed to
+        the mod's own reading first: she cannot write a value the mod does not confirm."""
+        if op == "mark" and (str(name or "") in self.setup_gate_marks() or str(name or "").startswith("setup_")):
+            value = self._route_setup_mark(str(name), value)
         cmd = self.RIMPLC_OPS.get(op)
         if cmd and not self.dry:
             args = {"set_mark": {"name": name, "value": value}, "set_tag": {"name": name, "value": value},
@@ -907,8 +1077,98 @@ class Toolbox:
         text = "\n".join("%d\t%s" % (a + k, l) for k, l in enumerate(chunk))
         return text[:guards.MAX_READ] + ("\n[%d lines total]" % len(lines))
 
+    # The pad records only what the mod confirmed (test run 2026-10-13, 19:15 row: "[x] explore", "[x] pawn_priorities",
+    # "[x] assign" on a colony that had run none of them). A "[x]" line that names a setup item is accepted only when
+    # the mod's ok: reply for that item is in the outbox since this colony started; otherwise the note is refused
+    # and she sees why. Item pattern -> the game_set cmds whose ok: confirms it. EVERY item a [x] line names must be
+    # confirmed (a bundled "[x] beds, shelves, stove + bill" with the stove refused is refused); word boundaries so
+    # "bedroom" is the shelter, not the beds.
+    PAD_ITEMS = (
+        ("unforbid", r"unforbid", ("unforbid", "day_one")),
+        ("priorities", r"pawn_priorities|priorit|work grid|set_work_priority", ("set_work_priority", "day_one")),
+        ("assign", r"\bassign|hostility", ("assign", "day_one", "crew_setup")),
+        ("explore", r"\bexplor", ("explore",)),
+        ("shelter", r"\bshelter|\bbedroom|build_room", ("shelter", "build_room")),
+        ("shelves", r"\bshel(f|ves)\b", ("shelves",)),
+        ("stores", r"stockpile|\bstores?\b", ("stockpile_camp", "stockpile_room", "zone_create")),
+        ("beds", r"\bbeds?\b", ("beds",)),
+        ("stove", r"\bstoves?\b", ("stove",)),
+        ("bill", r"\bbills?\b", ("add_bill", "kitchen", "bill_count")),
+        ("chop", r"\bchop", ("chop",)),          # not "wood": "a wood bedroom" names the stuff, not a chop order
+        ("crops", r"\bcrops?\b|\bfields?\b|\bsow", ("crops", "set_zone_plant", "zone_create")),
+        ("hunt", r"\bhunt", ("hunt",)),
+        ("roof", r"\broof", ("roof_area",)),
+    )
+
+    def _unconfirmed_ticks(self, text):
+        """The [x] lines of a note naming a setup item the mod never answered ok: for -> [(line, item, needed cmds)]."""
+        ok = self._outbox_ok_cmds()
+        explored = os.path.exists(os.path.join(ROOT, ".local", "qa", "_explore_done.flag"))
+        bad = []
+        for raw in str(text or "").splitlines():
+            line = raw.strip()
+            if not re.match(r"^(?:-\s*)?\[x\]", line, flags=re.I):
+                continue
+            low = line.lower()
+            for item, pat, cmds in self.PAD_ITEMS:
+                if not re.search(pat, low):
+                    continue
+                if item == "explore" and explored:
+                    continue
+                if not any(c in ok for c in cmds):
+                    bad.append((line[:90], item, cmds))
+        return bad
+
     def t_note(self, name, text, append=False):
+        bad = self._unconfirmed_ticks(text)
+        if bad:
+            raise GuardError("note not written -- a [x] needs the mod's ok: on record, and these have none this colony: "
+                             + " ; ".join("%r: %s (needs an ok: reply to game_set cmd %s)" % (l, item, " / ".join(c)) for l, item, c in bad)
+                             + ". Write them as [ ] (with what was refused, if it was) and send the note again.")
         return "wrote " + guards.scratch_write(name, text, append=bool(append))
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# This colony's epoch: where in the mod's outbox it started. Written by the autopilot when it detects a new colony
+# (autopilot.colony_epoch_check); read by the note tool and ladder_set so only THIS colony's ok: replies count.
+# ---------------------------------------------------------------------------------------------------------------
+COLONY_EPOCH = "colony-epoch.json"
+AUTOMATION_OUTBOX = os.path.join(os.path.expandvars(r"%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Config"),
+                                 "RimroomsAutomation", "outbox.jsonl")
+
+
+def colony_epoch():
+    try:
+        return json.load(open(guards.scratch_path(COLONY_EPOCH), encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def last_day_one_offset():
+    """The byte offset of the last 'day_one' reply in the outbox: keep-playing sends day_one once per new colony, so
+    the newest such row is the mod-confirmed start of the colony on the map (0 when there is none)."""
+    off, found = 0, 0
+    try:
+        with open(AUTOMATION_OUTBOX, "rb") as f:
+            for raw in f:
+                if b"'cmd': 'day_one'" in raw:
+                    found = off
+                off += len(raw)
+    except OSError:
+        return 0
+    return found
+
+
+def write_colony_epoch(offset=None):
+    """offset None = the outbox's current size (a colony starting now); 0 = count every reply on file."""
+    if offset is None:
+        try:
+            offset = os.path.getsize(AUTOMATION_OUTBOX)
+        except OSError:
+            offset = 0
+    guards.scratch_write(COLONY_EPOCH, json.dumps({"outbox_offset": int(offset), "ts": time.time(),
+                                                   "written": time.strftime("%Y-%m-%d %H:%M:%S")}, indent=1))
+    return offset
 
 
 def _outbox(text, reply_to):
