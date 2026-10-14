@@ -330,6 +330,21 @@ def _render_locked(req):
     seed = int(req.get("seed") or SEED)
     g = torch.Generator(DEVICE).manual_seed(seed)
     neg = fit_tokens(req.get("negative_prompt") or NEG)
+    if req.get("plain"):
+        # a PLAIN picture of whatever was asked (a viewer's "draw an apple"): no identity, no room, no reference --
+        # owner, 2026-10-14: "people are asking her for a apple image and she doesnt even know se can make images"
+        steps = max(8, min(30, int(req.get("steps") or 14)))
+        w = int(req.get("width") or 512); h = int(req.get("height") or 512)
+        g = torch.Generator(DEVICE).manual_seed(int(req.get("seed") or int(time.time()) % 100000))
+        plain_neg = fit_tokens("nsfw, nude, naked, gore, text, watermark, lowres, blurry, deformed, extra limbs, bad anatomy")
+        try: t2i.set_ip_adapter_scale(0.0)
+        except Exception: pass
+        try:
+            return t2i(prompt=fit_tokens(str(req.get("prompt") or "")), negative_prompt=plain_neg, num_inference_steps=steps,
+                       guidance_scale=7.0, ip_adapter_image=face_image(), width=w, height=h, generator=g).images[0]
+        finally:
+            try: t2i.set_ip_adapter_scale(FACE_SCALE)
+            except Exception: pass
     if req.get("reference") or not os.path.exists(REF):
         img = t2i(prompt=req.get("ref_prompt") or REF_PROMPT, negative_prompt=neg, num_inference_steps=STEPS, guidance_scale=6.5, ip_adapter_image=face_image(),
                   width=512, height=640, generator=g).images[0]
