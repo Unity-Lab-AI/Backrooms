@@ -213,8 +213,12 @@ namespace RimroomsAsyncIndustries.Automation
             a.TryGetValue("mode", out string mode);
             mode = (mode ?? "food").ToLowerInvariant();
             a.TryGetValue("room", out string want);
-            List<Room> candidates = IndoorRooms(map).Where(r => FoggedShare(map, r) < 0.2f && r.OpenRoofCount == 0 &&
+            // a room with a quarter of its roof still to come is a room (the store was 89 % roofed when the food rotted
+            // outside, run 5 2026-10-14); food only ever goes on ROOFED cells of it
+            List<Room> candidates = IndoorRooms(map).Where(r => FoggedShare(map, r) < 0.2f && r.OpenRoofCount * 4 <= r.CellCount &&
                                                                  !r.ContainedBeds.Any()).ToList();
+            Zone_Stockpile oldFood = mode == "food" ? SetupTools3.Store(map, "Food store") : null;
+            Zone_Stockpile mainStore = SetupTools3.Store(map, "Main store");
             Room room;
             if (!string.IsNullOrEmpty(want) && want != "auto" && int.TryParse(want, out int id))
             {
@@ -225,14 +229,27 @@ namespace RimroomsAsyncIndustries.Automation
             {
                 // a cooled room first (the freezer), else the smallest roofed explored room without beds
                 room = candidates.OrderByDescending(r => r.Temperature < 5f)
-                                 .ThenBy(r => r.CellCount).FirstOrDefault(r => r.Cells.Count(c => FreeFloor(map, c)) >= 4);
+                                 .ThenBy(r => r.CellCount).FirstOrDefault(r => r.Cells.Count(c => FreeFloor(map, c) && map.roofGrid.Roofed(c)) >= 4 ||
+                                                                               (mainStore != null && mainStore.cells.Any(c => c.GetRoom(map) == r)));
             }
             else
             {
                 room = candidates.OrderByDescending(r => r.Cells.Count(c => FreeFloor(map, c))).FirstOrDefault();
             }
             if (room == null) return "refused: no explored, roofed room without beds -- explore first";
-            List<IntVec3> cells = room.Cells.Where(c => FreeFloor(map, c)).ToList();
+            if (oldFood != null && oldFood.cells.Count(c => c.GetRoom(map) == room) * 5 >= oldFood.cells.Count * 4)
+                return "ok: Food store is already inside room " + room.ID + " (" + oldFood.cells.Count(c => map.roofGrid.Roofed(c)) + " of " + oldFood.cells.Count +
+                       " cells roofed; the rest roof with the room)";
+            List<IntVec3> cells = room.Cells.Where(c => FreeFloor(map, c) && (mode != "food" || map.roofGrid.Roofed(c))).ToList();
+            if (mode == "food" && cells.Count < 4)
+            {
+                // the Main store fills the room: the food store is a corner carved out of it (owner, run 5: food rotting in an
+                // open zone outside while the main store sat roofed)
+                string carved = SetupTools3.CarveFoodStore(map, room);
+                if (carved == null) return "refused: room " + room.ID + " has no free roofed floor and no Main store corner to carve";
+                if (oldFood != null) { int n = oldFood.cells.Count; oldFood.Delete(); carved += "; the open-air Food store (" + n + " cells) is deleted -- haulers carry its food in"; }
+                return carved;
+            }
             if (cells.Count == 0) return "refused: room " + room.ID + " has no free explored floor";
 
             var zone = new Zone_Stockpile(StorageSettingsPreset.DefaultStockpile, map.zoneManager);
@@ -253,8 +270,10 @@ namespace RimroomsAsyncIndustries.Automation
                 f.SetAllow(ThingCategoryDefOf.Corpses, false);
                 zone.label = "Main store";
             }
+            string moved = "";
+            if (mode == "food" && oldFood != null) { int n = oldFood.cells.Count; oldFood.Delete(); moved = "; the open-air Food store (" + n + " cells) is deleted -- haulers carry its food in"; }
             return "ok: " + zone.label + " in room " + room.ID + ", " + cells.Count + " cells, " +
-                   (room.Temperature < 5f ? "cold" : "room temperature") + ", filter " + mode;
+                   (room.Temperature < 5f ? "cold" : "room temperature") + ", filter " + mode + moved;
         }
 
         public static string Beds(Map map)

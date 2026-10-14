@@ -310,6 +310,37 @@ namespace RimPLC
 
             if (home.areaManager.Home != null) st["home_cells"] = (double)home.areaManager.Home.TrueCount;
 
+            // owner (run 5, 2026-10-14 02:33-02:36): food rotting in an open zone, bodies hauled into the stores. A dumping zone is
+            // a stockpile labelled dump that takes corpses; any other store that takes corpses is wrong; food on an unroofed
+            // cell deteriorates. Counted straight off the map, not off the sweep. colonists_idle: nobody has a job worth time.
+            bool dumping = false; int corpseStores = 0, foodOut = 0, idle = 0;
+            foreach (Zone_Stockpile z in home.zoneManager.AllZones.OfType<Zone_Stockpile>())
+            {
+                bool takesCorpses = z.settings.filter.Allows(ThingDefOf.Human.race.corpseDef);
+                bool dump = (z.label ?? string.Empty).IndexOf("dump", StringComparison.OrdinalIgnoreCase) >= 0;
+                if (takesCorpses && dump) dumping = true;
+                else if (takesCorpses) corpseStores++;
+            }
+            try
+            {
+                foreach (Thing t in home.listerThings.ThingsInGroup(ThingRequestGroup.FoodSourceNotPlantOrTree))
+                {
+                    if (t is Corpse || t.def.ingestible == null || !t.def.ingestible.HumanEdible || t.def.category != ThingCategory.Item) continue;
+                    if (!home.roofGrid.Roofed(t.Position)) foodOut++;
+                }
+            }
+            catch (Exception) { }
+            foreach (Pawn p in home.mapPawns.FreeColonistsSpawned)
+            {
+                if (p.Downed || p.Drafted) continue;
+                string job = p.CurJobDef != null ? p.CurJobDef.defName : string.Empty;
+                if (job.Length == 0 || job.StartsWith("Wait") || job.Contains("Wander") || job == "Skygaze" || job == "Idle") idle++;
+            }
+            st["dumping_zone"] = dumping;
+            st["corpse_stores"] = (double)corpseStores;
+            st["food_unroofed_stacks"] = (double)foodOut;
+            st["colonists_idle"] = (double)idle;
+
             // buildings: counted per building object (the bridge sweep had to merge touching cells). The def-name
             // tests are carried over from gates.BUILDING_KEYS; the substrings Embrasure, Grav, Throne, Ship_ and the
             // names PodLauncher, TransportPod, Battery, WindTurbine, GeothermalGenerator are UNVERIFIED against 1.6 defs.

@@ -367,6 +367,7 @@ namespace RimroomsAsyncIndustries.Automation
                 case "chop": return SetupTools3.Chop(map, a);
                 case "haul": return SetupTools3.Haul(map, a);
                 case "cancel": return SetupTools5.Cancel(map, a);
+                case "dump": return SetupTools3.Dump(map, a);
                 case "camp_plan": return CampPlan.Report(map, a);
                 case "free": return CampPlan.Free(map, a);
                 case "shelter": return SetupTools3.Shelter(map, a);
@@ -478,7 +479,7 @@ namespace RimroomsAsyncIndustries.Automation
         {
             "arm", "chop", "hunt", "explore", "equip", "shelter", "storage_room", "build_room", "build", "beds", "shelves", "stove",
             "butcher", "freezer", "mine", "wall_swap", "harvest", "tame", "slaughter", "deconstruct", "roof_area", "crops",
-            "tower", "security_room", "hall", "generator", "power", "capture", "bury", "firebreak", "draft", "hold", "haul", "free"
+            "tower", "security_room", "hall", "generator", "power", "capture", "bury", "firebreak", "draft", "hold", "haul", "free", "dump"
         };
 
         private static string Assign(Map map, Dictionary<string, string> a)
@@ -508,8 +509,9 @@ namespace RimroomsAsyncIndustries.Automation
 
         /// <summary>
         /// Sets the stockpile under a cell to a filter the owner's rules ask for -- the filter is UI-only otherwise.
-        ///   {"cmd":"stockpile_filter","x":..,"z":..,"mode":"food|nofood|all","priority":"important|preferred|normal|low"}
-        /// food: every food (meals, raw food, corpses off); nofood: everything except food and corpses.
+        ///   {"cmd":"stockpile_filter","x":..,"z":..,"mode":"food|nofood|all|dump","priority":"important|preferred|normal|low"}
+        /// food: every food (corpses off); nofood: everything except food and corpses; all: everything except corpses;
+        /// dump: corpses and chunks only. Only a dumping zone takes bodies (owner, run 5 2026-10-14).
         /// </summary>
         private static string StockpileFilter(Map map, Dictionary<string, string> a)
         {
@@ -529,8 +531,14 @@ namespace RimroomsAsyncIndustries.Automation
                     f.SetAllow(foods, false);
                     f.SetAllow(corpses, false);
                     break;
+                case "dump":
+                    f.SetDisallowAll();
+                    f.SetAllow(corpses, true);
+                    f.SetAllow(ThingCategoryDefOf.Chunks, true);
+                    break;
                 default:
                     f.SetAllowAll(null);
+                    f.SetAllow(corpses, false);
                     break;
             }
             if (a.TryGetValue("priority", out string pr) && Enum.TryParse(pr, true, out StoragePriority p))

@@ -19341,3 +19341,9 @@ Owner, verbatim: *"kil the cron, and start a new one that monitors Unity , the g
 
 Nothing in the run was fixed except the local audio; everything else is queued in fix order. No raw input was sent, the owner's controls were never touched, nothing on D: deleted.
 
+
+## 2026-10-14 — run 5 closed on the owner's word, 02:49-02:57
+
+**The owner's words, verbatim:** *"okay shut it all down im done for the night leave a good bye message say this was only a test and hope to see you all again"*
+
+Done 02:57: the goodbye posted in Twitch chat -- "That is the stream for tonight, everyone. This was only a test, so thank you for hanging out while we worked out the kinks. I hope to see you all again soon. Good night." (the Twitch chat window was brought up alone for it and closed again). By voice it never rendered: `unity-say` routes every line through the voice-writer model, which had been answering 500 after 90 s all evening, and the shutdown stopped the speaker first -- a raw goodbye route and a speak-before-stop `stop` are queued in `docs/TODO.md`. The 1-minute watcher cron ended; `services.py stop` stopped the stream over the OBS websocket, saved the game as Unity-autosave and closed it, and stopped 27 processes; the Rimrooms package (food corner, dump, corpse-free filters, roof columns, doors) was staged once the game was closed (integrity PASS) and RimPLC (four new sensors, 431-rung book) was staged before it. Nothing on D: deleted; no raw input sent.

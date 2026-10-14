@@ -14,7 +14,9 @@ namespace RimroomsAsyncIndustries.Automation
     ///   {"cmd":"chop","count":"300"}               trees nearest the crew marked to chop until their wood covers count
     ///   {"cmd":"shelter","w":"7","h":"5"}          a wood-walled room (inside w x h) with a door and roof, by the crew
     ///   {"cmd":"stockpile_camp","mode":"food|nofood"}  nofood = the Main store OVER the supply pile at the camp anchor;
-    ///                                              food = a 6x6 beside it. Then {"cmd":"storage_room"} walls and roofs it
+    ///                                              food = a corner carved out of the Main store (same walls, same roof).
+    ///                                              Then {"cmd":"storage_room"} walls and roofs it
+    ///   {"cmd":"dump"}                             a dumping zone outside the rooms; corpses off in every other store
     ///   {"cmd":"camp"} / {"cmd":"camp","x":"..","z":".."}   the camp anchor (CampAnchor.cs): read, set, recompute
     /// </summary>
     internal static class SetupTools3
@@ -172,6 +174,97 @@ namespace RimroomsAsyncIndustries.Automation
                    " colonists; they carry the pile into the store once time runs -- pawn_priorities sets Hauling back later";
         }
 
+        internal static Zone_Stockpile Store(Map map, string label) =>
+            map.zoneManager.AllZones.OfType<Zone_Stockpile>().FirstOrDefault(z => string.Equals(z.label, label, StringComparison.OrdinalIgnoreCase));
+
+        /// <summary>
+        /// The Food store as a corner block of the Main store: those cells leave the Main store and become the Food store
+        /// (filter food, Preferred). With inRoom set, only roofed cells of that room count (stockpile_room moving food under
+        /// a roof). Null when there is no Main store or no corner holds 12 usable cells.
+        /// </summary>
+        internal static string CarveFoodStore(Map map, Room inRoom)
+        {
+            Zone_Stockpile main = Store(map, "Main store");
+            if (main == null || main.cells.Count < 30) return null;
+            CellRect box = CellRect.FromCellList(main.cells);
+            int size = Math.Max(4, Math.Min(6, Math.Min(box.Width, box.Height) / 2));
+            string[] names = { "south-west", "south-east", "north-west", "north-east" };
+            int[] xs = { box.minX, box.maxX - size + 1, box.minX, box.maxX - size + 1 };
+            int[] zs = { box.minZ, box.minZ, box.maxZ - size + 1, box.maxZ - size + 1 };
+            List<IntVec3> best = null; string where = "";
+            for (int i = 0; i < 4; i++)
+            {
+                var block = new CellRect(xs[i], zs[i], size, size);
+                List<IntVec3> cells = main.cells.Where(c => block.Contains(c) && (inRoom == null || (c.GetRoom(map) == inRoom && map.roofGrid.Roofed(c)))).ToList();
+                if (cells.Count > (best?.Count ?? 11)) { best = cells; where = names[i]; }
+            }
+            if (best == null) return null;
+            foreach (IntVec3 c in best) main.RemoveCell(c);
+            var zone = new Zone_Stockpile(StorageSettingsPreset.DefaultStockpile, map.zoneManager);
+            map.zoneManager.RegisterZone(zone);
+            foreach (IntVec3 c in best) zone.AddCell(c);
+            zone.settings.filter.SetDisallowAll();
+            zone.settings.filter.SetAllow(ThingCategoryDefOf.Foods, true);
+            zone.settings.Priority = StoragePriority.Preferred;
+            zone.label = "Food store";
+            CellRect b = CellRect.FromCellList(best);
+            return "ok: Food store carved from the Main store's " + where + " corner, " + best.Count + " cells from " + b.minX + "," + b.minZ +
+                   " -- inside the same walls, under the same roof (the Main store keeps " + main.cells.Count + " cells; neither takes corpses)";
+        }
+
+        /// <summary>
+        /// {"cmd":"dump"} -- a dumping zone (corpses, chunks, rotten junk) on open ground OUTSIDE the camp's rooms, clear of
+        /// every door lane, priority Low. Owner (run 5, 2026-10-14 02:36): "she never set up dumping zone and negative the
+        /// other storages so bodies are being stored in the storages where arent body storage".
+        /// </summary>
+        public static string Dump(Map map, Dictionary<string, string> a)
+        {
+            Zone_Stockpile have = map.zoneManager.AllZones.OfType<Zone_Stockpile>()
+                .FirstOrDefault(z => (z.label ?? "").IndexOf("dump", StringComparison.OrdinalIgnoreCase) >= 0);
+            if (have != null)
+            {
+                int fixedStores = NoCorpsesElsewhere(map, have);
+                return "ok: dumping zone already exists (" + have.label + ", " + have.cells.Count + " cells)" + (fixedStores > 0 ? "; corpses switched off in " + fixedStores + " other store(s)" : "");
+            }
+            IntVec3 home = CrewCentre(map);
+            if (!home.IsValid) return "refused: no free colonist on this map";
+            var comp = map.GetComponent<RimroomsCampComponent>();
+            CellRect storage = comp != null ? comp.storageBox : CellRect.Empty, shelter = comp != null ? comp.shelterBox : CellRect.Empty;
+            CellRect mapRect = new CellRect(0, 0, map.Size.x, map.Size.z);
+            foreach (IntVec3 corner in GenRadial.RadialCellsAround(home, 30f, true))
+            {
+                var block = new CellRect(corner.x, corner.z, 5, 5);
+                if (!block.FullyContainedWithin(mapRect)) continue;
+                // outside both rooms with a margin, and off every door lane the planner reserved
+                if (storage.Width > 0 && block.ExpandedBy(3).Overlaps(storage)) continue;
+                if (shelter.Width > 0 && block.ExpandedBy(3).Overlaps(shelter)) continue;
+                if (comp != null && block.ExpandedBy(1).Cells.Any(c => comp.lanes.Contains(c))) continue;
+                List<IntVec3> cells = block.Cells.Where(c => Open(map, c) && map.zoneManager.ZoneAt(c) == null && !map.roofGrid.Roofed(c)).ToList();
+                if (cells.Count < 20) continue;
+                var zone = new Zone_Stockpile(StorageSettingsPreset.DumpingStockpile, map.zoneManager);
+                map.zoneManager.RegisterZone(zone);
+                foreach (IntVec3 c in cells) zone.AddCell(c);
+                zone.settings.Priority = StoragePriority.Low;
+                zone.label = "Dumping zone";
+                int fixedStores = NoCorpsesElsewhere(map, zone);
+                return "ok: Dumping zone, " + cells.Count + " cells from " + corner.x + "," + corner.z + " on open ground outside the camp (corpses and chunks, priority Low)" +
+                       (fixedStores > 0 ? "; corpses switched off in " + fixedStores + " other store(s)" : "") + " -- bodies go there until graves or a crematorium";
+            }
+            return "refused: no open 5x5 within 30 cells of the camp that is outside both rooms and off the door lanes";
+        }
+
+        /// <summary>Every stockpile but the dump stops taking bodies, whoever made it. Returns how many were changed.</summary>
+        private static int NoCorpsesElsewhere(Map map, Zone_Stockpile dump)
+        {
+            int n = 0;
+            foreach (Zone_Stockpile z in map.zoneManager.AllZones.OfType<Zone_Stockpile>())
+            {
+                if (z == dump || !z.settings.filter.Allows(ThingDefOf.Human.race.corpseDef)) continue;
+                z.settings.filter.SetAllow(ThingCategoryDefOf.Corpses, false); n++;
+            }
+            return n;
+        }
+
         public static string StockpileCamp(Map map, Dictionary<string, string> a)
         {
             a.TryGetValue("mode", out string mode);
@@ -181,6 +274,15 @@ namespace RimroomsAsyncIndustries.Automation
                 return "ok: " + label + " already exists";
             IntVec3 home = CrewCentre(map);
             if (!home.IsValid) return "refused: no free colonist on this map";
+            if (mode == "food")
+            {
+                // owner (run 5, 2026-10-14 02:33): "she had non duping zone stprage zones unroofed outside so food is deterorating" --
+                // the food store was a 6x6 in the open beside the camp and never came under the storage room's roof. It is now a
+                // corner carved out of the Main store: inside the walls storage_room plans, under the same roof, from the first order.
+                if (Store(map, "Main store") == null) StockpileCamp(map, new Dictionary<string, string> { { "mode", "nofood" } });
+                string carved = CarveFoodStore(map, null);
+                if (carved != null) return carved;
+            }
             if (mode != "food")
             {
                 // "zone them in a storage zone": the main store is the supply pile itself, where it lies at the anchor
