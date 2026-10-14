@@ -127,10 +127,11 @@ namespace RimroomsAsyncIndustries.Automation
                 foreach (IntVec3 c in ring.Concat(inside)) map.areaManager.Home[c] = true;
                 if (camp != null) camp.shelterBox = box;
                 foreach (IntVec3 c in inside) map.areaManager.BuildRoof[c] = true;
+                int columns = CampPlan.Supports(map, CellRect.FromCellList(inside), wood);   // a roof holds only 6 cells from a wall
                 int cost = (ring.Count - doorCells.Count) * wall.CostStuffCount + doorCells.Count * door.CostStuffCount;
                 return "ok: shelter planned, inside " + w + "x" + h + " from " + (corner.x + 1) + "," + (corner.z + 1) +
                        ", " + doorCells.Count + " door(s) at " + string.Join(" and ", doorCells.Select(dc => dc.x + "," + dc.z)) +
-                       " (lanes outside kept clear), roof marked; needs about " + cost +
+                       " (lanes outside kept clear), roof marked" + (columns > 0 ? " with " + columns + " support column(s)" : "") + "; needs about " + cost +
                        " wood (chop if short) and Construction work on. When it stands: beds, then stove";
             }
             return asked.InBounds(map)

@@ -143,6 +143,35 @@ namespace RimroomsAsyncIndustries.Automation
             return doors;
         }
 
+        /// <summary>
+        /// Support columns for a roof: RimWorld holds a roof only within RoofMaxSupportDistance (6) cells of a wall or column,
+        /// so an inside wider or taller than 12 gets a grid of columns at 12-cell spacing, 6 in from the walls (owner, 2026-10-14:
+        /// "room is too big to support a roof without walls as columns in the middle and for big rooms need rows and columns of
+        /// columns"). Returns how many were planned.
+        /// </summary>
+        public static int Supports(Map map, CellRect inside, ThingDef stuff)
+        {
+            const int reach = 6;
+            if (inside.Width <= 2 * reach && inside.Height <= 2 * reach) return 0;
+            ThingDef column = DefDatabase<ThingDef>.GetNamedSilentFail("Column") ?? ThingDefOf.Wall;
+            var xs = new List<int>(); var zs = new List<int>();
+            if (inside.Width > 2 * reach) for (int x = inside.minX + reach; x <= inside.maxX - reach + (2 * reach - 1); x += 2 * reach) { if (x > inside.maxX - 1) break; xs.Add(x); }
+            else xs.Add(inside.CenterCell.x);
+            if (inside.Height > 2 * reach) for (int z = inside.minZ + reach; z <= inside.maxZ - reach + (2 * reach - 1); z += 2 * reach) { if (z > inside.maxZ - 1) break; zs.Add(z); }
+            else zs.Add(inside.CenterCell.z);
+            int placed = 0;
+            foreach (int x in xs)
+                foreach (int z in zs)
+                {
+                    IntVec3 c = new IntVec3(x, 0, z);
+                    if (!c.InBounds(map) || c.GetEdifice(map) != null || c.GetThingList(map).Any(t => t.def.IsBlueprint || t.def.IsFrame)) continue;
+                    if (!GenConstruct.CanPlaceBlueprintAt(column, c, Rot4.North, map, false, null, null, stuff).Accepted) continue;
+                    GenConstruct.PlaceBlueprintForBuild(column, c, map, Rot4.North, Faction.OfPlayer, stuff);
+                    placed++;
+                }
+            return placed;
+        }
+
         /// <summary>The two ring cells beside a door along its wall: placed only once the door stands.</summary>
         public static List<IntVec3> Flanks(CellRect ring, IntVec3 door)
         {
