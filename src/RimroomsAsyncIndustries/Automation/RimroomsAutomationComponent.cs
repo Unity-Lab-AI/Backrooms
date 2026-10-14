@@ -311,6 +311,7 @@ namespace RimroomsAsyncIndustries.Automation
                 case "bill_count": return SetupTools5.BillCount(map, a);
                 case "zone_create": return SetupTools5.ZoneCreate(map, a);
                 case "roof_area": return SetupTools5.RoofArea(map, a);
+                case "mine": return SetupTools5.Mine(map, a);
                 case "firebreak": return SetupTools5.Firebreak(map, a);
                 case "pen": return SetupTools5.Pen(map, a);
                 case "bury": return SetupTools5.Bury(map, a);

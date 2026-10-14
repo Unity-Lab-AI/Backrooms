@@ -78,14 +78,20 @@ namespace RimroomsAsyncIndustries.Automation
                 if (b.Faction == Faction.OfPlayer && b.IsForbidden(Faction.OfPlayer)) b.SetForbidden(false, false);
                 targets.Add(b.Position);
             }
-            // the fog frontier: fogged, walkable cells right next to seen ground, sampled so the list stays short
-            int step = 0;
+            // the fog frontier: fogged, walkable cells right next to seen ground. Every one counts -- the old "every 6th
+            // cell" sampling dropped small frontiers entirely (test run 2026-10-13: explore reported nothing left while
+            // fogged rooms sat beside explored floor), so a frontier of five cells never became a target. The list is
+            // kept short by distance instead: the 400 nearest the camp anchor.
+            IntVec3 campAt = CampAnchor.Get(map);
+            var frontier = new List<IntVec3>();
             foreach (IntVec3 c in map.AllCells)
             {
                 if (!fog.IsFogged(c) || !c.Walkable(map)) continue;
                 if (!GenAdj.CardinalDirections.Any(d => { IntVec3 n = c + d; return n.InBounds(map) && !fog.IsFogged(n) && n.Walkable(map); })) continue;
-                if (++step % 6 == 0) targets.Add(c);
+                frontier.Add(c);
             }
+            if (campAt.IsValid) frontier = frontier.OrderBy(c => c.DistanceToSquared(campAt)).ToList();
+            targets.AddRange(frontier.Take(400));
             targets = targets.Distinct().ToList();
             if (targets.Count == 0)
             {

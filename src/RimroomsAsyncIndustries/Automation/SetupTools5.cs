@@ -15,6 +15,7 @@ namespace RimroomsAsyncIndustries.Automation
     ///   {"cmd":"bill_count","x":"..","z":"..","recipe":"CookMealSimple","count":"50"}   raise an existing bill's target
     ///   {"cmd":"zone_create","kind":"stockpile|growing","x":"..","z":"..","w":"..","h":"..","priority":"Preferred","plant":"Plant_Corn"}
     ///   {"cmd":"roof_area","x":"..","z":"..","w":"..","h":"..","mode":"roof|noroof|clear"}
+    ///   {"cmd":"mine","x":"..","z":"..","w":"..","h":".."}  natural rock designated to mine (cell or rectangle)
     ///   {"cmd":"firebreak","w":"3"}                     cut plants in a ring that wide around the Home area
     ///   {"cmd":"pen","x":"..","z":"..","w":"..","h":".."}  fence ring + fence gate + animal pen marker
     ///   {"cmd":"bury"}                                  a grave blueprint near the camp edge (corpses get hauled in)
@@ -124,13 +125,48 @@ namespace RimroomsAsyncIndustries.Automation
             a.TryGetValue("mode", out string mode);
             mode = mode ?? "roof";
             CellRect r = Rect(map, a);
+            int set = 0, unsupported = 0;
             foreach (IntVec3 c in r)
             {
+                if (mode == "roof")
+                {
+                    // Core only holds a roof within 6 cells of a wall or rock (test run 2026-10-13: a roof zone was drawn
+                    // over open ground with no wall under it and called "a proper room"); mark only what can stand.
+                    bool support = GenRadial.RadialCellsAround(c, 6f, true).Any(o => o.InBounds(map) && o.GetEdifice(map) != null &&
+                        (o.GetEdifice(map).def.holdsRoof || (o.GetEdifice(map).def.building != null && o.GetEdifice(map).def.building.isNaturalRock)));
+                    if (!support) { unsupported++; continue; }
+                }
                 map.areaManager.BuildRoof[c] = mode == "roof";
                 map.areaManager.NoRoof[c] = mode == "noroof";
+                set++;
             }
+            if (mode == "roof" && set == 0)
+                return "refused: no cell of that " + r.Width + "x" + r.Height + " has a wall or rock within 6 cells to hold a roof -- walls first (build_room / storage_room / shelter), then the roof";
+            return "ok: " + mode + " over " + set + " cells of " + r.Width + "x" + r.Height + " from " + r.minX + "," + r.minZ +
+                   (unsupported > 0 ? " (" + unsupported + " cells skipped: nothing within 6 cells to hold a roof)" : "");
+        }
 
-            return "ok: " + mode + " over " + r.Width + "x" + r.Height + " from " + r.minX + "," + r.minZ;
+        /// <summary>
+        ///   {"cmd":"mine","x":"..","z":".."}  or with "w","h"   natural rock designated to mine (the test run had no way to
+        ///   dig a cell: she tried deconstruct on raw rock four times). Only rock and ore; walls are deconstruct, not mine.
+        /// </summary>
+        public static string Mine(Map map, Dictionary<string, string> a)
+        {
+            CellRect r = Rect(map, a);
+            int marked = 0, already = 0, notRock = 0;
+            foreach (IntVec3 c in r)
+            {
+                if (map.fogGrid.IsFogged(c)) { notRock++; continue; }
+                Building ed = c.GetEdifice(map);
+                bool rock = ed != null && (ed.def.mineable || (ed.def.building != null && ed.def.building.isNaturalRock));
+                if (!rock) { notRock++; continue; }
+                if (map.designationManager.DesignationAt(c, DesignationDefOf.Mine) != null) { already++; continue; }
+                map.designationManager.AddDesignation(new Designation(c, DesignationDefOf.Mine));
+                marked++;
+            }
+            if (marked == 0 && already == 0) return "refused: no natural rock in that " + r.Width + "x" + r.Height + " (a built wall is deconstruct; open ground needs nothing)";
+            return "ok: " + marked + " rock cell(s) marked to mine" + (already > 0 ? ", " + already + " already marked" : "") +
+                   (notRock > 0 ? ", " + notRock + " skipped (not rock)" : "") + " -- someone needs Mining work on";
         }
 
         public static string Firebreak(Map map, Dictionary<string, string> a)

@@ -95,8 +95,9 @@ a mouse on your screen. Nothing uses it unless something writes to it.
 - Commands: `RimroomsAutomation/inbox.jsonl` in RimWorld's configuration folder, one JSON object per
   line. Results: `outbox.jsonl` beside it, one line per command, with the command's `id` echoed back.
 - Each command is something that otherwise needs a click: a zone's crop, a bed's owner, a bill, work
-  priorities, an allowed area; and the setup steps of a colony -- rooms, exploring, stockpiles,
-  shelves, stove, butcher table, freezer, crops, hunting; defence (arming, drafting, holding at
+  priorities, an allowed area; and the setup steps of a colony -- the camp anchor (where the
+  supplies fell, saved with the map) and a storage room around them, rooms, exploring, mining,
+  stockpiles, shelves, stove, butcher table, freezer, crops, hunting; defence (arming, drafting, holding at
   cover, corner towers); building (walls, halls, roofs, conduit); power (a generator with a battery);
   research order; prisoners; trading by comms console; guest bed fees. Every reply says what was
   done or exactly why it was refused.
