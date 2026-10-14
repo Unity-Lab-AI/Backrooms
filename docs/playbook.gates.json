@@ -7758,7 +7758,7 @@
     "game_pause_game pause true -- before any other order; pause is your friend",
     "read game_state once; close any operations menu (game_close_window) so pawn options show",
     "pawns selected but no pawn options/draft show: game_close_window, then select ONE pawn (click once) and read game_get_ui_layout",
-    "time stays stopped until the camp is LAID OUT (storage_room, shelter and stove ordered -> mark layout_set, confirmed on the mod's three oks) and the pawns are set; setup-6-run is the rung that starts time; orders placed while paused are queued and run then",
+    "time stays stopped until the camp is LAID OUT (storage_room and shelter ordered -> mark layout_set, confirmed on the mod's three oks) and the pawns are set; setup-6-run is the rung that starts time; orders placed while paused are queued and run then",
     "rock inside the pile's box being mined out for the layout (designations_mine > 0): time runs until it is gone -- the one exception besides a raid"
    ],
    "never": [
@@ -8227,7 +8227,8 @@
     "fridge (roofed food store), workshop (crafting spot / butcher), 1x2 table + stool, torch lamp, a campfire in the middle -- all inside or touching the camp (game_set cmd build def Campfire x z, game_set cmd build def TorchLamp x z)",
     "store everything under a roof except steel and stone blocks",
     "water/marsh inside the camp perimeter -> game_set cmd terraform mode bridge x z w h before building on it (Core has no mud/water-to-soil; mud: move the build or floor it)",
-    "unpause to build; when beds >= colonists and store_roofed_fraction >= 0.75: ladder_set mark shelter_set true"
+    "unpause to build; when beds >= colonists and store_roofed_fraction >= 0.75: ladder_set mark shelter_set true",
+    "the shelter ok with the storage room already ok: ladder_set mark layout_set true (confirmed on both replies) -- the camp is laid out, setup-6-run starts time"
    ],
    "never": [
     "build in steel",
@@ -8246,21 +8247,21 @@
    "latch": false,
    "when": {
     "colony_exists": true,
-    "mark_storage_room_set": true,
-    "mark_shelter_set": true,
+    "mark_layout_set": true,
+    "store_roofed_fraction": ">0",
     "mark_stove_set": false
    },
    "then": [
-    "game_set cmd stove -- a fueled stove on a wall of the roofed room nearest the food store, never in the doorway (a PLANNED room is fine: the stove is planned with it)",
-    "'kitchen room was planned' / 'walls are still planned': that is the plan standing, not a refusal -- the camp is now laid out: ladder_set mark layout_set true (confirmed on the storage_room, shelter and stove oks)",
-    "after setup-6-run, when stoves >= 1: game_set cmd kitchen (simple meals until {MEAL_BILL_TARGET}, Do until you have X, never Do forever)",
+    "game_set cmd stove -- a fueled stove on a wall of the roofed room nearest the food store, never in the doorway (a room must STAND: the command refuses while walls are planned)",
+    "'no finished roofed room yet': wait for the walls (time runs after setup-6-run); do not call stove again until a roofed room stands",
+    "when stoves >= 1: game_set cmd kitchen (simple meals until {MEAL_BILL_TARGET}, Do until you have X, never Do forever)",
     "stoves >= 1 and the bill is placed: ladder_set mark stove_set true"
    ],
    "never": [
     "place a second stove",
     "a Do-forever bill"
    ],
-   "why": "owner 2026-10-13 (run 5): \"wtf!!!1 she is just letting the game run does she not know to never let the game run just blindly pause is her friend should should not unpause until inistal setup and zoneing is done and buildings are layed out\" / \"one day just fast forwards to day two and she hasnt done a fucking thing this run throuhg is wasted restart it all\" / \"she should have beend buildt by the end of day one\" / owner 2026-10-13: \"and wtf she never built a kitchen and is running around killing animals she cat butcher because she never built a camp\" / owner: \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner: \"and set amounts higher and higher as your base grows\" -- walkthrough: walkthrough-opening-and-camp.md stove bill simple meals, do until ~6-20 [survival] B,Q"
+   "why": "run 5 (2026-10-14 01:21): stove refused until a room stands while the layout gate waited on the stove's ok -- a deadlock; the layout is the two rooms laid out / owner 2026-10-13 (run 5): \"wtf!!!1 she is just letting the game run does she not know to never let the game run just blindly pause is her friend should should not unpause until inistal setup and zoneing is done and buildings are layed out\" / \"one day just fast forwards to day two and she hasnt done a fucking thing this run throuhg is wasted restart it all\" / \"she should have beend buildt by the end of day one\" / owner 2026-10-13: \"and wtf she never built a kitchen and is running around killing animals she cat butcher because she never built a camp\" / owner: \"the whole logic gate chain like a plc i told you to have it use and edit on the fly\" / owner: \"and set amounts higher and higher as your base grows\" -- walkthrough: walkthrough-opening-and-camp.md stove bill simple meals, do until ~6-20 [survival] B,Q"
   },
   {
    "id": "setup-6-run",
@@ -11195,7 +11196,7 @@
     "mark_layout_set": false
    },
    "then": [
-    "the camp is LATE: the owner's standard is a camp built by the end of day one -- game_pause_game pause true, then lay it out now in order: game_set cmd camp, stockpile_camp, storage_room, shelter, stove",
+    "the camp is LATE: the owner's standard is a camp built by the end of day one -- game_pause_game pause true, then lay it out now in order: game_set cmd camp, stockpile_camp, storage_room, shelter",
     "reply_owner one line: what stands, what is planned, what is missing -- no excuses",
     "say it on stream plainly: the camp is late and this is the plan"
    ],
