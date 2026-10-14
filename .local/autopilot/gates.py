@@ -444,6 +444,38 @@ def _foreground():
         return False
 
 
+def _foreground_process():
+    """The exe name (lower case, no path) of the process that owns the foreground window; "" when it cannot be read.
+    GetForegroundWindow -> GetWindowThreadProcessId -> QueryFullProcessImageNameW (RimWorld runs as RimWorldWin64.exe)."""
+    try:
+        import ctypes
+        from ctypes import wintypes
+        u, k = ctypes.WinDLL("user32"), ctypes.WinDLL("kernel32")
+        u.GetForegroundWindow.restype = ctypes.c_void_p
+        u.GetWindowThreadProcessId.argtypes = [ctypes.c_void_p, ctypes.POINTER(wintypes.DWORD)]
+        k.OpenProcess.restype = ctypes.c_void_p
+        k.QueryFullProcessImageNameW.argtypes = [ctypes.c_void_p, wintypes.DWORD, ctypes.c_wchar_p, ctypes.POINTER(wintypes.DWORD)]
+        k.CloseHandle.argtypes = [ctypes.c_void_p]
+        h = u.GetForegroundWindow()
+        if not h:
+            return ""
+        pid = wintypes.DWORD(0); u.GetWindowThreadProcessId(h, ctypes.byref(pid))
+        if not pid.value:
+            return ""
+        p = k.OpenProcess(0x1000, False, pid.value)          # PROCESS_QUERY_LIMITED_INFORMATION
+        if not p:
+            return ""
+        try:
+            buf = ctypes.create_unicode_buffer(1024); n = wintypes.DWORD(len(buf))
+            if not k.QueryFullProcessImageNameW(p, 0, buf, ctypes.byref(n)):
+                return ""
+            return os.path.basename(buf.value).lower()
+        finally:
+            k.CloseHandle(p)
+    except Exception:
+        return ""
+
+
 def tags(book, st, lf=None):
     """The PLC tag table: constants stay put, variables are recomputed from the empire's current size.
 
@@ -937,11 +969,16 @@ def host_inputs():
                 out["voice_playing"] = True
     except (OSError, ImportError):
         pass
-    try:   # the owner is at the controls: keyboard/mouse used in the last 60 s (the bridge never sends real input)
+    try:   # the owner is at the controls: keyboard/mouse used in the last 60 s WHILE RimWorld is the foreground window.
+           # GetLastInputInfo is PC-wide, so without the foreground test the owner typing to the lead in a terminal
+           # read as him playing and held her idle (2026-10-13 ledger 18:54/19:08/19:11/19:12/19:42). The bridge never
+           # sends real input, so real input on the game window is his. A measured false is pushed every turn: the
+           # owner-at-controls rung is not latched and drops by itself on the first push after his hands leave the game.
         class LII(ctypes.Structure): _fields_ = [("cbSize", ctypes.c_uint), ("dwTime", ctypes.c_uint)]
         li = LII(); li.cbSize = ctypes.sizeof(LII)
         if ctypes.windll.user32.GetLastInputInfo(ctypes.byref(li)):
-            out["owner_input_active"] = (ctypes.windll.kernel32.GetTickCount() - li.dwTime) / 1000.0 < 60
+            age_s = ((ctypes.windll.kernel32.GetTickCount() - li.dwTime) & 0xFFFFFFFF) / 1000.0
+            out["owner_input_active"] = age_s < 60 and _foreground_process().startswith("rimworld")
     except (AttributeError, OSError):
         pass
     try:

@@ -78,14 +78,20 @@ namespace RimroomsAsyncIndustries.Automation
                 if (b.Faction == Faction.OfPlayer && b.IsForbidden(Faction.OfPlayer)) b.SetForbidden(false, false);
                 targets.Add(b.Position);
             }
-            // the fog frontier: fogged, walkable cells right next to seen ground, sampled so the list stays short
-            int step = 0;
+            // the fog frontier: fogged, walkable cells right next to seen ground. Every one counts -- the old "every 6th
+            // cell" sampling dropped small frontiers entirely (test run 2026-10-13: explore reported nothing left while
+            // fogged rooms sat beside explored floor), so a frontier of five cells never became a target. The list is
+            // kept short by distance instead: the 400 nearest the camp anchor.
+            IntVec3 campAt = CampAnchor.Get(map);
+            var frontier = new List<IntVec3>();
             foreach (IntVec3 c in map.AllCells)
             {
                 if (!fog.IsFogged(c) || !c.Walkable(map)) continue;
                 if (!GenAdj.CardinalDirections.Any(d => { IntVec3 n = c + d; return n.InBounds(map) && !fog.IsFogged(n) && n.Walkable(map); })) continue;
-                if (++step % 6 == 0) targets.Add(c);
+                frontier.Add(c);
             }
+            if (campAt.IsValid) frontier = frontier.OrderBy(c => c.DistanceToSquared(campAt)).ToList();
+            targets.AddRange(frontier.Take(400));
             targets = targets.Distinct().ToList();
             if (targets.Count == 0)
             {
@@ -267,24 +273,44 @@ namespace RimroomsAsyncIndustries.Automation
             }
 
             var placed = new List<string>();
-            foreach (Room r in IndoorRooms(map).Where(r => r.OpenRoofCount == 0 && FoggedShare(map, r) < 0.2f)
-                                               .OrderByDescending(r => r.ContainedBeds.Count()))
+            List<Room> rooms = IndoorRooms(map).Where(r => r.OpenRoofCount == 0 && FoggedShare(map, r) < 0.2f)
+                                               .OrderByDescending(r => r.ContainedBeds.Count()).ToList();
+            foreach (Room r in rooms)
             {
-                foreach (IntVec3 c in r.Cells.Where(x => FreeFloor(map, x)))
+                // Owner, 2026-10-13: "she just fills the room with beds no ryhme or reason and blocks the doors". Beds go
+                // against a wall, never on a cell next to a door, never on the row the door opens onto, head to the wall.
+                HashSet<IntVec3> doorCells = new HashSet<IntVec3>(r.BorderCells.Where(c => c.InBounds(map) && c.GetEdifice(map) is Building_Door));
+                bool NearDoor(IntVec3 c) => doorCells.Any(d => (Math.Abs(d.x - c.x) <= 1 && Math.Abs(d.z - c.z) <= 2) || (Math.Abs(d.z - c.z) <= 1 && Math.Abs(d.x - c.x) <= 2));
+                bool OnWall(IntVec3 c) => GenAdj.CardinalDirections.Any(d => { IntVec3 n = c + d; return n.InBounds(map) && n.GetEdifice(map) != null && n.GetEdifice(map).def.passability == Traversability.Impassable; });
+                foreach (IntVec3 c in r.Cells.Where(x => FreeFloor(map, x) && !NearDoor(x) && OnWall(x)).OrderBy(x => doorCells.Count == 0 ? 0 : -doorCells.Min(d => d.DistanceToSquared(x))))
                 {
                     if (placed.Count >= needed) break;
-                    Rot4 rot = Rot4.South;
-                    if (GenConstruct.CanPlaceBlueprintAt(bed, c, rot, map, false, null, null, stuff).Accepted)
-                    {
-                        GenConstruct.PlaceBlueprintForBuild(bed, c, map, rot, Faction.OfPlayer, stuff);
-                        placed.Add(c.x + "," + c.z);
-                    }
+                    // head against the wall the cell touches
+                    IntVec3 wallDir = GenAdj.CardinalDirections.First(d => { IntVec3 n = c + d; return n.InBounds(map) && n.GetEdifice(map) != null && n.GetEdifice(map).def.passability == Traversability.Impassable; });
+                    Rot4 rot = Rot4.FromIntVec3(wallDir);
+                    if (!GenConstruct.CanPlaceBlueprintAt(bed, c, rot, map, false, null, null, stuff).Accepted) continue;
+                    // the foot cell must stay free and not sit next to another bed's foot (one-cell lanes between beds)
+                    IntVec3 foot = c - wallDir;
+                    if (!FreeFloor(map, foot) || NearDoor(foot)) continue;
+                    GenConstruct.PlaceBlueprintForBuild(bed, c, map, rot, Faction.OfPlayer, stuff);
+                    placed.Add(c.x + "," + c.z);
                 }
                 if (placed.Count >= needed) break;
             }
-            return placed.Count == 0
-                ? "refused: no free roofed, explored floor fits a bed -- explore first"
-                : "ok: bed blueprints at " + string.Join(" ", placed) + " for " + string.Join(", ", without.Select(p => p.LabelShort));
+            if (placed.Count > 0)
+                return "ok: bed blueprints at " + string.Join(" ", placed) + " for " + string.Join(", ", without.Select(p => p.LabelShort)) +
+                       " (against the walls, clear of the door)";
+            // No usable room. Do not send her exploring: a crash site has no rooms until one is built. If a shelter is
+            // already planned or under construction, say so; otherwise plan one at the camp anchor now.
+            Thing pending = map.listerThings.AllThings.FirstOrDefault(t => t.Faction == Faction.OfPlayer && (t.def.IsBlueprint || t.def.IsFrame) &&
+                                                                          t.def.entityDefToBuild == ThingDefOf.Wall);
+            if (pending != null)
+                return "refused: no finished roofed room yet -- walls are still planned or being built near " + pending.Position.x + "," + pending.Position.z +
+                       " (keep Construction on, chop wood if short); beds once the room stands. Do not call beds again until then";
+            string shelter = SetupTools3.Shelter(map, new Dictionary<string, string>());
+            return shelter.StartsWith("ok")
+                ? "refused for now: no roofed room, so a shelter was planned at the camp -- " + shelter.Substring(4) + "; beds once it stands"
+                : "refused: no roofed room and no shelter could be planned (" + shelter + ") -- camp x,z elsewhere or build_room by hand";
         }
     }
 }

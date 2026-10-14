@@ -63,6 +63,23 @@ def _default_model():
 DEFAULT_MODEL = _default_model()
 STATE = "state.json"
 OWNER_ORDERS = os.path.join(HERE, "owner-orders.txt")     # written by the owner by hand; the autopilot only reads it
+WORLD_COUNT = os.path.join(ROOT, ".local", "qa", "_earth_seed.count")   # keep-playing: +1 for every new world it starts
+
+# Test run 2026-10-13, 19:15: the pad survived from the previous colony -- "[x] explore", "[x] pawn_priorities",
+# "[x] assign" at her first pad write of a colony that had run none of them, plus invented facts ("the bedroom at
+# 173,164 is roofed but full of limestone", "camp about 109,80"). A new colony starts from THIS pad, with no [x] on it;
+# a [x] is accepted by the note tool only when the mod's own ok: reply for that item is on record (tools.t_note).
+PAD_TEMPLATE = """FRESH COLONY -- nothing is done yet. Tick an item [x] ONLY after the mod answered ok: for it (the note tool checks the mod's outbox and refuses a [x] it cannot find). Write what the mod said, never what you assume.
+- [ ] unforbid every starting item (game_set cmd unforbid)
+- [ ] pawn_priorities for every pawn, one call each (1s Firefighter through Cooking, the rest customised, no blanks)
+- [ ] assign: food Fine, medicine Best, hostility Attack (game_set cmd assign)
+- [ ] explore with time running until it says nothing left (game_set cmd explore) -- open ground with no rooms: camp beside the crew instead
+- [ ] stores: stockpile_camp food, then nofood (stockpile_room only when rooms lists a real room with free floor)
+- [ ] shelter beside the crew (game_set cmd shelter w 7 h 7), then beds
+- [ ] shelves next to the food store
+- [ ] one stove and its meal bill (game_set cmd stove, then add_bill CookMealSimple)
+- [ ] unpause; crops, hunt, outside, then the empire
+"""
 
 
 def load_state():
@@ -75,6 +92,101 @@ def load_state():
 def save_state(st):
     st["memory"] = st["memory"][-20:]
     guards.scratch_write(STATE, json.dumps(st, indent=1))
+
+
+def _world_count():
+    try:
+        return int(open(WORLD_COUNT, encoding="utf-8").read().strip() or 0)
+    except (OSError, ValueError):
+        return 0
+
+
+def colony_epoch_check(st, game_info):
+    """A NEW COLONY: the scratch pad, the refusal memory, the carried tool results and the recent-memory lines all
+    belong to the colony that is gone. Detected from what the harness already knows, never from her say-so:
+      * keep-playing's world counter (.local/qa/_earth_seed.count) went up -- it starts a new world only on a
+        new-colony request, and the 'game is back -- conversation reset' line follows when the map is up;
+      * the game clock went backwards to day one (ticksGame fell by half a day or more and is under two days).
+    Returns True when a new colony was detected (the caller resets the conversation). The epoch -- when this colony
+    started, as a byte offset into the mod's outbox -- goes to scratch/colony-epoch.json for the note tool and
+    ladder_set (tools.py): only mod replies after it count as 'this colony'."""
+    tk = (game_info or {}).get("ticksGame") if isinstance(game_info, dict) else None
+    tk = tk if isinstance(tk, (int, float)) and not isinstance(tk, bool) else None
+    wn = _world_count()
+    sig = st.get("colony_sig")
+    if not isinstance(sig, dict):
+        # first run after this change (or a lost state file): adopt the colony on the map, do not wipe anything;
+        # the epoch is the mod's own day_one reply for this colony (keep-playing sends one per new colony), so the
+        # previous colony's ok: replies do not count for this one
+        st["colony_sig"] = {"world_n": wn, "ticks": tk}
+        if not os.path.exists(guards.scratch_path(tools.COLONY_EPOCH)):
+            off = tools.write_colony_epoch(offset=tools.last_day_one_offset())
+            log("colony epoch adopted at outbox byte %d (the last day_one reply)" % off)
+        return False
+    fresh = False
+    why = ""
+    if wn != sig.get("world_n"):
+        fresh, why = True, "world counter %s -> %s" % (sig.get("world_n"), wn)
+    elif tk is not None and isinstance(sig.get("ticks"), (int, float)) and tk < sig["ticks"] - 30000 and tk < 120000:
+        fresh, why = True, "game clock back to day one (ticks %s -> %s)" % (sig["ticks"], tk)
+    if tk is not None:
+        sig["ticks"] = tk
+    sig["world_n"] = wn
+    if not fresh:
+        return False
+    log("new colony detected (%s): scratch pad reset to the fresh template, refusal memory + carried results + "
+        "recent-memory lines cleared, setup marks scrubbed, conversation reset" % why)
+    try:
+        guards.scratch_write("pad.md", PAD_TEMPLATE)
+    except Exception as e:
+        log("pad reset failed:", str(e)[:120])
+    st["refused"] = []
+    st["last_results"] = []
+    st["memory"] = []
+    tools.write_colony_epoch()                 # from here on, only replies after this byte count for this colony
+    try:
+        tools.Toolbox.scrub_setup_marks()      # her say-so marks from the old colony never gate the new one
+    except Exception as e:
+        log("mark scrub failed:", str(e)[:120])
+    return True
+
+
+def refusal_reason(result):
+    """The reason a tool result is a refusal, or None. The mod answers inside automate's output ('beds -> refused: no
+    free floor'), the guards answer 'REFUSED BY GUARD: ...', play_slices 'not run: ...', the stream filter 'BLOCKED',
+    the dispatcher 'error in' / 'bad arguments' / 'unknown tool', the repeat counter 'REFUSED: ...'."""
+    s = str(result or "")
+    for line in s.splitlines():
+        t = line.strip()
+        if not t:
+            continue
+        m = re.search(r"->\s*refused:?\s*(.*)", t, flags=re.I)
+        if m:
+            return (m.group(1) or "refused").strip()[:160]
+        m = re.match(r"(?:REFUSED(?: BY GUARD)?|refused|not run|BLOCKED[^:]*|error in [^:]+|bad arguments for [^:]+|unknown tool)\s*:?\s*(.*)", t)
+        if m:
+            return (m.group(1) or t).strip()[:160]
+    return None
+
+
+def remember_result(st, name, args, result):
+    """Working memory that survives a conversation reset (test run 2026-10-13, 19:13: 'nothing learned survives a
+    reset'): the last 5 tool results, and the last 10 refusals with their reasons -- the brief carries both, so a
+    reset cannot restart a refused loop."""
+    short_args = json.dumps(args, ensure_ascii=False, sort_keys=True)[:120]
+    st["last_results"] = (st.get("last_results") or [])[-4:] + [
+        {"tool": name, "args": short_args, "result": str(result)[:300].replace("\n", " | ")}]
+    why = refusal_reason(result)
+    if why is None:
+        return
+    what = name + (" " + str(args.get("cmd")) if isinstance(args, dict) and args.get("cmd") else "")
+    refused = st.get("refused") or []
+    if refused and refused[-1].get("what") == what and refused[-1].get("why") == why:
+        refused[-1]["times"] = refused[-1].get("times", 1) + 1
+        refused[-1]["ts"] = time.strftime("%H:%M")
+    else:
+        refused = refused[-9:] + [{"ts": time.strftime("%H:%M"), "what": what, "args": short_args, "why": why, "times": 1}]
+    st["refused"] = refused
 
 
 def ollama_chat(model, messages, tool_specs, opts):
@@ -143,7 +255,7 @@ def gather_owner(st):
     return rows
 
 
-def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=()):
+def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=(), carry=False):
     # the unchanging parts go FIRST so Ollama can reuse them from the last turn (prompt cache); a turn number at
     # the top changed every turn and forced the CPU to re-read the whole brief, orders included, every time
     parts = []
@@ -266,10 +378,27 @@ def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=()):
     try:
         pad = open(guards.scratch_path("pad.md"), encoding="utf-8").read()[:2500]
         parts.append("YOUR SCRATCH PAD (scratch/pad.md, your plan between turns). Do the first unticked item, then "
-                     "rewrite the whole pad with the note tool (name pad.md, append false), ticking it [x] and adding "
-                     "what you learned:" + chr(10) + pad)
+                     "rewrite the whole pad with the note tool (name pad.md, append false), ticking it [x] ONLY when "
+                     "the mod answered ok: for it (the note tool refuses a [x] with no ok: on record), and adding "
+                     "what the mod actually said:" + chr(10) + pad)
     except Exception:
         pass
+    # refusal memory: kept in state.json, so it survives every conversation reset (19:13 row of the test run: after
+    # each reset she restarted the same refused loop from scratch). A refused call is NOT done.
+    refused = st.get("refused") or []
+    if refused:
+        lines = ["refused: (this colony, newest last -- these calls were REFUSED, so they are not done; never repeat "
+                 "one as it was: do the rung's fallback, change the target, or note it for the owner)"]
+        for r in refused[-10:]:
+            times = (" (x%d)" % r["times"]) if r.get("times", 1) > 1 else ""
+            lines.append("- %s %s %s%s: %s" % (r.get("ts", ""), r.get("what", ""), r.get("args", ""), times, r.get("why", "")))
+        parts.append(chr(10).join(lines))
+    if carry and st.get("last_results"):
+        lines = ["CARRIED OVER THE RESET -- your last tool results (the conversation was restarted; this is what you had "
+                 "just seen):"]
+        for r in st["last_results"][-5:]:
+            lines.append("- %s %s -> %s" % (r.get("tool", ""), r.get("args", ""), r.get("result", "")))
+        parts.append(chr(10).join(lines))
     parts.append("TURN %d. Follow the order of operations." % st["tick"])
     return "\n\n".join(parts)
 
@@ -278,20 +407,41 @@ CONVO = []          # one running conversation (append-only), so Ollama reuses e
 # Her context is pinned at 32768 tokens (the stream: a different num_ctx reloads the brain). A conversation past that
 # is cut from the FRONT by Ollama -- the system prompt and the brief went first, and she "forgot 90%" mid-play
 # (owner 2026-10-13). The cap leaves room for the tool list and her answer.
+#
+# WHY SHE RESETS EVERY 4-5 MINUTES (test run 2026-10-13, 19:13 row: 16 resets in 55 minutes, none of them a situation
+# change): THIS cap. Every turn appends a ~4k-token update plus tool results of up to 6000 characters each, so three
+# or four turns reach 18000 estimated tokens and the conversation starts over. The cap can NOT go up: the budget is
+# 32768 (num_ctx, stream/services.py) minus ~8600 for the 55 tool specs, minus ~5000 for the system prompt + situation
+# module, minus 1200 for her answer = ~18000, and the chars/4 estimate already runs optimistic for JSON. So the fix is
+# not a bigger cap but a reset that carries her memory: the pad, the refusal list and the last 5 tool results ride on
+# every fresh brief (brief(carry=True)), so nothing learned is lost when the conversation restarts.
 CONVO_TOKEN_CAP = int(os.environ.get("AUTOPILOT_CONVO_CAP", "18000"))
 MODULES = os.path.join(HERE, "modules")
 _FAMILY = [None]
+_FAM_SEEN = [None, 0]     # hysteresis: the family measured on the last pass(es) that differs from the active one
+SITUATION_HOLD_PASSES = 2  # a new family must be measured this many passes running before the module switches
 
 
 def situation(fallback="setup"):
     """The top live rung's family -> the prompt module for it (tools/build-prompt-modules.py). Owner, 2026-10-13:
     "can we have differnt plc wearning and information load differnt system prompts like meta prompts as needed so
-    its not eating a massive file and forgettting 90^ of it while doing the wrong choice?" """
+    its not eating a massive file and forgettting 90^ of it while doing the wrong choice?"
+
+    The ladder is decided on MOD-CONFIRMED setup marks only: every mark the setup gate reads (pawns_set, assign_set,
+    stove_set, setup_done ... the list in tools.Toolbox.setup_gate_marks) is overwritten with what the mod's own
+    sensors and replies say before the rungs are tested, so a mark she wrote herself can never pick the module
+    (19:30 row: 'ladder_set mark setup_crashlanded true' -> setup -> base-and-fortress -> setup, a reset each flip)."""
     try:
         import importlib.util as _il
         _gs = _il.spec_from_file_location("gates", os.path.join(HERE, "gates.py"))
         _g = _il.module_from_spec(_gs); _gs.loader.exec_module(_g)
-        hits, _st = _g.decide()
+        _st = _g.state()
+        try:
+            for k, v in tools.Toolbox.confirmed_marks(_st).items():
+                _st["mark_" + k] = bool(v)
+        except Exception as e:
+            log("confirmed marks unavailable for the situation:", str(e)[:120])
+        hits, _st = _g.decide(st=_st)
         fam = next((h.get("family") for h in hits if h.get("family") and h.get("priority", 99) < 98), None) or fallback
     except Exception:
         fam = fallback
@@ -300,6 +450,28 @@ def situation(fallback="setup"):
     except (OSError, ValueError):
         pass
     return fam if os.path.exists(os.path.join(MODULES, fam + ".md")) else fallback
+
+
+def situation_held(fallback="setup"):
+    """situation() with hysteresis (19:36 row: 'setup -> base-and-fortress' at 19:33:41, back at 19:36:00, a fresh
+    conversation each time). The active family only changes when a different family has been measured on
+    SITUATION_HOLD_PASSES consecutive passes; a one-pass blip (a threat letter that is read a minute later, a mark
+    that flips back) keeps the module and the conversation she has."""
+    fam = situation(fallback)
+    active = _FAMILY[0]
+    if active is None or fam == active:
+        _FAM_SEEN[0], _FAM_SEEN[1] = None, 0
+        return fam
+    if _FAM_SEEN[0] == fam:
+        _FAM_SEEN[1] += 1
+    else:
+        _FAM_SEEN[0], _FAM_SEEN[1] = fam, 1
+    if _FAM_SEEN[1] >= SITUATION_HOLD_PASSES:
+        _FAM_SEEN[0], _FAM_SEEN[1] = None, 0
+        return fam
+    log("situation measured %s (active %s), pass %d of %d: holding the module until it holds" % (
+        fam, active, _FAM_SEEN[1], SITUATION_HOLD_PASSES))
+    return active
 
 
 def system_for(system, fam):
@@ -367,15 +539,24 @@ def turn(toolbox, st, args, system, specs):
     if up and globals().get("_WAS_DOWN"):
         CONVO = []; log("game is back -- conversation reset")
     _WAS_DOWN = not up
-    fam = situation()
+    # a new colony on the map: the pad, the refusals and the carried results of the old one are wiped first
+    if up and colony_epoch_check(st, _gi if isinstance(_gi, dict) else None):
+        CONVO = []
+        _FAMILY[0] = None
+    fam = situation_held()
     if CONVO and fam != _FAMILY[0]:
         log("situation changed %s -> %s: fresh conversation with that module" % (_FAMILY[0], fam))
-    if not CONVO or _est_tokens(CONVO) > CONVO_TOKEN_CAP or fam != _FAMILY[0]:
+    why = ("no conversation yet" if not CONVO else "situation changed" if fam != _FAMILY[0]
+           else "token cap %d reached (est. %d)" % (CONVO_TOKEN_CAP, _est_tokens(CONVO)) if _est_tokens(CONVO) > CONVO_TOKEN_CAP
+           else "")
+    if why:
         _FAMILY[0] = fam
+        # the fresh brief carries her memory across the reset: the pad, the refusal list, the last 5 tool results
         CONVO = [{"role": "system", "content": system_for(system, fam)},
-                 {"role": "user", "content": brief(toolbox, st, joins, msgs, runlist, owner_msgs=owner_msgs)}]
+                 {"role": "user", "content": brief(toolbox, st, joins, msgs, runlist, owner_msgs=owner_msgs, carry=True)}]
         _ORDERS_SEEN[0] = len(_orders_text())   # the full brief carried every order up to now
-        log("fresh conversation (full brief)")
+        log("fresh conversation (full brief) -- %s; carried: pad, %d refusals, %d tool results" % (
+            why, len(st.get("refused") or []), len(st.get("last_results") or [])))
     else:
         CONVO.append({"role": "user", "content": short_update(toolbox, st, joins, msgs, owner_msgs)})
     messages = CONVO
@@ -408,6 +589,7 @@ def turn(toolbox, st, args, system, specs):
             else:
                 result = toolbox.dispatch(name, a)
             messages.append({"role": "tool", "tool_name": name, "content": str(result)[:6000]})
+            remember_result(st, name, a, result)     # survives the next reset (refusals + last results)
             # owner: train her on RimWorld (a LoRA). Every step is kept with the state she saw, the call and the
             # game's answer; the good ones get picked out later as training examples.
             try:
@@ -510,6 +692,14 @@ def main():
         args.model, "OFFLINE" if args.offline else ("DRY-RUN" if args.dry_run else "LIVE"), len(specs),
         args.num_gpu, args.think))
     st = load_state()
+    # a mark she set herself on a setup-gate name (19:30 row: setup_crashlanded) never survives a restart: the mod's
+    # readings decide those marks, not her say-so
+    try:
+        gone = tools.Toolbox.scrub_setup_marks()
+        if gone:
+            log("scrubbed self-set setup marks from the ladder:", ", ".join(gone))
+    except Exception as e:
+        log("mark scrub failed:", str(e)[:120])
     n = 0
     while True:
         n += 1
@@ -528,7 +718,7 @@ def main():
             # back to back; once everything on it is ticked she thinks every 45 s instead, unless chat is waiting
             try:
                 pad = open(guards.scratch_path("pad.md"), encoding="utf-8").read()
-                calm = "- [ ]" not in pad
+                calm = "[ ]" not in pad          # her pads write "- [ ]" and "[ ]" alike
             except Exception:
                 calm = False
             time.sleep(45 if calm else args.gap)
