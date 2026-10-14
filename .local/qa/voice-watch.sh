@@ -5,7 +5,7 @@ P="$1"; R="$2"; L="$3"; LABEL="$4"
 last=-1; same=0
 while true; do
   if [ -f "$R" ]; then echo "$LABEL FINISHED: $R"; exit 0; fi
-  if grep -aq "Traceback\|Error\|CUDA out of memory" "$L" 2>/dev/null && ! grep -aq "DONE" "$L"; then
+  if grep -aqE "Traceback|pass failed|CUDA out of memory" "$L" 2>/dev/null && ! grep -aq "all passes done" "$L"; then
     tail -c 1500 "$L" | grep -av "it/s" | tail -12; echo "$LABEL ERROR (see $L)"; exit 2
   fi
   n=$(wc -l < "$P" 2>/dev/null || echo 0)
