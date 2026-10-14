@@ -457,9 +457,22 @@ while True:
                 _last_overlay = time.time()
             except Exception:
                 pass
-        if os.path.exists(hold) and st.get("ticks_moving"):
-            os.remove(hold)
-            print(stamp(), "setup hold ended: time was started on purpose", flush=True)
+        # Run 5 (2026-10-13 23:21): the hold used to END the moment time moved ("started on purpose") -- she had started it to
+        # make an equip order land, and day 0 ran to day 2 with nothing laid out. Owner: "pause is her friend should should
+        # not unpause until inistal setup and zoneing is done and buildings are layed out". The hold ends only when the mod
+        # has confirmed the layout (storage_room, shelter and stove ordered) and the crew; until then a running clock is
+        # paused again -- unless hostiles are on the map, a raid is fought with time running.
+        if os.path.exists(hold):
+            laid_out = st.get("mark_layout_set") is True or st.get("mark_stove_set") is True
+            if laid_out and st.get("mark_pawns_set") is True and st.get("mark_assign_set") is True:
+                os.remove(hold)
+                print(stamp(), "setup hold ended: the camp is laid out and the crew is set -- time may run", flush=True)
+            elif st.get("ticks_moving") and not (st.get("hostiles_on_map") or 0):
+                try:
+                    gates_bridge_pause(True)
+                    print(stamp(), "setup hold: time was running before the camp was laid out -- paused again", flush=True)
+                except Exception as e:
+                    print(stamp(), "setup hold: could not pause again:", e, flush=True)
         top = firing[0]["id"] if firing else "none"
         print(stamp(), "gate:", top, "| food days:", round(st.get("meals", 0) * 0.9 / 4.8 + st.get("raw_food", 0) * 0.05 / 4.8, 2),
               "| game up:", game_up(), flush=True)

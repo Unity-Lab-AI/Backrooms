@@ -63,8 +63,11 @@ namespace RimroomsAsyncIndustries.Automation
 
             foreach (Pawn p in crew.Where(p => !HasRanged(p)))
             {
+                // Run 5 (2026-10-13 23:20): the pod drop lands FORBIDDEN, so "no free ranged weapon on the map" with four guns
+                // lying in the wreck (owner: "what happend to her guns did they not laod in"). A forbidden gun is a gun: it is
+                // unforbidden the moment it is claimed.
                 ThingWithComps gun = map.listerThings.ThingsInGroup(ThingRequestGroup.Weapon).OfType<ThingWithComps>()
-                    .Where(t => t.def.IsRangedWeapon && RealWeapon(t.def) && !claimed.Contains(t) && !t.IsForbidden(p) &&
+                    .Where(t => t.def.IsRangedWeapon && RealWeapon(t.def) && !claimed.Contains(t) &&
                                 p.CanReserveAndReach(t, PathEndMode.ClosestTouch, Danger.Some))
                     .OrderBy(t => t.Position.DistanceToSquared(p.Position)).FirstOrDefault();
                 if (gun == null)
@@ -77,6 +80,7 @@ namespace RimroomsAsyncIndustries.Automation
                     continue;
                 }
                 claimed.Add(gun);
+                if (gun.IsForbidden(Faction.OfPlayer)) gun.SetForbidden(false);
                 p.jobs.TryTakeOrderedJob(JobMaker.MakeJob(JobDefOf.Equip, gun), JobTag.Misc);
                 report.Add(p.LabelShort + " -> " + gun.LabelShort);
             }
@@ -85,11 +89,12 @@ namespace RimroomsAsyncIndustries.Automation
             foreach (Pawn p in crew.Where(p => HasRanged(p) && !CarriesMelee(p)))
             {
                 ThingWithComps blade = map.listerThings.ThingsInGroup(ThingRequestGroup.Weapon).OfType<ThingWithComps>()
-                    .Where(t => t.def.IsMeleeWeapon && RealWeapon(t.def) && !claimed.Contains(t) && !t.IsForbidden(p) &&
+                    .Where(t => t.def.IsMeleeWeapon && RealWeapon(t.def) && !claimed.Contains(t) &&
                                 p.CanReserveAndReach(t, PathEndMode.ClosestTouch, Danger.Some))
                     .OrderBy(t => t.Position.DistanceToSquared(p.Position)).FirstOrDefault();
                 if (blade == null) continue;
                 claimed.Add(blade);
+                if (blade.IsForbidden(Faction.OfPlayer)) blade.SetForbidden(false);
                 Job carry = JobMaker.MakeJob(JobDefOf.TakeInventory, blade);
                 carry.count = 1;
                 p.jobs.TryTakeOrderedJob(carry, JobTag.Misc);

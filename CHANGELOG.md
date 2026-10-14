@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.13.1-dev - 2026-10-13 - Run 5: pause is her friend
+
+- Time on a new colony stays stopped until the camp is laid out: the autopilot refuses every time-starting route while the setup hold stands until the mod has confirmed the crew (`pawns_set`, `assign_set`) and the new `layout_set` mark (its ok to `storage_room`, `shelter` and `stove`); hostiles on the map are the one exception. The driver's hold ends only on those marks and pauses the clock again if it runs before. Run 5 went from day 0 to day 2 at Superfast with no storage room, shelter or stove because an equip order "needed time to land" and a line in the prompt said plans placed means time runs.
+- The ladder's day-one release is one rung: `setup-0-pause-on-land` holds on `layout_set`, `setup-5-stove` marks the layout on a planned kitchen, `setup-6-run` starts time and carries the owner's standard (the camp stands by the end of day one), new `setup-late-day-one` speaks up on day two with nothing laid out, `unarmed-pawn` waits while the game is paused. 427 rungs.
+- `day_one` unforbids the pod drop before it arms anyone, and `arm` / `day_one` unforbid a gun they claim: the Crashlanded drop lands forbidden, and all three colonists read "no free ranged weapon on the map" with four weapons in the wreck. `arms_set` confirms on the `arm` reply (orders queued) as well as the armed sensor.
+- The popup guard restores a minimized game window without taking focus and sends it behind the owner's windows: a minimized Unity window presents no frames, so the stream froze on the last one, every screenshot timed out and the intro dialog waited unseen for eight minutes.
+- The studio token is kept across restarts; a page opened before a restart used to fail every send. The mod's paused-order reply says the order is queued instead of telling her to unpause. RimPLC's load line names the preset file it read, its size and the raw rung count in the text (a stale Oct 12 `Player.log` read as "127 of 426 rungs" cost forty minutes; the line now cannot be misread).
+
 ## 0.13.0-dev - 2026-10-13 - Test-run fix pass: the camp is where the supplies fell
 
 - The first full-kit run on RimWorld 1.7 (18:47-19:46, ledger in `docs/TESTRUN_NOTES.md`, 49 rows) found her building the store and the shelter 50 cells apart while the supplies sat in the rain, beds in the doorway row, no kitchen, and the stove refused four times on an open camp.

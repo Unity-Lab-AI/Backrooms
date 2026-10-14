@@ -19,7 +19,7 @@
  *
  *   Run:  node .claude/tools/persona-studio.cjs
  *   Port: PERSONA_STUDIO_PORT env var (default 4317)
- *   Auth: every POST needs header X-Studio-Token (or ?token=) = .claude/.studio-token, new each start
+ *   Auth: every POST needs header X-Studio-Token (or ?token=) = .claude/.studio-token, kept across restarts
  *   Key:  .claude/.env  POLLINATIONS_API_KEY  (window prompts if missing)
  *   Life: the server dies when its browser window closes — a pagehide beacon
  *         kills it instantly, and a poll-heartbeat watchdog is the backstop for
@@ -46,11 +46,18 @@ const BASE_PORT   = parseInt(process.env.PERSONA_STUDIO_PORT, 10) || 4317;
 const TOKEN_PATH  = path.join(CLAUDE_DIR, '.studio-token');
 const ROOT_DIR    = path.resolve(CLAUDE_DIR, '..');
 
-// ── per-session token: every mutating request must carry it ────────────────
+// ── the studio token: every mutating request must carry it ──────────────────
 // Written beside the inbox for the local helper scripts (header X-Studio-Token)
 // and injected into the studio page this server serves. Read-only GETs stay open.
-const TOKEN = crypto.randomBytes(24).toString('hex');
-try { fs.writeFileSync(TOKEN_PATH, TOKEN, { mode: 0o600 }); } catch (e) { console.error('persona-studio: could not write token file - ' + e.message); }
+// It is KEPT across restarts: a page opened before a restart held the old one and every send failed
+// (owner, 2026-10-13, twice -- once per restart: "send failed: forbidden: missing or wrong studio token").
+// A well-formed token file is reused; a new one is minted only when none exists or it is malformed.
+let TOKEN = '';
+try { const t = fs.readFileSync(TOKEN_PATH, 'utf8').trim(); if (/^[0-9a-f]{48}$/.test(t)) TOKEN = t; } catch (e) { /* first start */ }
+if (!TOKEN) {
+  TOKEN = crypto.randomBytes(24).toString('hex');
+  try { fs.writeFileSync(TOKEN_PATH, TOKEN, { mode: 0o600 }); } catch (e) { console.error('persona-studio: could not write token file - ' + e.message); }
+}
 function localHostOk(req) {
   const port = req.socket.localPort;
   const host = String(req.headers.host || '').toLowerCase();

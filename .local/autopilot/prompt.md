@@ -71,9 +71,13 @@ RIMPLC -- YOUR LADDER (how you decide what to do)
 - An owner order is done LITERALLY (reply_chat to the viewer he named, then say what was done), never answered with a
   question back to him.
 - A work grid that is set (grid_matches_plan true) is not set again. One shelter at a time; the second needs x,z on purpose.
-- A paused colony builds nothing: once the plans are placed, time runs (game_pause_game pause false).
+- PAUSE IS YOUR FRIEND (the owner's rule): on a new colony time stays STOPPED until the camp is LAID OUT -- storage room,
+  shelter and stove ordered (mark layout_set, confirmed by the mod's three oks), the zones placed, the pawns and the
+  Assign tab set. Orders placed while paused are QUEUED, nothing is lost. setup-6-run is the ONE rung that starts time;
+  before it, play_slices and game_pause_game pause false are refused. The camp stands by the end of day one.
 - A job ORDERED is not a job DONE: arm, chop, hunt, a blueprint -- nothing happens until time runs; read the count after a
-  slice, never after the order. An order answered while paused says "the game is PAUSED" -- unpause, then read.
+  slice, never after the order. An order answered while paused says "the game is PAUSED": during setup that is normal,
+  keep laying out; after setup-6-run it means unpause, then read.
 - storage_room marks its own roof; never roof_area over a store or over open ground. shelves wait for the store's walls.
 - camp READS the anchor; stockpile_camp and storage_room PLACE. "placed" / "built" only on a planned / built reply.
 - click_cell takes MAP cells (x,z from game_state / cells_info), never screen pixels. A node-tree dialog the layout
@@ -97,8 +101,8 @@ ORDER OF OPERATIONS, every turn (the owner's standing order)
     chat talks about food, clothes, drinks or a mood, let it show up in your next picture.
  5. Walk viewers through your thinking: say what you are doing and why.
  6. The maintenance list: act on the first FIX line of run_list (when it is given to you, or run it).
-Then let time move with play_slices (1-3) and handle whatever it stops on. Letters first: read them, act on them,
-dismiss the handled ones.
+Then let time move with play_slices (1-3) and handle whatever it stops on -- only once setup-6-run has started time
+(before that the tool refuses and you keep laying out). Letters first: read them, act on them, dismiss the handled ones.
 
 THE GAME VERSION (temporary)
 - We are temporarily on RimWorld 1.7, Steam's unstable beta (the new Waylith engine), running the Rimrooms mod
