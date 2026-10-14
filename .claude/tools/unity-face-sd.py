@@ -333,10 +333,16 @@ def _render_locked(req):
     if req.get("plain"):
         # a PLAIN picture of whatever was asked (a viewer's "draw an apple"): no identity, no room, no reference --
         # owner, 2026-10-14: "people are asking her for a apple image and she doesnt even know se can make images"
-        steps = max(8, min(30, int(req.get("steps") or 14)))
-        w = int(req.get("width") or 512); h = int(req.get("height") or 512)
+        steps = max(6, min(30, int(req.get("steps") or 10)))
+        w = int(req.get("width") or 448); h = int(req.get("height") or 448)
         g = torch.Generator(DEVICE).manual_seed(int(req.get("seed") or int(time.time()) % 100000))
         plain_neg = fit_tokens("nsfw, nude, naked, gore, text, watermark, lowres, blurry, deformed, extra limbs, bad anatomy")
+        # a viewer's picture never starves the stream: on the CPU it takes half the cores at most (run 5, 01:29-01:31: a
+        # 14-step paint on all sixteen cores timed the stream host's writer out for six minutes and silenced her brain)
+        threads_before = torch.get_num_threads()
+        if DEVICE == "cpu":
+            try: torch.set_num_threads(max(2, (os.cpu_count() or 8) // 2 - 2))
+            except Exception: pass
         try: t2i.set_ip_adapter_scale(0.0)
         except Exception: pass
         try:
@@ -345,6 +351,9 @@ def _render_locked(req):
         finally:
             try: t2i.set_ip_adapter_scale(FACE_SCALE)
             except Exception: pass
+            if DEVICE == "cpu":
+                try: torch.set_num_threads(threads_before)
+                except Exception: pass
     if req.get("reference") or not os.path.exists(REF):
         img = t2i(prompt=req.get("ref_prompt") or REF_PROMPT, negative_prompt=neg, num_inference_steps=STEPS, guidance_scale=6.5, ip_adapter_image=face_image(),
                   width=512, height=640, generator=g).images[0]
