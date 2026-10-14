@@ -1226,7 +1226,10 @@ class Toolbox:
             line = raw.strip()
             if not re.match(r"^(?:-\s*)?\[x\]", line, flags=re.I):
                 continue
-            low = line.lower()
+            # only the item the [x] NAMES is tested -- the plan words after "; next:", "--", "->" or "then" are not
+            # claims (run 5, 00:05:40 and 00:07:04: "[x] stream title and category set; next: ... shelves, stove" was
+            # refused twice for the shelves and the stove it had not claimed; owner: "why is ypour not fixing it")
+            low = re.split(r";\s*next\b|\bnext:|\s--\s|->|\bthen\b|\bafter that\b", line.lower(), maxsplit=1)[0]
             for item, pat, cmds in self.PAD_ITEMS:
                 if not re.search(pat, low):
                     continue
