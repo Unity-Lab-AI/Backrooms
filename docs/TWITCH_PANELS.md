@@ -59,7 +59,7 @@ Unity plays RimWorld with our lab's mods: Rimrooms Async Industries (company con
 ## Panel 1 — Title: `About the stream`
 
 ```
-Unity plays a modded RimWorld colony live: **Marble Hollow**, a goth marble city that is building toward a gate into the Backrooms and, one day, a space-flying empire.
+Unity plays a modded RimWorld colony live: a goth stone city that is building toward a gate into the Backrooms and, one day, a space-flying empire.
 
 **Chat drives the game.** Vote on the next build, name colonists, pick research, call the shots in a raid. If Unity does what you asked, a follow is the thank-you.
 

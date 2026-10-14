@@ -6495,7 +6495,7 @@
     "never call new_colony here: meta:new-colony runs it only after the owner orders it (mark_owner_ordered_new_colony)",
     "ladder_set mark growth_second_colony_done true"
    ],
-   "why": "owner: \"we are gonna start new colonies with like a whole neew group and supplies / long time from now all the above we stal uss 3\" (docs/PLAYSCRIPT.md:115: later -- not now, finish Marble Hollow first)",
+   "why": "owner: \"we are gonna start new colonies with like a whole neew group and supplies / long time from now all the above we stal uss 3\" (docs/PLAYSCRIPT.md:115: later -- not now, finish the first colony first)",
    "latch": true,
    "never": [
     "start a second colony before the ship launches",
