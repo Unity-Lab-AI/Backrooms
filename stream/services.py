@@ -239,14 +239,14 @@ def deps():
             print("model       unity-brain warm-up skipped (%s)" % str(e)[:40])
         return
     try:
-        vapi("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "think": False, "keep_alive": "30m",
+        vapi("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "think": False, "keep_alive": -1,
                                "options": {"num_ctx": 8192, "num_predict": 1}}, timeout=180)
         print("model       %s warm on the voice server" % VOICE)
     except Exception as e:
         print("model       %s voice warm-up skipped (%s)" % (VOICE, str(e)[:40]))
     return
     try:
-        api("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "think": False, "keep_alive": "30m",
+        api("/api/generate", {"model": VOICE, "prompt": "hi", "stream": False, "think": False, "keep_alive": -1,
                               "options": {"num_ctx": 8192, "num_predict": 1}}, timeout=180)
         print("model       %s warm" % VOICE)
     except Exception as e:

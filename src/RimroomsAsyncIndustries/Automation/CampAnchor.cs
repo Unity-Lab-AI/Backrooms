@@ -29,6 +29,39 @@ namespace RimroomsAsyncIndustries.Automation
         // a shelter went through the storage room's wall count; a build_room went over a steam geyser)
         public CellRect shelterBox = CellRect.Empty;
         public CellRect storageBox = CellRect.Empty;
+        // the camp planner (CampPlan.cs): door lanes every plan keeps clear, and the walls flanking a door that go up only
+        // once the door stands (run 5: one door, both rooms' doors on each other's walls, the crew sealed in)
+        public List<IntVec3> lanes = new List<IntVec3>();
+        private List<IntVec3> flankCells = new List<IntVec3>();
+        private List<IntVec3> flankDoors = new List<IntVec3>();
+        private List<string> flankStuff = new List<string>();
+
+        public int FlankCount => flankCells?.Count ?? 0;
+
+        public void QueueFlank(IntVec3 cell, IntVec3 door, ThingDef stuff)
+        {
+            if (flankCells == null) { flankCells = new List<IntVec3>(); flankDoors = new List<IntVec3>(); flankStuff = new List<string>(); }
+            if (flankCells.Contains(cell)) return;
+            flankCells.Add(cell); flankDoors.Add(door); flankStuff.Add(stuff.defName);
+        }
+
+        private void TickFlanks()
+        {
+            if (flankCells == null || flankCells.Count == 0) return;
+            for (int i = flankCells.Count - 1; i >= 0; i--)
+            {
+                IntVec3 c = flankCells[i], d = flankDoors[i];
+                if (!c.InBounds(map) || !d.InBounds(map)) { DropFlank(i); continue; }
+                if (c.GetEdifice(map) != null || c.GetThingList(map).Any(t => t.def.IsBlueprint || t.def.IsFrame)) { DropFlank(i); continue; }
+                if (!(d.GetEdifice(map) is Building_Door)) continue;                       // the door is not up yet: the gap stays
+                ThingDef stuff = DefDatabase<ThingDef>.GetNamedSilentFail(flankStuff[i]) ?? ThingDefOf.WoodLog;
+                if (GenConstruct.CanPlaceBlueprintAt(ThingDefOf.Wall, c, Rot4.North, map, false, null, null, stuff).Accepted)
+                    GenConstruct.PlaceBlueprintForBuild(ThingDefOf.Wall, c, map, Rot4.North, Faction.OfPlayer, stuff);
+                DropFlank(i);
+            }
+        }
+
+        private void DropFlank(int i) { flankCells.RemoveAt(i); flankDoors.RemoveAt(i); flankStuff.RemoveAt(i); }
 
         /// <summary>Does this planned box still have a wall blueprint or frame on its ring?</summary>
         public bool Unbuilt(CellRect box)
@@ -52,7 +85,9 @@ namespace RimroomsAsyncIndustries.Automation
 
         public override void MapComponentTick()
         {
-            if (pendingWalls == null || pendingWalls.Count == 0 || Find.TickManager.TicksGame % 120 != 0) return;
+            if (Find.TickManager.TicksGame % 120 != 0) return;
+            TickFlanks();
+            if (pendingWalls == null || pendingWalls.Count == 0) return;
             for (int i = pendingWalls.Count - 1; i >= 0; i--)
             {
                 IntVec3 c = pendingWalls[i];
@@ -77,10 +112,17 @@ namespace RimroomsAsyncIndustries.Automation
             Scribe_Values.Look(ref shelterBox, "rr_shelterBox", CellRect.Empty);
             Scribe_Values.Look(ref storageBox, "rr_storageBox", CellRect.Empty);
             Scribe_Collections.Look(ref pendingStuff, "rr_pendingStuff", LookMode.Value);
+            Scribe_Collections.Look(ref lanes, "rr_lanes", LookMode.Value);
+            Scribe_Collections.Look(ref flankCells, "rr_flankCells", LookMode.Value);
+            Scribe_Collections.Look(ref flankDoors, "rr_flankDoors", LookMode.Value);
+            Scribe_Collections.Look(ref flankStuff, "rr_flankStuff", LookMode.Value);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 if (pendingWalls == null) pendingWalls = new List<IntVec3>();
                 if (pendingStuff == null || pendingStuff.Count != pendingWalls.Count) pendingStuff = pendingWalls.Select(_ => "Steel").ToList();
+                if (lanes == null) lanes = new List<IntVec3>();
+                if (flankCells == null || flankDoors == null || flankStuff == null || flankDoors.Count != flankCells.Count || flankStuff.Count != flankCells.Count)
+                { flankCells = new List<IntVec3>(); flankDoors = new List<IntVec3>(); flankStuff = new List<string>(); }
             }
         }
     }
@@ -259,31 +301,37 @@ namespace RimroomsAsyncIndustries.Automation
                 if (p != null && p.def.plant.IsTree && map.designationManager.DesignationOn(p) == null)
                 { map.designationManager.AddDesignation(new Designation(p, DesignationDefOf.HarvestPlant)); chop++; }
             }
-            // the door faces the crew (or the anchor's north if the crew stands inside the box)
+            // TWO doors on different sides (the planner: toward the crew first, then the open front), each with a clear lane
+            // outside it that every later plan keeps clear; the two walls flanking each door wait until the door stands, so
+            // the room is never sealed with someone inside (run 5: one door, opening onto the shelter's wall)
             IntVec3 crew = CrewCentre(map);
-            IntVec3 doorCell;
-            if (crew.IsValid && !inside.Contains(crew))
-            {
-                int dx = crew.x - inside.CenterCell.x, dz = crew.z - inside.CenterCell.z;
-                doorCell = Math.Abs(dx) >= Math.Abs(dz)
-                    ? new IntVec3(dx > 0 ? ring.maxX : ring.minX, 0, inside.CenterCell.z)
-                    : new IntVec3(inside.CenterCell.x, 0, dz > 0 ? ring.maxZ : ring.minZ);
-            }
-            else doorCell = new IntVec3(inside.CenterCell.x, 0, ring.minZ);
+            List<IntVec3> doorCells = CampPlan.DoorSites(map, camp, ring, crew, out List<IntVec3> lanes);
+            if (doorCells.Count == 0) doorCells.Add(new IntVec3(inside.CenterCell.x, 0, ring.minZ));
+            var flanks = new HashSet<IntVec3>();
+            foreach (IntVec3 dc in doorCells) foreach (IntVec3 f in CampPlan.Flanks(ring, dc)) flanks.Add(f);
 
-            int walls = 0, doors = 0, kept = 0, blocked = 0;
+            int walls = 0, doors = 0, kept = 0, blocked = 0, waiting = 0;
             foreach (IntVec3 c in ring.EdgeCells)
             {
                 if (inside.Contains(c)) continue;
                 Building ed = c.GetEdifice(map);
                 if (ed != null && (ed.def.passability == Traversability.Impassable || ed is Building_Door)) { kept++; continue; }
                 if (c.GetThingList(map).Any(t => t.def.IsBlueprint || t.def.IsFrame)) { kept++; continue; }
-                ThingDef def = c == doorCell ? door : wall;
+                bool isDoor = doorCells.Contains(c);
+                if (!isDoor && flanks.Contains(c))
+                {
+                    IntVec3 itsDoor = doorCells.First(dc => CampPlan.Flanks(ring, dc).Contains(c));
+                    if (camp != null) { camp.QueueFlank(c, itsDoor, wood); waiting++; }
+                    continue;
+                }
+                ThingDef def = isDoor ? door : wall;
                 if (!GenConstruct.CanPlaceBlueprintAt(def, c, Rot4.North, map, false, null, null, wood).Accepted) { blocked++; continue; }
                 GenConstruct.PlaceBlueprintForBuild(def, c, map, Rot4.North, Faction.OfPlayer, wood);
                 if (def == door) doors++; else walls++;
             }
             if (walls + doors == 0 && kept == 0) return "refused: nothing of the ring could be placed around " + anchor.x + "," + anchor.z;
+            IntVec3 doorCell = doorCells[0];
+            string doorsText = string.Join(" and ", doorCells.Select(dc => dc.x + "," + dc.z));
 
             foreach (IntVec3 c in inside) map.areaManager.BuildRoof[c] = true;
             if (camp != null) camp.storageBox = ring;
@@ -309,8 +357,8 @@ namespace RimroomsAsyncIndustries.Automation
             }
             int cost = walls * wall.CostStuffCount + doors * door.CostStuffCount;
             return "ok: storage room around the supplies -- inside " + w + "x" + h + " from " + inside.minX + "," + inside.minZ +
-                   ", door at " + doorCell.x + "," + doorCell.z + ", " + walls + " walls + " + doors + " door planned (" + kept + " kept, " +
-                   blocked + " blocked), roof marked, Main store covers " + zoned + " more cells (" + pile.Count + " item stacks inside)" +
+                   ", " + doors + " door(s) at " + doorsText + " (lanes outside them kept clear), " + walls + " walls planned (" + kept + " kept, " +
+                   blocked + " blocked, " + waiting + " door-flank walls wait for the doors to stand), roof marked, Main store covers " + zoned + " more cells (" + pile.Count + " item stacks inside)" +
                    shifted + (mined > 0 ? ", " + mined + " rock cell(s) inside marked to mine (needs time running and Mining on)" : "") +
                    (chop > 0 ? ", " + chop + " trees inside marked to chop" : "") + "; needs about " + cost +
                    " wood -- chop if short, keep Construction on; the supplies stay where they are and come under the roof";

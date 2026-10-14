@@ -2156,6 +2156,15 @@
    "tip": "A raid or threat letter is on the stack and has not been read. Read it this turn; it never ages out unread.",
    "warn": true,
    "note": "gates.py-side reading like threat_letter: computed from list_letters and ladder.json letters_seen, not by RimPLC's Sensors.cs"
+  },
+  "colonists_trapped": {
+   "source": "RimPLC Sensors.cs: free colonists who cannot reach the map edge (reachability)",
+   "type": "int",
+   "group": "Crew",
+   "label": "Walled in",
+   "severity": "critical",
+   "tip": "A colonist cannot reach the map edge: walled in. game_set cmd free opens the way.",
+   "warn": ">0"
   }
  },
  "gates": [
@@ -8171,7 +8180,8 @@
     "refused for solid rock or a wall inside the pile's box: game_set cmd camp x z one pile-width toward open ground, then storage_room again",
     "refused otherwise: ladder_set mark storage_room_tried true, then ladder_set mark storage_room_tried false (each refusal counts once; 2 -> setup-4a-storage-room-fallback)",
     "the reply says planned: unpause so it is built, Construction stays on for everyone, chop if the wood needed is above wood; then ladder_set mark storage_room_set true (the mod's ok: confirms it) (the shelter rung follows while the walls go up)",
-    "say on stream in one line: the supplies are being roofed where they fell"
+    "say on stream in one line: the supplies are being roofed where they fell",
+    "the reply names the doors and their lanes (two doors, different sides; the flank walls wait for the doors): read it, never wall a lane; game_set cmd camp_plan reads the open front and the mountain back"
    ],
    "never": [
     "haul the pile somewhere else first",
@@ -8228,7 +8238,8 @@
     "store everything under a roof except steel and stone blocks",
     "water/marsh inside the camp perimeter -> game_set cmd terraform mode bridge x z w h before building on it (Core has no mud/water-to-soil; mud: move the build or floor it)",
     "unpause to build; when beds >= colonists and store_roofed_fraction >= 0.75: ladder_set mark shelter_set true",
-    "the shelter ok with the storage room already ok: ladder_set mark layout_set true (confirmed on both replies) -- the camp is laid out, setup-6-run starts time"
+    "the shelter ok with the storage room already ok: ladder_set mark layout_set true (confirmed on both replies) -- the camp is laid out, setup-6-run starts time",
+    "the reply names the doors and their lanes (two doors, different sides; the flank walls wait for the doors): read it, never wall a lane; game_set cmd camp_plan reads the open front and the mountain back"
    ],
    "never": [
     "build in steel",
@@ -11163,6 +11174,28 @@
     "light the engines with the colony undefended"
    ],
    "family": "space"
+  },
+  {
+   "id": "colonist-trapped",
+   "priority": 0.91,
+   "family": "survival",
+   "latch": false,
+   "when": {
+    "colony_exists": true,
+    "colonists_trapped": ">0"
+   },
+   "then": [
+    "game_set cmd free -- a plan on the room's edge is cancelled or a wall marked to deconstruct so they can get out; read who and where",
+    "game_pause_game pause false if time is stopped: the way out is built with time running (Construction on)",
+    "say it on stream: who was walled in and that the way out is coming; then game_set cmd camp_plan and plan the door again with its lane clear"
+   ],
+   "never": [
+    "run time at Superfast while someone is walled in",
+    "plan another wall before the way out stands"
+   ],
+   "why": "owner 2026-10-14: \"she only buildt one door on the main rooms and now she is blocked ina nd gonna dy\" / \"why the fuck is she blocvking both sides of doors with walls\" -- the planner (CampPlan.cs) gives rooms two doors with clear lanes; this rung is the safety valve",
+   "source": "book",
+   "mode": "advise"
   },
   {
    "id": "unarmed-pawn",
