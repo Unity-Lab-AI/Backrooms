@@ -119,8 +119,12 @@ namespace RimroomsAsyncIndustries.Automation
                 if (doors.Count >= 2) break;
                 IntVec3 outward = Dirs[d];
                 // candidate cells along that side, nearest the side's middle first, corners excluded
+                // never a corner, never beside a corner (owner, 2026-10-14: "one is on the corner with no corner wall"): at least
+                // two wall cells between a door and the ring's corner, candidates from the side's middle outward
                 var side = ring.EdgeCells.Where(c => (d == 0 && c.z == ring.maxZ) || (d == 2 && c.z == ring.minZ) || (d == 1 && c.x == ring.maxX) || (d == 3 && c.x == ring.minX))
+                                         .Where(c => Math.Min(c.x - ring.minX, ring.maxX - c.x) >= 2 || Math.Min(c.z - ring.minZ, ring.maxZ - c.z) >= 2)
                                          .Where(c => !((c.x == ring.minX || c.x == ring.maxX) && (c.z == ring.minZ || c.z == ring.maxZ)))
+                                         .Where(c => (d == 0 || d == 2) ? Math.Min(c.x - ring.minX, ring.maxX - c.x) >= 2 : Math.Min(c.z - ring.minZ, ring.maxZ - c.z) >= 2)
                                          .OrderBy(c => Math.Abs(c.x - ring.CenterCell.x) + Math.Abs(c.z - ring.CenterCell.z)).ToList();
                 foreach (IntVec3 c in side)
                 {
