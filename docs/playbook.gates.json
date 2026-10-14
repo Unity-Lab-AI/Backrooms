@@ -8042,17 +8042,20 @@
     "colony_exists": true,
     "mark_camp_set": true,
     "wood": "<{WOOD_RESERVE}",
-    "designations_cut": "<20"
+    "designations_cut": "<20",
+    "mark_chop_set": false
    },
    "then": [
     "game_set cmd chop count 300 (nearest trees to the camp anchor; trees on the site first -- storage_room marks the ones inside its box by itself); unpause so it is cut",
+    "the chop reply (\"n trees marked\" or \"already marked\") confirms mark chop_set: the rung is done then, whatever the designation count",
     "chop refused or 0 trees: game_set cmd explore for trees beyond reach, then game_get_cells_info on the wooded cells and game_apply_architect_designator Chop wood once",
-    "no trees on the whole map: reply_owner with the chop reply (the tile was picked wrong); never loop"
+    "no trees on the whole map: reply_owner with the chop reply (the tile was picked wrong); never loop",
+    "the reply read: ladder_set mark chop_set true (confirmed on the chop ok)"
    ],
    "never": [
     "put everyone on PlantCutting"
    ],
-   "why": "owner: \"and a big issue its it never auto unforbid all the starting materials and never copped wood to build starting structures rooms\" / owner: \"set your priorities, dont need everyone choopping wood, multitask\" -- walkthrough: walkthrough-opening-and-camp.md 'Chop trees on the site first, then chop more for wood stock.' [start] B,Q / owner: \"there is no wood no trees on this map, thats why in advanced setting on world gen setup you set 300x300 mapo and spring, and then when choosing a map tile u pic on that has mountains(the rock areas on map) in forest area and jungle areas the light green and green, terrain tab on left tells u all this when u highlight via select the tiles\""
+   "why": "run 5 (2026-10-14 01:09-01:11): 330 wood marked on 8 trees, designations_cut 8 < 20, the rung stayed on top and she chopped the same trees every turn / owner: \"and a big issue its it never auto unforbid all the starting materials and never copped wood to build starting structures rooms\" / owner: \"set your priorities, dont need everyone choopping wood, multitask\" -- walkthrough: walkthrough-opening-and-camp.md 'Chop trees on the site first, then chop more for wood stock.' [start] B,Q / owner: \"there is no wood no trees on this map, thats why in advanced setting on world gen setup you set 300x300 mapo and spring, and then when choosing a map tile u pic on that has mountains(the rock areas on map) in forest area and jungle areas the light green and green, terrain tab on left tells u all this when u highlight via select the tiles\""
   },
   {
    "id": "setup-4-stores-fallback",
@@ -12074,7 +12077,8 @@
    "shipfuel_short_set",
    "junk_weapons_set",
    "<rung_id>_done (latches)",
-   "layout_set"
+   "layout_set",
+   "chop_set"
   ]
  }
 }
