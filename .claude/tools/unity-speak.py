@@ -183,9 +183,11 @@ def _play(out):
         urllib.request.urlopen(urllib.request.Request(url, data=data,
                                headers={"Content-Type": "application/json", "X-Studio-Token": studio_token()}),
                                timeout=10).read()
-        # hold the turn while the line plays so the next one does not cut it off
-        time.sleep(min(wav_seconds(out), 60))
-        return
+        # The overlay page only STORES the line (its /api/voice is a state endpoint, not a player), so the owner
+        # heard nothing at his desk -- "get her speech working wtf did we make V2 if its not goning to work"
+        # (2026-10-13). Play it here on the default output as well: OBS's Desktop Audio is muted, so this never
+        # reaches the stream; the stream hears the OBS media source above. Playing blocks for the line's length,
+        # which is the hold the next line needs.
     except Exception:
         pass
     import winsound
