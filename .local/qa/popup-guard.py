@@ -23,6 +23,28 @@ if _os.name == "nt":
     _sp.Popen = _PopenNoWin
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(os.path.dirname(HERE))
+
+# Run 5 (owner, 2026-10-13: "its not working she frooze"): the game window was MINIMIZED. A minimized Unity window
+# stops presenting frames, so OBS held the last frame on stream, every screenshot timed out and the Crashlanded intro
+# dialog sat unseen while the game waited on it. Every pass: a minimized RimWorld window is restored WITHOUT taking
+# focus and pushed to the bottom of the z-order -- it keeps rendering behind whatever the owner is doing and never
+# covers his desktop (owner: "i cant see my desktop when tabbing out of it").
+import ctypes
+_u32 = ctypes.windll.user32 if os.name == "nt" else None
+if _u32 is not None:
+    _u32.FindWindowW.restype = ctypes.c_void_p
+    _u32.FindWindowW.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p]
+    _u32.IsIconic.argtypes = [ctypes.c_void_p]
+    _u32.ShowWindow.argtypes = [ctypes.c_void_p, ctypes.c_int]
+    _u32.SetWindowPos.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_uint]
+def unminimize_game():
+    """True when the game window was minimized and has just been restored behind the owner's windows."""
+    if _u32 is None: return False
+    h = _u32.FindWindowW(None, "RimWorld by Ludeon Studios")
+    if not h or not _u32.IsIconic(h): return False
+    _u32.ShowWindow(h, 4)                                                    # SW_SHOWNOACTIVATE: restore, no focus
+    _u32.SetWindowPos(h, ctypes.c_void_p(1), 0, 0, 0, 0, 0x0010 | 0x0002 | 0x0001)   # HWND_BOTTOM, NOACTIVATE|NOMOVE|NOSIZE
+    return True
 FLAG = os.path.join(ROOT, ".claude", ".popup.json"); SAY = os.path.join(ROOT, ".claude", "tools", "unity-say.py")
 spec = importlib.util.spec_from_file_location("b", os.path.join(HERE, "bridge.py")); b = importlib.util.module_from_spec(spec); spec.loader.exec_module(b)
 def session():
@@ -49,6 +71,8 @@ def buttons():
     walk(call("rimworld/get_ui_layout")); return out
 while True:
     try:
+        if unminimize_game():
+            print("game window was minimized -- restored behind the owner's windows (the stream and screenshots need its frames)", flush=True)
         st = call("rimworld/get_ui_state")
         wins = [w for w in st.get("windows", []) if w.get("absorbInputAroundWindow") and not any(k in (w.get("type") or "") for k in IGNORE)]
         if not wins:
