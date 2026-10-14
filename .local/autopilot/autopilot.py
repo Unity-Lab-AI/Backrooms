@@ -219,6 +219,9 @@ def remember_result(st, name, args, result):
     st["refused"] = refused
 
 
+THINKING_FLAG = os.path.join(HERE, "scratch", "_thinking.flag")   # present while a model reply is awaited (the face render waits on it)
+
+
 def ollama_chat(model, messages, tool_specs, opts):
     body = {"model": model, "messages": messages, "tools": tool_specs, "stream": False,
             "keep_alive": opts["keep_alive"],
@@ -234,11 +237,18 @@ def ollama_chat(model, messages, tool_specs, opts):
         body["think"] = opts["think"]
     req = urllib.request.Request(OLLAMA + "/api/chat", data=json.dumps(body).encode("utf-8"),
                                  headers={"Content-Type": "application/json"})
+    # while her brain generates, the webcam renderer waits (THINKING_FLAG, read by unity-face-sd.py): run 5 saw
+    # 113-178 s steps with the card at 99 % while frames rendered back to back beside the brain
+    try: open(THINKING_FLAG, "w").write(str(time.time()))
+    except OSError: pass
     try:
         with urllib.request.urlopen(req, timeout=opts["timeout"]) as r:
             return json.loads(r.read().decode("utf-8")).get("message", {})
     except urllib.error.HTTPError as e:
         raise RuntimeError("ollama %s: %s" % (e.code, e.read().decode("utf-8", "replace")[:400]))
+    finally:
+        try: os.remove(THINKING_FLAG)
+        except OSError: pass
 
 
 def gather_chat(st):
@@ -335,12 +345,35 @@ def live_top_line(toolbox=None):
         return ""
 
 
+def day_one_done_line():
+    """What the mod's day_one already did for THIS colony, from its own reply (run 5, 00:05:57: she re-ordered unforbid
+    nine minutes after day one had done it, and told the stream nobody was armed while three rifles were on order)."""
+    try:
+        off = tools.last_day_one_offset()
+        with open(tools.AUTOMATION_OUTBOX, "rb") as f:
+            f.seek(off)
+            row = f.readline().decode("utf-8", "replace")
+        i = row.find(" -> ")
+        if i < 0:
+            return ""
+        reply = row[i + 4:].split('"', 1)[0].replace("\\'", "'").strip()
+        if not reply.startswith("ok"):
+            return ""
+        reply = re.sub(r"<[^>]+>", "", reply)
+        return ("DAY ONE IS DONE (the mod did it when the crew landed; do not order these again): " + reply[:700] +
+                " -- an equip order listed here is QUEUED until time runs; 'unarmed' in the sensors means queued, not forgotten.")
+    except Exception:
+        return ""
+
+
 def brief(toolbox, st, joins, msgs, runlist, with_orders=True, owner_msgs=(), carry=False):
     # the unchanging parts go FIRST so Ollama can reuse them from the last turn (prompt cache); a turn number at
     # the top changed every turn and forced the CPU to re-read the whole brief, orders included, every time
     parts = []
     _top = live_top_line(toolbox)
     if _top: parts.append(_top)
+    _d1 = day_one_done_line()
+    if _d1: parts.append(_d1)
     if with_orders and os.path.exists(OWNER_ORDERS):
         txt = open(OWNER_ORDERS, encoding="utf-8", errors="replace").read().strip()
         if txt:

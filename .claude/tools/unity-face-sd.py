@@ -291,10 +291,30 @@ def pipes():
     return _t2i, _i2i
 
 
+THINKING_FLAG = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+                             ".local", "autopilot", "scratch", "_thinking.flag")
+
+
+def _yield_to_brain(max_wait=90):
+    """Her brain comes first: while the autopilot is waiting on a model reply (it writes the flag around every call), a
+    frame waits -- up to max_wait s, and never on a flag older than 4 minutes (a crashed turn). Run 5, 2026-10-14:
+    113-178 s brain steps with frames rendering back to back on the same machine (owner: "why is ypour not fixing it")."""
+    t0 = time.time()
+    while time.time() - t0 < max_wait:
+        try:
+            age = time.time() - float(open(THINKING_FLAG).read().strip() or 0)
+        except (OSError, ValueError):
+            return
+        if age > 240:
+            return
+        time.sleep(1.0)
+
+
 def render(req):
     if not _waiting.acquire(blocking=False):
         raise RuntimeError("busy: render queue full")
     try:
+        _yield_to_brain()
         with _lock:
             return _render_locked(req)
     finally:
