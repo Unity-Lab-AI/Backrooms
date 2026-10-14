@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.13.0-dev - 2026-10-13 - RimPLC completed, the playbook as commands, voice v2
+
+- RimPLC: 61 ladder defects fixed (inputs nothing wrote, bool-vs-number conditions, warnings that never fired, steps naming commands nothing answered, stale "missing tool" notes); a wiring pass in both checkers; three new sensors; the tower sensor no longer counts a plain wall embrasure as a tower. Ladder 421 rungs, 208 sensors.
+- The automation file gained the rest of the playbook as commands, one rung each: freezer, butcher, kitchen, room_cooler; arm, draft, hold, tower, security_room; power, hall, terraform; research_next; generator, prisoner, trade, guest_beds, call_trader, gate_posture. Trading is a multi-step process: call a trader (caravan or ship), wait for it, go back to the console or out to the caravan, trade with the one that was called; spacer tech is never sold.
+- Gate: a lapsed service no longer closes an opening already running as "not enough charge", and a refused opening tick names its real cause. Surveys count any room of a required family. The paperwork ledger says to build a records desk when there is none. Explore digs into every fogged room, nearest first, with no distance cut-off.
+- Text: the calibration step names the real button, the gate recipe describes the four-section gate, the ramp message names the coordinate, each start gets its own welcome letter; an orphaned-key rule in the string checker.
+- Unity's voice v2 (emotional-range retrain of the same voice) is the stream's voice; v1 is kept as the fallback.
+- Both mods staged into the game; the public Rimrooms and RimPLC repositories published. Nothing above has been played yet: the full-kit test run on RimWorld 1.7 is next, and its findings go to the test-run notes before any fix.
+
 ## 0.13.0-dev - 2026-10-12 - Current content folders named 1.7
 
 - Renamed the current Rimrooms and RimPLC content directories to `1.7/`, following the owner's naming correction.
