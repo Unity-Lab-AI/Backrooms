@@ -174,6 +174,10 @@ class Toolbox:
         self._empire_at = 0.0         # empire_pass: when it last ran and what it reported (the cooldown guard)
         self._empire_report = ""
         self.greeted_this_tick = set()
+        self.wants_time = None        # the speed she asked for this turn; applied when the turn ends (owner: never run while planning)
+        self.paused_on_purpose = False
+        self.last_speed = ""
+        self.time_was_running = False
         self.local = self._local_tools()
 
     # -- tool specs for Ollama --------------------------------------------------------------------------------
@@ -263,6 +267,17 @@ class Toolbox:
             why = self._time_blocked()
             if why:
                 raise GuardError(why)
+            # owner (run 5, 2026-10-14 02:40): "she can NOT [let the game run] while she plans" -- the game stays paused for the
+            # whole turn; the wish is kept and the loop applies it when the turn ends (autopilot._time_plan_end), only with work queued
+            if name in ("rimworld/pause_game", "rimworld/set_time_speed"):
+                sp = str(args.get("speed", "")) if name == "rimworld/set_time_speed" else ""
+                self.wants_time = sp or getattr(self, "last_speed", "") or "Normal"
+                self.paused_on_purpose = False
+                return ("noted: time runs at %s the moment this turn ends (the game stays paused while you plan -- owner's rule) "
+                        "and only if the crew has work queued; finish your orders, then end the turn" % self.wants_time)
+        if name == "rimworld/pause_game" and args.get("pause", True):
+            self.paused_on_purpose = True
+            self.wants_time = None
         if name == "rimworld/click_ui_target":
             tid = str(args.get("targetId") or "")
             if tid not in self.ui_targets:
@@ -404,7 +419,8 @@ class Toolbox:
                          "stockpile_filter (x,z,mode food|nofood|all, priority), beds, shelves, stove, crops (plant), "
                          "hunt, day_one, assign (the Assign tab: pawn or empty for all, food Fine, medicine Best, hostility Attack). "
                          "OPEN-GROUND CAMP (Crashlanded, no rooms): unforbid (every starting item), chop (count = wood wanted, nearest trees to the crew), "
-                         "shelter (w,h inside size; a wood room + door + roof beside the crew), stockpile_camp (mode food|nofood; a 6x6 store beside the crew), "
+                         "shelter (w,h inside size; a wood room + door + roof beside the crew), stockpile_camp (nofood: the Main store over the supply pile; food: a corner carved out of it, same walls, same roof -- never a zone in the open), "
+                         "dump (a dumping zone on open ground outside the rooms; corpses switched OFF in every other store -- bodies go nowhere else), "
                          "haul (every loose stack within 30 cells unforbidden + Hauling priority 1 for all: the pile goes into the store first), "
                          "cancel (x,z,w,h: every planned building and designation in the rect is cancelled -- the owner's 'delete that wall'), "
                          "camp_plan (the ground survey: rock per side, the open FRONT where raids come, the mountain BACK, the door lanes kept clear), "
@@ -427,7 +443,7 @@ class Toolbox:
                                                                "beds", "shelves", "stove", "crops", "hunt", "day_one", "assign",
                                                                "set_zone_plant", "set_zone_sowing", "set_work_priority",
                                                                "set_bed_owner", "add_bill", "set_area",
-                                                               "unforbid", "chop", "shelter", "stockpile_camp", "haul", "cancel", "camp_plan", "free", "build", "build_room", "deconstruct", "harvest", "tame",
+                                                               "unforbid", "chop", "shelter", "stockpile_camp", "haul", "cancel", "camp_plan", "free", "dump", "build", "build_room", "deconstruct", "harvest", "tame",
                                                                "slaughter", "allow_area", "self_tend", "schedule", "drug_policy", "research", "bed_medical", "bed_prisoner", "cooler_temp",
                                                                "equip", "capture", "bill_count", "zone_create", "roof_area", "firebreak", "pen", "bury", "ideo_role", "save_game",
                                                                "stockpile_priority", "stockpile_copy", "crew_setup", "terraform",
@@ -833,6 +849,7 @@ class Toolbox:
         # laid out; the stove follows once a room stands (setup-5-stove, after setup-6-run).
         "layout_set": (None, ("storage_room", "shelter"), "ok: replies to BOTH storage_room and shelter in the mod's outbox (the camp is laid out; the crew builds it once time runs; the stove comes when a room stands)"),
         "supplies_hauled": (None, ("haul",), "an ok: reply to game_set cmd haul (the pile unforbidden, Hauling at 1 for everyone)"),
+        "food_indoors": (None, ("stockpile_room",), "an ok: reply to game_set cmd stockpile_room mode food (the Food store under the roof; owner, run 5: food rotting outside)"),
         "chop_set": (None, ("chop",), "an ok: reply to game_set cmd chop (trees marked; the rung counted designations and chopped the same trees every turn -- run 5)"),
         "shelter_set": (None, ("shelter",),
                         "an ok: reply to game_set cmd shelter (or build_room) in the mod's outbox"),
@@ -1246,6 +1263,8 @@ class Toolbox:
             self.bridge.call("rimworld/pause_game", {"pause": True})
         except Exception:
             pass
+        self.paused_on_purpose = True
+        self.wants_time = None
         self.think_next = True
         return "paused and announced; your next turn thinks deeply -- plan it, then unpause when the plan is set"
 

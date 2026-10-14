@@ -110,9 +110,13 @@ namespace RimroomsAsyncIndustries.Automation
             }
             else
             {
-                var s = new Zone_Stockpile(StorageSettingsPreset.DefaultStockpile, map.zoneManager);
+                // kind dumping = corpses and chunks; every other stockpile has corpses OFF (owner, run 5 2026-10-14: "bodies are
+                // being stored in the storages where arent body storage")
+                bool dumping = (kind ?? "") == "dumping";
+                var s = new Zone_Stockpile(dumping ? StorageSettingsPreset.DumpingStockpile : StorageSettingsPreset.DefaultStockpile, map.zoneManager);
                 map.zoneManager.RegisterZone(s);
                 foreach (IntVec3 c in cells) s.AddCell(c);
+                if (!dumping) s.settings.filter.SetAllow(ThingCategoryDefOf.Corpses, false);
                 if (a.TryGetValue("priority", out string pr) && Enum.TryParse(pr, true, out StoragePriority sp)) s.settings.Priority = sp;
                 z = s;
             }
