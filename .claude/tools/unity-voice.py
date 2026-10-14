@@ -79,7 +79,7 @@ def ask(line):
                           "do not add events, keep every name, number and plan in it: " + line))}],
         "options": {"num_ctx": int(os.environ.get("UNITY_VOICE_NUM_CTX", "8192")), "num_predict": 90, "temperature": 0.7, "top_p": 0.9,
                     "repeat_penalty": 1.2},
-        "keep_alive": "30m"}).encode("utf-8")
+        "keep_alive": -1}).encode("utf-8")
     req = urllib.request.Request(OLLAMA + "/api/chat", data=body, headers={"Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=90) as r:
         return json.loads(r.read().decode("utf-8")).get("message", {}).get("content", "")

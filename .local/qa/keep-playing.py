@@ -348,7 +348,7 @@ while True:
             def pick(what, fallback):
                 try:
                     import urllib.request as _u
-                    body = {"model": os.environ.get("UNITY_VOICE_LLM", "unity-local"), "stream": False, "think": False, "keep_alive": "30m",
+                    body = {"model": os.environ.get("UNITY_VOICE_LLM", "unity-local"), "stream": False, "think": False, "keep_alive": -1,
                             "options": {"temperature": 1.0, "num_predict": 12, "num_ctx": int(os.environ.get("UNITY_VOICE_NUM_CTX", "8192"))},
                             "prompt": "You are Unity, a 25 year old emo goth streamer. Give " + what +
                                       ". Reply with the name only, one to three words, letters and spaces only, clean."}

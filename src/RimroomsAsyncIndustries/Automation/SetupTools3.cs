@@ -105,22 +105,41 @@ namespace RimroomsAsyncIndustries.Automation
                     for (int dz = 0; dz < h + 2 && ok; dz++)
                     {
                         IntVec3 c = new IntVec3(corner.x + dx, 0, corner.z + dz);
-                        if (!Open(map, c)) { ok = false; break; }
                         bool edge = dx == 0 || dz == 0 || dx == w + 1 || dz == h + 1;
+                        // the ring keeps a one-cell gap from every other plan or wall and never sits in a door lane (the planner);
+                        // the inside only needs open ground
+                        if (!Open(map, c) || (edge ? !CampPlan.RingCellFree(map, camp, c) : CampPlan.InLane(camp, c))) { ok = false; break; }
                         (edge ? ring : inside).Add(c);
                     }
                 if (!ok) continue;
-                IntVec3 doorCell = new IntVec3(corner.x + 1 + w / 2, 0, corner.z);
-                if (!ring.All(c => GenConstruct.CanPlaceBlueprintAt(c == doorCell ? door : wall, c, Rot4.North, map, false, null, null, wood).Accepted))
+                CellRect box = CellRect.FromCellList(ring);
+                // two doors on different sides: toward the storage room (or the anchor) first, then the open front; each
+                // with a clear lane outside; the walls flanking a door wait until the door stands
+                IntVec3 hint = camp != null && camp.storageBox.Width > 0 ? camp.storageBox.CenterCell : home;
+                List<IntVec3> doorCells = CampPlan.DoorSites(map, camp, box, hint, out List<IntVec3> lanes);
+                if (doorCells.Count == 0) doorCells.Add(new IntVec3(corner.x + 1 + w / 2, 0, corner.z));
+                var flanks = new HashSet<IntVec3>();
+                foreach (IntVec3 dc in doorCells) foreach (IntVec3 f in CampPlan.Flanks(box, dc)) flanks.Add(f);
+                if (!ring.All(c => flanks.Contains(c) || GenConstruct.CanPlaceBlueprintAt(doorCells.Contains(c) ? door : wall, c, Rot4.North, map, false, null, null, wood).Accepted))
                     continue;
-                foreach (IntVec3 c in ring) GenConstruct.PlaceBlueprintForBuild(c == doorCell ? door : wall, c, map, Rot4.North, Faction.OfPlayer, wood);
+                int waiting = 0;
+                foreach (IntVec3 c in ring)
+                {
+                    if (!doorCells.Contains(c) && flanks.Contains(c))
+                    {
+                        IntVec3 itsDoor = doorCells.First(dc => CampPlan.Flanks(box, dc).Contains(c));
+                        if (camp != null) { camp.QueueFlank(c, itsDoor, wood); waiting++; continue; }
+                    }
+                    GenConstruct.PlaceBlueprintForBuild(doorCells.Contains(c) ? door : wall, c, map, Rot4.North, Faction.OfPlayer, wood);
+                }
                 // the camp is Home: colonists only fight fires and clean inside the Home area (run 3: 47 fire cells with no Home)
                 foreach (IntVec3 c in ring.Concat(inside)) map.areaManager.Home[c] = true;
-                if (camp != null) camp.shelterBox = CellRect.FromCellList(ring);
+                if (camp != null) camp.shelterBox = box;
                 foreach (IntVec3 c in inside) map.areaManager.BuildRoof[c] = true;
-                int cost = (ring.Count - 1) * wall.CostStuffCount + door.CostStuffCount;
+                int cost = (ring.Count - doorCells.Count) * wall.CostStuffCount + doorCells.Count * door.CostStuffCount;
                 return "ok: shelter planned, inside " + w + "x" + h + " from " + (corner.x + 1) + "," + (corner.z + 1) +
-                       ", door at " + doorCell.x + "," + doorCell.z + ", roof marked; needs about " + cost +
+                       ", " + doorCells.Count + " door(s) at " + string.Join(" and ", doorCells.Select(dc => dc.x + "," + dc.z)) +
+                       " (lanes outside kept clear, " + waiting + " flank walls wait for the doors), roof marked; needs about " + cost +
                        " wood (chop if short) and Construction work on. When it stands: beds, then stove";
             }
             return asked.InBounds(map)

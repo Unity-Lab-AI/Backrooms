@@ -131,6 +131,17 @@ namespace RimPLC
 
             st["colonists"] = (double)crew.Count;
             st["colony_exists"] = crew.Count > 0;
+            // walled in: a colonist who cannot reach the map edge (run 5, 2026-10-14: one door per room, both rooms' doors on
+            // each other's walls -- owner: "she is blocked in and gonna die"). The mod's `free` command opens the way.
+            int trapped = 0;
+            try
+            {
+                if (home != null)
+                    foreach (Pawn p in crew)
+                        if (p.Spawned && p.Map == home && !p.Dead && !home.reachability.CanReachMapEdge(p.Position, TraverseParms.For(p))) trapped++;
+            }
+            catch (Exception) { }
+            st["colonists_trapped"] = (double)trapped;
             st["downed_count"] = (double)downed;
             st["drafted_count"] = (double)drafted;
             st["mental_break"] = mental;
