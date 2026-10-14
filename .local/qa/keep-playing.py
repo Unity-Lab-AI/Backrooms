@@ -479,12 +479,24 @@ while True:
             if laid_out and st.get("mark_pawns_set") is True and st.get("mark_assign_set") is True:
                 os.remove(hold)
                 print(stamp(), "setup hold ended: the camp is laid out and the crew is set -- time may run", flush=True)
-            elif st.get("ticks_moving") and not (st.get("hostiles_on_map") or 0):
+            elif st.get("ticks_moving"):
+                # live readings (the sensors file is tick-written and frozen while the game is held): a raid, or rock
+                # being mined out of the pile's box for the layout, lets the clock run (run 5, 00:21)
+                live = {}
                 try:
-                    gates_bridge_pause(True)
-                    print(stamp(), "setup hold: time was running before the camp was laid out -- paused again", flush=True)
-                except Exception as e:
-                    print(stamp(), "setup hold: could not pause again:", e, flush=True)
+                    s_, b_ = gates._session()
+                    r_ = gates.bridge.exchange(s_, b_, "tools/call", {"name": "rimplc/read_state", "arguments": {"keys": "hostiles_on_map,designations_mine"}})
+                    r_ = r_.get("result", r_); r_ = r_.get("structuredContent", r_)
+                    live = r_.get("state") if isinstance(r_.get("state"), dict) else {}
+                except Exception:
+                    live = {}
+                mining = (live.get("designations_mine") or 0) and st.get("mark_storage_room_set") is not True   # rock blocks the ROOM; once it is planned the lock is back
+                if not (live.get("hostiles_on_map") or 0) and not mining:
+                    try:
+                        gates_bridge_pause(True)
+                        print(stamp(), "setup hold: time was running before the camp was laid out -- paused again", flush=True)
+                    except Exception as e:
+                        print(stamp(), "setup hold: could not pause again:", e, flush=True)
         top = firing[0]["id"] if firing else "none"
         print(stamp(), "gate:", top, "| food days:", round(st.get("meals", 0) * 0.9 / 4.8 + st.get("raw_food", 0) * 0.05 / 4.8, 2),
               "| game up:", game_up(), flush=True)
