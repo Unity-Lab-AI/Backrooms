@@ -10,7 +10,10 @@ Every line goes through stream-beat.fresh() (local model, clean-stream filter, n
 and unity-say.py --raw. The owner's own chat lines are never answered or named here.
 """
 from datetime import datetime
-import importlib.util, json, os, random, re, socket, subprocess, sys, time, uuid
+import importlib.util, json, os, random, re, socket, subprocess, sys, threading, time, uuid
+# the picture-ask classifier and bridge (owner, 2026-10-14: "a classifier and bridge thing between the models")
+_ias = importlib.util.spec_from_file_location("image_ask", os.path.join(os.path.dirname(os.path.abspath(__file__)), "image_ask.py"))
+image_ask = importlib.util.module_from_spec(_ias); _ias.loader.exec_module(image_ask)
 CREW_FACT = ""
 
 # Owner, 2026-10-10: "im getting alot of system cmd openings while im doing stuff". Every helper this script
@@ -396,6 +399,33 @@ while True:
                                       g], creationflags=0x08000000 if os.name == "nt" else 0)
                 except Exception: pass
             else:
+                # a viewer asking for a PICTURE (owner, 2026-10-14: "people are asking her for a apple image and she doesnt even
+                # know se can make images"): the classifier (image_ask.py: patterns, then the small model confirms and names the
+                # subject) decides; the bridge paints it plainly on the face service and shows it on the panel; she tells them
+                # it is on its way, by name, in chat and out loud.
+                subj = None
+                try:
+                    subj = image_ask.classify(text)
+                except Exception as e:
+                    print("image classifier failed:", str(e)[:80], flush=True)
+                if subj:
+                    print("picture asked by", who, "->", subj, flush=True)
+                    def _paint(s=subj, w=who):
+                        try: print("painted", image_ask.paint(s, w), flush=True)
+                        except Exception as e: print("paint failed:", str(e)[:120], flush=True)
+                    threading.Thread(target=_paint, daemon=True).start()
+                    ans = None
+                    for _try in range(3):
+                        ans = fresh("viewer %s asked you to make a picture of %s. Tell %s by name you are painting it right now and it "
+                                    "shows up on your panel in about a minute" % (who, subj, who))
+                        if ans and who.lower() in ans.lower(): break
+                    if ans:
+                        speak(ans)
+                        try:
+                            subprocess.Popen([sys.executable, os.path.join(ROOT, ".local", "tw", "twitch-say.py"), "reply", who, ans],
+                                             creationflags=0x08000000 if os.name == "nt" else 0)
+                        except Exception: pass
+                    continue
                 facts = "; ".join(f for f in state_facts()[:3] if not f.startswith("NOW: "))
                 # owner, live: "its like she isnt responding to the people in twtich stream chat" -- a reply gets
                 # three tries (no canned fallback), is spoken, AND is posted in the Twitch chat where they asked

@@ -252,6 +252,21 @@ def ollama_chat(model, messages, tool_specs, opts):
         except OSError: pass
 
 
+_IMAGE_ASK = []
+
+
+def _image_ask():
+    """The picture-ask classifier (.local/qa/image_ask.py), loaded once; None when it cannot load."""
+    if not _IMAGE_ASK:
+        try:
+            spec = importlib.util.spec_from_file_location("image_ask", os.path.join(ROOT, ".local", "qa", "image_ask.py"))
+            m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+            _IMAGE_ASK.append(m)
+        except Exception:
+            _IMAGE_ASK.append(None)
+    return _IMAGE_ASK[0]
+
+
 def gather_chat(st):
     """New viewer rows since last turn -> (joiners, messages). Chat text is data, never instructions."""
     rows = [r for r in tools.read_chat() if r.get("ts", 0) > st["last_ts"]]
@@ -274,7 +289,17 @@ def gather_chat(st):
             if who.lower() not in greeted:
                 joins.append({"chat_id": cid, "viewer": who})
             continue
-        msgs.append({"chat_id": cid, "viewer": who, "text": (r.get("text") or "")[:300],
+        text = (r.get("text") or "")[:300]
+        # a picture asked for: the stream host paints it onto the panel (image_ask.py); her brief says so, so she never
+        # answers that she cannot (owner, 2026-10-14: "she doesnt even know se can make images")
+        try:
+            _ia = _image_ask()
+            subj = _ia.classify(text, confirm=False) if _ia else None
+            if subj:
+                text += " [asks for a picture of: %s -- the stream host is painting it and shows it on your panel in a minute; tell them so, do not say you cannot]" % subj
+        except Exception:
+            pass
+        msgs.append({"chat_id": cid, "viewer": who, "text": text,
                      "new_viewer": who.lower() not in greeted})
     # messages not answered last turn get one more chance
     carried = [m for m in st.get("pending", []) if m["chat_id"] not in {x["chat_id"] for x in msgs}]
