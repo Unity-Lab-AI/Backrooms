@@ -6765,18 +6765,22 @@
    },
    "then": [
     "stop every mouse/keyboard tool at once: no game_click_cell, game_right_click_cell, game_drag_cell, order_pawn, snap",
-    "keep playing only through the no-mouse channel: game_set (any cmd), pawn_priorities, ladder, game_state, game_list_*",
-    "reply_owner msg_id=<latest> text=<ask for control, e.g. I'm off your mouse, tell me when I can have it back>",
-    "say one clean line to chat that you are fixing something behind the scenes",
-    "retake input only after owner_input_active has read false for the OWNER_SETTLE_S tag s"
+    "quiet turn: at most one ladder read, then end the turn -- no say, no game_set, no order, nothing fired to fill the turn",
+    "reply_owner msg_id=<latest> text=<answer his line> only when owner_unread > 0; never ask for the mouse back",
+    "nothing to clear: the rung is not latched, it drops by itself on the next scan after owner_input_active reads false",
+    "mouse tools again only after owner_input_active has read false for the OWNER_SETTLE_S tag s"
    ],
    "never": [
     "press hotkeys or Win/Alt combos (they opened the Microsoft Store on the owner's PC)",
     "fight the owner's cursor",
-    "use the owner's screen to run tests"
+    "use the owner's screen to run tests",
+    "say a cover line on stream (no 'fixing something behind the scenes', ever)",
+    "fire hunt / explore / any game_set to fill the turn while he plays",
+    "ladder_set remove_rung or a mark to drop this rung -- it is not latched"
    ],
    "latch": false,
    "why": "owner: \"i dont know what eny of this means but im not loaining the mouse it need to have its OWN mouse!!!!!! that doesnt fight user input and deffers instantly before attempting recontol once settles d mouse\" / owner: \"FUCK THANK YOU FOR FUCKING STOPING !!!!! NOW LISTEN YOU ASK ME FOR CONTROL OF MOUSE IF YOU NEED IT< FUCK!!!! UPDATE CHAT YOU WE FUCKING ME OVER IN THE BACK GROUND  AND FIX ALL THE ISSUES OF EVERYTHING IVE EVER SAID IN TOTALITY AGAIN AND AGIN TILL EVERYTHING IN THE BASE IS CORRECT!!!!!\" / owner: \"HOW MANY TIMES HAVE I SAID DONT FIGHT ME!!!!!!!!!! U WERE OPENING THE MICROSOFT\n     STORE REPEADILEY USING HOTKEYS U FUCKING ITIOT U VIRUSED MY COMPUTER AND SHIT STOP DOING THAT\n     IF I TAKE THE FUCKING MOUSE OR KEEYS I HAVE TO BE ABLE TO TALK TO YOU SO FUCK UPDATE THE VIEWER\n     AND FIX THE SHIT NOT OPEN MY FUCKING APPS\" / owner: \"YOU GO PLAY AND RUN THE FUCKING TESTSS IN THE GAME!!!! DONT USE MY SCREEN TO DO IT DO U FUCKING UNDERSTAND!\" / owner: \"tell the players you are fixing it\"",
+   "note": "owner_input_active = real keyboard/mouse input in the last 60 s WHILE RimWorld is the foreground window (gates.host_inputs: GetLastInputInfo + GetForegroundWindow -> process RimWorld); typing in any other window never counts. Not latched: a measured false is pushed every turn and the rung drops on the first scan after his hands leave the game. 2026-10-13 ledger 18:54/19:08/19:11/19:12/19:42: the PC-wide read held her idle while the owner typed to the lead, she tried to delete the rung, said a canned cover line five ways and fired hunt/explore as filler",
    "family": "meta",
    "source": "book",
    "mode": "advise"
