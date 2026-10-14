@@ -8607,17 +8607,19 @@
    "when": {
     "colony_exists": true,
     "mark_assign_set": true,
+    "mark_layout_set": true,
+    "ideo_roles_unassigned": ">0",
     "mark_ideo_roles_set": false
    },
    "then": [
-    "game_open_main_tab Ideoligion; assign a leader and a moral guide (game_get_ui_layout, then click the listed targets once each)",
-    "a click selected everything (all fields/pawns): game_close_window and read game_get_ui_layout again -- exactly one thing selected before acting",
-    "ladder_set mark ideo_roles_set true"
+    "game_set cmd ideo_role role leader pawn <the best social/leadership skill> -- the mod assigns it (never the Ideoligion tab: the main-tab list does not show it on 1.7)",
+    "game_set cmd ideo_role role moralist pawn <the next best> ",
+    "the reply ok: ladder_set mark ideo_roles_set true (confirmed on ideo_leader_assigned and ideo_roles_unassigned 0)"
    ],
    "never": [
     "click an option twice"
    ],
-   "why": "owner: \"now u have a leader u need a morasl guide and they ahave abilities u want to always use\" / owner: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\" / owner: \"click the option s one not twice\" / owner: \"some time u click twice it selects all firelds be werry\"",
+   "why": "run 5 (2026-10-14 02:13-02:15): three turns listing main tabs for an Ideoligion tab the game does not list, a self-mark the rung never read, while the storage room waited / owner: \"now u have a leader u need a morasl guide and they ahave abilities u want to always use\" / owner: \"make sure everything ive ever told you about the game play and the walkthrough materials avaiilable online is properlbly buildt into the RimPLCand the models instructions liike tools and handles and usage and concise workings when called upon RimPLC\" / owner: \"click the option s one not twice\" / owner: \"some time u click twice it selects all firelds be werry\"",
    "source": "book",
    "mode": "advise"
   },
