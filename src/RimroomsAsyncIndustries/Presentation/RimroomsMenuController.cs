@@ -26,15 +26,16 @@ namespace RimroomsAsyncIndustries.Presentation
         }
     }
 
-    /// <summary>Claims only the stock title background and yields to other background owners.</summary>
+    /// <summary>Claims the title and loading background from any provider, and reclaims it if replaced.</summary>
     public sealed class RimroomsMenuController : MonoBehaviour
     {
         private static RimroomsMenuController instance;
 
-        private UI_BackgroundMain originalBackground;
+        private UIMenuBackground originalBackground;
         private RimroomsMenuBackground ownedBackground;
         private bool yieldedForEntry;
         private bool failedForEntry;
+        private string lastLoggedProvider;
 
         internal static void EnsureStarted()
         {
@@ -82,48 +83,27 @@ namespace RimroomsAsyncIndustries.Presentation
 
             try
             {
+                // **RIMROOMS OWNS THE MENU AND THE LOADING SCREEN, WHOEVER ELSE IS LOADED.** This
+                // used to claim only the stock background and yield, silently, to any other owner.
+                // Owner, 2026-10-21, on a RimSort list carrying Vanilla Backgrounds Expanded: *"im
+                // not seeing it activated and its loading screen art and main menu art and im not
+                // seeing the rimrooms versioning on main menu"* -- that mod sets its own picture,
+                // so we yielded, and the version label went with the art. Asked, the owner chose
+                // **"Rimrooms takes priority"**: claim the surface from any provider, and take it
+                // back if something replaces it.
                 UIMenuBackground active = UIMenuBackgroundManager.background;
-                if (ownedBackground != null)
-                {
-                    if (active == ownedBackground)
-                    {
-                        if (ownedBackground.ObserveNativeSelection()) { return; }
-                        ReleaseIfStillOwner();
-                        yieldedForEntry = true;
-                        return;
-                    }
-
-                    ownedBackground = null;
-                    originalBackground = null;
-                    if (active != null && active.GetType() == typeof(UI_BackgroundMain) &&
-                        IsStockSelectedImage(((UI_BackgroundMain)active).overrideBGImage))
-                    {
-                        // UIRoot_Entry.Init replaces the native background when returning to the menu.
-                        Install((UI_BackgroundMain)active);
-                        return;
-                    }
-
-                    // A different renderer or non-stock image means another provider owns the surface.
-                    yieldedForEntry = true;
-                    return;
-                }
-
                 if (active == null) { return; }
-                if (active.GetType() != typeof(UI_BackgroundMain))
+                if (ownedBackground != null && active == ownedBackground)
                 {
-                    yieldedForEntry = true;
+                    ownedBackground.ObserveNativeSelection();
                     return;
                 }
 
-                var stock = (UI_BackgroundMain)active;
-                if (!IsStockSelectedImage(stock.overrideBGImage))
-                {
-                    // A provider may use the stock type; an unknown image means ownership is ambiguous.
-                    yieldedForEntry = true;
-                    return;
-                }
-
-                Install(stock);
+                // UIRoot_Entry.Init replaces the background when returning to the menu, and another
+                // mod may swap it at any time; either way the surface is claimed again.
+                ownedBackground = null;
+                originalBackground = null;
+                Install(active);
             }
             catch (Exception exception)
             {
@@ -133,10 +113,21 @@ namespace RimroomsAsyncIndustries.Presentation
             }
         }
 
-        private void Install(UI_BackgroundMain stock)
+        private void Install(UIMenuBackground active)
         {
-            originalBackground = stock;
-            ownedBackground = new RimroomsMenuBackground(stock.overrideBGImage);
+            var main = active as UI_BackgroundMain;
+            bool stock = active.GetType() == typeof(UI_BackgroundMain) && IsStockSelectedImage(main.overrideBGImage);
+            if (!stock && active.GetType().FullName != lastLoggedProvider)
+            {
+                // Once per provider, so a mod that swaps the background every frame cannot flood the log.
+                lastLoggedProvider = active.GetType().FullName;
+                Log.Message("[Rimrooms][Menu] Took the menu background over from " + active.GetType().FullName + ".");
+            }
+            originalBackground = active;
+            // Only a stock expansion picture is kept as the native image; another provider's
+            // picture is never shown under ours.
+            Texture2D nativeImage = main != null && IsStockSelectedImage(main.overrideBGImage) ? main.overrideBGImage : null;
+            ownedBackground = new RimroomsMenuBackground(nativeImage);
             UIMenuBackgroundManager.background = ownedBackground;
         }
 

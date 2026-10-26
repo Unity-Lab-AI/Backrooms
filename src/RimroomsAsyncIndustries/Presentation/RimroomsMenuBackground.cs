@@ -49,15 +49,15 @@ namespace RimroomsAsyncIndustries.Presentation
             SetupExpansionFadeData();
         }
 
-        internal bool ObserveNativeSelection()
+        /// <summary>Follows the player's expansion pick; another provider's picture is ignored.</summary>
+        internal void ObserveNativeSelection()
         {
             Texture2D observed = overrideBGImage;
-            if (observed == lastAssignedImage) { return true; }
-            if (!RimroomsMenuController.IsStockSelectedImage(observed)) { return false; }
+            if (observed == lastAssignedImage) { return; }
+            if (!RimroomsMenuController.IsStockSelectedImage(observed)) { return; }
 
             nativeImage = observed;
             lastAssignedImage = observed;
-            return true;
         }
 
         public override void BackgroundOnGUI()
@@ -80,6 +80,18 @@ namespace RimroomsAsyncIndustries.Presentation
             }
 
             base.BackgroundOnGUI();
+
+            // **THE BASE DRAW IS NOT OURS TO TRUST.** Vanilla Backgrounds Expanded transpiles
+            // `UI_BackgroundMain.BackgroundOnGUI`, so the picture assigned above is not what base
+            // paints when it is loaded. The current slide is painted again over it -- except while
+            // the native expansion preview is hovered, which base draws and must stay visible.
+            if (settingsMode != 0 && slides.Count > 0 && !protectNativeExpansionPreview &&
+                Event.current.type == EventType.Repaint)
+            {
+                Texture2D slide = slides[currentIndex];
+                GUI.DrawTexture(new Rect(0f, 0f, Verse.UI.screenWidth, Verse.UI.screenHeight), BaseContent.BlackTex);
+                GUI.DrawTexture(RimroomsSlideArt.FullScreenRect(slide), slide, ScaleMode.ScaleToFit, true);
+            }
 
             if (transitionTarget >= 0 && !transitionPaused && !protectNativeExpansionPreview &&
                 Event.current.type == EventType.Repaint)
